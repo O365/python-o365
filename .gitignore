@@ -52,3 +52,6 @@ docs/_build/
 
 # PyBuilder
 target/
+
+# Passwords and other things I care to publish
+*.pw
