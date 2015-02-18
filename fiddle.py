@@ -17,24 +17,32 @@ if __name__ == '__main__':
 
 	config = open('./ep.pw','r').read()
 	cjson = json.loads(config)
-	print cjson
-
+#	print cjson
+#
 	e = cjson ['email']
 	p = cjson ['password']
+#
+#	i = Inbox(e,p)
+#	i.getMessages()
+#	for j in i.messages:
+#		print j.subject
+#	print len(i.messages)
+#
 
-	i = Inbox(e,p)
-	i.getMessages()
-	for j in i.messages:
-		print j.subject
-	print len(i.messages)
+#	m = i.messages[0]
+#	print m.fetchAttachments()
+#	a = None
+#	for j in m.attachments:
+#		print j.name, j.isPDF
+#		if j.isPDF:
+#			a = j
+#
+#	print "saved attachment: ", a.save('/home/toby.archer')
 
 
-	m = i.messages[0]
-	print m.fetchAttachments()
-	a = None
-	for j in m.attachments:
-		print j.name, j.isPDF
-		if j.isPDF:
-			a = j
+	m = Message(None,(e,p))
+	m.subject = 'Test'
+	m.body = 'testing testing testie test'
+	m.receiver = 'toby.archer@om.org'
 
-	print "saved attachment: ", a.save('/home/toby.archer')
+	print m.sendMessage()
