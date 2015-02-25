@@ -2,9 +2,11 @@ import requests
 import base64
 import json
 import logging
+import time
 from inbox import Inbox
 from message import Message
 from attachment import Attachment
+from O365Schedule import *
 
 logging.basicConfig(filename='o365.log',level=logging.DEBUG)
 
@@ -39,10 +41,29 @@ if __name__ == '__main__':
 #
 #	print "saved attachment: ", a.save('/home/toby.archer')
 
+##########################################
 
-	m = Message(None,(e,p))
-	m.subject = 'Test'
-	m.body = 'testing testing testie test'
-	m.receiver = 'toby.archer@om.org'
+#	m = Message(None,(e,p))
+#	m.subject = 'Test'
+#	m.body = 'testing testing testie test'
+#	m.receiver = 'toby.archer@om.org'
 
-	print m.sendMessage()
+#	print m.sendMessage()
+
+
+##########################################
+
+	s = Schedule(e,p)
+	s.getCalendars()
+
+	for cal in s.calendars:
+		cal.fetchEvents()
+
+	e = Event(auth=(e,p))
+	e.subject = 'json test'
+	e.body = 'derpa derp'
+	e.start = time.localtime()
+	e.end = time.gmtime(time.time()+7200)
+	e.attendees = [{"EmailAddress":{"Address":"Toby.Archer@om.org","Name":"Toby Archer (LIFE)"}}]
+	e.create(s.calendars[0])
+	
