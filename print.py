@@ -19,7 +19,7 @@ class Printer( object ):
 		
 
 	def setFlag(self,flag,value):
-		if flag = 'd':
+		if flag == 'd':
 			return False
 		try:
 			self.flags[flag] = value
@@ -56,25 +56,32 @@ class Printer( object ):
 
 
 	def sendPrint(self,item):
-		command = ['lp','-d',self.name]
+		#command = ['lp','-d',self.name]
+		command = ['/usr/bin/lp']
 		for flag in self.flags.keys():
 			command.append('-{0} {1}'.format(flag,self.flags[flag]))
 
 		for op in self.options:
 			command.append(str(op))
 
-		p = subprocess.Popen(command,stdout=subprocess.PIPE,stdin=subprocess.PIPE,stderr=subprocess.STDOUT)
-		outs = p.communicate(input=item)[0]
+		print command
+		p = subprocess.Popen(command,stdout=subprocess.PIPE,stdin=subprocess.PIPE)
+		#outs = p.communicate(input=item)[0]
+		p.stdin.write(item)
+		outs = p.communicate()
 		print outs
 
 
 class Option( object ):
 
 
-	def __init__(self,name,options,default):
+	def __init__(self,name,options,default=None):
 		self.name = name
 		self.options = options
-		self.default = default
+		if default:
+			self.default = default
+		else:
+			self.default = self.options[0]
 
 
 	def __str__(self):
@@ -88,3 +95,16 @@ class Option( object ):
 			return False
 		self.default = self.options[index]
 		return True
+
+
+if __name__ == '__main__':
+	ops = []
+	ops.append(Option('ColorModel',['Gray']))
+	ops.append(Option('Duplex',['DuplexNoTumble']))
+	ops.append(Option('JobType',['LockedPrint']))
+	ops.append(Option('LockedPrintPassword',['1234']))
+	p = Printer('ricoh-double',{'U':'tester'},ops)
+	p.sendPrint(open('README.md','rb').read())
+
+
+

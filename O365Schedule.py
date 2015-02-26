@@ -2,8 +2,10 @@ import requests
 import base64
 import json
 import logging
-from O365Calendar import Calendar
-from O365Event import Event
+#from O365Calendar import Calendar
+#from O365Event import Event
+
+import O365
 
 logging.basicConfig(filename='o365.log',level=logging.DEBUG)
 
@@ -26,7 +28,7 @@ class Schedule( object ):
 		for calendar in response.json()['value']:
 			try:
 				log.debug('appended calendar: %s',calendar['Name'])
-				self.calendars.append(Calendar(calendar,self.auth))
+				self.calendars.append(O365.Calendar(calendar,self.auth))
 				print 'appended message:',calendar['Name']
 			except Exception as e:
 				log.info('failed to append calendar: %',str(e))

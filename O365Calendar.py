@@ -3,7 +3,8 @@ import base64
 import json
 import logging
 import time
-from O365Event import Event
+#from O365Event import Event
+import O365
 
 logging.basicConfig(filename='o365.log',level=logging.DEBUG)
 
