@@ -2,7 +2,7 @@ import requests
 import base64
 import json
 import logging
-#from attachment import Attachment
+from O365 import *
 
 logging.basicConfig(filename='o365.log',level=logging.DEBUG)
 
@@ -42,7 +42,7 @@ class Message( object ):
 
 		for att in json['value']:
 			try:
-				self.attachments.append(O365.Attachment(att))
+				self.attachments.append(Attachment(att))
 				log.debug('successfully downloaded attachment for: %s.',self.auth[0])
 			except Exception as e:
 				log.info('failed to download attachment for: %s', self.auth[0])

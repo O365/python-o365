@@ -2,8 +2,7 @@ import requests
 import base64
 import json
 import logging
-#from message import Message
-#from attachment import Attachment
+from O365 import *
 
 logging.basicConfig(filename='o365.log',level=logging.DEBUG)
 
@@ -25,7 +24,7 @@ class Inbox( object ):
 		
 		for message in response.json()['value']:
 			try:
-				self.messages.append(O365.Message(message,self.auth))
+				self.messages.append(Message(message,self.auth))
 				log.debug('appended message: %s',message['Subject'])
 			except Exception as e:
 				log.info('failed to append message: %',str(e))

@@ -2,7 +2,7 @@ import requests
 import base64
 import json
 import logging
-import O365
+from O365 import *
 
 logging.basicConfig(filename='o365.log',level=logging.DEBUG)
 

@@ -4,7 +4,7 @@ import json
 import logging
 import time
 #from O365Event import Event
-import O365
+from O365 import *
 
 logging.basicConfig(filename='o365.log',level=logging.DEBUG)
 

@@ -8,7 +8,7 @@ import time
 #from attachment import Attachment
 #from O365Schedule import *
 
-import O365
+from O365 import *
 
 logging.basicConfig(filename='o365.log',level=logging.DEBUG)
 
@@ -55,13 +55,13 @@ if __name__ == '__main__':
 
 ##########################################
 
-	s = O365.Schedule(e,p)
+	s = Schedule(e,p)
 	s.getCalendars()
 
 	for cal in s.calendars:
 		cal.fetchEvents()
 
-	e = O365.Event(auth=(e,p))
+	e = Event(auth=(e,p))
 	e.subject = 'json test'
 	e.body = 'derpa derp'
 	e.start = time.localtime()
