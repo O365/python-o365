@@ -32,3 +32,5 @@ class Inbox( object ):
 		
 		log.debug('all messages retrieved and put in to the list.')
 		return True
+
+#To the King!

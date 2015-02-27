@@ -44,3 +44,5 @@ class Attachment( object ):
 			log.debug('what? no clue went wrong here. cannot decode')
 
 		return False
+
+#To the King!

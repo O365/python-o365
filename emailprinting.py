@@ -22,3 +22,5 @@ if __name__ == '__main__':
 			if p:
 				ret = printer.sendPrint(p)
 				print ret
+
+#To the King!

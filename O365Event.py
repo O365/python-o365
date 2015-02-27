@@ -141,3 +141,5 @@ class Event( object ):
 			log.debug('response to deletion: %s',str(response))
 
 		return response
+
+#To the King!

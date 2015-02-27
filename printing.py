@@ -163,4 +163,6 @@ def getRicoh():
 if __name__ == '__main__':
 	r = getRicoh()
 	print r
-	
+
+
+#To the King!

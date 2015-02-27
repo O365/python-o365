@@ -32,3 +32,5 @@ class Schedule( object ):
 		
 		log.debug('all calendars retrieved and put in to the list.')
 		return True
+
+#To the King!
