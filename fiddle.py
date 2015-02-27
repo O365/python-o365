@@ -1,5 +1,3 @@
-
-<<<<<<< HEAD
 from O365 import *
 
 logging.basicConfig(filename='o365.log',level=logging.DEBUG)
@@ -70,6 +68,4 @@ if __name__ == '__main__':
 #	t.delete()
 
 
-=======
->>>>>>> master
 #To the King!

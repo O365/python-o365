@@ -1,5 +1,3 @@
-
-<<<<<<< HEAD
 logging.basicConfig(filename='o365.log',level=logging.DEBUG)
 
 log = logging.getLogger(__name__)
@@ -28,6 +26,4 @@ class Inbox( object ):
 		log.debug('all messages retrieved and put in to the list.')
 		return True
 
-=======
->>>>>>> master
 #To the King!

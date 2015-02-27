@@ -1,5 +1,4 @@
 
-<<<<<<< HEAD
 if __name__ == '__main__':
 	with open('./ep.pw','r') as configFile:
 		config = configFile.read()
@@ -21,6 +20,4 @@ if __name__ == '__main__':
 				ret = printer.sendPrint(p)
 				print ret
 
-=======
->>>>>>> master
 #To the King!

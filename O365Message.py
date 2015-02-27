@@ -1,5 +1,3 @@
-
-<<<<<<< HEAD
 logging.basicConfig(filename='o365.log',level=logging.DEBUG)
 
 log = logging.getLogger(__name__)
@@ -66,6 +64,4 @@ class Message( object ):
 		return True
 		
 
-=======
->>>>>>> master
 #To the King!
