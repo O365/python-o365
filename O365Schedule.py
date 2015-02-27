@@ -1,9 +1,5 @@
-import requests
-import base64
-import json
-import logging
-from O365 import *
 
+<<<<<<< HEAD
 logging.basicConfig(filename='o365.log',level=logging.DEBUG)
 
 log = logging.getLogger(__name__)
@@ -33,4 +29,6 @@ class Schedule( object ):
 		log.debug('all calendars retrieved and put in to the list.')
 		return True
 
+=======
+>>>>>>> master
 #To the King!

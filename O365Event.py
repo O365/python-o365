@@ -1,10 +1,5 @@
-import requests
-import base64
-import json
-import logging
-import time
-from O365 import *
 
+<<<<<<< HEAD
 logging.basicConfig(filename='o365.log',level=logging.DEBUG)
 
 log = logging.getLogger(__name__)
@@ -142,4 +137,6 @@ class Event( object ):
 
 		return response
 
+=======
+>>>>>>> master
 #To the King!

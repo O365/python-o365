@@ -1,9 +1,5 @@
-import requests
-import base64
-import json
-import logging
-from O365 import *
 
+<<<<<<< HEAD
 logging.basicConfig(filename='o365.log',level=logging.DEBUG)
 
 log = logging.getLogger(__name__)
@@ -70,4 +66,6 @@ class Message( object ):
 		return True
 		
 
+=======
+>>>>>>> master
 #To the King!

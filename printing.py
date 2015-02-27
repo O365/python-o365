@@ -1,6 +1,5 @@
-import subprocess
-import os
 
+<<<<<<< HEAD
 class Printer( object ):
 
 
@@ -165,4 +164,6 @@ if __name__ == '__main__':
 	print r
 
 
+=======
+>>>>>>> master
 #To the King!
