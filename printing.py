@@ -1,3 +1,5 @@
+import subprocess
+
 class Printer( object ):
 
 
@@ -137,7 +139,7 @@ def listOptions(printer):
 
 def getRicoh():
 	ops = listOptions('ricoh-double')
-	prin = Printer('ricoh-double',{'U':'tester'},ops)
+	prin = Printer('ricoh-double',{'U':'tester','t':'testPrint.pdf'},ops)
 
 	op = prin.getOption('ColorModel')
 	op.setDefault('Gray')

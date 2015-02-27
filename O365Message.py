@@ -1,3 +1,8 @@
+from O365 import *
+import logging
+import json
+import requests
+
 logging.basicConfig(filename='o365.log',level=logging.DEBUG)
 
 log = logging.getLogger(__name__)
@@ -5,6 +10,7 @@ log = logging.getLogger(__name__)
 class Message( object ):
 	att_url = 'https://outlook.office365.com/api/v1.0/me/messages/{0}/attachments'
 	send_url = 'https://outlook.office365.com/api/v1.0/me/sendmail'
+	update_url = 'https://outlook.office365.com/api/v1.0/me/messages/{0}'
 
 	def __init__(self, json=None, auth=None):
 		'''
@@ -63,5 +69,15 @@ class Message( object ):
 
 		return True
 		
+	def markAsRead(self):
+		read = '{"IsRead":true}'
+		headers = {'Content-type': 'application/json', 'Accept': 'application/json'}
+#		try:
+		response = requests.patch(self.update_url.format(self.messageId),read,headers=headers,auth=self.auth)
+#		except:
+#			return False
+#		print response
+#		return True
+
 
 #To the King!

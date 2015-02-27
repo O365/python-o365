@@ -1,3 +1,9 @@
+from O365 import *
+from O365Message import Message
+import logging
+import json
+import requests
+
 logging.basicConfig(filename='o365.log',level=logging.DEBUG)
 
 log = logging.getLogger(__name__)

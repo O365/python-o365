@@ -1,3 +1,9 @@
+from O365 import *
+import base64
+import logging
+import json
+import requests
+
 logging.basicConfig(filename='o365.log',level=logging.DEBUG)
 
 log = logging.getLogger(__name__)

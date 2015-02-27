@@ -1,4 +1,7 @@
 from O365 import *
+import logging
+import json
+import requests
 
 logging.basicConfig(filename='o365.log',level=logging.DEBUG)
 
@@ -24,12 +27,14 @@ if __name__ == '__main__':
 
 
 	m = i.messages[0]
-	print m.fetchAttachments()
-	a = None
-	for j in m.attachments:
-		print j.name, j.isPDF
-		if j.isPDF:
-			a = j
+#	print m.fetchAttachments()
+#	a = None
+#	for j in m.attachments:
+#		print j.name, j.isPDF
+#		if j.isPDF:
+#			a = j
+
+	print m.markAsRead()
 
 #	print "saved attachment: ", a.save('/home/toby.archer')
 
