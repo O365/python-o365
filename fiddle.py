@@ -3,10 +3,6 @@ import base64
 import json
 import logging
 import time
-#from inbox import Inbox
-#from message import Message
-#from attachment import Attachment
-#from O365Schedule import *
 
 from O365 import *
 
@@ -21,26 +17,26 @@ if __name__ == '__main__':
 
 	config = open('./ep.pw','r').read()
 	cjson = json.loads(config)
-#	print cjson
+	print cjson
 #
 	e = cjson ['email']
 	p = cjson ['password']
 #
-#	i = Inbox(e,p)
-#	i.getMessages()
-#	for j in i.messages:
-#		print j.subject
-#	print len(i.messages)
-#
+	i = Inbox(e,p)
+	i.getMessages()
+	for j in i.messages:
+		print j.subject
+	print len(i.messages)
 
-#	m = i.messages[0]
-#	print m.fetchAttachments()
-#	a = None
-#	for j in m.attachments:
-#		print j.name, j.isPDF
-#		if j.isPDF:
-#			a = j
-#
+
+	m = i.messages[0]
+	print m.fetchAttachments()
+	a = None
+	for j in m.attachments:
+		print j.name, j.isPDF
+		if j.isPDF:
+			a = j
+
 #	print "saved attachment: ", a.save('/home/toby.archer')
 
 ##########################################
@@ -55,24 +51,24 @@ if __name__ == '__main__':
 
 ##########################################
 
-	s = Schedule(e,p)
-	s.getCalendars()
+#	s = Schedule(e,p)
+#	s.getCalendars()
 
-	for cal in s.calendars:
-		cal.fetchEvents()
+#	for cal in s.calendars:
+#		cal.fetchEvents()
 
-	e = Event(auth=(e,p))
-	e.subject = 'json test'
-	e.body = 'derpa derp'
-	e.start = time.localtime()
-	e.end = time.gmtime(time.time()+7200)
-	e.attendees = [{"EmailAddress":{"Address":"Toby.Archer@om.org","Name":"Toby Archer (LIFE)"}}]
-	t = e.create(s.calendars[0])
-	time.sleep(15)
-	t.subject = 'EDITED!'
-	t.start = time.gmtime(time.time()+3600)
-	print 't is ready to update'
-	print t.update()
-	print 'update sent!'
-	time.sleep(10)
-	t.delete()
+#	e = Event(auth=(e,p))
+#	e.subject = 'json test'
+#	e.body = 'derpa derp'
+#	e.start = time.localtime()
+#	e.end = time.gmtime(time.time()+7200)
+#	e.attendees = [{"EmailAddress":{"Address":"Toby.Archer@om.org","Name":"Toby Archer (LIFE)"}}]
+#	t = e.create(s.calendars[0])
+#	time.sleep(15)
+#	t.subject = 'EDITED!'
+#	t.start = time.gmtime(time.time()+3600)
+#	print 't is ready to update'
+#	print t.update()
+#	print 'update sent!'
+#	time.sleep(10)
+#	t.delete()

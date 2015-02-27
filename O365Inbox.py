@@ -3,6 +3,7 @@ import base64
 import json
 import logging
 from O365 import *
+from O365Message import Message
 
 logging.basicConfig(filename='o365.log',level=logging.DEBUG)
 

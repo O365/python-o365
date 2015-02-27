@@ -31,3 +31,16 @@ class Attachment( object ):
 
 		log.debug('file saving successful')
 		return True
+
+	def byteString(self):
+		if not self.isPDF:
+			log.debug('we only work with PDFs.')
+			return False
+
+		try:
+			return base64.b64decode(self.content)
+
+		except Exception as e:
+			log.debug('what? no clue went wrong here. cannot decode')
+
+		return False
