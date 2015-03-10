@@ -22,6 +22,7 @@ def verifyUser(email):
 emails = open('./emails.pw','r').read().split('\n')
 
 if __name__ == '__main__':
+	print "checking for emails"
 	with open('./ep.pw','r') as configFile:
 		config = configFile.read()
 		cjson = json.loads(config)
@@ -44,6 +45,8 @@ if __name__ == '__main__':
 		for att in m.attachments:
 			printer.setFlag('U',userFromEmail(m.address))
 			p = att.byteString()
+			if not p:
+				continue
 			print "length of byte string: ",len(p),"for attachment:",att.name
 			if p:
 				print "ready. set. PRINT!"

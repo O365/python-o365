@@ -12,21 +12,21 @@ if __name__ == '__main__':
 	#p = raw_input('Password: ')
 	#print(e,p)
 
-	config = open('./ep.pw','r').read()
+	config = open('./test.pw','r').read()
 	cjson = json.loads(config)
-	print cjson
+#	print cjson
 #
 	e = cjson ['email']
 	p = cjson ['password']
 #
-	i = Inbox(e,p)
-	i.getMessages()
-	for j in i.messages:
-		print j.subject
-	print len(i.messages)
+#	i = Inbox(e,p)
+#	i.getMessages()
+#	for j in i.messages:
+#		print j.subject
+#	print len(i.messages)
 
 
-	m = i.messages[0]
+#	m = i.messages[0]
 #	print m.fetchAttachments()
 #	a = None
 #	for j in m.attachments:
@@ -34,7 +34,7 @@ if __name__ == '__main__':
 #		if j.isPDF:
 #			a = j
 
-	print m.markAsRead()
+#	print m.markAsRead()
 
 #	print "saved attachment: ", a.save('/home/toby.archer')
 
@@ -50,12 +50,16 @@ if __name__ == '__main__':
 
 ##########################################
 
-#	s = Schedule(e,p)
-#	s.getCalendars()
+	s = Schedule(e,p)
+	s.getCalendars()
 
-#	for cal in s.calendars:
-#		cal.fetchEvents()
+	for cal in s.calendars:
+		print 'fetch succeed:',cal.fetchEvents()
 
+	print 'events for',e,len(cal.events)
+
+	for eve in cal.events:
+		print e,eve
 #	e = Event(auth=(e,p))
 #	e.subject = 'json test'
 #	e.body = 'derpa derp'

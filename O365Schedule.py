@@ -19,13 +19,11 @@ class Schedule( object ):
 		log.debug('fetching calendars.')
 		response = requests.get(self.cal_url,auth=self.auth)
 		log.info('Response from O365: %s', str(response))
-		print 'Response from O365:', str(response)
 		
 		for calendar in response.json()['value']:
 			try:
 				log.debug('appended calendar: %s',calendar['Name'])
 				self.calendars.append(Calendar(calendar,self.auth))
-				print 'appended message:',calendar['Name']
 			except Exception as e:
 				log.info('failed to append calendar: %',str(e))
 		

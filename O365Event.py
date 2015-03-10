@@ -2,6 +2,7 @@ from O365 import *
 import logging
 import json
 import requests
+import time
 
 logging.basicConfig(filename='o365.log',level=logging.DEBUG)
 
@@ -81,7 +82,6 @@ class Event( object ):
 		log.debug('response to event creation: %s',str(response))
 		return Event(response.json(),self.auth,calendar)
 
-
 	def update(self,calendar=None):
                 if not self.auth:
                         return False
@@ -139,5 +139,9 @@ class Event( object ):
 			log.debug('response to deletion: %s',str(response))
 
 		return response
+
+	def toJson(self):
+		return json.dumps(self.__dict__)
+		
 
 #To the King!

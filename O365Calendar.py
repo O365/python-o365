@@ -3,7 +3,7 @@ import base64
 import json
 import logging
 import time
-#from O365Event import Event
+from O365Event import Event
 from O365 import *
 
 logging.basicConfig(filename='o365.log',level=logging.DEBUG)
@@ -26,9 +26,14 @@ class Calendar( object ):
 			log.debug('translating calendar information into local variables.')
 			self.calendarId = json['Id']
 			self.name = json['Name']
-			
-
 	def fetchEvents(self,start=None,end=None):
+		'''
+		So I originally made this function "fetchEvents" which was a terrible idea. Everything else is "getX" except
+		events which were appearenty to good for that. So this function is just a pass through for legacy sake.
+		'''
+		return self.getEvents(start,end)
+
+	def getEvents(self,start=None,end=None):
 		'''
 		Pulls events in for this calendar. default range is today to a year now.
 		'''
@@ -42,15 +47,13 @@ class Calendar( object ):
 			end = time.gmtime(end)
 			end = time.strftime(self.time_string,end)
 
-		print self.events_url.format(self.calendarId,start,end)
 		response = requests.get(self.events_url.format(self.calendarId,start,end),auth=self.auth)
 		log.info('Response from O365: %s', str(response))
-		print 'Response from O365:', str(response)
 		
 		for event in response.json()['value']:
 			try:
 				log.debug('appended event: %s',event['Subject'])
-				print 'appended message:',event['Subject']
+				self.events.append(Event(event,self.auth,self))
 			except Exception as e:
 				log.info('failed to append calendar: %',str(e))
 		
