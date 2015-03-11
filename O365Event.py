@@ -140,8 +140,20 @@ class Event( object ):
 
 		return response
 
+	def updateJson(self):
+		try:
+			self.json['Subject'] = self.subject
+			self.json['Body'] = {'ContentType':'HTML','Content':self.body}
+			self.json['Start'] = time.strftime(self.time_string,self.start)
+			self.json['End'] = time.strftime(self.time_string,self.end)
+			self.json['Attendees'] = self.attendees
+			self.json['Id'] = self.Id
+			return True
+		except:
+			return False
+
 	def toJson(self):
-		return json.dumps(self.__dict__)
-		
+		return self.json
 
 #To the King!
+
