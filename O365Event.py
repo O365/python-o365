@@ -155,5 +155,16 @@ class Event( object ):
 	def toJson(self):
 		return self.json
 
+	def fullcalendarioJson(self):
+		ret = {}
+		ret['title'] = self.subject
+		ret['driver'] = self.json['Organizer']['EmailAddress']['Name']
+		ret['driverEmail'] = self.json['Organizer']['EmailAddress']['Address']
+		ret['start'] = time.strftime(self.time_string,self.start)
+		ret['end'] = time.strftime(self.time_string,self.end)
+		ret['IsAllDay'] = self.json['IsAllDay']
+		return ret
+		
+
 #To the King!
 

@@ -34,11 +34,12 @@ if __name__ == '__main__':
 			print 'attempting for event information'
 			for event in cal.events:
 				print 'HERE!'
-				bookings.append(event.toJson())
+				bookings.append(event.fullcalendarioJson())
 		json_outs[e] = bookings
 
 	with open('bookings.json','w') as outs:
 		outs.write(json.dumps(json_outs,sort_keys=True,indent=4))
+			
 
 #	with open('./ep.pw','r') as configFile:
 #		config = configFile.read()
