@@ -1,4 +1,4 @@
-from O365 import *
+from O365 import Calendar
 import logging
 import json
 import requests

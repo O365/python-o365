@@ -1,4 +1,3 @@
-from O365 import *
 import logging
 import json
 import requests

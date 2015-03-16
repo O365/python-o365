@@ -1,4 +1,3 @@
-from O365 import *
 import base64
 import logging
 import json
