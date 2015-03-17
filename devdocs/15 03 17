@@ -1,0 +1,41 @@
+I'm starting to have some change of mind in how this whole library is structured. It has been      x
+sensible enough to have the information saved as local variables, but I think that in the long run 
+that won't be as useful as it seems. I'm leaning towards using instead json to store all the 
+information for the class. It feels a little weird to be honest. Why even have classes then? Well, I
+think the reason for that would be that people using this are still going to be thinking object
+oriented programming as they try to use it. 
+
+I wonder if there is a way I could blend it. Like using getattr to make the json elements seem like
+local variables. must test!
+
+haha! score:
+
+>>> class Val:
+...     def __init__(self,bob):
+...             self.bob = bob
+...     def __getattr__(self,name):
+...             return self.bob[name]
+...
+>>> v = Val(j)
+>>> v.bar
+2
+>>> v.foo
+5
+>>>
+
+I shall integrate this into my classes. That will allow the classes to fake having the json as
+their local variables. 
+
+__getattr__
+__setattr__
+
+
+*tries to implement*
+
+Ok. that was a bad idea. The problem is that this leads to a lot of infinite recussion. So I'm
+probably going to give up this idea and simply move to just having a class.json arrangement. this
+would allow me to have the json and any time a user wants data or wants to change something, he
+can do it through that. 
+
+I like the idea of having the json form the data structure, even if it is a little ridiculous.
+

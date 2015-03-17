@@ -37,6 +37,12 @@ class Event( object ):
 			self.start = time.localtime()
 			self.attendees = []
 
+#        def __getattr__(self,name):
+#                return self.json[name]
+
+#        def __setattr__(self,name,value):
+#                self.json[name] = value
+
 
 	def create(self,calendar=None):
 		'''

@@ -31,6 +31,12 @@ class Message( object ):
 
 			self.hasAttachments = json['HasAttachments']
 
+#        def __getattr__(self,name):
+#                return self.json[name]
+
+#        def __setattr__(self,name,value):
+#                self.json[name] = value
+
 	def fetchAttachments(self):
 		if not self.hasAttachments:
 			log.debug('message has no attachments, skipping out early.')

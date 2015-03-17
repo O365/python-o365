@@ -1,4 +1,4 @@
-from O365.Message import Message
+from O365.message import Message
 import logging
 import json
 import requests
@@ -15,6 +15,12 @@ class Inbox( object ):
 		log.debug('creating inbox for the email %s',email)
 		self.auth = (email,password)
 		self.messages = []
+
+#        def __getattr__(self,name):
+#                return self.json[name]
+
+#        def __setattr__(self,name,value):
+#                self.json[name] = value
 
 	def getMessages(self):
 		log.debug('fetching messages.')

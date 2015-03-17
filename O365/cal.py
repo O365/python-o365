@@ -4,7 +4,7 @@ import json
 import logging
 import time
 
-from O365.Event import Event
+from O365.event import Event
 
 logging.basicConfig(filename='o365.log',level=logging.DEBUG)
 
@@ -26,6 +26,14 @@ class Calendar( object ):
 			log.debug('translating calendar information into local variables.')
 			self.calendarId = json['Id']
 			self.name = json['Name']
+
+#        def __getattr__(self,name):
+#                return self.json[name]
+
+#        def __setattr__(self,name,value):
+#                self.json[name] = value
+
+
 	def fetchEvents(self,start=None,end=None):
 		'''
 		So I originally made this function "fetchEvents" which was a terrible idea. Everything else is "getX" except
