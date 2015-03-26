@@ -20,28 +20,13 @@ class Event( object ):
 	def __init__(self,json=None,auth=None,cal=None):
 		self.auth = auth
 		self.calendar = cal
+		self.attendees = []
+
 		if json:
 			self.json = json
-			self.subject = json['Subject']
-			self.body = json['BodyPreview']
-			self.start = time.strptime(json['Start'], self.time_string)
-			self.end = time.strptime(json['End'], self.time_string)
-			self.Id = json['Id']
 			self.isNew = False
-			self.attendees = json['Attendees']
 		else:
-			self.isNew = True
-			self.subject = ''
-			self.body = ''
-			self.start = time.localtime()
-			self.start = time.localtime()
-			self.attendees = []
-
-#        def __getattr__(self,name):
-#                return self.json[name]
-
-#        def __setattr__(self,name,value):
-#                self.json[name] = value
+			self.json = {}
 
 
 	def create(self,calendar=None):
@@ -65,12 +50,7 @@ class Event( object ):
 		headers = {'Content-type': 'application/json', 'Accept': 'application/json'}
 
 		try:
-			req = {}
-			req['Subject'] = self.subject
-			req['Body'] = {'ContentType':'HTML','Content':self.body}
-			req['Start'] = time.strftime(self.time_string,self.start)
-			req['End'] = time.strftime(self.time_string,self.end)
-			req['Attendees'] = self.attendees
+			self.json['Attendees'] = self.attendees
 		except:
 			return False
 
@@ -88,6 +68,10 @@ class Event( object ):
 		return Event(response.json(),self.auth,calendar)
 
 	def update(self,calendar=None):
+		'''
+		This method updates an event that already exists in a calendar. It simply 
+		re-uploads the local json, so change things before you call this function.
+		'''
                 if not self.auth:
                         return False
 
@@ -128,6 +112,11 @@ class Event( object ):
 
 
 	def delete(self):
+		'''
+		delete's an event from the calendar it is in. But leaves you this handle.
+		You could, in theory, then change the calendar and transfer the event to
+		that new calendar. You know, if that's your thing.
+		'''
 		if not self.auth:
 			return False
 		if not self.Id:
@@ -145,22 +134,18 @@ class Event( object ):
 
 		return response
 
-	def updateJson(self):
-		try:
-			self.json['Subject'] = self.subject
-			self.json['Body'] = {'ContentType':'HTML','Content':self.body}
-			self.json['Start'] = time.strftime(self.time_string,self.start)
-			self.json['End'] = time.strftime(self.time_string,self.end)
-			self.json['Attendees'] = self.attendees
-			self.json['Id'] = self.Id
-			return True
-		except:
-			return False
-
 	def toJson(self):
+		'''
+		Creates a JSON representation of the calendar event! oh. uh. I mean it
+		simply returns the json representation that has always been in self.json.
+		'''
 		return self.json
 
 	def fullcalendarioJson(self):
+		'''
+		returns a form of the event suitable for the vehicle booking system here.
+		oh the joys of having a library to yourself! 
+		'''
 		ret = {}
 		ret['title'] = self.subject
 		ret['driver'] = self.json['Organizer']['EmailAddress']['Name']

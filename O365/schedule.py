@@ -15,20 +15,6 @@ class Schedule( object ):
 		self.auth = (email,password)
 		self.calendars = []
 
-#        def __getattr__(self,name):
-#		if name == "json":
-#			return object.__getattribute__(self,name)
-#		if "json" in dir(self):
-#	                return self.json[name]
-#		raise AttributeError()
-
-#        def __setattr__(self,name,value):
-#		if 'json' in dir(self):
-#			self.json[name]
-#		else:
-#			object.__setattribute__(self,name,value)
-
-		
 
 	def getCalendars(self):
 		log.debug('fetching calendars.')

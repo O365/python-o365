@@ -8,23 +8,28 @@ logging.basicConfig(filename='o365.log',level=logging.DEBUG)
 log = logging.getLogger(__name__)
 
 class Inbox( object ):
-	#inbox_url = 'https://outlook.office365.com/EWS/OData/Me/Messages'
-	inbox_url = 'https://outlook.office365.com/EWS/OData/Me/Messages?$filter=IsRead eq false'
+	#inbox_url = 'https://outlook.office365.com/EWS/OData/Me/Messages?$filter=IsRead eq {0}'
+	inbox_url = 'https://outlook.office365.com/api/v1.0/me/messages?$filter=IsRead eq {0}'
 
 	def __init__(self, email, password):
 		log.debug('creating inbox for the email %s',email)
 		self.auth = (email,password)
 		self.messages = []
+		self.getMessages()
 
-#        def __getattr__(self,name):
-#                return self.json[name]
 
-#        def __setattr__(self,name,value):
-#                self.json[name] = value
+	def getMessages(self,IsRead=False):
+		'''
+		You create an inbox to be the container class for messages, this method
+		then pulls those messages down to the local disk. This is called in the
+		init method, so it's kind of pointless for you. Unless you think new
+		messages have come in.
 
-	def getMessages(self):
+		IsRead: Set this as True if you want to include messages that have been read.
+		'''
 		log.debug('fetching messages.')
-		response = requests.get(self.inbox_url,auth=self.auth)
+		print self.inbox_url.format(str(IsRead).lower())
+		response = requests.get(self.inbox_url.format(str(IsRead).lower()),auth=self.auth)
 		log.info('Response from O365: %s', str(response))
 		
 		for message in response.json()['value']:

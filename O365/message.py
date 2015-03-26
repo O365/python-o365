@@ -16,42 +16,42 @@ class Message( object ):
 		'''
 		Wraps all the informaiton for receiving messages.
 		'''
-		self.json = json
+		if json:
+			self.json = json
+			self.hasAttachments = json['HasAttachments']
+
+		else:
+			self.json = {}
+			self.hasAttachments = False
+	
 		self.auth = auth
 		self.attachments = []
 		self.reciever = None
 
-		if json:
-			log.debug('translating message information into local variables.')
-			self.messageId = json['Id']
-			self.sender = json['Sender']['EmailAddress']['Name']
-			self.address = json['Sender']['EmailAddress']['Address']
-			self.subject = json['Subject']
-			self.body = json['Body']['Content']
+#		if json:
+#			log.debug('translating message information into local variables.')
+#			self.messageId = json['Id']
+#			self.sender = json['Sender']['EmailAddress']['Name']
+#			self.address = json['Sender']['EmailAddress']['Address']
+#			self.subject = json['Subject']
+#			self.body = json['Body']['Content']
 
-			self.hasAttachments = json['HasAttachments']
-
-#        def __getattr__(self,name):
-#                return self.json[name]
-
-#        def __setattr__(self,name,value):
-#                self.json[name] = value
 
 	def fetchAttachments(self):
 		if not self.hasAttachments:
 			log.debug('message has no attachments, skipping out early.')
 			return False
 
-		response = requests.get(self.att_url.format(self.messageId),auth=self.auth)
+		response = requests.get(self.att_url.format(self.json['Id']),auth=self.auth)
 		log.info('response from O365 for retriving message attachments: %s',str(response))
 		json = response.json()
 
 		for att in json['value']:
-			try:
-				self.attachments.append(Attachment(att))
-				log.debug('successfully downloaded attachment for: %s.',self.auth[0])
-			except Exception as e:
-				log.info('failed to download attachment for: %s', self.auth[0])
+#			try:
+			self.attachments.append(Attachment(att))
+#				log.debug('successfully downloaded attachment for: %s.',self.auth[0])
+#			except Exception as e:
+#				log.info('failed to download attachment for: %s', self.auth[0])
 
 		return len(self.attachments)
 
@@ -60,14 +60,15 @@ class Message( object ):
 			return False
 
 		headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
-		message = {}
-		message['Subject'] = self.subject
-		message['Body'] = {'ContentType':'Text','Content':self.body}
-		message['ToRecipients'] = [{'EmailAddress':{'Address':self.receiver}}]
+#		message = {}
+#		message['Subject'] = self.subject
+#		message['Body'] = {'ContentType':'Text','Content':self.body}
+#		message['ToRecipients'] = [{'EmailAddress':{'Address':self.receiver}}]
 
-		dat = {'Message':message,'SaveToSentItems':'true'}
+#		dat = {'Message':message,'SaveToSentItems':'true'}
 
-		data = json.dumps(dat)
+#		data = json.dumps(dat)
+		data = json.dumps(self.json)
 		print data
 
 		response = requests.post(self.send_url,data,headers=headers,auth=self.auth)
@@ -79,11 +80,11 @@ class Message( object ):
 		read = '{"IsRead":true}'
 		headers = {'Content-type': 'application/json', 'Accept': 'application/json'}
 #		try:
-		response = requests.patch(self.update_url.format(self.messageId),read,headers=headers,auth=self.auth)
+		response = requests.patch(self.update_url.format(self.json['Id']),read,headers=headers,auth=self.auth)
 #		except:
 #			return False
-#		print response
-#		return True
+		print response
+		return True
 
 
 #To the King!

@@ -27,12 +27,6 @@ class Calendar( object ):
 			self.calendarId = json['Id']
 			self.name = json['Name']
 
-#        def __getattr__(self,name):
-#                return self.json[name]
-
-#        def __setattr__(self,name,value):
-#                self.json[name] = value
-
 
 	def fetchEvents(self,start=None,end=None):
 		'''
@@ -40,6 +34,7 @@ class Calendar( object ):
 		events which were appearenty to good for that. So this function is just a pass through for legacy sake.
 		'''
 		return self.getEvents(start,end)
+
 
 	def getEvents(self,start=None,end=None):
 		'''
@@ -55,7 +50,7 @@ class Calendar( object ):
 			end = time.gmtime(end)
 			end = time.strftime(self.time_string,end)
 
-		response = requests.get(self.events_url.format(self.calendarId,start,end),auth=self.auth)
+		response = requests.get(self.events_url.format(self.json['Id'],start,end),auth=self.auth)
 		log.info('Response from O365: %s', str(response))
 		
 		for event in response.json()['value']:
