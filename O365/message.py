@@ -60,15 +60,15 @@ class Message( object ):
 			return False
 
 		headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
-#		message = {}
-#		message['Subject'] = self.subject
-#		message['Body'] = {'ContentType':'Text','Content':self.body}
-#		message['ToRecipients'] = [{'EmailAddress':{'Address':self.receiver}}]
+		message = {}
+		message['Subject'] = self.subject
+		message['Body'] = {'ContentType':'Text','Content':self.body}
+		message['ToRecipients'] = [{'EmailAddress':{'Address':self.receiver}}]
 
-#		dat = {'Message':message,'SaveToSentItems':'true'}
+		dat = {'Message':message,'SaveToSentItems':'true'}
 
-#		data = json.dumps(dat)
-		data = json.dumps(self.json)
+		data = json.dumps(dat)
+#		data = json.dumps(self.json)
 		print data
 
 		response = requests.post(self.send_url,data,headers=headers,auth=self.auth)
