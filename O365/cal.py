@@ -27,6 +27,14 @@ class Calendar( object ):
 			self.calendarId = json['Id']
 			self.name = json['Name']
 
+	def getName(self):
+		return self.json['Name']
+
+	def getCalendarId(self):
+		return self.calendarId['Id']
+
+	def getId(self):
+		return self.getCalendarId()
 
 	def fetchEvents(self,start=None,end=None):
 		'''

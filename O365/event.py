@@ -154,7 +154,38 @@ class Event( object ):
 		ret['end'] = time.strftime(self.time_string,self.end)
 		ret['IsAllDay'] = self.json['IsAllDay']
 		return ret
-		
+
+	def getSubject(self):
+		return self.json['Subject']
+
+	def getBody(self):
+		return self.json['Body']['Content']
+
+	def getStart(self):
+		return time.strptime(self.json['Start'], self.time_string)
+
+	def getEnd(self):
+		return time.strptime(self.json['End'], self.time_string)
+
+	def getAttendees(self):
+		return self.json['Attendees']
+
+	def addAttendee(self,val):
+		self.json['Attendees'].append(val)
+
+	def setSubject(self,val):
+		self.json['Subject'] = val
+
+	def setBody(self,val):
+		self.json['Body']['Content'] = val
+
+	def setStart(self,val):
+		self.json['Start'] = time.strftime(self.time_string,val)
+
+	def setEnd(self,val):
+		self.json['End'] = time.strftime(self.time_string,val)
+
+	def setAttendees(self,val):
+		self.json['Attendees'] = val
 
 #To the King!
-

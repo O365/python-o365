@@ -56,7 +56,7 @@ class Attachment( object ):
 		log.debug('file saving successful')
 		return True
 
-	def byteString(self):
+	def getByteString(self):
 		'''
 		fetch the binary representation of the file. useful for times you want to
 		skip the step of saving before sending it to another program. This allows
@@ -66,8 +66,36 @@ class Attachment( object ):
 			return base64.b64decode(self.json['ContentBytes'])
 
 		except Exception as e:
-			log.debug('what? no clue went wrong here. cannot decode')
+			log.debug('what? no clue what went wrong here. cannot decode attachment.')
 
 		return False
+
+	def getBase64(self):
+		'''
+		fetches the base64 encoding representation of the attachment.
+		'''
+		try:
+			return self.json['ContentBytes']
+		except Exception as e:
+			log.debug('what? no clue what went wrong here. probably no attachment.')
+		return False
+
+	def setByteString(self,val):
+		'''
+		sets the file for this attachment from a byte string.
+		'''
+		try:
+			self.json['ContentBytes'] = base64.b64encode(val)
+		except:
+			log.debug('error encoding attachment.')
+			return False
+		return True
+
+	def setBase64(self,val):
+		'''
+		Sets the file for this attachment from a base64 encoding.
+		'''
+		self.json['ContentBytes'] = val
+		return true
 
 #To the King!

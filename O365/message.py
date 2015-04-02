@@ -87,4 +87,41 @@ class Message( object ):
 		return True
 
 
+	def getSender(self):
+		return self.json['Sender']
+
+	def getSenderEmail(self):
+		return self.json['Sender']['EmailAddress']['Address']
+	
+	def getSenderName(self):
+		return self.json['Sender']['EmailAddress']['Name']
+
+	def getSubject(self):
+		return self.json['Subject']
+
+	def getBody(self):
+		return self.json['Body']['Content']
+
+	def setRecipients(self,val):
+		if isinstance(val,list):
+			self.json['ToRecipients'] = val
+		elif isinstances(val,dict):
+			self.json['ToRecipients'] = [val]
+		elif isinstance(val,string):
+			if '@' in val:
+				self.json['ToRecipients'] = []
+				self.addRecipient(None,val)
+		else:
+			return False
+		return True
+
+	def addRecipient(self,name,address):
+		self.json['ToRecipients'].append({'EmailAddress':{'Address':address,'Name':name}})
+
+	def setSubject(self,val):
+		self.json['Subject']
+
+	def setBody(self,val):
+		self.json['Body']['Content']
+
 #To the King!
