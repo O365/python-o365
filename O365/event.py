@@ -147,11 +147,15 @@ class Event( object ):
 		oh the joys of having a library to yourself! 
 		'''
 		ret = {}
-		ret['title'] = self.subject
+		ret['title'] = self.json['Subject']
 		ret['driver'] = self.json['Organizer']['EmailAddress']['Name']
 		ret['driverEmail'] = self.json['Organizer']['EmailAddress']['Address']
-		ret['start'] = time.strftime(self.time_string,self.start)
-		ret['end'] = time.strftime(self.time_string,self.end)
+		ret['start'] = self.json['Start']
+		ret['end'] = self.json['End']
+
+		#ret['start'] = time.strftime(self.time_string,self.start)
+		#ret['end'] = time.strftime(self.time_string,self.end)
+
 		ret['IsAllDay'] = self.json['IsAllDay']
 		return ret
 

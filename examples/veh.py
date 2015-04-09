@@ -5,7 +5,7 @@ import json
 
 
 if __name__ == '__main__':
-	veh = open('./veh.pw','r').read()
+	veh = open('./pw/veh.pw','r').read()
 	vj = json.loads(veh)
 
 	schedules = []

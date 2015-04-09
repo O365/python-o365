@@ -20,11 +20,11 @@ def verifyUser(email):
 	return True	
 #	name = email[:email.index(
 
-emails = open('./emails.pw','r').read().split('\n')
+emails = open('./pw/emails.pw','r').read().split('\n')
 
 if __name__ == '__main__':
 	print "checking for emails"
-	with open('./ep.pw','r') as configFile:
+	with open('./pw/ep.pw','r') as configFile:
 		config = configFile.read()
 		cjson = json.loads(config)
 

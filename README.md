@@ -1,16 +1,22 @@
 # python-o365
-A simple python library for interaction with Office 365. 
+A simple python library for interaction with Office 365. Read, create, send emails and calendar events. 
+
+This library is still in development, but is a functional alpha. I have already used it to create systems for checking my facility's vehicle's calendars and forwarding emails to our printers. I hope to have it more stable, usable, and featured in the future.
+
+Road Map:
+0.5:
+	documentation
+	upload to pypi
+	usability additions
+	clean up. 
+0.6
+	add support for the contacts api.
+	increase robustness
+	add unit tests
+0.7
+	thoughts?
 
 
-# NB
-cat blank.pdf | lp -d "ricoh-double" -U tester -oColorModel=Gray -oDuplex=DuplexNoTumble -oJobType=LockedPrint -oLockedPrintPassword=1234
-
-args = '/usr/bin/lp -U tester -oColorModel=Gray -oDuplex=DuplexNoTumble -oJobType=LockedPrint -oLockedPrintPassword=1234'.split()
-p = subprocess.Popen(args,stdin=subprocess.PIPE)                                                           
-p.stdin.write(open('README.md','rb').read())
-p.communicate()
-request id is ricoh-double-8 (0 file(s))
-(None, None)
 
 
 # To the King!
