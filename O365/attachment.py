@@ -29,6 +29,10 @@ class Attachment( object ):
 	'''
 	Attachment class is the object for dealing with attachments in your messages. To add one to
 	a message, simply append it to the message's attachment list (message.attachments). 
+
+	these are stored locally in base64 encoded strings. You can pass either a byte string or a
+	base64 encoded string tot he appropriate set function to bring your attachment into the
+	instance, which will of course need to happen before it could be mailed.
 	'''
 	def __init__(self,json=None):
 		if json:
@@ -38,22 +42,17 @@ class Attachment( object ):
 			self.json = {}
 
 	def isType(self,typeString):
-		'''
-		This function lets you know what type the file is.
-		'''
+		'''Test to if the attachment is the same type as you are seeking. Do not include a period.'''
 		return '.'+typeString.lower() in self.json['Name'].lower()
 
 	def getType(self):
-		'''
-		returns the file extension
-		'''
+		'''returns the file extension'''
 		return self.json['Name'][self.json['Name'].rindex('.'):]
 
 	def save(self,location):
-		'''
-		Location: path to where the file is to be saved.
+		'''Save the attachment locally to disk.
 
-		Save the attachment locally to disk.
+		location -- path to where the file is to be saved.
 		'''
 		try:
 			outs = open(location+'/'+self.Name,'wb')
@@ -69,8 +68,7 @@ class Attachment( object ):
 		return True
 
 	def getByteString(self):
-		'''
-		fetch the binary representation of the file. useful for times you want to
+		'''Fetch the binary representation of the file. useful for times you want to
 		skip the step of saving before sending it to another program. This allows
 		you to make scripts that use linux pipe lines in their execution.
 		'''
@@ -83,9 +81,7 @@ class Attachment( object ):
 		return False
 
 	def getBase64(self):
-		'''
-		fetches the base64 encoding representation of the attachment.
-		'''
+		'''Returns the base64 encoding representation of the attachment.'''
 		try:
 			return self.json['ContentBytes']
 		except Exception as e:
@@ -93,9 +89,7 @@ class Attachment( object ):
 		return False
 
 	def setByteString(self,val):
-		'''
-		sets the file for this attachment from a byte string.
-		'''
+		'''Sets the file for this attachment from a byte string.'''
 		try:
 			self.json['ContentBytes'] = base64.b64encode(val)
 		except:
@@ -104,9 +98,7 @@ class Attachment( object ):
 		return True
 
 	def setBase64(self,val):
-		'''
-		Sets the file for this attachment from a base64 encoding.
-		'''
+		'''Sets the file for this attachment from a base64 encoding.'''
 		self.json['ContentBytes'] = val
 		return true
 
