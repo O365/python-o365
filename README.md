@@ -5,16 +5,18 @@ This library is still in development, but is a functional alpha. I have already 
 
 Road Map:
 0.5:
-	documentation
-	upload to pypi
-	usability additions
-	clean up. 
+  * documentation
+  * upload to pypi
+  * usability additions
+  * clean up. 
+
 0.6
-	add support for the contacts api.
-	increase robustness
-	add unit tests
+  * add support for the contacts api.
+  * increase robustness
+  * add unit tests
+
 0.7
-	thoughts?
+  * thoughts?
 
 
 
