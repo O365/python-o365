@@ -1,3 +1,16 @@
+# Copyright 2015 by Toben "Narcolapser" Archer. All Rights Reserved.
+#
+# Permission to use, copy, modify, and distribute this software and its documentation for any purpose 
+# and without fee is hereby granted, provided that the above copyright notice appear in all copies and 
+# that both that copyright notice and this permission notice appear in supporting documentation, and 
+# that the name of Toben Archer not be used in advertising or publicity pertaining to distribution of 
+# the software without specific, written prior permission. TOBEN ARCHER DISCLAIMS ALL WARRANTIES WITH 
+# REGARD TO THIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT 
+# SHALL TOBEN ARCHER BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES 
+# WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE 
+# OR OTHER TORTIOUS ACTION, ARISING OUT
+# OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
 import logging
 import json
 import requests
@@ -8,6 +21,7 @@ logging.basicConfig(filename='o365.log',level=logging.DEBUG)
 log = logging.getLogger(__name__)
 
 class Event( object ):
+	#Formated time string for translation to and from json.
 	time_string = '%Y-%m-%dT%H:%M:%SZ'
 	#takes a calendar ID
 	create_url = 'https://outlook.office365.com/api/v1.0/me/calendars/{0}/events'
@@ -100,8 +114,8 @@ class Event( object ):
                 data = json.dumps(req)
 
 		try:
-			log.debug('sending patch request now')
 			response = requests.patch(self.update_url.format(self.Id),data,headers=headers,auth=self.auth)
+			log.debug('sending patch request now')
 		except:
 			log.debug('response to event creation: %s',str(response))
 			return False
@@ -152,10 +166,6 @@ class Event( object ):
 		ret['driverEmail'] = self.json['Organizer']['EmailAddress']['Address']
 		ret['start'] = self.json['Start']
 		ret['end'] = self.json['End']
-
-		#ret['start'] = time.strftime(self.time_string,self.start)
-		#ret['end'] = time.strftime(self.time_string,self.end)
-
 		ret['IsAllDay'] = self.json['IsAllDay']
 		return ret
 

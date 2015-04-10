@@ -1,3 +1,16 @@
+# Copyright 2015 by Toben "Narcolapser" Archer. All Rights Reserved.
+#
+# Permission to use, copy, modify, and distribute this software and its documentation for any purpose 
+# and without fee is hereby granted, provided that the above copyright notice appear in all copies and 
+# that both that copyright notice and this permission notice appear in supporting documentation, and 
+# that the name of Toben Archer not be used in advertising or publicity pertaining to distribution of 
+# the software without specific, written prior permission. TOBEN ARCHER DISCLAIMS ALL WARRANTIES WITH 
+# REGARD TO THIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT 
+# SHALL TOBEN ARCHER BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES 
+# WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE 
+# OR OTHER TORTIOUS ACTION, ARISING OUT
+# OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
 from O365 import Attachment
 import logging
 import json
@@ -28,14 +41,6 @@ class Message( object ):
 		self.attachments = []
 		self.reciever = None
 
-#		if json:
-#			log.debug('translating message information into local variables.')
-#			self.messageId = json['Id']
-#			self.sender = json['Sender']['EmailAddress']['Name']
-#			self.address = json['Sender']['EmailAddress']['Address']
-#			self.subject = json['Subject']
-#			self.body = json['Body']['Content']
-
 
 	def fetchAttachments(self):
 		if not self.hasAttachments:
@@ -47,11 +52,11 @@ class Message( object ):
 		json = response.json()
 
 		for att in json['value']:
-#			try:
-			self.attachments.append(Attachment(att))
-#				log.debug('successfully downloaded attachment for: %s.',self.auth[0])
-#			except Exception as e:
-#				log.info('failed to download attachment for: %s', self.auth[0])
+			try:
+				self.attachments.append(Attachment(att))
+				log.debug('successfully downloaded attachment for: %s.',self.auth[0])
+			except Exception as e:
+				log.info('failed to download attachment for: %s', self.auth[0])
 
 		return len(self.attachments)
 
@@ -79,10 +84,10 @@ class Message( object ):
 	def markAsRead(self):
 		read = '{"IsRead":true}'
 		headers = {'Content-type': 'application/json', 'Accept': 'application/json'}
-#		try:
-		response = requests.patch(self.update_url.format(self.json['Id']),read,headers=headers,auth=self.auth)
-#		except:
-#			return False
+		try:
+			response = requests.patch(self.update_url.format(self.json['Id']),read,headers=headers,auth=self.auth)
+		except:
+			return False
 		print response
 		return True
 

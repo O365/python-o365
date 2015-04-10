@@ -1,3 +1,16 @@
+# Copyright 2015 by Toben "Narcolapser" Archer. All Rights Reserved.
+#
+# Permission to use, copy, modify, and distribute this software and its documentation for any purpose 
+# and without fee is hereby granted, provided that the above copyright notice appear in all copies and 
+# that both that copyright notice and this permission notice appear in supporting documentation, and 
+# that the name of Toben Archer not be used in advertising or publicity pertaining to distribution of 
+# the software without specific, written prior permission. TOBEN ARCHER DISCLAIMS ALL WARRANTIES WITH 
+# REGARD TO THIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT 
+# SHALL TOBEN ARCHER BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES 
+# WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE 
+# OR OTHER TORTIOUS ACTION, ARISING OUT
+# OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
 import requests
 import base64
 import json
@@ -49,22 +62,27 @@ class Calendar( object ):
 		Pulls events in for this calendar. default range is today to a year now.
 		'''
 
+		#If no start time has been supplied, it is assumed you want to start as of now.
 		if not start:
 			start = time.strftime(self.time_string)
 
+		#If no end time has been supplied, it is assumed you want the end time to be a year
+		#from what ever the start date was. 
 		if not end:
 			end = time.time()
 			end += 3600*24*365.25
 			end = time.gmtime(end)
 			end = time.strftime(self.time_string,end)
 
+		#This is where the actual call to Office365 happens.
 		response = requests.get(self.events_url.format(self.json['Id'],start,end),auth=self.auth)
 		log.info('Response from O365: %s', str(response))
 		
+		#This takes that response and then parses it into individual calendar events.
 		for event in response.json()['value']:
 			try:
-				log.debug('appended event: %s',event['Subject'])
 				self.events.append(Event(event,self.auth,self))
+				log.debug('appended event: %s',event['Subject'])
 			except Exception as e:
 				log.info('failed to append calendar: %',str(e))
 		

@@ -37,6 +37,18 @@ class Attachment( object ):
 		else:
 			self.json = {}
 
+	def isType(self,typeString):
+		'''
+		This function lets you know what type the file is.
+		'''
+		return '.'+typeString.lower() in self.json['Name'].lower()
+
+	def getType(self):
+		'''
+		returns the file extension
+		'''
+		return self.json['Name'][self.json['Name'].rindex('.'):]
+
 	def save(self,location):
 		'''
 		Location: path to where the file is to be saved.
