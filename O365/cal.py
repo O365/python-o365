@@ -105,8 +105,18 @@ class Calendar( object ):
 		#This takes that response and then parses it into individual calendar events.
 		for event in response.json()['value']:
 			try:
-				#this needs tobe patched to fix the problem of multiple instances of the same event
-				self.events.append(Event(event,self.auth,self))
+				duplicate = False
+
+				#checks to see if the event is a duplicate. if it is local changes are clobbered.
+				for i,e in enumerate(self.events):
+					if e.json['Id'] == event['Id']:
+						self.events[i] = Event(event,self.auth,self)
+						duplicate = True
+						break
+
+				if not duplicate:
+					self.events.append(Event(event,self.auth,self))
+				
 				log.debug('appended event: %s',event['Subject'])
 			except Exception as e:
 				log.info('failed to append calendar: %',str(e))

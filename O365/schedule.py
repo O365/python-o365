@@ -48,8 +48,19 @@ class Schedule( object ):
 		
 		for calendar in response.json()['value']:
 			try:
-				#hmmm. this should be patched too.
-				self.calendars.append(Calendar(calendar,self.auth))
+				duplicate = False
+
+				for i,c in enumerate(self.calendars):
+					if c.json['Id'] == calendar['Id']:
+						c.json = calendar
+						c.name = calendar['Name']
+						c.calendarId = calendar['Id']
+						duplicate = True
+						break
+
+				if not duplicate:
+					self.calendars.append(Calendar(calendar,self.auth))
+
 				log.debug('appended calendar: %s',calendar['Name'])
 			except Exception as e:
 				log.info('failed to append calendar: %',str(e))

@@ -66,11 +66,20 @@ class Inbox( object ):
 		
 		for message in response.json()['value']:
 			try:
-				self.messages.append(Message(message,self.auth))
+				duplicate = False
+				for i,m in enumerate(self.messages):
+					if message['Id'] == m.json['Id']:
+						self.messages[i] = Message(message,self.auth)
+						duplicate = True
+						break
+				
+				if not duplicate:
+					self.messages.append(Message(message,self.auth))
+
 				log.debug('appended message: %s',message['Subject'])
 			except Exception as e:
 				log.info('failed to append message: %',str(e))
-		
+
 		log.debug('all messages retrieved and put in to the list.')
 		return True
 
