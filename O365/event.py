@@ -112,7 +112,7 @@ class Event( object ):
 			return False
 
 		log.debug('creating json for request.')
-		data = json.dumps(req)
+		data = json.dumps(self.json)
 
 		try:
 			log.debug('sending post request now')
@@ -137,18 +137,7 @@ class Event( object ):
 
 		headers = {'Content-type': 'application/json', 'Accept': 'application/json'}
 
-		try:
-			req = {}
-			req['Subject'] = self.subject
-			req['Body'] = {'ContentType':'HTML','Content':self.body}
-			req['Start'] = time.strftime(self.time_string,self.start)
-			req['End'] = time.strftime(self.time_string,self.end)
-			req['Attendees'] = self.attendees
-		except:
-			return False
-
-		log.debug('creating json for request.')
-		data = json.dumps(req)
+		data = json.dumps(self.json)
 
 		try:
 			response = requests.patch(self.update_url.format(self.Id),data,headers=headers,auth=self.auth)
@@ -159,7 +148,7 @@ class Event( object ):
 
 		log.debug('response to event creation: %s',str(response))
 
-		return Event(response.json(),self.auth)		
+		return Event(response.json(),self.auth)
 
 
 	def delete(self):

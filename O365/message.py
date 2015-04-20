@@ -109,9 +109,7 @@ class Message( object ):
 
 		dat = {'Message':message,'SaveToSentItems':'true'}
 
-		#this really needs to be updated.
-		data = json.dumps(dat)
-#		data = json.dumps(self.json)
+		data = json.dumps(self.json)
 		log.debug(str(data))
 
 		response = requests.post(self.send_url,data,headers=headers,auth=self.auth)
