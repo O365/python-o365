@@ -21,21 +21,34 @@ logging.basicConfig(filename='o365.log',level=logging.DEBUG)
 log = logging.getLogger(__name__)
 
 class Schedule( object ):
+	'''
+	A wrapper class that handles all the Calendars associated with a sngle Office365 account.
+	
+	Methods:
+		constructor -- takes your email and password for authentication.
+		getCalendars -- begins the actual process of downloading calendars.
+	
+	Variables:
+		cal_url -- the url that is requested for the retrival of the calendar GUIDs.
+	'''
 	cal_url = 'https://outlook.office365.com/EWS/OData/Me/Calendars'
 
 	def __init__(self, email, password):
+		'''Creates a Schedule class for managing all calendars associated with email+password.'''
 		log.debug('setting up for the schedule of the email %s',email)
 		self.auth = (email,password)
 		self.calendars = []
 
 
 	def getCalendars(self):
+		'''Begin the process of downloading calendar metadata.'''
 		log.debug('fetching calendars.')
 		response = requests.get(self.cal_url,auth=self.auth)
 		log.info('Response from O365: %s', str(response))
 		
 		for calendar in response.json()['value']:
 			try:
+				#hmmm. this should be patched too.
 				self.calendars.append(Calendar(calendar,self.auth))
 				log.debug('appended calendar: %s',calendar['Name'])
 			except Exception as e:

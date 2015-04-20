@@ -47,7 +47,7 @@ if __name__ == '__main__':
 			if '.pdf' not in att.json['Name'].lower():
 				print 'not a pdf. skipping!'
 				continue
-			p = att.byteString()
+			p = att.getByteString()
 			if not p:
 				continue
 			print "length of byte string: ",len(p),"for attachment:",att.json['Name']

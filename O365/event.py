@@ -21,6 +21,33 @@ logging.basicConfig(filename='o365.log',level=logging.DEBUG)
 log = logging.getLogger(__name__)
 
 class Event( object ):
+	'''
+	Class for managing the creation and manipluation of events in a calendar. 
+	
+	Methods:
+		create -- Creates the event in a calendar.
+		update -- Sends local changes up to the cloud.
+		delete -- Deletes event from the cloud.
+		toJson -- returns the json representation.
+		fullcalendarioJson -- gets a specific json representation used for fullcalendario.
+		getSubject -- gets the subject of the event.
+		getBody -- gets the body of the event.
+		getStart -- gets the starting time of the event. (struct_time)
+		getEnd -- gets the ending time of the event. (struct_time)
+		getAttendees -- gets the attendees of the event.
+		addAttendee -- adds an attendee to the event. update needs to be called for notification.
+		setSubject -- sets the subject line of the event.
+		setBody -- sets the body of the event.
+		setStart -- sets the starting time of the event. (struct_time)
+		setEnd -- sets the starting time of the event. (struct_time)
+		setAttendees -- sets the attendee list.
+		
+	Variables:
+		time_string -- Formated time string for translation to and from json.
+		create_url -- url for creating a new event.
+		update_url -- url for updating an existing event.
+		delete_url -- url for deleting an event.
+	'''
 	#Formated time string for translation to and from json.
 	time_string = '%Y-%m-%dT%H:%M:%SZ'
 	#takes a calendar ID
@@ -32,6 +59,16 @@ class Event( object ):
 
 
 	def __init__(self,json=None,auth=None,cal=None):
+		'''
+		Creates a new event wrapper.
+		
+		Keyword Argument:
+			json (default = None) -- json representation of an existing event. mostly just used by
+			this library internally for events that are downloaded by the callendar class.
+			auth (default = None) -- a (email,password) tuple which will be used for authentication
+			to office365.
+			cal (default = None) -- an instance of the calendar for this event to associate with.
+		'''
 		self.auth = auth
 		self.calendar = cal
 		self.attendees = []
@@ -46,9 +83,15 @@ class Event( object ):
 	def create(self,calendar=None):
 		'''
 		this method creates an event on the calender passed.
+
 		IMPORTANT: It returns that event now created in the calendar, if you wish
 		to make any changes to this event after you make it, use the returned value
 		and not this particular event any further.
+		
+		calendar -- a calendar class onto which you want this event to be created. If this is left
+		empty then the event's default calendar, specified at instancing, will be used. If no 
+		default is specified, then the event cannot be created.
+		
 		'''
 		if not self.auth:
 			return False
@@ -81,37 +124,31 @@ class Event( object ):
 		log.debug('response to event creation: %s',str(response))
 		return Event(response.json(),self.auth,calendar)
 
-	def update(self,calendar=None):
-		'''
-		This method updates an event that already exists in a calendar. It simply 
-		re-uploads the local json, so change things before you call this function.
-		'''
-                if not self.auth:
-                        return False
+	def update(self):
+		'''Updates an event that already exists in a calendar.'''
+		if not self.auth:
+			return False
 
-                if calendar:
-                        calId = calendar.calendarId
-                        self.calendar = calendar
-                elif self.calendar:
-                        calId = self.calendar.calendarId
-                else:
-                        return False
+		if self.calendar:
+			calId = self.calendar.calendarId
+		else:
+			return False
 
 
-                headers = {'Content-type': 'application/json', 'Accept': 'application/json'}
+		headers = {'Content-type': 'application/json', 'Accept': 'application/json'}
 
-                try:
-                        req = {}
-                        req['Subject'] = self.subject
-                        req['Body'] = {'ContentType':'HTML','Content':self.body}
-                        req['Start'] = time.strftime(self.time_string,self.start)
-                        req['End'] = time.strftime(self.time_string,self.end)
-                        req['Attendees'] = self.attendees
-                except:
-                        return False
+		try:
+			req = {}
+			req['Subject'] = self.subject
+			req['Body'] = {'ContentType':'HTML','Content':self.body}
+			req['Start'] = time.strftime(self.time_string,self.start)
+			req['End'] = time.strftime(self.time_string,self.end)
+			req['Attendees'] = self.attendees
+		except:
+			return False
 
-                log.debug('creating json for request.')
-                data = json.dumps(req)
+		log.debug('creating json for request.')
+		data = json.dumps(req)
 
 		try:
 			response = requests.patch(self.update_url.format(self.Id),data,headers=headers,auth=self.auth)
@@ -127,8 +164,9 @@ class Event( object ):
 
 	def delete(self):
 		'''
-		delete's an event from the calendar it is in. But leaves you this handle.
-		You could, in theory, then change the calendar and transfer the event to
+		Delete's an event from the calendar it is in.
+		
+		But leaves you this handle. You could then change the calendar and transfer the event to 
 		that new calendar. You know, if that's your thing.
 		'''
 		if not self.auth:
@@ -150,8 +188,9 @@ class Event( object ):
 
 	def toJson(self):
 		'''
-		Creates a JSON representation of the calendar event! oh. uh. I mean it
-		simply returns the json representation that has always been in self.json.
+		Creates a JSON representation of the calendar event.
+		
+		oh. uh. I mean it simply returns the json representation that has always been in self.json.
 		'''
 		return self.json
 
@@ -170,36 +209,47 @@ class Event( object ):
 		return ret
 
 	def getSubject(self):
+		'''Gets event subject line.'''
 		return self.json['Subject']
 
 	def getBody(self):
+		'''Gets event body content.'''
 		return self.json['Body']['Content']
 
 	def getStart(self):
+		'''Gets event start struct_time'''
 		return time.strptime(self.json['Start'], self.time_string)
 
 	def getEnd(self):
+		'''Gets event end struct_time'''
 		return time.strptime(self.json['End'], self.time_string)
 
 	def getAttendees(self):
+		'''Gets list of event attendees.'''
 		return self.json['Attendees']
 
 	def addAttendee(self,val):
+		'''adds an attendee to the event. must call update for notification to send.'''
 		self.json['Attendees'].append(val)
 
 	def setSubject(self,val):
+		'''sets event subject line.'''
 		self.json['Subject'] = val
 
 	def setBody(self,val):
+		'''sets event body content.'''
 		self.json['Body']['Content'] = val
 
 	def setStart(self,val):
+		'''sets event start struct_time.'''
 		self.json['Start'] = time.strftime(self.time_string,val)
 
 	def setEnd(self,val):
+		'''sets event end struct_time.'''
 		self.json['End'] = time.strftime(self.time_string,val)
 
 	def setAttendees(self,val):
+		'''sets event attendees list.'''
 		self.json['Attendees'] = val
 
 #To the King!

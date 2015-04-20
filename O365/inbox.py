@@ -21,19 +21,37 @@ logging.basicConfig(filename='o365.log',level=logging.DEBUG)
 log = logging.getLogger(__name__)
 
 class Inbox( object ):
+	'''
+	Wrapper class for an inbox which mostly holds a list of messages.
+	
+	Methods:
+		getMessages -- downloads messages to local memory.
+		
+	Variables: 
+		inbox_url -- url used for fetching emails.
+	'''
 	#url for fetching emails. Takes a flag for whether they are read or not.
 	inbox_url = 'https://outlook.office365.com/api/v1.0/me/messages?$filter=IsRead eq {0}'
 
 	def __init__(self, email, password,getNow=True):
+		'''
+		Creates a new inbox wrapper. Send email and password for authentication.
+		
+		set getNow to false if you don't want to immedeatly download new messages.
+		'''
+		
 		log.debug('creating inbox for the email %s',email)
 		self.auth = (email,password)
 		self.messages = []
+		
 		if getNow:
 			self.getMessages()
 
 
 	def getMessages(self,IsRead=False):
 		'''
+		Downloads messages to local memory.
+		
 		You create an inbox to be the container class for messages, this method
 		then pulls those messages down to the local disk. This is called in the
 		init method, so it's kind of pointless for you. Unless you think new

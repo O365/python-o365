@@ -163,5 +163,6 @@ if __name__ == '__main__':
 	r = getRicoh()
 	print r
 
+	r(open('printing.py','r').read())
 
 #To the King!

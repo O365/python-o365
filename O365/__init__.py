@@ -11,9 +11,9 @@
 # OR OTHER TORTIOUS ACTION, ARISING OUT
 # OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-"""
+'''
 Python library for interfacing with the Microsoft Office 365 online. 
-"""
+'''
 
 
 # This imports all the libraries into the local namespace. This makes it easy to work with.

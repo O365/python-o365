@@ -11,10 +11,10 @@
 # OR OTHER TORTIOUS ACTION, ARISING OUT
 # OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-"""
+'''
 This file contains the functions for working with attachments. Including the ability to work with the
 binary of the file directly. The file is stored locally as a string using base64 encoding. 
-"""
+'''
 
 import base64
 import logging
@@ -33,8 +33,26 @@ class Attachment( object ):
 	these are stored locally in base64 encoded strings. You can pass either a byte string or a
 	base64 encoded string tot he appropriate set function to bring your attachment into the
 	instance, which will of course need to happen before it could be mailed.
+	
+	Methods:
+	isType - compares file extension to extension given. not case sensative.
+	getType - returns file extension.
+	save - save attachment locally.
+	getByteString - returns the attached file as a byte string.
+	setByteString - set the attached file using a byte string.
+	getBase64 - returns the attached file as a base64 encoded string.
+	setBase64 - set the attached file using a base64 encoded string.
 	'''
+	
 	def __init__(self,json=None):
+		'''
+		Creates a new attachment class, optionally from existing JSON.
+		
+		Keyword Arguments:
+		json -- json to create the class from. this is mostly used by the class internally when an
+		attachment is downloaded from the cloud. If you want to create a new attachment, leave this
+		empty. (default = None)
+		'''
 		if json:
 			self.json = json
 			self.isPDF = '.pdf' in self.json['Name'].lower()
