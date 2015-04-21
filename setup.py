@@ -9,6 +9,8 @@ setup(name='O365',
 	maintainer='Toben Archer',
 	maintainer_email='sandslash+O365@gmail.com',
 	url='https://github.com/Narcolapser/python-o365',
-	packages=['O365']
+	packages=['O365'],
+	install_requires=['requests'],
+	license='Apache 2.0'
 	)
 
