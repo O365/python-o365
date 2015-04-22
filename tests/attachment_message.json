@@ -1,0 +1,62 @@
+{
+   "@odata.context":"https://outlook.office365.com/api/v1.0/$metadata#Me/Messages",
+   "value":[
+      {
+         "@odata.id":"https://outlook.office365.com/api/v1.0/Users('test@unit.com')/Messages('bigoldguid')",
+         "@odata.etag":"W/\"ck\"",
+         "Id":"bigoldguid",
+         "ChangeKey":"ck",
+         "Categories":[
+
+         ],
+         "DateTimeCreated":"2015-04-22T11:31:18Z",
+         "DateTimeLastModified":"2015-04-22T11:32:08Z",
+         "Subject":"I've got a lovely bunch of coconuts",
+         "BodyPreview":"This email has an at",
+         "Body":{
+            "ContentType":"HTML",
+            "Content":"This email has an attachment!"
+         },
+         "Importance":"Normal",
+         "HasAttachments":true,
+         "ParentFolderId":"parfoid",
+         "From":{
+            "EmailAddress":{
+               "Address":"Speach@unit.com",
+               "Name":"For talking"
+            }
+         },
+         "Sender":{
+            "EmailAddress":{
+               "Address":"Speach@unit.com",
+               "Name":"For talking"
+            }
+         },
+         "ToRecipients":[
+            {
+               "EmailAddress":{
+                  "Address":"test@unit.com",
+                  "Name":"Tester for Testing"
+               }
+            }
+         ],
+         "CcRecipients":[
+
+         ],
+         "BccRecipients":[
+
+         ],
+         "ReplyTo":[
+
+         ],
+         "ConversationId":"addyconvoid=",
+         "DateTimeReceived":"2015-04-22T11:31:18Z",
+         "DateTimeSent":"2015-04-22T11:30:46Z",
+         "IsDeliveryReceiptRequested":false,
+         "IsReadReceiptRequested":false,
+         "IsDraft":false,
+         "IsRead":false,
+         "WebLink":"https://outlook.office365.com/owa/?ItemID=addywebid&exvsurl=1&viewmodel=ReadMessageItem"
+      }
+   ]
+}

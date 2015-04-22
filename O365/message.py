@@ -98,16 +98,8 @@ class Message( object ):
 
 	def sendMessage(self):
 		'''takes local variabls and forms them into a message to be sent.'''
-		if not self.receiver:
-			return False
 
 		headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
-		message = {}
-		message['Subject'] = self.subject
-		message['Body'] = {'ContentType':'Text','Content':self.body}
-		message['ToRecipients'] = [{'EmailAddress':{'Address':self.receiver}}]
-
-		dat = {'Message':message,'SaveToSentItems':'true'}
 
 		data = json.dumps(self.json)
 		log.debug(str(data))
@@ -125,7 +117,6 @@ class Message( object ):
 			response = requests.patch(self.update_url.format(self.json['Id']),read,headers=headers,auth=self.auth)
 		except:
 			return False
-		print response
 		return True
 
 
@@ -169,7 +160,7 @@ class Message( object ):
 			self.json['ToRecipients'] = val
 		elif isinstance(val,dict):
 			self.json['ToRecipients'] = [val]
-		elif isinstance(val,string):
+		elif isinstance(val,str):
 			if '@' in val:
 				self.json['ToRecipients'] = []
 				self.addRecipient(None,val)

@@ -1,0 +1,19 @@
+{
+   "@odata.context":"https://outlook.office365.com/api/v1.0/$metadata#Me/Messages('bigoldguid')/Attachments",
+   "value":[
+      {
+         "@odata.type":"#Microsoft.OutlookServices.FileAttachment",
+         "@odata.id":"https://outlook.office365.com/api/v1.0/Users('test@unit.com')/Messages('bigoldguid')/Attachments('attguid')",
+         "Id":"attguid",
+         "Name":"test.txt",
+         "ContentType":null,
+         "Size":73560,
+         "IsInline":false,
+         "DateTimeLastModified":"2015-01-11T14:55:16Z",
+         "ContentId":null,
+         "ContentLocation":null,
+         "IsContactPhoto":false,
+         "ContentBytes":"dGVzdGluZyB3MDB0IQ==\n"
+      }
+   ]
+}
