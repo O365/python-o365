@@ -4,8 +4,8 @@ import json
 
 class Calendar:
 	'''mock up calendar class'''
-	def __init__(self,calid,auth):
-		self.calid = calid
+	def __init__(self,json,auth):
+		self.json = json
 		self.auth = auth
 
 schedule.Calendar = Calendar
@@ -17,7 +17,7 @@ class Resp:
 	def json(self):
 		return json.loads(self.jsons)
 
-sch_rep = '''{"@odata.context": "https://outlook.office365.com/EWS/OData/$metadata#Me/Calendars", "value": [{"Name": "Calendar", "Color": "Auto", "@odata.id": "https://outlook.office365.com/EWS/OData/Users(\'test@unit.org\')/Calendars(\'bigolguid=\')", "ChangeKey": "littleguid=", "Id": "bigolguid=", "@odata.etag": "W/\\"littleguid=\\""}, {"Name": "dat other cal", "Color": "Auto", "@odata.id": "https://outlook.office365.com/EWS/OData/Users(\'test@unit.org\')/Calendars(\'bigolguid2=\')", "ChangeKey": "littleguid2=", "Id": "bigolguid2=", "@odata.etag": "W/\\"littleguid2=\\""}]}'''
+sch_rep = '''{"@odata.context": "https://outlook.office365.com/EWS/OData/$metadata#Me/Calendars", "value": [{"Name": "Calendar", "Color": "Auto", "@odata.id": "https://outlook.office365.com/EWS/OData/Users(\'test@unit.org\')/Calendars(\'bigolguid=\')", "ChangeKey": "littleguid=", "Id": "bigolguid=", "@odata.etag": "W/\\"littleguid=\\""}, {"Name": "dat other cal", "Color": "Auto", "@odata.id": "https://outlook.office365.com/EWS/OData/Users(\'test@unit.org\')/Calendars(\'bigoldguid2=\')", "ChangeKey": "littleguid2=", "Id": "bigoldguid2=", "@odata.etag": "W/\\"littleguid2=\\""}]}'''
 
 
 def get(url,**params):
@@ -41,6 +41,11 @@ class TestSchedule (unittest.TestCase):
 	def test_getCalendar(self):
 		self.val.getCalendars()
 		self.assertEqual(2,len(self.val.calendars))
+
+	def test_auth(self):
+		self.assertEqual('test@unit.com',self.val.auth[0])
+		self.assertEqual('pass',self.val.auth[1])
+
 
 if __name__ == '__main__':
 	unittest.main()

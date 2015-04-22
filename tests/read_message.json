@@ -1,0 +1,234 @@
+{
+   "@odata.context":"https://outlook.office365.com/api/v1.0/$metadata#Me/Messages",
+   "value":[
+      {
+         "@odata.id":"https://outlook.office365.com/api/v1.0/Users('test@unit.com')/Messages('guid1')",
+         "@odata.etag":"ck1",
+         "Id":"guid1",
+         "ChangeKey":"CQAAABYAAAD9eTSzqEULQLIWnNHLzkE/AADSuoSD",
+         "Categories":[
+
+         ],
+         "DateTimeCreated":"2015-04-22T09:30:16Z",
+         "DateTimeLastModified":"2015-04-22T09:30:38Z",
+         "Subject":"m1",
+         "BodyPreview":"rb1",
+         "Body":{
+            "ContentType":"HTML",
+            "Content":"read body 1"
+         },
+         "Importance":"Normal",
+         "HasAttachments":false,
+         "ParentFolderId":"parfoId",
+         "From":{
+            "EmailAddress":{
+               "Address":"sender1@unit.com",
+               "Name":"first sender"
+            }
+         },
+         "Sender":{
+            "EmailAddress":{
+               "Address":"sender1@unit.com",
+               "Name":"first sender"
+            }
+         },
+         "ToRecipients":[
+            {
+               "EmailAddress":{
+                  "Address":"test@unit.com",
+                  "Name":"Tester for Testing"
+               }
+            }
+         ],
+         "CcRecipients":[
+
+         ],
+         "BccRecipients":[
+
+         ],
+         "ReplyTo":[
+
+         ],
+         "ConversationId":"convoId1",
+         "DateTimeReceived":"2015-04-22T09:30:16Z",
+         "DateTimeSent":"2015-04-22T09:30:09Z",
+         "IsDeliveryReceiptRequested":false,
+         "IsReadReceiptRequested":false,
+         "IsDraft":false,
+         "IsRead":true,
+         "WebLink":"https://outlook.office365.com/owa/?ItemID=webid1&exvsurl=1&viewmodel=ReadMessageItem"
+      },
+      {
+         "@odata.id":"https://outlook.office365.com/api/v1.0/Users('test@unit.com')/Messages('guid2')",
+         "@odata.etag":"W/\"ck2\"",
+         "Id":"guid2",
+         "ChangeKey":"ck2",
+         "Categories":[
+
+         ],
+         "DateTimeCreated":"2015-04-22T09:22:01Z",
+         "DateTimeLastModified":"2015-04-22T09:23:38Z",
+         "Subject":"FW: Microsoft Office Not Activating",
+         "BodyPreview":"rb2",
+         "Body":{
+            "ContentType":"HTML",
+            "Content":"read body 2"
+         },
+         "Importance":"Normal",
+         "HasAttachments":false,
+         "ParentFolderId":"parfoId",
+         "From":{
+            "EmailAddress":{
+               "Address":"sender1@unit.com",
+               "Name":"first sender"
+            }
+         },
+         "Sender":{
+            "EmailAddress":{
+               "Address":"sender1@unit.com",
+               "Name":"first sender"
+            }
+         },
+         "ToRecipients":[
+            {
+               "EmailAddress":{
+                  "Address":"test@unit.com",
+                  "Name":"Tester for Testing"
+               }
+            }
+         ],
+         "CcRecipients":[
+
+         ],
+         "BccRecipients":[
+
+         ],
+         "ReplyTo":[
+
+         ],
+         "ConversationId":"convoId2",
+         "DateTimeReceived":"2015-04-22T09:22:01Z",
+         "DateTimeSent":"2015-04-22T09:22:00Z",
+         "IsDeliveryReceiptRequested":false,
+         "IsReadReceiptRequested":false,
+         "IsDraft":false,
+         "IsRead":true,
+         "WebLink":"https://outlook.office365.com/owa/?ItemID=webid2&exvsurl=1&viewmodel=ReadMessageItem"
+      },
+      {
+         "@odata.id":"https://outlook.office365.com/api/v1.0/Users('test@unit.com')/Messages('guid3')",
+         "@odata.etag":"W/\"ck3\"",
+         "Id":"guid3",
+         "ChangeKey":"ck3",
+         "Categories":[
+
+         ],
+         "DateTimeCreated":"2015-04-21T16:04:30Z",
+         "DateTimeLastModified":"2015-04-22T08:54:50Z",
+         "Subject":"sub 3",
+         "BodyPreview":"rb3",
+         "Body":{
+            "ContentType":"HTML",
+            "Content":"Read body 3"
+         },
+         "Importance":"Normal",
+         "HasAttachments":false,
+         "ParentFolderId":"parfoId",
+         "From":{
+            "EmailAddress":{
+               "Address":"Another@unit.com",
+               "Name":"Another One"
+            }
+         },
+         "Sender":{
+            "EmailAddress":{
+               "Address":"Another@unit.com",
+               "Name":"Another One"
+            }
+         },
+         "ToRecipients":[
+            {
+               "EmailAddress":{
+                  "Address":"test@unit.com",
+                  "Name":"Tester for Testing"
+               }
+            }
+         ],
+         "CcRecipients":[
+
+         ],
+         "BccRecipients":[
+
+         ],
+         "ReplyTo":[
+
+         ],
+         "ConversationId":"convoId3",
+         "DateTimeReceived":"2015-04-21T16:04:30Z",
+         "DateTimeSent":"2015-04-21T16:04:28Z",
+         "IsDeliveryReceiptRequested":false,
+         "IsReadReceiptRequested":false,
+         "IsDraft":false,
+         "IsRead":true,
+         "WebLink":"https://outlook.office365.com/owa/?ItemID=weblink3&exvsurl=1&viewmodel=ReadMessageItem"
+      },
+      {
+         "@odata.id":"https://outlook.office365.com/api/v1.0/Users('test@unit.com')/Messages('guid4')",
+         "@odata.etag":"W/\"ck4\"",
+         "Id":"guid4",
+         "ChangeKey":"ck4",
+         "Categories":[
+
+         ],
+         "DateTimeCreated":"2015-04-21T01:36:21Z",
+         "DateTimeLastModified":"2015-04-22T08:49:41Z",
+         "Subject":"Windows 10 is still underwhealming.",
+         "BodyPreview":"rb4",
+         "Body":{
+            "ContentType":"HTML",
+            "Content":"rb4"
+         },
+         "Importance":"High",
+         "HasAttachments":false,
+         "ParentFolderId":"parfoId",
+         "From":{
+            "EmailAddress":{
+               "Address":"super@unit.com",
+               "Name":"Sudo Su"
+            }
+         },
+         "Sender":{
+            "EmailAddress":{
+               "Address":"super@unit.com",
+               "Name":"Sudo Su"
+            }
+         },
+         "ToRecipients":[
+            {
+               "EmailAddress":{
+                  "Address":"test@unit.com",
+                  "Name":"Tester for Testing"
+               }
+            }
+         ],
+         "CcRecipients":[
+
+         ],
+         "BccRecipients":[
+
+         ],
+         "ReplyTo":[
+
+         ],
+         "ConversationId":"convoId",
+         "DateTimeReceived":"2015-04-21T01:36:22Z",
+         "DateTimeSent":"2015-04-21T01:35:54Z",
+         "IsDeliveryReceiptRequested":null,
+         "IsReadReceiptRequested":false,
+         "IsDraft":false,
+         "IsRead":true,
+         "WebLink":"https://outlook.office365.com/owa/?ItemID=weblink4&exvsurl=1&viewmodel=ReadMessageItem"
+      }
+   ],
+   "@odata.nextLink":"https://outlook.office365.com/api/v1.0/me/messages/?%24filter=IsRead+eq+true&%24skip=10"
+}

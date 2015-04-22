@@ -60,7 +60,7 @@ class Calendar( object ):
 
 	def getCalendarId(self):
 		'''Get calendar's GUID for office 365. mostly used interally in this library.'''
-		return self.calendarId['Id']
+		return self.json['Id']
 
 	def getId(self):
 		'''Get calendar's GUID for office 365. mostly used interally in this library.'''
@@ -94,7 +94,7 @@ class Calendar( object ):
 		#from what ever the start date was. 
 		if not end:
 			end = time.time()
-			end += 3600*24*365.25
+			end += 3600*24*365
 			end = time.gmtime(end)
 			end = time.strftime(self.time_string,end)
 

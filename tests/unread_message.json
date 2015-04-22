@@ -1,0 +1,62 @@
+{
+   "@odata.context":"https://outlook.office365.com/api/v1.0/$metadata#Me/Messages",
+   "value":[
+      {
+         "@odata.id":"https://outlook.office365.com/api/v1.0/Users('test@unit.com')/Messages('big guid=')",
+         "@odata.etag":"lil guid",
+         "Id":"big guid=",
+         "ChangeKey":"lil guid",
+         "Categories":[
+
+         ],
+         "DateTimeCreated":"2015-04-20T16:17:42Z",
+         "DateTimeLastModified":"2015-04-22T10:10:38Z",
+         "Subject":"unread test email",
+         "BodyPreview":"this is the ",
+         "Body":{
+            "ContentType":"HTML",
+            "Content":"this is the body fully"
+         },
+         "Importance":"Normal",
+         "HasAttachments":false,
+         "ParentFolderId":"parfoId=",
+         "From":{
+            "EmailAddress":{
+               "Address":"sender@unit.com",
+               "Name":"Sender for Test"
+            }
+         },
+         "Sender":{
+            "EmailAddress":{
+               "Address":"sender@unit.com",
+               "Name":"Sender for Test"
+            }
+         },
+         "ToRecipients":[
+            {
+               "EmailAddress":{
+                  "Address":"test@unit.com",
+                  "Name":"Tester of Testing"
+               }
+            }
+         ],
+         "CcRecipients":[
+
+         ],
+         "BccRecipients":[
+
+         ],
+         "ReplyTo":[
+
+         ],
+         "ConversationId":"convoId=",
+         "DateTimeReceived":"2015-04-20T16:17:42Z",
+         "DateTimeSent":"2015-04-20T16:17:39Z",
+         "IsDeliveryReceiptRequested":false,
+         "IsReadReceiptRequested":false,
+         "IsDraft":false,
+         "IsRead":false,
+         "WebLink":"https://outlook.office365.com/owa/?ItemID=daitemidyo&exvsurl=1&viewmodel=ReadMessageItem"
+      }
+   ]
+}

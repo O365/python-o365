@@ -49,21 +49,24 @@ class Schedule( object ):
 		for calendar in response.json()['value']:
 			try:
 				duplicate = False
-
+				log.debug('Got a calendar with Name: {0} and Id: {1}'.format(calendar['Name'],calendar['Id']))
 				for i,c in enumerate(self.calendars):
 					if c.json['Id'] == calendar['Id']:
 						c.json = calendar
 						c.name = calendar['Name']
 						c.calendarId = calendar['Id']
 						duplicate = True
+						log.debug('Calendar: {0} is a duplicate',calendar['Name'])
 						break
 
 				if not duplicate:
 					self.calendars.append(Calendar(calendar,self.auth))
+					log.debug('appended calendar: %s',calendar['Name'])
 
-				log.debug('appended calendar: %s',calendar['Name'])
+				log.debug('Finished with calendar {0} moving on.'.format(calendar['Name']))
+
 			except Exception as e:
-				log.info('failed to append calendar: %',str(e))
+				log.info('failed to append calendar: {0}'.format(str(e)))
 		
 		log.debug('all calendars retrieved and put in to the list.')
 		return True

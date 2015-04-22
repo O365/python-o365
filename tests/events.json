@@ -1,0 +1,164 @@
+{
+   "@odata.context":"https://outlook.office365.com/api/v1.0/$metadata#Me/Calendars('bigolguid')/CalendarView",
+   "value":[
+      {
+         "@odata.id":"https://outlook.office365.com/api/v1.0/Users('test@unit.com')/Events('bigolguid=')",
+         "@odata.etag":"W/\"ck1\"",
+         "Id":"bigolguid=",
+         "ChangeKey":"ck1",
+         "Categories":[
+
+         ],
+         "DateTimeCreated":"2015-04-22T11:04:08.5260627Z",
+         "DateTimeLastModified":"2015-04-22T11:03:34.025Z",
+         "Subject":"da vent",
+         "BodyPreview":"Viva la reddit.",
+         "Body":{
+            "ContentType":"HTML",
+            "Content":"Viva la reddit. content"
+         },
+         "Importance":"Normal",
+         "HasAttachments":false,
+         "Start":"2015-04-22T12:00:00Z",
+         "StartTimeZone":"GMT Standard Time",
+         "End":"2015-04-22T12:30:00Z",
+         "EndTimeZone":"GMT Standard Time",
+         "Reminder":15,
+         "Location":{
+            "DisplayName":"da place",
+            "Address":{
+               "Street":"",
+               "City":"",
+               "State":"",
+               "CountryOrRegion":"",
+               "PostalCode":""
+            },
+            "Coordinates":{
+               "Accuracy":"NaN",
+               "Altitude":"NaN",
+               "AltitudeAccuracy":"NaN",
+               "Latitude":"NaN",
+               "Longitude":"NaN"
+            }
+         },
+         "ResponseStatus":{
+            "Response":"None",
+            "Time":"0001-01-01T00:00:00Z"
+         },
+         "ShowAs":"Busy",
+         "IsAllDay":false,
+         "IsCancelled":false,
+         "IsOrganizer":true,
+         "ResponseRequested":true,
+         "Type":"SingleInstance",
+         "SeriesMasterId":null,
+         "Attendees":[
+            {
+               "EmailAddress":{
+                  "Address":"test@unit.com",
+                  "Name":"Tester for Testing"
+               },
+               "Status":{
+                  "Response":"None",
+                  "Time":"0001-01-01T00:00:00Z"
+               },
+               "Type":"Required"
+            }
+         ],
+         "Recurrence":null,
+         "Organizer":{
+            "EmailAddress":{
+               "Address":"organizer@unit.com",
+               "Name":"The Choosen One"
+            }
+         },
+         "iCalUId":"calid",
+         "WebLink":"https://outlook.office365.com/owa/?ItemID=webid1&exvsurl=1&viewmodel=ICalendarItemDetailsViewModelFactory"
+      },
+      {
+         "@odata.id":"https://outlook.office365.com/api/v1.0/Users('test@unit.com')/Events('otherguid')",
+         "@odata.etag":"W/\"crusader kings II\"",
+         "Id":"otherguid",
+         "ChangeKey":"crusader kings II",
+         "Categories":[
+
+         ],
+         "DateTimeCreated":"2015-04-22T11:05:49.0137691Z",
+         "DateTimeLastModified":"2015-04-22T11:03:54.775Z",
+         "Subject":"dat oughter",
+         "BodyPreview":"Blub blub",
+         "Body":{
+            "ContentType":"HTML",
+            "Content":"blub blub goes Microsoft's flag ship."
+         },
+         "Importance":"Normal",
+         "HasAttachments":false,
+         "Start":"2015-04-24T00:00:00Z",
+         "StartTimeZone":"UTC",
+         "End":"2015-04-25T00:00:00Z",
+         "EndTimeZone":"UTC",
+         "Reminder":1080,
+         "Location":{
+            "DisplayName":"dat ocean",
+            "Address":{
+               "Street":"",
+               "City":"",
+               "State":"",
+               "CountryOrRegion":"",
+               "PostalCode":""
+            },
+            "Coordinates":{
+               "Accuracy":"NaN",
+               "Altitude":"NaN",
+               "AltitudeAccuracy":"NaN",
+               "Latitude":"NaN",
+               "Longitude":"NaN"
+            }
+         },
+         "ResponseStatus":{
+            "Response":"Organizer",
+            "Time":"0001-01-01T00:00:00Z"
+         },
+         "ShowAs":"Free",
+         "IsAllDay":true,
+         "IsCancelled":false,
+         "IsOrganizer":true,
+         "ResponseRequested":true,
+         "Type":"SingleInstance",
+         "SeriesMasterId":null,
+         "Attendees":[
+            {
+               "EmailAddress":{
+                  "Address":"test@unit.com",
+                  "Name":"Tester for Testing"
+               },
+               "Status":{
+                  "Response":"None",
+                  "Time":"0001-01-01T00:00:00Z"
+               },
+               "Type":"Required"
+            },
+            {
+               "EmailAddress":{
+                  "Address":"test@unit.com",
+                  "Name":"test@unit.com"
+               },
+               "Status":{
+                  "Response":"None",
+                  "Time":"0001-01-01T00:00:00Z"
+               },
+               "Type":"Required"
+            }
+         ],
+         "Recurrence":null,
+         "Organizer":{
+            "EmailAddress":{
+               "Address":"mrfins@splashy.whale",
+               "Name":"Mr. Splashy Fins"
+            }
+         },
+         "iCalUId":"clid2",
+         "WebLink":"https://outlook.office365.com/owa/?ItemID=webid22&exvsurl=1&viewmodel=ICalendarItemDetailsViewModelFactory"
+      }
+   ]
+}
