@@ -19,7 +19,6 @@ binary of the file directly. The file is stored locally as a string using base64
 import base64
 import logging
 import json
-import requests
 
 logging.basicConfig(filename='o365.log',level=logging.DEBUG)
 
@@ -73,7 +72,7 @@ class Attachment( object ):
 		location -- path to where the file is to be saved.
 		'''
 		try:
-			outs = open(location+'/'+self.Name,'wb')
+			outs = open(location+'/'+self.json['Name'],'wb')
 			outs.write(base64.b64decode(self.json['ContentBytes']))
 			outs.close()
 			log.debug('file saved locally.')
@@ -109,7 +108,7 @@ class Attachment( object ):
 	def setByteString(self,val):
 		'''Sets the file for this attachment from a byte string.'''
 		try:
-			self.json['ContentBytes'] = base64.b64encode(val)
+			self.json['ContentBytes'] = base64.encodestring(val)
 		except:
 			log.debug('error encoding attachment.')
 			return False
@@ -117,6 +116,11 @@ class Attachment( object ):
 
 	def setBase64(self,val):
 		'''Sets the file for this attachment from a base64 encoding.'''
+		try:
+			base64.decodestring(val)
+		except:
+			log.error('tried to give me an attachment as a base64 and it is not.')
+			raise
 		self.json['ContentBytes'] = val
 		return true
 

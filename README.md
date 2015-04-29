@@ -11,13 +11,12 @@ Road Map:
   * clean up. 
 
 0.6
-  * add support for the contacts api.
   * increase robustness
   * add unit tests
 
 0.7
-  * thoughts?
-
+  * add support for the contacts api.
+  * features!
 
 
 
