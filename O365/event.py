@@ -94,31 +94,35 @@ class Event( object ):
 		
 		'''
 		if not self.auth:
+			log.debug('failed authentication check when creating event.')
 			return False
 
 		if calendar:
 			calId = calendar.calendarId
 			self.calendar = calendar
+			log.debug('sent to passed calendar.')
 		elif self.calendar:
 			calId = self.calendar.calendarId
+			log.debug('sent to default calendar.')
 		else:
+			log.debug('no valid calendar to upload to.')
 			return False
 
 		headers = {'Content-type': 'application/json', 'Accept': 'application/json'}
 
-		try:
-			self.json['Attendees'] = self.attendees
-		except:
-			return False
-
 		log.debug('creating json for request.')
 		data = json.dumps(self.json)
 
+		response = None
 		try:
 			log.debug('sending post request now')
 			response = requests.post(self.create_url.format(calId),data,headers=headers,auth=self.auth)
-		except:
-			log.debug('response to event creation: %s',str(response))
+			log.debug('sent post request.')
+		except Exception as e:
+			if response:
+				log.debug('response to event creation: %s',str(response))
+			else:
+				log.debug('No response, something is very wrong: %s',str(e))
 			return False
 
 		log.debug('response to event creation: %s',str(response))

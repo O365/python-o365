@@ -1,15 +1,14 @@
-from O365 import cal
+from O365 import event
 import unittest
 import json
 import time
 
-class Event:
-	'''mock up event class'''
+class Calendar:
+	'''mock up calendar class'''
 	def __init__(self,json,auth):
 		self.json = json
 		self.auth = auth
-
-cal.Event = Event
+		self.calendarId = json['Id']
 
 class Resp:
 	def __init__(self,json_string):
@@ -19,39 +18,14 @@ class Resp:
 		return json.loads(self.jsons)
 
 event_rep = open('events.json','r').read()
-no_event_rep = '''{"@odata.context":"https://outlook.office365.com/api/v1.0/$metadata#Me/Calendars('bigolguid')/CalendarView","value":[]}'''
-
-sch_rep = '''{"@odata.context": "https://outlook.office365.com/EWS/OData/$metadata#Me/Calendars", "value": [{"Name": "Calendar", "Color": "Auto", "@odata.id": "https://outlook.office365.com/EWS/OData/Users(\'test@unit.org\')/Calendars(\'bigolguid=\')", "ChangeKey": "littleguid=", "Id": "bigolguid=", "@odata.etag": "W/\\"littleguid=\\""}, {"Name": "dat other cal", "Color": "Auto", "@odata.id": "https://outlook.office365.com/EWS/OData/Users(\'test@unit.org\')/Calendars(\'bigoldguid2=\')", "ChangeKey": "littleguid2=", "Id": "bigoldguid2=", "@odata.etag": "W/\\"littleguid2=\\""}]}'''
+events_json = json.loads(event_rep)
+lough = events_json['value'][0]
+oughter = events_json['value'][1]
 
 t_string = '%Y-%m-%dT%H:%M:%SZ'
 
-s1 = '2015-04-20T17:18:25Z'
-e1 = '2016-04-20T17:18:25Z'
-
-s2 = time.strftime(t_string)
-e2 = time.time()
-e2 += 3600*24*365
-e2 = time.gmtime(e2)
-e2 = time.strftime(t_string,e2)
-
-s3 = s1
-e3 = '2015-04-25T17:18:25Z'
-
-def get(url,**params):
-	t1_url = 'https://outlook.office365.com/api/v1.0/me/calendars/bigoldguid2=/calendarview?startDateTime={0}&endDateTime={1}'.format(s1,e1)
-	t2_url = 'https://outlook.office365.com/api/v1.0/me/calendars/bigoldguid2=/calendarview?startDateTime={0}&endDateTime={1}'.format(s2,e2)
-	t3_url = 'https://outlook.office365.com/api/v1.0/me/calendars/bigoldguid2=/calendarview?startDateTime={0}&endDateTime={1}'.format(s3,e3)
-	if url == t1_url:
-		ret = Resp(event_rep)
-	elif url == t2_url:
-		ret = Resp(no_event_rep)
-	elif url == t3_url:
-		ret = Resp(event_rep)
-	else:
-		print url
-		print t1_url
-		print t2_url
-		print t3_url
+def delete(url,data,headers,auth):
+	if url != 'https://outlook.office365.com/api/v1.0/me/events/{0}':
 		raise
 	if params['auth'][0] != 'test@unit.com':
 		raise
@@ -60,34 +34,71 @@ def get(url,**params):
 
 	return ret
 
-cal.requests.get = get
+event.requests.delete = delete
+
+def post(url,data,headers,auth):
+	if url != 'https://outlook.office365.com/api/v1.0/me/calendars/0/events':
+		raise BaseException('Url wrong')
+	if auth[0] != 'test@unit.com':
+		raise BaseException('wrong email')
+	if auth[1] != 'pass':
+		raise BaseException('wrong password')
+	if headers['Content-type'] != 'application/json':
+		raise BaseException('header wrong value for content-type.')
+	if headers['Accept'] != 'application/json':
+		raise BaseException('header accept wrong.')
+
+	if json.loads(data) != lough and json.loads(data) != oughter:
+		raise BaseException('data is wrong.')
+
+	return Resp(data)
+
+event.requests.post = post
+
+def patch(url,data,headers,auth):
+	if url != 'https://outlook.office365.com/api/v1.0/me/events/{0}':
+			raise
+	if auth[0] != 'test@unit.com':
+		raise
+	if auth[1] != 'pass':
+		raise
+	if headers['Content-type'] != 'application/json':
+		raise
+	if headers['Accept'] != 'application/json':
+		raise	
+	return True
+
+event.requests.patch = patch
 
 auth = ('test@unit.com','pass')
+
+cal_json = {'Id':0}
+cal = Calendar(cal_json,auth)
 
 class TestInbox (unittest.TestCase):
 	
 	def setUp(self):
-		caljson = json.loads(sch_rep)
-		self.cal = cal.Calendar(caljson['value'][1],auth)
+		self.lough = event.Event(lough,auth,cal)
+		self.oughter = event.Event(oughter,auth,cal)
 
-	def test_getName(self):
-		self.assertEqual('dat other cal',self.cal.getName())
+	def test_create(self):
+		self.assertTrue(self.lough.create())
+		self.assertTrue(self.oughter.create())
 
-	def test_getCalendarId(self):
-		self.assertEqual('bigoldguid2=',self.cal.getCalendarId())
+	def test_update(self):
+		self.assertTrue(self.lough.update())
+		self.assertTrue(self.oughter.update())
 
-	def test_getId(self):
-		self.assertEqual('bigoldguid2=',self.cal.getCalendarId())
-
-	def test_getEvents_blank(self):
-		self.assertEqual(0,len(self.cal.events))
-		self.cal.getEvents()
-		self.assertEqual(2,len(self.cal.events))
+	def test_delete(self):
+		self.assertTrue(self.lough.delete())
+		self.assertTrue(self.oughter.delete())
 
 	def test_auth(self):
-		self.assertEqual('test@unit.com',self.cal.auth[0])
-		self.assertEqual('pass',self.cal.auth[1])
+		self.assertEqual('test@unit.com',self.lough.auth[0])
+		self.assertEqual('pass',self.lough.auth[1])
 
+		self.assertEqual('test@unit.com',self.oughter.auth[0])
+		self.assertEqual('pass',self.oughter.auth[1])
 
 if __name__ == '__main__':
 	unittest.main()
