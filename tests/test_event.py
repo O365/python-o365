@@ -23,16 +23,22 @@ lough = events_json['value'][0]
 oughter = events_json['value'][1]
 
 t_string = '%Y-%m-%dT%H:%M:%SZ'
+urls = ['https://outlook.office365.com/api/v1.0/me/events/bigolguid=',
+	'https://outlook.office365.com/api/v1.0/me/events/otherguid']
 
-def delete(url,data,headers,auth):
-	if url != 'https://outlook.office365.com/api/v1.0/me/events/{0}':
-		raise
-	if params['auth'][0] != 'test@unit.com':
-		raise
-	if params['auth'][1] != 'pass':
-		raise
+def delete(url,headers,auth):
+	if url not in urls:
+		raise BaseException('Url wrong')
+	if auth[0] != 'test@unit.com':
+		raise BaseException('wrong email')
+	if auth[1] != 'pass':
+		raise BaseException('wrong password')
+	if headers['Content-type'] != 'application/json':
+		raise BaseException('header wrong value for content-type.')
+	if headers['Accept'] != 'text/plain':
+		raise BaseException('header accept wrong.')
 
-	return ret
+	return True
 
 event.requests.delete = delete
 
@@ -56,17 +62,18 @@ def post(url,data,headers,auth):
 event.requests.post = post
 
 def patch(url,data,headers,auth):
-	if url != 'https://outlook.office365.com/api/v1.0/me/events/{0}':
-			raise
+	if url not in urls:
+		raise BaseException('Url wrong')
 	if auth[0] != 'test@unit.com':
-		raise
+		raise BaseException('wrong email')
 	if auth[1] != 'pass':
-		raise
+		raise BaseException('wrong password')
 	if headers['Content-type'] != 'application/json':
-		raise
+		raise BaseException('header wrong value for content-type.')
 	if headers['Accept'] != 'application/json':
-		raise	
-	return True
+		raise BaseException('header accept wrong.')
+
+	return Resp(data)
 
 event.requests.patch = patch
 

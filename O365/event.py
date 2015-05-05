@@ -122,7 +122,7 @@ class Event( object ):
 			if response:
 				log.debug('response to event creation: %s',str(response))
 			else:
-				log.debug('No response, something is very wrong: %s',str(e))
+				log.error('No response, something is very wrong with create: %s',str(e))
 			return False
 
 		log.debug('response to event creation: %s',str(response))
@@ -143,11 +143,15 @@ class Event( object ):
 
 		data = json.dumps(self.json)
 
+		response = None
 		try:
-			response = requests.patch(self.update_url.format(self.Id),data,headers=headers,auth=self.auth)
+			response = requests.patch(self.update_url.format(self.json['Id']),data,headers=headers,auth=self.auth)
 			log.debug('sending patch request now')
-		except:
-			log.debug('response to event creation: %s',str(response))
+		except Exception as e:
+			if response:
+				log.debug('response to event creation: %s',str(response))
+			else:
+				log.error('No response, something is very wrong with update: %s',str(e))
 			return False
 
 		log.debug('response to event creation: %s',str(response))
@@ -164,18 +168,20 @@ class Event( object ):
 		'''
 		if not self.auth:
 			return False
-		if not self.Id:
-			return False
 
 		headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
 
+		response = None
 		try:
 			log.debug('sending delete request')
-			response = requests.delete(self.delete_url.format(self.Id),headers=headers,auth=self.auth)
-		except:
+			response = requests.delete(self.delete_url.format(self.json['Id']),headers=headers,auth=self.auth)
+
+		except Exception as e:
+			if response:
+				log.debug('response to deletion: %s',str(response))
+			else:
+				log.error('No response, something is very wrong with delete: %s',str(e))
 			return False
-		finally:
-			log.debug('response to deletion: %s',str(response))
 
 		return response
 

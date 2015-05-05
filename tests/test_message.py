@@ -54,11 +54,11 @@ message.requests.post = post
 
 def patch(url,data,headers,auth):
 	if url != 'https://outlook.office365.com/api/v1.0/me/messages/big guid=':
-				raise
-		if auth[0] != 'test@unit.com':
-				raise
-		if auth[1] != 'pass':
-				raise
+		raise
+	if auth[0] != 'test@unit.com':
+		raise
+	if auth[1] != 'pass':
+		raise
 	if headers['Content-type'] != 'application/json':
 		raise
 	if headers['Accept'] != 'application/json':
