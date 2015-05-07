@@ -11,7 +11,7 @@ CLASSIFIERS = [
 ]
 
 setup(name='O365',
-	version='0.6',
+	version='0.6.1',
 	description='Python library for working with Microsoft Office 365',
 	author='Toben Archer',
 	author_email='sandslash+O365@gmail.com',

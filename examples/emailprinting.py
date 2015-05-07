@@ -1,6 +1,9 @@
 from O365 import *
 from printing import *
 import json
+import os
+import sys
+import time
 
 def userFromEmail(email):
 	name = email[:email.index('@')]
@@ -20,41 +23,53 @@ def verifyUser(email):
 	return True	
 #	name = email[:email.index(
 
+def getLock():
+	f = open('emailprinting.lock','r').read()
+	lock = int(f)
+	return lock
+
 emails = open('./pw/emails.pw','r').read().split('\n')
 
 if __name__ == '__main__':
-	print "checking for emails"
-	with open('./pw/ep.pw','r') as configFile:
-		config = configFile.read()
-		cjson = json.loads(config)
+	newpid = os.fork()
+	if newpid > 0:
+		print newpid
+		sys.exit(0)
+	
+	while getLock():
+		print "checking for emails"
+		with open('./pw/ep.pw','r') as configFile:
+			config = configFile.read()
+			cjson = json.loads(config)
 
-	e = cjson ['email']
-	p = cjson ['password']
+		e = cjson ['email']
+		p = cjson ['password']
 
-	i = Inbox(e,p)
+		i = Inbox(e,p)
 
-        printer = getRicoh()
-	print "messages: ",len(i.messages)
-	for m in i.messages:
-		m.fetchAttachments()
-		m.markAsRead()
-		if not verifyUser(m.json['From']['EmailAddress']['Address']):
-			print "NOT OMER!"
-			continue
-		print "\t attachments: ",len(m.attachments),"from:",userFromEmail(m.json['From']['EmailAddress']['Address']),m.json['Subject']
-		for att in m.attachments:
-			printer.setFlag('U',userFromEmail(m.json['From']['EmailAddress']['Address']))
-			if '.pdf' not in att.json['Name'].lower():
-				print 'not a pdf. skipping!'
+	        printer = getRicoh()
+		print "messages: ",len(i.messages)
+		for m in i.messages:
+			m.fetchAttachments()
+			m.markAsRead()
+			if not verifyUser(m.json['From']['EmailAddress']['Address']):
+				print "NOT OMER!"
 				continue
-			p = att.getByteString()
-			if not p:
-				continue
-			print "length of byte string: ",len(p),"for attachment:",att.json['Name']
-			if p:
-				print "ready. set. PRINT!"
-				printer.setFlag('t',att.json['Name'])
-				ret = printer.sendPrint(p)
-				print ret
+			print "\t attachments: ",len(m.attachments),"from:",userFromEmail(m.json['From']['EmailAddress']['Address']),m.json['Subject']
+			for att in m.attachments:
+				printer.setFlag('U',userFromEmail(m.json['From']['EmailAddress']['Address']))
+				if '.pdf' not in att.json['Name'].lower():
+					print 'not a pdf. skipping!'
+					continue
+				p = att.getByteString()
+				if not p:
+					continue
+				print "length of byte string: ",len(p),"for attachment:",att.json['Name']
+				if p:
+					print "ready. set. PRINT!"
+					printer.setFlag('t',att.json['Name'])
+					ret = printer.sendPrint(p)
+					print ret
+		time.sleep(55)
 
 #To the King!

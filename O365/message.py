@@ -69,7 +69,7 @@ class Message( object ):
 			self.hasAttachments = json['HasAttachments']
 
 		else:
-			self.json = {}
+			self.json = {'Message':{'Body':{}},'ToRecipients':{}}
 			self.hasAttachments = False
 	
 		self.auth = auth
@@ -101,13 +101,24 @@ class Message( object ):
 
 		headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
 
-		data = json.dumps(self.json)
+#		data = json.dumps(self.json)
+
+		data = {'Message':{'Body':{}}}
+		data['Message']['Subject'] = self.json['Subject']
+		data['Message']['Body']['Content'] = self.json['Body']['Content']
+		data['Message']['Body']['ContentType'] = self.json['Body']['ContentType']
+		data['Message']['ToRecipients'] = self.json['ToRecipients']
+		data['SaveToSentItems'] = "false"
+
 		log.debug(str(data))
 
 		response = requests.post(self.send_url,data,headers=headers,auth=self.auth)
 		log.debug('response from server for sending message:'+str(response))
 
 		return True
+
+		
+
 		
 	def markAsRead(self):
 		'''marks analogous message as read in the cloud.'''
@@ -176,14 +187,25 @@ class Message( object ):
 		name -- the name of the person you are sending to. mostly just a decorator.
 		address -- the email address of the person you are sending to. <<< Important that.
 		'''
+		if name is None:
+			name = address[:address.index('@')]
 		self.json['ToRecipients'].append({'EmailAddress':{'Address':address,'Name':name}})
 
 	def setSubject(self,val):
 		'''Sets the subect line of the email.'''
-		self.json['Subject']
+		self.json['Subject'] = val
 
 	def setBody(self,val):
 		'''Sets the body content of the email.'''
-		self.json['Body']['Content']
+		cont = False
+
+		while not cont:
+			try:
+				self.json['Body']['Content'] = val
+				self.json['Body']['ContentType'] = 'Text'
+				cont = True
+			except:
+				self.json['Body'] = {}
+
 
 #To the King!
