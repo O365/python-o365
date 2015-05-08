@@ -110,6 +110,8 @@ class Message( object ):
 		data['Message']['ToRecipients'] = self.json['ToRecipients']
 		data['SaveToSentItems'] = "false"
 
+		data = json.dumps(data)
+
 		log.debug(str(data))
 
 		response = requests.post(self.send_url,data,headers=headers,auth=self.auth)
