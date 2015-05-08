@@ -31,7 +31,7 @@ class Inbox( object ):
 		inbox_url -- url used for fetching emails.
 	'''
 	#url for fetching emails. Takes a flag for whether they are read or not.
-	inbox_url = 'https://outlook.office365.com/api/v1.0/me/messages?$filter=IsRead eq {0}'
+	inbox_url = 'https://outlook.office365.com/api/v1.0/me/messages'
 
 	def __init__(self, email, password,getNow=True):
 		'''
@@ -43,12 +43,15 @@ class Inbox( object ):
 		log.debug('creating inbox for the email %s',email)
 		self.auth = (email,password)
 		self.messages = []
+
+		self.filters = ''
 		
 		if getNow:
+			self.filters = 'IsRead eq false'
 			self.getMessages()
 
 
-	def getMessages(self,IsRead=False):
+	def getMessages(self):
 		'''
 		Downloads messages to local memory.
 		
@@ -57,11 +60,12 @@ class Inbox( object ):
 		init method, so it's kind of pointless for you. Unless you think new
 		messages have come in.
 
-		IsRead: Set this as True if you want to include messages that have been read.
+		You can filter only certain emails by setting filters. See the set and
+		get filters methods for more information.
 		'''
 
-		log.debug('fetching messages.')
-		response = requests.get(self.inbox_url.format(str(IsRead).lower()),auth=self.auth)
+		log.debug('fetching messages.')			
+		response = requests.get(self.inbox_url,auth=self.auth,params={'$filter':self.filters})
 		log.info('Response from O365: %s', str(response))
 		
 		for message in response.json()['value']:
@@ -81,6 +85,27 @@ class Inbox( object ):
 				log.info('failed to append message: %',str(e))
 
 		log.debug('all messages retrieved and put in to the list.')
+		return True
+
+	def getFilter(self):
+		'''get the value set for a specific filter, if exists, else None'''
+		return self.filters
+
+	def setFilter(self,f_string):
+		'''
+		Set the value of a filter. More information on what filters are available
+		can be found here:
+		https://msdn.microsoft.com/office/office365/APi/complex-types-for-mail-contacts-calendar#RESTAPIResourcesMessage
+		I may in the future have the ability to add these in yourself. but right now that is to complicated.
+		
+		Arguments:
+			f_string -- The string that represents the filters you want to enact.
+				should be something like: (HasAttachments eq true) and (IsRead eq false)
+				or just: IsRead eq false
+				test your filter stirng here: https://outlook.office365.com/api/v1.0/me/messages?$filter=
+				if that accepts it then you know it works.
+		'''
+		self.filters = f_string
 		return True
 
 #To the King!
