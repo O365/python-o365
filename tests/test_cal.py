@@ -64,7 +64,7 @@ cal.requests.get = get
 
 auth = ('test@unit.com','pass')
 
-class TestInbox (unittest.TestCase):
+class TestCalendar (unittest.TestCase):
 	
 	def setUp(self):
 		caljson = json.loads(sch_rep)

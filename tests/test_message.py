@@ -11,8 +11,9 @@ class Attachment:
 message.Attachment = Attachment
 
 class Resp:
-	def __init__(self,json_string):
+	def __init__(self,json_string,code=200):
 		self.jsons = json_string
+		self.status_code = code
 
 	def json(self):
 		return json.loads(self.jsons)
@@ -21,6 +22,7 @@ read_rep = open('read_message.json','r').read()
 un_rep = open('unread_message.json','r').read()
 att_m_rep = open('attachment_message.json','r').read()
 att_rep = open('attachment.json','r').read()
+new_rep = open('newmessage.json','r').read()
 
 def get(url,**params):
 	if url == 'https://outlook.office365.com/api/v1.0/me/messages/bigoldguid/attachments':
@@ -46,9 +48,17 @@ def post(url,data,headers,auth):
 	if headers['Content-type'] != 'application/json':
 		raise
 	if headers['Accept'] != 'text/plain':
-		raise	
+		raise
 
-	return True
+	if isinstance(data,dict) and 'Message' in data.keys():
+		if data['Message']['Body']['Content'] == 'The new Cafetaria is open.':
+			return Resp(None,202)
+		else:
+			return Resp(None,400)
+	else:
+		return Resp(None,202)
+
+		
 
 message.requests.post = post
 
@@ -78,6 +88,8 @@ class TestMessage (unittest.TestCase):
 		self.read = message.Message(re,auth)
 		att = json.loads(att_m_rep)['value'][0]
 		self.att = message.Message(att,auth)
+		
+		self.newm = message.Message(auth=auth)
 
 	def test_fetchAttachments(self):
 		self.assertTrue(len(self.att.attachments) == 0)
@@ -93,7 +105,14 @@ class TestMessage (unittest.TestCase):
 		self.assertTrue(len(self.read.attachments) == 0)
 
 	def test_sendMessage(self):
-		self.read.sendMessage()
+		self.assertTrue(self.read.sendMessage())
+
+		self.assertFalse(self.newm.sendMessage())
+
+		self.newm.setSubject('Meet for lunch?')
+		self.newm.setBody('The new cafeteria is open.')
+		self.newm.setRecipients('garthf@1830edad9050849NDA1.onmicrosoft.com')
+		self.assertTrue(self.newm.sendMessage())
 
 	def test_markAsRead(self):
 		self.unread.markAsRead()

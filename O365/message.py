@@ -103,19 +103,24 @@ class Message( object ):
 
 #		data = json.dumps(self.json)
 
-		data = {'Message':{'Body':{}}}
-		data['Message']['Subject'] = self.json['Subject']
-		data['Message']['Body']['Content'] = self.json['Body']['Content']
-		data['Message']['Body']['ContentType'] = self.json['Body']['ContentType']
-		data['Message']['ToRecipients'] = self.json['ToRecipients']
-		data['SaveToSentItems'] = "false"
-
-		data = json.dumps(data)
-
-		log.debug(str(data))
+		try:
+			data = {'Message':{'Body':{}}}
+			data['Message']['Subject'] = self.json['Subject']
+			data['Message']['Body']['Content'] = self.json['Body']['Content']
+			data['Message']['Body']['ContentType'] = self.json['Body']['ContentType']
+			data['Message']['ToRecipients'] = self.json['ToRecipients']
+			data['SaveToSentItems'] = "false"
+			data = json.dumps(data)
+			log.debug(str(data))
+		except Exception as e:
+			log.error(str(e))
+			return False
 
 		response = requests.post(self.send_url,data,headers=headers,auth=self.auth)
 		log.debug('response from server for sending message:'+str(response))
+
+		if response.status_code != 202:
+			return false
 
 		return True
 
