@@ -68,6 +68,7 @@ class TestInbox (unittest.TestCase):
 
 
 		#now fetch the un-read emails. prefetch should still have one extra.
+		self.preFetch.setFilter('IsRead eq false')
 		self.preFetch.getMessages()
 		self.JITFetch.setFilter('IsRead eq false')
 		self.JITFetch.getMessages()
