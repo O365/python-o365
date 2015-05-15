@@ -13,19 +13,27 @@ long_desc = '''When I started making this library I was looking for something th
 
 The objective here is to make it easy to make utilities that are to be run against an office 365 account. for example, the code for sending an email is:
 
+
 from O365 import Message
+
 authenticiation = ('YourAccount@office365.com','YourPassword')
+
 m = Message(auth=authenticiation)
+
 m.setRecipients('reciving@office365.com')
+
 m.setSubject('I made an email script.')
+
 m.setBody('Talk to the computer, cause the human does not want to hear it any more.')
+
 m.sendMessage()
+
 
 That's it. making and sending emails and events is now very simple and straight forward. I've used it for emailing the printer and creating a overview of our car booking system. simple, easy, but still in development. Any suggestions or advice are quite welcome at the projects github page:
 https://github.com/Narcolapser/python-o365'''
 
 setup(name='O365',
-	version='0.6.3',
+	version='0.6.5',
 	description='Python library for working with Microsoft Office 365',
 	long_description=long_desc,
 	author='Toben Archer',

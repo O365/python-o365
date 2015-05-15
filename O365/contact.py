@@ -36,7 +36,7 @@ class Contact( object ):
 		events_url - the url that is actually called to fetch events. takes an ID, start, and end.
 		time_string - used for converting between struct_time and json's time format.
 	'''
-	con_url = 'https://outlook.office365.com/api/v1.0/me/contacts'
+	con_url = 'https://outlook.office365.com/api/v1.0/me/contacts/{0}'
 	time_string = '%Y-%m-%dT%H:%M:%SZ'
 
 	def __init__(self, json=None, auth=None):
@@ -50,6 +50,42 @@ class Contact( object ):
 			log.debug('translating contact information into local variables.')
 			self.contactId = json['Id']
 			self.name = json['DisplayName']
+
+	def delete(self):
+		'''delete's a contact. cause who needs that guy anyway?'''
+		log.debug('preparing to delete contact.')
+		response = requests.delete(self.con_url.format(str(self.contactId)),auth=self.auth)
+		log.debug('response from delete attempt: {0}'.format(str(response)))
+
+		return response.status_code == 204
+
+	def update(self):
+		'''updates a contact with information in the local json.'''
+		if not self.auth:
+			log.debug('no authentication information, cannot update')
+			return false
+
+		headers = {'Content-type': 'application/json', 'Accept': 'application/json'}
+
+		data = json.dumps(self.json)
+
+		response = None
+		try:
+			response = requests.patch(self.con_url.format(str(self.contactId)),auth=self.auth)
+			log.debug('sent update request')
+		except Exception as e:
+			if response:
+				log.debug('response to contact update: {0}'.format(str(response)))
+			else:
+				log.error('No response, something is very wrong with update: {0}'.format(str(e)))
+			return False
+
+		log.debug('Response to contact update: {0}'.format(str(response)))
+
+		return Contact(response.json(),self.auth)
+
+	def create(self):
+		pass
 
 	def getName(self):
 		'''Get the contact's Name.'''
