@@ -24,5 +24,7 @@ from event import Event
 from inbox import Inbox
 from message import Message
 from schedule import Schedule
+from contact import Contact
+from group import Group
 
 #To the King!
