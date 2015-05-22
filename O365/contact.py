@@ -52,12 +52,13 @@ class Contact( object ):
 			self.name = json['DisplayName']
 		else:
 			log.debug('there was no json, putting in some dumby info.')
-			self.json = {'DisplayName':
+			self.json = {'DisplayName':'Jebediah Kerman'}
 
 	def delete(self):
 		'''delete's a contact. cause who needs that guy anyway?'''
+		headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
 		log.debug('preparing to delete contact.')
-		response = requests.delete(self.con_url.format(str(self.contactId)),auth=self.auth)
+		response = requests.delete(self.con_url.format(str(self.contactId)),headers=headers,auth=self.auth)
 		log.debug('response from delete attempt: {0}'.format(str(response)))
 
 		return response.status_code == 204
@@ -74,7 +75,7 @@ class Contact( object ):
 
 		response = None
 		try:
-			response = requests.patch(self.con_url.format(str(self.contactId)),auth=self.auth)
+			response = requests.patch(self.con_url.format(str(self.contactId)),data,headers=headers,auth=self.auth)
 			log.debug('sent update request')
 		except Exception as e:
 			if response:
@@ -99,7 +100,7 @@ class Contact( object ):
 
 		response = None
 		try:
-			response = requests.post(self.con_url.format(str(self.contactId)),auth=self.auth)
+			response = requests.post(self.con_url.format(str(self.contactId)),data,headers=headers,auth=self.auth)
 			log.debug('sent create request')
 		except Exception as e:
 			if response:
@@ -126,7 +127,7 @@ class Contact( object ):
 
 	def setName(self,val):
 		'''sets the display name of the contact.'''
-		self.json['DisplayName'] = val.
+		self.json['DisplayName'] = val
 
 	def getFirstEmailAddress(self):
 		'''Get the contact's first Email address. returns just the email address.'''
@@ -171,7 +172,7 @@ class Contact( object ):
 
 	def addEmail(self,address,name=None):
 		'''takes a plain string email, and optionally name, and appends it to list.'''
-		ins = {'Address':address,'Name':None
+		ins = {'Address':address,'Name':None}
 
 	
 
