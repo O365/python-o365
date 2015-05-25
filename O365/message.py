@@ -101,8 +101,6 @@ class Message( object ):
 
 		headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
 
-#		data = json.dumps(self.json)
-
 		try:
 			data = {'Message':{'Body':{}}}
 			data['Message']['Subject'] = self.json['Subject']
@@ -169,8 +167,11 @@ class Message( object ):
 			a dictionary: this must to be a dictionary formated as such:
 				{"EmailAddress":{"Address":"recipient@example.com"}}
 				with other options such ass "Name" with address. but at minimum it must have this.
-			a list: this must to be a list of libraries formatted the way specified above.
+			a list: this must to be a list of libraries formatted the way specified above,
+				or it can be a list of libraries objects of type Contact. The method will sort
+				out the libraries from the contacts. 
 			a string: this is if you just want to throw an email address. 
+			a contact: type Contact from this library. 
 		For each of these argument types the appropriate action will be taken to fit them to the 
 		needs of the library.
 		'''
@@ -181,22 +182,30 @@ class Message( object ):
 		elif isinstance(val,str):
 			if '@' in val:
 				self.json['ToRecipients'] = []
-				self.addRecipient(None,val)
+				self.addRecipient(val)
+		elif isinstance(val,Contact):
+			self.json['ToRecipients'] = []
+			self.addRecipient(val)
 		else:
 			return False
 		return True
 
-	def addRecipient(self,name,address):
+	def addRecipient(self,address,name=None):
 		'''
 		Adds a recipient to the recipients list.
 		
 		Arguments:
-		name -- the name of the person you are sending to. mostly just a decorator.
 		address -- the email address of the person you are sending to. <<< Important that.
+			Address can also be of type contact. if it is name is superflous. Else, it
+			uses the name passed if you sent it one.
+		name -- the name of the person you are sending to. mostly just a decorator.
 		'''
-		if name is None:
-			name = address[:address.index('@')]
-		self.json['ToRecipients'].append({'EmailAddress':{'Address':address,'Name':name}})
+		if isinstance(address,Contact):
+			self.json['ToRecipients'].append(address.getFirstEmailAddress())
+		else:
+			if name is None:
+				name = address[:address.index('@')]
+			self.json['ToRecipients'].append({'EmailAddress':{'Address':address,'Name':name}})
 
 	def setSubject(self,val):
 		'''Sets the subect line of the email.'''

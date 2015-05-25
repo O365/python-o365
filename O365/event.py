@@ -227,9 +227,9 @@ class Event( object ):
 		'''Gets list of event attendees.'''
 		return self.json['Attendees']
 
-	def addAttendee(self,val):
-		'''adds an attendee to the event. must call update for notification to send.'''
-		self.json['Attendees'].append(val)
+#	def addAttendee(self,val):
+#		'''adds an attendee to the event. must call update for notification to send.'''
+#		self.json['Attendees'].append(val)
 
 	def setSubject(self,val):
 		'''sets event subject line.'''
@@ -247,8 +247,52 @@ class Event( object ):
 		'''sets event end struct_time.'''
 		self.json['End'] = time.strftime(self.time_string,val)
 
-	def setAttendees(self,val):
-		'''sets event attendees list.'''
-		self.json['Attendees'] = val
+	def setAttendee(self,val):
+		'''
+		set the recipient list.
+		
+		val: the one argument this method takes can be very flexible. you can send:
+			a dictionary: this must to be a dictionary formated as such:
+				{"EmailAddress":{"Address":"recipient@example.com"}}
+				with other options such ass "Name" with address. but at minimum it must have this.
+			a list: this must to be a list of libraries formatted the way specified above,
+				or it can be a list of libraries objects of type Contact. The method will sort
+				out the libraries from the contacts. 
+			a string: this is if you just want to throw an email address. 
+			a contact: type Contact from this library. 
+		For each of these argument types the appropriate action will be taken to fit them to the 
+		needs of the library.
+		'''
+		if isinstance(val,list):
+			self.json['Attendees'] = val
+		elif isinstance(val,dict):
+			self.json['Attendees'] = [val]
+		elif isinstance(val,str):
+			if '@' in val:
+				self.json['Attendees'] = []
+				self.addRecipient(val)
+		elif isinstance(val,Contact):
+			self.json['Attendees'] = []
+			self.addRecipient(val)
+		else:
+			return False
+		return True
+
+	def addAttendee(self,address,name=None):
+		'''
+		Adds a recipient to the attendee list.
+		
+		Arguments:
+		address -- the email address of the person you are sending to. <<< Important that.
+			Address can also be of type contact. if it is name is superflous. Else, it
+			uses the name passed if you sent it one.
+		name -- the name of the person you are sending to. mostly just a decorator.
+		'''
+		if isinstance(address,Contact):
+			self.json['Attendees'].append(address.getFirstEmailAddress())
+		else:
+			if name is None:
+				name = address[:address.index('@')]
+			self.json['Attendees'].append({'EmailAddress':{'Address':address,'Name':name}})
 
 #To the King!
