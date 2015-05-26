@@ -67,14 +67,17 @@ class Attachment( object ):
 			self.json = json
 			self.isPDF = '.pdf' in self.json['Name'].lower()
 		elif path:
-			with open(path,'br') as val:
-				self.json = {'@odata.type':'Microsoft.OutlookServices.FileAttachment'}
+			with open(path,'rb') as val:
+				self.json = {'@odata.type':'#Microsoft.OutlookServices.FileAttachment'}
 				self.isPDF = '.pdf' in path.lower()
 
 				self.setByteString(val.read())
-				self.setName(path[path.rindex('/')+1:])
+				try:
+					self.setName(path[path.rindex('/')+1:])
+				except:
+					self.setName(path)
 		else:
-			self.json = {'@odata.type':'Microsoft.OutlookServices.FileAttachment'}
+			self.json = {'@odata.type':'#Microsoft.OutlookServices.FileAttachment'}
 
 	def isType(self,typeString):
 		'''Test to if the attachment is the same type as you are seeking. Do not include a period.'''

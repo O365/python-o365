@@ -12,6 +12,7 @@
 # OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 from O365 import Attachment
+from O365 import Contact
 import logging
 import json
 import requests
@@ -52,6 +53,7 @@ class Message( object ):
 	
 	att_url = 'https://outlook.office365.com/api/v1.0/me/messages/{0}/attachments'
 	send_url = 'https://outlook.office365.com/api/v1.0/me/sendmail'
+	draft_url = 'https://outlook.office365.com/api/v1.0/me/folders/{folder_id}/messages'
 	update_url = 'https://outlook.office365.com/api/v1.0/me/messages/{0}'
 
 	def __init__(self, json=None, auth=None):
@@ -107,6 +109,7 @@ class Message( object ):
 			data['Message']['Body']['Content'] = self.json['Body']['Content']
 			data['Message']['Body']['ContentType'] = self.json['Body']['ContentType']
 			data['Message']['ToRecipients'] = self.json['ToRecipients']
+			data['Message']['Attachments'] = [att.json for att in self.attachments]
 			data['SaveToSentItems'] = "false"
 			data = json.dumps(data)
 			log.debug(str(data))
@@ -118,7 +121,7 @@ class Message( object ):
 		log.debug('response from server for sending message:'+str(response))
 
 		if response.status_code != 202:
-			return false
+			return False
 
 		return True
 
