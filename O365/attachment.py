@@ -16,9 +16,14 @@ This file contains the functions for working with attachments. Including the abi
 binary of the file directly. The file is stored locally as a string using base64 encoding. 
 '''
 
+#from O365 import Message
+
 import base64
 import logging
 import json
+import requests
+
+#from O365 import Message
 
 logging.basicConfig(filename='o365.log',level=logging.DEBUG)
 
@@ -42,8 +47,10 @@ class Attachment( object ):
 	getBase64 - returns the attached file as a base64 encoded string.
 	setBase64 - set the attached file using a base64 encoded string.
 	'''
-	
-	def __init__(self,json=None):
+
+	create_url = 'https://outlook.office365.com/api/v1.0/me/messages/{0}/attachments'
+
+	def __init__(self,json=None,path=None):
 		'''
 		Creates a new attachment class, optionally from existing JSON.
 		
@@ -51,12 +58,23 @@ class Attachment( object ):
 		json -- json to create the class from. this is mostly used by the class internally when an
 		attachment is downloaded from the cloud. If you want to create a new attachment, leave this
 		empty. (default = None)
+		path -- a string giving the path to a file. it is cross platform as long as you break
+		windows convention and use '/' instead of '\'. Passing this argument will tend to
+		the rest of the process of making an attachment. Note that passing in json as well
+		will cause this argument to be ignored.
 		'''
 		if json:
 			self.json = json
 			self.isPDF = '.pdf' in self.json['Name'].lower()
+		elif path:
+			with open(path,'br') as val:
+				self.json = {'@odata.type':'Microsoft.OutlookServices.FileAttachment'}
+				self.isPDF = '.pdf' in path.lower()
+
+				self.setByteString(val.read())
+				self.setName(path[path.rindex('/')+1:])
 		else:
-			self.json = {}
+			self.json = {'@odata.type':'Microsoft.OutlookServices.FileAttachment'}
 
 	def isType(self,typeString):
 		'''Test to if the attachment is the same type as you are seeking. Do not include a period.'''
@@ -84,6 +102,23 @@ class Attachment( object ):
 		log.debug('file saving successful')
 		return True
 
+	def attach(self,message):
+		'''
+		This does the actual creating of the attachment as well as attaching to a message.
+
+		message -- a Message type, the message to be attached to.
+		'''
+		mid = message.json['Id']
+
+		headers = {'Content-type': 'application/json', 'Accept': 'application/json'}
+
+		data = json.dumps(self.json)
+
+		response = requests.post(self.create_url.format(mid),data,header=headers,auth=message.auth)
+		log.debug('Response from server for attaching: {0}'.format(str(response)))
+
+		return response
+
 	def getByteString(self):
 		'''Fetch the binary representation of the file. useful for times you want to
 		skip the step of saving before sending it to another program. This allows
@@ -104,6 +139,18 @@ class Attachment( object ):
 		except Exception as e:
 			log.debug('what? no clue what went wrong here. probably no attachment.')
 		return False
+
+	def getName(self):
+		'''Returns the file name.'''
+		try:
+			return self.json['Name']
+		except Exception as e:
+			log.error('The attachment does not appear to have a name.')
+		return False
+
+	def setName(self,val):
+		'''Set the name for the file.'''
+		self.json['Name'] = val
 
 	def setByteString(self,val):
 		'''Sets the file for this attachment from a byte string.'''

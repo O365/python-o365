@@ -14,13 +14,13 @@
 '''
 Python library for interfacing with the Microsoft Office 365 online. 
 '''
-
+#__all__ = ['attachment','cal','contact','event','group','inbox','message','schedule']
 
 # This imports all the libraries into the local namespace. This makes it easy to work with.
 
-from attachment import Attachment
 from cal import Calendar
 from event import Event
+from attachment import Attachment
 from inbox import Inbox
 from message import Message
 from schedule import Schedule
