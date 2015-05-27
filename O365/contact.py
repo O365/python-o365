@@ -29,8 +29,7 @@ class Contact( object ):
 		getName - Returns the name of the contact.
 		getContactId - returns the GUID that identifies the contact on office365
 		getId - synonym of getContactId
-		getEvents - kicks off the process of fetching events.
-		fetchEvents - legacy duplicate of getEvents
+		getContacts - kicks off the process of fetching contacts.
 	
 	Variable:
 		events_url - the url that is actually called to fetch events. takes an ID, start, and end.
@@ -57,6 +56,7 @@ class Contact( object ):
 	def delete(self):
 		'''delete's a contact. cause who needs that guy anyway?'''
 		headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
+
 		log.debug('preparing to delete contact.')
 		response = requests.delete(self.con_url.format(str(self.contactId)),headers=headers,auth=self.auth)
 		log.debug('response from delete attempt: {0}'.format(str(response)))

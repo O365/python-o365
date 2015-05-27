@@ -136,12 +136,13 @@ class TestMessage (unittest.TestCase):
 	def test_addRecipient(self):
 		self.assertTrue(len(self.read.json['ToRecipients']) == 1)
 
-		self.read.addRecipient('later','second@unit.com')
+		self.read.addRecipient('second@unit.com','later')
 
 		self.assertTrue(len(self.read.json['ToRecipients']) == 2)
 
 		self.assertTrue(self.read.json['ToRecipients'][1]['EmailAddress']['Address'] == 'second@unit.com')
 		self.assertTrue(self.read.json['ToRecipients'][1]['EmailAddress']['Name'] == 'later')
+
 
 	def test_auth(self):
 		self.assertEqual(auth[0],self.read.auth[0])

@@ -30,6 +30,8 @@ class Group( object ):
 	
 	Variables:
 		con_url -- the url that is requested for the retrival of the contacts.
+		con_folder_url -- the url that is used for requesting contacts from a specific folder.
+		folder_url -- the url that is used for finding folder Id's from folder names.
 	'''
 	con_url = 'https://outlook.office365.com/api/v1.0/me/contacts'
 	con_folder_url = 'https://outlook.office365.com/api/v1.0/me/contactfolders/{0}/contacts'

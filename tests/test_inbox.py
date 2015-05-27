@@ -23,12 +23,12 @@ un_rep = open('unread_message.json','r').read()
 
 def get(url,auth,params):
 	if url == 'https://outlook.office365.com/api/v1.0/me/messages':
-		print params
+#		print params
 		if params == {'$filter': 'IsRead eq false'}:
-			print 'getting the unread'
+#			print 'getting the unread'
 			ret = Resp(un_rep)
 		else:
-			print 'getting the read'
+#			print 'getting the read'
 			ret = Resp(read_rep)
 	else:
 		raise Exception('Wrong URL')
@@ -61,19 +61,19 @@ class TestInbox (unittest.TestCase):
 		self.assertEqual(len(self.JITFetch.messages),1)
 
 
-	def test_getUnread(self):
+	def test_getRead(self):
 		#sanity check
 		self.assertEqual(len(self.preFetch.messages),1)
 		self.assertEqual(len(self.JITFetch.messages),0)
 
 
 		#now fetch the un-read emails. prefetch should still have one extra.
-		self.preFetch.setFilter('IsRead eq false')
+		self.preFetch.setFilter('IsRead eq true')
 		self.preFetch.getMessages()
-		self.JITFetch.setFilter('IsRead eq false')
+		self.JITFetch.setFilter('IsRead eq true')
 		self.JITFetch.getMessages()
-		self.assertEqual(len(self.preFetch.messages),5)
 		self.assertEqual(len(self.JITFetch.messages),4)
+		self.assertEqual(len(self.preFetch.messages),5)
 		
 
 	def test_auth(self):

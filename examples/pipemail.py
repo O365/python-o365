@@ -5,7 +5,16 @@ from O365 import *
 from sys import argv
 import sys
 
-print argv
+'''Usage:
+This script is designed to provide a simple means of scripting the output of a program into
+email. You pass it several arguments but the body of the email is to be sent from stdin. the
+args in order are:
+pipemail.py sender@example.com password recipient@example.com subject
+'''
+
+if argv[1] == '/?':
+	print usage
+	exit()
 
 auth = (argv[1],argv[2])
 

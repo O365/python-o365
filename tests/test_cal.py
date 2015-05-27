@@ -82,7 +82,7 @@ class TestCalendar (unittest.TestCase):
 	def test_getEvents_blank(self):
 		self.assertEqual(0,len(self.cal.events))
 		self.cal.getEvents()
-		self.assertEqual(2,len(self.cal.events))
+		self.assertEqual(0,len(self.cal.events))
 
 	def test_auth(self):
 		self.assertEqual('test@unit.com',self.cal.auth[0])
