@@ -32,19 +32,38 @@ class Group( object ):
 		con_url -- the url that is requested for the retrival of the contacts.
 	'''
 	con_url = 'https://outlook.office365.com/api/v1.0/me/contacts'
+	con_folder_url = 'https://outlook.office365.com/api/v1.0/me/contactfolders/{0}/contacts'
+	folder_url = 'https://outlook.office365.com/api/v1.0/me/contactfolders?$filter=DisplayName eq \'{0}\''
 
-	def __init__(self, email, password):
-		'''Creates a group class for managing all contacts associated with email+password.'''
+	def __init__(self, email, password, folderName=None):
+		'''
+		Creates a group class for managing all contacts associated with email+password.
+
+		Optional: folderName -- send the name of a contacts folder and the search will limit
+		it'self to only those which are in that folder.
+		'''
 		log.debug('setting up for the schedule of the email %s',email)
 		self.auth = (email,password)
 		self.contacts = []
+		self.folderName = folderName
 
 
 	def getContact(self):
 		'''Begin the process of downloading contact metadata.'''
-		log.debug('fetching contacts.')
-		response = requests.get(self.con_url,auth=self.auth)
-		log.info('Response from O365: %s', str(response))
+		if self.folderName is None:
+			log.debug('fetching contacts.')
+			response = requests.get(self.con_url,auth=self.auth)
+			log.info('Response from O365: %s', str(response))
+
+		else:
+			log.debug('fetching contact folder.')
+			response = requests.get(self.folder_url.format(self.folderName),auth=auth)
+			fid = response.json()['value'][0]['Id']
+			log.debug('got a response of {0} and an Id of {1}'.format(response.status_code,fid))
+
+			log.debug('fetching contacts for {0}.'.format(self.folderName))
+			response = requests.get(self.con_folder_url.format(fid),auth=self.auth)
+			log.info('Response from O365: {0}'.format(str(response)))
 
 		for contact in response.json()['value']:
 			duplicate = False
