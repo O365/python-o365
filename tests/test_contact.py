@@ -15,7 +15,7 @@ class Resp:
 contact_rep = open('contacts.json','r').read()
 contacts_json = json.loads(contact_rep)
 jeb = contacts_json['value'][0]
-bill = contacts_json['value'][1]
+bob = contacts_json['value'][2]
 
 t_string = '%Y-%m-%dT%H:%M:%SZ'
 urls = ['https://outlook.office365.com/api/v1.0/me/contacts/',
@@ -52,7 +52,7 @@ def post(url,data,headers,auth):
 	if headers['Accept'] != 'application/json':
 		raise BaseException('header accept wrong.')
 
-	if json.loads(data) != jeb and json.loads(data) != bill:
+	if json.loads(data) != jeb and json.loads(data) != bob:
 		raise BaseException('data is wrong.')
 
 	return Resp(data,202)
@@ -83,26 +83,26 @@ class TestInbox (unittest.TestCase):
 	
 	def setUp(self):
 		self.jeb = contact.Contact(jeb,auth)
-		self.bill = contact.Contact(bill,auth)
+		self.bob = contact.Contact(bob,auth)
 
 	def test_create(self):
 		self.assertTrue(self.jeb.create())
-		self.assertTrue(self.bill.create())
+		self.assertTrue(self.bob.create())
 
 	def test_update(self):
 		self.assertTrue(self.jeb.update())
-		self.assertTrue(self.bill.update())
+		self.assertTrue(self.bob.update())
 
 	def test_delete(self):
 		self.assertTrue(self.jeb.delete())
-		self.assertTrue(self.bill.delete())
+		self.assertTrue(self.bob.delete())
 
 	def test_auth(self):
 		self.assertEqual('test@unit.com',self.jeb.auth[0])
 		self.assertEqual('pass',self.jeb.auth[1])
 
-		self.assertEqual('test@unit.com',self.bill.auth[0])
-		self.assertEqual('pass',self.bill.auth[1])
+		self.assertEqual('test@unit.com',self.bob.auth[0])
+		self.assertEqual('pass',self.bob.auth[1])
 
 if __name__ == '__main__':
 	unittest.main()

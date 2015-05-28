@@ -26,7 +26,7 @@ class Group( object ):
 	
 	Methods:
 		constructor -- takes your email and password for authentication.
-		getContactss -- begins the actual process of downloading contacts.
+		getContacts -- begins the actual process of downloading contacts.
 	
 	Variables:
 		con_url -- the url that is requested for the retrival of the contacts.
@@ -50,7 +50,7 @@ class Group( object ):
 		self.folderName = folderName
 
 
-	def getContact(self):
+	def getContacts(self):
 		'''Begin the process of downloading contact metadata.'''
 		if self.folderName is None:
 			log.debug('fetching contacts.')
@@ -59,7 +59,7 @@ class Group( object ):
 
 		else:
 			log.debug('fetching contact folder.')
-			response = requests.get(self.folder_url.format(self.folderName),auth=auth)
+			response = requests.get(self.folder_url.format(self.folderName),auth=self.auth)
 			fid = response.json()['value'][0]['Id']
 			log.debug('got a response of {0} and an Id of {1}'.format(response.status_code,fid))
 

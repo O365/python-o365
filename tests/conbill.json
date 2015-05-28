@@ -1,0 +1,59 @@
+{
+
+   "@odata.context":"https://outlook.office365.com/api/v1.0/$metadata#Me/Contacts",
+
+   "value":[
+
+      {
+
+         "@odata.id":"https://outlook.office365.com/api/v1.0/Users('Wernher.VonKerman@ksp.org')/Contacts('bigguid2')",
+
+         "@odata.etag":"W/\"etag2\"",
+
+         "Id":"bigguid2",
+
+         "ChangeKey":"etag2",
+
+         "Categories":[
+
+
+
+         ],
+
+         "DateTimeCreated":"2015-05-14T15:39:21Z",
+
+         "DateTimeLastModified":"2015-05-18T10:59:36Z",
+
+         "ParentFolderId":"Engineers",
+
+         "FileAs":"Kerman, Bill",
+
+         "DisplayName":"Bill Kerman (KSP)",
+
+         "GivenName":"Bill",
+
+         "Initials":"B.K.",
+
+         "Surname":"Kerman",
+
+         "EmailAddresses":[
+
+            {
+
+               "Address":"Bill.Kerman@ksp.org",
+
+               "Name":"Bill Kerman (KSP)"
+
+            },
+
+            null,
+
+            null
+
+         ]
+
+      }
+
+   ]
+
+}

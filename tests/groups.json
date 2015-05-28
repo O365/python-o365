@@ -1,0 +1,17 @@
+{
+   "@odata.context":"https://outlook.office365.com/api/v1.0/$metadata#Me/ContactFolders",
+   "value":[
+      {
+         "@odata.id":"https://outlook.office365.com/api/v1.0/Users('Wernher.VonKerman@ksp.org')/ContactFolders('engiID')",
+         "Id":"engiID",
+         "ParentFolderId":"parentfolder",
+         "DisplayName":"Engineers"
+      },
+      {
+         "@odata.id":"https://outlook.office365.com/api/v1.0/Users('Wernher.VonKerman@ksp.org')/ContactFolders('OrangesID')",
+         "Id":"OrangesID",
+         "ParentFolderId":"parentfolder",
+         "DisplayName":"Oranges"
+      }
+   ]
+}
