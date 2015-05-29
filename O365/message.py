@@ -171,15 +171,20 @@ class Message( object ):
 				{"EmailAddress":{"Address":"recipient@example.com"}}
 				with other options such ass "Name" with address. but at minimum it must have this.
 			a list: this must to be a list of libraries formatted the way specified above,
-				or it can be a list of libraries objects of type Contact. The method will sort
+				or it can be a list of dictionary objects of type Contact. The method will sort
 				out the libraries from the contacts. 
 			a string: this is if you just want to throw an email address. 
-			a contact: type Contact from this library. 
+			a contact: type Contact from this dictionary. 
+			a group: type Group, which is a list of contacts.
 		For each of these argument types the appropriate action will be taken to fit them to the 
 		needs of the library.
 		'''
 		if isinstance(val,list):
-			self.json['ToRecipients'] = val
+			self.json['ToRecipients'] = []
+			if isinstance(val,Contact):
+				self.addRecipient(val)
+			else:
+				self.json['ToRecipients'].append(val)
 		elif isinstance(val,dict):
 			self.json['ToRecipients'] = [val]
 		elif isinstance(val,str):
@@ -187,8 +192,10 @@ class Message( object ):
 				self.json['ToRecipients'] = []
 				self.addRecipient(val)
 		elif isinstance(val,Contact):
-			self.json['ToRecipients'] = []
 			self.addRecipient(val)
+		elif isinstance(val,Group):
+			for person in val:
+				self.addRecipient(person)
 		else:
 			return False
 		return True

@@ -10,10 +10,6 @@ logging.basicConfig(filename='ff.log',level=logging.DEBUG)
 log = logging.getLogger('ff')
 
 def processMessage(m):
-	if m.json['Subject'] != 'Fetch File':
-		return False
-	m.markAsRead()
-
 	path = m.json['BodyPreview']
 
 	path = path[:path.index('\n')]
@@ -23,13 +19,11 @@ def processMessage(m):
 	att = Attachment(path=path)
 
 	resp = Message(auth=auth)
-	resp.setSubject('Your file sir!')
 	resp.setRecipients(m.getSender())
+
+	resp.setSubject('Your file sir!')
 	resp.setBody(path)
-
-
 	resp.attachments.append(att)
-
 	resp.sendMessage()
 
 	return True
@@ -45,7 +39,11 @@ p = cjson ['password']
 
 auth = (e,p)
 
-i = Inbox(e,p)
+i = Inbox(e,p,getNow=False) #Email, Password, Delay fetching so I can change the filters.
+
+i.setFilter("IsRead eq false & Subject eq 'Fetch File'")
+
+i.getMessages()
 
 log.debug("messages: {0}".format(len(i.messages)))
 for m in i.messages:
