@@ -1,9 +1,16 @@
-# python-o365
-A simple python library for interaction with Office 365. Read, create, send emails and calendar events. 
+# python-o365 - Office365 for you server
 
-This library is still in development, but is a functional alpha. I have already used it to create systems for checking my facility's vehicle's calendars and forwarding emails to our printers. I hope to have it more stable, usable, and featured in the future.
+The objective O365 is to create it easy to make utilities that are to be run against an Office 365 account. If you wanted to script sending an email it could be as simple as:
 
-This library is still in development, but is already fairly functional. Suggestions and ideas are quite welcome.
+```python
+from O365 import Message
+authenticiation = ('YourAccount@office365.com','YourPassword')
+m = Message(auth=authenticiation)
+m.setRecipients('reciving@office365.com')
+m.setSubject('I made an email script.')
+m.setBody('Talk to the computer, cause the human does not want to hear it any more.')
+m.sendMessage()
+```
 
 
-# To the King!
+#### To the King!
