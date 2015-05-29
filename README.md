@@ -1,6 +1,6 @@
 # python-o365 - Office365 for you server
 
-The objective O365 is to create it easy to make utilities that are to be run against an Office 365 account. If you wanted to script sending an email it could be as simple as:
+The objective O365 is to make it easy to make utilities that are to be run against an Office 365 account. If you wanted to script sending an email it could be as simple as:
 
 ```python
 from O365 import Message
