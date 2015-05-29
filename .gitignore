@@ -56,3 +56,4 @@ target/
 # Passwords and other things I care to publish
 *.pw
 *bookings.json
+*/pid

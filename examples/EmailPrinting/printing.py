@@ -108,6 +108,7 @@ class Option( object ):
 		self.default = op
 		return True
 
+
 def listPrinters():
 	lpsc = subprocess.Popen(['lpstat','-s'],stdout=subprocess.PIPE)
 	lpstats = lpsc.communicate()[0]
@@ -119,6 +120,8 @@ def listPrinters():
 		printers.append(p.split()[2:4])
 
 	return printers
+
+
 def listOptions(printer):
 	lpop = subprocess.Popen(['lpoptions','-p',printer,'-l'],stdout=subprocess.PIPE)
 	lpout = lpop.communicate()[0].split('\n')[:-1]
@@ -136,6 +139,7 @@ def listOptions(printer):
 		ops.append(Option(name,valuelist,None,human_name))
 	
 	return ops
+
 
 def getRicoh():
 	ops = listOptions('ricoh-double')
