@@ -52,8 +52,8 @@ group.requests.get = get
 class TestGroup (unittest.TestCase):
 	
 	def setUp(self):
-		self.cons = group.Group('Wernher.VonKerman@ksp.org','rakete')
-		self.folds = group.Group('Wernher.VonKerman@ksp.org','rakete','Engineers')
+		self.cons = group.Group(('Wernher.VonKerman@ksp.org','rakete'))
+		self.folds = group.Group(('Wernher.VonKerman@ksp.org','rakete'),'Engineers')
 
 	def test_getContacts(self):
 		#Sanity check

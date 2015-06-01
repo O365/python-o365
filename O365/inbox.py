@@ -1,16 +1,3 @@
-# Copyright 2015 by Toben "Narcolapser" Archer. All Rights Reserved.
-#
-# Permission to use, copy, modify, and distribute this software and its documentation for any purpose 
-# and without fee is hereby granted, provided that the above copyright notice appear in all copies and 
-# that both that copyright notice and this permission notice appear in supporting documentation, and 
-# that the name of Toben Archer not be used in advertising or publicity pertaining to distribution of 
-# the software without specific, written prior permission. TOBEN ARCHER DISCLAIMS ALL WARRANTIES WITH 
-# REGARD TO THIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT 
-# SHALL TOBEN ARCHER BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES 
-# WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE 
-# OR OTHER TORTIOUS ACTION, ARISING OUT
-# OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-
 from O365.message import Message
 import logging
 import json
@@ -33,15 +20,15 @@ class Inbox( object ):
 	#url for fetching emails. Takes a flag for whether they are read or not.
 	inbox_url = 'https://outlook.office365.com/api/v1.0/me/messages'
 
-	def __init__(self, email, password,getNow=True):
+	def __init__(self, auth, getNow=True):
 		'''
 		Creates a new inbox wrapper. Send email and password for authentication.
 		
 		set getNow to false if you don't want to immedeatly download new messages.
 		'''
 		
-		log.debug('creating inbox for the email %s',email)
-		self.auth = (email,password)
+		log.debug('creating inbox for the email %s',auth[0])
+		self.auth = auth
 		self.messages = []
 
 		self.filters = ''

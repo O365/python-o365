@@ -44,8 +44,8 @@ inbox.requests.get = get
 class TestInbox (unittest.TestCase):
 	
 	def setUp(self):
-		self.preFetch = inbox.Inbox('test@unit.com','pass')
-		self.JITFetch = inbox.Inbox('test@unit.com','pass',getNow=False)
+		self.preFetch = inbox.Inbox(('test@unit.com','pass'))
+		self.JITFetch = inbox.Inbox(('test@unit.com','pass'),getNow=False)
 
 	def test_getMessages(self):
 		#test to see if they got the messages already, should only work for prefetch

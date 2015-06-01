@@ -36,7 +36,7 @@ schedule.requests.get = get
 class TestSchedule (unittest.TestCase):
 	
 	def setUp(self):
-		self.val = schedule.Schedule('test@unit.com','pass')
+		self.val = schedule.Schedule(('test@unit.com','pass'))
 		
 	def test_getCalendar(self):
 		self.val.getCalendars()
