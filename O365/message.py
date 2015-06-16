@@ -1,5 +1,5 @@
-from O365 import Attachment
-from O365 import Contact
+from O365.attachment import Attachment
+from O365.contact import Contact
 import logging
 import json
 import requests

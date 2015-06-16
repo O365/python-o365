@@ -18,13 +18,13 @@ Python library for interfacing with the Microsoft Office 365 online.
 
 # This imports all the libraries into the local namespace. This makes it easy to work with.
 
-from contact import Contact
-from group import Group
-from cal import Calendar
-from event import Event
-from attachment import Attachment
-from inbox import Inbox
-from message import Message
-from schedule import Schedule
+from .contact import Contact
+from .group import Group
+from .cal import Calendar
+from .event import Event
+from .attachment import Attachment
+from .inbox import Inbox
+from .message import Message
+from .schedule import Schedule
 
 #To the King!
