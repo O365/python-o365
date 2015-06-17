@@ -48,10 +48,10 @@ def get(url,**params):
 	elif url == t3_url:
 		ret = Resp(event_rep)
 	else:
-		print url
-		print t1_url
-		print t2_url
-		print t3_url
+		print(url)
+		print(t1_url)
+		print(t2_url)
+		print(t3_url)
 		raise
 	if params['auth'][0] != 'test@unit.com':
 		raise

@@ -25,7 +25,7 @@ urls = ['https://outlook.office365.com/api/v1.0/me/contacts/',
 
 def delete(url,headers,auth):
 	if url not in urls:
-		print url
+		print(url)
 		raise BaseException('Url wrong')
 	if auth[0] != 'test@unit.com':
 		raise BaseException('wrong email')
