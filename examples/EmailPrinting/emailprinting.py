@@ -136,7 +136,8 @@ if __name__ == '__main__':
 		sys.exit(0)
 	
 	while getLock():
-		try:
+		if True:
+#		try:
 			print "checking for emails"
 			with open('./ep.pw','r') as configFile:
 				config = configFile.read()
@@ -145,15 +146,15 @@ if __name__ == '__main__':
 			e = cjson ['email']
 			p = cjson ['password']
 
-			i = Inbox(e,p)
-
 			auth = (e,p)
+
+			i = Inbox(auth)
 
 			log.debug("messages: {0}".format(len(i.messages)))
 			for m in i.messages:
 				processMessage(m,auth)
 			time.sleep(55)
-		except Exception as e:
-			log.critical('something went really really bad: {0}',str(e))
+#		except Exception as e:
+			log.critical('something went really really bad: {0}'.format(str(e)))
 
 #To the King!
