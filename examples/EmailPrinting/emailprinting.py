@@ -13,8 +13,8 @@ log = logging.getLogger('ep')
 '''
 This script represents a way that O365 could be used to integrate parts of your enviorment. This is
 not a theoretical example, this is a production script that I use at our facility. The objective
-here is to aliviate a problem where the printer rests inside a protecte network but students who
-want to print are outside of that network. By sending print jobs they have to an email address they
+here is to aliviate a problem where the printer rests inside a protected network but students who
+want to print are outside of that network. By sending print jobs they have to send it to an email address they
 do not need to install the printer on their local device, nor do they need direct access to the
 device.
 
