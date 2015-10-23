@@ -3,7 +3,7 @@
 from distutils.core import setup
 
 CLASSIFIERS = [
-	'Development Status :: 3 - Alpha',
+	'Development Status :: 4 - Beta',
 	'Intended Audience :: Developers',
 	'License :: OSI Approved :: Apache Software License',
 	'Topic :: Office/Business :: Office Suites',
@@ -33,7 +33,7 @@ That's it. making and sending emails and events is now very simple and straight 
 https://github.com/Narcolapser/python-o365'''
 
 setup(name='O365',
-	version='0.7.1',
+	version='0.9',
 	description='Python library for working with Microsoft Office 365',
 	long_description=long_desc,
 	author='Toben Archer',
