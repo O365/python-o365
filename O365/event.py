@@ -223,12 +223,48 @@ class Event( object ):
 		self.json['Body']['Content'] = val
 
 	def setStart(self,val):
-		'''sets event start struct_time.'''
-		self.json['Start'] = time.strftime(self.time_string,val)
+		'''
+		sets event start time.
+		
+		Argument:
+			val - this argument can be passed in three different ways. You can pass it in as a int
+			or float, in which case the assumption is that it's seconds since Unix Epoch. You can
+			pass it in as a struct_time. Or you can pass in a string. The string must be formated
+			in the json style, which is %Y-%m-%dT%H:%M:%SZ. If you stray from that in your string
+			you will break the library.
+		'''
+		if isinstance(val,time.struct_time):
+			self.json['Start'] = time.strftime(self.time_string,val)
+		elif isinstance(val,int):
+			self.json['Start'] = time.strftime(self.time_string,time.gmtime(val))
+		elif isinstance(val,float):
+			self.json['Start'] = time.strftime(self.time_string,time.gmtime(val))
+		else:
+			#this last one assumes you know how to format the time string. if it brakes, check
+			#your time string!
+			self.json['Start'] = val
 
 	def setEnd(self,val):
-		'''sets event end struct_time.'''
-		self.json['End'] = time.strftime(self.time_string,val)
+		'''
+		sets event end time.
+		
+		Argument:
+			val - this argument can be passed in three different ways. You can pass it in as a int
+			or float, in which case the assumption is that it's seconds since Unix Epoch. You can
+			pass it in as a struct_time. Or you can pass in a string. The string must be formated
+			in the json style, which is %Y-%m-%dT%H:%M:%SZ. If you stray from that in your string
+			you will break the library.
+		'''
+		if isinstance(val,time.struct_time):
+			self.json['End'] = time.strftime(self.time_string,val)
+		elif isinstance(val,int):
+			self.json['End'] = time.strftime(self.time_string,time.gmtime(val))
+		elif isinstance(val,float):
+			self.json['End'] = time.strftime(self.time_string,time.gmtime(val))
+		else:
+			#this last one assumes you know how to format the time string. if it brakes, check
+			#your time string!
+			self.json['End'] = val
 
 	def setAttendee(self,val):
 		'''
