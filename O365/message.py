@@ -1,5 +1,6 @@
 from O365.attachment import Attachment
 from O365.contact import Contact
+from O365.group import Group
 import logging
 import json
 import requests
@@ -166,8 +167,8 @@ class Message( object ):
 		For each of these argument types the appropriate action will be taken to fit them to the 
 		needs of the library.
 		'''
+		self.json['ToRecipients'] = []
 		if isinstance(val,list):
-			self.json['ToRecipients'] = []
 			for con in val:
 				if isinstance(con,Contact):
 					self.addRecipient(con)
@@ -177,7 +178,6 @@ class Message( object ):
 			self.json['ToRecipients'] = [val]
 		elif isinstance(val,str):
 			if '@' in val:
-				self.json['ToRecipients'] = []
 				self.addRecipient(val)
 		elif isinstance(val,Contact):
 			self.addRecipient(val)
@@ -194,12 +194,18 @@ class Message( object ):
 		
 		Arguments:
 		address -- the email address of the person you are sending to. <<< Important that.
-			Address can also be of type contact. if it is name is superflous. Else, it
-			uses the name passed if you sent it one.
-		name -- the name of the person you are sending to. mostly just a decorator.
+			Address can also be of type Contact or type Group.
+		name -- the name of the person you are sending to. mostly just a decorator. If you
+			send an email address for the address arg, this will give you the ability
+			to set the name properly, other wise it uses the email address up to the
+			at sign for the name. But if you send a type Contact or type Group, this
+			argument is completely ignored.
 		'''
 		if isinstance(address,Contact):
 			self.json['ToRecipients'].append(address.getFirstEmailAddress())
+		elif isinstance(address,Group):
+			for con in address.contacts:
+				self.json['ToRecipients'].append(address.getFirstEmailAddress())
 		else:
 			if name is None:
 				name = address[:address.index('@')]

@@ -214,10 +214,6 @@ class Event( object ):
 		'''Gets list of event attendees.'''
 		return self.json['Attendees']
 
-#	def addAttendee(self,val):
-#		'''adds an attendee to the event. must call update for notification to send.'''
-#		self.json['Attendees'].append(val)
-
 	def setSubject(self,val):
 		'''sets event subject line.'''
 		self.json['Subject'] = val
@@ -236,7 +232,7 @@ class Event( object ):
 
 	def setAttendee(self,val):
 		'''
-		set the recipient list.
+		set the attendee list.
 		
 		val: the one argument this method takes can be very flexible. you can send:
 			a dictionary: this must to be a dictionary formated as such:
@@ -250,17 +246,18 @@ class Event( object ):
 		For each of these argument types the appropriate action will be taken to fit them to the 
 		needs of the library.
 		'''
+		self.json['Attendees'] = []
 		if isinstance(val,list):
 			self.json['Attendees'] = val
 		elif isinstance(val,dict):
 			self.json['Attendees'] = [val]
 		elif isinstance(val,str):
 			if '@' in val:
-				self.json['Attendees'] = []
-				self.addRecipient(val)
+				self.addAttendee(val)
 		elif isinstance(val,Contact):
-			self.json['Attendees'] = []
-			self.addRecipient(val)
+			self.addAttendee(val)
+		elif isinstance(val,Group):
+			self.addAttendee(val)
 		else:
 			return False
 		return True
@@ -271,12 +268,18 @@ class Event( object ):
 		
 		Arguments:
 		address -- the email address of the person you are sending to. <<< Important that.
-			Address can also be of type contact. if it is name is superflous. Else, it
-			uses the name passed if you sent it one.
-		name -- the name of the person you are sending to. mostly just a decorator.
+			Address can also be of type Contact or type Group.
+		name -- the name of the person you are sending to. mostly just a decorator. If you
+			send an email address for the address arg, this will give you the ability
+			to set the name properly, other wise it uses the email address up to the
+			at sign for the name. But if you send a type Contact or type Group, this
+			argument is completely ignored.
 		'''
 		if isinstance(address,Contact):
 			self.json['Attendees'].append(address.getFirstEmailAddress())
+		elif isinstance(address,Group):
+			for con in address.contacts:
+				self.json['Attendees'].append(address.getFirstEmailAddress())
 		else:
 			if name is None:
 				name = address[:address.index('@')]
