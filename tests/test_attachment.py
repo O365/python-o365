@@ -24,14 +24,16 @@ class TestAttachment (unittest.TestCase):
 		name1 = self.newFileName(name)
 		self.att.json['Name'] = name1
 		self.assertTrue(self.att.save('/tmp'))
-		f = open('/tmp/'+name1,'r').read()
-		self.assertEqual('testing w00t!',f)
+		with open('/tmp/'+name1,'r') as ins:
+			f = ins.read()
+			self.assertEqual('testing w00t!',f)
 
 		name2 = self.newFileName(name)
 		self.att.json['Name'] = name2
 		self.assertTrue(self.att.save('/tmp/'))
-		f = open('/tmp/'+name2,'r').read()
-		self.assertEqual('testing w00t!',f)
+		with open('/tmp/'+name2,'r') as ins:
+			f = ins.read()
+			self.assertEqual('testing w00t!',f)
 
 	def newFileName(self,val):
 		for i in range(4):
@@ -40,16 +42,16 @@ class TestAttachment (unittest.TestCase):
 		return val
 
 	def test_getByteString(self):
-		self.assertEqual(self.att.getByteString(),'testing w00t!')
+		self.assertEqual(self.att.getByteString(),b'testing w00t!')
 
 	def test_getBase64(self):
 		self.assertEqual(self.att.getBase64(),'dGVzdGluZyB3MDB0IQ==\n')
 
 	def test_setByteString(self):
-		test_string = 'testing testie test'
+		test_string = b'testing testie test'
 		self.att.setByteString(test_string)
 
-		enc = base64.encodestring(test_string)
+		enc = base64.encodebytes(test_string)
 
 		self.assertEqual(self.att.json['ContentBytes'],enc)
 

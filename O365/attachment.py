@@ -145,7 +145,7 @@ class Attachment( object ):
 	def setByteString(self,val):
 		'''Sets the file for this attachment from a byte string.'''
 		try:
-			self.json['ContentBytes'] = base64.encodestring(val)
+			self.json['ContentBytes'] = base64.encodebytes(val)
 		except:
 			log.debug('error encoding attachment.')
 			return False
