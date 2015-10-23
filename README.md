@@ -28,7 +28,6 @@ if m.json['IsReadReceiptRequested']:
 - [Email](#email)
 - [Calendar](#calendar)
 - [Contacts](#contacts)
-- [Files - One Drive](#files)
 
 ## Email
 There are two classes for working with emails in O365.
@@ -143,8 +142,7 @@ m.setRecipients(group)
 m.sendMessage()
 ```
 
-## Files
-This will be a new feature in 0.8. Coming soon.
-
+## Looking for new maintainer
+I no longer, as of October 2015, have an office365 account and so I'm looking for someone to take over this project. Please fork and carry on.
 
 #### Soli Deo Gloria
