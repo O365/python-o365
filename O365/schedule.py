@@ -18,7 +18,7 @@ class Schedule( object ):
 	Variables:
 		cal_url -- the url that is requested for the retrival of the calendar GUIDs.
 	'''
-	cal_url = 'https://outlook.office365.com/EWS/OData/Me/Calendars'
+	cal_url = 'https://outlook.office365.com/api/v1.0/me/calendars'
 
 	def __init__(self, auth):
 		'''Creates a Schedule class for managing all calendars associated with email+password.'''
