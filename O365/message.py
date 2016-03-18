@@ -157,22 +157,27 @@ class Message( object ):
 		val: the one argument this method takes can be very flexible. you can send:
 			a dictionary: this must to be a dictionary formated as such:
 				{"EmailAddress":{"Address":"recipient@example.com"}}
-				with other options such ass "Name" with address. but at minimum it must have this.
-			a list: this must to be a list of libraries formatted the way specified above,
-				or it can be a list of dictionary objects of type Contact. The method will sort
-				out the libraries from the contacts. 
+				with other options such ass "Name" with address. but at minimum
+				it must have this.
+			a list: this must to be a list of libraries formatted the way 
+				specified above, or it can be a list of dictionary objects of
+				type Contact or it can be an email address as string. The 
+				method will sort out the libraries from the contacts. 
 			a string: this is if you just want to throw an email address. 
 			a contact: type Contact from this dictionary. 
 			a group: type Group, which is a list of contacts.
-		For each of these argument types the appropriate action will be taken to fit them to the 
-		needs of the library.
+		For each of these argument types the appropriate action will be taken
+		to fit them to the needs of the library.
 		'''
 		self.json['ToRecipients'] = []
 		if isinstance(val,list):
 			for con in val:
 				if isinstance(con,Contact):
 					self.addRecipient(con)
-				else:
+				elif isinstance(con, str):
+					if '@' in con:
+						self.addRecipient(con)
+				elif isinstance(con, dict):
 					self.json['ToRecipients'].append(con)
 		elif isinstance(val,dict):
 			self.json['ToRecipients'] = [val]
