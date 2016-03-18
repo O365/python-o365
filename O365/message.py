@@ -231,6 +231,18 @@ class Message( object ):
 				cont = True
 			except:
 				self.json['Body'] = {}
+	
+	def setBodyHTML(self,val=None):
+		'''
+		Sets the body content type to HTML for your pretty emails.
+		
+		arguments:
+		val -- Default: None. The content of the body you want set. If you don't pass a
+			value it is just ignored. 
+		'''
+		self.json['Body']['ContentType'] = 'HTML'
+		if val:
+			self.json['Body']['Content'] = val
 
 
 #To the King!
