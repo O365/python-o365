@@ -159,6 +159,6 @@ class Attachment( object ):
 			log.error('tried to give me an attachment as a base64 and it is not.')
 			raise
 		self.json['ContentBytes'] = val
-		return true
+		return True
 
 #To the King!
