@@ -39,7 +39,7 @@ p = cjson ['password']
 
 auth = (e,p)
 
-i = Inbox(e,p,getNow=False) #Email, Password, Delay fetching so I can change the filters.
+i = Inbox( auth, getNow=False) #Email, Password, Delay fetching so I can change the filters.
 
 i.setFilter("IsRead eq false & Subject eq 'Fetch File'")
 
