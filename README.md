@@ -38,7 +38,7 @@ An actual email with all it's associated data.
 
 In the [Fetch File](https://github.com/Narcolapser/python-o365/blob/master/examples/fetchFile.py) example a filter is used to get only the unread messages with the subject line "Fetch File"
 ```python
-i = Inbox(e,p,getNow=False) #Email, Password, Delay fetching so I can change the filters.
+i = Inbox(auth,getNow=False) #Email, Password, Delay fetching so I can change the filters.
 
 i.setFilter("IsRead eq false & Subject eq 'Fetch File'")
 
