@@ -22,7 +22,7 @@ class Calendar( object ):
 		fetchEvents - legacy duplicate of getEvents
 	
 	Variable:
-		events_url - the url that is actually called to fetch events. takes an ID, start, and end.
+		events_url - the url that is actually called to fetch events. takes an ID, start, and end date.
 		time_string - used for converting between struct_time and json's time format.
 	'''
 	events_url = 'https://outlook.office365.com/api/v1.0/me/calendars/{0}/calendarview?startDateTime={1}&endDateTime={2}'
@@ -30,7 +30,7 @@ class Calendar( object ):
 
 	def __init__(self, json=None, auth=None):
 		'''
-		Wraps all the informaiton for managing calendars.
+		Wraps all the information for managing calendars.
 		'''
 		self.json = json
 		self.auth = auth
@@ -46,11 +46,11 @@ class Calendar( object ):
 		return self.json['Name']
 
 	def getCalendarId(self):
-		'''Get calendar's GUID for office 365. mostly used interally in this library.'''
+		'''Get calendar's GUID for office 365. mostly used internally in this library.'''
 		return self.json['Id']
 
 	def getId(self):
-		'''Get calendar's GUID for office 365. mostly used interally in this library.'''
+		'''Get calendar's GUID for office 365. mostly used internally in this library.'''
 		return self.getCalendarId()
 
 	def fetchEvents(self,start=None,end=None):
@@ -73,19 +73,19 @@ class Calendar( object ):
 		type is a struct_time. Default is a year from start.
 		'''
 
-		#If no start time has been supplied, it is assumed you want to start as of now.
+		# If no start time has been supplied, it is assumed you want to start as of now.
 		if not start:
 			start = time.strftime(self.time_string)
 
-		#If no end time has been supplied, it is assumed you want the end time to be a year
-		#from what ever the start date was. 
+		# If no end time has been supplied, it is assumed you want the end time to be a year
+		# from what ever the start date was. 
 		if not end:
 			end = time.time()
 			end += 3600*24*365
 			end = time.gmtime(end)
 			end = time.strftime(self.time_string,end)
 
-		#This is where the actual call to Office365 happens.
+		# This is where the actual call to Office365 happens.
 		response = requests.get(self.events_url.format(self.json['Id'],start,end),auth=self.auth)
 		log.info('Response from O365: %s', str(response))
 		
@@ -94,7 +94,7 @@ class Calendar( object ):
 			try:
 				duplicate = False
 
-				#checks to see if the event is a duplicate. if it is local changes are clobbered.
+				# checks to see if the event is a duplicate. if it is local changes are clobbered.
 				for i,e in enumerate(self.events):
 					if e.json['Id'] == event['Id']:
 						self.events[i] = Event(event,self.auth,self)
@@ -111,4 +111,4 @@ class Calendar( object ):
 		log.debug('all events retrieved and put in to the list.')
 		return True
 
-#To the King!
+# To the King!
