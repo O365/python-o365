@@ -1,3 +1,4 @@
+from O365.contact import Contact
 import logging
 import json
 import requests
