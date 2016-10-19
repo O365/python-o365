@@ -1,4 +1,5 @@
 from O365.contact import Contact
+from O365.group import Group
 import logging
 import json
 import requests
