@@ -32,7 +32,6 @@ class Event( object ):
 		setAttendees -- sets the attendee list.
 		setStartTimeZone -- sets the timezone for the start of the event item.
                 setEndTimeZone -- sets the timezone for the end of the event item.
-                setType -- sets the type of meeting (required or not) for an event.
 		
 	Variables:
 		time_string -- Formated time string for translation to and from json.
@@ -310,10 +309,6 @@ class Event( object ):
         def setEndTimeZone(self,val):
                 '''sets event end timezone'''
                 self.json['EndTimeZone'] = val
-
-        def setType(self,val):
-                '''sets event type'''
-                self.json['Type'] = val	
 
 	def addAttendee(self,address,name=None):
 		'''
