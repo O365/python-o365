@@ -1,14 +1,8 @@
+from O365.event import Event
 import requests
 import base64
 import json
-import logging
 import time
-
-from O365.event import Event
-
-logging.basicConfig(filename='o365.log',level=logging.DEBUG)
-
-log = logging.getLogger(__name__)
 
 class Calendar( object ):
 	'''
@@ -22,11 +16,12 @@ class Calendar( object ):
 		fetchEvents - legacy duplicate of getEvents
 	
 	Variable:
-		events_url - the url that is actually called to fetch events. takes an ID, start, and end date.
+		events_url - the url that is actually called to fetch events. takes an ID, start, end date, and max number (between 1 and 50).
 		time_string - used for converting between struct_time and json's time format.
 	'''
-	events_url = 'https://outlook.office365.com/api/v1.0/me/calendars/{0}/calendarview?startDateTime={1}&endDateTime={2}'
+	events_url = 'https://outlook.office365.com/api/v1.0/me/calendars/{0}/calendarview?startDateTime={1}&endDateTime={2}&$top={3}'
 	time_string = '%Y-%m-%dT%H:%M:%SZ'
+	timemorning_string = '%Y-%m-%dT00:00:00Z'
 
 	def __init__(self, json=None, auth=None):
 		'''
@@ -37,7 +32,6 @@ class Calendar( object ):
 		self.events = []
 
 		if json:
-			log.debug('translating calendar information into local variables.')
 			self.calendarId = json['Id']
 			self.name = json['Name']
 
@@ -62,7 +56,7 @@ class Calendar( object ):
 		return self.getEvents(start,end)
 
 
-	def getEvents(self,start=None,end=None):
+	def getEvents(self,start=None,end=None,top=None):
 		'''
 		Pulls events in for this calendar. default range is today to a year now.
 		
@@ -84,10 +78,12 @@ class Calendar( object ):
 			end += 3600*24*365
 			end = time.gmtime(end)
 			end = time.strftime(self.time_string,end)
+		
+		if not top:
+			top = 20
 
 		# This is where the actual call to Office365 happens.
-		response = requests.get(self.events_url.format(self.json['Id'],start,end),auth=self.auth)
-		log.info('Response from O365: %s', str(response))
+		response = requests.get(self.events_url.format(self.json['Id'],start,end,top),auth=self.auth)
 		
 		#This takes that response and then parses it into individual calendar events.
 		for event in response.json()['value']:
@@ -104,11 +100,7 @@ class Calendar( object ):
 				if not duplicate:
 					self.events.append(Event(event,self.auth,self))
 				
-				log.debug('appended event: %s',event['Subject'])
 			except Exception as e:
-				log.info('failed to append calendar: %',str(e))
+				print('failed to append calendar: %',str(e))
 		
-		log.debug('all events retrieved and put in to the list.')
 		return True
-
-# To the King!

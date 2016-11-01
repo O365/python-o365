@@ -1,13 +1,8 @@
 from O365.contact import Contact
 from O365.group import Group
-import logging
 import json
 import requests
 import time
-
-logging.basicConfig(filename='o365.log',level=logging.DEBUG)
-
-log = logging.getLogger(__name__)
 
 class Event( object ):
 	'''
@@ -19,6 +14,7 @@ class Event( object ):
 		delete -- Deletes event from the cloud.
 		toJson -- returns the json representation.
 		fullcalendarioJson -- gets a specific json representation used for fullcalendario.
+		fullcalendarsaveJson -- gets a specific json output
 		getSubject -- gets the subject of the event.
 		getBody -- gets the body of the event.
 		getStart -- gets the starting time of the event. (struct_time)
@@ -31,7 +27,7 @@ class Event( object ):
 		setEnd -- sets the starting time of the event. (struct_time)
 		setAttendees -- sets the attendee list.
 		setStartTimeZone -- sets the timezone for the start of the event item.
-                setEndTimeZone -- sets the timezone for the end of the event item.
+		setEndTimeZone -- sets the timezone for the end of the event item.
 		
 	Variables:
 		time_string -- Formated time string for translation to and from json.
@@ -85,38 +81,31 @@ class Event( object ):
 		
 		'''
 		if not self.auth:
-			log.debug('failed authentication check when creating event.')
+			print('failed authentication check when creating event.')
 			return False
 
 		if calendar:
 			calId = calendar.calendarId
 			self.calendar = calendar
-			log.debug('sent to passed calendar.')
 		elif self.calendar:
 			calId = self.calendar.calendarId
-			log.debug('sent to default calendar.')
 		else:
-			log.debug('no valid calendar to upload to.')
 			return False
 
 		headers = {'Content-type': 'application/json', 'Accept': 'application/json'}
 
-		log.debug('creating json for request.')
 		data = json.dumps(self.json)
 
 		response = None
 		try:
-			log.debug('sending post request now')
 			response = requests.post(self.create_url.format(calId),data,headers=headers,auth=self.auth)
-			log.debug('sent post request.')
 		except Exception as e:
 			if response:
-				log.debug('response to event creation: %s',str(response))
+				print('response to event creation: %s',str(response))
 			else:
-				log.error('No response, something is very wrong with create: %s',str(e))
+				print('No response, something is very wrong with create: %s',str(e))
 			return False
 
-		log.debug('response to event creation: %s',str(response))
 		return Event(response.json(),self.auth,calendar)
 
 	def update(self):
@@ -129,7 +118,6 @@ class Event( object ):
 		else:
 			return False
 
-
 		headers = {'Content-type': 'application/json', 'Accept': 'application/json'}
 
 		data = json.dumps(self.json)
@@ -137,15 +125,12 @@ class Event( object ):
 		response = None
 		try:
 			response = requests.patch(self.update_url.format(self.json['Id']),data,headers=headers,auth=self.auth)
-			log.debug('sending patch request now')
 		except Exception as e:
 			if response:
-				log.debug('response to event creation: %s',str(response))
+				print('response to event creation: %s',str(response))
 			else:
-				log.error('No response, something is very wrong with update: %s',str(e))
+				print('No response, something is very wrong with update: %s',str(e))
 			return False
-
-		log.debug('response to event creation: %s',str(response))
 
 		return Event(response.json(),self.auth)
 
@@ -161,17 +146,15 @@ class Event( object ):
 			return False
 
 		headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
-
 		response = None
 		try:
-			log.debug('sending delete request')
 			response = requests.delete(self.delete_url.format(self.json['Id']),headers=headers,auth=self.auth)
 
 		except Exception as e:
 			if response:
-				log.debug('response to deletion: %s',str(response))
+				print('response to deletion: %s',str(response))
 			else:
-				log.error('No response, something is very wrong with delete: %s',str(e))
+				print('No response, something is very wrong with delete: %s',str(e))
 			return False
 
 		return response
@@ -179,7 +162,6 @@ class Event( object ):
 	def toJson(self):
 		'''
 		Creates a JSON representation of the calendar event.
-		
 		oh. uh. I mean it simply returns the json representation that has always been in self.json.
 		'''
 		return self.json
@@ -198,9 +180,26 @@ class Event( object ):
 		ret['IsAllDay'] = self.json['IsAllDay']
 		return ret
 
+	def fullcalendarsaveJson(self):
+		ret = {}
+		ret['Subject'] = self.json['Subject']
+		ret['Location'] = self.json['Location']['DisplayName']
+		ret['Organizer'] = self.json['Organizer']['EmailAddress']['Name']
+		ret['Start'] = self.json['Start']
+		ret['End'] = self.json['End']
+		ret['IsAllDay'] = self.json['IsAllDay']
+		ret['ShowAs'] = self.json['ShowAs']
+		return ret
+
 	def getSubject(self):
 		'''Gets event subject line.'''
 		return self.json['Subject']
+
+	def getLocation(self):
+		'''Gets the event Location'''
+		'''Microsoft.OutlookServices.Location  https://msdn.microsoft.com/en-us/office/office365/api/complex-types-for-mail-contacts-calendar#Locationv10'''
+		#Which is now quite large
+		return self.json['Location']
 
 	def getBody(self):
 		'''Gets event body content.'''
@@ -214,9 +213,29 @@ class Event( object ):
 		'''Gets event end struct_time'''
 		return time.strptime(self.json['End'], self.time_string)
 
+	def getIsAllDay(self):
+		'''Returns boolean if allday'''
+		return self.json['IsAllDay']
+
 	def getAttendees(self):
 		'''Gets list of event attendees.'''
 		return self.json['Attendees']
+
+	def getCategories(self):
+		'''Gets the list of category (Collection(String))'''
+		return self.json['Categories']
+	
+	def getShowAs(self):
+		'''Gets BusyFree data FreeBusyStatus Free = 0, Tentative = 1, Busy = 2, Oof = 3, WorkingElsewhere = 4, Unknown = -1'''
+		return self.json['ShowAs']
+
+	def getImportance(self):
+		'''Gets the Event Importance as string of either Low, Normal, High.'''
+		return self.json['Importance']
+
+	def getSensitivity(self):
+		'''Gets the Event Sensitivity as string of either Normal = 0, Personal = 1, Private = 2, Confidential = 3'''
+		return self.json['Sensitivity']
 
 	def setSubject(self,val):
 		'''sets event subject line.'''
@@ -302,13 +321,13 @@ class Event( object ):
 			return False
 		return True
 	
-        def setStartTimeZone(self,val):
-                '''sets event start timezone'''
-                self.json['StartTimeZone'] = val
+	def setStartTimeZone(self,val):
+		'''sets event start timezone'''
+		self.json['StartTimeZone'] = val
 
-        def setEndTimeZone(self,val):
-                '''sets event end timezone'''
-                self.json['EndTimeZone'] = val
+	def setEndTimeZone(self,val):
+		'''sets event end timezone'''
+		self.json['EndTimeZone'] = val
 
 	def addAttendee(self,address,name=None):
 		'''
@@ -332,5 +351,3 @@ class Event( object ):
 			if name is None:
 				name = address[:address.index('@')]
 			self.json['Attendees'].append({'EmailAddress':{'Address':address,'Name':name}})
-
-#To the King!

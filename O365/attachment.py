@@ -3,18 +3,10 @@ This file contains the functions for working with attachments. Including the abi
 binary of the file directly. The file is stored locally as a string using base64 encoding. 
 '''
 
-#from O365 import Message
-
 import base64
-import logging
 import json
 import requests
 
-#from O365 import Message
-
-logging.basicConfig(filename='o365.log',level=logging.DEBUG)
-
-log = logging.getLogger(__name__)
 
 class Attachment( object ):
 	'''
@@ -83,13 +75,11 @@ class Attachment( object ):
 			outs = open(location+'/'+self.json['Name'],'wb')
 			outs.write(base64.b64decode(self.json['ContentBytes']))
 			outs.close()
-			log.debug('file saved locally.')
 			
 		except Exception as e:
-			log.debug('file failed to be saved: %s',str(e))
+			print('file failed to be saved: %s',str(e))
 			return False
 
-		log.debug('file saving successful')
 		return True
 
 	def attach(self,message):
@@ -99,14 +89,9 @@ class Attachment( object ):
 		message -- a Message type, the message to be attached to.
 		'''
 		mid = message.json['Id']
-
 		headers = {'Content-type': 'application/json', 'Accept': 'application/json'}
-
 		data = json.dumps(self.json)
-
 		response = requests.post(self.create_url.format(mid),data,header=headers,auth=message.auth)
-		log.debug('Response from server for attaching: {0}'.format(str(response)))
-
 		return response
 
 	def getByteString(self):
@@ -116,10 +101,8 @@ class Attachment( object ):
 		'''
 		try:
 			return base64.b64decode(self.json['ContentBytes'])
-
 		except Exception as e:
-			log.debug('what? no clue what went wrong here. cannot decode attachment.')
-
+			print('what? no clue what went wrong here. cannot decode attachment.')
 		return False
 
 	def getBase64(self):
@@ -127,7 +110,7 @@ class Attachment( object ):
 		try:
 			return self.json['ContentBytes']
 		except Exception as e:
-			log.debug('what? no clue what went wrong here. probably no attachment.')
+			print('what? no clue what went wrong here. probably no attachment.')
 		return False
 
 	def getName(self):
@@ -135,7 +118,7 @@ class Attachment( object ):
 		try:
 			return self.json['Name']
 		except Exception as e:
-			log.error('The attachment does not appear to have a name.')
+			print('The attachment does not appear to have a name.')
 		return False
 
 	def setName(self,val):
@@ -147,7 +130,7 @@ class Attachment( object ):
 		try:
 			self.json['ContentBytes'] = base64.encodebytes(val)
 		except:
-			log.debug('error encoding attachment.')
+			print('error encoding attachment.')
 			return False
 		return True
 
@@ -156,9 +139,7 @@ class Attachment( object ):
 		try:
 			base64.decodestring(val)
 		except:
-			log.error('tried to give me an attachment as a base64 and it is not.')
+			print('tried to give me an attachment as a base64 and it is not.')
 			raise
 		self.json['ContentBytes'] = val
 		return True
-
-#To the King!

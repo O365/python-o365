@@ -1,13 +1,8 @@
 from O365.attachment import Attachment
 from O365.contact import Contact
 from O365.group import Group
-import logging
 import json
 import requests
-
-logging.basicConfig(filename='o365.log',level=logging.DEBUG)
-
-log = logging.getLogger(__name__)
 
 class Message( object ):
 	'''
@@ -70,19 +65,16 @@ class Message( object ):
 	def fetchAttachments(self):
 		'''kicks off the process that downloads attachments locally.'''
 		if not self.hasAttachments:
-			log.debug('message has no attachments, skipping out early.')
 			return False
 
 		response = requests.get(self.att_url.format(self.json['Id']),auth=self.auth)
-		log.info('response from O365 for retriving message attachments: %s',str(response))
 		json = response.json()
 
 		for att in json['value']:
 			try:
 				self.attachments.append(Attachment(att))
-				log.debug('successfully downloaded attachment for: %s.',self.auth[0])
 			except Exception as e:
-				log.info('failed to download attachment for: %s', self.auth[0])
+				print('failed to download attachment for: %s', self.auth[0])
 
 		return len(self.attachments)
 
@@ -102,20 +94,17 @@ class Message( object ):
 			data = json.dumps(data)
 			log.debug(str(data))
 		except Exception as e:
-			log.error(str(e))
+			print(str(e))
 			return False
 
 		response = requests.post(self.send_url,data,headers=headers,auth=self.auth)
-		log.debug('response from server for sending message:'+str(response))
 
 		if response.status_code != 202:
 			return False
 
 		return True
 
-		
 
-		
 	def markAsRead(self):
 		'''marks analogous message as read in the cloud.'''
 		read = '{"IsRead":true}'
@@ -243,6 +232,3 @@ class Message( object ):
 		self.json['Body']['ContentType'] = 'HTML'
 		if val:
 			self.json['Body']['Content'] = val
-
-
-#To the King!

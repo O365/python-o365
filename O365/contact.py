@@ -1,12 +1,7 @@
 import requests
 import base64
 import json
-import logging
 import time
-
-logging.basicConfig(filename='o365.log',level=logging.DEBUG)
-
-log = logging.getLogger(__name__)
 
 class Contact( object ):
 	'''
@@ -33,70 +28,54 @@ class Contact( object ):
 		self.auth = auth
 
 		if json:
-			log.debug('translating contact information into local variables.')
 			self.contactId = json['Id']
 			self.name = json['DisplayName']
 		else:
-			log.debug('there was no json, putting in some dumby info.')
 			self.json = {'DisplayName':'Jebediah Kerman'}
 
 	def delete(self):
 		'''delete's a contact. cause who needs that guy anyway?'''
 		headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
-
-		log.debug('preparing to delete contact.')
 		response = requests.delete(self.con_url.format(str(self.contactId)),headers=headers,auth=self.auth)
-		log.debug('response from delete attempt: {0}'.format(str(response)))
-
 		return response.status_code == 204
 
 	def update(self):
 		'''updates a contact with information in the local json.'''
 		if not self.auth:
-			log.debug('no authentication information, cannot update')
 			return false
 
 		headers = {'Content-type': 'application/json', 'Accept': 'application/json'}
-
 		data = json.dumps(self.json)
 
 		response = None
 		try:
 			response = requests.patch(self.con_url.format(str(self.contactId)),data,headers=headers,auth=self.auth)
-			log.debug('sent update request')
 		except Exception as e:
 			if response:
-				log.debug('response to contact update: {0}'.format(str(response)))
+				print('response to contact update: {0}'.format(str(response)))
 			else:
-				log.error('No response, something is very wrong with update: {0}'.format(str(e)))
+				print('No response, something is very wrong with update: {0}'.format(str(e)))
 			return False
-
-		log.debug('Response to contact update: {0}'.format(str(response)))
 
 		return Contact(response.json(),self.auth)
 
 	def create(self):
 		'''create a contact with information in the local json.'''
 		if not self.auth:
-			log.debug('no authentication information, cannot create')
 			return false
 
 		headers = {'Content-type': 'application/json', 'Accept': 'application/json'}
-
 		data = json.dumps(self.json)
 
 		response = None
 		try:
 			response = requests.post(self.con_url.format(str(self.contactId)),data,headers=headers,auth=self.auth)
-			log.debug('sent create request')
 		except Exception as e:
 			if response:
-				log.debug('response to contact create: {0}'.format(str(response)))
+				print('response to contact create: {0}'.format(str(response)))
 			else:
-				log.error('No response, something is very wrong with create: {0}'.format(str(e)))
+				print('No response, something is very wrong with create: {0}'.format(str(e)))
 			return False
-
-		log.debug('Response to contact create: {0}'.format(str(response)))
 
 		return Contact(response.json(),self.auth)
 
@@ -160,7 +139,3 @@ class Contact( object ):
 	def addEmail(self,address,name=None):
 		'''takes a plain string email, and optionally name, and appends it to list.'''
 		ins = {'Address':address,'Name':None}
-
-	
-
-#To the King!

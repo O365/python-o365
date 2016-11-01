@@ -1,11 +1,6 @@
 from O365.message import Message
-import logging
 import json
 import requests
-
-logging.basicConfig(filename='o365.log',level=logging.DEBUG)
-
-log = logging.getLogger(__name__)
 
 class Inbox( object ):
 	'''
@@ -27,7 +22,6 @@ class Inbox( object ):
 		set getNow to false if you don't want to immedeatly download new messages.
 		'''
 		
-		log.debug('creating inbox for the email %s',auth[0])
 		self.auth = auth
 		self.messages = []
 
@@ -51,9 +45,7 @@ class Inbox( object ):
 		get filters methods for more information.
 		'''
 
-		log.debug('fetching messages.')			
 		response = requests.get(self.inbox_url,auth=self.auth,params={'$filter':self.filters})
-		log.info('Response from O365: %s', str(response))
 		
 		for message in response.json()['value']:
 			try:
@@ -67,11 +59,9 @@ class Inbox( object ):
 				if not duplicate:
 					self.messages.append(Message(message,self.auth))
 
-				log.debug('appended message: %s',message['Subject'])
 			except Exception as e:
-				log.info('failed to append message: %',str(e))
+				print('failed to append message: %',str(e))
 
-		log.debug('all messages retrieved and put in to the list.')
 		return True
 
 	def getFilter(self):
@@ -94,5 +84,3 @@ class Inbox( object ):
 		'''
 		self.filters = f_string
 		return True
-
-#To the King!

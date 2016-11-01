@@ -26,5 +26,3 @@ from .attachment import Attachment
 from .inbox import Inbox
 from .message import Message
 from .schedule import Schedule
-
-#To the King!
