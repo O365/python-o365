@@ -31,7 +31,7 @@ class Event( object ):
 		setEnd -- sets the starting time of the event. (struct_time)
 		setAttendees -- sets the attendee list.
 		setStartTimeZone -- sets the timezone for the start of the event item.
-                setEndTimeZone -- sets the timezone for the end of the event item.
+		setEndTimeZone -- sets the timezone for the end of the event item.
 		
 	Variables:
 		time_string -- Formated time string for translation to and from json.
@@ -224,7 +224,15 @@ class Event( object ):
 
 	def setBody(self,val):
 		'''sets event body content.'''
-		self.json['Body']['Content'] = val
+		cont = False
+
+		while not cont:
+			try:
+				self.json['Body']['Content'] = val
+				self.json['Body']['ContentType'] = 'Text'
+				cont = True
+			except:
+				self.json['Body'] = {}
 
 	def setStart(self,val):
 		'''
@@ -302,13 +310,13 @@ class Event( object ):
 			return False
 		return True
 	
-        def setStartTimeZone(self,val):
-                '''sets event start timezone'''
-                self.json['StartTimeZone'] = val
+	def setStartTimeZone(self,val):
+		'''sets event start timezone'''
+		self.json['StartTimeZone'] = val
 
-        def setEndTimeZone(self,val):
-                '''sets event end timezone'''
-                self.json['EndTimeZone'] = val
+	def setEndTimeZone(self,val):
+		'''sets event end timezone'''
+		self.json['EndTimeZone'] = val
 
 	def addAttendee(self,address,name=None):
 		'''
