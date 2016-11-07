@@ -9,6 +9,7 @@ import base64
 import logging
 import json
 import requests
+import sys
 
 #from O365 import Message
 
@@ -145,7 +146,10 @@ class Attachment( object ):
 	def setByteString(self,val):
 		'''Sets the file for this attachment from a byte string.'''
 		try:
-			self.json['ContentBytes'] = base64.encodebytes(val)
+			if sys.version_info[0] == 2:
+				self.json['ContentBytes'] = base64.encodebytes(val)
+			else:
+				self.json['ContentBytes'] = str(base64.encodebytes(val),'utf-8')
 		except:
 			log.debug('error encoding attachment.')
 			return False

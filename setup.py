@@ -42,8 +42,10 @@ setup(name='O365',
 	maintainer_email='sandslash+O365@gmail.com',
 	url='https://github.com/Narcolapser/python-o365',
 	packages=['O365'],
-	install_requires=['requests'],
+#	install_requires=['requests'],
 	license='Apache 2.0',
 	classifiers=CLASSIFIERS
 	)
 
+
+#so I don't have to keep looking it up: python setup.py sdist upload -r pypi

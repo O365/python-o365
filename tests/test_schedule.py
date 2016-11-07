@@ -21,7 +21,7 @@ sch_rep = '''{"@odata.context": "https://outlook.office365.com/EWS/OData/$metada
 
 
 def get(url,**params):
-	if url != 'https://outlook.office365.com/EWS/OData/Me/Calendars':
+	if url != 'https://outlook.office365.com/api/v1.0/me/calendars':
 		raise
 	if params['auth'][0] != 'test@unit.com':
 		raise
