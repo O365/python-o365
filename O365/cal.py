@@ -6,8 +6,6 @@ import time
 
 from O365.event import Event
 
-logging.basicConfig(filename='o365.log',level=logging.DEBUG)
-
 log = logging.getLogger(__name__)
 
 class Calendar( object ):

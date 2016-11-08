@@ -5,8 +5,6 @@ import json
 import requests
 import time
 
-logging.basicConfig(filename='o365.log',level=logging.DEBUG)
-
 log = logging.getLogger(__name__)
 
 class Event( object ):

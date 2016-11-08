@@ -3,17 +3,11 @@ This file contains the functions for working with attachments. Including the abi
 binary of the file directly. The file is stored locally as a string using base64 encoding. 
 '''
 
-#from O365 import Message
-
 import base64
 import logging
 import json
 import requests
 import sys
-
-#from O365 import Message
-
-logging.basicConfig(filename='o365.log',level=logging.DEBUG)
 
 log = logging.getLogger(__name__)
 
