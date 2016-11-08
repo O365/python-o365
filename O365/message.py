@@ -238,9 +238,15 @@ class Message( object ):
 		val -- Default: None. The content of the body you want set. If you don't pass a
 			value it is just ignored. 
 		'''
-		self.json['Body']['ContentType'] = 'HTML'
-		if val:
-			self.json['Body']['Content'] = val
-
+		cont = False
+		
+		while not cont:
+			try:
+				self.json['Body']['ContentType'] = 'HTML'
+				if val:
+					self.json['Body']['Content'] = val
+				cont = True
+			except:
+				self.json['Body'] = {}
 
 #To the King!
