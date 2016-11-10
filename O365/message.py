@@ -100,7 +100,7 @@ class Message( object ):
 			data = json.dumps(data)
 			log.debug(str(data))
 		except Exception as e:
-			log.error(str(e))
+			log.error('Error while trying to compile the json string to send: {0}'.format(str(e)))
 			return False
 
 		response = requests.post(self.send_url,data,headers=headers,auth=self.auth)

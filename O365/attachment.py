@@ -141,11 +141,11 @@ class Attachment( object ):
 		'''Sets the file for this attachment from a byte string.'''
 		try:
 			if sys.version_info[0] == 2:
-				self.json['ContentBytes'] = base64.encodebytes(val)
+				self.json['ContentBytes'] = base64.b64encode(val)
 			else:
 				self.json['ContentBytes'] = str(base64.encodebytes(val),'utf-8')
-		except:
-			log.debug('error encoding attachment.')
+		except Exception as e:
+			log.debug('error encoding attachment: {0}'.format(e))
 			return False
 		return True
 
