@@ -35,9 +35,11 @@ class Calendar( object ):
 			self.calendarId = json['Id']
 			self.name = json['Name']
 
+
 	def getName(self):
 		'''Get the calendar's Name.'''
 		return self.json['Name']
+
 
 	def getCalendarId(self):
 		'''Get calendar's GUID for office 365. mostly used internally in this library.'''
@@ -47,6 +49,7 @@ class Calendar( object ):
 		'''Get calendar's GUID for office 365. mostly used internally in this library.'''
 		return self.getCalendarId()
 
+
 	def fetchEvents(self,start=None,end=None):
 		'''
 		So I originally made this function "fetchEvents" which was a terrible idea. Everything else
@@ -54,7 +57,6 @@ class Calendar( object ):
 		pass through for legacy sake.
 		'''
 		return self.getEvents(start,end)
-
 
 	def getEvents(self,start=None,end=None,top=None):
 		'''
@@ -79,8 +81,9 @@ class Calendar( object ):
 			end = time.gmtime(end)
 			end = time.strftime(self.time_string,end)
 		
+		# If no number of events given, set to 10
 		if not top:
-			top = 20
+			top = 10
 
 		# This is where the actual call to Office365 happens.
 		response = requests.get(self.events_url.format(self.json['Id'],start,end,top),auth=self.auth)

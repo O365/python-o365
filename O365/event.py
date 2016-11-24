@@ -7,6 +7,8 @@ import time
 class Event( object ):
 	'''
 	Class for managing the creation and manipluation of events in a calendar. 
+	https://msdn.microsoft.com/en-us/office/office365/api/calendar-rest-operations#get-events
+	https://msdn.microsoft.com/en-us/office/office365/api/complex-types-for-mail-contacts-calendar#EventResource
 	
 	Methods:
 		create -- Creates the event in a calendar.
@@ -108,6 +110,7 @@ class Event( object ):
 
 		return Event(response.json(),self.auth,calendar)
 
+
 	def update(self):
 		'''Updates an event that already exists in a calendar.'''
 		if not self.auth:
@@ -159,12 +162,14 @@ class Event( object ):
 
 		return response
 
+
 	def toJson(self):
 		'''
 		Creates a JSON representation of the calendar event.
 		oh. uh. I mean it simply returns the json representation that has always been in self.json.
 		'''
 		return self.json
+
 
 	def fullcalendarioJson(self):
 		'''
@@ -180,16 +185,22 @@ class Event( object ):
 		ret['IsAllDay'] = self.json['IsAllDay']
 		return ret
 
+
 	def fullcalendarsaveJson(self):
 		ret = {}
-		ret['Subject'] = self.json['Subject']
-		ret['Location'] = self.json['Location']['DisplayName']
-		ret['Organizer'] = self.json['Organizer']['EmailAddress']['Name']
-		ret['Start'] = self.json['Start']
-		ret['End'] = self.json['End']
-		ret['IsAllDay'] = self.json['IsAllDay']
-		ret['ShowAs'] = self.json['ShowAs']
+		ret['Subject']     = self.json['Subject']
+		ret['Location']    = self.json['Location']['DisplayName']
+		ret['Organizer']   = self.json['Organizer']['EmailAddress']['Name']
+		ret['Start']       = self.json['Start']
+		ret['End']         = self.json['End']
+		ret['IsAllDay']    = self.json['IsAllDay']
+		ret['ShowAs']      = self.json['ShowAs']
+		ret['Reminder']    = self.json['Reminder']
+		ret['Importance']  = self.json['Importance']
+		ret['Categories']  = self.json['Categories']
+		ret['Sensitivity'] = self.json['Sensitivity']
 		return ret
+
 
 	def getSubject(self):
 		'''Gets event subject line.'''

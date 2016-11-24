@@ -15,17 +15,11 @@ The objective here is to make it easy to make utilities that are to be run again
 
 
 from O365 import Message
-
 authenticiation = ('YourAccount@office365.com','YourPassword')
-
 m = Message(auth=authenticiation)
-
 m.setRecipients('reciving@office365.com')
-
 m.setSubject('I made an email script.')
-
 m.setBody('Talk to the computer, cause the human does not want to hear it any more.')
-
 m.sendMessage()
 
 
@@ -33,7 +27,7 @@ That's it. making and sending emails and events is now very simple and straight 
 https://github.com/Narcolapser/python-o365'''
 
 setup(name='O365',
-	version='0.9.3',
+	version='0.9.4',
 	description='Python library for working with Microsoft Office 365',
 	long_description=long_desc,
 	author='Toben Archer',
