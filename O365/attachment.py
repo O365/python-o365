@@ -1,6 +1,7 @@
 '''
-This file contains the functions for working with attachments. Including the ability to work with the
-binary of the file directly. The file is stored locally as a string using base64 encoding. 
+This file contains the functions for working with attachments.
+Including the ability to work with the binary of the file directly.
+The file is stored locally as a string using base64 encoding.
 '''
 
 import base64
@@ -76,7 +77,7 @@ class Attachment(object):
             outs.close()
             
         except Exception as e:
-            print('file failed to be saved: %s', str(e))
+            print 'file failed to be saved: %s', str(e)
             return False
 
         return True
