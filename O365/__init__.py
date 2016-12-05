@@ -26,3 +26,5 @@ from .attachment import Attachment
 from .inbox import Inbox
 from .message import Message
 from .schedule import Schedule
+from .catcolor import CatColorType
+from .catcolor import CatColors
