@@ -9,6 +9,4 @@ O365/event.py
 O365/group.py
 O365/inbox.py
 O365/message.py
-O365/onedrive.py
-O365/onefile.py
 O365/schedule.py
