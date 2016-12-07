@@ -23,7 +23,7 @@ class Calendar( object ):
 		events_url - the url that is actually called to fetch events. takes an ID, start, and end date.
 		time_string - used for converting between struct_time and json's time format.
 	'''
-	events_url = 'https://outlook.office365.com/api/v1.0/me/calendars/{0}/calendarview?startDateTime={1}&endDateTime={2}'
+	events_url = 'https://outlook.office365.com/api/v1.0/me/calendars/{0}/calendarview?startDateTime={1}&endDateTime={2}&$top=50'
 	time_string = '%Y-%m-%dT%H:%M:%SZ'
 
 	def __init__(self, json=None, auth=None):
