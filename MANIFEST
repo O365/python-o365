@@ -11,3 +11,4 @@ O365/inbox.py
 O365/message.py
 O365/schedule.py
 O365/catcolor.py
+O365/category.py

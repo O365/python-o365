@@ -28,3 +28,4 @@ from .message import Message
 from .schedule import Schedule
 from .catcolor import CatColorType
 from .catcolor import CatColors
+from .category import Category

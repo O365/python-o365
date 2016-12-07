@@ -89,3 +89,15 @@ class CatColors(object):
         for i, c in enumerate(self.colors):
             if c.colorid == colorid:
                 return c.name
+
+    def get_item_fromid(self, colorid):
+        '''Finds the whole sub object by Color ID'''
+        for i, c in enumerate(self.colors):
+            if c.colorid == colorid:
+                return c
+
+    def get_item_fromname(self, name):
+        '''Finds the whole sub object by Name'''
+        for i, c in enumerate(self.colors):
+            if c.name == name:
+                return c

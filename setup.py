@@ -27,7 +27,7 @@ That's it. making and sending emails and events is now very simple and straight 
 https://github.com/Narcolapser/python-o365'''
 
 setup(name='O365',
-      version='0.9.5',
+      version='0.9.6',
       description='Python library for working with Microsoft Office 365',
       long_description=long_desc,
       author='Toben Archer',

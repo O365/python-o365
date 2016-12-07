@@ -78,7 +78,7 @@ class Event(object):
         and not this particular event any further.
         
         calendar -- a calendar class onto which you want this event to be created. If this is left
-        empty then the event's default calendar, specified at instancing, will be used. If no 
+        empty then the event's default calendar, specified at instancing, will be used. If no
         default is specified, then the event cannot be created.
         
         '''
@@ -142,7 +142,7 @@ class Event(object):
         '''
         Delete's an event from the calendar it is in.
         
-        But leaves you this handle. You could then change the calendar and transfer the event to 
+        But leaves you this handle. You could then change the calendar and transfer the event to
         that new calendar. You know, if that's your thing.
         '''
         if not self.auth:
@@ -163,7 +163,7 @@ class Event(object):
         return response
 
 
-    def toJson(self):
+    def tojson(self):
         '''
         Creates a JSON representation of the calendar event.
         oh. uh. I mean it simply returns the json representation that has always been in self.json.
@@ -171,7 +171,7 @@ class Event(object):
         return self.json
 
 
-    def fullcalendarioJson(self):
+    def fullcalendariojson(self):
         '''
         returns a form of the event suitable for the vehicle booking system here.
         oh the joys of having a library to yourself!
@@ -186,8 +186,10 @@ class Event(object):
         return ret
 
 
-    def fullcalendarsaveJson(self):
+    def fullcalendarsavejson(self):
+        ''' Returns a more full event json output '''
         ret = {}
+        ret['Id'] = self.json['Id']
         ret['Subject'] = self.json['Subject']
         ret['Location'] = self.json['Location']['DisplayName']
         ret['Organizer'] = self.json['Organizer']['EmailAddress']['Name']
@@ -202,13 +204,19 @@ class Event(object):
         return ret
 
 
+    def getid(self):
+        '''Gets event ID.'''
+        return self.json['Id']
+
     def getSubject(self):
         '''Gets event subject line.'''
         return self.json['Subject']
 
     def getLocation(self):
-        '''Gets the event Location'''
-        '''Microsoft.OutlookServices.Location  https://msdn.microsoft.com/en-us/office/office365/api/complex-types-for-mail-contacts-calendar#Locationv10'''
+        '''Gets the event Location
+        Microsoft.OutlookServices.Location
+        https://msdn.microsoft.com/en-us/office/office365/api/complex-types-for-mail-contacts-calendar#Locationv10
+        '''
         #Which is now quite large
         return self.json['Location']
 
@@ -237,15 +245,18 @@ class Event(object):
         return self.json['Categories']
     
     def getShowAs(self):
-        '''Gets BusyFree data FreeBusyStatus Free = 0, Tentative = 1, Busy = 2, Oof = 3, WorkingElsewhere = 4, Unknown = -1'''
+        '''Gets BusyFree data FreeBusyStatus
+        Free = 0, Tentative = 1, Busy = 2, Oof = 3, WorkingElsewhere = 4, Unknown = -1'''
         return self.json['ShowAs']
 
     def getImportance(self):
-        '''Gets the Event Importance as string of either Low, Normal, High.'''
+        '''Gets the Event Importance as string of either
+        Low, Normal, High.'''
         return self.json['Importance']
 
     def getSensitivity(self):
-        '''Gets the Event Sensitivity as string of either Normal = 0, Personal = 1, Private = 2, Confidential = 3'''
+        '''Gets the Event Sensitivity as string of either
+        Normal = 0, Personal = 1, Private = 2, Confidential = 3'''
         return self.json['Sensitivity']
 
     def setSubject(self, val):
