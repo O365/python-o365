@@ -24,7 +24,7 @@ un_rep = open('unread_message.json','r').read()
 def get(url,auth,params):
 	if url == 'https://outlook.office365.com/api/v1.0/me/messages':
 #		print params
-		if params == {'$filter': 'IsRead eq false'}:
+		if params['$filter'] == 'IsRead eq false':
 #			print 'getting the unread'
 			ret = Resp(un_rep)
 		else:

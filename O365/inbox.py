@@ -36,7 +36,7 @@ class Inbox( object ):
 			self.getMessages()
 
 
-	def getMessages(self):
+	def getMessages(self, number = 10):
 		'''
 		Downloads messages to local memory.
 		
@@ -50,7 +50,7 @@ class Inbox( object ):
 		'''
 
 		log.debug('fetching messages.')			
-		response = requests.get(self.inbox_url,auth=self.auth,params={'$filter':self.filters})
+		response = requests.get(self.inbox_url,auth=self.auth,params={'$filter':self.filters, '$top':number})
 		log.info('Response from O365: %s', str(response))
 		
 		for message in response.json()['value']:
