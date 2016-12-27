@@ -23,7 +23,7 @@ class Calendar( object ):
 		events_url - the url that is actually called to fetch events. takes an ID, start, and end date.
 		time_string - used for converting between struct_time and json's time format.
 	'''
-	events_url = 'https://outlook.office365.com/api/v1.0/me/calendars/{0}/calendarview?startDateTime={1}&endDateTime={2}&$top=50'
+	events_url = 'https://outlook.office365.com/api/v1.0/me/calendars/{0}/calendarview?startDateTime={1}&endDateTime={2}&$top={3}'
 	time_string = '%Y-%m-%dT%H:%M:%SZ'
 
 	def __init__(self, json=None, auth=None):
@@ -60,7 +60,7 @@ class Calendar( object ):
 		return self.getEvents(start,end)
 
 
-	def getEvents(self,start=None,end=None):
+	def getEvents(self,start=None,end=None, eventCount=10):
 		'''
 		Pulls events in for this calendar. default range is today to a year now.
 		
@@ -84,7 +84,7 @@ class Calendar( object ):
 			end = time.strftime(self.time_string,end)
 
 		# This is where the actual call to Office365 happens.
-		response = requests.get(self.events_url.format(self.json['Id'],start,end),auth=self.auth)
+		response = requests.get(self.events_url.format(self.json['Id'],start,end,eventCount) ,auth=self.auth)
 		log.info('Response from O365: %s', str(response))
 		
 		#This takes that response and then parses it into individual calendar events.
