@@ -152,10 +152,6 @@ class Message( object ):
 	def getSubject(self):
 		'''get email subject line.'''
 		return self.json['Subject']
-	
-	def getDateTime(self):
-		'''get email date.'''
-		return self.json['DateTimeReceived']     
 
 	def getBody(self):
 		'''get email body.'''
