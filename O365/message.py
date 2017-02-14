@@ -20,6 +20,8 @@ class Message( object ):
 		fetchAttachments -- kicks off the process that downloads attachments.
 		sendMessage -- take local variables and form them to send the message.
 		markAsRead -- marks the analougs message in the cloud as read.
+		getID -- gets the ID of the message
+		getReceivedDate -- gets the datetime the message was recieved
 		getSender -- gets a dictionary with the sender's information.
 		getSenderEmail -- gets the email address of the sender.
 		getSenderName -- gets the name of the sender, if possible.
@@ -123,7 +125,14 @@ class Message( object ):
 		except:
 			return False
 		return True
-
+	
+	def getID(self):
+		'''get the ID of the email.'''
+		return self.json['Id']
+	
+	def getReceivedDate(self):
+		'''get the DateTime the email was received.'''
+		return self.json['DateTimeReceived']
 
 	def getSender(self):
 		'''get all available information for the sender of the email.'''
