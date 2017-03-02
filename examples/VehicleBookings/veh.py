@@ -1,5 +1,4 @@
 from O365 import *
-from printing import *
 import json
 
 
@@ -15,25 +14,25 @@ if __name__ == '__main__':
 		e = veh['email']
 		p = veh['password']
 
-		schedule = Schedule(e,p)
+		schedule = Schedule((e,p))
 		try:
 			result = schedule.getCalendars()
-			print 'Fetched calendars for',e,'was successful:',result
+			print('Fetched calendars for',e,'was successful:',result)
 		except:
-			print 'Login failed for',e
+			print('Login failed for',e)
 
 		bookings = []
 
 		for cal in schedule.calendars:
-			print 'attempting to fetch events for',e
+			print('attempting to fetch events for',e)
 			try:
 				result = cal.getEvents()
-				print 'Got events',result,'got',len(cal.events)
+				print('Got events',result,'got',len(cal.events))
 			except:
-				print 'failed to fetch events'
-			print 'attempting for event information'
+				print('failed to fetch events')
+			print('attempting for event information')
 			for event in cal.events:
-				print 'HERE!'
+				print('HERE!')
 				bookings.append(event.fullcalendarioJson())
 		json_outs[e] = bookings
 
