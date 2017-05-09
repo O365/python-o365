@@ -7,7 +7,6 @@ import requests
 
 log = logging.getLogger(__name__)
 
-
 class Message(object):
   '''
   Management of the process of sending, recieving, reading, and editing emails.
