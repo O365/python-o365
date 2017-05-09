@@ -61,7 +61,7 @@ class Message(object):
 
     else:
       self.json = {'Message': {'Body': {}},
-                   'ToRecipients': {}, 'BccRecipients': {}}
+                   'ToRecipients': [], 'CcRecipients': [], 'BccRecipients': []}
       self.hasAttachments = False
 
     self.auth = auth
@@ -99,11 +99,10 @@ class Message(object):
       data['Message']['Body']['Content'] = self.json['Body']['Content']
       data['Message']['Body']['ContentType'] = self.json['Body']['ContentType']
       data['Message']['ToRecipients'] = self.json['ToRecipients']
-      if self.json['BccRecipients']:
-        data['Message']['BccRecipients'] = self.json['BccRecipients']
+      data['Message']['CcRecipients'] = self.json['CcRecipients']
+      data['Message']['BccRecipients'] = self.json['BccRecipients']
       data['Message']['Attachments'] = [att.json for att in self.attachments]
       data = json.dumps(data)
-      log.debug(str(data))
     except Exception as e:
       log.error(
           'Error while trying to compile the json string to send: {0}'.format(str(e)))
@@ -152,7 +151,7 @@ class Message(object):
     '''get email body.'''
     return self.json['Body']['Content']
 
-  def setRecipients(self, val):
+  def setRecipients(self, val, r_type="To"):
     '''
     set the recipient list.
 
@@ -171,31 +170,33 @@ class Message(object):
     For each of these argument types the appropriate action will be taken
     to fit them to the needs of the library.
     '''
-    self.json['ToRecipients'] = []
+    log.debug("Entered SET_RECIPIENTS function with type: {}".format(r_type))
+    self.json[r_type + 'Recipients'] = []
+
     if isinstance(val, list):
       for con in val:
         if isinstance(con, Contact):
-          self.addRecipient(con)
+          self.addRecipient(con, r_type=r_type)
         elif isinstance(con, str):
           if '@' in con:
-            self.addRecipient(con)
+            self.addRecipient(con, r_type=r_type)
         elif isinstance(con, dict):
-          self.json['ToRecipients'].append(con)
+          self.json[r_type + 'Recipients'].append(con)
     elif isinstance(val, dict):
-      self.json['ToRecipients'] = [val]
+      self.json[r_type + 'Recipients'] = [val]
     elif isinstance(val, str):
       if '@' in val:
-        self.addRecipient(val)
+        self.addRecipient(val, r_type=r_type)
     elif isinstance(val, Contact):
-      self.addRecipient(val)
+      self.addRecipient(val, r_type=r_type)
     elif isinstance(val, Group):
       for person in val:
-        self.addRecipient(person)
+        self.addRecipient(person, r_type=r_type)
     else:
       return False
     return True
 
-  def addRecipient(self, address, name=None):
+  def addRecipient(self, address, name=None, r_type="To"):
     '''
     Adds a recipient to the recipients list.
 
@@ -209,90 +210,15 @@ class Message(object):
             argument is completely ignored.
     '''
     if isinstance(address, Contact):
-      self.json['ToRecipients'].append(address.getFirstEmailAddress())
+      self.json[r_type + 'Recipients'].append(address.getFirstEmailAddress())
     elif isinstance(address, Group):
       for con in address.contacts:
-        self.json['ToRecipients'].append(address.getFirstEmailAddress())
+        self.json[r_type + 'Recipients'].append(address.getFirstEmailAddress())
     else:
       if name is None:
         name = address[:address.index('@')]
-      if "aferreira" in name:
-        self.json['ToRecipients'].append(
-            {'EmailAddress': {'Address': address, 'Name': name}})
-      else:
-        self.json['ToRecipients'].append(
-            {'EmailAddress': {'Address': address, 'Name': name}})
-
-  def setBccRecipients(self, val):
-    '''
-    set the recipient list.
-
-    val: the one argument this method takes can be very flexible. you can send:
-            a dictionary: this must to be a dictionary formated as such:
-                    {"EmailAddress":{"Address":"recipient@example.com"}}
-                    with other options such ass "Name" with address. but at minimum
-                    it must have this.
-            a list: this must to be a list of libraries formatted the way
-                    specified above, or it can be a list of dictionary objects of
-                    type Contact or it can be an email address as string. The
-                    method will sort out the libraries from the contacts.
-            a string: this is if you just want to throw an email address.
-            a contact: type Contact from this dictionary.
-            a group: type Group, which is a list of contacts.
-    For each of these argument types the appropriate action will be taken
-    to fit them to the needs of the library.
-    '''
-    self.json['BccRecipients'] = []
-    if isinstance(val, list):
-      for con in val:
-        if isinstance(con, Contact):
-          self.addBccRecipient(con)
-        elif isinstance(con, str):
-          if '@' in con:
-            self.addBccRecipient(con)
-        elif isinstance(con, dict):
-          self.json['BccRecipients'].append(con)
-    elif isinstance(val, dict):
-      self.json['BccRecipients'] = [val]
-    elif isinstance(val, str):
-      if '@' in val:
-        self.addBccRecipient(val)
-    elif isinstance(val, Contact):
-      self.addBccRecipient(val)
-    elif isinstance(val, Group):
-      for person in val:
-        self.addBccRecipient(person)
-    else:
-      return False
-    return True
-
-  def addBccRecipient(self, address, name=None):
-    '''
-    Adds a recipient to the recipients list.
-
-    Arguments:
-    address -- the email address of the person you are sending to. <<< Important that.
-            Address can also be of type Contact or type Group.
-    name -- the name of the person you are sending to. mostly just a decorator. If you
-            send an email address for the address arg, this will give you the ability
-            to set the name properly, other wise it uses the email address up to the
-            at sign for the name. But if you send a type Contact or type Group, this
-            argument is completely ignored.
-    '''
-    if isinstance(address, Contact):
-      self.json['BccRecipients'].append(address.getFirstEmailAddress())
-    elif isinstance(address, Group):
-      for con in address.contacts:
-        self.json['BccRecipients'].append(address.getFirstEmailAddress())
-    else:
-      if name is None:
-        name = address[:address.index('@')]
-      if "aferreira" in name:
-        self.json['BccRecipients'].append(
-            {'EmailAddress': {'Address': address, 'Name': name}})
-      else:
-        self.json['BccRecipients'].append(
-            {'EmailAddress': {'Address': address, 'Name': name}})
+      self.json[r_type + 'Recipients'].append(
+          {'EmailAddress': {'Address': address, 'Name': name}})
 
   def setSubject(self, val):
     '''Sets the subect line of the email.'''
