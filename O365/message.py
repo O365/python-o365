@@ -7,7 +7,7 @@ from O365.contact import Contact
 from O365.group import Group
 
 log = logging.getLogger(__name__)
-log.setLevel(logging.INFO)
+log.setLevel(logging.DEBUG)
 
 
 class Message(object):
@@ -40,10 +40,10 @@ class Message(object):
 
   '''
 
-  att_url = 'https://outlook.office365.com/api/v2.0/me/messages/{0}/attachments'
-  send_url = 'https://outlook.office365.com/api/v2.0/me/sendmail'
-  draft_url = 'https://outlook.office365.com/api/v2.0/me/folders/{folder_id}/messages'
-  update_url = 'https://outlook.office365.com/api/v2.0/me/messages/{0}'
+  att_url = 'https://outlook.office365.com/api/v1.0/me/messages/{0}/attachments'
+  send_url = 'https://outlook.office365.com/api/v1.0/me/sendmail'
+  draft_url = 'https://outlook.office365.com/api/v1.0/me/folders/{folder_id}/messages'
+  update_url = 'https://outlook.office365.com/api/v1.0/me/messages/{0}'
 
   def __init__(self, json=None, auth=None):
     '''
@@ -102,7 +102,6 @@ class Message(object):
       if self.json['BccRecipients']:
         data['Message']['BccRecipients'] = self.json['BccRecipients']
       data['Message']['Attachments'] = [att.json for att in self.attachments]
-      data['SavetoSentItems'] = "true"
       data = json.dumps(data)
       log.debug(str(data))
     except Exception as e:
@@ -113,7 +112,7 @@ class Message(object):
     response = requests.post(
         self.send_url, data, headers=headers, auth=self.auth)
     log.debug('response from server for sending message:' + str(response))
-
+    log.debug("respnse body: {}".format(response.text))
     if response.status_code != 202:
       return False
 
