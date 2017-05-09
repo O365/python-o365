@@ -1,13 +1,11 @@
-import json
-import logging
-
-import requests
 from O365.attachment import Attachment
 from O365.contact import Contact
 from O365.group import Group
+import logging
+import json
+import requests
 
 log = logging.getLogger(__name__)
-log.setLevel(logging.DEBUG)
 
 
 class Message(object):
