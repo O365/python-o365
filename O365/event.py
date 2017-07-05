@@ -339,4 +339,35 @@ class Event( object ):
 				name = address[:address.index('@')]
 			self.json['Attendees'].append({'EmailAddress':{'Address':address,'Name':name}})
 
+	def setLocation(self,loc):
+		'''
+		Sets the event's location.
+
+		Arguments:
+		loc -- two options, you can send a dictionary in the format discribed here:
+		https://msdn.microsoft.com/en-us/office/office365/api/complex-types-for-mail-contacts-calendar#LocationBeta
+		this will allow you to set address, coordinates, displayname, location email
+		address, location uri, or any combination of the above. If you don't need that much
+		detail you can simply send a string and it will be set as the locations display
+		name. If you send something not a string or a dict, it will try to cast whatever
+		you send into a string and set that as the display name.
+		'''
+		if Location not in self.json:
+			self.json['Location'] = {"Address":null}
+
+		if isinstance(loc,dict):
+			self.json['Location'] = loc
+		else:
+			self.json['Location']['DisplayName'] = str(loc)
+
+	def getLocation(self):
+		'''
+		Get the current location, if one is set.
+		'''
+		if Location in self.json:
+			return self.json['Location']
+		return None
+		
+			
+
 #To the King!
