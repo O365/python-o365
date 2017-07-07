@@ -352,7 +352,7 @@ class Event( object ):
 		name. If you send something not a string or a dict, it will try to cast whatever
 		you send into a string and set that as the display name.
 		'''
-		if Location not in self.json:
+		if 'Location' not in self.json:
 			self.json['Location'] = {"Address":null}
 
 		if isinstance(loc,dict):
@@ -364,7 +364,7 @@ class Event( object ):
 		'''
 		Get the current location, if one is set.
 		'''
-		if Location in self.json:
+		if 'Location' in self.json:
 			return self.json['Location']
 		return None
 		
