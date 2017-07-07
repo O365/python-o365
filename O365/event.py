@@ -353,7 +353,7 @@ class Event( object ):
 		you send into a string and set that as the display name.
 		'''
 		if 'Location' not in self.json:
-			self.json['Location'] = {"Address":null}
+			self.json['Location'] = {"Address":None}
 
 		if isinstance(loc,dict):
 			self.json['Location'] = loc
