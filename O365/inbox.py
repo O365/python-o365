@@ -18,7 +18,7 @@ class Inbox( object ):
 	#url for fetching emails. Takes a flag for whether they are read or not.
 	inbox_url = 'https://outlook.office365.com/api/v1.0/me/messages'
 
-	def __init__(self, auth, getNow=True):
+	def __init__(self, auth, getNow=True, verify=True):
 		'''
 		Creates a new inbox wrapper. Send email and password for authentication.
 		
@@ -35,6 +35,8 @@ class Inbox( object ):
 			self.filters = 'IsRead eq false'
 			self.getMessages()
 
+                self.verify = verify
+
 
 	def getMessages(self, number = 10):
 		'''
@@ -50,7 +52,7 @@ class Inbox( object ):
 		'''
 
 		log.debug('fetching messages.')			
-		response = requests.get(self.inbox_url,auth=self.auth,params={'$filter':self.filters, '$top':number})
+		response = requests.get(self.inbox_url,auth=self.auth,params={'$filter':self.filters, '$top':number},verify=self.verify)
 		log.info('Response from O365: %s', str(response))
 		
 		for message in response.json()['value']:

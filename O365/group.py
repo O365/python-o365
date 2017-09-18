@@ -22,7 +22,7 @@ class Group( object ):
 	con_folder_url = 'https://outlook.office365.com/api/v1.0/me/contactfolders/{0}/contacts'
 	folder_url = 'https://outlook.office365.com/api/v1.0/me/contactfolders?$filter=DisplayName eq \'{0}\''
 
-	def __init__(self, auth, folderName=None):
+	def __init__(self, auth, folderName=None,verify=True):
 		'''
 		Creates a group class for managing all contacts associated with email+password.
 
@@ -34,22 +34,24 @@ class Group( object ):
 		self.contacts = []
 		self.folderName = folderName
 
+                self.verify = verify
+
 
 	def getContacts(self):
 		'''Begin the process of downloading contact metadata.'''
 		if self.folderName is None:
 			log.debug('fetching contacts.')
-			response = requests.get(self.con_url,auth=self.auth)
+			response = requests.get(self.con_url,auth=self.auth,verify=self.verify)
 			log.info('Response from O365: %s', str(response))
 
 		else:
 			log.debug('fetching contact folder.')
-			response = requests.get(self.folder_url.format(self.folderName),auth=self.auth)
+			response = requests.get(self.folder_url.format(self.folderName),auth=self.auth,verify=self.verify)
 			fid = response.json()['value'][0]['Id']
 			log.debug('got a response of {0} and an Id of {1}'.format(response.status_code,fid))
 
 			log.debug('fetching contacts for {0}.'.format(self.folderName))
-			response = requests.get(self.con_folder_url.format(fid),auth=self.auth)
+			response = requests.get(self.con_folder_url.format(fid),auth=self.auth,verify=self.verify)
 			log.info('Response from O365: {0}'.format(str(response)))
 
 		for contact in response.json()['value']:

@@ -18,17 +18,19 @@ class Schedule( object ):
 	'''
 	cal_url = 'https://outlook.office365.com/api/v1.0/me/calendars'
 
-	def __init__(self, auth):
+	def __init__(self, auth, verify=True):
 		'''Creates a Schedule class for managing all calendars associated with email+password.'''
 		log.debug('setting up for the schedule of the email %s',auth[0])
 		self.auth = auth
 		self.calendars = []
 
+                self.verify = verify
+
 
 	def getCalendars(self):
 		'''Begin the process of downloading calendar metadata.'''
 		log.debug('fetching calendars.')
-		response = requests.get(self.cal_url,auth=self.auth)
+		response = requests.get(self.cal_url,auth=self.auth,verify=self.verify)
 		log.info('Response from O365: %s', str(response))
 		
 		for calendar in response.json()['value']:

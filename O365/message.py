@@ -42,7 +42,7 @@ class Message(object):
   draft_url = 'https://outlook.office365.com/api/v1.0/me/folders/{folder_id}/messages'
   update_url = 'https://outlook.office365.com/api/v1.0/me/messages/{0}'
 
-  def __init__(self, json=None, auth=None):
+  def __init__(self, json=None, auth=None, verify=True):
     '''
     Makes a new message wrapper for sending and recieving messages.
 
@@ -65,6 +65,9 @@ class Message(object):
     self.attachments = []
     self.reciever = None
 
+    self.verify = verify
+
+
   def fetchAttachments(self):
     '''kicks off the process that downloads attachments locally.'''
     if not self.hasAttachments:
@@ -72,7 +75,7 @@ class Message(object):
       return False
 
     response = requests.get(self.att_url.format(
-        self.json['Id']), auth=self.auth)
+        self.json['Id']), auth=self.auth,verify=self.verify)
     log.info('response from O365 for retriving message attachments: %s', str(response))
     json = response.json()
 
@@ -106,7 +109,7 @@ class Message(object):
       return False
 
     response = requests.post(
-        self.send_url, data, headers=headers, auth=self.auth)
+        self.send_url, data, headers=headers, auth=self.auth,verify=self.verify)
     log.debug('response from server for sending message:' + str(response))
     log.debug("respnse body: {}".format(response.text))
     if response.status_code != 202:
@@ -120,7 +123,7 @@ class Message(object):
     headers = {'Content-type': 'application/json', 'Accept': 'application/json'}
     try:
       response = requests.patch(self.update_url.format(
-          self.json['Id']), read, headers=headers, auth=self.auth)
+          self.json['Id']), read, headers=headers, auth=self.auth,verify=self.verify)
     except:
       return False
     return True

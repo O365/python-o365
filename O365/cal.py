@@ -26,7 +26,7 @@ class Calendar( object ):
 	events_url = 'https://outlook.office365.com/api/v1.0/me/calendars/{0}/calendarview?startDateTime={1}&endDateTime={2}&$top={3}'
 	time_string = '%Y-%m-%dT%H:%M:%SZ'
 
-	def __init__(self, json=None, auth=None):
+	def __init__(self, json=None, auth=None, verify=True):
 		'''
 		Wraps all the information for managing calendars.
 		'''
@@ -38,6 +38,8 @@ class Calendar( object ):
 			log.debug('translating calendar information into local variables.')
 			self.calendarId = json['Id']
 			self.name = json['Name']
+
+                self.verify = verify
 
 	def getName(self):
 		'''Get the calendar's Name.'''
@@ -84,7 +86,7 @@ class Calendar( object ):
 			end = time.strftime(self.time_string,end)
 
 		# This is where the actual call to Office365 happens.
-		response = requests.get(self.events_url.format(self.json['Id'],start,end,eventCount) ,auth=self.auth)
+		response = requests.get(self.events_url.format(self.json['Id'],start,end,eventCount) ,auth=self.auth, verify=self.verify)
 		log.info('Response from O365: %s', str(response))
 		
 		#This takes that response and then parses it into individual calendar events.
