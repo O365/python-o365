@@ -39,7 +39,7 @@ class Calendar( object ):
 			self.calendarId = json['Id']
 			self.name = json['Name']
 
-                self.verify = verify
+		self.verify = verify
 
 	def getName(self):
 		'''Get the calendar's Name.'''

@@ -37,8 +37,8 @@ class Contact( object ):
 		else:
 			log.debug('there was no json, putting in some dumby info.')
 			self.json = {'DisplayName':'Jebediah Kerman'}
-                        
-                self.verify = verify
+
+		self.verify = verify
 
 	def delete(self):
 		'''delete's a contact. cause who needs that guy anyway?'''
@@ -160,7 +160,5 @@ class Contact( object ):
 	def addEmail(self,address,name=None):
 		'''takes a plain string email, and optionally name, and appends it to list.'''
 		ins = {'Address':address,'Name':None}
-
-	
 
 #To the King!

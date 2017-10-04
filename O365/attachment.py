@@ -61,7 +61,7 @@ class Attachment( object ):
 		else:
 			self.json = {'@odata.type':'#Microsoft.OutlookServices.FileAttachment'}
 
-                self.verify = verify
+		self.verify = verify
 
 	def isType(self,typeString):
 		'''Test to if the attachment is the same type as you are seeking. Do not include a period.'''

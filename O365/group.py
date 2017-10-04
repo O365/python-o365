@@ -34,7 +34,7 @@ class Group( object ):
 		self.contacts = []
 		self.folderName = folderName
 
-                self.verify = verify
+		self.verify = verify
 
 
 	def getContacts(self):

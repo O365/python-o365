@@ -35,7 +35,7 @@ class Inbox( object ):
 			self.filters = 'IsRead eq false'
 			self.getMessages()
 
-                self.verify = verify
+		self.verify = verify
 
 
 	def getMessages(self, number = 10):

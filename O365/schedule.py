@@ -24,7 +24,7 @@ class Schedule( object ):
 		self.auth = auth
 		self.calendars = []
 
-                self.verify = verify
+		self.verify = verify
 
 
 	def getCalendars(self):

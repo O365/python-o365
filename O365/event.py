@@ -68,7 +68,7 @@ class Event( object ):
 		else:
 			self.json = {}
 
-                self.verify = verify
+		self.verify = verify
 
 
 	def create(self,calendar=None):
