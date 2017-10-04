@@ -25,6 +25,8 @@ class Message(object):
           getSenderName -- gets the name of the sender, if possible.
           getSubject -- gets the email's subject line.
           getBody -- gets contents of the body of the email.
+          setFrom -- sets the email's sender in case username have permissions to send mail for 
+                        other account.
           addRecipient -- adds a person to the recipient list.
           setRecipients -- sets the list of recipients.
           setSubject -- sets the subject line.
@@ -95,6 +97,8 @@ class Message(object):
       data['Message']['Subject'] = self.json['Subject']
       data['Message']['Body']['Content'] = self.json['Body']['Content']
       data['Message']['Body']['ContentType'] = self.json['Body']['ContentType']
+      if 'From' in self.json:
+        data['Message']['From'] = self.json['From']
       data['Message']['ToRecipients'] = self.json['ToRecipients']
       data['Message']['CcRecipients'] = self.json['CcRecipients']
       data['Message']['BccRecipients'] = self.json['BccRecipients']
@@ -216,6 +220,15 @@ class Message(object):
         name = address[:address.index('@')]
       self.json[r_type + 'Recipients'].append(
           {'EmailAddress': {'Address': address, 'Name': name}})
+
+  def setFrom(self, address, name = None):
+    '''
+    Set custom sender through an other account, in case you have permissions to send as 
+    the other account.
+    '''
+    if name == None:
+      name = address[:address.index('@')]
+    self.json['From'] = {"EmailAddress":{"Address":address, "Name": name}}
 
   def setSubject(self, val):
     '''Sets the subect line of the email.'''
