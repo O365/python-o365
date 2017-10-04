@@ -220,7 +220,7 @@ class Event( object ):
 		'''sets event subject line.'''
 		self.json['Subject'] = val
 
-	def setBody(self,val,ContentType='Text'):
+	def setBody(self,val,contentType='Text'):
 		'''
 			sets event body content:
 				Examples for ContentType could be 'Text' or 'HTML'
@@ -230,7 +230,7 @@ class Event( object ):
 		while not cont:
 			try:
 				self.json['Body']['Content'] = val
-				self.json['Body']['ContentType'] = ContentType
+				self.json['Body']['ContentType'] = contentType
 				cont = True
 			except:
 				self.json['Body'] = {}
