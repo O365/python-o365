@@ -23,7 +23,7 @@ class Contact( object ):
 	con_url = 'https://outlook.office365.com/api/v1.0/me/contacts/{0}'
 	time_string = '%Y-%m-%dT%H:%M:%SZ'
 
-	def __init__(self, json=None, auth=None):
+	def __init__(self, json=None, auth=None, verify=True):
 		'''
 		Wraps all the informaiton for managing contacts.
 		'''
@@ -38,12 +38,14 @@ class Contact( object ):
 			log.debug('there was no json, putting in some dumby info.')
 			self.json = {'DisplayName':'Jebediah Kerman'}
 
+		self.verify = verify
+
 	def delete(self):
 		'''delete's a contact. cause who needs that guy anyway?'''
 		headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
 
 		log.debug('preparing to delete contact.')
-		response = requests.delete(self.con_url.format(str(self.contactId)),headers=headers,auth=self.auth)
+		response = requests.delete(self.con_url.format(str(self.contactId)),headers=headers,auth=self.auth,verify=self.verify)
 		log.debug('response from delete attempt: {0}'.format(str(response)))
 
 		return response.status_code == 204
@@ -60,7 +62,7 @@ class Contact( object ):
 
 		response = None
 		try:
-			response = requests.patch(self.con_url.format(str(self.contactId)),data,headers=headers,auth=self.auth)
+			response = requests.patch(self.con_url.format(str(self.contactId)),data,headers=headers,auth=self.auth,verify=self.verify)
 			log.debug('sent update request')
 		except Exception as e:
 			if response:
@@ -85,7 +87,7 @@ class Contact( object ):
 
 		response = None
 		try:
-			response = requests.post(self.con_url.format(str(self.contactId)),data,headers=headers,auth=self.auth)
+			response = requests.post(self.con_url.format(str(self.contactId)),data,headers=headers,auth=self.auth,verify=self.verify)
 			log.debug('sent create request')
 		except Exception as e:
 			if response:
@@ -158,7 +160,5 @@ class Contact( object ):
 	def addEmail(self,address,name=None):
 		'''takes a plain string email, and optionally name, and appends it to list.'''
 		ins = {'Address':address,'Name':None}
-
-	
 
 #To the King!

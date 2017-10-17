@@ -47,7 +47,7 @@ class Event( object ):
 	delete_url = 'https://outlook.office365.com/api/v1.0/me/events/{0}'
 
 
-	def __init__(self,json=None,auth=None,cal=None):
+	def __init__(self,json=None,auth=None,cal=None,verify=True):
 		'''
 		Creates a new event wrapper.
 		
@@ -67,6 +67,8 @@ class Event( object ):
 			self.isNew = False
 		else:
 			self.json = {}
+
+		self.verify = verify
 
 
 	def create(self,calendar=None):
@@ -105,7 +107,7 @@ class Event( object ):
 		response = None
 		try:
 			log.debug('sending post request now')
-			response = requests.post(self.create_url.format(calId),data,headers=headers,auth=self.auth)
+			response = requests.post(self.create_url.format(calId),data,headers=headers,auth=self.auth,verify=self.verify)
 			log.debug('sent post request.')
 		except Exception as e:
 			if response:
@@ -134,7 +136,7 @@ class Event( object ):
 
 		response = None
 		try:
-			response = requests.patch(self.update_url.format(self.json['Id']),data,headers=headers,auth=self.auth)
+			response = requests.patch(self.update_url.format(self.json['Id']),data,headers=headers,auth=self.auth,verify=self.verify)
 			log.debug('sending patch request now')
 		except Exception as e:
 			if response:
@@ -163,7 +165,7 @@ class Event( object ):
 		response = None
 		try:
 			log.debug('sending delete request')
-			response = requests.delete(self.delete_url.format(self.json['Id']),headers=headers,auth=self.auth)
+			response = requests.delete(self.delete_url.format(self.json['Id']),headers=headers,auth=self.auth,verify=self.verify)
 
 		except Exception as e:
 			if response:
