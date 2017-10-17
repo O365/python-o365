@@ -32,7 +32,7 @@ class Attachment( object ):
 
 	create_url = 'https://outlook.office365.com/api/v1.0/me/messages/{0}/attachments'
 
-	def __init__(self,json=None,path=None):
+	def __init__(self,json=None,path=None,verify=True):
 		'''
 		Creates a new attachment class, optionally from existing JSON.
 		
@@ -60,6 +60,8 @@ class Attachment( object ):
 					self.setName(path)
 		else:
 			self.json = {'@odata.type':'#Microsoft.OutlookServices.FileAttachment'}
+
+		self.verify = verify
 
 	def isType(self,typeString):
 		'''Test to if the attachment is the same type as you are seeking. Do not include a period.'''
@@ -99,7 +101,7 @@ class Attachment( object ):
 
 		data = json.dumps(self.json)
 
-		response = requests.post(self.create_url.format(mid),data,header=headers,auth=message.auth)
+		response = requests.post(self.create_url.format(mid),data,header=headers,auth=message.auth,verify=self.verify)
 		log.debug('Response from server for attaching: {0}'.format(str(response)))
 
 		return response
