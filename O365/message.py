@@ -126,7 +126,7 @@ class Message( object ):
 			return False
 		return True
 	
-	def markAsUnRead(self, id):
+	def markAsUnRead(id):
 		'''marks analogous message as unread in the cloud.'''
 		read = '{"IsRead":false}'
 		headers = {'Content-type': 'application/json', 'Accept': 'application/json'}
