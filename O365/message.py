@@ -126,12 +126,12 @@ class Message( object ):
 			return False
 		return True
 	
-	def markAsUnRead(id):
+	def markAsUnRead(self):
 		'''marks analogous message as unread in the cloud.'''
 		read = '{"IsRead":false}'
 		headers = {'Content-type': 'application/json', 'Accept': 'application/json'}
 		try:
-			response = requests.patch(self.update_url.format(id),read,headers=headers,auth=self.auth)
+			response = requests.patch(self.update_url.format(self.json['Id']),read,headers=headers,auth=self.auth)
 		except:
 			return False
 		return True	
