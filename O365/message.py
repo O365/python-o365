@@ -126,6 +126,16 @@ class Message( object ):
 			return False
 		return True
 	
+	def markAsUnRead(self):
+		'''marks analogous message as read in the cloud.'''
+		read = '{"IsRead":false}'
+		headers = {'Content-type': 'application/json', 'Accept': 'application/json'}
+		try:
+			response = requests.patch(self.update_url.format(self.json['Id']),read,headers=headers,auth=self.auth)
+		except:
+			return False
+		return True	
+	
 	def getID(self):
 		'''get the ID of the email.'''
 		return self.json['Id']
