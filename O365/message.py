@@ -255,4 +255,15 @@ class Message(object):
 			except:
 				self.json['Body'] = {}
 
+    def update_category(self, category_name):
+        category = '{{"Categories":["{}"]}}'.format(category_name)
+        headers = {'Content-type': 'application/json', 'Accept': 'application/json'}
+        try:
+            response = requests.patch(self.update_url.format(
+                self.json['Id']), category, headers=headers, auth=self.auth, verify=self.verify)
+            print(response.url)
+        except:
+            return False
+        return True
+
 # To the King!

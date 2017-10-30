@@ -57,3 +57,7 @@ target/
 *.pw
 *bookings.json
 */pid
+
+.idea/
+
+trail.py
