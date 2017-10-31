@@ -1,3 +1,8 @@
+import requests
+import logging
+
+log = logging.getLogger(__name__)
+
 class Connection(object):
     instance = None
 
@@ -14,6 +19,7 @@ class Connection(object):
         """
         self.api_version = api_version
         self.auth = None
+        self.proxy_url = None
 
     @staticmethod
     def login(username, password):
@@ -26,8 +32,34 @@ class Connection(object):
             Connection()
 
         Connection.instance.auth = (username, password)
-
         return Connection.instance
 
-    def proxy(self, url, port, username, password):
-        pass
+    @staticmethod
+    def proxy(url, port, username, password):
+        if not Connection.instance:
+            Connection()
+
+        Connection.instance.proxy_dict = {
+            "http": "http://{}:{}@{}:{}".format(username, password, url, port),
+            "https": "https://{}:{}@{}:{}".format(username, password, url,
+                                                  port),
+        }
+        return Connection.instance
+
+    @staticmethod
+    def get_response(request_url, **kwargs):
+        if not Connection.instance:
+            Connection()
+
+        if not Connection.instance.auth:
+            raise RuntimeError('Connection is not configured, please use '
+                               '"O365.Connection" to set username and password')
+        con_params = {'auth': Connection.instance.auth}
+        if Connection.instance.proxy_dict:
+            con_params['proxies'] = Connection.instance.proxy_dict
+        con_params.update(kwargs)
+
+        log.info('Requesting URL: {}'.format(request_url))
+        response = requests.get(request_url, **con_params)
+        log.info('Received response from URL {}'.format(response.url))
+        return response

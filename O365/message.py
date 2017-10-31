@@ -68,14 +68,14 @@ class Message(object):
 
         self.verify = verify
 
-    def fetchAttachments(self):
+    def fetchAttachments(self,**kwargs):
         '''kicks off the process that downloads attachments locally.'''
         if not self.hasAttachments:
             log.debug('message has no attachments, skipping out early.')
             return False
 
         response = requests.get(self.att_url.format(
-            self.json['Id']), auth=self.auth, verify=self.verify)
+            self.json['Id']), auth=self.auth, verify=self.verify, **kwargs)
         log.info('response from O365 for retriving message attachments: %s', str(response))
         json = response.json()
 
@@ -88,7 +88,7 @@ class Message(object):
 
         return len(self.attachments)
 
-    def sendMessage(self):
+    def sendMessage(self, **kwargs):
         '''takes local variabls and forms them into a message to be sent.'''
 
         headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
@@ -109,7 +109,7 @@ class Message(object):
             return False
 
         response = requests.post(
-            self.send_url, data, headers=headers, auth=self.auth, verify=self.verify)
+            self.send_url, data, headers=headers, auth=self.auth, verify=self.verify, **kwargs)
         log.debug('response from server for sending message:' + str(response))
         log.debug("respnse body: {}".format(response.text))
         if response.status_code != 202:
@@ -255,12 +255,12 @@ class Message(object):
             except:
                 self.json['Body'] = {}
 
-    def update_category(self, category_name):
+    def update_category(self, category_name, **kwargs):
         category = '{{"Categories":["{}"]}}'.format(category_name)
         headers = {'Content-type': 'application/json', 'Accept': 'application/json'}
         try:
             response = requests.patch(self.update_url.format(
-                self.json['Id']), category, headers=headers, auth=self.auth, verify=self.verify)
+                self.json['Id']), category, headers=headers, auth=self.auth, verify=self.verify, **kwargs)
             print(response.url)
         except:
             return False

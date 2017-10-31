@@ -1,7 +1,8 @@
-from O365.message import Message
 import logging
-import json
+
 import requests
+
+from O365.message import Message
 
 log = logging.getLogger(__name__)
 
@@ -31,9 +32,6 @@ class FluentInbox(object):
 
         :param verify: whether or not to verify SSL certificate
         """
-        if not Connection.instance or not Connection.instance.auth:
-            raise RuntimeError('Connection is not configured, please use O365.Connection to set username and password')
-
         self.url = FluentInbox._get_url('inbox')
         self.fetched_count = 0
         self._filter = ''
@@ -47,7 +45,9 @@ class FluentInbox(object):
         :param folder_name: name of the outlook folder
         """
         self._reset()
-        response = self._get_response(FluentInbox._get_url('folders'), params={'$top': 100})
+        response = Connection.get_response(FluentInbox._get_url('folders'),
+                                           verify=self.verify,
+                                           params={'$top': 100})
 
         folder_id = None
         all_folders = []
@@ -60,7 +60,8 @@ class FluentInbox(object):
             all_folders.append(folder['DisplayName'])
 
         if not folder_id:
-            raise RuntimeError('Folder "{}" is not found, available folders are {}'.format(folder_name, all_folders))
+            raise RuntimeError('Folder "{}" is not found, available folders '
+                               'are {}'.format(folder_name, all_folders))
 
         self.url = FluentInbox._get_url('folder').format(folder_id=folder_id)
 
@@ -88,12 +89,14 @@ class FluentInbox(object):
     def fetch_next(self, count=1):
         skip_count = self.fetched_count
         if self._search:
-            params = {'$filter': self._filter, '$top': count, '$search': '"{}"'.format(self._search)}
+            params = {'$filter': self._filter, '$top': count,
+                      '$search': '"{}"'.format(self._search)}
         else:
-            params = {'$filter': self._filter, '$top': count, '$skip': skip_count}
+            params = {'$filter': self._filter, '$top': count,
+                      '$skip': skip_count}
 
-        response = self._get_response(self.url, params=params)
-        log.info('Received response from url'.format(response.url))
+        response = Connection.get_response(self.url, verify=self.verify,
+                                           params=params)
         self.fetched_count += count
 
         messages = []
@@ -110,14 +113,6 @@ class FluentInbox(object):
         self.fetched_count = 0
         self.messages = []
 
-    def _get_response(self, request_url, **kwargs):
-        defaults = {
-            'auth': Connection.instance.auth,
-            'verify': self.verify
-        }
-        defaults.update(kwargs)
-        return requests.get(request_url, **defaults)
-
     def getMessages(self, number=10):
         '''
         Downloads messages to local memory.
@@ -132,7 +127,9 @@ class FluentInbox(object):
         '''
 
         log.debug('fetching messages.')
-        response = requests.get(self.inbox_url, auth=self.auth, params={'$filter': self.filters, '$top': number},
+        response = requests.get(self.inbox_url, auth=self.auth,
+                                params={'$filter': self.filters,
+                                        '$top': number},
                                 verify=self.verify)
         log.info('Response from O365: %s', str(response))
 
