@@ -30,13 +30,11 @@ class Inbox( object ):
 		self.messages = []
 
 		self.filters = ''
+		self.verify = verify
 		
 		if getNow:
 			self.filters = 'IsRead eq false'
 			self.getMessages()
-
-		self.verify = verify
-
 
 	def getMessages(self, number = 10):
 		'''
