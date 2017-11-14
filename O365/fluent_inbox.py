@@ -1,12 +1,9 @@
 import logging
 
-import requests
-
-from O365.message import Message
+from O365.connection import Connection
+from O365.fluent_message import Message
 
 log = logging.getLogger(__name__)
-
-from .connection import Connection
 
 
 class FluentInbox(object):
@@ -68,25 +65,61 @@ class FluentInbox(object):
         return self
 
     def filter(self, filter_string):
+        """ Set the value of a filter. More information on what filters are available can be found here:
+        https://msdn.microsoft.com/office/office365/APi/complex-types-for-mail-contacts-calendar#RESTAPIResourcesMessage
+        More improvements coming soon
+
+        :param filter_string: The string that represents the filters you want to enact.
+                should be something like: (HasAttachments eq true) and (IsRead eq false) or just: IsRead eq false
+                test your filter string here: https://outlook.office365.com/api/v1.0/me/messages?$filter=
+                if that accepts it then you know it works.
+        """
         self._filter = filter_string
         return self
 
     def search(self, search_string):
+        """ Set the value of a search. More information on what searches are available can be found here:
+        https://msdn.microsoft.com/office/office365/APi/complex-types-for-mail-contacts-calendar#RESTAPIResourcesMessage
+        More improvements coming soon
+
+        :param search_string: The search string you want to use
+
+        Should be something like: "Category:Action AND Subject:Test" or just: "Subject:Test".
+
+        Test your search string here: "https://outlook.office365.com/api/v1.0/me/messages?$search="
+        or directly in your mailbox, if that accepts it then you know it works.
+        """
         self._search = search_string
         return self
 
     def fetch_first(self, count=10):
+        """ Fetch the first n messages, where n is the specified count
+
+        :param count: no.of messages to fetch
+        """
         self.fetched_count = 0
         return self.fetch_next(count=count)
 
     def skip(self, count):
+        """ Skips the first n messages, where n is the specified count
+
+        :param count: no.of messages to skip
+        """
         self.fetched_count = count
         return self
 
     def fetch(self, count=10):
+        """ Fetch n messages from the result, where n is the specified count
+
+        :param count: no.of messages to fetch
+        """
         return self.fetch_next(count=count)
 
     def fetch_next(self, count=1):
+        """ Fetch the next n messages after the previous fetch, where n is the specified count
+
+        :param count: no.of messages to fetch
+        """
         skip_count = self.fetched_count
         if self._search:
             params = {'$filter': self._filter, '$top': count,
@@ -106,71 +139,15 @@ class FluentInbox(object):
         return messages
 
     @staticmethod
-    def _get_url(topic):
-        return FluentInbox.url_dict[topic][Connection.instance.api_version]
+    def _get_url(key):
+        """ Fetches the url for specified key as per the connection version configured
+
+        :param key: the key for which url is required
+        :return: URL to use for requests
+        """
+        return FluentInbox.url_dict[key][Connection.instance.api_version]
 
     def _reset(self):
+        """ Resets the current reference """
         self.fetched_count = 0
         self.messages = []
-
-    def getMessages(self, number=10):
-        '''
-        Downloads messages to local memory.
-
-        You create an inbox to be the container class for messages, this method
-        then pulls those messages down to the local disk. This is called in the
-        init method, so it's kind of pointless for you. Unless you think new
-        messages have come in.
-
-        You can filter only certain emails by setting filters. See the set and
-        get filters methods for more information.
-        '''
-
-        log.debug('fetching messages.')
-        response = requests.get(self.inbox_url, auth=self.auth,
-                                params={'$filter': self.filters,
-                                        '$top': number},
-                                verify=self.verify)
-        log.info('Response from O365: %s', str(response))
-
-        for message in response.json()['value']:
-            try:
-                duplicate = False
-                for i, m in enumerate(self.messages):
-                    if message['Id'] == m.json['Id']:
-                        self.messages[i] = Message(message, self.auth)
-                        duplicate = True
-                        break
-
-                if not duplicate:
-                    self.messages.append(Message(message, self.auth))
-
-                log.debug('appended message: %s', message['Subject'])
-            except Exception as e:
-                log.info('failed to append message: %', str(e))
-
-        log.debug('all messages retrieved and put in to the list.')
-        return True
-
-    def getFilter(self):
-        '''get the value set for a specific filter, if exists, else None'''
-        return self.filters
-
-    def setFilter(self, f_string):
-        '''
-        Set the value of a filter. More information on what filters are available
-        can be found here:
-        https://msdn.microsoft.com/office/office365/APi/complex-types-for-mail-contacts-calendar#RESTAPIResourcesMessage
-        I may in the future have the ability to add these in yourself. but right now that is to complicated.
-
-        Arguments:
-            f_string -- The string that represents the filters you want to enact.
-                should be something like: (HasAttachments eq true) and (IsRead eq false)
-                or just: IsRead eq false
-                test your filter stirng here: https://outlook.office365.com/api/v1.0/me/messages?$filter=
-                if that accepts it then you know it works.
-        '''
-        self.filters = f_string
-        return True
-
-# To the King!

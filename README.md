@@ -28,6 +28,7 @@ if m.json['IsReadReceiptRequested']:
 - [Email](#email)
 - [Calendar](#calendar)
 - [Contacts](#contacts)
+- [FluentInbox](#fluent inbox)
 
 ## Email
 There are two classes for working with emails in O365.
@@ -141,6 +142,47 @@ m.setBody(open('news.html','r').read())
 m.setRecipients(group)
 m.sendMessage()
 ```
+
+## Fluent Inbox
+FluentInbox is a new class introduced to enhance usage of inbox fluently (check the below example to understand clearly)
+```python
+from O365 import Connection, FluentInbox
+
+# Setup connection object
+# Proxy call is required only if you are behind proxy
+Connection.login('email_id@company.com', 'password to login')
+Connection.proxy(url='proxy.company.com', port=8080, username='proxy_username', password='proxy_password')
+
+# Create an inbox reference
+inbox = FluentInbox()
+
+# Fetch 20 messages from "Temp" folder containing "Test" in the subject
+for message in inbox.from_folder('Temp').search('Subject:Test').fetch(count=20):
+    # Just print the message subject
+    print(message.getSubject())
+
+# Fetch the next 15 messages from the results
+for message in inbox.fetch_next(15):
+    # Just print the message subject
+    print(message.getSubject())
+
+# Alternately you can do the below for same result, just a different way of accessing the messages
+inbox.from_folder('Temp').search('Subject:Test').fetch(count=20)
+inbox.fetch_next(15)
+for message in inbox.messages:
+    # Just print the message subject
+    print(message.getSubject())
+
+# If you would like to get only the 2nd result
+for message in inbox.search('Category:some_cat').skip(1).fetch(1):
+    # Just print the message subject
+    print(message.getSubject())
+
+# If you want the results from beginning by ignoring any currently read count
+inbox.fetch_first(10)
+```
+
+
 
 ## Looking for new maintainer
 I no longer, as of October 2015, have an office365 account and so I'm looking for someone to take over this project. Please fork and carry on.

@@ -3,6 +3,7 @@ import logging
 
 log = logging.getLogger(__name__)
 
+
 class Connection(object):
     instance = None
 
@@ -19,7 +20,7 @@ class Connection(object):
         """
         self.api_version = api_version
         self.auth = None
-        self.proxy_url = None
+        self.proxy_dict = None
 
     @staticmethod
     def login(username, password):
@@ -36,6 +37,13 @@ class Connection(object):
 
     @staticmethod
     def proxy(url, port, username, password):
+        """ Connect to Office 365 though the specified proxy
+
+        :param url: url of the proxy server
+        :param port: port to connect to proxy server
+        :param username: username for authentication in the proxy server
+        :param password: password for the specified username
+        """
         if not Connection.instance:
             Connection()
 
@@ -48,6 +56,12 @@ class Connection(object):
 
     @staticmethod
     def get_response(request_url, **kwargs):
+        """ Fetches the response for specified url and arguments, adding the auth and proxy information to the url
+
+        :param request_url: url to request
+        :param kwargs: any keyword arguments to pass to the requests api
+        :return: response object
+        """
         if not Connection.instance:
             Connection()
 
