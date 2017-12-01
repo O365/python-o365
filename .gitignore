@@ -57,3 +57,5 @@ target/
 *.pw
 *bookings.json
 */pid
+
+.idea/

@@ -109,6 +109,9 @@ class Event( object ):
 			log.debug('sending post request now')
 			response = requests.post(self.create_url.format(calId),data,headers=headers,auth=self.auth,verify=self.verify)
 			log.debug('sent post request.')
+			if response.status_code > 399:
+				log.error("Invalid response code [{}], response text: \n{}".format(response.status_code, response.text))
+				return False
 		except Exception as e:
 			if response:
 				log.debug('response to event creation: %s',str(response))
