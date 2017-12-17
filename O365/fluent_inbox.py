@@ -10,17 +10,17 @@ class FluentInbox(object):
     url_dict = {
         'inbox': {
             '1.0': 'https://outlook.office365.com/api/v1.0/me/messages',
-            '2.0': 'https://outlook.office365.com/api/v2.0/me/messages',
+            '2.0': 'https://graph.microsoft.com/v1.0/me/messages',
         },
 
         'folders': {
             '1.0': 'https://outlook.office365.com/api/v1.0/me/Folders',
-            '2.0': 'https://outlook.office365.com/api/v2.0/me/MailFolders',
+            '2.0': 'https://graph.microsoft.com/v1.0/me/MailFolders',
         },
 
         'folder': {
             '1.0': 'https://outlook.office365.com/api/v1.0/me/Folders/{folder_id}/messages',
-            '2.0': 'https://outlook.office365.com/api/v2.0/me/MailFolders/{folder_id}/messages',
+            '2.0': 'https://graph.microsoft.com/v1.0/me/MailFolders/{folder_id}/messages',
         },
     }
 
@@ -49,12 +49,12 @@ class FluentInbox(object):
         folder_id = None
         all_folders = []
 
-        for folder in response.json()['value']:
-            if folder['DisplayName'] == folder_name:
-                folder_id = folder['Id']
+        for folder in response:
+            if folder['displayName'] == folder_name:
+                folder_id = folder['id']
                 break
 
-            all_folders.append(folder['DisplayName'])
+            all_folders.append(folder['displayName'])
 
         if not folder_id:
             raise RuntimeError('Folder "{}" is not found, available folders '
@@ -133,7 +133,7 @@ class FluentInbox(object):
         self.fetched_count += count
 
         messages = []
-        for message in response.json()['value']:
+        for message in response:
             messages.append(Message(message, Connection.instance.auth))
 
         return messages

@@ -61,3 +61,4 @@ target/
 .idea/
 
 trail.py
+sample_run.py

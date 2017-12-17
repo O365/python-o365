@@ -33,19 +33,19 @@ That's it. making and sending emails and events is now very simple and straight 
 https://github.com/Narcolapser/python-o365'''
 
 setup(name='O365',
-	version='0.9.8.RC1',
-	description='Python library for working with Microsoft Office 365',
-	long_description=long_desc,
-	author='Toben Archer',
-	author_email='sandslash+O365@gmail.com',
-	maintainer='Toben Archer',
-	maintainer_email='sandslash+O365@gmail.com',
-	url='https://github.com/Narcolapser/python-o365',
-	packages=['O365'],
-	install_requires=['requests'],
-	license='Apache 2.0',
-	classifiers=CLASSIFIERS
-	)
+      version='0.9.8.RC1',
+      description='Python library for working with Microsoft Office 365',
+      long_description=long_desc,
+      author='Toben Archer',
+      author_email='sandslash+O365@gmail.com',
+      maintainer='Toben Archer',
+      maintainer_email='sandslash+O365@gmail.com',
+      url='https://github.com/Narcolapser/python-o365',
+      packages=['O365'],
+      install_requires=['requests', 'oauthlib'],
+      license='Apache 2.0',
+      classifiers=CLASSIFIERS
+      )
 
 
 #so I don't have to keep looking it up: python setup.py sdist upload -r pypi

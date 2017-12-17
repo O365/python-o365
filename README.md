@@ -28,6 +28,7 @@ if m.json['IsReadReceiptRequested']:
 - [Email](#email)
 - [Calendar](#calendar)
 - [Contacts](#contacts)
+- [Connection](#connection)
 - [FluentInbox](#fluent inbox)
 
 ## Email
@@ -142,6 +143,45 @@ m.setBody(open('news.html','r').read())
 m.setRecipients(group)
 m.sendMessage()
 ```
+## Connection
+Connection is a singleton class to take care of all authentication to the Office 365 api.
+
+Connection has 2 different types of authentication and 1 additional function
+1. Basic - using Username and Password
+2. OAuth2 - using client id and client secret
+
+#### Basic Authentication
+```python
+from O365 import Connection, FluentInbox
+
+# Setup connection object
+# Proxy call is required only if you are behind proxy
+Connection.login('email_id@company.com', 'password to login')
+Connection.proxy(url='proxy.company.com', port=8080, username='proxy_username', password='proxy_password')
+```
+#### OAuth2 Authentication
+You will need to register your application at Microsoft Apps(https://apps.dev.microsoft.com/). Steps below
+1. Login to https://apps.dev.microsoft.com/
+2. Create an app, note your app id (client_id)
+3. Generate a new password (client_secret) under "Application Secrets" section
+4. Under the "Platform" section, add a new Web platform and set "https://outlook.office365.com/owa/" as the redirect URL
+5. Under "Microsoft Graph Permissions" section, Add the below delegated permission
+    1. email
+    2. Mail.ReadWrite
+    3. Mail.Send
+    4. User.Read
+```python
+from O365 import Connection, FluentInbox
+
+# Setup connection object
+# This will provide you with auth url, open it and authentication and copy the resulting page url and paste it back in the input
+Connection.oauth2("your client_id", "your client_secret", store_token=True)
+
+# Proxy call is required only if you are behind proxy
+Connection.proxy(url='proxy.company.com', port=8080, username='proxy_username', password='proxy_password')
+```
+    
+
 
 ## Fluent Inbox
 FluentInbox is a new class introduced to enhance usage of inbox fluently (check the below example to understand clearly)
