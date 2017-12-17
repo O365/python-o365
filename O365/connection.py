@@ -18,6 +18,15 @@ class MicroDict(dict):
         return result
 
 
+class Singleton(object):
+    _instance = None
+
+    def __new__(cls, *args, **kwargs):
+        if not cls._instance:
+            cls._instance = object.__new__(cls)
+        return cls._instance
+
+
 _default_token_file = '.o365_token'
 _home_path = path.expanduser("~")
 default_token_path = path.join(_home_path, _default_token_file)
@@ -63,30 +72,19 @@ def delete_token(token_path=None):
         os.unlink(token_path)
 
 
-class Connection(object):
-    instance = None
+class Connection(Singleton):
+    _oauth2_authorize_url = 'https://login.microsoftonline.com/common/oauth2/v2.0/authorize'
+    _oauth2_token_url = 'https://login.microsoftonline.com/common/oauth2/v2.0/token'
 
-    oauth2_authorize_url = 'https://login.microsoftonline.com/common/oauth2/v2.0/authorize'
-    oauth2_token_url = 'https://login.microsoftonline.com/common/oauth2/v2.0/token'
-
-    def __new__(cls, *args, **kwargs):
-        if not Connection.instance:
-            Connection.instance = object.__new__(cls)
-
-        return Connection.instance
-
-    def __init__(self, api_version='1.0'):
-        """ Creates a O365 connection object for specified version
-
-        :param api_version: which version of Office 365 rest api to use, only 1.0 supported as of now
-        """
+    def __init__(self):
+        """ Creates a O365 connection object """
         self.api_version = None
-
         self.auth = None
 
         self.oauth = None
         self.client_id = None
         self.client_secret = None
+        self.token = None
 
         self.proxy_dict = None
 
@@ -107,12 +105,11 @@ class Connection(object):
         :param username: username to login with
         :param password: password for authentication
         """
-        if not Connection.instance:
-            Connection()
+        connection = Connection()
 
-        Connection.instance.api_version = '1.0'
-        Connection.instance.auth = (username, password)
-        return Connection.instance
+        connection.api_version = '1.0'
+        connection.auth = (username, password)
+        return connection
 
     @staticmethod
     def oauth2(client_id, client_secret, store_token=True, token_path=None):
@@ -124,12 +121,11 @@ class Connection(object):
             the auth link and authenticating every time
         :param token_path: full path to where the token should be saved to
         """
-        if not Connection.instance:
-            Connection()
+        connection = Connection()
 
-        Connection.instance.api_version = '2.0'
-        Connection.instance.client_id = client_id
-        Connection.instance.client_secret = client_secret
+        connection.api_version = '2.0'
+        connection.client_id = client_id
+        connection.client_secret = client_secret
 
         if not store_token:
             delete_token(token_path)
@@ -137,26 +133,26 @@ class Connection(object):
         token = load_token(token_path)
 
         if not token:
-            Connection.instance.oauth = OAuth2Session(client_id=client_id,
-                                                      redirect_uri='https://outlook.office365.com/owa/',
-                                                      scope=['https://graph.microsoft.com/Mail.ReadWrite',
-                                                             'https://graph.microsoft.com/Mail.Send',
-                                                             'offline_access'], )
-            oauth = Connection.instance.oauth
+            connection.oauth = OAuth2Session(client_id=client_id,
+                                             redirect_uri='https://outlook.office365.com/owa/',
+                                             scope=['https://graph.microsoft.com/Mail.ReadWrite',
+                                                    'https://graph.microsoft.com/Mail.Send',
+                                                    'offline_access'], )
+            oauth = connection.oauth
             auth_url, state = oauth.authorization_url(
-                url=Connection.oauth2_authorize_url,
+                url=Connection._oauth2_authorize_url,
                 access_type='offline')
             print('Please open {} and authorize the application'.format(auth_url))
             auth_resp = input('Enter the full result url: ')
             os.environ['OAUTHLIB_RELAX_TOKEN_SCOPE'] = 'Y'
-            token = oauth.fetch_token(token_url=Connection.oauth2_token_url,
+            token = oauth.fetch_token(token_url=Connection._oauth2_token_url,
                                       authorization_response=auth_resp, client_secret=client_secret)
             save_token(token, token_path)
         else:
-            Connection.instance.oauth = OAuth2Session(client_id=client_id,
-                                                      token=token)
+            connection.oauth = OAuth2Session(client_id=client_id,
+                                             token=token)
 
-        return Connection.instance
+        return connection
 
     @staticmethod
     def proxy(url, port, username, password):
@@ -185,33 +181,33 @@ class Connection(object):
         :param kwargs: any keyword arguments to pass to the requests api
         :return: response object
         """
-        if not Connection.instance:
-            Connection()
+        connection = Connection()
 
-        con = Connection.instance
-
-        if not con.is_valid():
-            raise RuntimeError('Connection is not configured, please use '
-                               '"O365.Connection" to set username and password')
+        if not connection.is_valid():
+            raise RuntimeError('Connection is not configured, please use "O365.Connection" '
+                               'to set username and password or OAuth2 authentication')
 
         con_params = {}
-        if Connection.instance.proxy_dict:
-            con_params['proxies'] = Connection.instance.proxy_dict
+        if connection.proxy_dict:
+            con_params['proxies'] = connection.proxy_dict
         con_params.update(kwargs)
 
         log.info('Requesting URL: {}'.format(request_url))
 
-        if con.api_version == '1.0':
-            con_params['auth'] = Connection.instance.auth
+        if connection.api_version == '1.0':
+            con_params['auth'] = connection.auth
             response = requests.get(request_url, **con_params)
         else:
             try:
-                response = con.oauth.get(request_url, **con_params)
-            except TokenExpiredError as e:
-                token = con.oauth.refresh_token(Connection.oauth2_token_url, client_id=con.client_id,
-                                                client_secret=con.client_secret)
+                response = connection.oauth.get(request_url, **con_params)
+            except TokenExpiredError:
+                log.info('Token is expired, fetching a new token')
+                token = connection.oauth.refresh_token(Connection._oauth2_token_url, client_id=connection.client_id,
+                                                       client_secret=connection.client_secret)
+                log.info('New token fetched')
                 save_token(token)
-                response = con.oauth.get(request_url, **con_params)
+
+                response = connection.oauth.get(request_url, **con_params)
 
         log.info('Received response from URL {}'.format(response.url))
 
