@@ -134,7 +134,7 @@ class FluentInbox(object):
 
         messages = []
         for message in response:
-            messages.append(Message(message, Connection.instance.auth))
+            messages.append(Message(message, Connection().auth))
 
         return messages
 
@@ -145,7 +145,7 @@ class FluentInbox(object):
         :param key: the key for which url is required
         :return: URL to use for requests
         """
-        return FluentInbox.url_dict[key][Connection.instance.api_version]
+        return FluentInbox.url_dict[key][Connection().api_version]
 
     def _reset(self):
         """ Resets the current reference """

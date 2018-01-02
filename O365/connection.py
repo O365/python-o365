@@ -6,6 +6,8 @@ import json
 import requests
 from oauthlib.oauth2 import TokenExpiredError
 from requests_oauthlib import OAuth2Session
+from future.utils import with_metaclass
+
 
 log = logging.getLogger(__name__)
 
@@ -18,13 +20,18 @@ class MicroDict(dict):
         return result
 
 
-class Singleton(object):
+class Singleton(type):
     _instance = None
 
-    def __new__(cls, *args, **kwargs):
+    def __call__(cls, *args, **kwargs):
         if not cls._instance:
-            cls._instance = object.__new__(cls)
+            cls._instance = super(Singleton, cls).__call__(*args, **kwargs)
         return cls._instance
+
+    # def __new__(cls, *args, **kwargs):
+    #     if not cls._instance:
+    #         cls._instance = object.__new__(cls)
+    #     return cls._instance
 
 
 _default_token_file = '.o365_token'
@@ -72,7 +79,7 @@ def delete_token(token_path=None):
         os.unlink(token_path)
 
 
-class Connection(Singleton):
+class Connection(with_metaclass(Singleton)):
     _oauth2_authorize_url = 'https://login.microsoftonline.com/common/oauth2/v2.0/authorize'
     _oauth2_token_url = 'https://login.microsoftonline.com/common/oauth2/v2.0/token'
 
@@ -163,15 +170,14 @@ class Connection(Singleton):
         :param username: username for authentication in the proxy server
         :param password: password for the specified username
         """
-        if not Connection.instance:
-            Connection()
+        connection = Connection()
 
-        Connection.instance.proxy_dict = {
+        connection.proxy_dict = {
             "http": "http://{}:{}@{}:{}".format(username, password, url, port),
             "https": "https://{}:{}@{}:{}".format(username, password, url,
                                                   port),
         }
-        return Connection.instance
+        return connection
 
     @staticmethod
     def get_response(request_url, **kwargs):
