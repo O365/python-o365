@@ -26,5 +26,8 @@ from .attachment import Attachment
 from .inbox import Inbox
 from .message import Message
 from .schedule import Schedule
+from .connection import Connection
+from .fluent_inbox import FluentInbox
+
 
 #To the King!
