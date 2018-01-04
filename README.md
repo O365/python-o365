@@ -29,7 +29,7 @@ if m.json['IsReadReceiptRequested']:
 - [Calendar](#calendar)
 - [Contacts](#contacts)
 - [Connection](#connection)
-- [FluentInbox](#fluent inbox)
+- [FluentInbox](#fluent-inbox)
 
 ## Email
 There are two classes for working with emails in O365.
@@ -221,14 +221,5 @@ for message in inbox.search('Category:some_cat').skip(1).fetch(1):
 # If you want the results from beginning by ignoring any currently read count
 inbox.fetch_first(10)
 ```
-
-
-
-## Looking for new maintainer
-I no longer, as of October 2015, have an office365 account and so I'm looking for someone to take over this project. Please fork and carry on.
-
-#Maybe not as much now.
-New company I work for has given me a testing account for O365. So I can actually do some work again. 
-
 
 #### Soli Deo Gloria
