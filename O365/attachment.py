@@ -17,7 +17,7 @@ class Attachment( object ):
 	a message, simply append it to the message's attachment list (message.attachments). 
 
 	these are stored locally in base64 encoded strings. You can pass either a byte string or a
-	base64 encoded string tot he appropriate set function to bring your attachment into the
+	base64 encoded string to the appropriate set function to bring your attachment into the
 	instance, which will of course need to happen before it could be mailed.
 	
 	Methods:
