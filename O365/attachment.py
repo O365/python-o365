@@ -17,7 +17,7 @@ class Attachment( object ):
 	a message, simply append it to the message's attachment list (message.attachments). 
 
 	these are stored locally in base64 encoded strings. You can pass either a byte string or a
-	base64 encoded string to the appropriate set function to bring your attachment into the
+	base64 encoded string tot he appropriate set function to bring your attachment into the
 	instance, which will of course need to happen before it could be mailed.
 	
 	Methods:
@@ -69,7 +69,11 @@ class Attachment( object ):
 
 	def getType(self):
 		'''returns the file extension'''
-		return self.json['Name'][self.json['Name'].rindex('.'):]
+		try:
+			return self.json['Name'][self.json['Name'].rindex('.'):]
+		except ValueError:
+			log.debug('No file extension found on file ', self.json['Name'])
+			return ""
 
 	def save(self,location):
 		'''Save the attachment locally to disk.
