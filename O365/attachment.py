@@ -8,6 +8,7 @@ import logging
 import json
 import requests
 import sys
+from os import path
 
 log = logging.getLogger(__name__)
 
@@ -81,7 +82,7 @@ class Attachment( object ):
 		location -- path to where the file is to be saved.
 		'''
 		try:
-			outs = open(location+'/'+self.json['Name'],'wb')
+			outs = open(path.join(location, self.json['Name']),'wb')
 			outs.write(base64.b64decode(self.json['ContentBytes']))
 			outs.close()
 			log.debug('file saved locally.')
