@@ -79,7 +79,7 @@ for att in m.attachments:
 	processAttachment(att,resp)
 #various un-related bits left out for brevity.
 ```
-The attachment class stores the files as base64 encoded files. But this doesn't matter to you! The attachment class can work with you if you want to just send/recieve raw binary or base64. You can also just give it a path to a file if you want to creat an attachment:
+The attachment class stores the files as base64 encoded files. But this doesn't matter to you! The attachment class can work with you if you want to just send/receive raw binary or base64. You can also just give it a path to a file if you want to creat an attachment:
 ```python
 att = Attachment(path=path)
 ```

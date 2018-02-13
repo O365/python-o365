@@ -9,7 +9,7 @@ log = logging.getLogger(__name__)
 
 class Message(object):
 	'''
-	Management of the process of sending, recieving, reading, and editing emails.
+	Management of the process of sending, receiving, reading, and editing emails.
 
 	Note: the get and set methods are technically superflous. You can get more through control over
 	a message you are trying to craft throught he use of editing the message.json, but these
@@ -44,7 +44,7 @@ class Message(object):
 
 	def __init__(self, json=None, auth=None, verify=True):
 		'''
-		Makes a new message wrapper for sending and recieving messages.
+		Makes a new message wrapper for sending and receiving messages.
 
 		Keyword Arguments:
 						json (default = None) -- Takes json if you have a pre-existing message to create from.
@@ -63,7 +63,7 @@ class Message(object):
 
 		self.auth = auth
 		self.attachments = []
-		self.reciever = None
+		self.receiver = None
 
 		self.verify = verify
 
