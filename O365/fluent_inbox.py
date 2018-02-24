@@ -22,6 +22,10 @@ class FluentInbox(object):
             '1.0': 'https://outlook.office365.com/api/v1.0/me/Folders/{folder_id}/messages',
             '2.0': 'https://graph.microsoft.com/v1.0/me/MailFolders/{folder_id}/messages',
         },
+        'child_folders': {
+            '1.0': 'https://outlook.office365.com/api/v1.0/me/Folders/{folder_id}/childfolders',
+            '2.0': 'https://graph.microsoft.com/v1.0/me/MailFolders/{folder_id}/childfolders',
+        },
     }
 
     def __init__(self, verify=True):
@@ -63,6 +67,69 @@ class FluentInbox(object):
         self.url = FluentInbox._get_url('folder').format(folder_id=folder_id)
 
         return self
+
+    def get_folder(self, value, by='Id', parent_id=None):
+        """
+        Return a folder by a given attribute.  If multiple folders exist by
+        this attribute, only the first will be returned
+
+        Example:
+           get_folder(by='DisplayName', value='Inbox')
+
+           or
+
+           get_folder(by='Id', value='AAKrWFG...')
+
+           Would both return the requested folder attributes
+
+        :param value: Value that we are searching for
+        :param by: Search on this key (default: Id)
+        :returns: Single folder data
+        """
+        if parent_id:
+            folders_url = FluentInbox._get_url('child_folders').format(
+                folder_id=parent_id)
+        else:
+            folders_url = FluentInbox._get_url('folders')
+
+        response = Connection.get_response(folders_url,
+                                           verify=self.verify,
+                                           params={'$top': 100})
+
+        folder_id = None
+        all_folders = []
+
+        for folder in response:
+            if folder[by] == value:
+                return(folder)
+
+            all_folders.append(folder['displayName'])
+
+        if not folder_id:
+            raise RuntimeError(
+                'Folder "{}" is not found by "{}", available folders '
+                'are {}'.format(value, by, all_folders))
+
+    def list_folders(self, parent_id=None):
+        """
+        :param parent_id: Id of parent folder to list.  Default to top folder
+        :return: List of all folder data
+        """
+        if parent_id:
+            folders_url = FluentInbox._get_url('child_folders').format(
+                folder_id=parent_id)
+        else:
+            folders_url = FluentInbox._get_url('folders')
+
+        response = Connection.get_response(folders_url,
+                                           verify=self.verify,
+                                           params={'$top': 100})
+
+        folders = []
+        for folder in response:
+            folders.append(folder)
+
+        return folders
 
     def filter(self, filter_string):
         """ Set the value of a filter. More information on what filters are available can be found here:
