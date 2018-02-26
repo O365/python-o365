@@ -169,7 +169,11 @@ class Message(object):
 
     def getBody(self):
         '''get email body.'''
-        return self.json['Body']['Content']
+        try:
+            return self.json['Body']['Content']
+        except KeyError as e:
+            log.debug("Fluent inbox getBody: No body content.")
+            return ""
 
     def setRecipients(self, val, r_type="To"):
         '''

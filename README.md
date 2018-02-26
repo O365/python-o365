@@ -38,11 +38,11 @@ A collection of emails. This is used when ever you are requesting an email or em
 #### Message
 An actual email with all it's associated data.
 
-In the [Fetch File](https://github.com/Narcolapser/python-o365/blob/master/examples/fetchFile.py) example a filter is used to get only the unread messages with the subject line "Fetch File"
+In the [Fetch File](https://github.com/Narcolapser/python-o365/blob/master/examples/fetchFile.py) example a filter is used to get only the unread messages:
 ```python
 i = Inbox(auth,getNow=False) #Email, Password, Delay fetching so I can change the filters.
 
-i.setFilter("IsRead eq false & Subject eq 'Fetch File'")
+i.setFilter("IsRead eq false")
 
 i.getMessages()
 ```
