@@ -128,6 +128,26 @@ class Message(object):
             return False
         return True
 
+    def moveToFolder(self, folder_id):
+        """
+        Move the message to a given folder
+
+        :param folder_id: Folder ID to move this message to
+        :returns: True on success
+        """
+        move_url = 'https://outlook.office365.com/api/v1.0/me/messages/{0}/move'
+        headers = {'Content-type': 'application/json',
+                   'Accept': 'application/json'}
+        post_data = {"DestinationId": folder_id}
+        try:
+            response = requests.post(move_url.format(self.json['Id']),
+                                     json=post_data, headers=headers,
+                                     auth=self.auth, verify=self.verify)
+        except:
+            return False
+
+        return True
+
     def getSender(self):
         '''get all available information for the sender of the email.'''
         return self.json['Sender']
