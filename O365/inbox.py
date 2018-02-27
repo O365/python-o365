@@ -48,20 +48,20 @@ class Inbox( object ):
 		You can filter only certain emails by setting filters. See the set and
 		get filters methods for more information.
 
-                Returns true if there are messages. Returns false if there were no 
-                messages available that matched the filters specified. 
+				Returns true if there are messages. Returns false if there were no 
+				messages available that matched the filters specified. 
 		'''
 
 		log.debug('fetching messages.')			
 		response = requests.get(self.inbox_url,auth=self.auth,params={'$filter':self.filters, '$top':number},verify=self.verify)
 		log.info('Response from O365: %s', str(response))
 
-                #check that there are messages
-                try:
-                    response.json()['value']
-                except KeyError as e:
-                    log.debug('no messages')
-                    return False
+				#check that there are messages
+				try:
+					response.json()['value']
+				except KeyError as e:
+					log.debug('no messages')
+					return False
 		
 		for message in response.json()['value']:
 			try:
