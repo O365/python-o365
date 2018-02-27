@@ -56,13 +56,13 @@ class Inbox( object ):
 		response = requests.get(self.inbox_url,auth=self.auth,params={'$filter':self.filters, '$top':number},verify=self.verify)
 		log.info('Response from O365: %s', str(response))
 
-				#check that there are messages
-				try:
-					response.json()['value']
-				except KeyError as e:
-					log.debug('no messages')
-					return False
-		
+		#check that there are messages
+		try:
+			response.json()['value']
+		except KeyError as e:
+			log.debug('no messages')
+			return False
+
 		for message in response.json()['value']:
 			try:
 				duplicate = False
