@@ -1,258 +1,433 @@
-from O365.attachment import Attachment
-from O365.contact import Contact
-from O365.group import Group
 import logging
 import json
-import requests
+import base64
+import iso8601
+from pathlib import Path
+from bs4 import BeautifulSoup as bs
+
+from O365.connection import BaseApi
 
 log = logging.getLogger(__name__)
 
-class Message(object):
-	'''
-	Management of the process of sending, receiving, reading, and editing emails.
 
-	Note: the get and set methods are technically superflous. You can get more through control over
-	a message you are trying to craft throught he use of editing the message.json, but these
-	methods provide an easy way if you don't need all the power and would like the ease.
+class Recipient(object):
+    """ A single Recipient"""
 
-	Methods:
-					constructor -- creates a new message class, using json for existing, nothing for new.
-					fetchAttachments -- kicks off the process that downloads attachments.
-					sendMessage -- take local variables and form them to send the message.
-					markAsRead -- marks the analougs message in the cloud as read.
-					getSender -- gets a dictionary with the sender's information.
-					getSenderEmail -- gets the email address of the sender.
-					getSenderName -- gets the name of the sender, if possible.
-					getSubject -- gets the email's subject line.
-					getBody -- gets contents of the body of the email.
-					addRecipient -- adds a person to the recipient list.
-					setRecipients -- sets the list of recipients.
-					setSubject -- sets the subject line.
-					setBody -- sets the body.
+    def __init__(self, address=None, name=None, recipient=None):
+        assert address is None or recipient is None, 'Provide a recipient or and address'
+        if recipient is not None:
+            # recipient from the cloud
+            recipient = recipient.get('emailAddress')
+            self.address = recipient.get('address', '')
+            self.name = recipient.get('name', '')
+        else:
+            self.address = address or ''
+            self.name = name or ''
 
-	Variables:
-					att_url -- url for requestiong attachments. takes message GUID
-					send_url -- url for sending an email
-					update_url -- url for updating an email already existing in the cloud.
+    def _to_data(self):
+        if self.address:
+            data = {'emailAddress': {'address': self.address}}
+            if self.name:
+                data['emailAddress']['name'] = self.name
+            return data
+        else:
+            return None
 
-	'''
+    def __bool__(self):
+        return bool(self.address)
 
-	att_url = 'https://outlook.office365.com/api/v1.0/me/messages/{0}/attachments'
-	send_url = 'https://outlook.office365.com/api/v1.0/me/sendmail'
-	draft_url = 'https://outlook.office365.com/api/v1.0/me/folders/{folder_id}/messages'
-	update_url = 'https://outlook.office365.com/api/v1.0/me/messages/{0}'
-
-	def __init__(self, json=None, auth=None, verify=True):
-		'''
-		Makes a new message wrapper for sending and receiving messages.
-
-		Keyword Arguments:
-						json (default = None) -- Takes json if you have a pre-existing message to create from.
-						this is mostly used inside the library for when new messages are downloaded.
-						auth (default = None) -- Takes an (email,password) tuple that will be used for
-						authentication with office365.
-		'''
-		if json:
-			self.json = json
-			self.hasAttachments = json['HasAttachments']
-
-		else:
-			self.json = {'Message': {'Body': {}},
-									 'ToRecipients': [], 'CcRecipients': [], 'BccRecipients': []}
-			self.hasAttachments = False
-
-		self.auth = auth
-		self.attachments = []
-		self.receiver = None
-
-		self.verify = verify
+    def __str__(self):
+        if self.name:
+            return '{} ({})'.format(self.name, self.address)
+        else:
+            return self.address
 
 
-	def fetchAttachments(self):
-		'''kicks off the process that downloads attachments locally.'''
-		if not self.hasAttachments:
-			log.debug('message has no attachments, skipping out early.')
-			return False
+class Recipients(object):
+    """ A Sequence of Recipients """
 
-		response = requests.get(self.att_url.format(
-				self.json['Id']), auth=self.auth,verify=self.verify)
-		log.info('response from O365 for retriving message attachments: %s', str(response))
-		json = response.json()
+    def __init__(self, recipients=None):
+        """ Recipients must be a list of either address strings or tuples (name, address) or dictionary elements """
 
-		for att in json['value']:
-			try:
-				self.attachments.append(Attachment(att))
-				log.debug('successfully downloaded attachment for: %s.', self.auth[0])
-			except Exception as e:
-				log.info('failed to download attachment for: %s', self.auth[0])
+        self.recipients = []
+        if recipients:
+            self.add(recipients)
 
-		return len(self.attachments)
+    def __iter__(self):
+        return iter(self.recipients)
 
-	def sendMessage(self):
-		'''takes local variabls and forms them into a message to be sent.'''
+    def __len__(self):
+        return len(self.recipients)
 
-		headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
+    def __str__(self):
+        return 'Recipients count: {}'.format(len(self.recipients))
 
-		try:
-			data = {'Message': {'Body': {}}}
-			data['Message']['Subject'] = self.json['Subject']
-			data['Message']['Body']['Content'] = self.json['Body']['Content']
-			data['Message']['Body']['ContentType'] = self.json['Body']['ContentType']
-			data['Message']['ToRecipients'] = self.json['ToRecipients']
-			data['Message']['CcRecipients'] = self.json['CcRecipients']
-			data['Message']['BccRecipients'] = self.json['BccRecipients']
-			data['Message']['Attachments'] = [att.json for att in self.attachments]
-			data = json.dumps(data)
-		except Exception as e:
-			log.error(
-					'Error while trying to compile the json string to send: {0}'.format(str(e)))
-			return False
+    def _to_data(self):
+        return [recipient._to_data() for recipient in self.recipients]
 
-		response = requests.post(
-				self.send_url, data, headers=headers, auth=self.auth,verify=self.verify)
-		log.debug('response from server for sending message:' + str(response))
-		log.debug("respnse body: {}".format(response.text))
-		if response.status_code != 202:
-			return False
+    def clear(self):
+        self.recipients = []
 
-		return True
+    def add(self, recipients):
+        """ Recipients must be a list of either address strings or tuples (name, address) or dictionary elements """
 
-	def markAsRead(self):
-		'''marks analogous message as read in the cloud.'''
-		read = '{"IsRead":true}'
-		headers = {'Content-type': 'application/json', 'Accept': 'application/json'}
-		try:
-			response = requests.patch(self.update_url.format(
-					self.json['Id']), read, headers=headers, auth=self.auth,verify=self.verify)
-		except:
-			return False
-		return True
+        if recipients:
+            if not isinstance(recipients, (list, tuple)):
+                raise ValueError('Recipients must be a list or tuple')
 
-	def getSender(self):
-		'''get all available information for the sender of the email.'''
-		return self.json['Sender']
+            recipients_temp = []
+            # Check first element and assume all elements are the same
 
-	def getSenderEmail(self):
-		'''get the email address of the sender.'''
-		return self.json['Sender']['EmailAddress']['Address']
+            if isinstance(recipients[0], str):
+                recipients_temp = [Recipient(address=address) for address in recipients]
+            elif isinstance(recipients[0], tuple):
+                recipients_temp = [Recipient(name=name, address=address) for name, address in recipients]
+            elif isinstance(recipients[0], dict):
+                recipients_temp = [Recipient(recipient=recipient) for recipient in recipients]
 
-	def getSenderName(self):
-		'''try to get the name of the sender.'''
-		try:
-			return self.json['Sender']['EmailAddress']['Name']
-		except:
-			return ''
+            self.recipients.extend(recipients_temp)
 
-	def getSubject(self):
-		'''get email subject line.'''
-		return self.json['Subject']
+    def remove(self, address):
+        """ Remove an address or multiple addreses """
+        recipients = []
+        if isinstance(address, str):
+            address = {address}  # set
+        for recipient in self.recipients:
+            if recipient.address not in address:
+                recipients.append(recipient)
+        self.recipients = recipients
 
-	def getBody(self):
-		'''get email body.'''
-		return self.json['Body']['Content']
 
-	def setRecipients(self, val, r_type="To"):
-		'''
-		set the recipient list.
+class Attachment(BaseApi):
+    """
+    Attachment class is the object for dealing with attachments in your messages. To add one to
+    a message, simply append it to the message's attachment list (message.attachments).
 
-		val: the one argument this method takes can be very flexible. you can send:
-						a dictionary: this must to be a dictionary formated as such:
-										{"EmailAddress":{"Address":"recipient@example.com"}}
-										with other options such ass "Name" with address. but at minimum
-										it must have this.
-						a list: this must to be a list of libraries formatted the way
-										specified above, or it can be a list of dictionary objects of
-										type Contact or it can be an email address as string. The
-										method will sort out the libraries from the contacts.
-						a string: this is if you just want to throw an email address.
-						a contact: type Contact from this dictionary.
-						a group: type Group, which is a list of contacts.
-		For each of these argument types the appropriate action will be taken
-		to fit them to the needs of the library.
-		'''
-		log.debug("Entered SET_RECIPIENTS function with type: {}".format(r_type))
-		self.json[r_type + 'Recipients'] = []
+    these are stored locally in base64 encoded strings. You can pass either a byte string or a
+    base64 encoded string tot he appropriate set function to bring your attachment into the
+    instance, which will of course need to happen before it could be mailed.
+    """
+    _endpoints = {
+        'attach': '/messages/{id}/attachments'
+    }
 
-		if isinstance(val, list):
-			for con in val:
-				if isinstance(con, Contact):
-					self.addRecipient(con, r_type=r_type)
-				elif isinstance(con, str):
-					if '@' in con:
-						self.addRecipient(con, r_type=r_type)
-				elif isinstance(con, dict):
-					self.json[r_type + 'Recipients'].append(con)
-		elif isinstance(val, dict):
-			self.json[r_type + 'Recipients'] = [val]
-		elif isinstance(val, str):
-			if '@' in val:
-				self.addRecipient(val, r_type=r_type)
-		elif isinstance(val, Contact):
-			self.addRecipient(val, r_type=r_type)
-		elif isinstance(val, Group):
-			for person in val:
-				self.addRecipient(person, r_type=r_type)
-		else:
-			return False
-		return True
+    def __init__(self, attachment=None, **kwargs):
+        """
+        Creates a new attachment class, optionally from existing JSON.
 
-	def addRecipient(self, address, name=None, r_type="To"):
-		'''
-		Adds a recipient to the recipients list.
+        Keyword Arguments:
+        json -- json to create the class from. this is mostly used by the class internally when an
+        attachment is downloaded from the cloud. If you want to create a new attachment, leave this
+        empty. (default = None)
+        path -- a string giving the path to a file. it is cross platform as long as you break
+        windows convention and use '/' instead of '\'. Passing this argument will tend to
+        the rest of the process of making an attachment. Note that passing in json as well
+        will cause this argument to be ignored.
+        """
+        super().__init__(**kwargs)
 
-		Arguments:
-		address -- the email address of the person you are sending to. <<< Important that.
-						Address can also be of type Contact or type Group.
-		name -- the name of the person you are sending to. mostly just a decorator. If you
-						send an email address for the address arg, this will give you the ability
-						to set the name properly, other wise it uses the email address up to the
-						at sign for the name. But if you send a type Contact or type Group, this
-						argument is completely ignored.
-		'''
-		if isinstance(address, Contact):
-			self.json[r_type + 'Recipients'].append(address.getFirstEmailAddress())
-		elif isinstance(address, Group):
-			for con in address.contacts:
-				self.json[r_type + 'Recipients'].append(address.getFirstEmailAddress())
-		else:
-			if name is None:
-				name = address[:address.index('@')]
-			self.json[r_type + 'Recipients'].append(
-					{'EmailAddress': {'Address': address, 'Name': name}})
+        if attachment:
+            if isinstance(attachment, str):
+                self.attachment = Path(attachment)
+                self.name = self.attachment.name
+                with self.attachment.open('rb') as file:
+                    # str(base64.encodebytes(file.read()), 'utf-8') ?
+                    self.content = base64.b64encode(file.read()).decode('utf-8')
+                self.on_disk = True
+            elif isinstance(attachment, (tuple, list)):
+                file_path, custom_name = attachment
+                self.attachment = Path(file_path)
+                self.name = custom_name
+                with self.attachment.open('rb') as file:
+                    self.content = base64.b64encode(file.read()).decode('utf-8')
+                self.on_disk = True
+            elif isinstance(attachment, dict):
+                # from the cloud
+                self.attachment = None
+                self.name = attachment.get('name', None)
+                self.content = attachment.get('contentBytes', None)
+                self.on_disk = False
+        else:
+            self.attachment = None
+            self.name = None
+            self.content = None
+            self.on_disk = False
 
-	def setSubject(self, val):
-		'''Sets the subect line of the email.'''
-		self.json['Subject'] = val
+    def _to_data(self):
+        return {'@odata.type': '#microsoft.graph.fileAttachment', 'contentBytes': self.content, 'name': self.name}
 
-	def setBody(self, val):
-		'''Sets the body content of the email.'''
-		cont = False
+    def save(self, location=None, custom_name=None):
+        """  Save the attachment locally to disk.
+        :param location: path string to where the file is to be saved.
+        :param custom_name: a custom name to be saved as
+        """
+        location = Path(location or '')
+        if not location.exists():
+            log.debug('the location provided does not exist')
+            return False
+        try:
+            path = location / (custom_name or self.name)
+            with path.open('wb') as file:
+                file.write(base64.b64decode(self.content))
+            self.attachment = path
+            self.on_disk = True
+            log.debug('file saved locally.')
+        except Exception as e:
+            log.debug('file failed to be saved: %s', str(e))
+            return False
+        return True
 
-		while not cont:
-			try:
-				self.json['Body']['Content'] = val
-				self.json['Body']['ContentType'] = 'Text'
-				cont = True
-			except:
-				self.json['Body'] = {}
+    def attach(self, message, on_cloud=False):
+        """ Attach a file to an existing message """
+        if message:
+            if on_cloud:
+                if not message.message_id:
+                    raise RuntimeError('A valid message id is needed in order to attach a file')
+                url = self._build_url(self._endpoints.get('attach').format(id=message.message_id))
+                response = message.con.post(url, data=json.dumps(self._to_data()))
+                log.debug('attached file to message')
+                return response.status_code == 201
+            else:
+                message.attachments.add([self._to_data()])
 
-	def setBodyHTML(self, val=None):
-		'''
-		Sets the body content type to HTML for your pretty emails.
+    def __str__(self):
+        return self.name
 
-		arguments:
-		val -- Default: None. The content of the body you want set. If you don't pass a
-						value it is just ignored.
-		'''
-		cont = False
+    def __repr__(self):
+        return self.__str__()
 
-		while not cont:
-			try:
-				self.json['Body']['ContentType'] = 'HTML'
-				if val:
-					self.json['Body']['Content'] = val
-				cont = True
-			except:
-				self.json['Body'] = {}
 
-# To the King!
+class Attachments(BaseApi):
+    """ A Sequence of Attachments """
+
+    _endpoints = {'attachments': '/messages/{id}/attachments'}
+
+    def __init__(self, message, attachments=None, **kwargs):
+        """ Attachments must be a list of path strings or dictionary elements """
+        super().__init__(**kwargs)
+        self.message = message
+        self.attachments = []
+        if attachments:
+            self.add(attachments)
+
+    def __iter__(self):
+        return iter(self.attachments)
+
+    def __len__(self):
+        return len(self.attachments)
+
+    def __str__(self):
+        attachments = len(self.attachments)
+        if self.message.has_attachments and attachments == 0:
+            return 'Message Has Attachments: # Download attachments'
+        else:
+            return 'Message Attachments: {}'.format(attachments)
+
+    def _to_data(self):
+        return [attachment._to_data() for attachment in self.attachments]
+
+    def clear(self):
+        self.attachments = []
+
+    def add(self, attachments):
+        """ Attachments must be a list of path strings or dictionary elements """
+
+        if attachments:
+            if not isinstance(attachments, (list, tuple)):
+                raise ValueError('Attachments must be a list or tuple')
+
+            attachments_temp = []
+            # Check first element and assume all elements are the same
+
+            api_data = dict(api_version=self.api_version, main_resource=self.main_resource)
+            attachments_temp = [Attachment(attachment, **api_data) for attachment in attachments]
+
+            self.attachments.extend(attachments_temp)
+
+    def download_attachments(self):
+        """ Downloads this message attachments into memory. Need a call to save to save them on disk. """
+        if not self.message.has_attachments:
+            log.debug('message has no attachments, skipping out early.')
+            return False
+
+        url = self._build_url(self._endpoints.get('attachments').format(id=self.message.message_id))
+
+        try:
+            response = self.message.con.get(url)
+        except Exception as e:
+            log.error('Error downloading attachments for message id: {}'.format(self.message.message_id))
+            return False
+
+        if response.status_code != 200:
+            return False
+        log.debug('successfully downloaded attachments for message id: {}'.format(self.message.message_id))
+
+        attachments = response.json().get('value', [])
+
+        self.add(attachments)
+
+        return True
+
+
+class Message(BaseApi):
+    """Management of the process of sending, receiving, reading, and editing emails.
+
+    Note: the get and set methods are technically superflous. You can get more through control over
+    a message you are trying to craft throught he use of editing the message.json, but these
+    methods provide an easy way if you don't need all the power and would like the ease.
+    """
+
+    _endpoints = {
+        'send': '/sendMail',
+        'message': '/messages/{id}',
+        'move': 'messages/{id}/move',
+        'attachments': '/messages/{id}/attachments'
+    }
+
+    send_url = 'https://outlook.office365.com/api/v1.0/me/sendmail'
+    draft_url = 'https://outlook.office365.com/api/v1.0/me/folders/{folder_id}/messages'
+
+    def __init__(self, con, **kwargs):
+        """
+        Makes a new message wrapper for sending and receiving messages.
+
+        :param message_id: the id of this message if it exists
+        """
+        super().__init__(**kwargs)
+        self.con = con
+        self.message_id = kwargs.get('id', None)
+        self.created = kwargs.get('createdDateTime', None)
+        self.received = kwargs.get('receivedDateTime', None)
+        self.sent = kwargs.get('sentDateTime', None)
+
+        # parsing dates from iso8601 format to datetimes UTC. TODO: Convert UTC to Local Time
+        self.created = iso8601.parse_date(self.created) if self.created else None
+        self.received = iso8601.parse_date(self.received) if self.received else None
+        self.sent = iso8601.parse_date(self.sent) if self.sent else None
+
+        self.has_attachments = kwargs.get('hasAttachments', False)
+        self.attachments = Attachments(message=self, attachments=kwargs.get('attachments', []), **kwargs)
+        if self.has_attachments and kwargs.get('download_attachments'):
+            self.attachments.download_attachments()
+        self.subject = kwargs.get('subject', '')
+        self.body = kwargs.get('body', {}).get('content', '')
+        self.sender = Recipient(recipient=kwargs.get('from', None))
+        self.to = Recipients(kwargs.get('toRecipients', []))
+        self.cc = Recipients(kwargs.get('ccRecipients', []))
+        self.bcc = Recipients(kwargs.get('bccRecipients', []))
+        self.categories = kwargs.get('categories', [])
+        self.importance = kwargs.get('importance', 'normal')
+        self.is_read = kwargs.get('isRead', None)
+        self.is_draft = kwargs.get('isDraft', None)
+        self.conversation_id = kwargs.get('conversationId', None)
+        self.folder_id = kwargs.get('parentFolderId', None)
+
+    def send(self):
+        """ Sends this message. """
+
+        if self.message_id and not self.is_draft:
+            return RuntimeError('Not possible to send a message that is not new or a draft. Use Reply or Forward instead.')
+        data = {
+            'message': {
+                'subject': self.subject,
+                'body': {
+                    'contentType': 'HTML',
+                    'content': self.body},
+                'toRecipients': self.to._to_data(),
+                'ccRecipients': self.cc._to_data(),
+                'bccRecipients': self.bcc._to_data(),
+                'attachments': self.attachments._to_data()
+            },
+        }
+        if self.sender:
+            data['message']['from'] = self.sender._to_data()
+
+        url = self._build_url(self._endpoints.get('send'))
+
+        response = self.con.post(url, data=json.dumps(data))
+        log.debug('response from server for sending message:' + str(response))
+        log.debug('response body: {}'.format(response.text))
+
+        return response.status_code == 202
+
+    def delete(self):
+        """ Deletes a stored message """
+        if self.message_id is None:
+            raise RuntimeError('Attempting to delete an unsaved Message')
+
+        url = self._build_url(self._endpoints.get('message').format(id=self.message_id))
+
+        log.debug('deleting message id: {id}'.format(id=self.message_id))
+        response = self.con.delete(url)
+        log.debug('response from server for deleting message:' + str(response))
+
+        return response.status_code == 204
+
+    def mark_as_read(self):
+        """ Marks this message as read in the cloud."""
+        if self.message_id is None:
+            raise RuntimeError('Attempting to mark as read an unsaved Message')
+
+        data = {'isRead': True}
+
+        url = self._build_url(self._endpoints.get('message').format(id=self.message_id))
+        response = self.con.patch(url, data=json.dumps(data))
+
+        return response.status_code == 200
+
+    def move(self, folder_id):
+        """
+        Move the message to a given folder
+
+        :param folder_id: Folder id or Well-known name to move this message to
+        :returns: True on success
+        """
+        if self.message_id is None:
+            raise RuntimeError('Attempting to move an unsaved Message')
+
+        url = self._build_url(self._endpoints.get('move').format(id=self.message_id))
+
+        data = {'destinationId': folder_id}
+        try:
+            response = self.con.post(url, data=json.dumps(data))
+            log.debug('message moved to folder: {}'.format(folder_id))
+        except Exception as e:
+            log.error('message (id: {}) could not be moved to folder id: {}'.format(self.message_id, folder_id))
+            return False
+
+        return response.status_code == 201
+
+    def update_category(self, categories):
+        """ Update this message categories """
+        if not isinstance(categories, (list, tuple)):
+            raise ValueError('Categories must be a list or tuple')
+
+        data = {'categories': categories}
+
+        url = self._build_url(self._endpoints.get('message').format(id=self.message_id))
+        try:
+            response = self.con.patch(url, data=json.dumps(data))
+            log.debug('changed categories on message id: {}'.format(self.message_id))
+        except:
+            return False
+
+        return response.status_code == 200
+
+    def get_body_text(self):
+        """ Parse the body html and returns the body text using bs4 """
+        try:
+            soup = bs(self.body, 'html.parser')
+        except Exception as e:
+            return self.body
+        else:
+            return soup.body.text
+
+    def __str__(self):
+        return 'subject: {}'.format(self.subject)
+
+    def __repr__(self):
+        return self.__str__()
+
+
+
+

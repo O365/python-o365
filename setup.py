@@ -3,11 +3,11 @@
 from distutils.core import setup
 
 CLASSIFIERS = [
-	'Development Status :: 4 - Beta',
-	'Intended Audience :: Developers',
-	'License :: OSI Approved :: Apache Software License',
-	'Topic :: Office/Business :: Office Suites',
-	'Topic :: Software Development :: Libraries'
+    'Development Status :: 4 - Beta',
+    'Intended Audience :: Developers',
+    'License :: OSI Approved :: Apache Software License',
+    'Topic :: Office/Business :: Office Suites',
+    'Topic :: Software Development :: Libraries'
 ]
 long_desc = '''When I started making this library I was looking for something that would provide a simple interface to an office365 mailbox. I was creating a system that would allow people send an email to our printer without having to require they install drivers or be inside the office firewall (important for students). As I found working with the office API to be fairly easy, I quickly built up solid general use library for working with office 365. 
 
@@ -42,9 +42,9 @@ setup(name='O365',
       maintainer_email='sandslash+O365@gmail.com',
       url='https://github.com/Narcolapser/python-o365',
       packages=['O365'],
-      install_requires=['requests', 'oauthlib','requests_oauthlib','future'],
+      install_requires=['requests', 'oauthlib', 'requests_oauthlib', 'future', 'iso8601', 'beautifulsoup4'],
       license='Apache 2.0',
       classifiers=CLASSIFIERS
       )
 
-#so I don't have to keep looking it up: python setup.py sdist upload -r pypi
+# so I don't have to keep looking it up: python setup.py sdist upload -r pypi
