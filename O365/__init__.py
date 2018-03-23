@@ -22,8 +22,3 @@ from .app import App
 from .connection import Connection
 from .inbox import Inbox
 from .message import Message
-from .contact import Contact
-from .group import Group
-from .cal import Calendar
-from .event import Event
-from .schedule import Schedule

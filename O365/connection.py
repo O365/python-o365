@@ -2,6 +2,7 @@ import logging
 import json
 import os
 from pathlib import Path
+from stringcase import pascalcase
 
 import requests
 from oauthlib.oauth2 import TokenExpiredError
@@ -9,16 +10,78 @@ from requests_oauthlib import OAuth2Session
 
 log = logging.getLogger(__name__)
 
-O365_API_VERSION = 'v1.0'
+O365_API_VERSION = 'v1.0'  # TODO: Change to v2.0
+GRAPH_API_VERSION = 'v1.0'
+OAUTH_REDIRECT_URL = 'https://outlook.office365.com/owa/'
+
+AUTH_METHOD_BASIC = 'basic'
+AUTH_METHOD_OAUTH = 'oauth'
+
+ME_RESOURCE = 'me'
 
 
-class BaseApi(object):
-    _endpoint_url = 'https://graph.microsoft.com/{api_version}/{resource}'
+SCOPES_FOR = {
+    'basic': ['offline_access', 'https://graph.microsoft.com/User.Read'],
+    'inbox': ['https://graph.microsoft.com/Mail.Read'],
+    'message_send': ['https://graph.microsoft.com/Mail.Send'],
+    'message_all': ['https://graph.microsoft.com/Mail.ReadWrite', 'https://graph.microsoft.com/Mail.Send'],
+    'address_book': ['https://graph.microsoft.com/Contacts.ReadWrite'],
+    'calendar': ['https://graph.microsoft.com/Calendars.ReadWrite']
+}
 
-    def __init__(self, api_version=O365_API_VERSION, main_resource='me', **kwargs):
-        self.api_version = api_version
-        self.main_resource = main_resource
-        self.endpoint = self._endpoint_url.format(api_version=self.api_version, resource=main_resource)
+
+def get_scopes_for(app_parts='all'):
+    """ Returns a list of scopes needed for all the app_parts
+    :param app_parts: a list of
+    """
+    if app_parts is None:
+        app_parts = ['basic']
+    elif app_parts == 'all':
+        app_parts = [app_part for app_part in SCOPES_FOR]
+    elif isinstance(app_parts, str):
+        app_parts = [app_parts]
+
+    if not isinstance(app_parts, (list, tuple)):
+        raise ValueError('app_parts must be a list or a tuple of strings')
+
+    return list({scope for ap in (list(app_parts) + ['basic']) for scope in SCOPES_FOR.get(ap, [ap])})
+
+
+class ApiBase(object):
+    _cloud_data_key = 'cloud_data'
+
+    def __init__(self, auth_method=None):
+        self.auth_method = auth_method or AUTH_METHOD_OAUTH
+
+    def _cc(self, dict_key):
+        """
+        Converts Case to send/read from the cloud --> if basic auth then use pascalcase
+        When using basic auth the endpoints are from the O365 API and this uses PascalCase. On the other hand, when using Oauth,
+        the endpoints are from Microsoft Graph API and this one uses lowerCamelCase.
+        This method converts the payload from one case to the other based on the authmethod used.
+
+        Default case in this API is lowerCamelCase.
+
+        :param dict_key: a dictionary key to convert
+        """
+        return dict_key if self.auth_method == AUTH_METHOD_OAUTH else pascalcase(dict_key)
+
+
+class ApiComponent(ApiBase):
+    """ Base class for all object interactions to the cloud api """
+    _graph_endpoint_url = 'https://graph.microsoft.com/{api_version}/{resource}'
+    _office365_endpoint_url = 'https://outlook.office365.com/api/{api_version}/{resource}'
+
+    def __init__(self, auth_method=None, api_version=None, main_resource=None, **kwargs):
+        super().__init__(auth_method=auth_method)
+        self.auth_method = auth_method or AUTH_METHOD_OAUTH
+        self.main_resource = main_resource or ME_RESOURCE
+        if self.auth_method == 'basic':
+            self.api_version = api_version or O365_API_VERSION
+            self.endpoint = self._office365_endpoint_url.format(api_version=self.api_version, resource=main_resource)
+        else:
+            self.api_version = api_version or GRAPH_API_VERSION
+            self.endpoint = self._graph_endpoint_url.format(api_version=self.api_version, resource=main_resource)
 
     def _build_url(self, resource):
         return '{endpoint}{resource}'.format(endpoint=self.endpoint, resource=resource)
@@ -32,7 +95,7 @@ class Connection(object):
     _allowed_methods = ['get', 'post', 'put', 'patch', 'delete']
 
     def __init__(self, username=None, password=None, client_id=None, client_secret=None, proxy_server=None,
-                 proxy_port=8080, proxy_username=None, proxy_password=None, api_version='v1.0'):
+                 proxy_port=8080, proxy_username=None, proxy_password=None, api_version=None, scopes=None):
         """ Creates a O365 connection object
         :param username: basic auth: username to login with
         :param password: basic auth: password for authentication
@@ -40,21 +103,23 @@ class Connection(object):
         :param client_secret: oauth2: secret password key generated for your application
         """
         assert (username and password) or (client_id and client_secret), 'Provide valid auth credentials'
+
         if username and password:
             self.auth_method = 'basic'
             self.auth = (username, password)
+            self.api_version = api_version or O365_API_VERSION
         else:
             self.auth_method = 'oauth'
             self.auth = (client_id, client_secret)
-
-        self.api_version = api_version
+            self.api_version = api_version or GRAPH_API_VERSION
+            self.scopes = get_scopes_for(scopes)
+            self.oauth = None
+            self.store_token = True
+            self.token_path = self._default_token_path
+            self.token = None
 
         self.proxy = None
         self.set_proxy(proxy_server, proxy_port, proxy_username, proxy_password)
-
-        self.oauth = None
-        self.store_token = True
-        self.token = None
 
     def set_proxy(self, proxy_server, proxy_port, proxy_username, proxy_password):
         """ Sets a proxy on the Session """
@@ -64,50 +129,81 @@ class Connection(object):
                 "https": "https://{}:{}@{}:{}".format(proxy_username, proxy_password, proxy_server, proxy_port),
             }
 
-    def oauth2(self, store_token=None, token_path=None, scope=None):
-        """ Connect to office 365 using specified Open Authentication protocol
+    def check_token_file(self):
+        """ Checks if the token file exists at the given position"""
+        if self.token_path:
+            path = Path(self.token_path)
+        else:
+            path = self._default_token_path
 
+        return path.exists()
+
+    def get_authorization_url(self, requested_scopes=None):
+        """
+        Inicialices the oauth authorization flow, getting the authorization url that the user must approve.
+        This is a two step process, first call this function. Then get the url result from the user and then
+        call 'request_token' to get and store the access token.
+        """
+        client_id, client_secret = self.auth
+
+        if requested_scopes:
+            scopes = get_scopes_for(requested_scopes)
+        elif self.scopes is not None:
+            scopes = self.scopes
+        else:
+            scopes = get_scopes_for()
+
+        self.oauth = oauth = OAuth2Session(client_id=client_id, redirect_uri=OAUTH_REDIRECT_URL, scope=scopes)
+
+        auth_url, state = oauth.authorization_url(url=self._oauth2_authorize_url, access_type='offline')
+
+        return auth_url
+
+    def request_token(self, authorizated_url, store_token=True, token_path=None):
+        """
+        Returns and saves the token with the authorizated_url provided by the user
+
+        :param authorizated_url: url given by the authorization flow
         :param store_token: whether or not to store the token in file system,
                             so u don't have to keep opening the auth link and authenticating every time
         :param token_path: full path to where the token should be saved to
-        :param scope: a list of scopes that your app has access to
         """
 
-        if store_token is None:
-            store_token = self.store_token
+        if self.oauth is None:
+            raise RuntimeError("Fist call 'get_authorization_url' to generate a valid oauth object")
+
+        _, client_secret = self.auth
+
+        # Allow token scope to not match requested scope. (Other auth libraries allow
+        # this, but Requests-OAuthlib raises exception on scope mismatch by default.)
+        os.environ['OAUTHLIB_RELAX_TOKEN_SCOPE'] = '1'
+        os.environ['OAUTHLIB_IGNORE_SCOPE_CHANGE'] = '1'
+
+        self.token = self.oauth.fetch_token(token_url=self._oauth2_token_url, authorization_response=authorizated_url,
+                                            client_secret=client_secret, proxies=self.proxy)
+
+        if token_path:
+            self.token_path = token_path
+        self.store_token = store_token
+        if self.store_token:
+            self._save_token(self.token, self.token_path)
+
+        return self.token
+
+    def oauth2(self, token_path=None):
+        """ Create a valid oauth session with the stored token
+
+        :param token_path: full path to where the token should be load from
+        """
+
+        if self.token is None:
+            self.token = self._load_token(token_path)
+
+        if self.token:
+            client_id, _ = self.auth
+            self.oauth = OAuth2Session(client_id=client_id, token=self.token)
         else:
-            self.store_token = store_token
-
-        client_id, client_secret = self.auth
-
-        self.token = token = self._load_token(token_path)
-
-        if not scope:
-            scope = ['https://graph.microsoft.com/Mail.ReadWrite',
-                     'https://graph.microsoft.com/Mail.Send',
-                     'offline_access']
-
-        if not token:
-            self.oauth = ouath = OAuth2Session(client_id=client_id,
-                                               redirect_uri='https://outlook.office365.com/owa/',
-                                               scope=scope)
-
-            auth_url, state = ouath.authorization_url(url=self._oauth2_authorize_url, access_type='offline')
-            print('Please open {} and authorize the application'.format(auth_url))
-            auth_resp = input('Enter the full result url: ')
-
-            # Allow token scope to not match requested scope. (Other auth libraries allow
-            # this, but Requests-OAuthlib raises exception on scope mismatch by default.)
-            os.environ['OAUTHLIB_RELAX_TOKEN_SCOPE'] = '1'
-            os.environ['OAUTHLIB_IGNORE_SCOPE_CHANGE'] = '1'
-
-            self.token = token = ouath.fetch_token(token_url=self._oauth2_token_url, authorization_response=auth_resp,
-                                                   client_secret=client_secret, proxies=self.proxy)
-
-            if store_token:
-                self._save_token(token, token_path)
-        else:
-            self.oauth = OAuth2Session(client_id=client_id, token=token)
+            raise RuntimeError('No auth token found. Authentication Flow needed')
 
     def refresh_token(self):
         """ Gets another token """
@@ -156,14 +252,6 @@ class Connection(object):
 
         log.info('Received response from URL {}'.format(response.url))
 
-        # response_json = response.json()
-        # if 'value' not in response_json:
-        #     raise RuntimeError('Something went wrong, received an unexpected result \n{}'.format(response_json))
-        #
-        # response_values = [dict(x) for x in response_json['value']]
-        #
-        # return response_values
-
         return response
 
     def get(self, url, params=None, **kwargs):
@@ -190,13 +278,18 @@ class Connection(object):
         """ Save the specified token dictionary to a specified file path
 
         :param token: token dictionary returned by the oauth token request
-        :param token_path: path to where the files is to be saved
+        :param token_path: Path object to where the file is to be saved
         """
         if not token_path:
             token_path = self._default_token_path
+        else:
+            if not isinstance(token_path, Path):
+                raise ValueError('token_path must be a valid Path from pathlib')
 
-        with open(token_path, 'w') as token_file:
+        with token_path.open('w') as token_file:
             json.dump(token, token_file, indent=True)
+
+        return True
 
     def _load_token(self, token_path=None):
         """ Load the specified token dictionary from specified file path
@@ -211,14 +304,14 @@ class Connection(object):
 
         token = None
         if token_path.exists():
-            with open(token_path, 'r') as token_file:
+            with token_path.open('r') as token_file:
                 token = json.load(token_file)
         return token
 
     def _delete_token(self, token_path=None):
         """ Delete the specified token dictionary from specified file path
 
-        :param token_path: path to where the token is saved
+        :param token_path: Path object to where the token is saved
         """
         if not token_path:
             token_path = self._default_token_path
@@ -228,3 +321,5 @@ class Connection(object):
 
         if token_path.exists():
             token_path.unlink()
+            return True
+        return False

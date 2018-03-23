@@ -1,30 +1,35 @@
 import logging
-import json
-import requests
 
-from O365.connection import BaseApi
+from O365.connection import ApiComponent
 from O365.message import Message
 
 log = logging.getLogger(__name__)
 
 
-class Inbox(BaseApi):
-    """
-    Wrapper class for an inbox which mostly holds a list of messages.
-    Methods:
-        getMessages -- downloads messages to local memory.
-    """
-    _endpoints = {
-        'list': '/messages',
-    }
+class Inbox(ApiComponent):
+    """ Inbox Class to Handle Messages (filter, update, delete, etc.) """
 
-    def __init__(self, con, **kwargs):
-        """
-        Creates a new inbox wrapper.
-        """
-        super().__init__(**kwargs)
-        self.con = con
-        self.filters = {'unread': 'IsRead eq false'}
+    _endpoints = {'list': '/messages'}
+
+    def __init__(self, *, parent=None, con=None, **kwargs):
+
+        assert parent or con, 'Need a parent or a connection'
+        self.con = parent.con if parent else con
+
+        # get the main_resource passed in kwargs over the parent main_resource
+        main_resource = kwargs.pop('main_resource', None)
+        if main_resource is None:
+            main_resource = getattr(parent, 'main_resource', None) if parent else None
+        super().__init__(auth_method=self.con.auth_method, api_version=self.con.api_version,
+                         main_resource=main_resource)
+
+        self.filter_templates = {'unread': 'IsRead eq false'}
+
+    def __str__(self):
+        return 'Inbox resource: {}'.format(self.main_resource)
+
+    def __repr__(self):
+        return self.__str__()
 
     def get_messages(self, query=None, join_query='or', order_by=None, limit=10, download_attachments=False):
         """
@@ -50,14 +55,19 @@ class Inbox(BaseApi):
         if query:
             if isinstance(query, str):
                 query = [query]  # convert to list
-            query = [self.filters.get(q, q) for q in query]  # get templated filters
+            query = [self.filter_templates.get(q, q) for q in query]  # get templated filters
             query_str = ' {} '.format(join_query).join(query)  # convert to query string
             params['$filter'] = query_str
 
         if order_by:
             params['$orderby'] = order_by
 
-        response = self.con.get(url, params=params)
+        try:
+            response = self.con.get(url, params=params)
+        except Exception as e:
+            log.error('Error while donwloading messages')
+            return False, []
+
         log.info('Response from O365: %s', str(response))
 
         if response.status_code != 200:
@@ -65,27 +75,7 @@ class Inbox(BaseApi):
 
         messages = response.json().get('value', [])
 
-        return True, [Message(self.con, download_attachments=download_attachments, **message) for message in messages]
+        # Everything received from the cloud must be passed with self._cloud_data_key
+        return True, [Message(parent=self, download_attachments=download_attachments, **{self._cloud_data_key: message})
+                      for message in messages]
 
-#     def getFilter(self):
-#         '''get the value set for a specific filter, if exists, else None'''
-#         return self.filters
-#
-#     def setFilter(self, f_string):
-#         '''
-# 		Set the value of a filter. More information on what filters are available
-# 		can be found here:
-# 		https://msdn.microsoft.com/office/office365/APi/complex-types-for-mail-contacts-calendar#RESTAPIResourcesMessage
-# 		I may in the future have the ability to add these in yourself. but right now that is to complicated.
-#
-# 		Arguments:
-# 			f_string -- The string that represents the filters you want to enact.
-# 				should be something like: (HasAttachments eq true) and (IsRead eq false)
-# 				or just: IsRead eq false
-# 				test your filter stirng here: https://outlook.office365.com/api/v1.0/me/messages?$filter=
-# 				if that accepts it then you know it works.
-# 		'''
-#         self.filters = f_string
-#         return True
-#
-# # To the King!

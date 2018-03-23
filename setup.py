@@ -42,7 +42,7 @@ setup(name='O365',
       maintainer_email='sandslash+O365@gmail.com',
       url='https://github.com/Narcolapser/python-o365',
       packages=['O365'],
-      install_requires=['requests', 'oauthlib', 'requests_oauthlib', 'future', 'iso8601', 'beautifulsoup4'],
+      install_requires=['requests', 'oauthlib', 'requests_oauthlib', 'future', 'iso8601', 'beautifulsoup4', 'stringcase'],
       license='Apache 2.0',
       classifiers=CLASSIFIERS
       )
