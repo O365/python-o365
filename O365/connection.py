@@ -10,7 +10,7 @@ from requests_oauthlib import OAuth2Session
 
 log = logging.getLogger(__name__)
 
-O365_API_VERSION = 'v1.0'  # TODO: Change to v2.0
+O365_API_VERSION = 'v1.0'  # v2.0 does not allow basic auth
 GRAPH_API_VERSION = 'v1.0'
 OAUTH_REDIRECT_URL = 'https://outlook.office365.com/owa/'
 
@@ -18,6 +18,8 @@ AUTH_METHOD_BASIC = 'basic'
 AUTH_METHOD_OAUTH = 'oauth'
 
 ME_RESOURCE = 'me'
+
+MAX_TOP_VALUE = 999
 
 
 SCOPES_FOR = {
@@ -30,7 +32,8 @@ SCOPES_FOR = {
     'message_all_shared': ['https://graph.microsoft.com/Mail.ReadWrite.Shared',
                            'https://graph.microsoft.com/Mail.Send.Shared'],
     'address_book': ['https://graph.microsoft.com/Contacts.ReadWrite'],
-    'calendar': ['https://graph.microsoft.com/Calendars.ReadWrite']
+    'calendar': ['https://graph.microsoft.com/Calendars.ReadWrite'],
+    'users': ['https://graph.microsoft.com/User.ReadBasic.All']
 }
 
 
@@ -110,6 +113,11 @@ class Connection(object):
             self.auth_method = 'basic'
             self.auth = (username, password)
             self.api_version = api_version or O365_API_VERSION
+
+            if self.auth_method == AUTH_METHOD_BASIC and self.api_version != 'v1.0':
+                raise RuntimeError('Basic Authentication only works in api version v1.0 and until November 1 2018.')
+            else:
+                log.warning('Basic Authentication only works in api version v1.0 and until November 1 2018.')
         else:
             self.auth_method = 'oauth'
             self.auth = (client_id, client_secret)

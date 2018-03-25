@@ -1,8 +1,12 @@
 import logging
 import iso8601
 
-from O365.connection import ApiComponent
+from O365.connection import ApiComponent, MAX_TOP_VALUE
 from O365.message import MixinHandleRecipients, Recipients
+from O365.utils import Pagination, NEXT_LINK_KEYWORD
+
+
+GAL_MAIN_RESOURCE = 'users'
 
 log = logging.getLogger(__name__)
 
@@ -57,9 +61,18 @@ class Contact(ApiComponent, MixinHandleRecipients):
         self.business_addresses = cloud_data.get(cc('businessAddress'), {})
         self.home_addresses = cloud_data.get(cc('homesAddress'), {})
         self.other_addresses = cloud_data.get(cc('otherAddress'), {})
+        self.preferred_language = cloud_data.get(cc('preferredLanguage'), None)
 
         self.categories = cloud_data.get(cc('categories'), [])
         self.folder_id = cloud_data.get(cc('parentFolderId'), None)
+
+        # when using Users endpoints : missing keys: ['mail', 'userPrincipalName']
+        mail = cloud_data.get(cc('mail'), None)
+        user_principal_name = cloud_data.get(cc('userPrincipalName'), None)
+        if mail and mail not in self.emails:
+            self.emails.add([mail])
+        if user_principal_name and user_principal_name not in self.emails:
+            self.emails.add([user_principal_name])
 
     @property
     def full_name(self):
@@ -149,7 +162,11 @@ class Contact(ApiComponent, MixinHandleRecipients):
 class AddressBook(ApiComponent):
     """ A class representing an address book """
 
-    _endpoints = {'list': '/contacts'}
+    _endpoints = {
+        'gal': '',
+        'list': '/contacts',
+    }
+    contact_constructor = Contact
 
     def __init__(self, *, parent=None, con=None, **kwargs):
 
@@ -186,28 +203,60 @@ class AddressBook(ApiComponent):
 
         return True, Contact(parent=self, **{self._cloud_data_key: contact})
 
-    def get_contacts(self, query=None, join_query='or', order_by=None, limit=10):
-        """ Gets a list of conctacts"""
+    def get_contacts(self, limit=None, *, query=None, order_by=None, batch=None):
+        """
+        Gets a list of contacts from this address book
 
-        url = self._build_url(self._endpoints.get('list'))
-        params = {'$top': limit}
+        When quering the Global Address List the Users enpoint will be used.
+        Only a limited set of information will be available unless you have acces to
+         scope 'User.Read.All' wich requires App Administration Consent.
+        Also using the Users enpoint has some limitations on the quering capabilites.
+
+        To use query an order_by check the OData specification here:
+
+        http://docs.oasis-open.org/odata/odata/v4.0/errata03/os/complete/part2-url-conventions/odata-v4.0-errata03-os-part2-url-conventions-complete.html
+
+        :param limit: Number of elements to return. Over 999 uses batch.
+        :param query: a OData valid filter clause
+        :param order_by: OData valid order by clause
+        :param batch: Returns a custom iterator that retrieves items in batches allowing
+            to retrieve more items than the limit.
+        """
+
+        if self.main_resource == GAL_MAIN_RESOURCE:
+            # using Users endpoint to access the Global Address List
+            url = self._build_url(self._endpoints.get('gal'))
+        else:
+            url = self._build_url(self._endpoints.get('list'))
+
+        if limit is None or limit > MAX_TOP_VALUE:
+            batch = MAX_TOP_VALUE
+
+        params = {'$top': batch if batch else limit}
 
         if query:
-            if isinstance(query, str):
-                query = [query]  # convert to list
-            query_str = ' {} '.format(join_query).join(query)  # convert to query string
-            params['$filter'] = query_str
-
+            params['$filter'] = query
         if order_by:
             params['$orderby'] = order_by
 
         try:
             response = self.con.get(url, params=params)
         except Exception as e:
-            log.error('Error getting contact. Error: {}'.format(str(e)))
-            return False, []
+            log.error('Error getting contacts. Error {}'.format(str(e)))
+            return []
 
-        contacts = response.json().get('value', [])
+        if response.status_code != 200:
+            log.debug('Getting contacts Request failed: {}'.format(response.reason))
+            return []
+
+        data = response.json()
 
         # Everything received from the cloud must be passed with self._cloud_data_key
-        return True, [Contact(parent=self, **{self._cloud_data_key: contact}) for contact in contacts]
+        contacts = [self.contact_constructor(parent=self, **{self._cloud_data_key: contact})
+                    for contact in data.get('value', [])]
+
+        if batch:
+            return Pagination(parent=self, data=contacts, constructor=self.contact_constructor,
+                              next_link=data.get(NEXT_LINK_KEYWORD, None), limit=limit)
+        else:
+            return contacts

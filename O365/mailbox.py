@@ -1,8 +1,9 @@
 import logging
 import datetime as dt
 
-from O365.connection import ApiComponent
+from O365.connection import ApiComponent, MAX_TOP_VALUE
 from O365.message import Message
+from O365.utils import Pagination, NEXT_LINK_KEYWORD
 
 log = logging.getLogger(__name__)
 
@@ -52,13 +53,14 @@ class Folder(ApiComponent):
     def __repr__(self):
         return self.__str__()
 
-    def get_folders(self, query=None, order_by=None, limit=100):
+    def get_folders(self, limit=None, *, query=None, order_by=None, batch=None):
         """
         Returns a list of child folders
 
+        :param limit: limits the result set. Over 999 uses batch.
         :param query: applies a filter to the request such as 'displayName:HelloFolder'
         :param order_by: orders the result set based on this condition
-        :param limit: limits the result set.
+        :param batch: Returns a custom iterator that retrieves items in batches allowing to retrieve more items than the limit.
         """
 
         if self.root:
@@ -66,7 +68,10 @@ class Folder(ApiComponent):
         else:
             url = self._build_url(self._endpoints.get('child_folders').format(id=self.folder_id))
 
-        params = {'$top': limit}
+        if limit is None or limit > MAX_TOP_VALUE:
+            batch = MAX_TOP_VALUE
+
+        params = {'$top': batch if batch else limit}
         if query:
             params['$filter'] = query
         if order_by:
@@ -82,18 +87,25 @@ class Folder(ApiComponent):
             log.debug('Getting folders Request failed: {}'.format(response.reason))
             return []
 
-        folders = response.json().get('value', [])
+        data = response.json()
 
         # Everything received from the cloud must be passed with self._cloud_data_key
-        return [self.__class__(parent=self, **{self._cloud_data_key: folder}) for folder in folders]
+        folders = [self.__class__(parent=self, **{self._cloud_data_key: folder}) for folder in data.get('value', [])]
+        if batch:
+            return Pagination(parent=self, data=folders, constructor=self.__class__,
+                              next_link=data.get(NEXT_LINK_KEYWORD, None), limit=limit)
+        else:
+            return folders
 
-    def get_messages(self, query=None, order_by=None, limit=10, download_attachments=False):
+    def get_messages(self, limit=None, *, query=None, order_by=None, batch=None, download_attachments=False):
         """
         Downloads messages from this folder
 
+        :param limit: limits the result set. Over 999 uses batch.
         :param query: applies a filter to the request such as 'displayName:HelloFolder'
         :param order_by: orders the result set based on this condition
-        :param limit: limits the result set.
+        :param batch: Returns a custom iterator that retrieves items in batches allowing
+            to retrieve more items than the limit. Download_attachments is ignored.
         :param download_attachments: downloads message attachments
         """
 
@@ -102,7 +114,13 @@ class Folder(ApiComponent):
         else:
             url = self._build_url(self._endpoints.get('folder_messages').format(id=self.folder_id))
 
-        params = {'$top': limit}
+        if limit is None or limit > MAX_TOP_VALUE:
+            batch = MAX_TOP_VALUE
+
+        if batch:
+            download_attachments = False
+
+        params = {'$top': batch if batch else limit}
 
         if query:
             params['$filter'] = query
@@ -120,12 +138,17 @@ class Folder(ApiComponent):
             log.debug('Getting messages Request failed: {}'.format(response.reason))
             return []
 
-        messages = response.json().get('value', [])
+        data = response.json()
 
         # Everything received from the cloud must be passed with self._cloud_data_key
-        return [self.message_constructor(parent=self, download_attachments=download_attachments,
-                                         **{self._cloud_data_key: message})
-                for message in messages]
+        messages = [self.message_constructor(parent=self, download_attachments=download_attachments,
+                                             **{self._cloud_data_key: message})
+                    for message in data.get('value', [])]
+        if batch:
+            return Pagination(parent=self, data=messages, constructor=self.message_constructor,
+                              next_link=data.get(NEXT_LINK_KEYWORD, None), limit=limit)
+        else:
+            return messages
 
     def create_child_folder(self, folder_name):
         """

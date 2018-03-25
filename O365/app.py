@@ -12,8 +12,6 @@ class App(object):
         self.con = Connection(username=username, password=password, client_id=client_id, client_secret=client_secret,
                               api_version=api_version, scopes=scopes)
         self.api_version = self.con.api_version
-        self._mailbox = None  # lazy instantiation
-        self._addres_book = None  # lazy instantiation
 
     @property
     def connection(self):
@@ -32,15 +30,19 @@ class App(object):
         Creates MailBox Folder instance
         :param resource: Custom resource to be used in this mailbox. defaults to parent main_resource.
         """
-        if self._mailbox is None:
-            self._mailbox = Folder(parent=self, main_resource=resource, name='MailBox', root=True)
-        return self._mailbox
+        return Folder(parent=self, main_resource=resource, name='MailBox', root=True)
 
-    def addres_book(self, resource=None):
+    def addres_book(self, address_book='personal', resource=None):
         """
         Creates Address Book instance
+        :param address_book: Choose from Personal or Gal (Global Address List)
         :param resource: Custom resource to be used in this address book. defaults to parent main_resource.
         """
-        if self._addres_book is None:
-            self._addres_book = AddressBook(parent=self, main_resource=resource)
-        return self._addres_book
+        if address_book == 'personal':
+            return AddressBook(parent=self, main_resource=resource)
+        elif address_book == 'gal':
+            if self.con.auth_method == 'basic' and self.con.api_version == 'v1.0':
+                raise RuntimeError('v1.0 with basic Authentication does not have access to the Global Addres List')
+            return AddressBook(parent=self, main_resource='users')
+        else:
+            raise RuntimeError('Addres_book must be either "personal" (resource address book) or "gal" (Global Address List)')

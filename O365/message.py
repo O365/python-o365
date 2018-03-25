@@ -1,10 +1,13 @@
 import logging
 import base64
-import iso8601
+from dateutil.parser import parse
+from tzlocal import get_localzone
+import pytz
 from pathlib import Path
 from bs4 import BeautifulSoup as bs
 
 from O365.connection import ApiComponent, AUTH_METHOD_BASIC
+
 
 log = logging.getLogger(__name__)
 
@@ -40,6 +43,12 @@ class Recipients(object):
 
     def __iter__(self):
         return iter(self.recipients)
+
+    def __getitem__(self, key):
+        return self.recipients[key]
+
+    def __contains__(self, item):
+        return item in {recipient.address for recipient in self.recipients}
 
     def __len__(self):
         return len(self.recipients)
@@ -129,7 +138,6 @@ class Attachment(ApiComponent):
                     self.attachment_id = attachment.get('attachment_id')
                     self.attachment = Path(file_path) if self.on_disk else None
                     self.name = self.attachment.name if self.on_disk else attachment.get('name')
-
             elif isinstance(attachment, str):
                 self.attachment = Path(attachment)
                 self.name = self.attachment.name
@@ -137,12 +145,16 @@ class Attachment(ApiComponent):
                 file_path, custom_name = attachment
                 self.attachment = Path(file_path)
                 self.name = custom_name
-            # TODO: allow attach a message
-            # elif isinstance(attachment, Message):
-            #     # attaching a message
-            #     self.attachment_type = 'message'
-            #     self.name = attachment.subject
-            #     self.content = attachment._api_data()
+            elif isinstance(attachment, Message):
+                # attaching a message
+                self.attachment_type = 'message'
+                self.attachment = attachment
+                self.name = attachment.subject
+                self.content = attachment._api_data()
+                if self.auth_method == AUTH_METHOD_BASIC:
+                    self.content['@odata.type'] = 'Microsoft.OutlookServices.Message'
+                else:
+                    self.content['@odata.type'] = 'microsoft.graph.message'
 
             if self.content is None and self.attachment:
                 with self.attachment.open('rb') as file:
@@ -150,12 +162,18 @@ class Attachment(ApiComponent):
                 self.on_disk = True
 
     def _api_data(self):
+        attachment_type = self._cc('file') if self.attachment_type == 'file' else self._cc('item')
         if self.auth_method == AUTH_METHOD_BASIC:
-            data = {'@odata.type': '#Microsoft.OutlookServices.FileAttachment'}
+            data = {'@odata.type': '#Microsoft.OutlookServices.{}Attachment'.format(attachment_type)}
         else:
-            data = {'@odata.type': '#microsoft.graph.fileAttachment'}
-        data[self._cc('contentBytes')] = self.content
+            data = {'@odata.type': '#microsoft.graph.{}Attachment'.format(attachment_type)}
+
         data[self._cc('name')] = self.name
+
+        if self.attachment_type == 'file':
+            data[self._cc('contentBytes')] = self.content
+        else:
+            data[self._cc('item')] = self.content
 
         return data
 
@@ -164,6 +182,9 @@ class Attachment(ApiComponent):
         :param location: path string to where the file is to be saved.
         :param custom_name: a custom name to be saved as
         """
+        if self.attachment_type != 'file':
+            return False
+
         location = Path(location or '')
         if not location.exists():
             log.debug('the location provided does not exist')
@@ -186,7 +207,7 @@ class Attachment(ApiComponent):
             if on_cloud:
                 if not message.message_id:
                     raise RuntimeError('A valid message id is needed in order to attach a file')
-                # message builds its own url
+                # message builds its own url using its resource and main configuration
                 url = message._build_url(self._endpoints.get('attach').format(id=message.message_id))
                 try:
                     response = message.con.post(url, data=self._api_data())
@@ -197,13 +218,17 @@ class Attachment(ApiComponent):
                 log.debug('attached file to message')
                 return response.status_code == 201
             else:
-                message.attachments.add([{
-                    'attachment_id': self.attachment_id,  # TODO: copy attachment id? or set to None?
-                    'path': str(self.attachment) if self.attachment else None,
-                    'name': self.name,
-                    'content': self.content,
-                    'on_disk': self.on_disk
-                }])
+                if self.attachment_type == 'file':
+                    message.attachments.add([{
+                        'attachment_id': self.attachment_id,  # TODO: copy attachment id? or set to None?
+                        'path': str(self.attachment) if self.attachment else None,
+                        'name': self.name,
+                        'content': self.content,
+                        'on_disk': self.on_disk
+                    }])
+                elif self.attachment_type == 'item':
+                    message.attachments.add([self.attachment])
+
 
     def __str__(self):
         return self.name
@@ -227,6 +252,9 @@ class Attachments(ApiComponent):
 
     def __iter__(self):
         return iter(self.attachments)
+
+    def __getitem__(self, key):
+        return self.attachments[key]
 
     def __len__(self):
         return len(self.attachments)
@@ -373,10 +401,10 @@ class Message(ApiComponent, MixinHandleRecipients):
         self.received = cloud_data.get(cc('receivedDateTime'), None)
         self.sent = cloud_data.get(cc('sentDateTime'), None)
 
-        # parsing dates from iso8601 format to datetimes UTC. TODO: Convert UTC to Local Time
-        self.created = iso8601.parse_date(self.created) if self.created else None
-        self.received = iso8601.parse_date(self.received) if self.received else None
-        self.sent = iso8601.parse_date(self.sent) if self.sent else None
+        loca_tz = get_localzone()
+        self.created = parse(self.created).astimezone(loca_tz) if self.created else None
+        self.received = parse(self.received).astimezone(loca_tz) if self.received else None
+        self.sent = parse(self.sent).astimezone(loca_tz) if self.sent else None
 
         self.attachments = Attachments(message=self, attachments=[])
         self.has_attachments = cloud_data.get(cc('hasAttachments'), 0)
@@ -385,11 +413,12 @@ class Message(ApiComponent, MixinHandleRecipients):
         self.subject = cloud_data.get(cc('subject'), '')
         body = cloud_data.get(cc('body'), {})
         self.body = body.get(cc('content'), '')
-        self.body_type = body.get(self._cc('contentType'), '')
+        self.body_type = body.get(self._cc('contentType'), 'HTML')  # default to HTML for new messages
         self.sender = self._recipient_from_cloud(cloud_data.get(cc('from'), None))
         self.to = self._recipients_from_cloud(cloud_data.get(cc('toRecipients'), []))
         self.cc = self._recipients_from_cloud(cloud_data.get(cc('ccRecipients'), []))
         self.bcc = self._recipients_from_cloud(cloud_data.get(cc('bccRecipients'), []))
+        self.reply_to = self._recipients_from_cloud(cloud_data.get(cc('replyTo'), []))
         self.categories = cloud_data.get(cc('categories'), [])
         self.importance = self._importance_options.get(cloud_data.get(cc('importance'), 'normal'), 'normal')  # only allow valid importance
         self.is_read = cloud_data.get(cc('isRead'), None)
@@ -402,22 +431,38 @@ class Message(ApiComponent, MixinHandleRecipients):
 
         cc = self._cc  # alias to shorten the code
 
-        data = {
-            cc('message'): {
-                cc('subject'): self.subject,
-                cc('body'): {
-                    cc('contentType'): 'HTML',
-                    cc('content'): self.body},
-                cc('toRecipients'): [self._recipient_to_cloud(recipient) for recipient in self.to],
-                cc('ccRecipients'): [self._recipient_to_cloud(recipient) for recipient in self.cc],
-                cc('bccRecipients'): [self._recipient_to_cloud(recipient) for recipient in self.bcc],
-                cc('attachments'): self.attachments._api_data()
-            },
+        message = {
+            cc('subject'): self.subject,
+            cc('body'): {
+                cc('contentType'): self.body_type,
+                cc('content'): self.body},
+            cc('toRecipients'): [self._recipient_to_cloud(recipient) for recipient in self.to],
+            cc('ccRecipients'): [self._recipient_to_cloud(recipient) for recipient in self.cc],
+            cc('bccRecipients'): [self._recipient_to_cloud(recipient) for recipient in self.bcc],
+            cc('replyTo'): [self._recipient_to_cloud(recipient) for recipient in self.reply_to],
+            cc('attachments'): self.attachments._api_data()
         }
-        if self.sender and self.sender.address:
-            data[cc('message')][cc('from')] = self._recipient_to_cloud(self.sender)
 
-        return data
+        if self.message_id and not self.is_draft:
+            # return the whole signature of this message
+
+            message[cc('id')] = self.message_id
+            message[cc('createdDateTime')] = self.created.astimezone(pytz.utc).isoformat()
+            message[cc('receivedDateTime')] = self.received.astimezone(pytz.utc).isoformat()
+            message[cc('sentDateTime')] = self.sent.astimezone(pytz.utc).isoformat()
+            message[cc('hasAttachments')] = len(self.attachments) > 0
+            message[cc('from')] = self._recipient_to_cloud(self.sender)
+            message[cc('categories')] = self.categories
+            message[cc('importance')] = self.importance
+            message[cc('isRead')] = self.is_read
+            message[cc('isDraft')] = self.is_draft
+            message[cc('conversationId')] = self.conversation_id
+            message[cc('parentFolderId')] = self.folder_id  # this property does not form part of the message itself
+        else:
+            if self.sender and self.sender.address:
+                message[cc('from')] = self._recipient_to_cloud(self.sender)
+
+        return message
 
     def send(self, save_to_sent_folder=True):
         """ Sends this message. """
@@ -430,7 +475,7 @@ class Message(ApiComponent, MixinHandleRecipients):
             data = None
         else:
             url = self._build_url(self._endpoints.get('send_mail'))
-            data = self._api_data()
+            data = {self._cc('message'): self._api_data()}
             if save_to_sent_folder is False:
                 data[self._cc('saveToSentItems')] = False
 
@@ -650,7 +695,7 @@ class Message(ApiComponent, MixinHandleRecipients):
         if not isinstance(target_folder, str):
             target_folder = getattr(target_folder, 'folder_id', None)
 
-        if target_folder:
+        if target_folder and target_folder != 'Drafts':
             url = self._build_url(self._endpoints.get('create_draft_folder').format(id=target_folder))
         else:
             url = self._build_url(self._endpoints.get('create_draft'))
