@@ -20,5 +20,5 @@ Python library for interfacing with the Microsoft Office 365 online.
 
 from .app import App
 from .connection import Connection
-from .inbox import Inbox
+from .mailbox import Inbox
 from .message import Message

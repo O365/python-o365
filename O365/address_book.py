@@ -1,4 +1,3 @@
-import json
 import logging
 import iso8601
 
@@ -136,7 +135,7 @@ class Contact(ApiComponent, MixinHandleRecipients):
 
         url = self._build_url(self._endpoints.get('contact'.format(id=self.contact_id)))
         try:
-            response = self.con.patch(url, data=json.dumps(data))
+            response = self.con.patch(url, data=data)
             log.debug('sent update request')
         except Exception as e:
             log.error('Error while updating Contact id: {id}. Error: {error}'.format(id=self.contact_id, error=str(e)))
@@ -172,7 +171,7 @@ class AddressBook(ApiComponent):
 
     def get_contact(self, email):
         """ Gets a contact by it's email """
-        # TODO emailAddress is not a filterable field acording to Graph docs. Try $search instead of $filter
+        # TODO emailAddress is not a filterable field acording to Graph docs.
         params = {'$filter': "emailAddresses/any(a:a/address eq '{email}')".format(email=email)}
 
         url = self._build_url(self._endpoints.get('list'))

@@ -1,5 +1,4 @@
 import logging
-import json
 import base64
 import iso8601
 from pathlib import Path
@@ -105,6 +104,7 @@ class Attachment(ApiComponent):
                          api_version=getattr(parent, 'api_version', None),
                          main_resource=getattr(parent, 'main_resource', None))
 
+        self.attachment_type = 'file'
         self.attachment_id = None
         self.attachment = None
         self.name = None
@@ -137,6 +137,12 @@ class Attachment(ApiComponent):
                 file_path, custom_name = attachment
                 self.attachment = Path(file_path)
                 self.name = custom_name
+            # TODO: allow attach a message
+            # elif isinstance(attachment, Message):
+            #     # attaching a message
+            #     self.attachment_type = 'message'
+            #     self.name = attachment.subject
+            #     self.content = attachment._api_data()
 
             if self.content is None and self.attachment:
                 with self.attachment.open('rb') as file:
@@ -183,7 +189,7 @@ class Attachment(ApiComponent):
                 # message builds its own url
                 url = message._build_url(self._endpoints.get('attach').format(id=message.message_id))
                 try:
-                    response = message.con.post(url, data=json.dumps(self._api_data()))
+                    response = message.con.post(url, data=self._api_data())
                 except Exception as e:
                     log.error('Error attaching file to message')
                     return False
@@ -326,15 +332,19 @@ class Message(ApiComponent, MixinHandleRecipients):
     """
 
     _endpoints = {
-        'send': '/sendMail',
-        'message': '/messages/{id}',
-        'move': 'messages/{id}/move',
-        'attachments': '/messages/{id}/attachments'
+        'create_draft': '/messages',
+        'create_draft_folder': '/mailFolders/{id}/messages',
+        'send_mail': '/sendMail',
+        'send_draft': '/messages/{id}/send',
+        'get_message': '/messages/{id}',
+        'move_message': '/messages/{id}/move',
+        'copy_message': '/messages/{id}/copy',
+        'create_reply': '/messages/{id}/createReply',
+        'create_reply_all': '/messages/{id}/createReplyAll',
+        'forward_message': '/messages/{id}/createForward'
     }
 
     _importance_options = {'normal': 'normal', 'low': 'low', 'high': 'high'}
-
-    draft_url = 'https://outlook.office365.com/api/v1.0/me/folders/{folder_id}/messages'  # TODO: drafts?
 
     def __init__(self, *, parent=None, con=None, **kwargs):
         """
@@ -375,6 +385,7 @@ class Message(ApiComponent, MixinHandleRecipients):
         self.subject = cloud_data.get(cc('subject'), '')
         body = cloud_data.get(cc('body'), {})
         self.body = body.get(cc('content'), '')
+        self.body_type = body.get(self._cc('contentType'), '')
         self.sender = self._recipient_from_cloud(cloud_data.get(cc('from'), None))
         self.to = self._recipients_from_cloud(cloud_data.get(cc('toRecipients'), []))
         self.cc = self._recipients_from_cloud(cloud_data.get(cc('ccRecipients'), []))
@@ -382,16 +393,15 @@ class Message(ApiComponent, MixinHandleRecipients):
         self.categories = cloud_data.get(cc('categories'), [])
         self.importance = self._importance_options.get(cloud_data.get(cc('importance'), 'normal'), 'normal')  # only allow valid importance
         self.is_read = cloud_data.get(cc('isRead'), None)
-        self.is_draft = cloud_data.get(cc('isDraft'), None)
+        self.is_draft = cloud_data.get(cc('isDraft'), kwargs.get('is_draft', True))  # a message is a draft by default
         self.conversation_id = cloud_data.get(cc('conversationId'), None)
         self.folder_id = cloud_data.get(cc('parentFolderId'), None)
 
-    def send(self, save_to_sent_folder=True):
-        """ Sends this message. """
+    def _api_data(self):
+        """ Returns a dict representation of this message prepared to be send to the cloud """
 
-        if self.message_id and not self.is_draft:
-            return RuntimeError('Not possible to send a message that is not new or a draft. Use Reply or Forward instead.')
         cc = self._cc  # alias to shorten the code
+
         data = {
             cc('message'): {
                 cc('subject'): self.subject,
@@ -404,74 +414,204 @@ class Message(ApiComponent, MixinHandleRecipients):
                 cc('attachments'): self.attachments._api_data()
             },
         }
-        if save_to_sent_folder is False:
-            data[cc('saveToSentItems')] = False
-
         if self.sender and self.sender.address:
             data[cc('message')][cc('from')] = self._recipient_to_cloud(self.sender)
 
-        url = self._build_url(self._endpoints.get('send'))
+        return data
+
+    def send(self, save_to_sent_folder=True):
+        """ Sends this message. """
+
+        if self.message_id and not self.is_draft:
+            return RuntimeError('Not possible to send a message that is not new or a draft. Use Reply or Forward instead.')
+
+        if self.is_draft and self.message_id:
+            url = self._build_url(self._endpoints.get('send_draft').format(id=self.message_id))
+            data = None
+        else:
+            url = self._build_url(self._endpoints.get('send_mail'))
+            data = self._api_data()
+            if save_to_sent_folder is False:
+                data[self._cc('saveToSentItems')] = False
+
         try:
-            response = self.con.post(url, data=json.dumps(data))
+            response = self.con.post(url, data=data)
         except Exception as e:
-            log.error('Message could not be send error: {}'.format(str(e)))
+            log.error('Message could not be send. Error: {}'.format(str(e)))
             return False
 
-        log.debug('response from server for sending message:' + str(response))
-        log.debug('response body: {}'.format(response.text))
+        if response.status_code != 202:
+            log.debug('Message failed to be sent. Reason: {}'.format(response.reason))
+            return False
 
-        return response.status_code == 202
+        self.message_id = 'sent_message' if not self.message_id else self.message_id
+        self.is_draft = False
+
+        return True
+
+    def reply(self, to_all=True):
+        """
+        Creates a new message that is a reply to this message.
+        :param to_all: replies to all the recipients instead to just the sender
+        """
+        if not self.message_id or self.is_draft:
+            raise RuntimeError("Can't reply to this message")
+
+        if to_all:
+            url = self._build_url(self._endpoints.get('create_reply_all').format(id=self.message_id))
+        else:
+            url = self._build_url(self._endpoints.get('create_reply').format(id=self.message_id))
+
+        try:
+            response = self.con.post(url)
+        except Exception as e:
+            log.error('message (id: {}) could not be replied. Error: {}'.format(self.message_id, str(e)))
+            return None
+
+        if response.status_code != 201:
+            log.debug('message (id: {}) could not be replied. Reason: {}'.format(self.message_id, response.reason))
+            return None
+
+        message = response.json()
+
+        # Everything received from the cloud must be passed with self._cloud_data_key
+        return self.__class__(parent=self, **{self._cloud_data_key: message})
+
+    def forward(self):
+        """
+        Creates a new message that is a forward of this message.
+        """
+        if not self.message_id or self.is_draft:
+            raise RuntimeError("Can't forward this message")
+
+        url = self._build_url(self._endpoints.get('forward_message').format(id=self.message_id))
+
+        try:
+            response = self.con.post(url)
+        except Exception as e:
+            log.error('message (id: {}) could not be forward. Error: {}'.format(self.message_id, str(e)))
+            return None
+
+        if response.status_code != 201:
+            log.debug('message (id: {}) could not be forward. Reason: {}'.format(self.message_id, response.reason))
+            return None
+
+        message = response.json()
+
+        # Everything received from the cloud must be passed with self._cloud_data_key
+        return self.__class__(parent=self, **{self._cloud_data_key: message})
 
     def delete(self):
         """ Deletes a stored message """
         if self.message_id is None:
             raise RuntimeError('Attempting to delete an unsaved Message')
 
-        url = self._build_url(self._endpoints.get('message').format(id=self.message_id))
+        url = self._build_url(self._endpoints.get('get_message').format(id=self.message_id))
 
-        log.debug('deleting message id: {id}'.format(id=self.message_id))
-        response = self.con.delete(url)
-        log.debug('response from server for deleting message:' + str(response))
+        try:
+            response = self.con.delete(url)
+        except Exception as e:
+            log.error('Message (id: {}) could not be deleted. Error: {}'.format(self.message_id, str(e)))
+            return False
 
-        return response.status_code == 204
+        if response.status_code != 204:
+            log.debug('Message (id: {}) could not be deleted. Reason: {}'.format(self.message_id, response.reason))
+            return False
+
+        return True
 
     def mark_as_read(self):
         """ Marks this message as read in the cloud."""
-        if self.message_id is None:
+        if self.message_id is None or self.is_draft:
             raise RuntimeError('Attempting to mark as read an unsaved Message')
 
         data = {self._cc('isRead'): True}
 
-        url = self._build_url(self._endpoints.get('message').format(id=self.message_id))
+        url = self._build_url(self._endpoints.get('get_message').format(id=self.message_id))
         try:
-            response = self.con.patch(url, data=json.dumps(data))
+            response = self.con.patch(url, data=data)
         except Exception as e:
-            log.error('Message could not be marked as read. Error: {}'.format(str(e)))
+            log.error('Message (id: {}) could not be marked as read. Error: {}'.format(self.message_id, str(e)))
             return False
 
-        return response.status_code == 200
+        if response.status_code != 200:
+            log.debug('Message (id: {}) could not be marked as read. Reason: {}'.format(self.message_id, response.reason))
+            return False
 
-    def move(self, folder_id):
+        self.is_read = True
+
+        return True
+
+    def move(self, folder):
         """
         Move the message to a given folder
 
-        :param folder_id: Folder id or Well-known name to move this message to
+        :param folder: Folder object or Folder id or Well-known name to move this message to
         :returns: True on success
         """
         if self.message_id is None:
             raise RuntimeError('Attempting to move an unsaved Message')
 
-        url = self._build_url(self._endpoints.get('move').format(id=self.message_id))
+        url = self._build_url(self._endpoints.get('move_message').format(id=self.message_id))
+
+        if isinstance(folder, str):
+            folder_id = folder
+        else:
+            folder_id = getattr(folder, 'folder_id', None)
+
+        if not folder_id:
+            raise RuntimeError('Must Provide a valid folder_id')
 
         data = {self._cc('destinationId'): folder_id}
         try:
-            response = self.con.post(url, data=json.dumps(data))
-            log.debug('message moved to folder: {}'.format(folder_id))
+            response = self.con.post(url, data=data)
         except Exception as e:
-            log.error('message (id: {}) could not be moved to folder id: {}'.format(self.message_id, folder_id))
+            log.error('Message (id: {}) could not be moved to folder id: {}. Error: {}'.format(self.message_id, folder_id, str(e)))
             return False
 
-        return response.status_code == 201
+        if response.status_code != 201:
+            log.debug('Message (id: {}) could not be moved to folder id: {}. Reason: {}'.format(self.message_id, folder_id, response.reason))
+            return False
+
+        self.folder_id = folder_id
+
+        return True
+
+    def copy(self, folder):
+        """
+        Copy the message to a given folder
+
+        :param folder: Folder object or Folder id or Well-known name to move this message to
+        :returns: the copied message
+        """
+        if self.message_id is None:
+            raise RuntimeError('Attempting to move an unsaved Message')
+
+        url = self._build_url(self._endpoints.get('copy_message').format(id=self.message_id))
+
+        if isinstance(folder, str):
+            folder_id = folder
+        else:
+            folder_id = getattr(folder, 'folder_id', None)
+
+        if not folder_id:
+            raise RuntimeError('Must Provide a valid folder_id')
+
+        data = {self._cc('destinationId'): folder_id}
+        try:
+            response = self.con.post(url, data=data)
+        except Exception as e:
+            log.error('Message (id: {}) could not be copied to folder id: {}. Error: {}'.format(self.message_id, folder_id, str(e)))
+            return None
+
+        if response.status_code != 201:
+            log.debug('Message (id: {}) could not be copied to folder id: {}. Error: {}'.format(self.message_id, folder_id, response.reason))
+            return None
+
+        message = response.json()
+
+        # Everything received from the cloud must be passed with self._cloud_data_key
+        return self.__class__(parent=self, **{self._cloud_data_key: message})
 
     def update_category(self, categories):
         """ Update this message categories """
@@ -483,24 +623,72 @@ class Message(ApiComponent, MixinHandleRecipients):
 
         data = {self._cc('categories'): categories}
 
-        url = self._build_url(self._endpoints.get('message').format(id=self.message_id))
+        url = self._build_url(self._endpoints.get('get_message').format(id=self.message_id))
         try:
-            response = self.con.patch(url, data=json.dumps(data))
-            log.debug('changed categories on message id: {}'.format(self.message_id))
+            response = self.con.patch(url, data=data)
         except Exception as e:
             log.error('Categories not updated. Error: {}'.format(str(e)))
             return False
 
-        return response.status_code == 200
+        if response.status_code != 200:
+            log.debug('Categories not updated. Reason: {}'.format(response.reason))
+            return False
+
+        self.categories = response.json().get(self._cc('categories'), [])
+        return True
+
+    def save_draft(self, target_folder='Drafts'):
+        """ Save this message as a draft on the cloud """
+
+        if not self.is_draft:
+            raise RuntimeError('Only draft messages can be saved as drafts')
+        if self.message_id:
+            raise RuntimeError('This message has been already saved to the cloud')
+
+        data = self._api_data()
+
+        if not isinstance(target_folder, str):
+            target_folder = getattr(target_folder, 'folder_id', None)
+
+        if target_folder:
+            url = self._build_url(self._endpoints.get('create_draft_folder').format(id=target_folder))
+        else:
+            url = self._build_url(self._endpoints.get('create_draft'))
+
+        try:
+            response = self.con.post(url, data=data)
+        except Exception as e:
+            log.error('Error saving draft. Error: {}'.format(str(e)))
+            return False
+
+        if response.status_code != 201:
+            log.debug('Saving draft Request failed: {}'.format(response.reason))
+            return False
+
+        message = response.json()
+        self.message_id = message.get(self._cc('id'), None)
+        self.folder_id = message.get(self._cc('parentFolderId'), None)
+
+        return True
 
     def get_body_text(self):
         """ Parse the body html and returns the body text using bs4 """
+        if self.body_type != 'HTML':
+            return self.body
+
         try:
             soup = bs(self.body, 'html.parser')
         except Exception as e:
             return self.body
         else:
             return soup.body.text
+
+    def get_body_soup(self):
+        """ Returns the beautifulsoup4 of the html body"""
+        if self.body_type != 'HTML':
+            return None
+        else:
+            return bs(self.body, 'html.parser')
 
     def __str__(self):
         return 'subject: {}'.format(self.subject)

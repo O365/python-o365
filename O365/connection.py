@@ -22,21 +22,23 @@ ME_RESOURCE = 'me'
 
 SCOPES_FOR = {
     'basic': ['offline_access', 'https://graph.microsoft.com/User.Read'],
-    'inbox': ['https://graph.microsoft.com/Mail.Read'],
+    'mailbox': ['https://graph.microsoft.com/Mail.Read'],
+    'mailbox_shared': ['https://graph.microsoft.com/Mail.Read.Shared'],
     'message_send': ['https://graph.microsoft.com/Mail.Send'],
+    'message_send_shared': ['https://graph.microsoft.com/Mail.Send.Shared'],
     'message_all': ['https://graph.microsoft.com/Mail.ReadWrite', 'https://graph.microsoft.com/Mail.Send'],
+    'message_all_shared': ['https://graph.microsoft.com/Mail.ReadWrite.Shared',
+                           'https://graph.microsoft.com/Mail.Send.Shared'],
     'address_book': ['https://graph.microsoft.com/Contacts.ReadWrite'],
     'calendar': ['https://graph.microsoft.com/Calendars.ReadWrite']
 }
 
 
-def get_scopes_for(app_parts='all'):
+def get_scopes_for(app_parts=None):
     """ Returns a list of scopes needed for all the app_parts
     :param app_parts: a list of
     """
     if app_parts is None:
-        app_parts = ['basic']
-    elif app_parts == 'all':
         app_parts = [app_part for app_part in SCOPES_FOR]
     elif isinstance(app_parts, str):
         app_parts = [app_parts]
@@ -179,8 +181,13 @@ class Connection(object):
         os.environ['OAUTHLIB_RELAX_TOKEN_SCOPE'] = '1'
         os.environ['OAUTHLIB_IGNORE_SCOPE_CHANGE'] = '1'
 
-        self.token = self.oauth.fetch_token(token_url=self._oauth2_token_url, authorization_response=authorizated_url,
-                                            client_secret=client_secret, proxies=self.proxy)
+        try:
+            self.token = self.oauth.fetch_token(token_url=self._oauth2_token_url,
+                                                authorization_response=authorizated_url,
+                                                client_secret=client_secret, proxies=self.proxy)
+        except Exception as e:
+            log.error('Unable to fetch auth token. Error: {}'.format(str(e)))
+            return None
 
         if token_path:
             self.token_path = token_path
@@ -188,7 +195,7 @@ class Connection(object):
         if self.store_token:
             self._save_token(self.token, self.token_path)
 
-        return self.token
+        return True
 
     def oauth2(self, token_path=None):
         """ Create a valid oauth session with the stored token
@@ -228,6 +235,8 @@ class Connection(object):
             if 'headers' not in kwargs:
                 kwargs['headers'] = {}
             kwargs['headers']['Content-type'] = 'application/json'
+            if 'data' in kwargs:
+                kwargs['data'] = json.dumps(kwargs['data'])  # autoconvert to json
 
         if self.proxy:
             kwargs['proxies'] = self.proxy
