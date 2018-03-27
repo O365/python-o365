@@ -1,7 +1,8 @@
 import logging
-import iso8601
+from dateutil.parser import parse
+from tzlocal import get_localzone
 
-from O365.connection import ApiComponent, MAX_TOP_VALUE
+from O365.connection import ApiComponent, MAX_TOP_VALUE, Connection
 from O365.message import MixinHandleRecipients, Recipients
 from O365.utils import Pagination, NEXT_LINK_KEYWORD
 
@@ -41,9 +42,9 @@ class Contact(ApiComponent, MixinHandleRecipients):
         self.created = cloud_data.get(cc('createdDateTime'), None)
         self.modified = cloud_data.get(cc('lastModifiedDateTime'), None)
 
-        # parsing dates from iso8601 format to datetimes UTC. TODO: Convert UTC to Local Time
-        self.created = iso8601.parse_date(self.created) if self.created else None
-        self.modified = iso8601.parse_date(self.modified) if self.modified else None
+        local_tz = get_localzone()
+        self.created = parse(self.created).astimezone(local_tz) if self.created else None
+        self.modified = parse(self.modified).astimezone(local_tz) if self.modified else None
 
         self.display_name = cloud_data.get(cc('displayName'), '')
         self.name = cloud_data.get(cc('givenName'), '')

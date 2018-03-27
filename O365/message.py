@@ -6,7 +6,7 @@ import pytz
 from pathlib import Path
 from bs4 import BeautifulSoup as bs
 
-from O365.connection import ApiComponent, AUTH_METHOD_BASIC
+from O365.connection import ApiComponent, AUTH_METHOD
 
 
 log = logging.getLogger(__name__)
@@ -109,9 +109,7 @@ class Attachment(ApiComponent):
         :param attachment: attachment data (dict = cloud data, other = user data)
         :param parent: the parent Attachments
         """
-        super().__init__(auth_method=getattr(parent, 'auth_method', None),
-                         api_version=getattr(parent, 'api_version', None),
-                         main_resource=getattr(parent, 'main_resource', None))
+        super().__init__(main_resource=getattr(parent, 'main_resource', None), protocol=getattr(parent, '_api_protocol', None))
 
         self.attachment_type = 'file'
         self.attachment_id = None
@@ -151,10 +149,7 @@ class Attachment(ApiComponent):
                 self.attachment = attachment
                 self.name = attachment.subject
                 self.content = attachment._api_data()
-                if self.auth_method == AUTH_METHOD_BASIC:
-                    self.content['@odata.type'] = 'Microsoft.OutlookServices.Message'
-                else:
-                    self.content['@odata.type'] = 'microsoft.graph.message'
+                self.content['@odata.type'] = self._gk('message_type')
 
             if self.content is None and self.attachment:
                 with self.attachment.open('rb') as file:
@@ -162,13 +157,7 @@ class Attachment(ApiComponent):
                 self.on_disk = True
 
     def _api_data(self):
-        attachment_type = self._cc('file') if self.attachment_type == 'file' else self._cc('item')
-        if self.auth_method == AUTH_METHOD_BASIC:
-            data = {'@odata.type': '#Microsoft.OutlookServices.{}Attachment'.format(attachment_type)}
-        else:
-            data = {'@odata.type': '#microsoft.graph.{}Attachment'.format(attachment_type)}
-
-        data[self._cc('name')] = self.name
+        data = {'@odata.type': self._gk('{}_attachment_type'.format(self.attachment_type)), self._cc('name'): self.name}
 
         if self.attachment_type == 'file':
             data[self._cc('contentBytes')] = self.content
@@ -229,7 +218,6 @@ class Attachment(ApiComponent):
                 elif self.attachment_type == 'item':
                     message.attachments.add([self.attachment])
 
-
     def __str__(self):
         return self.name
 
@@ -244,7 +232,7 @@ class Attachments(ApiComponent):
 
     def __init__(self, message, attachments=None):
         """ Attachments must be a list of path strings or dictionary elements """
-        super().__init__(auth_method=message.auth_method, api_version=message.api_version, main_resource=message.main_resource)
+        super().__init__(protocol=message.con.protocol, main_resource=message.main_resource)
         self.message = message
         self.attachments = []
         if attachments:
@@ -384,12 +372,9 @@ class Message(ApiComponent, MixinHandleRecipients):
         assert parent or con, 'Need a parent or a connection'
         self.con = parent.con if parent else con
 
-        # get the main_resource passed in kwargs over the parent main_resource
-        main_resource = kwargs.pop('main_resource', None)
-        if main_resource is None:
-            main_resource = getattr(parent, 'main_resource', None) if parent else None
-        super().__init__(auth_method=self.con.auth_method, api_version=self.con.api_version,
-                         main_resource=main_resource)
+        # Choose the main_resource passed in kwargs over the parent main_resource
+        main_resource = kwargs.pop('main_resource', None) or getattr(parent, 'main_resource', None) if parent else None
+        super().__init__(protocol=self.con.protocol, main_resource=main_resource)
 
         download_attachments = kwargs.get('download_attachments')
 
@@ -401,10 +386,10 @@ class Message(ApiComponent, MixinHandleRecipients):
         self.received = cloud_data.get(cc('receivedDateTime'), None)
         self.sent = cloud_data.get(cc('sentDateTime'), None)
 
-        loca_tz = get_localzone()
-        self.created = parse(self.created).astimezone(loca_tz) if self.created else None
-        self.received = parse(self.received).astimezone(loca_tz) if self.received else None
-        self.sent = parse(self.sent).astimezone(loca_tz) if self.sent else None
+        local_tz = get_localzone()
+        self.created = parse(self.created).astimezone(local_tz) if self.created else None
+        self.received = parse(self.received).astimezone(local_tz) if self.received else None
+        self.sent = parse(self.sent).astimezone(local_tz) if self.sent else None
 
         self.attachments = Attachments(message=self, attachments=[])
         self.has_attachments = cloud_data.get(cc('hasAttachments'), 0)

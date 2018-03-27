@@ -1,4 +1,4 @@
-from O365.connection import Connection, ME_RESOURCE
+from O365.connection import Connection, ME_RESOURCE, AUTH_METHOD
 from O365.message import Message
 from O365.mailbox import Folder
 from O365.address_book import AddressBook
@@ -6,12 +6,9 @@ from O365.address_book import AddressBook
 
 class App(object):
 
-    def __init__(self, username=None, password=None, client_id=None, client_secret=None,
-                 api_version=None, main_resource=ME_RESOURCE, scopes=None):
+    def __init__(self, credentials, *, auth_method=AUTH_METHOD.OAUTH, scopes=None, protocol=None, main_resource=ME_RESOURCE):
         self.main_resource = main_resource
-        self.con = Connection(username=username, password=password, client_id=client_id, client_secret=client_secret,
-                              api_version=api_version, scopes=scopes)
-        self.api_version = self.con.api_version
+        self.con = Connection(credentials, auth_method=auth_method, scopes=scopes, protocol=protocol)
 
     @property
     def connection(self):
@@ -41,7 +38,7 @@ class App(object):
         if address_book == 'personal':
             return AddressBook(parent=self, main_resource=resource)
         elif address_book == 'gal':
-            if self.con.auth_method == 'basic' and self.con.api_version == 'v1.0':
+            if self.con.auth_method == AUTH_METHOD.BASIC and self.con.protocol.api_version == 'v1.0':
                 raise RuntimeError('v1.0 with basic Authentication does not have access to the Global Addres List')
             return AddressBook(parent=self, main_resource='users')
         else:
