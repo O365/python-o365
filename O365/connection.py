@@ -17,8 +17,6 @@ OAUTH_REDIRECT_URL = 'https://outlook.office365.com/owa/'
 
 ME_RESOURCE = 'me'
 
-MAX_TOP_VALUE = 999
-
 SCOPES_FOR = {
     'basic': ['offline_access', 'https://graph.microsoft.com/User.Read'],
     'mailbox': ['https://graph.microsoft.com/Mail.Read'],
@@ -35,8 +33,8 @@ SCOPES_FOR = {
 
 
 class AUTH_METHOD(Enum):
-    BASIC = 1
-    OAUTH = 2
+    BASIC = 'basic'
+    OAUTH = 'oauth'
 
 
 def get_scopes_for(app_parts=None):
@@ -59,16 +57,19 @@ class Protocol:
 
     _cloud_data_key = '__cloud_data__'  # wrapps cloud data with this dict key
 
-    def __init__(self, protocol_url, api_version, casing_function=None):
+    def __init__(self, *, protocol_url=None, api_version=None, default_resource=ME_RESOURCE, casing_function=None):
         """
         :param protocol_url: the base url used to comunicate with the server
         :param api_version: the api version
         :param default_resource: the default resource to use when there's no other option
         :param casing_function: the casing transform function to be used on api keywords
         """
+        if protocol_url is None or api_version is None:
+            raise ValueError('Must provide valid protocol_url and api_version values')
         self.protocol_url = protocol_url
         self.api_version = api_version
         self.service_url = '{}{}/'.format(protocol_url, api_version)
+        self.default_resource = default_resource
         self.use_default_casing = True if casing_function is None else False  # if true just returns the key without transform
         self.casing_function = casing_function or camelcase
         self.keyword_data_store = {}
@@ -92,25 +93,34 @@ class Protocol:
 
 
 class MSGraphProtocol(Protocol):
+    """ A Microsoft Graph Protocol Implementation """
+
+    _protocol_url = 'https://graph.microsoft.com/'
 
     def __init__(self, api_version='v1.0', default_resource=ME_RESOURCE):
-        super().__init__(protocol_url='https://graph.microsoft.com/',
+        super().__init__(protocol_url=self._protocol_url, default_resource=default_resource,
                          api_version=api_version, casing_function=camelcase)
 
         self.keyword_data_store['message_type'] = 'microsoft.graph.message'
         self.keyword_data_store['file_attachment_type'] = '#microsoft.graph.fileAttachment'
         self.keyword_data_store['item_attachment_type'] = '#microsoft.graph.itemAttachment'
+        self.max_top_value = 999  # Max $top parameter value
 
 
 class MSOffice365Protocol(Protocol):
+    """ A Microsoft Office 365 Protocol Implementation """
+
+    # _protocol_url = 'https://outlook.office365.com/api/'
+    _protocol_url = 'https://outlook.office.com/api/'
 
     def __init__(self, api_version='v1.0', default_resource=ME_RESOURCE):
-        super().__init__(protocol_url='https://outlook.office365.com/api/',
+        super().__init__(protocol_url=self._protocol_url, default_resource=default_resource,
                          api_version=api_version, casing_function=pascalcase)
 
         self.keyword_data_store['message_type'] = 'Microsoft.OutlookServices.Message'
         self.keyword_data_store['file_attachment_type'] = '#Microsoft.OutlookServices.FileAttachment'
-        self.keyword_data_store['item_attachment_type'] = '#microsoft.graph.ItemAttachment'
+        self.keyword_data_store['item_attachment_type'] = '#Microsoft.OutlookServices.ItemAttachment'
+        self.max_top_value = 999  # Max $top parameter value
 
 
 class ApiComponent:
@@ -123,23 +133,28 @@ class ApiComponent:
     _endpoints = {}  # dict of all API service endpoints needed
 
     def __init__(self, *, protocol=None, main_resource=None, **kwargs):
-        self._api_protocol = protocol or getattr(self, 'con', None)
-        if self._api_protocol is None:
+        """ Object initialization
+        :param protocol: A protocol class or instance to be used with this connection
+        :param main_resource: main_resource to be used in these API comunications
+        :param kwargs: Extra arguments
+        """
+        self.protocol = protocol() if isinstance(protocol, type) else protocol
+        if self.protocol is None:
             raise ValueError('Protocol not provided to Api Component')
         self.main_resource = main_resource or ME_RESOURCE
-        self._base_url = '{}{}'.format(self._api_protocol.service_url, self.main_resource)  # protocol service url + main resource
+        self._base_url = '{}{}'.format(self.protocol.service_url, self.main_resource)
 
-    def _build_url(self, endpoint):
+    def build_url(self, endpoint):
         """ Returns a url for a given endpoint using the protocol service url """
         return '{}{}'.format(self._base_url, endpoint)
 
     def _gk(self, keyword):
         """ Alias for protocol.get_service_keyword """
-        return self._api_protocol.get_service_keyword(keyword)
+        return self.protocol.get_service_keyword(keyword)
 
     def _cc(self, dict_key):
         """ Alias for protocol.convert_case """
-        return self._api_protocol.convertcase(dict_key) if self._api_protocol else dict_key
+        return self.protocol.convert_case(dict_key)
 
 
 class Connection:
@@ -151,7 +166,7 @@ class Connection:
     _default_token_path = Path() / _default_token_file
     _allowed_methods = ['get', 'post', 'put', 'patch', 'delete']
 
-    def __init__(self, credentials, *, auth_method=AUTH_METHOD.OAUTH, scopes=None, protocol=None,
+    def __init__(self, credentials, *, auth_method=AUTH_METHOD.OAUTH, scopes=None,
                  proxy_server=None, proxy_port=8080, proxy_username=None, proxy_password=None):
         """ Creates an API connection object
 
@@ -160,7 +175,6 @@ class Connection:
             Generate client_id and client_secret in https://apps.dev.microsoft.com.
         :param auth_method: the method used when connecting to the service API.
         :param scopes: oauth2: a list of scopes permissions to request access to
-        :param protocol: A protocol class or instance to be used with this connection
         :param proxy_server: the proxy server
         :param proxy_port: the proxy port, defaults to 8080
         :param proxy_username: the proxy username
@@ -172,19 +186,9 @@ class Connection:
         if auth_method is AUTH_METHOD.BASIC:
             self.auth_method = AUTH_METHOD.BASIC
             self.auth = credentials
-
-            protocol = protocol or MSOffice365Protocol  # using basic auth defaults to Office 365 protocol
-            self.protocol = protocol() if isinstance(protocol, type) else protocol
-
-            if self.protocol.api_version != 'v1.0' or isinstance(self.protocol, MSGraphProtocol):
-                raise RuntimeError('Basic Authentication only works with Office 365 Api version v1.0 and until November 1 2018.')
         elif auth_method is AUTH_METHOD.OAUTH:
             self.auth_method = AUTH_METHOD.OAUTH
             self.auth = credentials
-
-            protocol = protocol or MSGraphProtocol  # using basic auth defaults to Graph protocol
-            self.protocol = protocol() if isinstance(protocol, type) else protocol
-
             self.scopes = get_scopes_for(scopes)  # defaults to full scopes spectrum
             self.oauth = None
             self.store_token = True

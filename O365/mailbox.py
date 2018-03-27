@@ -1,9 +1,9 @@
 import logging
 import datetime as dt
 
-from O365.connection import ApiComponent, MAX_TOP_VALUE
+from O365.connection import ApiComponent
 from O365.message import Message
-from O365.utils import Pagination, NEXT_LINK_KEYWORD
+from O365.utils import Pagination, NEXT_LINK_KEYWORD, WellKnowFolderNames
 
 log = logging.getLogger(__name__)
 
@@ -29,18 +29,15 @@ class Folder(ApiComponent):
 
         self.root = kwargs.pop('root', False)  # This folder has no parents if root = True.
 
-        # get the main_resource passed in kwargs over the parent main_resource
-        main_resource = kwargs.pop('main_resource', None)
-        if main_resource is None:
-            main_resource = getattr(parent, 'main_resource', None) if parent else None
-        super().__init__(auth_method=self.con.auth_method, api_version=self.con.api_version,
-                         main_resource=main_resource)
+        # Choose the main_resource passed in kwargs over the parent main_resource
+        main_resource = kwargs.pop('main_resource', None) or getattr(parent, 'main_resource', None) if parent else None
+        super().__init__(protocol=parent.protocol if parent else kwargs.get('protocol'), main_resource=main_resource)
 
         cloud_data = kwargs.get(self._cloud_data_key, {})
 
-        self.name = cloud_data.get(self._cc('displayName'), kwargs.get('name', ''))
+        self.name = cloud_data.get(self._cc('displayName'), kwargs.get('name', ''))  # Fallback to manual folder
         if self.root is False:
-            self.folder_id = cloud_data.get(self._cc('id'), kwargs.get('folder_id', None))  # Create Folder manually
+            self.folder_id = cloud_data.get(self._cc('id'), kwargs.get('folder_id', None))  # Fallback to manual folder
             self.parent_id = cloud_data.get(self._cc('parentFolderId'), None)
             self.child_folders_count = cloud_data.get(self._cc('childFolderCount'), 0)
             self.unread_items_count = cloud_data.get(self._cc('unreadItemCount'), 0)
@@ -58,18 +55,18 @@ class Folder(ApiComponent):
         Returns a list of child folders
 
         :param limit: limits the result set. Over 999 uses batch.
-        :param query: applies a filter to the request such as 'displayName:HelloFolder'
+        :param query: applies a filter to the request such as "displayName eq 'HelloFolder'"
         :param order_by: orders the result set based on this condition
         :param batch: Returns a custom iterator that retrieves items in batches allowing to retrieve more items than the limit.
         """
 
         if self.root:
-            url = self._build_url(self._endpoints.get('root_folders'))
+            url = self.build_url(self._endpoints.get('root_folders'))
         else:
-            url = self._build_url(self._endpoints.get('child_folders').format(id=self.folder_id))
+            url = self.build_url(self._endpoints.get('child_folders').format(id=self.folder_id))
 
-        if limit is None or limit > MAX_TOP_VALUE:
-            batch = MAX_TOP_VALUE
+        if limit is None or limit > self.protocol.max_top_value:
+            batch = self.protocol.max_top_value
 
         params = {'$top': batch if batch else limit}
         if query:
@@ -90,14 +87,14 @@ class Folder(ApiComponent):
         data = response.json()
 
         # Everything received from the cloud must be passed with self._cloud_data_key
-        folders = [self.__class__(parent=self, **{self._cloud_data_key: folder}) for folder in data.get('value', [])]
+        folders = [Folder(parent=self, **{self._cloud_data_key: folder}) for folder in data.get('value', [])]
         if batch:
             return Pagination(parent=self, data=folders, constructor=self.__class__,
                               next_link=data.get(NEXT_LINK_KEYWORD, None), limit=limit)
         else:
             return folders
 
-    def get_messages(self, limit=None, *, query=None, order_by=None, batch=None, download_attachments=False):
+    def get_messages(self, limit=25, *, query=None, order_by=None, batch=None, download_attachments=False):
         """
         Downloads messages from this folder
 
@@ -110,12 +107,12 @@ class Folder(ApiComponent):
         """
 
         if self.root:
-            url = self._build_url(self._endpoints.get('root_messages'))
+            url = self.build_url(self._endpoints.get('root_messages'))
         else:
-            url = self._build_url(self._endpoints.get('folder_messages').format(id=self.folder_id))
+            url = self.build_url(self._endpoints.get('folder_messages').format(id=self.folder_id))
 
-        if limit is None or limit > MAX_TOP_VALUE:
-            batch = MAX_TOP_VALUE
+        if limit is None or limit > self.protocol.max_top_value:
+            batch = self.protocol.max_top_value
 
         if batch:
             download_attachments = False
@@ -160,9 +157,9 @@ class Folder(ApiComponent):
             return None
 
         if self.root:
-            url = self._build_url(self._endpoints.get('root_folders'))
+            url = self.build_url(self._endpoints.get('root_folders'))
         else:
-            url = self._build_url(self._endpoints.get('child_folders').format(id=self.folder_id))
+            url = self.build_url(self._endpoints.get('child_folders').format(id=self.folder_id))
 
         try:
             response = self.con.post(url, data={self._cc('displayName'): folder_name})
@@ -177,7 +174,7 @@ class Folder(ApiComponent):
         folder = response.json()
 
         # Everything received from the cloud must be passed with self._cloud_data_key
-        return self.__class__(parent=self, **{self._cloud_data_key: folder})
+        return Folder(parent=self, **{self._cloud_data_key: folder})
 
     def get_folder(self, folder_id=None, folder_name=None):
         """
@@ -193,14 +190,14 @@ class Folder(ApiComponent):
 
         if folder_id:
             # get folder by it's id, independet of how the parent of this folder_id
-            url = self._build_url(self._endpoints.get('get_folder').format(id=folder_id))
+            url = self.build_url(self._endpoints.get('get_folder').format(id=folder_id))
             params = None
         else:
             # get folder by name. Only looks up in child folders.
             if self.root:
-                url = self._build_url(self._endpoints.get('root_folders'))
+                url = self.build_url(self._endpoints.get('root_folders'))
             else:
-                url = self._build_url(self._endpoints.get('child_folders').format(id=self.folder_id))
+                url = self.build_url(self._endpoints.get('child_folders').format(id=self.folder_id))
             params = {'$filter': "{} eq '{}'".format(self._cc('displayName'), folder_name), '$top': 1}
 
         try:
@@ -222,7 +219,7 @@ class Folder(ApiComponent):
                 return None
 
         # Everything received from the cloud must be passed with self._cloud_data_key
-        return self.__class__(con=self.con, main_resource=self.main_resource, **{self._cloud_data_key: folder})
+        return Folder(con=self.con, main_resource=self.main_resource, **{self._cloud_data_key: folder})
 
     def refresh_folder(self, update_parent_if_changed=False):
         """
@@ -268,7 +265,7 @@ class Folder(ApiComponent):
         if not name:
             return False
 
-        url = self._build_url(self._endpoints.get('get_folder').format(id=self.folder_id))
+        url = self.build_url(self._endpoints.get('get_folder').format(id=self.folder_id))
 
         try:
             response = self.con.patch(url, data={self._cc('displayName'): name})
@@ -301,7 +298,7 @@ class Folder(ApiComponent):
         if self.root or not self.folder_id:
             return False
 
-        url = self._build_url(self._endpoints.get('get_folder').format(id=self.folder_id))
+        url = self.build_url(self._endpoints.get('get_folder').format(id=self.folder_id))
 
         try:
             response = self.con.delete(url)
@@ -326,7 +323,7 @@ class Folder(ApiComponent):
         if self.root or not self.folder_id or not to_folder_id:
             return None
 
-        url = self._build_url(self._endpoints.get('copy_folder').format(id=self.folder_id))
+        url = self.build_url(self._endpoints.get('copy_folder').format(id=self.folder_id))
 
         try:
             response = self.con.post(url, data={self._cc('destinationId'): to_folder_id})
@@ -341,7 +338,7 @@ class Folder(ApiComponent):
         folder = response.json()
 
         # Everything received from the cloud must be passed with self._cloud_data_key
-        return self.__class__(con=self.con, main_resource=self.main_resource, **{self._cloud_data_key: folder})
+        return Folder(con=self.con, main_resource=self.main_resource, **{self._cloud_data_key: folder})
 
     def move_folder(self, to_folder_id, update_parent_if_changed=False):
         """
@@ -352,7 +349,7 @@ class Folder(ApiComponent):
         if self.root or not self.folder_id or not to_folder_id:
             return False
 
-        url = self._build_url(self._endpoints.get('move_folder').format(id=self.folder_id))
+        url = self.build_url(self._endpoints.get('move_folder').format(id=self.folder_id))
 
         try:
             response = self.con.post(url, data={self._cc('destinationId'): to_folder_id})
@@ -379,48 +376,40 @@ class Folder(ApiComponent):
         """ Creates a new draft message in this folder """
 
         draft_message = self.message_constructor(parent=self, is_draft=True)
-        draft_message.folder_id = self.folder_id
+
+        if self.root:
+            draft_message.folder_id = WellKnowFolderNames.DRAFTS.value
+        else:
+            draft_message.folder_id = self.folder_id
 
         return draft_message
 
 
-class Inbox(Folder):
-    """ Inbox Folder """
+class MailBox(Folder):
 
     def __init__(self, *, parent=None, con=None, **kwargs):
-        super().__init__(parent=parent, con=con, name='Inbox', folder_id='Inbox', **kwargs)
+        super().__init__(parent=parent, con=con, **kwargs)
 
+    def inbox_folder(self):
+        """ Returns this mailbox Inbox """
+        return Folder(parent=self, name='Inbox', folder_id=WellKnowFolderNames.INBOX.value)
 
-class Junk(Folder):
-    """ JunkEmail Folder """
+    def junk_folder(self):
+        """ Returns this mailbox Junk Folder """
+        return Folder(parent=self, name='Junk', folder_id=WellKnowFolderNames.JUNK.value)
 
-    def __init__(self, *, parent=None, con=None, **kwargs):
-        super().__init__(parent=parent, con=con, name='JunkEmail', folder_id='v', **kwargs)
+    def deleted_folder(self):
+        """ Returns this mailbox DeletedItems Folder """
+        return Folder(parent=self, name='DeletedItems', folder_id=WellKnowFolderNames.DELETED.value)
 
+    def drafts_folder(self):
+        """ Returns this mailbox Drafs Folder """
+        return Folder(parent=self, name='Drafs', folder_id=WellKnowFolderNames.DRAFTS.value)
 
-class DeletedItems(Folder):
-    """ DeletedItems Folder """
+    def sent_folder(self):
+        """ Returns this mailbox SentItems Folder """
+        return Folder(parent=self, name='SentItems', folder_id=WellKnowFolderNames.SENT.value)
 
-    def __init__(self, *, parent=None, con=None, **kwargs):
-        super().__init__(parent=parent, con=con, name='DeletedItems', folder_id='DeletedItems', **kwargs)
-
-
-class Drafts(Folder):
-    """ Drafts Folder """
-
-    def __init__(self, *, parent=None, con=None, **kwargs):
-        super().__init__(parent=parent, con=con, name='Drafts', folder_id='Drafts', **kwargs)
-
-
-class SentItems(Folder):
-    """ SentItems Folder """
-
-    def __init__(self, *, parent=None, con=None, **kwargs):
-        super().__init__(parent=parent, con=con, name='SentItems', folder_id='SentItems', **kwargs)
-
-
-class Outbox(Folder):
-    """ Outbox Folder """
-
-    def __init__(self, *, parent=None, con=None, **kwargs):
-        super().__init__(parent=parent, con=con, name='Outbox', folder_id='Outbox', **kwargs)
+    def outbox_folder(self):
+        """ Returns this mailbox Outbox Folder """
+        return Folder(parent=self, name='Outbox', folder_id=WellKnowFolderNames.OUTBOX.value)

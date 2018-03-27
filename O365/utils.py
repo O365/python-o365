@@ -1,13 +1,23 @@
 import logging
+from enum import Enum
 
-from O365.connection import ApiBase
+from O365.connection import ApiComponent
 
 NEXT_LINK_KEYWORD = '@odata.nextLink'
 
 log = logging.getLogger(__name__)
 
 
-class Pagination(ApiBase):
+class WellKnowFolderNames(Enum):
+    INBOX = 'Inbox'
+    JUNK = 'JunkEmail'
+    DELETED = 'DeletedItems'
+    DRAFTS = 'Drafts'
+    SENT = 'SentItems'
+    OUTBOX = 'Outbox'
+
+
+class Pagination(ApiComponent):
     """ Utility class that allows batching requests to the server """
 
     def __init__(self, *, parent=None, data=None, constructor=None, next_link=None, limit=None):
@@ -23,11 +33,12 @@ class Pagination(ApiBase):
         :param next_link: the link to request more data to
         :param limit: when to stop retrieving more data
         """
+        if parent is None:
+            raise ValueError('Parent must be another Api Component')
 
-        super().__init__(auth_method=parent.con.auth_method)
+        super().__init__(protocol=parent.protocol, main_resource=parent.main_resource)
+
         self.con = parent.con
-        self.api_version = parent.api_version
-        self.main_resource = parent.main_resource
         self.constructor = constructor
         self.next_link = next_link
         self.limit = limit
@@ -98,3 +109,19 @@ class Pagination(ApiBase):
             return value
         else:
             raise StopIteration()
+
+
+class Query:
+    """ Helper to conform OData filters """
+    _mapping = {
+        'from': {'expands_to': 'from/emailAddress/address'},
+        'received': {}
+
+    }
+
+    def __init__(self, protocol):
+        self.protocol = protocol
+
+    def filter(self, and_filter):
+        pass
+

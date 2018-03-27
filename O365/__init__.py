@@ -18,7 +18,7 @@ Python library for interfacing with the Microsoft Office 365 online.
 
 # This imports all the libraries into the local namespace. This makes it easy to work with.
 
-from .app import App
+from .account import Account
 from .connection import Connection
-from .mailbox import Inbox
+from .mailbox import MailBox
 from .message import Message

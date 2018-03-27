@@ -2,7 +2,7 @@ import logging
 from dateutil.parser import parse
 from tzlocal import get_localzone
 
-from O365.connection import ApiComponent, MAX_TOP_VALUE, Connection
+from O365.connection import ApiComponent
 from O365.message import MixinHandleRecipients, Recipients
 from O365.utils import Pagination, NEXT_LINK_KEYWORD
 
@@ -28,12 +28,9 @@ class Contact(ApiComponent, MixinHandleRecipients):
         assert parent or con, 'Need a parent or a connection'
         self.con = parent.con if parent else con
 
-        # get the main_resource passed in kwargs over the parent main_resource
-        main_resource = kwargs.pop('main_resource', None)
-        if main_resource is None:
-            main_resource = getattr(parent, 'main_resource', None) if parent else None
-        super().__init__(auth_method=self.con.auth_method, api_version=self.con.api_version,
-                         main_resource=main_resource)
+        # Choose the main_resource passed in kwargs over the parent main_resource
+        main_resource = kwargs.pop('main_resource', None) or getattr(parent, 'main_resource', None) if parent else None
+        super().__init__(protocol=parent.protocol if parent else kwargs.get('protocol'), main_resource=main_resource)
 
         cloud_data = kwargs.get(self._cloud_data_key, {})
         cc = self._cc  # alias to shorten the code
@@ -67,7 +64,7 @@ class Contact(ApiComponent, MixinHandleRecipients):
         self.categories = cloud_data.get(cc('categories'), [])
         self.folder_id = cloud_data.get(cc('parentFolderId'), None)
 
-        # when using Users endpoints : missing keys: ['mail', 'userPrincipalName']
+        # when using Users endpoints (GAL) : missing keys: ['mail', 'userPrincipalName']
         mail = cloud_data.get(cc('mail'), None)
         user_principal_name = cloud_data.get(cc('userPrincipalName'), None)
         if mail and mail not in self.emails:
@@ -86,7 +83,7 @@ class Contact(ApiComponent, MixinHandleRecipients):
     def __repr__(self):
         return self.__str__()
 
-    def _api_data(self):
+    def to_api_data(self):
         """ Returns a dictionary in cloud format """
 
         data = {
@@ -101,7 +98,7 @@ class Contact(ApiComponent, MixinHandleRecipients):
             'businessPhones': self.business_phones,
             'mobilePhone': self.mobile_phone,
             'homePhones': self.home_phones,
-            'emailAddresses': self.emails._api_data(),
+            'emailAddresses': self.emails.to_api_data(),
             'businessAddress': self.business_addresses,
             'homesAddress': self.home_addresses,
             'otherAddress': self.other_addresses,
@@ -114,7 +111,7 @@ class Contact(ApiComponent, MixinHandleRecipients):
         if not self.contact_id:
             raise RuntimeError('Attemping to delete an usaved Contact')
 
-        url = self._build_url(self._endpoints.get('contact').format(id=self.contact_id))
+        url = self.build_url(self._endpoints.get('contact').format(id=self.contact_id))
 
         try:
             response = self.con.delete(url)
@@ -147,7 +144,7 @@ class Contact(ApiComponent, MixinHandleRecipients):
             else:
                 data[self._cc(mapping)] = update_value
 
-        url = self._build_url(self._endpoints.get('contact'.format(id=self.contact_id)))
+        url = self.build_url(self._endpoints.get('contact'.format(id=self.contact_id)))
         try:
             response = self.con.patch(url, data=data)
             log.debug('sent update request')
@@ -174,12 +171,9 @@ class AddressBook(ApiComponent):
         assert parent or con, 'Need a parent or a connection'
         self.con = parent.con if parent else con
 
-        # get the main_resource passed in kwargs over the parent main_resource
-        main_resource = kwargs.pop('main_resource', None)
-        if main_resource is None:
-            main_resource = getattr(parent, 'main_resource', None) if parent else None
-        super().__init__(auth_method=self.con.auth_method, api_version=self.con.api_version,
-                         main_resource=main_resource)
+        # Choose the main_resource passed in kwargs over the parent main_resource
+        main_resource = kwargs.pop('main_resource', None) or getattr(parent, 'main_resource', None) if parent else None
+        super().__init__(protocol=parent.protocol if parent else kwargs.get('protocol'), main_resource=main_resource)
 
     def __str__(self):
         return 'Address Book resource: {}'.format(self.main_resource)
@@ -192,7 +186,7 @@ class AddressBook(ApiComponent):
         # TODO emailAddress is not a filterable field acording to Graph docs.
         params = {'$filter': "emailAddresses/any(a:a/address eq '{email}')".format(email=email)}
 
-        url = self._build_url(self._endpoints.get('list'))
+        url = self.build_url(self._endpoints.get('list'))
 
         try:
             response = self.con.get(url, params=params)
@@ -214,7 +208,6 @@ class AddressBook(ApiComponent):
         Also using the Users enpoint has some limitations on the quering capabilites.
 
         To use query an order_by check the OData specification here:
-
         http://docs.oasis-open.org/odata/odata/v4.0/errata03/os/complete/part2-url-conventions/odata-v4.0-errata03-os-part2-url-conventions-complete.html
 
         :param limit: Number of elements to return. Over 999 uses batch.
@@ -226,12 +219,12 @@ class AddressBook(ApiComponent):
 
         if self.main_resource == GAL_MAIN_RESOURCE:
             # using Users endpoint to access the Global Address List
-            url = self._build_url(self._endpoints.get('gal'))
+            url = self.build_url(self._endpoints.get('gal'))
         else:
-            url = self._build_url(self._endpoints.get('list'))
+            url = self.build_url(self._endpoints.get('list'))
 
-        if limit is None or limit > MAX_TOP_VALUE:
-            batch = MAX_TOP_VALUE
+        if limit is None or limit > self.protocol.max_top_value:
+            batch = self.protocol.max_top_value
 
         params = {'$top': batch if batch else limit}
 
