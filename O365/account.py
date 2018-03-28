@@ -46,11 +46,11 @@ class Account(object):
         """
         return MailBox(parent=self, main_resource=resource, name='MailBox', root=True)
 
-    def address_book(self, address_book='personal', resource=None):
+    def address_book(self, resource=None, *, address_book='personal'):
         """
         Creates Address Book instance
-        :param address_book: Choose from Personal or Gal (Global Address List)
         :param resource: Custom resource to be used in this address book. defaults to parent main_resource.
+        :param address_book: Choose from Personal or Gal (Global Address List)
         """
         if address_book == 'personal':
             return AddressBook(parent=self, main_resource=resource)

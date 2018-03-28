@@ -54,7 +54,7 @@ class Pagination(ApiComponent):
         self.state = 0
 
     def __str__(self):
-        return "Iterating over '{}'".format(self.constructor.__name__ if self.constructor else 'Unknown')
+        return "'{}' Iterator".format(self.constructor.__name__ if self.constructor else 'Unknown')
 
     def __repr__(self):
         return self.__str__()

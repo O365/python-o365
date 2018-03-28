@@ -244,12 +244,13 @@ class AddressBook(ApiComponent):
             return []
 
         data = response.json()
-
         # Everything received from the cloud must be passed with self._cloud_data_key
         contacts = [self.contact_constructor(parent=self, **{self._cloud_data_key: contact})
                     for contact in data.get('value', [])]
 
-        if batch:
+        next_link = data.get(NEXT_LINK_KEYWORD, None)
+
+        if batch and next_link:
             return Pagination(parent=self, data=contacts, constructor=self.contact_constructor,
                               next_link=data.get(NEXT_LINK_KEYWORD, None), limit=limit)
         else:

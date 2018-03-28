@@ -27,7 +27,10 @@ SCOPES_FOR = {
     'message_all': ['https://graph.microsoft.com/Mail.ReadWrite', 'https://graph.microsoft.com/Mail.Send'],
     'message_all_shared': ['https://graph.microsoft.com/Mail.ReadWrite.Shared',
                            'https://graph.microsoft.com/Mail.Send.Shared'],
-    'address_book': ['https://graph.microsoft.com/Contacts.ReadWrite'],
+    'address_book': ['https://graph.microsoft.com/Contacts.Read'],
+    'address_book_shared': ['https://graph.microsoft.com/Contacts.Read.Shared'],
+    'address_book_all': ['https://graph.microsoft.com/Contacts.ReadWrite'],
+    'address_book_all_shared': ['https://graph.microsoft.com/Contacts.ReadWrite.Shared'],
     'calendar': ['https://graph.microsoft.com/Calendars.ReadWrite'],
     'users': ['https://graph.microsoft.com/User.ReadBasic.All']
 }

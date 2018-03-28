@@ -219,7 +219,8 @@ class Folder(ApiComponent):
                 return None
 
         # Everything received from the cloud must be passed with self._cloud_data_key
-        return Folder(con=self.con, main_resource=self.main_resource, **{self._cloud_data_key: folder})
+        # we don't pass parent, as this folder may not be a child of self.
+        return Folder(con=self.con, protocol=self.protocol, main_resource=self.main_resource, **{self._cloud_data_key: folder})
 
     def refresh_folder(self, update_parent_if_changed=False):
         """
