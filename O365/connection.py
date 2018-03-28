@@ -16,6 +16,7 @@ GRAPH_API_VERSION = 'v1.0'
 OAUTH_REDIRECT_URL = 'https://outlook.office365.com/owa/'
 
 ME_RESOURCE = 'me'
+USERS_RESOURCE = 'users'
 
 SCOPES_FOR = {
     'basic': ['offline_access', 'https://graph.microsoft.com/User.Read'],
@@ -141,8 +142,22 @@ class ApiComponent:
         self.protocol = protocol() if isinstance(protocol, type) else protocol
         if self.protocol is None:
             raise ValueError('Protocol not provided to Api Component')
-        self.main_resource = main_resource or ME_RESOURCE
+        self.main_resource = self._parse_resource(main_resource or protocol.default_resource)
         self._base_url = '{}{}'.format(self.protocol.service_url, self.main_resource)
+
+    @staticmethod
+    def _parse_resource(resource):
+        """ Parses and completes resource information """
+        if resource == ME_RESOURCE:
+            return resource
+        elif USERS_RESOURCE == resource:
+            return resource
+        else:
+            if USERS_RESOURCE not in resource:
+                resource = resource.replace('/', '')
+                return '{}/{}'.format(USERS_RESOURCE, resource)
+            else:
+                return resource
 
     def build_url(self, endpoint):
         """ Returns a url for a given endpoint using the protocol service url """
@@ -158,7 +173,7 @@ class ApiComponent:
 
 
 class Connection:
-    """ Handles all comunication (requests and protocol used) between the app and the server """
+    """ Handles all comunication (requests) between the app and the server """
 
     _oauth2_authorize_url = 'https://login.microsoftonline.com/common/oauth2/v2.0/authorize'
     _oauth2_token_url = 'https://login.microsoftonline.com/common/oauth2/v2.0/token'
