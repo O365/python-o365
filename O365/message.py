@@ -12,7 +12,7 @@ class Message(object):
 	Management of the process of sending, receiving, reading, and editing emails.
 
 	Note: the get and set methods are technically superflous. You can get more through control over
-	a message you are trying to craft throught he use of editing the message.json, but these
+	a message you are trying to craft through the use of editing the message.json, but these
 	methods provide an easy way if you don't need all the power and would like the ease.
 
 	Methods:
