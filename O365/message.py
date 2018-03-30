@@ -57,7 +57,7 @@ class Message(object):
 			self.hasAttachments = json['HasAttachments']
 
 		else:
-			self.json = {'Message': {'Body': {}},
+			self.json = {'Body': {},
 									 'ToRecipients': [], 'CcRecipients': [], 'BccRecipients': []}
 			self.hasAttachments = False
 
