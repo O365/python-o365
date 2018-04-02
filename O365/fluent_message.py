@@ -163,9 +163,15 @@ class Message(object):
 		except:
 			return ''
 
-	def getSubject(self):
+	@property
+	def subject(self):
 		'''get email subject line.'''
 		return self.json['Subject']
+
+	@subject.setter
+	def subject(self, val):
+		'''Sets the subect line of the email.'''
+		self.json['Subject'] = val
 
 	def getBody(self):
 		'''get email body.'''
@@ -243,10 +249,6 @@ class Message(object):
 				name = address[:address.index('@')]
 			self.json[r_type + 'Recipients'].append(
 				{'EmailAddress': {'Address': address, 'Name': name}})
-
-	def setSubject(self, val):
-		'''Sets the subect line of the email.'''
-		self.json['Subject'] = val
 
 	def setBody(self, val):
 		'''Sets the body content of the email.'''

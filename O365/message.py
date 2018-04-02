@@ -88,7 +88,7 @@ class Message(object):
 
 		return len(self.attachments)
 
-	def sendMessage(self):
+	def send(self):
 		'''takes local variabls and forms them into a message to be sent.'''
 
 		headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
@@ -143,15 +143,40 @@ class Message(object):
 		except:
 			return ''
 
-	def getSubject(self):
+	@property
+	def subject(self):
 		'''get email subject line.'''
 		return self.json['Subject']
 
-	def getBody(self):
+	@subject.setter
+	def subject(self,val):
+		'''Sets the subect line of the email.'''
+		self.json['Subject'] = val
+
+	@property
+	def body(self):
 		'''get email body.'''
 		return self.json['Body']['Content']
 
-	def setRecipients(self, val, r_type="To"):
+	@body.setter
+	def body(self, val):
+		'''Sets the body content of the email.'''
+		cont = False
+
+		while not cont:
+			try:
+				self.json['Body']['Content'] = val
+				self.json['Body']['ContentType'] = 'Text'
+				cont = True
+			except:
+				self.json['Body'] = {}
+
+	@property
+	def recipient(self, r_type='To'):
+		return self.json[r_type + 'Recipients']
+	
+	@recipient.setter
+	def recipient(self, val, r_type='To'):
 		'''
 		set the recipient list.
 
@@ -219,22 +244,6 @@ class Message(object):
 				name = address[:address.index('@')]
 			self.json[r_type + 'Recipients'].append(
 					{'EmailAddress': {'Address': address, 'Name': name}})
-
-	def setSubject(self, val):
-		'''Sets the subect line of the email.'''
-		self.json['Subject'] = val
-
-	def setBody(self, val):
-		'''Sets the body content of the email.'''
-		cont = False
-
-		while not cont:
-			try:
-				self.json['Body']['Content'] = val
-				self.json['Body']['ContentType'] = 'Text'
-				cont = True
-			except:
-				self.json['Body'] = {}
 
 	def setBodyHTML(self, val=None):
 		'''

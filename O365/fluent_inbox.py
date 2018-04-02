@@ -205,6 +205,25 @@ class FluentInbox(object):
 
 		return messages
 
+	def __getitem__(self,key):
+		if isinstance(key,int):
+			self.fetched_count = key
+			return self.fetch_next()[0]
+		
+		if key.step:
+			messages = []
+			total = key.stop - key.start
+			for i in range(total/key.step):
+				self.fetched_count = key.start + key.step*i
+				messages += self.fetch_next()
+			return messages
+
+		if key.start == None:
+			return self.fetch_next(key.stop)
+
+		self.fetched_count = key.start
+		return self.fetch_next(key.stop-key.start)
+
 	@staticmethod
 	def _get_url(key):
 		""" Fetches the url for specified key as per the connection version configured

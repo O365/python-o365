@@ -31,3 +31,28 @@ from .fluent_inbox import FluentInbox
 
 
 #To the King!
+
+class O365 (object):
+	_inbox = None
+
+	def __init__(self,auth):
+		self.auth = auth
+		Connection.login(auth[0],auth[1])
+	
+	def newMessage(self):
+		return Message(auth=self.auth)
+	
+	def newEvent(self):
+		schedule = Schedule(self.auth)
+		schedule.getCalendars()
+		return Event(auth=self.auth,cal=schedule.calendars[0])
+
+	@property
+	def inbox(self):
+		if not self._inbox:
+			self._inbox = FluentInbox()
+		return self._inbox
+
+
+def login(username,password):
+	return O365((username,password))

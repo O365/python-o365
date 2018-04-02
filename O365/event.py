@@ -70,8 +70,10 @@ class Event( object ):
 
 		self.verify = verify
 
-
 	def create(self,calendar=None):
+		self.save(calendar)
+
+	def save(self,calendar=None):
 		'''
 		this method creates an event on the calender passed.
 
@@ -201,31 +203,23 @@ class Event( object ):
 		ret['IsAllDay'] = self.json['IsAllDay']
 		return ret
 
-	def getSubject(self):
+	@property
+	def subject(self):
 		'''Gets event subject line.'''
 		return self.json['Subject']
 
-	def getBody(self):
-		'''Gets event body content.'''
-		return self.json['Body']['Content']
-
-	def getStart(self):
-		'''Gets event start struct_time'''
-		return time.strptime(self.json['Start'], self.time_string)
-
-	def getEnd(self):
-		'''Gets event end struct_time'''
-		return time.strptime(self.json['End'], self.time_string)
-
-	def getAttendees(self):
-		'''Gets list of event attendees.'''
-		return self.json['Attendees']
-
-	def setSubject(self,val):
+	@subject.setter
+	def subject(self,val):
 		'''sets event subject line.'''
 		self.json['Subject'] = val
 
-	def setBody(self,val,contentType='Text'):
+	@property
+	def body(self):
+		'''Gets event body content.'''
+		return self.json['Body']['Content']
+
+	@body.setter
+	def body(self,val,contentType='Text'):
 		'''
 			sets event body content:
 				Examples for ContentType could be 'Text' or 'HTML'
@@ -240,7 +234,13 @@ class Event( object ):
 			except:
 				self.json['Body'] = {}
 
-	def setStart(self,val):
+	@property
+	def start(self):
+		'''Gets event start struct_time'''
+		return time.strptime(self.json['Start'], self.time_string)
+
+	@start.setter
+	def start(self,val):
 		'''
 		sets event start time.
 		
@@ -262,7 +262,13 @@ class Event( object ):
 			#your time string!
 			self.json['Start'] = val
 
-	def setEnd(self,val):
+	@property
+	def end(self):
+		'''Gets event end struct_time'''
+		return time.strptime(self.json['End'], self.time_string)
+
+	@end.setter
+	def end(self,val):
 		'''
 		sets event end time.
 		
@@ -323,6 +329,10 @@ class Event( object ):
 	def setEndTimeZone(self,val):
 		'''sets event end timezone'''
 		self.json['EndTimeZone'] = val
+
+	def getAttendees(self):
+		'''Gets list of event attendees.'''
+		return self.json['Attendees']
 
 	def addAttendee(self,address,name=None):
 		'''
