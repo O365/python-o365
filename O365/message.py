@@ -245,6 +245,9 @@ class Attachments(ApiComponent):
     def __getitem__(self, key):
         return self.attachments[key]
 
+    def __contains__(self, item):
+        return item in {attachment.name for attachment in self.attachments}
+
     def __len__(self):
         return len(self.attachments)
 

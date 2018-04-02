@@ -20,7 +20,7 @@ account = Account(credentials, auth_method='basic')
 m = account.new_message()
 m.to.add('to_example@example.com')
 m.subject = 'Testing!'
-m.body("George Best quote: I've stopped drinking, but only while I'm asleep.")
+m.body = "George Best quote: I've stopped drinking, but only while I'm asleep."
 m.send()
 ```
 
@@ -56,7 +56,7 @@ You use one or the other using protocols:
 
 Both allow pretty much the same options (depending on the api version used).
 
-When using basic authentication the protocol defaults to `MSOffice365Protocol`.
+When using basic authentication the protocol defaults to `MSOffice365Protocol` (because Microsoft Graph doesn't allow basic authentication).
 When using oauth authentication the protocol defaults to `MSGraphProtocol`.
 
 You can implement your own protocols by inheriting from `Protocol` to communicate with other Microsoft APIs.
@@ -206,15 +206,24 @@ message2 = Message(parent=mailbox)  # message will inherit the connection and pr
 
 It's also easy to implement a custom Class.
 
-Just Inherit from ApiComponent, define the endpoints, and use the connection to make requests.
+Just Inherit from ApiComponent, define the endpoints, and use the connection to make requests. If needed also inherit from Protocol to handle different comunications aspects with the API server.
 
 ```python
 class CustomClass(ApiComponent):
     _endpoints = {'custom': '/customendpoint'}
     
     def __init__(self, *, parent=None, con=None, **kwargs):
-        super().__init__()
-        
+        super().__init__(parent=parent, con=con, **kwargs)
+        # ...
+
+    def do_some_stuff(self):
+
+        url = 'my_api_url'
+        my_params = {'param1': 'param1'}
+
+        response = self.con.get(url, params=params)  # note the use of the connection here.
+
+        # handle response and return to the user...
 ```
 
 ## MailBox
@@ -303,5 +312,68 @@ The address book.
 
 #### Pagination
 
+When using certain methods, it is possible that you request more items than the api can return in a single api call.
+In this case the Api, returns a "next link" url where you can pull more data.
+
+When this is the case, the methods in this library will return a `Pagination` object which abstracts all this into a single iterator.
+The pagination object will request "next links" as soon as they are needed.
+
+For example:
+
+```python
+maibox = account.mailbox()
+
+messages = mailbox.get_messages(limit=1500)  # the Office 365 and MS Graph API have a 999 items limit returned per api call.
+
+# Here messages is a Pagination instance. It's an Iterator so you can iterate over.
+
+# The first 999 iterations will be normal list iterations, returning one item at a time.
+# When the iterator reaches the 1000 item, the Pagination instance will call the api again requesting exactly 500 items
+# or the items specified in the batch parameter (see later).
+
+for message in messages:
+    print(message.subject)
+```
+
+When using certain methods you will have the option to specify not only a limit option (the number of items to be returned) but a batch option.
+This option will indicate the method to request data to the api in batches until the limit is reached or the data consumed.
+
+For example:
+
+```python
+messages = mailbox.get_messages(limit=100, batch=25)
+
+# messages here is a Pagination instance
+# when iterating over it will call the api 4 times (each requesting 25 items).
+
+for message in messages:  # 100 loops with 4 requests to the api server
+    print(message.subject)
+```
+
 #### The Query helper
 
+When using the Office 365 API you can filter some fields.
+This filtering is tedious as is using [Open Data Protocol (OData)](http://docs.oasis-open.org/odata/odata/v4.0/errata03/os/complete/part2-url-conventions/odata-v4.0-errata03-os-part2-url-conventions-complete.html).
+
+Every `ApiComponent` (such as MailBox) implements a new_query method that will return a `Query` instance.
+This `Query` instance can handle the filtering very easily.
+
+For example:
+
+```python
+query = mailbox.new_query()
+
+query = query.on_attribute('subject').contains('george best').chain('or').startswith('quotes')
+
+# 'created_date_time' will automatically be converted to the protocol casing.
+# For example when using MS Graph this will become 'createdDateTime'.
+
+query = query.chain('and').on_attribute('created_date_time').greater('2018-03-21')
+
+print(query)
+
+# contains(subject, 'george best') or startswith(subject, 'quotes') and createdDateTime gt '2018-03-21'
+
+# To use query just pass it to que query option:
+filtered_messages = mailbox.get_messages(query=query)
+```

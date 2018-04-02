@@ -65,7 +65,7 @@ class Query:
         if isinstance(operation, str):
             operation = ChainOperator(operation)
         self._chain = operation
-        self._attribute = self._get_mapping(attribute)
+        self._attribute = self._get_mapping(attribute) if attribute else None
         self._negation = False
         return self
 
