@@ -2,10 +2,8 @@ import logging
 from dateutil.parser import parse
 from tzlocal import get_localzone
 
-from O365.connection import ApiComponent
 from O365.message import MixinHandleRecipients, Recipients
-from O365.utils import Pagination, NEXT_LINK_KEYWORD
-
+from O365.utils import Pagination, NEXT_LINK_KEYWORD, ApiComponent
 
 GAL_MAIN_RESOURCE = 'users'
 
@@ -21,7 +19,10 @@ class Contact(ApiComponent, MixinHandleRecipients):
                 'emails': 'emailAddresses', 'business_addresses': 'businessAddress', 'home_addresses': 'homesAddress',
                 'other_addresses': 'otherAddress', 'categories': 'categories'}
 
-    _endpoints = {'contact': '/contacts/{id}'}
+    _endpoints = {
+        'root_contact': '/contacts/{id}',
+        'child_contact': '/contactFolders/{id}/contacts'
+    }
 
     def __init__(self, *, parent=None, con=None, **kwargs):
 
@@ -156,18 +157,54 @@ class Contact(ApiComponent, MixinHandleRecipients):
 
         return response.status_code == 200
 
+    def save(self):
+        """ Saves this Contact to the cloud """
+        if self.contact_id:
+            raise RuntimeError("Can't save an existing Contact. Use Update instead. ")
 
-class AddressBook(ApiComponent):
-    """ A class representing an address book """
+        if self.folder_id:
+            url = self.build_url(self._endpoints.get('child_contact').format(self.folder_id))
+        else:
+            url = self.build_url(self._endpoints.get('root_contact'))
+
+        try:
+            response = self.con.psot(url, data=self.to_api_data())
+        except Exception as e:
+            log.error('Error while saving contact. Error: {error}'.format(error=str(e)))
+            return False
+
+        if response.status_code != 201:
+            log.debug('Creating contact Request failed: {}'.format(response.reason))
+            return False
+
+        contact = response.json()
+
+        self.contact_id = contact.get(self._cc('id'), None)
+        self.created = contact.get(self._cc('createdDateTime'), None)
+        self.modified = contact.get(self._cc('lastModifiedDateTime'), None)
+
+        local_tz = get_localzone()
+        self.created = parse(self.created).astimezone(local_tz) if self.created else None
+        self.modified = parse(self.modified).astimezone(local_tz) if self.modified else None
+
+        return True
+
+
+class ContactFolder(ApiComponent):
+    """ A Contact Folder representation """
 
     _endpoints = {
         'gal': '',
-        'list': '/contacts',
+        'root_contacts': '/contacts',
+        'folder_contacts': '/contactFolders/{id}/contacts',
+        'get_folder': '/contactFolders/{id}',
+        'root_folders': '/contactFolders',
+        'child_folders': '/contactFolders/{id}/childFolders'
     }
+
     contact_constructor = Contact
 
     def __init__(self, *, parent=None, con=None, **kwargs):
-
         assert parent or con, 'Need a parent or a connection'
         self.con = parent.con if parent else con
 
@@ -175,30 +212,103 @@ class AddressBook(ApiComponent):
         main_resource = kwargs.pop('main_resource', None) or getattr(parent, 'main_resource', None) if parent else None
         super().__init__(protocol=parent.protocol if parent else kwargs.get('protocol'), main_resource=main_resource)
 
+        self.root = kwargs.pop('root', False)  # This folder has no parents if root = True.
+
+        cloud_data = kwargs.get(self._cloud_data_key, {})
+
+        self.name = cloud_data.get(self._cc('displayName'), kwargs.get('name', None))  # Fallback to manual folder
+        self.folder_id = cloud_data.get(self._cc('id'), None)
+        self.parent_id = cloud_data.get(self._cc('parentFolderId'), None)
+
     def __str__(self):
-        return 'Address Book resource: {}'.format(self.main_resource)
+        return 'Contact Folder: {}'.format(self.name)
 
     def __repr__(self):
         return self.__str__()
 
-    def get_contact(self, email):
-        """ Gets a contact by it's email """
-        # TODO emailAddress is not a filterable field acording to Graph docs.
-        params = {'$filter': "emailAddresses/any(a:a/address eq '{email}')".format(email=email)}
+    def get_folder(self, folder_id=None, folder_name=None):
+        """
+        Returns a ContactFolder by it's id
+        :param folder_id: the folder_id to be retrieved. Can be any folder Id (child or not)
+        :param folder_name: the folder name to be retrieved. Must be a child of this folder.
+        """
 
-        url = self.build_url(self._endpoints.get('list'))
+        if folder_id and folder_name:
+            raise RuntimeError('Provide only one of the options')
+
+        if not folder_id and not folder_name:
+            raise RuntimeError('Provide one of the options')
+
+        if folder_id:
+            # get folder by it's id, independent of the parent of this folder_id
+            url = self.build_url(self._endpoints.get('get_folder').format(id=folder_id))
+            params = None
+        else:
+            # get folder by name. Only looks up in child folders.
+            if self.root:
+                url = self.build_url(self._endpoints.get('root_folders'))
+            else:
+                url = self.build_url(self._endpoints.get('child_folders').format(id=self.folder_id))
+
+            params = {'$filter': "{} eq '{}'".format(self._cc('displayName'), folder_name), '$top': 1}
+        try:
+            response = self.con.get(url, params=params)
+        except Exception as e:
+            log.error('Error getting contact folder {}. Error: {}'.format(folder_id, str(e)))
+            return None
+
+        if response.status_code != 200:
+            log.debug('Getting contact folder Request failed: {}'.format(response.reason))
+            return None
+
+        if folder_id:
+            folder = response.json()
+        else:
+            folder = response.json().get('value')
+            folder = folder[0] if folder else None
+            if folder is None:
+                return None
+
+        # Everything received from the cloud must be passed with self._cloud_data_key
+        # we don't pass parent, as this folder may not be a child of self.
+        return ContactFolder(con=self.con, protocol=self.protocol, main_resource=self.main_resource, **{self._cloud_data_key: folder})
+
+    def get_folders(self, limit=25, *, query=None, order_by=None):
+        """
+        Returns a list of child folders
+
+        :param limit: Number of elements to return.
+        :param query: a OData valid filter clause
+        :param order_by: OData valid order by clause
+        """
+        if self.root:
+            url = self.build_url(self._endpoints.get('root_folders'))
+        else:
+            url = self.build_url(self._endpoints.get('child_folders').format(self.folder_id))
+
+        params = {'$top': limit or 25}
+
+        if query:
+            params['$filter'] = str(query)
+        if order_by:
+            params['$orderby'] = order_by
 
         try:
             response = self.con.get(url, params=params)
         except Exception as e:
-            log.error('Error getting contact. Error: {}'.format(str(e)))
-            return False, None
+            log.error('Error getting child contact folders. Error {}'.format(str(e)))
+            return []
 
-        contact = response.json().get('value', None)
+        if response.status_code != 200:
+            log.debug('Getting child contact folders Request failed: {}'.format(response.reason))
+            return []
 
-        return True, Contact(parent=self, **{self._cloud_data_key: contact})
+        data = response.json()
 
-    def get_contacts(self, limit=None, *, query=None, order_by=None, batch=None):
+        return [ContactFolder(parent=self, **{self._cloud_data_key: folder})
+                for folder in data.get('value', [])]
+
+    def get_contacts(self, limit=25, *, query=None, order_by=None, batch=None):
         """
         Gets a list of contacts from this address book
 
@@ -221,7 +331,10 @@ class AddressBook(ApiComponent):
             # using Users endpoint to access the Global Address List
             url = self.build_url(self._endpoints.get('gal'))
         else:
-            url = self.build_url(self._endpoints.get('list'))
+            if self.root:
+                url = self.build_url(self._endpoints.get('root_contacts'))
+            else:
+                url = self.build_url(self._endpoints.get('folder_contacts').format(self.folder_id))
 
         if limit is None or limit > self.protocol.max_top_value:
             batch = self.protocol.max_top_value
@@ -229,7 +342,7 @@ class AddressBook(ApiComponent):
         params = {'$top': batch if batch else limit}
 
         if query:
-            params['$filter'] = query
+            params['$filter'] = str(query)
         if order_by:
             params['$orderby'] = order_by
 
@@ -244,6 +357,7 @@ class AddressBook(ApiComponent):
             return []
 
         data = response.json()
+
         # Everything received from the cloud must be passed with self._cloud_data_key
         contacts = [self.contact_constructor(parent=self, **{self._cloud_data_key: contact})
                     for contact in data.get('value', [])]
@@ -255,3 +369,132 @@ class AddressBook(ApiComponent):
                               next_link=data.get(NEXT_LINK_KEYWORD, None), limit=limit)
         else:
             return contacts
+
+    def create_child_folder(self, folder_name):
+        """
+        Creates a new child folder
+        :return the new Folder Object or None
+        """
+
+        if not folder_name:
+            return None
+
+        if self.root:
+            url = self.build_url(self._endpoints.get('root_folders'))
+        else:
+            url = self.build_url(self._endpoints.get('child_folders').format(id=self.folder_id))
+
+        try:
+            response = self.con.post(url, data={self._cc('displayName'): folder_name})
+        except Exception as e:
+            log.error('Error creating contact folder of {}. Error: {}'.format(self.name, str(e)))
+            return None
+
+        if response.status_code != 201:
+            log.debug('Creating contact folder Request failed: {}'.format(response.reason))
+            return None
+
+        folder = response.json()
+
+        # Everything received from the cloud must be passed with self._cloud_data_key
+        return ContactFolder(parent=self, **{self._cloud_data_key: folder})
+
+    def update_folder_name(self, name):
+        """ Change this folder name """
+        if self.root:
+            return False
+        if not name:
+            return False
+
+        url = self.build_url(self._endpoints.get('get_folder').format(id=self.folder_id))
+
+        try:
+            response = self.con.patch(url, data={self._cc('displayName'): name})
+        except Exception as e:
+            log.error('Error updating contact folder {}. Error: {}'.format(self.name, str(e)))
+            return False
+
+        if response.status_code != 200:
+            log.debug('Updating contact folder Request failed: {}'.format(response.reason))
+            return False
+
+        folder = response.json()
+
+        self.name = folder.get(self._cc('displayName'), '')
+        self.parent_id = folder.get(self._cc('parentFolderId'), None)
+
+        return True
+
+    def move_folder(self, to_folder):
+        """
+        Change this folder name
+        :param to_folder: a folder_id str or a ContactFolder
+        """
+        if self.root:
+            return False
+        if not to_folder:
+            return False
+
+        url = self.build_url(self._endpoints.get('get_folder').format(id=self.folder_id))
+
+        if isinstance(to_folder, ContactFolder):
+            folder_id = to_folder.folder_id
+        elif isinstance(to_folder, str):
+            folder_id = to_folder
+        else:
+            return False
+
+        try:
+            response = self.con.patch(url, data={self._cc('parentFolderId'): folder_id})
+        except Exception as e:
+            log.error('Error moving contact folder {}. Error: {}'.format(self.name, str(e)))
+            return False
+
+        if response.status_code != 200:
+            log.debug('Moving contact folder Request failed: {}'.format(response.reason))
+            return False
+
+        folder = response.json()
+
+        self.name = folder.get(self._cc('displayName'), '')
+        self.parent_id = folder.get(self._cc('parentFolderId'), None)
+
+        return True
+
+    def delete(self):
+        """ Deletes this folder """
+
+        if self.root or not self.folder_id:
+            return False
+
+        url = self.build_url(self._endpoints.get('get_folder').format(id=self.folder_id))
+
+        try:
+            response = self.con.delete(url)
+        except Exception as e:
+            log.error('Error deleting contact folder {}. Error: {}'.format(self.name, str(e)))
+            return False
+
+        if response.status_code != 204:
+            log.debug('Deleteing contact folder Request failed: {}'.format(response.reason))
+            return False
+
+        self.folder_id = None
+
+        return True
+
+    def new_contact(self):
+        """ Creates a new contact to be saved into it's parent folder """
+        contact = self.contact_constructor(parent=self)
+        if not self.root:
+            contact.folder_id = self.folder_id
+
+
+class AddressBook(ContactFolder):
+    """ A class representing an address book """
+
+    def __init__(self, *, parent=None, con=None, **kwargs):
+        super().__init__(parent=parent, con=con, root=True, **kwargs)
+
+    def __str__(self):
+        return 'Address Book resource: {}'.format(self.main_resource)

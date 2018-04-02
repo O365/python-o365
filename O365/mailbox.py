@@ -1,9 +1,8 @@
 import logging
 import datetime as dt
 
-from O365.connection import ApiComponent
 from O365.message import Message
-from O365.utils import Pagination, NEXT_LINK_KEYWORD, WellKnowFolderNames
+from O365.utils import Pagination, NEXT_LINK_KEYWORD, WellKnowFolderNames, ApiComponent
 
 log = logging.getLogger(__name__)
 
@@ -70,7 +69,7 @@ class Folder(ApiComponent):
 
         params = {'$top': batch if batch else limit}
         if query:
-            params['$filter'] = query
+            params['$filter'] = str(query)
         if order_by:
             params['$orderby'] = order_by
 
@@ -120,7 +119,7 @@ class Folder(ApiComponent):
         params = {'$top': batch if batch else limit}
 
         if query:
-            params['$filter'] = query
+            params['$filter'] = str(query)
         if order_by:
             params['$orderby'] = order_by
 
@@ -189,7 +188,7 @@ class Folder(ApiComponent):
             raise RuntimeError('Provide one of the options')
 
         if folder_id:
-            # get folder by it's id, independet of how the parent of this folder_id
+            # get folder by it's id, independent of the parent of this folder_id
             url = self.build_url(self._endpoints.get('get_folder').format(id=folder_id))
             params = None
         else:
@@ -389,7 +388,7 @@ class Folder(ApiComponent):
 class MailBox(Folder):
 
     def __init__(self, *, parent=None, con=None, **kwargs):
-        super().__init__(parent=parent, con=con, **kwargs)
+        super().__init__(parent=parent, con=con, root=True, **kwargs)
 
     def inbox_folder(self):
         """ Returns this mailbox Inbox """

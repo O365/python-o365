@@ -1,3 +1,4 @@
+# Copyright 2018 by Janscas. All Rights Reserved.
 # Copyright 2015 by Toben "Narcolapser" Archer. All Rights Reserved.
 #
 # Permission to use, copy, modify, and distribute this software and its documentation for any purpose 
@@ -11,12 +12,9 @@
 # OR OTHER TORTIOUS ACTION, ARISING OUT
 # OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-'''
+"""
 Python library for interfacing with the Microsoft Office 365 online. 
-'''
-#__all__ = ['attachment','cal','contact','event','group','inbox','message','schedule']
-
-# This imports all the libraries into the local namespace. This makes it easy to work with.
+"""
 
 from .account import Account
 from .connection import Connection, Protocol, MSGraphProtocol, MSOffice365Protocol, get_scopes_for, AUTH_METHOD

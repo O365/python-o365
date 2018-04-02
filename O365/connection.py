@@ -9,14 +9,13 @@ import requests
 from oauthlib.oauth2 import TokenExpiredError
 from requests_oauthlib import OAuth2Session
 
+from O365.utils import ME_RESOURCE
+
 log = logging.getLogger(__name__)
 
 O365_API_VERSION = 'v1.0'  # v2.0 does not allow basic auth
 GRAPH_API_VERSION = 'v1.0'
 OAUTH_REDIRECT_URL = 'https://outlook.office365.com/owa/'
-
-ME_RESOURCE = 'me'
-USERS_RESOURCE = 'users'
 
 SCOPES_FOR = {
     'basic': ['offline_access', 'https://graph.microsoft.com/User.Read'],
@@ -127,54 +126,6 @@ class MSOffice365Protocol(Protocol):
         self.max_top_value = 999  # Max $top parameter value
 
 
-class ApiComponent:
-    """ Base class for all object interactions with the Cloud Service API
-
-    Exposes common access methods to the api protocol within all Api objects
-    """
-
-    _cloud_data_key = '__cloud_data__'  # wrapps cloud data with this dict key
-    _endpoints = {}  # dict of all API service endpoints needed
-
-    def __init__(self, *, protocol=None, main_resource=None, **kwargs):
-        """ Object initialization
-        :param protocol: A protocol class or instance to be used with this connection
-        :param main_resource: main_resource to be used in these API comunications
-        :param kwargs: Extra arguments
-        """
-        self.protocol = protocol() if isinstance(protocol, type) else protocol
-        if self.protocol is None:
-            raise ValueError('Protocol not provided to Api Component')
-        self.main_resource = self._parse_resource(main_resource or protocol.default_resource)
-        self._base_url = '{}{}'.format(self.protocol.service_url, self.main_resource)
-
-    @staticmethod
-    def _parse_resource(resource):
-        """ Parses and completes resource information """
-        if resource == ME_RESOURCE:
-            return resource
-        elif USERS_RESOURCE == resource:
-            return resource
-        else:
-            if USERS_RESOURCE not in resource:
-                resource = resource.replace('/', '')
-                return '{}/{}'.format(USERS_RESOURCE, resource)
-            else:
-                return resource
-
-    def build_url(self, endpoint):
-        """ Returns a url for a given endpoint using the protocol service url """
-        return '{}{}'.format(self._base_url, endpoint)
-
-    def _gk(self, keyword):
-        """ Alias for protocol.get_service_keyword """
-        return self.protocol.get_service_keyword(keyword)
-
-    def _cc(self, dict_key):
-        """ Alias for protocol.convert_case """
-        return self.protocol.convert_case(dict_key)
-
-
 class Connection:
     """ Handles all comunication (requests) between the app and the server """
 
@@ -200,6 +151,9 @@ class Connection:
         """
         if not isinstance(credentials, tuple) or len(credentials) != 2 or (not credentials[0] and not credentials[1]):
             raise ValueError('Provide valid auth credentials')
+
+        if isinstance(auth_method, str):
+            auth_method = AUTH_METHOD(auth_method)
 
         if auth_method is AUTH_METHOD.BASIC:
             self.auth_method = AUTH_METHOD.BASIC
@@ -341,8 +295,9 @@ class Connection:
         elif method in ['post', 'put', 'patch']:
             if 'headers' not in kwargs:
                 kwargs['headers'] = {}
-            kwargs['headers']['Content-type'] = 'application/json'
-            if 'data' in kwargs:
+            if kwargs['headers'].get('Content-type') is None:
+                kwargs['headers']['Content-type'] = 'application/json'
+            if 'data' in kwargs and kwargs['headers']['Content-type'] == 'application/json':
                 kwargs['data'] = json.dumps(kwargs['data'])  # autoconvert to json
 
         if self.proxy:

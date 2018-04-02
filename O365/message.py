@@ -6,9 +6,7 @@ import pytz
 from pathlib import Path
 from bs4 import BeautifulSoup as bs
 
-from O365.connection import ApiComponent
-from O365.utils import WellKnowFolderNames
-
+from O365.utils import WellKnowFolderNames, ApiComponent
 
 log = logging.getLogger(__name__)
 

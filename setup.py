@@ -9,7 +9,8 @@ CLASSIFIERS = [
     'Topic :: Office/Business :: Office Suites',
     'Topic :: Software Development :: Libraries'
 ]
-long_desc = '''When I started making this library I was looking for something that would provide a simple interface to an office365 mailbox. I was creating a system that would allow people send an email to our printer without having to require they install drivers or be inside the office firewall (important for students). As I found working with the office API to be fairly easy, I quickly built up solid general use library for working with office 365. 
+long_desc = """
+When I started making this library I was looking for something that would provide a simple interface to an office365 mailbox. I was creating a system that would allow people send an email to our printer without having to require they install drivers or be inside the office firewall (important for students). As I found working with the office API to be fairly easy, I quickly built up solid general use library for working with office 365. 
 
 The objective here is to make it easy to make utilities that are to be run against an office 365 account. for example, the code for sending an email is:
 
@@ -30,17 +31,18 @@ m.sendMessage()
 
 
 That's it. making and sending emails and events is now very simple and straight forward. I've used it for emailing the printer and creating a overview of our car booking system. simple, easy, but still in development. Any suggestions or advice are quite welcome at the projects github page:
-https://github.com/Narcolapser/python-o365'''
+https://github.com/janscas/py-o365
+"""
 
 setup(name='O365',
-      version='0.9.14',
-      description='Python library for working with Microsoft Office 365',
+      version='0.1.0',
+      description='Python library for working with Microsoft Office 365 REST API',
       long_description=long_desc,
-      author='Toben Archer',
-      author_email='sandslash+O365@gmail.com',
-      maintainer='Toben Archer',
-      maintainer_email='sandslash+O365@gmail.com',
-      url='https://github.com/Narcolapser/python-o365',
+      author='Toben Archer, Janscas',
+      author_email='sandslash+O365@gmail.com, janscas@users.noreply.github.com',
+      maintainer='Janscas',
+      maintainer_email='janscas@users.noreply.github.com',
+      url='https://github.com/janscas/py-o365',
       packages=['O365'],
       install_requires=['requests', 'oauthlib', 'requests_oauthlib', 'beautifulsoup4', 'stringcase', 'python-dateutil', 'tzlocal'],
       license='Apache 2.0',

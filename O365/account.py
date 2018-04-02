@@ -1,4 +1,5 @@
-from O365.connection import Connection, Protocol, MSGraphProtocol, MSOffice365Protocol, ME_RESOURCE, AUTH_METHOD
+from O365.connection import Connection, Protocol, MSGraphProtocol, MSOffice365Protocol, AUTH_METHOD
+from O365.utils import ME_RESOURCE
 from O365.message import Message
 from O365.mailbox import MailBox
 from O365.address_book import AddressBook, GAL_MAIN_RESOURCE
@@ -44,7 +45,7 @@ class Account(object):
         Creates MailBox Folder instance
         :param resource: Custom resource to be used in this mailbox. defaults to parent main_resource.
         """
-        return MailBox(parent=self, main_resource=resource, name='MailBox', root=True)
+        return MailBox(parent=self, main_resource=resource, name='MailBox')
 
     def address_book(self, resource=None, *, address_book='personal'):
         """
@@ -53,10 +54,10 @@ class Account(object):
         :param address_book: Choose from Personal or Gal (Global Address List)
         """
         if address_book == 'personal':
-            return AddressBook(parent=self, main_resource=resource)
+            return AddressBook(parent=self, main_resource=resource, name='Personal Address Book')
         elif address_book == 'gal':
             if self.con.auth_method == AUTH_METHOD.BASIC and self.protocol.api_version == 'v1.0':
                 raise RuntimeError('v1.0 with basic Authentication does not have access to the Global Addres List')
-            return AddressBook(parent=self, main_resource=GAL_MAIN_RESOURCE)
+            return AddressBook(parent=self, main_resource=GAL_MAIN_RESOURCE, name='Global Address List')
         else:
             raise RuntimeError('Addres_book must be either "personal" (resource address book) or "gal" (Global Address List)')

@@ -3,16 +3,18 @@
 This project aims is to make it easy to interact with Office 365 Email, Contacts, Calendar, OneDrive, etc.
 
 This project is based on the super work done by [Toben Archer](https://github.com/Narcolapser) [Python-O365](https://github.com/Narcolapser/python-o365).
-I just want it to make it different in almost every sense, and make it also more pythonic (not getters and setters, etc.) and make it also compatible with oauth and basic auth.
+The oauth part is based on the work done by [Royce Melborn](https://github.com/roycem90) which is now integrated with the original project.
 
-The result is a package that provides a lot of O365 API capabilities.
+I just want to make this project different in almost every sense, and make it also more pythonic (no getters and setters, etc.) and make it also compatible with oauth and basic auth.
+
+The result is a package that provides a lot of the Office 365 API capabilities.
 
 This is for example how you send a message:
 
 ```python
 from O365 import Account
 
-credentials = (username@example.com, password)
+credentials = ('username@example.com', 'my_password')
 
 account = Account(credentials, auth_method='basic')
 m = account.new_message()
@@ -22,6 +24,16 @@ m.body("George Best quote: I've stopped drinking, but only while I'm asleep.")
 m.send()
 ```
 
+Python 3.4 is the minimum required... I was very tempted to just go for 3.6 and use f-strings. Those are fantastic!
+
+This project was also a learning resource for me. This is a list of not so common python characteristics used in this project:
+- New unpacking technics: `def method(argument, *, with_name=None, **other_params):`
+- Enums: `from enum import Enum`
+- Factory paradigm.
+- Package organization
+- Etc. (see the code!)
+
+> This project is in early development.
 
 ## Table of contents
 
@@ -101,7 +113,7 @@ Just pass auth_method argument with 'basic' (or `AUTH_METHOD.BASIC` enum) parame
 ```python
 from O365 import Account, AUTH_METHOD
 
-credentials = (username@example.com, password)
+credentials = ('username@example.com', 'my_password')
 
 account = Account(credentials, auth_method=AUTH_METHOD.BASIC)
 ```
@@ -192,6 +204,19 @@ message2 = Message(parent=mailbox)  # message will inherit the connection and pr
 # ...
 ```
 
+It's also easy to implement a custom Class.
+
+Just Inherit from ApiComponent, define the endpoints, and use the connection to make requests.
+
+```python
+class CustomClass(ApiComponent):
+    _endpoints = {'custom': '/customendpoint'}
+    
+    def __init__(self, *, parent=None, con=None, **kwargs):
+        super().__init__()
+        
+```
+
 ## MailBox
 Mailbox groups the funcionality of both the messages and the email folders.
 
@@ -247,146 +272,36 @@ message.save_draft()  # save the message on the cloud as a draft in the drafts f
 ```
 
 Working with saved emails is also easy:
-
-When the inbox has run it's getMessages method, whether when it is instanced or later, all the messages it retrieves will be stored in a list local to the instance of inbox. Inbox.messages
-
-While the Inbox class is used exclusively for incoming mail, as the name might imply, the message class is incoming and out going. In the fetch file example in it's processMessage method it work with both an incoming message, "m", and prepares an out going message, "resp":
 ```python
-def processMessage(m):
-	path = m.json['BodyPreview']
+query = mailbox.new_query().on_attribute('subject').contains('george best')  # see query object in Utils
+messages = mailbox.get_messages(limit=25, query=query)
 
-	path = path[:path.index('\n')]
-	if path[-1] == '\r':
-		path = path[:-1]
+message = messages[0]  # get the first one
 
-	att = Attachment(path=path)
+message.mark_as_read()
+reply_msg = message.reply()
 
-	resp = Message(auth=auth)
-	resp.setRecipients(m.getSender())
+if 'example@example.com' in reply_msg.to:  # magic methods implemented
+    reply_msg.body = 'George Best quote: I spent a lot of money on booze, birds and fast cars. The rest I just squandered.'
+else:
+    reply_msg.body = 'George Best quote: I used to go missing a lot... Miss Canada, Miss United Kingdom, Miss World.'
 
-	resp.setSubject('Your file sir!')
-	resp.setBody(path)
-	resp.attachments.append(att)
-	resp.sendMessage()
-
-	return True
+reply_msg.send()
 ```
-In this method we pull the BodyPreview, less likely to have Markup, and pull out it's first line to get the path to a file. That path is then sent to the attachment class and a response message is created and sent. Simple and straight forward.
 
-The attachment class is a relatively simple class for handling downloading and creating attachments. Attachments in Office365 are stored seperately from the email in most cases and as such will have to be downloaded and uploaded seperately as well. This however is also taken care of behind the scenes with O365. Simply call a message's getAttachments method to download the attachments locally to your process. This creates a list of attachments local to the instance of Message, as is seen in the [Email Printing example](https://github.com/Narcolapser/python-o365/blob/master/examples/EmailPrinting/emailprinting.py):
-```python
-m.fetchAttachments()
-for att in m.attachments:
-	processAttachment(att,resp)
-#various un-related bits left out for brevity.
-```
-The attachment class stores the files as base64 encoded files. But this doesn't matter to you! The attachment class can work with you if you want to just send/receive raw binary or base64. You can also just give it a path to a file if you want to creat an attachment:
-```python
-att = Attachment(path=path)
-```
-or if you want to save the file
-```
-att.save(path)
-```
+## AddressBook
+The address book.
+
+#### Contact Folders
+
+#### Contacts
+
 
 ## Calendar
-Events are on a Calendar, Calendars are grouped into a Schedule. In the [Vehicle Booking](https://github.com/Narcolapser/python-o365/blob/master/examples/VehicleBookings/veh.py) example the purpose of the script is to create a json file with information to be imported into another program for presentation. We want to know all of the times the vehicles are booked out, for each vehicle, and by who, etc. This is done by simple getting the schedule and calendar for each vehicle and spitting out it's events:
-```python
-for veh in vj:
-	e = veh['email']
-	p = veh['password']
-
-	schedule = Schedule(e,p)
-	try:
-		result = schedule.getCalendars()
-		print 'Fetched calendars for',e,'was successful:',result
-	except:
-		print 'Login failed for',e
-
-	bookings = []
-
-	for cal in schedule.calendars:
-		print 'attempting to fetch events for',e
-		try:
-			result = cal.getEvents()
-			print 'Got events',result,'got',len(cal.events)
-		except:
-			print 'failed to fetch events'
-		print 'attempting for event information'
-		for event in cal.events:
-			print 'HERE!'
-			bookings.append(event.fullcalendarioJson())
-	json_outs[e] = bookings
-```
-
-Events can be made relatively easily too. You just have to create a event class:
-```python
-e = Event(authentication,parentCalendar)
-```
-and give it a few nesessary details:
-```python
-import time
-e.setSubject('Coffee!')
-e.setStart(time.gmtime(time.time()+3600)) #start an hour from now.
-e.setEnd(time.gmtime(time.time()+7200)) #end two hours from now.
-new_e = e.create()
-```
-
-## Contacts
-Contacts are a small part of this library, but can have their use. You can store email addresses in your contacts list in folders and then use this as a form of mailing list:
-```python
-e = 'youremail@office365.com'
-p = 'embarrassingly simple password.'
-group = Group(e,p,'Contact folder name')
-m = Message(auth=(e,p))
-m.setSubject('News for today')
-m.setBody(open('news.html','r').read())
-m.setRecipients(group)
-m.sendMessage()
-```
 
 ## Utils
 
 #### Pagination
 
 #### The Query helper
-
-## Fluent Inbox
-FluentInbox is a new class introduced to enhance usage of inbox fluently (check the below example to understand clearly)
-```python
-from O365 import Connection, FluentInbox
-
-# Setup connection object
-# Proxy call is required only if you are behind proxy
-Connection.login('email_id@company.com', 'password to login')
-Connection.proxy(url='proxy.company.com', port=8080, username='proxy_username', password='proxy_password')
-
-# Create an inbox reference
-inbox = FluentInbox()
-
-# Fetch 20 messages from "Temp" folder containing "Test" in the subject
-for message in inbox.from_folder('Temp').search('Subject:Test').fetch(count=20):
-    # Just print the message subject
-    print(message.getSubject())
-
-# Fetch the next 15 messages from the results
-for message in inbox.fetch_next(15):
-    # Just print the message subject
-    print(message.getSubject())
-
-# Alternately you can do the below for same result, just a different way of accessing the messages
-inbox.from_folder('Temp').search('Subject:Test').fetch(count=20)
-inbox.fetch_next(15)
-for message in inbox.messages:
-    # Just print the message subject
-    print(message.getSubject())
-
-# If you would like to get only the 2nd result
-for message in inbox.search('Category:some_cat').skip(1).fetch(1):
-    # Just print the message subject
-    print(message.getSubject())
-
-# If you want the results from beginning by ignoring any currently read count
-inbox.fetch_first(10)
-```
 
