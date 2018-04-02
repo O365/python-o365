@@ -1,4 +1,4 @@
-# Python-O365 - Office365 API made easy
+# Py-O365 - Office 365 API made easy
 
 This project aims is to make it easy to interact with Office 365 Email, Contacts, Calendar, OneDrive, etc.
 
