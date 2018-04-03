@@ -217,11 +217,14 @@ class CustomClass(ApiComponent):
         # ...
 
     def do_some_stuff(self):
-
-        url = 'my_api_url'
+        
+        # self.build_url just merges the protocol service_url with the enpoint passed as a parameter
+        # to change the service_url implement your own protocol inherinting from Protocol Class
+        url = self.build_url(self._endpoints.get('my_url_key'))  
+        
         my_params = {'param1': 'param1'}
 
-        response = self.con.get(url, params=params)  # note the use of the connection here.
+        response = self.con.get(url, params=my_params)  # note the use of the connection here.
 
         # handle response and return to the user...
 ```
