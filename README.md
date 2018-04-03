@@ -6,6 +6,7 @@ This project is based on the super work done by [Toben Archer](https://github.co
 The oauth part is based on the work done by [Royce Melborn](https://github.com/roycem90) which is now integrated with the original project.
 
 I just want to make this project different in almost every sense, and make it also more pythonic (no getters and setters, etc.) and make it also compatible with oauth and basic auth.
+So I ended up rewriting the hole project from scratch.
 
 The result is a package that provides a lot of the Office 365 API capabilities.
 
@@ -43,6 +44,7 @@ This project was also a learning resource for me. This is a list of not so commo
 - [MailBox](#mailbox)
 - [AddressBook](#addressbook)
 - [Calendar](#calendar)
+- [OneDrive](#onedrive)
 - [Utils](#utils)
 
 
@@ -367,11 +369,35 @@ contact = global_address_list.get_contact_by_email('example@example.com')
 ```
 
 #### Contacts
-A Contact representation
+Everything returned from an `AddressBook` instance is a `Contact` instance.
+Contacts have all the information stored as attributes
 
-Working with contacts is
+Creating a contact from an `AddressBook`:
+
+```python
+new_contact = address_book.new_contact()
+
+new_contact.name = 'George Best'
+new_contact.job_title = 'football player'
+new_contact.emails.add('george@best.com')
+
+new_contact.save()  # saved on the cloud
+
+message = new_contact.new_message()  #  Bonus: send a message to this contact
+
+# ...
+
+new_contact.delete()  # Bonus: deteled from the cloud
+```
+
 
 ## Calendar
+Work in progress
+
+
+## OneDrive
+Work in progress
+
 
 ## Utils
 
@@ -420,7 +446,7 @@ for message in messages:  # 100 loops with 4 requests to the api server
 When using the Office 365 API you can filter some fields.
 This filtering is tedious as is using [Open Data Protocol (OData)](http://docs.oasis-open.org/odata/odata/v4.0/errata03/os/complete/part2-url-conventions/odata-v4.0-errata03-os-part2-url-conventions-complete.html).
 
-Every `ApiComponent` (such as MailBox) implements a new_query method that will return a `Query` instance.
+Every `ApiComponent` (such as `MailBox`) implements a new_query method that will return a `Query` instance.
 This `Query` instance can handle the filtering very easily.
 
 For example:
@@ -439,6 +465,6 @@ print(query)
 
 # contains(subject, 'george best') or startswith(subject, 'quotes') and createdDateTime gt '2018-03-21'
 
-# To use query just pass it to que query option:
+# To use query just pass it to the query parameter:
 filtered_messages = mailbox.get_messages(query=query)
 ```

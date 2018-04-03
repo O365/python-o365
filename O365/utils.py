@@ -58,7 +58,7 @@ class ApiComponent:
         """ Parses and completes resource information """
         if resource == ME_RESOURCE:
             return resource
-        elif USERS_RESOURCE == resource:
+        elif resource == USERS_RESOURCE:
             return resource
         else:
             if USERS_RESOURCE not in resource:
