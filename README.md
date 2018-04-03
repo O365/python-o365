@@ -299,12 +299,74 @@ reply_msg.send()
 ```
 
 ## AddressBook
-The address book.
+AddressBook groups the funcionality of both the Contact Folders and Contacts. Outlook Distribution Groups are not supported.
 
 #### Contact Folders
+Represents a Folder within your Contacts Section in Office 365.
+AddressBook class represents the parent folder (it's a folder itself).
+
+You can get any folder in your address book by requesting child folders or filtering by name.
+
+```python
+address_book = account.address_book()
+
+contacts = address_book.get_contacts(limit=None)  # get all the contacts in the Personal Contacts root folder
+
+work_contacts_folder = address_book.get_folder(folder_name='Work Contacts')  # get a folder with 'Work Contacts' name
+
+message_to_all_contats_in_folder = work_contacts_folder.new_message()  # creates a draft message with all the contacts as recipients
+
+message_to_all_contats_in_folder.subject = 'Hallo!'
+message_to_all_contats_in_folder.body = """
+If you'd given me the choice of going out and beating four men and smashing a goal in
+from thirty yards against Liverpool or going to bed with Miss World,
+it would have been a difficult choice. Luckily, I had both.
+"""
+message_to_all_contats_in_folder.send()
+
+# querying folders is easy:
+child_folders = address_book.get_folders(25) # get at most 25 child folders
+
+for folder in child_folders:
+    print(folder.name, folder.parent_id)
+
+# creating a contact folder:
+address_book.create_child_folder('new folder')
+```
+
+#### The Global Address List
+Office 365 API (Nor MS Graph API) has no concept such as the Outlook Global Address List.
+However you can use the Users API to access all the users within your organization.
+
+Without admin consent you can only access a few properties of each user such as name and email and litte more.
+You can search by name or retrieve a contact specifying the complete email.
+
+- Basic Permision needed is Users.ReadBasic.All (limit info)
+- Full Permision is Users.Read.All but needs admin consent.
+
+To search the Global Address List (Users API):
+
+```python
+global_address_list = account.address_book(address_book='gal')
+
+# start a new query:
+q = global_address_list.new_query('display_name')
+q.startswith('George Best')
+
+print(global_address_list.get_contacts(query=q))
+```
+
+
+To retrieve a contact by it's email:
+
+```python
+contact = global_address_list.get_contact_by_email('example@example.com')
+```
 
 #### Contacts
+A Contact representation
 
+Working with contacts is
 
 ## Calendar
 

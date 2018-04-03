@@ -12,7 +12,7 @@ log = logging.getLogger(__name__)
 
 
 class Recipient(object):
-    """ A single Recipient"""
+    """ A single Recipient """
 
     def __init__(self, address=None, name=None):
             self.address = address or ''
@@ -48,6 +48,9 @@ class Recipients(object):
 
     def __contains__(self, item):
         return item in {recipient.address for recipient in self.recipients}
+
+    def __bool__(self):
+        return bool(len(self.recipients))
 
     def __len__(self):
         return len(self.recipients)
@@ -88,6 +91,14 @@ class Recipients(object):
             if recipient.address not in address:
                 recipients.append(recipient)
         self.recipients = recipients
+
+    def get_first_recipient_with_address(self):
+        """ Returns the first recipient found with a non blank address"""
+        recipients_with_address = [recipient for recipient in self.recipients if recipient.address]
+        if recipients_with_address:
+            return recipients_with_address[0]
+        else:
+            return None
 
 
 class Attachment(ApiComponent):

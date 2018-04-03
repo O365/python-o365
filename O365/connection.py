@@ -1,6 +1,7 @@
 import logging
 import json
 import os
+import time
 from pathlib import Path
 from enum import Enum
 
@@ -136,7 +137,8 @@ class Connection:
     _allowed_methods = ['get', 'post', 'put', 'patch', 'delete']
 
     def __init__(self, credentials, *, auth_method=AUTH_METHOD.OAUTH, scopes=None,
-                 proxy_server=None, proxy_port=8080, proxy_username=None, proxy_password=None):
+                 proxy_server=None, proxy_port=8080, proxy_username=None, proxy_password=None,
+                 requests_delay=200):
         """ Creates an API connection object
 
         :param credentials: a tuple containing the credentials for this connection.
@@ -148,6 +150,9 @@ class Connection:
         :param proxy_port: the proxy port, defaults to 8080
         :param proxy_username: the proxy username
         :param proxy_password: the proxy password
+        :param requests_delay: number of miliseconds to wait between api calls
+            The Api will respond with 429 Too many requests if more than 17 requests are made per second.
+            Defaults to 200 miliseconds just in case more than 1 connection is making requests across multiple processes.
         """
         if not isinstance(credentials, tuple) or len(credentials) != 2 or (not credentials[0] and not credentials[1]):
             raise ValueError('Provide valid auth credentials')
@@ -171,6 +176,8 @@ class Connection:
 
         self.proxy = None
         self.set_proxy(proxy_server, proxy_port, proxy_username, proxy_password)
+        self.requests_delay = requests_delay or 0
+        self.previous_request_at = None  # store the time of the previous request
 
     def set_proxy(self, proxy_server, proxy_port, proxy_username, proxy_password):
         """ Sets a proxy on the Session """
@@ -280,6 +287,14 @@ class Connection:
         if self.store_token:
             self._save_token(token)
 
+    def _check_delay(self):
+        """ Checks if a delay is needed between requests and sleeps if True """
+        if self.previous_request_at:
+            dif = round(time.time() - self.previous_request_at, 2) * 1000  # difference in miliseconds
+            if dif < self.requests_delay:
+                time.sleep((self.requests_delay - dif) / 1000)  # sleep needs seconds
+        self.previous_request_at = time.time()
+
     def request(self, url, method, **kwargs):
         """ Makes a request to url
 
@@ -308,11 +323,13 @@ class Connection:
         if self.auth_method is AUTH_METHOD.BASIC:
             # basic authentication
             kwargs['auth'] = self.auth
+            self._check_delay()  # sleeps if needed
             response = requests.request(method, url, **kwargs)
         else:
             # oauth2 authentication
             if not self.oauth:
                 self.oauth2()
+            self._check_delay()  # sleeps if needed
             try:
                 response = self.oauth.request(method, url, **kwargs)
             except TokenExpiredError:
