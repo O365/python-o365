@@ -1,5 +1,8 @@
 import logging
 from enum import Enum
+from tzlocal import get_localzone
+import pytz
+import datetime as dt
 
 ME_RESOURCE = 'me'
 USERS_RESOURCE = 'users'
@@ -185,16 +188,17 @@ class Query:
     """ Helper to conform OData filters """
     _mapping = {
         'from': 'from/emailAddress/address',
-        'received': ''
+        'to': 'toRecipients/emailAddress/address'
     }
 
     def __init__(self, attribute=None, *, protocol):
-        self.protocol = protocol
+        self.protocol = protocol() if isinstance(protocol, type) else protocol
         self._attribute = None
         self._chain = None
         self.new(attribute)
         self._negation = False
         self._filters = []
+        self._localtz = None  # lazy attribute
 
     def __str__(self):
         if self._filters:
@@ -208,8 +212,12 @@ class Query:
     def __repr__(self):
         return self.__str__()
 
-    def filter(self, and_filter):
-        pass
+    @property
+    def localtz(self):
+        """ Returns the cached local time zone """
+        if self._localtz is None:
+            self._localtz = get_localzone()
+        return self._localtz
 
     def _get_mapping(self, attribute):
         mapping = self._mapping.get(attribute)
@@ -225,6 +233,11 @@ class Query:
         self._chain = operation
         self._attribute = self._get_mapping(attribute) if attribute else None
         self._negation = False
+        return self
+
+    def clear(self):
+        self._filters = []
+        self.new(None)
         return self
 
     def negate(self):
@@ -248,47 +261,55 @@ class Query:
         else:
             raise ValueError('Attribute property needed. call on_attribute(attribute) or new(attribute)')
 
-    def logical_operator(self, operation, word):
+    def _parse_filter_word(self, word):
+        """ Converts the word parameter into the correct format """
         if isinstance(word, str):
-            sentence = "{} {} {} '{}'".format('not' if self._negation else '', self._attribute, operation, word).strip()
-        else:
-            sentence = '{} {} {} {}'.format('not' if self._negation else '', self._attribute, operation, word).strip()
+            word = "'{}'".format(word)
+        elif isinstance(word, dt.date):
+            if isinstance(word, dt.datetime):
+                if word.tzinfo is None:
+                    # if it's a naive datetime, localize the datetime.
+                    word = self.localtz.localize(word)  # localize datetime into local tz
+                    word = word.astimezone(pytz.utc)  # transform local datetime to utc
+            word = "'{}'".format(word.isoformat())  # convert datetime utc to isoformat
 
+        return word
+
+    def logical_operator(self, operation, word):
+        word = self._parse_filter_word(word)
+        sentence = '{} {} {} {}'.format('not' if self._negation else '', self._attribute, operation, word).strip()
         self._add_filter(sentence)
         return self
 
     def equals(self, word):
-        self.logical_operator('eq', word)
-        return self
+        return self.logical_operator('eq', word)
 
     def unequal(self, word):
-        self.logical_operator('ne', word)
-        return self
+        return self.logical_operator('ne', word)
 
     def greater(self, word):
-        self.logical_operator('gt', word)
-        return self
+        return self.logical_operator('gt', word)
 
     def greater_equal(self, word):
-        self.logical_operator('ge', word)
-        return self
+        return self.logical_operator('ge', word)
 
     def less(self, word):
-        self.logical_operator('lt', word)
-        return self
+        return self.logical_operator('lt', word)
 
     def less_equal(self, word):
-        self.logical_operator('le', word)
+        return self.logical_operator('le', word)
+
+    def function(self, function_name, word):
+        word = self._parse_filter_word(word)
+
+        self._add_filter("{} {}({}, {})".format('not' if self._negation else '', function_name, self._attribute, word).strip())
         return self
 
     def contains(self, word):
-        self._add_filter("{} contains({}, '{}')".format('not' if self._negation else '', self._attribute, word).strip())
-        return self
+        return self.function('contains', word)
 
     def startswith(self, word):
-        self._add_filter("{} startswith({}, '{}')".format('not' if self._negation else '', self._attribute, word).strip())
-        return self
+        return self.function('startswith', word)
 
     def endswith(self, word):
-        self._add_filter("{} endswith({}, '{}')".format('not' if self._negation else '', self._attribute, word).strip())
-        return self
+        return self.function('endswith', word)

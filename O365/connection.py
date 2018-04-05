@@ -7,6 +7,7 @@ from enum import Enum
 
 from stringcase import pascalcase, camelcase
 import requests
+from requests.exceptions import HTTPError
 from oauthlib.oauth2 import TokenExpiredError
 from requests_oauthlib import OAuth2Session
 
@@ -18,21 +19,44 @@ O365_API_VERSION = 'v1.0'  # v2.0 does not allow basic auth
 GRAPH_API_VERSION = 'v1.0'
 OAUTH_REDIRECT_URL = 'https://outlook.office365.com/owa/'
 
-SCOPES_FOR = {
-    'basic': ['offline_access', 'https://graph.microsoft.com/User.Read'],
-    'mailbox': ['https://graph.microsoft.com/Mail.Read'],
-    'mailbox_shared': ['https://graph.microsoft.com/Mail.Read.Shared'],
-    'message_send': ['https://graph.microsoft.com/Mail.Send'],
-    'message_send_shared': ['https://graph.microsoft.com/Mail.Send.Shared'],
-    'message_all': ['https://graph.microsoft.com/Mail.ReadWrite', 'https://graph.microsoft.com/Mail.Send'],
-    'message_all_shared': ['https://graph.microsoft.com/Mail.ReadWrite.Shared',
-                           'https://graph.microsoft.com/Mail.Send.Shared'],
-    'address_book': ['https://graph.microsoft.com/Contacts.Read'],
-    'address_book_shared': ['https://graph.microsoft.com/Contacts.Read.Shared'],
-    'address_book_all': ['https://graph.microsoft.com/Contacts.ReadWrite'],
-    'address_book_all_shared': ['https://graph.microsoft.com/Contacts.ReadWrite.Shared'],
-    'calendar': ['https://graph.microsoft.com/Calendars.ReadWrite'],
-    'users': ['https://graph.microsoft.com/User.ReadBasic.All']
+
+# Custom Exceptions
+class BaseApiException(HTTPError):
+
+    def __init__(self, response):
+        error = response.json().get('error', {})
+        super().__init__('{}: {} - {}'.format(response.status_code, error.get('code'), error.get('message')), response=response)
+
+
+class ApiBadRequestError(BaseApiException):
+    """ Generic Error for 400 Bad Request error code """
+    pass
+
+
+class ApiInternalServerError(BaseApiException):
+    """ Generic Error for 500 Internal Server Error error code """
+    pass
+
+
+class ApiOtherException(BaseApiException):
+    """ Group of all other posible exceptions """
+    pass
+
+
+DEFAULT_SCOPES = {
+    'basic': [('offline_access',), 'User.Read'],  # wrap any scope in a 1 element tuple to avoid prefixing
+    'mailbox': ['Mail.Read'],
+    'mailbox_shared': ['Mail.Read.Shared'],
+    'message_send': ['Mail.Send'],
+    'message_send_shared': ['Mail.Send.Shared'],
+    'message_all': ['Mail.ReadWrite', 'Mail.Send'],
+    'message_all_shared': ['Mail.ReadWrite.Shared', 'Mail.Send.Shared'],
+    'address_book': ['Contacts.Read'],
+    'address_book_shared': ['Contacts.Read.Shared'],
+    'address_book_all': ['Contacts.ReadWrite'],
+    'address_book_all_shared': ['Contacts.ReadWrite.Shared'],
+    'calendar': ['Calendars.ReadWrite'],
+    'users': ['User.ReadBasic.All']
 }
 
 
@@ -41,41 +65,33 @@ class AUTH_METHOD(Enum):
     OAUTH = 'oauth'
 
 
-def get_scopes_for(app_parts=None):
-    """ Returns a list of scopes needed for all the app_parts
-    :param app_parts: a list of
-    """
-    if app_parts is None:
-        app_parts = [app_part for app_part in SCOPES_FOR]
-    elif isinstance(app_parts, str):
-        app_parts = [app_parts]
-
-    if not isinstance(app_parts, (list, tuple)):
-        raise ValueError('app_parts must be a list or a tuple of strings')
-
-    return list({scope for ap in (list(app_parts) + ['basic']) for scope in SCOPES_FOR.get(ap, [ap])})
-
-
 class Protocol:
     """ Base class for all protocols """
 
-    _cloud_data_key = '__cloud_data__'  # wrapps cloud data with this dict key
+    _protocol_url = 'not_defined'  # Main url to request. Override in subclass
+    _oauth_scope_prefix = ''  # prefix for scopes (in MS GRAPH is 'https://graph.microsoft.com/' + SCOPE)
+    _oauth_scopes = {}  # dictionary of {scopes_name: [scope1, scope2]}
 
-    def __init__(self, *, protocol_url=None, api_version=None, default_resource=ME_RESOURCE, casing_function=None):
+    def __init__(self, *, protocol_url=None, api_version=None, default_resource=ME_RESOURCE,
+                 casing_function=None, protocol_scope_prefix=None):
         """
         :param protocol_url: the base url used to comunicate with the server
         :param api_version: the api version
         :param default_resource: the default resource to use when there's no other option
         :param casing_function: the casing transform function to be used on api keywords
+        :param protocol_scope_prefix: prefix for scopes (in MS GRAPH is 'https://graph.microsoft.com/' + SCOPE)
         """
         if protocol_url is None or api_version is None:
             raise ValueError('Must provide valid protocol_url and api_version values')
         self.protocol_url = protocol_url
+        self.protocol_scope_prefix = protocol_scope_prefix or ''
         self.api_version = api_version
         self.service_url = '{}{}/'.format(protocol_url, api_version)
         self.default_resource = default_resource
         self.use_default_casing = True if casing_function is None else False  # if true just returns the key without transform
         self.casing_function = casing_function or camelcase
+
+        # define any keyword that can be different in this protocol
         self.keyword_data_store = {}
 
     def get_service_keyword(self, keyword):
@@ -95,15 +111,53 @@ class Protocol:
         """
         return dict_key if self.use_default_casing else self.casing_function(dict_key)
 
+    def get_scopes_for(self, user_provided_scopes):
+        """ Returns a list of scopes needed for each of the scope_helpers provided
+        :param user_provided_scopes: a list of scopes or scope helpers
+        """
+        if user_provided_scopes is None:
+            # return all available scopes
+            user_provided_scopes = [app_part for app_part in self._oauth_scopes]
+        elif isinstance(user_provided_scopes, str):
+            user_provided_scopes = [user_provided_scopes]
+
+        if not isinstance(user_provided_scopes, (list, tuple)):
+            raise ValueError("'user_provided_scopes' must be a list or a tuple of strings")
+
+        scopes = set()
+        for app_part in user_provided_scopes:
+            for scope in self._oauth_scopes.get(app_part, [app_part]):
+                scopes.add(self._prefix_scope(scope))
+
+        return list(scopes)
+
+    def _prefix_scope(self, scope):
+        """ Inserts the protocol scope prefix """
+        if self.protocol_scope_prefix:
+            if isinstance(scope, tuple):
+                return scope[0]
+            elif scope.startswith(self.protocol_scope_prefix):
+                return scope
+            else:
+                return '{}{}'.format(self.protocol_scope_prefix, scope)
+        else:
+            if isinstance(scope, tuple):
+                return scope[0]
+            else:
+                return scope
+
 
 class MSGraphProtocol(Protocol):
     """ A Microsoft Graph Protocol Implementation """
 
     _protocol_url = 'https://graph.microsoft.com/'
+    _oauth_scope_prefix = 'https://graph.microsoft.com/'
+    _oauth_scopes = DEFAULT_SCOPES
 
     def __init__(self, api_version='v1.0', default_resource=ME_RESOURCE):
         super().__init__(protocol_url=self._protocol_url, default_resource=default_resource,
-                         api_version=api_version, casing_function=camelcase)
+                         api_version=api_version, casing_function=camelcase,
+                         protocol_scope_prefix=self._oauth_scope_prefix)
 
         self.keyword_data_store['message_type'] = 'microsoft.graph.message'
         self.keyword_data_store['file_attachment_type'] = '#microsoft.graph.fileAttachment'
@@ -116,10 +170,13 @@ class MSOffice365Protocol(Protocol):
 
     # _protocol_url = 'https://outlook.office365.com/api/'
     _protocol_url = 'https://outlook.office.com/api/'
+    _oauth_scope_prefix = 'https://outlook.office.com/'
+    _oauth_scopes = DEFAULT_SCOPES
 
     def __init__(self, api_version='v1.0', default_resource=ME_RESOURCE):
         super().__init__(protocol_url=self._protocol_url, default_resource=default_resource,
-                         api_version=api_version, casing_function=pascalcase)
+                         api_version=api_version, casing_function=pascalcase,
+                         protocol_scope_prefix=self._oauth_scope_prefix)
 
         self.keyword_data_store['message_type'] = 'Microsoft.OutlookServices.Message'
         self.keyword_data_store['file_attachment_type'] = '#Microsoft.OutlookServices.FileAttachment'
@@ -138,7 +195,7 @@ class Connection:
 
     def __init__(self, credentials, *, auth_method=AUTH_METHOD.OAUTH, scopes=None,
                  proxy_server=None, proxy_port=8080, proxy_username=None, proxy_password=None,
-                 requests_delay=200):
+                 requests_delay=200, raise_http_errors=True):
         """ Creates an API connection object
 
         :param credentials: a tuple containing the credentials for this connection.
@@ -153,6 +210,7 @@ class Connection:
         :param requests_delay: number of miliseconds to wait between api calls
             The Api will respond with 429 Too many requests if more than 17 requests are made per second.
             Defaults to 200 miliseconds just in case more than 1 connection is making requests across multiple processes.
+        :param raise_http_errors: If True Http 4xx and 5xx status codes will raise a custom exception
         """
         if not isinstance(credentials, tuple) or len(credentials) != 2 or (not credentials[0] and not credentials[1]):
             raise ValueError('Provide valid auth credentials')
@@ -166,7 +224,7 @@ class Connection:
         elif auth_method is AUTH_METHOD.OAUTH:
             self.auth_method = AUTH_METHOD.OAUTH
             self.auth = credentials
-            self.scopes = get_scopes_for(scopes)  # defaults to full scopes spectrum
+            self.scopes = scopes
             self.oauth = None
             self.store_token = True
             self.token_path = self._default_token_path
@@ -178,6 +236,7 @@ class Connection:
         self.set_proxy(proxy_server, proxy_port, proxy_username, proxy_password)
         self.requests_delay = requests_delay or 0
         self.previous_request_at = None  # store the time of the previous request
+        self.raise_http_errors = raise_http_errors
 
     def set_proxy(self, proxy_server, proxy_port, proxy_username, proxy_password):
         """ Sets a proxy on the Session """
@@ -208,14 +267,15 @@ class Connection:
         client_id, client_secret = self.auth
 
         if requested_scopes:
-            scopes = get_scopes_for(requested_scopes)
+            scopes = requested_scopes
         elif self.scopes is not None:
             scopes = self.scopes
         else:
-            scopes = get_scopes_for()
+            raise ValueError('Must provide at least one scope')
 
         self.oauth = oauth = OAuth2Session(client_id=client_id, redirect_uri=OAUTH_REDIRECT_URL, scope=scopes)
 
+        # TODO: access_type='offline' has no effect acording to documentation. This is done through scope 'offline_access'.
         auth_url, state = oauth.authorization_url(url=self._oauth2_authorize_url, access_type='offline')
 
         return auth_url
@@ -340,6 +400,8 @@ class Connection:
 
         log.info('Received response from URL {}'.format(response.url))
 
+        if not response.ok and self.raise_http_errors:
+            raise self.raise_api_exception(response)
         return response
 
     def get(self, url, params=None, **kwargs):
@@ -420,3 +482,14 @@ class Connection:
             token_path.unlink()
             return True
         return False
+
+    @staticmethod
+    def raise_api_exception(response):
+        """ Raises a custom exception """
+        code = int(response.status_code / 100)
+        if code == 4:
+            return ApiBadRequestError(response)
+        elif code == 5:
+            return ApiInternalServerError(response)
+        else:
+            return ApiOtherException(response)

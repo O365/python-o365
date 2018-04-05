@@ -14,7 +14,6 @@ class Account(object):
                 auth_method = AUTH_METHOD(auth_method)
             except ValueError as e:
                 raise e
-        self.con = Connection(credentials, auth_method=auth_method, scopes=scopes)
 
         if auth_method is AUTH_METHOD.BASIC:
             protocol = protocol or MSOffice365Protocol  # using basic auth defaults to Office 365 protocol
@@ -25,6 +24,11 @@ class Account(object):
         elif auth_method is AUTH_METHOD.OAUTH:
             protocol = protocol or MSGraphProtocol  # using oauth auth defaults to Graph protocol
             self.protocol = protocol(default_resource=main_resource) if isinstance(protocol, type) else protocol
+
+        if not isinstance(self.protocol, Protocol):
+            raise ValueError("'protocol' must be a subclass of Protocol")
+
+        self.con = Connection(credentials, auth_method=auth_method, scopes=self.protocol.get_scopes_for(scopes))
 
         self.main_resource = main_resource
 

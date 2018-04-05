@@ -126,7 +126,7 @@ class Folder(ApiComponent):
         try:
             response = self.con.get(url, params=params)
         except Exception as e:
-            log.error('Error donwloading messages in folder {}. Error {}'.format(self.name, str(e)))
+            log.error('Error donwloading messages in folder {}. Error {}'.format(self.name, e))
             return []
         log.debug('Getting messages in folder {} Response: {}'.format(self.name, str(response)))
 

@@ -58,8 +58,9 @@ You use one or the other using protocols:
 
 Both allow pretty much the same options (depending on the api version used).
 
-When using basic authentication the protocol defaults to `MSOffice365Protocol` (because Microsoft Graph doesn't allow basic authentication).
-When using oauth authentication the protocol defaults to `MSGraphProtocol`.
+The `Account` Class  will select the most apropriate protocol based on the auth method:
+- When using basic authentication the protocol defaults to `MSOffice365Protocol` (because Microsoft Graph doesn't allow basic authentication).
+- When using oauth authentication the protocol defaults to `MSGraphProtocol`.
 
 You can implement your own protocols by inheriting from `Protocol` to communicate with other Microsoft APIs.
 
@@ -135,11 +136,28 @@ from O365 import Connection, AUTH_METHOD
 credentials = ('client_id', 'client_secret')
 
 scopes = ['https://graph.microsoft.com/Mail.ReadWrite', 'https://graph.microsoft.com/Mail.Send']
-# This project provides some shorthand scopes like 'message_all' that group certain scopes, using scopes = ['message_all] is the same as above.
-# see SCOPES_FOR and get_scopes_for inside the connection module.
 
 con = Connection(credentials, auth_method=AUTH_METHOD.OAUTH, scopes=scopes)
 ```
+
+Scope implementation depends on the protocol used. So by using protocol data you can automatically set the scopes needed:
+
+You can get the same scopes as before using protocols like this:
+
+```python
+protocol_graph = MSGraphProtocol()
+
+scopes_graph = protocol.get_scopes_for('message all')
+# scopes here are: ['https://graph.microsoft.com/Mail.ReadWrite', 'https://graph.microsoft.com/Mail.Send']
+
+protocol_office = MSOffice365Protocol()
+
+scopes_office = protocol.get_scopes_for('message all')
+# scopes here are: ['https://outlook.office.com/Mail.ReadWrite', 'https://outlook.office.com/Mail.Send']
+
+con = Connection(credentials, auth_method=AUTH_METHOD.OAUTH, scopes=scopes_graph)
+```
+
 
 ##### Authentication Flow
 1. To work with oauth you first need to register your application at [Microsoft Application Registration Portal](https://apps.dev.microsoft.com/).
@@ -212,7 +230,7 @@ Just Inherit from ApiComponent, define the endpoints, and use the connection to 
 
 ```python
 class CustomClass(ApiComponent):
-    _endpoints = {'custom': '/customendpoint'}
+    _endpoints = {'my_url_key': '/customendpoint'}
     
     def __init__(self, *, parent=None, con=None, **kwargs):
         super().__init__(parent=parent, con=con, **kwargs)
@@ -468,3 +486,10 @@ print(query)
 # To use query just pass it to the query parameter:
 filtered_messages = mailbox.get_messages(query=query)
 ```
+
+#### Request Error Handling and Custom Errors
+
+Whenever a Request error raises, we log it to the stdout with it's message, an return Falsy (None, False, [], etc...)
+
+We also raise HttpErrors such as Bad Request and Internal Server Error.
+
