@@ -57,7 +57,7 @@ class Contact(ApiComponent, MixinHandleRecipients):
         self.business_phones = cloud_data.get(cc('businessPhones'), []) or []
         self.mobile_phone = cloud_data.get(cc('mobilePhone'), '')
         self.home_phones = cloud_data.get(cc('homePhones'), []) or []
-        self.emails = self._recipients_from_cloud(cloud_data.get(cc('emailAddresses'), []))
+        self.__emails = self._recipients_from_cloud(cloud_data.get(cc('emailAddresses'), []))
         self.business_addresses = cloud_data.get(cc('businessAddress'), {})
         self.home_addresses = cloud_data.get(cc('homesAddress'), {})
         self.other_addresses = cloud_data.get(cc('otherAddress'), {})
@@ -73,6 +73,10 @@ class Contact(ApiComponent, MixinHandleRecipients):
             self.emails.add([mail])
         if user_principal_name and user_principal_name not in self.emails:
             self.emails.add([user_principal_name])
+
+    @property
+    def emails(self):
+        return self.__emails
 
     @property
     def full_name(self):

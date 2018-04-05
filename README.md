@@ -30,7 +30,7 @@ Python 3.4 is the minimum required... I was very tempted to just go for 3.6 and 
 This project was also a learning resource for me. This is a list of not so common python characteristics used in this project:
 - New unpacking technics: `def method(argument, *, with_name=None, **other_params):`
 - Enums: `from enum import Enum`
-- Factory paradigm.
+- Factory paradigm
 - Package organization
 - Etc. (see the code!)
 

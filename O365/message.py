@@ -399,7 +399,7 @@ class Message(ApiComponent, MixinHandleRecipients):
         self.received = parse(self.received).astimezone(local_tz) if self.received else None
         self.sent = parse(self.sent).astimezone(local_tz) if self.sent else None
 
-        self.attachments = Attachments(message=self, attachments=[])
+        self.__attachments = Attachments(message=self, attachments=[])
         self.has_attachments = cloud_data.get(cc('hasAttachments'), 0)
         if self.has_attachments and download_attachments:
             self.attachments.download_attachments()
@@ -407,17 +407,72 @@ class Message(ApiComponent, MixinHandleRecipients):
         body = cloud_data.get(cc('body'), {})
         self.body = body.get(cc('content'), '')
         self.body_type = body.get(cc('contentType'), 'HTML')  # default to HTML for new messages
-        self.sender = self._recipient_from_cloud(cloud_data.get(cc('from'), None))
-        self.to = self._recipients_from_cloud(cloud_data.get(cc('toRecipients'), []))
-        self.cc = self._recipients_from_cloud(cloud_data.get(cc('ccRecipients'), []))
-        self.bcc = self._recipients_from_cloud(cloud_data.get(cc('bccRecipients'), []))
-        self.reply_to = self._recipients_from_cloud(cloud_data.get(cc('replyTo'), []))
-        self.categories = cloud_data.get(cc('categories'), [])
+        self.__sender = self._recipient_from_cloud(cloud_data.get(cc('from'), None))
+        self.__to = self._recipients_from_cloud(cloud_data.get(cc('toRecipients'), []))
+        self.__cc = self._recipients_from_cloud(cloud_data.get(cc('ccRecipients'), []))
+        self.__bcc = self._recipients_from_cloud(cloud_data.get(cc('bccRecipients'), []))
+        self.__reply_to = self._recipients_from_cloud(cloud_data.get(cc('replyTo'), []))
+        self.__categories = cloud_data.get(cc('categories'), [])
         self.importance = self._importance_options.get(cloud_data.get(cc('importance'), 'normal'), 'normal')  # only allow valid importance
         self.is_read = cloud_data.get(cc('isRead'), None)
         self.is_draft = cloud_data.get(cc('isDraft'), kwargs.get('is_draft', True))  # a message is a draft by default
         self.conversation_id = cloud_data.get(cc('conversationId'), None)
         self.folder_id = cloud_data.get(cc('parentFolderId'), None)
+
+    @property
+    def attachments(self):
+        """ Just to avoid api misuse by assigning to 'attachments' """
+        return self.__attachments
+
+    @property
+    def sender(self):
+        """ sender is a property to force to be allways a Recipient class """
+        return self.__sender
+
+    @sender.setter
+    def sender(self, value):
+        """ sender is a property to force to be allways a Recipient class """
+        if isinstance(value, Recipient):
+            self.__sender = value
+        elif isinstance(value, str):
+            self.__sender.address = value
+        else:
+            raise ValueError('sender must be an address string or a Recipient object')
+
+    @property
+    def to(self):
+        """ Just to avoid api misuse by assigning to 'to' """
+        return self.__to
+
+    @property
+    def cc(self):
+        """ Just to avoid api misuse by assigning to 'cc' """
+        return self.__cc
+
+    @property
+    def bcc(self):
+        """ Just to avoid api misuse by assigning to 'bcc' """
+        return self.__bcc
+
+    @property
+    def reply_to(self):
+        """ Just to avoid api misuse by assigning to 'reply_to' """
+        return self.__reply_to
+
+    @property
+    def categories(self):
+        return self.__categories
+
+    @categories.setter
+    def categories(self, value):
+        if isinstance(value, list):
+            self.__categories = value
+        elif isinstance(value, str):
+            self.__categories = [value]
+        elif isinstance(value, tuple):
+            self.__categories = list(value)
+        else:
+            raise ValueError('categories must be a list')
 
     def to_api_data(self):
         """ Returns a dict representation of this message prepared to be send to the cloud """
