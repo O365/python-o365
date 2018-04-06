@@ -174,8 +174,8 @@ class MSGraphProtocol(Protocol):
 class MSOffice365Protocol(Protocol):
     """ A Microsoft Office 365 Protocol Implementation """
 
-    # _protocol_url = 'https://outlook.office365.com/api/'
-    _protocol_url = 'https://outlook.office.com/api/'
+    _protocol_url = 'https://outlook.office365.com/api/'
+    # _protocol_url = 'https://outlook.office.com/api/'  # basic auth only works on 'https://outlook.office365.com/api/'
     _oauth_scope_prefix = 'https://outlook.office.com/'
     _oauth_scopes = DEFAULT_SCOPES
 
@@ -232,13 +232,13 @@ class Connection:
             self.auth_method = AUTH_METHOD.OAUTH
             self.auth = credentials
             self.scopes = scopes
-            self.session = None  # requests Session object
             self.store_token = True
             self.token_path = self._default_token_path
             self.token = None
         else:
             raise ValueError("Auth Method must be 'basic' or 'oauth'")
 
+        self.session = None  # requests Session object
         self.proxy = {}
         self.set_proxy(proxy_server, proxy_port, proxy_username, proxy_password)
         self.requests_delay = requests_delay or 0
