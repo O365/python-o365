@@ -370,7 +370,7 @@ class ContactFolder(BaseContactFolder):
         # we don't pass parent, as this folder may not be a child of self.
         return ContactFolder(con=self.con, protocol=self.protocol, main_resource=self.main_resource, **{self._cloud_data_key: folder})
 
-    def get_folders(self, limit=50, *, query=None, order_by=None):
+    def get_folders(self, limit=None, *, query=None, order_by=None):
         """
         Returns a list of child folders
 
@@ -383,15 +383,17 @@ class ContactFolder(BaseContactFolder):
         else:
             url = self.build_url(self._endpoints.get('child_folders').format(self.folder_id))
 
-        params = {'$top': limit or 25}
+        params = {}
 
+        if limit:
+            params['$top'] = limit
         if query:
             params['$filter'] = str(query)
         if order_by:
             params['$orderby'] = order_by
 
         try:
-            response = self.con.get(url, params=params)
+            response = self.con.get(url, params=params or None)
         except Exception as e:
             log.error('Error getting child contact folders. Error {}'.format(str(e)))
             return []

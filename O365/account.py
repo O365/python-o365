@@ -7,7 +7,8 @@ from O365.address_book import AddressBook, GlobalAddressList
 
 class Account(object):
 
-    def __init__(self, credentials, *, auth_method=AUTH_METHOD.OAUTH, scopes=None, protocol=None, main_resource=ME_RESOURCE):
+    def __init__(self, credentials, *, auth_method=AUTH_METHOD.OAUTH, scopes=None,
+                 protocol=None, main_resource=ME_RESOURCE, **kwargs):
 
         if isinstance(auth_method, str):
             try:
@@ -28,7 +29,9 @@ class Account(object):
         if not isinstance(self.protocol, Protocol):
             raise ValueError("'protocol' must be a subclass of Protocol")
 
-        self.con = Connection(credentials, auth_method=auth_method, scopes=self.protocol.get_scopes_for(scopes))
+        self.con = kwargs.get('connection') or Connection(credentials,
+                                                          auth_method=auth_method,
+                                                          scopes=self.protocol.get_scopes_for(scopes))
 
         self.main_resource = main_resource
 

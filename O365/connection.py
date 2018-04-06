@@ -7,6 +7,8 @@ from enum import Enum
 
 from stringcase import pascalcase, camelcase
 import requests
+from requests.adapters import HTTPAdapter
+from requests.packages.urllib3.util.retry import Retry  # dynamic loading of module Retry by requests.packages
 from requests.exceptions import HTTPError
 from oauthlib.oauth2 import TokenExpiredError
 from requests_oauthlib import OAuth2Session
@@ -19,13 +21,17 @@ O365_API_VERSION = 'v1.0'  # v2.0 does not allow basic auth
 GRAPH_API_VERSION = 'v1.0'
 OAUTH_REDIRECT_URL = 'https://outlook.office365.com/owa/'
 
+RETRIES_STATUS_LIST = [500, 502, 503, 504]
+RETRIES_BACKOFF_FACTOR = 0.5
+
 
 # Custom Exceptions
 class BaseApiException(HTTPError):
 
     def __init__(self, response):
         error = response.json().get('error', {})
-        super().__init__('{}: {} - {}'.format(response.status_code, error.get('code'), error.get('message')), response=response)
+        super().__init__('{}: {} - {}'.format(response.status_code, error.get('code'), error.get('message')),
+                         response=response)
 
 
 class ApiBadRequestError(BaseApiException):
@@ -195,7 +201,7 @@ class Connection:
 
     def __init__(self, credentials, *, auth_method=AUTH_METHOD.OAUTH, scopes=None,
                  proxy_server=None, proxy_port=8080, proxy_username=None, proxy_password=None,
-                 requests_delay=200, raise_http_errors=True):
+                 requests_delay=200, raise_http_errors=True, request_retries=3):
         """ Creates an API connection object
 
         :param credentials: a tuple containing the credentials for this connection.
@@ -211,6 +217,7 @@ class Connection:
             The Api will respond with 429 Too many requests if more than 17 requests are made per second.
             Defaults to 200 miliseconds just in case more than 1 connection is making requests across multiple processes.
         :param raise_http_errors: If True Http 4xx and 5xx status codes will raise a custom exception
+        :param request_retries: number of retries done when the server responds with 5xx error codes.
         """
         if not isinstance(credentials, tuple) or len(credentials) != 2 or (not credentials[0] and not credentials[1]):
             raise ValueError('Provide valid auth credentials')
@@ -225,18 +232,19 @@ class Connection:
             self.auth_method = AUTH_METHOD.OAUTH
             self.auth = credentials
             self.scopes = scopes
-            self.oauth = None
+            self.session = None  # requests Session object
             self.store_token = True
             self.token_path = self._default_token_path
             self.token = None
         else:
             raise ValueError("Auth Method must be 'basic' or 'oauth'")
 
-        self.proxy = None
+        self.proxy = {}
         self.set_proxy(proxy_server, proxy_port, proxy_username, proxy_password)
         self.requests_delay = requests_delay or 0
         self.previous_request_at = None  # store the time of the previous request
         self.raise_http_errors = raise_http_errors
+        self.request_retries = request_retries
 
     def set_proxy(self, proxy_server, proxy_port, proxy_username, proxy_password):
         """ Sets a proxy on the Session """
@@ -273,7 +281,14 @@ class Connection:
         else:
             raise ValueError('Must provide at least one scope')
 
-        self.oauth = oauth = OAuth2Session(client_id=client_id, redirect_uri=OAUTH_REDIRECT_URL, scope=scopes)
+        self.session = oauth = OAuth2Session(client_id=client_id, redirect_uri=OAUTH_REDIRECT_URL, scope=scopes)
+        self.session.proxies = self.proxy
+        if self.request_retries:
+            retry = Retry(total=self.request_retries, read=self.request_retries, connect=self.request_retries,
+                          backoff_factor=RETRIES_BACKOFF_FACTOR, status_forcelist=RETRIES_STATUS_LIST)
+            adapter = HTTPAdapter(max_retries=retry)
+            self.session.mount('http://', adapter)
+            self.session.mount('https://', adapter)
 
         # TODO: access_type='offline' has no effect acording to documentation. This is done through scope 'offline_access'.
         auth_url, state = oauth.authorization_url(url=self._oauth2_authorize_url, access_type='offline')
@@ -292,7 +307,7 @@ class Connection:
         if self.auth_method is AUTH_METHOD.BASIC:
             raise RuntimeError('Method not allowed using basic authentication')
 
-        if self.oauth is None:
+        if self.session is None:
             raise RuntimeError("Fist call 'get_authorization_url' to generate a valid oauth object")
 
         _, client_secret = self.auth
@@ -303,9 +318,9 @@ class Connection:
         os.environ['OAUTHLIB_IGNORE_SCOPE_CHANGE'] = '1'
 
         try:
-            self.token = self.oauth.fetch_token(token_url=self._oauth2_token_url,
-                                                authorization_response=authorizated_url,
-                                                client_secret=client_secret, proxies=self.proxy)
+            self.token = self.session.fetch_token(token_url=self._oauth2_token_url,
+                                                  authorization_response=authorizated_url,
+                                                  client_secret=client_secret)
         except Exception as e:
             log.error('Unable to fetch auth token. Error: {}'.format(str(e)))
             return None
@@ -318,22 +333,33 @@ class Connection:
 
         return True
 
-    def oauth2(self, token_path=None):
-        """ Create a valid oauth session with the stored token
+    def get_session(self, token_path=None):
+        """ Create a requests Session object
 
-        :param token_path: full path to where the token should be load from
+        :param token_path: Only oauth: full path to where the token should be load from
         """
         if self.auth_method is AUTH_METHOD.BASIC:
-            raise RuntimeError('Method not allowed using basic authentication')
-
-        if self.token is None:
-            self.token = self._load_token(token_path)
-
-        if self.token:
-            client_id, _ = self.auth
-            self.oauth = OAuth2Session(client_id=client_id, token=self.token)
+            self.session = requests.Session()
+            self.session.auth = self.auth
         else:
-            raise RuntimeError('No auth token found. Authentication Flow needed')
+            self.token = self.token or self._load_token(token_path)
+
+            if self.token:
+                client_id, _ = self.auth
+                self.session = OAuth2Session(client_id=client_id, token=self.token)
+            else:
+                raise RuntimeError('No auth token found. Authentication Flow needed')
+
+        self.session.proxies = self.proxy
+
+        if self.request_retries:
+            retry = Retry(total=self.request_retries, read=self.request_retries, connect=self.request_retries,
+                          backoff_factor=RETRIES_BACKOFF_FACTOR, status_forcelist=RETRIES_STATUS_LIST)
+            adapter = HTTPAdapter(max_retries=retry)
+            self.session.mount('http://', adapter)
+            self.session.mount('https://', adapter)
+
+        return self.session
 
     def refresh_token(self):
         """ Gets another token """
@@ -342,8 +368,8 @@ class Connection:
             raise RuntimeError('Method not allowed using basic authentication')
 
         client_id, client_secret = self.auth
-        self.token = token = self.oauth.refresh_token(self._oauth2_token_url, client_id=client_id,
-                                                      client_secret=client_secret, proxies=self.proxy)
+        self.token = token = self.session.refresh_token(self._oauth2_token_url, client_id=client_id,
+                                                        client_secret=client_secret)
         if self.store_token:
             self._save_token(token)
 
@@ -375,28 +401,31 @@ class Connection:
             if 'data' in kwargs and kwargs['headers']['Content-type'] == 'application/json':
                 kwargs['data'] = json.dumps(kwargs['data'])  # autoconvert to json
 
-        if self.proxy:
-            kwargs['proxies'] = self.proxy
+        # no needed as proxies is set in the session.
+        # if self.proxy:
+        #     kwargs['proxies'] = self.proxy
 
         log.info('Requesting URL: {}'.format(url))
 
         if self.auth_method is AUTH_METHOD.BASIC:
-            # basic authentication
-            kwargs['auth'] = self.auth
+            # # basic authentication
+            # kwargs['auth'] = self.auth  # set in get_session
+            if not self.session:
+                self.get_session()
             self._check_delay()  # sleeps if needed
-            response = requests.request(method, url, **kwargs)
+            response = self.session.request(method, url, **kwargs)
         else:
             # oauth2 authentication
-            if not self.oauth:
-                self.oauth2()
+            if not self.session:
+                self.get_session()
             self._check_delay()  # sleeps if needed
             try:
-                response = self.oauth.request(method, url, **kwargs)
+                response = self.session.request(method, url, **kwargs)
             except TokenExpiredError:
                 log.info('Token is expired, fetching a new token')
                 self.refresh_token()
                 log.info('New token fetched')
-                response = self.oauth.request(method, url, **kwargs)
+                response = self.session.request(method, url, **kwargs)
 
         log.info('Received response from URL {}'.format(response.url))
 
