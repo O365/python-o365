@@ -4,6 +4,7 @@ from tzlocal import get_localzone
 import pytz
 import datetime as dt
 
+
 ME_RESOURCE = 'me'
 USERS_RESOURCE = 'users'
 
@@ -13,12 +14,6 @@ log = logging.getLogger(__name__)
 
 
 MAX_RECIPIENTS_PER_MESSAGE = 500  # Actual limit on Office 365
-
-
-class RecipientType(Enum):
-    TO = 'to'
-    CC = 'cc'
-    BCC = 'bcc'
 
 
 class WellKnowFolderNames(Enum):
@@ -55,6 +50,7 @@ class ApiComponent:
             raise ValueError('Protocol not provided to Api Component')
         self.main_resource = self._parse_resource(main_resource or protocol.default_resource)
         self._base_url = '{}{}'.format(self.protocol.service_url, self.main_resource)
+        super().__init__(**kwargs)
 
     @staticmethod
     def _parse_resource(resource):
@@ -199,18 +195,51 @@ class Query:
         self._negation = False
         self._filters = []
         self._localtz = None  # lazy attribute
+        self._order_by = []
 
     def __str__(self):
         if self._filters:
             filters_list = self._filters
             if isinstance(filters_list[-1], Enum):
                 filters_list = filters_list[:-1]
-            return ' '.join([fs.value if isinstance(fs, Enum) else fs for fs in filters_list]).strip()
+            return ' '.join([fs.value if isinstance(fs, Enum) else fs[1] for fs in filters_list]).strip()
         else:
             return ''
 
     def __repr__(self):
         return self.__str__()
+
+    def as_params(self):
+        """ Returns the filters and orders as query parameters"""
+        params = {}
+        if self.has_filters():
+            params['$filter'] = self.get_filters()
+        if self.has_order():
+            params['$orderby'] = self.get_order()
+        return params
+
+    def has_filters(self):
+        return bool(self._filters)
+
+    def has_order(self):
+        return bool(self._order_by)
+
+    def get_filters(self):
+        """ Returns the result filters """
+        if self._filters:
+            filters_list = self._filters
+            if isinstance(filters_list[-1], Enum):
+                filters_list = filters_list[:-1]
+            return ' '.join([fs.value if isinstance(fs, Enum) else fs[1] for fs in filters_list]).strip()
+        else:
+            return None
+
+    def get_order(self):
+        order_clauses = [filter_attr[0] for filter_attr in self._filters if isinstance(filter_attr, tuple)]
+        if self._order_by:
+            return ','.join(order_clauses + self._order_by)
+        else:
+            return None
 
     @property
     def localtz(self):
@@ -220,12 +249,14 @@ class Query:
         return self._localtz
 
     def _get_mapping(self, attribute):
-        mapping = self._mapping.get(attribute)
-        if mapping:
-            attribute = '/'.join([self.protocol.convert_case(step) for step in mapping.split('/')])
-        else:
-            attribute = self.protocol.convert_case(attribute)
-        return attribute
+        if attribute:
+            mapping = self._mapping.get(attribute)
+            if mapping:
+                attribute = '/'.join([self.protocol.convert_case(step) for step in mapping.split('/')])
+            else:
+                attribute = self.protocol.convert_case(attribute)
+            return attribute
+        return None
 
     def new(self, attribute, operation=ChainOperator.AND):
         if isinstance(operation, str):
@@ -237,6 +268,7 @@ class Query:
 
     def clear(self):
         self._filters = []
+        self._order_by = []
         self.new(None)
         return self
 
@@ -256,7 +288,7 @@ class Query:
 
     def _add_filter(self, filter_str):
         if self._attribute:
-            self._filters.append(filter_str)
+            self._filters.append((self._attribute, filter_str))
             self._filters.append(self._chain)
         else:
             raise ValueError('Attribute property needed. call on_attribute(attribute) or new(attribute)')
@@ -272,7 +304,8 @@ class Query:
                     word = self.localtz.localize(word)  # localize datetime into local tz
                     word = word.astimezone(pytz.utc)  # transform local datetime to utc
             word = "'{}'".format(word.isoformat())  # convert datetime utc to isoformat
-
+        elif isinstance(word, bool):
+            word = str(word).lower()
         return word
 
     def logical_operator(self, operation, word):
@@ -313,3 +346,12 @@ class Query:
 
     def endswith(self, word):
         return self.function('endswith', word)
+
+    def order_by(self, attribute=None, *, ascending=True):
+        """ applies a order_by clause"""
+        attribute = self._get_mapping(attribute) or self._attribute
+        if attribute:
+            self._order_by.append('{} {}'.format(attribute, '' if ascending else 'desc').strip())
+        else:
+            raise ValueError('Attribute property needed. call on_attribute(attribute) or new(attribute)')
+        return self

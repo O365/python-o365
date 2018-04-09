@@ -1,0 +1,286 @@
+import logging
+import base64
+from pathlib import Path
+
+from O365.utils.utils import ApiComponent
+
+
+log = logging.getLogger(__name__)
+
+
+class AttachableMixin:
+    """
+    Defines the functionality for an object to be attachable.
+    Any object that inherits from this class will be attachable (if the underlying api allows that)
+    """
+
+    def __init__(self, attachment_name_property=None, attachment_type=None):
+        self.__attachment_name = None
+        self.__attachment_name_property = attachment_name_property
+        self.__attachment_type = self._gk(attachment_type)
+
+    @property
+    def attachment_name(self):
+        if self.__attachment_name is not None:
+            return self.__attachment_name
+        if self.__attachment_name_property:
+            return getattr(self, self.__attachment_name_property, '')
+        else:
+            # property order resolution:
+            # 1) try property 'subject'
+            # 2) try property 'name'
+            try:
+                attachment_name = getattr(self, 'subject')
+            except AttributeError:
+                attachment_name = getattr(self, 'name', '')
+            return attachment_name
+
+    @attachment_name.setter
+    def attachment_name(self, value):
+        self.__attachment_name = value
+
+    @property
+    def attachment_type(self):
+        return self.__attachment_type
+
+    def to_api_data(self):
+        raise NotImplementedError()
+
+
+class Attachment(ApiComponent):
+    """ Attachment class is the base object for dealing with attachments """
+
+    _endpoints = {'attach': None}
+
+    def __init__(self, attachment=None, *, parent=None, **kwargs):
+        """
+        Creates a new attachment class, optionally from existing cloud data.
+
+        :param attachment: attachment data (dict = cloud data, other = user data)
+        :param parent: the parent Attachments
+        :param kwargs: extra options:
+            - 'protocol' when using attachment standalone
+            - 'main_resource' when using attachment standalone and is not the default_resource of protocol
+        """
+        kwargs.setdefault('protocol', getattr(parent, 'protocol', None))
+        kwargs.setdefault('main_resource', getattr(parent, 'main_resource', None))
+        super().__init__(**kwargs)
+
+        self.attachment_type = 'file'
+        self.attachment_id = None
+        self.attachment = None
+        self.name = None
+        self.content = None
+        self.on_disk = False
+
+        if attachment:
+            if isinstance(attachment, dict):
+                if self._cloud_data_key in attachment:
+                    # data from the cloud
+                    attachment = attachment.get(self._cloud_data_key)
+                    self.attachment_id = attachment.get(self._cc('id'), None)
+                    self.name = attachment.get(self._cc('name'), None)
+                    self.content = attachment.get(self._cc('contentBytes'), None)
+                    self.attachment_type = 'item' if 'item' in attachment.get('@odata.type', '').lower() else 'file'
+                    self.on_disk = False
+                else:
+                    file_path = attachment.get('path', attachment.get('name'))
+                    if file_path is None:
+                        raise ValueError('Must provide a valid "path" or "name" for the attachment')
+                    self.content = attachment.get('content')
+                    self.on_disk = attachment.get('on_disk')
+                    self.attachment_id = attachment.get('attachment_id')
+                    self.attachment = Path(file_path) if self.on_disk else None
+                    self.name = self.attachment.name if self.on_disk else attachment.get('name')
+            elif isinstance(attachment, str):
+                self.attachment = Path(attachment)
+                self.name = self.attachment.name
+            elif isinstance(attachment, (tuple, list)):
+                file_path, custom_name = attachment
+                self.attachment = Path(file_path)
+                self.name = custom_name
+            elif isinstance(attachment, AttachableMixin):
+                # Object that can be attached (Message for example)
+                self.attachment_type = 'item'
+                self.attachment = attachment
+                self.name = attachment.attachment_name
+                self.content = attachment.to_api_data()
+                self.content['@odata.type'] = attachment.attachment_type
+
+            if self.content is None and self.attachment:
+                with self.attachment.open('rb') as file:
+                    self.content = base64.b64encode(file.read()).decode('utf-8')
+                self.on_disk = True
+
+    def to_api_data(self):
+        data = {'@odata.type': self._gk('{}_attachment_type'.format(self.attachment_type)), self._cc('name'): self.name}
+
+        if self.attachment_type == 'file':
+            data[self._cc('contentBytes')] = self.content
+        else:
+            data[self._cc('item')] = self.content
+
+        return data
+
+    def save(self, location=None, custom_name=None):
+        """  Save the attachment locally to disk.
+        :param location: path string to where the file is to be saved.
+        :param custom_name: a custom name to be saved as
+        """
+        if not self.content:
+            return False
+
+        location = Path(location or '')
+        if not location.exists():
+            log.debug('the location provided does not exist')
+            return False
+
+        name = custom_name or self.name
+        name = name.replace('/', '-').replace('\\', '')
+        try:
+            path = location / name
+            with path.open('wb') as file:
+                file.write(base64.b64decode(self.content))
+            self.attachment = path
+            self.on_disk = True
+            log.debug('file saved locally.')
+        except Exception as e:
+            log.error('file failed to be saved: %s', str(e))
+            return False
+        return True
+
+    def attach(self, api_object, on_cloud=False):
+        """ Attach this attachment to an existing api_object """
+
+        # api_object must exist and if implements attachments then we can attach to it.
+        if api_object and getattr(api_object, 'attachments', None):
+            if on_cloud:
+                if not api_object.object_id:
+                    raise RuntimeError('A valid message id is needed in order to attach a file')
+                # message builds its own url using its resource and main configuration
+                url = api_object.build_url(self._endpoints.get('attach').format(id=api_object.message_id))
+                try:
+                    response = api_object.con.post(url, data=self.to_api_data())
+                except Exception as e:
+                    log.error('Error attaching file to message')
+                    return False
+
+                log.debug('attached file to message')
+                return response.status_code == 201
+            else:
+                if self.attachment_type == 'file':
+                    api_object.attachments.add([{
+                        'attachment_id': self.attachment_id,  # TODO: copy attachment id? or set to None?
+                        'path': str(self.attachment) if self.attachment else None,
+                        'name': self.name,
+                        'content': self.content,
+                        'on_disk': self.on_disk
+                    }])
+                else:
+                    raise RuntimeError('Only file attachments can be attached')
+
+    def __str__(self):
+        return self.name
+
+    def __repr__(self):
+        return self.__str__()
+
+
+class Attachments(ApiComponent):
+    """ A Collection of Attachments """
+
+    _endpoints = {
+        'attachments': '/messages/{id}/attachments',
+        'attachment': '/messages/{id}/attachments/{ida}'
+    }
+    _attachment_constructor = Attachment
+
+    def __init__(self, parent, attachments=None):
+        """ Attachments must be a list of path strings or dictionary elements """
+        super().__init__(protocol=parent.protocol, main_resource=parent.main_resource)
+        self.__parent = parent
+        self.__attachments = []
+        if attachments:
+            self.add(attachments)
+
+    def __iter__(self):
+        return iter(self.__attachments)
+
+    def __getitem__(self, key):
+        return self.__attachments[key]
+
+    def __contains__(self, item):
+        return item in {attachment.name for attachment in self.__attachments}
+
+    def __len__(self):
+        return len(self.__attachments)
+
+    def __str__(self):
+        attachments = len(self.__attachments)
+        parent_has_attachments = getattr(self.__parent, 'has_attachments', False)
+        if parent_has_attachments and attachments == 0:
+            return 'Number of Attachments: unknown'
+        else:
+            return 'Number of Attachments: {}'.format(attachments)
+
+    def to_api_data(self):
+        return [attachment.to_api_data() for attachment in self.__attachments]
+
+    def clear(self):
+        self.__attachments = []
+        if getattr(self.__parent, 'has_attachments', None) is not None:
+            setattr(self.__parent, 'has_attachments', False)
+
+    def add(self, attachments):
+        """ Attachments must be a list of path strings or dictionary elements """
+
+        if attachments:
+            if isinstance(attachments, (list, tuple)):
+                # User provided attachments
+                attachments_temp = [self._attachment_constructor(attachment, parent=self)
+                                    for attachment in attachments]
+            elif isinstance(attachments, dict) and self._cloud_data_key in attachments:
+                # Cloud downloaded attachments
+                attachments_temp = [self._attachment_constructor({self._cloud_data_key: attachment}, parent=self)
+                                    for attachment in attachments.get(self._cloud_data_key, [])]
+            else:
+                raise ValueError('Attachments must be a list or tuple')
+
+            self.__attachments.extend(attachments_temp)
+            try:
+                if getattr(self.__parent, 'has_attachments'):
+                    return
+            except AttributeError:
+                pass
+            finally:
+                self.__parent.has_attachments = True
+
+    def download_attachments(self):
+        """ Downloads this message attachments into memory. Need a call to 'attachment.save' to save them on disk. """
+        if not self.__parent.has_attachments:
+            log.debug('Parent {} has no attachments, skipping out early.'.format(self.__parent.__class__.__name__))
+            return False
+
+        if not self.__parent.object_id:
+            raise RuntimeError('Attempt to download attachments of an unsaved {}'.format(self.__parent.__class__.__name__))
+
+        url = self.build_url(self._endpoints.get('attachments').format(id=self.__parent.object_id))
+
+        try:
+            response = self.__parent.con.get(url)
+        except Exception as e:
+            log.error('Error downloading attachments for message id: {}'.format(self.__parent.object_id))
+            return False
+
+        if response.status_code != 200:
+            return False
+        log.debug('successfully downloaded attachments for message id: {}'.format(self.__parent.object_id))
+
+        attachments = response.json().get('value', [])
+
+        # Everything received from the cloud must be passed with self._cloud_data_key
+        self.add({self._cloud_data_key: attachments})
+
+        # TODO: when it's a item attachment the attachment itself is not downloaded. We must download it...
+        # TODO: idea: retrieve the attachments ids' only with select and then download one by one.
+        return True

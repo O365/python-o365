@@ -6,7 +6,7 @@ import pytz
 from pathlib import Path
 from bs4 import BeautifulSoup as bs
 
-from O365.utils import WellKnowFolderNames, ApiComponent
+from O365.utils import WellKnowFolderNames, ApiComponent, Attachments, Attachment, AttachableMixin
 
 log = logging.getLogger(__name__)
 
@@ -102,228 +102,18 @@ class Recipients:
             return None
 
 
-class Attachment(ApiComponent):
-    """
-    Attachment class is the object for dealing with attachments in your messages. To add one to
-    a message, simply append it to the message's attachment list (message.attachments).
+class MessageAttachment(Attachment):
 
-    these are stored locally in base64 encoded strings. You can pass either a byte string or a
-    base64 encoded string tot he appropriate set function to bring your attachment into the
-    instance, which will of course need to happen before it could be mailed.
-    """
     _endpoints = {'attach': '/messages/{id}/attachments'}
 
-    def __init__(self, attachment=None, parent=None, protocol=None):
-        """
-        Creates a new attachment class, optionally from existing cloud data.
 
-        :param attachment: attachment data (dict = cloud data, other = user data)
-        :param parent: the parent Attachments
-        :param protocol: protocol when using attachment standalone
-        """
-        super().__init__(main_resource=getattr(parent, 'main_resource', None),
-                         protocol=protocol or getattr(parent, 'protocol', None))
-
-        self.attachment_type = 'file'
-        self.attachment_id = None
-        self.attachment = None
-        self.name = None
-        self.content = None
-        self.on_disk = False
-
-        if attachment:
-            if isinstance(attachment, dict):
-                if self._cloud_data_key in attachment:
-                    # data from the cloud
-                    attachment = attachment.get(self._cloud_data_key)
-                    self.attachment_id = attachment.get(self._cc('id'), None)
-                    self.name = attachment.get(self._cc('name'), None)
-                    self.content = attachment.get(self._cc('contentBytes'), None)
-                    self.on_disk = False
-                else:
-                    file_path = attachment.get('path', attachment.get('name'))
-                    if file_path is None:
-                        raise ValueError('Must provide a valid "path" or "name" for the attachment')
-                    self.content = attachment.get('content')
-                    self.on_disk = attachment.get('on_disk')
-                    self.attachment_id = attachment.get('attachment_id')
-                    self.attachment = Path(file_path) if self.on_disk else None
-                    self.name = self.attachment.name if self.on_disk else attachment.get('name')
-            elif isinstance(attachment, str):
-                self.attachment = Path(attachment)
-                self.name = self.attachment.name
-            elif isinstance(attachment, (tuple, list)):
-                file_path, custom_name = attachment
-                self.attachment = Path(file_path)
-                self.name = custom_name
-            elif isinstance(attachment, Message):
-                # attaching a message
-                self.attachment_type = 'item'
-                self.attachment = attachment
-                self.name = attachment.subject
-                self.content = attachment.to_api_data()
-                self.content['@odata.type'] = self._gk('message_type')
-
-            if self.content is None and self.attachment:
-                with self.attachment.open('rb') as file:
-                    self.content = base64.b64encode(file.read()).decode('utf-8')
-                self.on_disk = True
-
-    def to_api_data(self):
-        data = {'@odata.type': self._gk('{}_attachment_type'.format(self.attachment_type)), self._cc('name'): self.name}
-
-        if self.attachment_type == 'file':
-            data[self._cc('contentBytes')] = self.content
-        else:
-            data[self._cc('item')] = self.content
-
-        return data
-
-    def save(self, location=None, custom_name=None):
-        """  Save the attachment locally to disk.
-        :param location: path string to where the file is to be saved.
-        :param custom_name: a custom name to be saved as
-        """
-        if self.attachment_type != 'file':
-            return False
-
-        location = Path(location or '')
-        if not location.exists():
-            log.debug('the location provided does not exist')
-            return False
-        try:
-            path = location / (custom_name or self.name)
-            with path.open('wb') as file:
-                file.write(base64.b64decode(self.content))
-            self.attachment = path
-            self.on_disk = True
-            log.debug('file saved locally.')
-        except Exception as e:
-            log.debug('file failed to be saved: %s', str(e))
-            return False
-        return True
-
-    def attach(self, message, on_cloud=False):
-        """ Attach a file to an existing message """
-        if message:
-            if on_cloud:
-                if not message.message_id:
-                    raise RuntimeError('A valid message id is needed in order to attach a file')
-                # message builds its own url using its resource and main configuration
-                url = message.build_url(self._endpoints.get('attach').format(id=message.message_id))
-                try:
-                    response = message.con.post(url, data=self.to_api_data())
-                except Exception as e:
-                    log.error('Error attaching file to message')
-                    return False
-
-                log.debug('attached file to message')
-                return response.status_code == 201
-            else:
-                if self.attachment_type == 'file':
-                    message.attachments.add([{
-                        'attachment_id': self.attachment_id,  # TODO: copy attachment id? or set to None?
-                        'path': str(self.attachment) if self.attachment else None,
-                        'name': self.name,
-                        'content': self.content,
-                        'on_disk': self.on_disk
-                    }])
-                elif self.attachment_type == 'item':
-                    message.attachments.add([self.attachment])
-
-    def __str__(self):
-        return self.name
-
-    def __repr__(self):
-        return self.__str__()
-
-
-class Attachments(ApiComponent):
-    """ A Collection of Attachments """
+class MessageAttachments(Attachments):
 
     _endpoints = {'attachments': '/messages/{id}/attachments'}
-
-    def __init__(self, message, attachments=None):
-        """ Attachments must be a list of path strings or dictionary elements """
-        super().__init__(protocol=message.protocol, main_resource=message.main_resource)
-        self.message = message
-        self.attachments = []
-        if attachments:
-            self.add(attachments)
-
-    def __iter__(self):
-        return iter(self.attachments)
-
-    def __getitem__(self, key):
-        return self.attachments[key]
-
-    def __contains__(self, item):
-        return item in {attachment.name for attachment in self.attachments}
-
-    def __len__(self):
-        return len(self.attachments)
-
-    def __str__(self):
-        attachments = len(self.attachments)
-        if self.message.has_attachments and attachments == 0:
-            return 'Message Has Attachments: # Download attachments'
-        else:
-            return 'Message Attachments: {}'.format(attachments)
-
-    def to_api_data(self):
-        return [attachment.to_api_data() for attachment in self.attachments]
-
-    def clear(self):
-        self.attachments = []
-        self.message.has_attachments = False
-
-    def add(self, attachments):
-        """ Attachments must be a list of path strings or dictionary elements """
-
-        if attachments:
-            if isinstance(attachments, (list, tuple)):
-                # User provided attachments
-                attachments_temp = [Attachment(attachment, parent=self) for attachment in attachments]
-            elif isinstance(attachments, dict) and self._cloud_data_key in attachments:
-                # Cloud downloaded attachments
-                attachments_temp = [Attachment({self._cloud_data_key: attachment}, parent=self)
-                                    for attachment in attachments.get(self._cloud_data_key, [])]
-            else:
-                raise ValueError('Attachments must be a list or tuple')
-
-            self.attachments.extend(attachments_temp)
-            self.message.has_attachments = True
-
-    def download_attachments(self):
-        """ Downloads this message attachments into memory. Need a call to save to save them on disk. """
-        if not self.message.has_attachments:
-            log.debug('message has no attachments, skipping out early.')
-            return False
-
-        if not self.message.message_id:
-            raise RuntimeError('Attempt to download attachments of and unsaved message')
-
-        url = self.build_url(self._endpoints.get('attachments').format(id=self.message.message_id))
-
-        try:
-            response = self.message.con.get(url)
-        except Exception as e:
-            log.error('Error downloading attachments for message id: {}'.format(self.message.message_id))
-            return False
-
-        if response.status_code != 200:
-            return False
-        log.debug('successfully downloaded attachments for message id: {}'.format(self.message.message_id))
-
-        attachments = response.json().get('value', [])
-
-        # Everything received from the cloud must be passed with self._cloud_data_key
-        self.add({self._cloud_data_key: attachments})
-
-        return True
+    _attachment_constructor = MessageAttachment
 
 
-class MixinHandleRecipients:
+class HandleRecipientsMixin:
 
     def _recipients_from_cloud(self, recipients):
         """ Transform a recipient from cloud data to object data """
@@ -353,7 +143,7 @@ class MixinHandleRecipients:
         return data
 
 
-class Message(ApiComponent, MixinHandleRecipients):
+class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
     """ Management of the process of sending, receiving, reading, and editing emails. """
 
     _endpoints = {
@@ -383,14 +173,15 @@ class Message(ApiComponent, MixinHandleRecipients):
 
         # Choose the main_resource passed in kwargs over the parent main_resource
         main_resource = kwargs.pop('main_resource', None) or getattr(parent, 'main_resource', None) if parent else None
-        super().__init__(protocol=parent.protocol if parent else kwargs.get('protocol'), main_resource=main_resource)
+        super().__init__(protocol=parent.protocol if parent else kwargs.get('protocol'), main_resource=main_resource,
+                         attachment_name_property='subject', attachment_type='message_type')
 
         download_attachments = kwargs.get('download_attachments')
 
         cloud_data = kwargs.get(self._cloud_data_key, {})
         cc = self._cc  # alias to shorten the code
 
-        self.message_id = cloud_data.get(cc('id'), None)
+        self.object_id = cloud_data.get(cc('id'), None)
         self.created = cloud_data.get(cc('createdDateTime'), None)
         self.received = cloud_data.get(cc('receivedDateTime'), None)
         self.sent = cloud_data.get(cc('sentDateTime'), None)
@@ -400,7 +191,7 @@ class Message(ApiComponent, MixinHandleRecipients):
         self.received = parse(self.received).astimezone(local_tz) if self.received else None
         self.sent = parse(self.sent).astimezone(local_tz) if self.sent else None
 
-        self.__attachments = Attachments(message=self, attachments=[])
+        self.__attachments = MessageAttachments(parent=self, attachments=[])
         self.has_attachments = cloud_data.get(cc('hasAttachments'), 0)
         if self.has_attachments and download_attachments:
             self.attachments.download_attachments()
@@ -492,10 +283,10 @@ class Message(ApiComponent, MixinHandleRecipients):
             cc('attachments'): self.attachments.to_api_data()
         }
 
-        if self.message_id and not self.is_draft:
+        if self.object_id and not self.is_draft:
             # return the whole signature of this message
 
-            message[cc('id')] = self.message_id
+            message[cc('id')] = self.object_id
             message[cc('createdDateTime')] = self.created.astimezone(pytz.utc).isoformat()
             message[cc('receivedDateTime')] = self.received.astimezone(pytz.utc).isoformat()
             message[cc('sentDateTime')] = self.sent.astimezone(pytz.utc).isoformat()
@@ -516,11 +307,11 @@ class Message(ApiComponent, MixinHandleRecipients):
     def send(self, save_to_sent_folder=True):
         """ Sends this message. """
 
-        if self.message_id and not self.is_draft:
+        if self.object_id and not self.is_draft:
             return RuntimeError('Not possible to send a message that is not new or a draft. Use Reply or Forward instead.')
 
-        if self.is_draft and self.message_id:
-            url = self.build_url(self._endpoints.get('send_draft').format(id=self.message_id))
+        if self.is_draft and self.object_id:
+            url = self.build_url(self._endpoints.get('send_draft').format(id=self.object_id))
             data = None
         else:
             url = self.build_url(self._endpoints.get('send_mail'))
@@ -538,7 +329,7 @@ class Message(ApiComponent, MixinHandleRecipients):
             log.debug('Message failed to be sent. Reason: {}'.format(response.reason))
             return False
 
-        self.message_id = 'sent_message' if not self.message_id else self.message_id
+        self.object_id = 'sent_message' if not self.object_id else self.object_id
         self.is_draft = False
 
         return True
@@ -548,22 +339,22 @@ class Message(ApiComponent, MixinHandleRecipients):
         Creates a new message that is a reply to this message.
         :param to_all: replies to all the recipients instead to just the sender
         """
-        if not self.message_id or self.is_draft:
+        if not self.object_id or self.is_draft:
             raise RuntimeError("Can't reply to this message")
 
         if to_all:
-            url = self.build_url(self._endpoints.get('create_reply_all').format(id=self.message_id))
+            url = self.build_url(self._endpoints.get('create_reply_all').format(id=self.object_id))
         else:
-            url = self.build_url(self._endpoints.get('create_reply').format(id=self.message_id))
+            url = self.build_url(self._endpoints.get('create_reply').format(id=self.object_id))
 
         try:
             response = self.con.post(url)
         except Exception as e:
-            log.error('message (id: {}) could not be replied. Error: {}'.format(self.message_id, str(e)))
+            log.error('message (id: {}) could not be replied. Error: {}'.format(self.object_id, str(e)))
             return None
 
         if response.status_code != 201:
-            log.debug('message (id: {}) could not be replied. Reason: {}'.format(self.message_id, response.reason))
+            log.debug('message (id: {}) could not be replied. Reason: {}'.format(self.object_id, response.reason))
             return None
 
         message = response.json()
@@ -575,19 +366,19 @@ class Message(ApiComponent, MixinHandleRecipients):
         """
         Creates a new message that is a forward of this message.
         """
-        if not self.message_id or self.is_draft:
+        if not self.object_id or self.is_draft:
             raise RuntimeError("Can't forward this message")
 
-        url = self.build_url(self._endpoints.get('forward_message').format(id=self.message_id))
+        url = self.build_url(self._endpoints.get('forward_message').format(id=self.object_id))
 
         try:
             response = self.con.post(url)
         except Exception as e:
-            log.error('message (id: {}) could not be forward. Error: {}'.format(self.message_id, str(e)))
+            log.error('message (id: {}) could not be forward. Error: {}'.format(self.object_id, str(e)))
             return None
 
         if response.status_code != 201:
-            log.debug('message (id: {}) could not be forward. Reason: {}'.format(self.message_id, response.reason))
+            log.debug('message (id: {}) could not be forward. Reason: {}'.format(self.object_id, response.reason))
             return None
 
         message = response.json()
@@ -597,39 +388,39 @@ class Message(ApiComponent, MixinHandleRecipients):
 
     def delete(self):
         """ Deletes a stored message """
-        if self.message_id is None:
+        if self.object_id is None:
             raise RuntimeError('Attempting to delete an unsaved Message')
 
-        url = self.build_url(self._endpoints.get('get_message').format(id=self.message_id))
+        url = self.build_url(self._endpoints.get('get_message').format(id=self.object_id))
 
         try:
             response = self.con.delete(url)
         except Exception as e:
-            log.error('Message (id: {}) could not be deleted. Error: {}'.format(self.message_id, str(e)))
+            log.error('Message (id: {}) could not be deleted. Error: {}'.format(self.object_id, str(e)))
             return False
 
         if response.status_code != 204:
-            log.debug('Message (id: {}) could not be deleted. Reason: {}'.format(self.message_id, response.reason))
+            log.debug('Message (id: {}) could not be deleted. Reason: {}'.format(self.object_id, response.reason))
             return False
 
         return True
 
     def mark_as_read(self):
         """ Marks this message as read in the cloud."""
-        if self.message_id is None or self.is_draft:
+        if self.object_id is None or self.is_draft:
             raise RuntimeError('Attempting to mark as read an unsaved Message')
 
         data = {self._cc('isRead'): True}
 
-        url = self.build_url(self._endpoints.get('get_message').format(id=self.message_id))
+        url = self.build_url(self._endpoints.get('get_message').format(id=self.object_id))
         try:
             response = self.con.patch(url, data=data)
         except Exception as e:
-            log.error('Message (id: {}) could not be marked as read. Error: {}'.format(self.message_id, str(e)))
+            log.error('Message (id: {}) could not be marked as read. Error: {}'.format(self.object_id, str(e)))
             return False
 
         if response.status_code != 200:
-            log.debug('Message (id: {}) could not be marked as read. Reason: {}'.format(self.message_id, response.reason))
+            log.debug('Message (id: {}) could not be marked as read. Reason: {}'.format(self.object_id, response.reason))
             return False
 
         self.is_read = True
@@ -643,10 +434,10 @@ class Message(ApiComponent, MixinHandleRecipients):
         :param folder: Folder object or Folder id or Well-known name to move this message to
         :returns: True on success
         """
-        if self.message_id is None:
+        if self.object_id is None:
             raise RuntimeError('Attempting to move an unsaved Message')
 
-        url = self.build_url(self._endpoints.get('move_message').format(id=self.message_id))
+        url = self.build_url(self._endpoints.get('move_message').format(id=self.object_id))
 
         if isinstance(folder, str):
             folder_id = folder
@@ -660,11 +451,11 @@ class Message(ApiComponent, MixinHandleRecipients):
         try:
             response = self.con.post(url, data=data)
         except Exception as e:
-            log.error('Message (id: {}) could not be moved to folder id: {}. Error: {}'.format(self.message_id, folder_id, str(e)))
+            log.error('Message (id: {}) could not be moved to folder id: {}. Error: {}'.format(self.object_id, folder_id, str(e)))
             return False
 
         if response.status_code != 201:
-            log.debug('Message (id: {}) could not be moved to folder id: {}. Reason: {}'.format(self.message_id, folder_id, response.reason))
+            log.debug('Message (id: {}) could not be moved to folder id: {}. Reason: {}'.format(self.object_id, folder_id, response.reason))
             return False
 
         self.folder_id = folder_id
@@ -678,10 +469,10 @@ class Message(ApiComponent, MixinHandleRecipients):
         :param folder: Folder object or Folder id or Well-known name to move this message to
         :returns: the copied message
         """
-        if self.message_id is None:
+        if self.object_id is None:
             raise RuntimeError('Attempting to move an unsaved Message')
 
-        url = self.build_url(self._endpoints.get('copy_message').format(id=self.message_id))
+        url = self.build_url(self._endpoints.get('copy_message').format(id=self.object_id))
 
         if isinstance(folder, str):
             folder_id = folder
@@ -695,11 +486,11 @@ class Message(ApiComponent, MixinHandleRecipients):
         try:
             response = self.con.post(url, data=data)
         except Exception as e:
-            log.error('Message (id: {}) could not be copied to folder id: {}. Error: {}'.format(self.message_id, folder_id, str(e)))
+            log.error('Message (id: {}) could not be copied to folder id: {}. Error: {}'.format(self.object_id, folder_id, str(e)))
             return None
 
         if response.status_code != 201:
-            log.debug('Message (id: {}) could not be copied to folder id: {}. Error: {}'.format(self.message_id, folder_id, response.reason))
+            log.debug('Message (id: {}) could not be copied to folder id: {}. Error: {}'.format(self.object_id, folder_id, response.reason))
             return None
 
         message = response.json()
@@ -712,12 +503,12 @@ class Message(ApiComponent, MixinHandleRecipients):
         if not isinstance(categories, (list, tuple)):
             raise ValueError('Categories must be a list or tuple')
 
-        if self.message_id is None:
+        if self.object_id is None:
             raise RuntimeError('Attempting to update an unsaved Message')
 
         data = {self._cc('categories'): categories}
 
-        url = self.build_url(self._endpoints.get('get_message').format(id=self.message_id))
+        url = self.build_url(self._endpoints.get('get_message').format(id=self.object_id))
         try:
             response = self.con.patch(url, data=data)
         except Exception as e:
@@ -736,7 +527,7 @@ class Message(ApiComponent, MixinHandleRecipients):
 
         if not self.is_draft:
             raise RuntimeError('Only draft messages can be saved as drafts')
-        if self.message_id:
+        if self.object_id:
             raise RuntimeError('This message has been already saved to the cloud')
 
         data = self.to_api_data()
@@ -760,7 +551,7 @@ class Message(ApiComponent, MixinHandleRecipients):
             return False
 
         message = response.json()
-        self.message_id = message.get(self._cc('id'), None)
+        self.object_id = message.get(self._cc('id'), None)
         self.folder_id = message.get(self._cc('parentFolderId'), None)
 
         return True

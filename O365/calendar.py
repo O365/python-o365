@@ -1,10 +1,18 @@
 import logging
 from enum import Enum
+from dateutil.parser import parse
+from tzlocal import get_localzone
+import pytz
 
-from O365.message import Recipient, MixinHandleRecipients
-from O365.utils import Pagination, NEXT_LINK_KEYWORD, ApiComponent, RecipientType
+from O365.utils.utils import Pagination, NEXT_LINK_KEYWORD, ApiComponent
 
 log = logging.getLogger(__name__)
+
+
+class AttendeeType(Enum):
+    Required = 'required'
+    Optional = 'optional'
+    Resource = 'resource'
 
 
 class CalendarColors(Enum):
@@ -24,62 +32,102 @@ class CalendarColors(Enum):
 class Attendee:
     """ A Event attendee """
 
-    def __init__(self, address, name=None, status=None, attendee_type=None):
+    def __init__(self, address, *, name=None, attendee_type=None, status=None):
         self.address = address
         self.name = name
         self.response_status = status[0] if status else None
         self.response_datetime = status[1] if status else None
+        self.__attendee_type = AttendeeType.Required
         self.attendee_type = attendee_type
+
+    @property
+    def attendee_type(self):
+        return self.__attendee_type
+
+    @attendee_type.setter
+    def attendee_type(self, value):
+        self.__attendee_type = AttendeeType(value)
 
     def _to_api_data(self):
         pass
 
 
-class Attendees:
+class Attendees(ApiComponent):
     """ A Collection of Attendees """
 
     def __init__(self, event, attendees=None):
-        self.event = event  # check if reference to event is needed
-        self.attendees = []
+        super().__init__(protocol=event.protocol, main_resource=event.main_resource)
+        self._event = event
+        self.__attendees = []
         if attendees:
             self.add(attendees)
 
     def __iter__(self):
-        return iter(self.attendees)
+        return iter(self.__attendees)
 
     def __getitem__(self, key):
-        return self.attendees[key]
+        return self.__attendees[key]
 
     def __contains__(self, item):
-        return item in {attendee.email for attendee in self.attendees}
+        return item in {attendee.email for attendee in self.__attendees}
 
     def __len__(self):
-        return len(self.attendees)
+        return len(self.__attendees)
 
     def __str__(self):
-        return 'Attendees Count: {}'.format(len(self.attendees))
+        return 'Attendees Count: {}'.format(len(self.__attendees))
 
     def clear(self):
-        self.attendees = []
+        self.__attendees = []
 
     def add(self, attendees):
         """ attendees must be a list of path strings or dictionary elements """
 
         if attendees:
             if isinstance(attendees, str):
-                self.attendees.append(Attendee(address=attendees))
+                self.__attendees.append(Attendee(address=attendees))
             elif isinstance(attendees, Attendee):
-                self.attendees.append(attendees)
+                self.__attendees.append(attendees)
             elif isinstance(attendees, tuple):
                 name, address = attendees
                 if address:
-                    self.attendees.append(Attendee(address=address, name=name))
+                    self.__attendees.append(Attendee(address=address, name=name))
             elif isinstance(attendees, list):
-                for recipient in attendees:
-                    self.add(recipient)
+                for attendee in attendees:
+                    self.add(attendee)
+            elif isinstance(attendees, dict) and self._cloud_data_key in attendees:
+                attendees = attendees.get(self._cloud_data_key)
+                email = attendees.get(self._cc('emailAddress'), {})
+                address = email.get(self._cc('address'), None)
+                if address:
+                    name = email.get(self._cc('name'), None)
+                    status = attendees.get(self._cc('status'), {})
+                    response_time = status.get(self._cc('time'), None)
+                    response_status = status.get(self._cc('response'), None)
+                    if response_time:
+                        local_tz = get_localzone()  # calls to get_localzone() are cached so no problem here
+                        response_time = parse(response_time).astimezone(local_tz)
+
+                    attendee_type = attendees.get(self._cc('type'), 'required')  # default value
+                    self.__attendees.append(Attendee(address=address, name=name, attendee_type=attendee_type,
+                                                     status=(response_status, response_time)))
             else:
-                raise ValueError('Recipients must be an address string, an'
+                raise ValueError('Attendees must be an address string, an'
                                  ' Attendee instance, a (name, address) tuple or a list')
+
+    def to_api_data(self):
+        data = []
+        for attendee in self.__attendees:
+            if attendee.address:
+                att_data = {
+                    self._cc('emailAddress'): {
+                        self._cc('address'): attendee.address,
+                        self._cc('name'): attendee.name
+                    },
+                    self._cc('type'): attendee.attendee_type.value
+                }
+                data.append(att_data)
+        return data
 
 
 class Event(ApiComponent):
@@ -87,7 +135,6 @@ class Event(ApiComponent):
 
     _endpoints = {
         'calendar': '/calendars/{id}',
-        # 'child_contact': '/contactFolders/{id}/contacts'
     }
 
     def __init__(self, *, parent=None, con=None, **kwargs):
@@ -101,20 +148,53 @@ class Event(ApiComponent):
         cloud_data = kwargs.get(self._cloud_data_key, {})
 
         cc = self._cc  # alias
-        self.event_id = cloud_data.get(cc('id'), None)
+        self.object_id = cloud_data.get(cc('id'), None)
         self.subject = cloud_data.get(cc('subject'), '')
         body = cloud_data.get(cc('body'), {})
         self.body = body.get(cc('content'), '')
         self.body_type = body.get(cc('contentType'), 'HTML')  # default to HTML for new messages
 
+        self.__attendees = Attendees(event=self, attendees=cloud_data.get(cc('attendees'), []))
+        self.__categories = cloud_data.get(cc('categories'), [])
 
-        self.owner_name = owner.get(self._cc('name'), '')
-        self.owner_email = owner.get(self._cc('address'), '')
-        self.color = cloud_data.get(self._cc('color'), -1)
-        self.color = CalendarColors(self.color)
-        self.can_edit = cloud_data.get(self._cc('canEdit'), False)
-        self.can_share = cloud_data.get(self._cc('canShare'), False)
-        self.can_view_private_items = cloud_data.get(self._cc('canViewPrivateItems'), False)
+        self.created = cloud_data.get(cc('createdDateTime'), None)
+        self.modified = cloud_data.get(cc('lastModifiedDateTime'), None)
+
+        local_tz = get_localzone()
+        self.created = parse(self.created).astimezone(local_tz) if self.created else None
+        self.modified = parse(self.modified).astimezone(local_tz) if self.modified else None
+
+        start = cloud_data.get(cc('start'), {})
+        timezone = pytz.timezone(start.get(cc('timeZone'), get_localzone()))
+        start = start.get(cc('dateTime'), None)
+        self.start = parse(start).astimezone(timezone) if start else None
+
+        end = cloud_data.get(cc('end'), {})
+        timezone = pytz.timezone(end.get(cc('timeZone'), get_localzone()))
+        end = end.get(cc('dateTime'), None)
+        self.end = parse(end).astimezone(timezone) if end else None
+
+        self.has_attachments = cloud_data.get(cc('hasAttachments'), False)
+
+    @property
+    def attendees(self):
+        """ Just to avoid api misuse by assigning to 'attendees' """
+        return self.__attendees
+
+    @property
+    def categories(self):
+        return self.__categories
+
+    @categories.setter
+    def categories(self, value):
+        if isinstance(value, list):
+            self.__categories = value
+        elif isinstance(value, str):
+            self.__categories = [value]
+        elif isinstance(value, tuple):
+            self.__categories = list(value)
+        else:
+            raise ValueError('categories must be a list')
 
 
 class Calendar(ApiComponent):
@@ -141,8 +221,7 @@ class Calendar(ApiComponent):
         owner = cloud_data.get(self._cc('owner'), {})
         self.owner_name = owner.get(self._cc('name'), '')
         self.owner_email = owner.get(self._cc('address'), '')
-        self.color = cloud_data.get(self._cc('color'), -1)
-        self.color = CalendarColors(self.color)
+        self.color = CalendarColors(cloud_data.get(self._cc('color'), -1))
         self.can_edit = cloud_data.get(self._cc('canEdit'), False)
         self.can_share = cloud_data.get(self._cc('canShare'), False)
         self.can_view_private_items = cloud_data.get(self._cc('canViewPrivateItems'), False)

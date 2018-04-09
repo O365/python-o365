@@ -29,8 +29,14 @@ RETRIES_BACKOFF_FACTOR = 0.5
 class BaseApiException(HTTPError):
 
     def __init__(self, response):
-        error = response.json().get('error', {})
-        super().__init__('{}: {} - {}'.format(response.status_code, error.get('code'), error.get('message')),
+        try:
+            error = response.json()
+        except ValueError:
+            error = {}
+        error = error.get('error', {})
+        super().__init__('{}: {} - {}'.format(response.status_code,
+                                              error.get('code', response.reason),
+                                              error.get('message', '')),
                          response=response)
 
 

@@ -7,6 +7,7 @@ from O365.calendar import Schedule
 
 
 class Account(object):
+    """ Class helper to integrate all components into a single object """
 
     def __init__(self, credentials, *, auth_method=AUTH_METHOD.OAUTH, scopes=None,
                  protocol=None, main_resource=ME_RESOURCE, **kwargs):

@@ -1,16 +1,23 @@
 import logging
 from dateutil.parser import parse
 from tzlocal import get_localzone
+from enum import Enum
 
-from O365.message import MixinHandleRecipients, Recipients, Message
-from O365.utils import Pagination, NEXT_LINK_KEYWORD, ApiComponent, RecipientType
+from O365.message import HandleRecipientsMixin, Recipients, Message
+from O365.utils import Pagination, NEXT_LINK_KEYWORD, ApiComponent, AttachableMixin
 
 GAL_MAIN_RESOURCE = 'users'
 
 log = logging.getLogger(__name__)
 
 
-class Contact(ApiComponent, MixinHandleRecipients):
+class RecipientType(Enum):
+    TO = 'to'
+    CC = 'cc'
+    BCC = 'bcc'
+
+
+class Contact(ApiComponent, AttachableMixin, HandleRecipientsMixin):
     """ Contact manages lists of events on an associated contact on office365. """
 
     _mapping = {'display_name': 'displayName', 'name': 'givenName', 'surname': 'surname', 'title': 'title', 'job_title': 'jobTitle',
@@ -37,7 +44,7 @@ class Contact(ApiComponent, MixinHandleRecipients):
         cloud_data = kwargs.get(self._cloud_data_key, {})
         cc = self._cc  # alias to shorten the code
 
-        self.contact_id = cloud_data.get(cc('id'), None)
+        self.object_id = cloud_data.get(cc('id'), None)
         self.created = cloud_data.get(cc('createdDateTime'), None)
         self.modified = cloud_data.get(cc('lastModifiedDateTime'), None)
 
@@ -121,15 +128,15 @@ class Contact(ApiComponent, MixinHandleRecipients):
     def delete(self):
         """ Deletes this contact """
 
-        if not self.contact_id:
+        if not self.object_id:
             raise RuntimeError('Attemping to delete an usaved Contact')
 
-        url = self.build_url(self._endpoints.get('contact').format(id=self.contact_id))
+        url = self.build_url(self._endpoints.get('contact').format(id=self.object_id))
 
         try:
             response = self.con.delete(url)
         except Exception as e:
-            log.error('Error while deleting Contact id: {}'.format(self.contact_id))
+            log.error('Error while deleting Contact id: {}'.format(self.object_id))
             return False
         log.debug('response from delete attempt: {0}'.format(str(response)))
 
@@ -140,7 +147,7 @@ class Contact(ApiComponent, MixinHandleRecipients):
          :param fields: a dict of fields to update (field: value).
          """
 
-        if not self.contact_id:
+        if not self.object_id:
             raise RuntimeError('Attemping to update an usaved Contact')
 
         if fields is None or not isinstance(fields, (list, tuple)):
@@ -157,12 +164,12 @@ class Contact(ApiComponent, MixinHandleRecipients):
             else:
                 data[self._cc(mapping)] = update_value
 
-        url = self.build_url(self._endpoints.get('contact'.format(id=self.contact_id)))
+        url = self.build_url(self._endpoints.get('contact'.format(id=self.object_id)))
         try:
             response = self.con.patch(url, data=data)
             log.debug('sent update request')
         except Exception as e:
-            log.error('Error while updating Contact id: {id}. Error: {error}'.format(id=self.contact_id, error=str(e)))
+            log.error('Error while updating Contact id: {id}. Error: {error}'.format(id=self.object_id, error=str(e)))
             return False
 
         log.debug('Response to contact update: {0}'.format(str(response)))
@@ -171,7 +178,7 @@ class Contact(ApiComponent, MixinHandleRecipients):
 
     def save(self):
         """ Saves this Contact to the cloud """
-        if self.contact_id:
+        if self.object_id:
             raise RuntimeError("Can't save an existing Contact. Use Update instead. ")
 
         if self.folder_id:
@@ -191,7 +198,7 @@ class Contact(ApiComponent, MixinHandleRecipients):
 
         contact = response.json()
 
-        self.contact_id = contact.get(self._cc('id'), None)
+        self.object_id = contact.get(self._cc('id'), None)
         self.created = contact.get(self._cc('createdDateTime'), None)
         self.modified = contact.get(self._cc('lastModifiedDateTime'), None)
 
