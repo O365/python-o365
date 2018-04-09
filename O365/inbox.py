@@ -28,8 +28,10 @@ class Inbox( object ):
 		log.debug('creating inbox for the email %s',auth[0])
 		self.auth = auth
 		self.messages = []
+		self.errors = ''
 
 		self.filters = ''
+		self.order_by = ''
 		self.verify = verify
 		
 		if getNow:
@@ -53,7 +55,14 @@ class Inbox( object ):
 		'''
 
 		log.debug('fetching messages.')			
-		response = requests.get(self.inbox_url,auth=self.auth,params={'$filter':self.filters, '$top':number},verify=self.verify)
+		response = requests.get(self.inbox_url,auth=self.auth,params={'$orderby':self.order_by, '$filter':self.filters, '$top':number},verify=self.verify)
+		if response.status_code in [400, 500]:
+			self.errors = response.text
+			return False
+		elif response.status_code in [401]:
+			self.errors = response.reason
+			return False
+
 		log.info('Response from O365: %s', str(response))
 
 		#check that there are messages
@@ -80,6 +89,19 @@ class Inbox( object ):
 				log.info('failed to append message: %',str(e))
 
 		log.debug('all messages retrieved and put in to the list.')
+		return True
+
+	def getErrors(self):
+		return self.errors
+
+	def getOrderBy(self):
+		return self.order_by
+
+	def setOrderBy(self, f_string):
+		'''
+		For example 'DateTimeReceived desc'
+		'''
+		self.order_by = f_string
 		return True
 
 	def getFilter(self):
