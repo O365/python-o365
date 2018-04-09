@@ -177,7 +177,7 @@ class Folder(ApiComponent):
 
     def get_folder(self, folder_id=None, folder_name=None):
         """
-        Returns a folder by it's id
+        Returns a folder by it's id or name
         :param folder_id: the folder_id to be retrieved. Can be any folder Id (child or not)
         :param folder_name: the folder name to be retrieved. Must be a child of this folder.
         """
@@ -202,7 +202,7 @@ class Folder(ApiComponent):
         try:
             response = self.con.get(url, params=params)
         except Exception as e:
-            log.error('Error getting folder {}. Error: {}'.format(folder_id, str(e)))
+            log.error('Error getting folder {}. Error: {}'.format(folder_id or folder_name, str(e)))
             return None
 
         if response.status_code != 200:
@@ -307,7 +307,7 @@ class Folder(ApiComponent):
             return False
 
         if response.status_code != 204:
-            log.debug('Deleteing folder Request failed: {}'.format(response.reason))
+            log.debug('Deleting folder Request failed: {}'.format(response.reason))
             return False
 
         self.folder_id = None

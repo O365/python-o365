@@ -50,25 +50,30 @@ This project was also a learning resource for me. This is a list of not so commo
 
 ## Protocols
 Protocols handles the aspects of comunications between different APIs.
-This project can use either the Office 365 APIs or Microsoft Graph APIs.
-You use one or the other using protocols:
+This project uses by default either the Office 365 APIs or Microsoft Graph APIs.
+But, you can use many other Microsoft APIs as long as you implement the protocol needed.
+
+You can use one or the other:
 
 - `MSOffice365Protocol` to use the [Office 365 API](https://msdn.microsoft.com/en-us/office/office365/api/api-catalog)
 - `MSGraphProtocol` to use the [Microsoft Graph API](https://developer.microsoft.com/en-us/graph/docs/concepts/overview)
 
-Both allow pretty much the same options (depending on the api version used).
+To have a protocol that works with basic authentication a `BasicAuthProtocol` (that inherits from `MSOffice365Protocol`) is also provided for convenience.
+
+Both protocols allow pretty much the same options (depending on the api version used).
 
 The `Account` Class  will select the most apropriate protocol based on the auth method:
-- When using basic authentication the protocol defaults to `MSOffice365Protocol` (because Microsoft Graph doesn't allow basic authentication).
+- When using basic authentication the protocol defaults to `BasicAuthProtocol` (`MSOffice365Protocol`) api version 1.0 on office365 endpoint (because Microsoft Graph doesn't allow basic authentication).
 - When using oauth authentication the protocol defaults to `MSGraphProtocol`.
 
 You can implement your own protocols by inheriting from `Protocol` to communicate with other Microsoft APIs.
 
 You can instantiate protocols like this:
 ```python
-from O365 import MSOffice365Protocol
+from O365 import MSGraphProtocol
 
-protocol = MSOffice365Protocol(api_version='v2.0')  # MSOffice365Protocol defaults to v1.0 api version
+# try the api version beta of the Microsoft Graph endpoint.
+protocol = MSGraphProtocol(api_version='beta')  # MSGraphProtocol defaults to v1.0 api version
 ```
 
 ##### Resources:
@@ -122,7 +127,7 @@ account = Account(credentials, auth_method=AUTH_METHOD.BASIC)
 ```
 #### Oauth Authentication
 This is the recommended way of authenticating.
-This section is explained using Microsoft Graph Protocol, almost the same applies to the Office 365 REST API, except that you have to register you app at [Azure Portal](https://portal.azure.com/).
+This section is explained using Microsoft Graph Protocol, almost the same applies to the Office 365 REST API.
 
 ##### Permissions and Scopes:
 When using oauth you create an application and allow some resources to be accesed and used by it's users.
@@ -341,6 +346,8 @@ message_to_all_contats_in_folder = work_contacts_folder.new_message()  # creates
 
 message_to_all_contats_in_folder.subject = 'Hallo!'
 message_to_all_contats_in_folder.body = """
+George Best quote:
+
 If you'd given me the choice of going out and beating four men and smashing a goal in
 from thirty yards against Liverpool or going to bed with Miss World,
 it would have been a difficult choice. Luckily, I had both.
@@ -477,19 +484,21 @@ query = query.on_attribute('subject').contains('george best').chain('or').starts
 # 'created_date_time' will automatically be converted to the protocol casing.
 # For example when using MS Graph this will become 'createdDateTime'.
 
-query = query.chain('and').on_attribute('created_date_time').greater('2018-03-21')
+query = query.chain('and').on_attribute('created_date_time').greater(datetime(2018, 3, 21))
 
 print(query)
 
-# contains(subject, 'george best') or startswith(subject, 'quotes') and createdDateTime gt '2018-03-21'
+# contains(subject, 'george best') or startswith(subject, 'quotes') and createdDateTime gt '2018-03-21T00:00:00Z'
+# note you can pass naive datetimes and those will be converted to you local timezone and then send to the api as UTC in iso8601 format
 
-# To use query just pass it to the query parameter:
+# To use Query objetcs just pass it to the query parameter:
 filtered_messages = mailbox.get_messages(query=query)
 ```
 
 #### Request Error Handling and Custom Errors
 
-Whenever a Request error raises, we log it to the stdout with it's message, an return Falsy (None, False, [], etc...)
+Whenever a Request error raises, the connection object will raise an exception.
+Then the exception will be captured and logged it to the stdout with it's message, an return Falsy (None, False, [], etc...)
 
-We also raise HttpErrors such as Bad Request and Internal Server Error.
+HttpErrors 4xx (Bad Request) and 5xx (Internal Server Error) are considered exceptions and raised also by the connection (you can configure this on the connection).
 

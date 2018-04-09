@@ -11,7 +11,7 @@ from O365.utils import WellKnowFolderNames, ApiComponent
 log = logging.getLogger(__name__)
 
 
-class Recipient(object):
+class Recipient:
     """ A single Recipient """
 
     def __init__(self, address=None, name=None):
@@ -31,7 +31,7 @@ class Recipient(object):
         return self.__str__()
 
 
-class Recipients(object):
+class Recipients:
     """ A Sequence of Recipients """
 
     def __init__(self, recipients=None):
@@ -75,12 +75,13 @@ class Recipients(object):
             elif isinstance(recipients, tuple):
                 name, address = recipients
                 if address:
-                    self.recipients.append(Recipient(address=recipients, name=name))
+                    self.recipients.append(Recipient(address=address, name=name))
             elif isinstance(recipients, list):
                 for recipient in recipients:
                     self.add(recipient)
             else:
-                raise ValueError('Recipients must be an address string, a name - address tuple  or a list')
+                raise ValueError('Recipients must be an address string, a'
+                                 ' Recipient instance, a (name, address) tuple or a list')
 
     def remove(self, address):
         """ Remove an address or multiple addreses """
@@ -238,7 +239,7 @@ class Attachment(ApiComponent):
 
 
 class Attachments(ApiComponent):
-    """ A Sequence of Attachments """
+    """ A Collection of Attachments """
 
     _endpoints = {'attachments': '/messages/{id}/attachments'}
 
@@ -322,7 +323,7 @@ class Attachments(ApiComponent):
         return True
 
 
-class MixinHandleRecipients(object):
+class MixinHandleRecipients:
 
     def _recipients_from_cloud(self, recipients):
         """ Transform a recipient from cloud data to object data """

@@ -89,7 +89,7 @@ class Protocol:
         """
         if protocol_url is None or api_version is None:
             raise ValueError('Must provide valid protocol_url and api_version values')
-        self.protocol_url = protocol_url
+        self.protocol_url = protocol_url or self._protocol_url
         self.protocol_scope_prefix = protocol_scope_prefix or ''
         self.api_version = api_version
         self.service_url = '{}{}/'.format(protocol_url, api_version)
@@ -161,8 +161,8 @@ class MSGraphProtocol(Protocol):
     _oauth_scopes = DEFAULT_SCOPES
 
     def __init__(self, api_version='v1.0', default_resource=ME_RESOURCE):
-        super().__init__(protocol_url=self._protocol_url, default_resource=default_resource,
-                         api_version=api_version, casing_function=camelcase,
+        super().__init__(protocol_url=self._protocol_url, api_version=api_version,
+                         default_resource=default_resource, casing_function=camelcase,
                          protocol_scope_prefix=self._oauth_scope_prefix)
 
         self.keyword_data_store['message_type'] = 'microsoft.graph.message'
@@ -174,20 +174,32 @@ class MSGraphProtocol(Protocol):
 class MSOffice365Protocol(Protocol):
     """ A Microsoft Office 365 Protocol Implementation """
 
-    _protocol_url = 'https://outlook.office365.com/api/'
-    # _protocol_url = 'https://outlook.office.com/api/'  # basic auth only works on 'https://outlook.office365.com/api/'
+    _protocol_url = 'https://outlook.office.com/api/'
     _oauth_scope_prefix = 'https://outlook.office.com/'
     _oauth_scopes = DEFAULT_SCOPES
 
-    def __init__(self, api_version='v1.0', default_resource=ME_RESOURCE):
-        super().__init__(protocol_url=self._protocol_url, default_resource=default_resource,
-                         api_version=api_version, casing_function=pascalcase,
+    def __init__(self, api_version='v2.0', default_resource=ME_RESOURCE):
+        super().__init__(protocol_url=self._protocol_url, api_version=api_version,
+                         default_resource=default_resource, casing_function=pascalcase,
                          protocol_scope_prefix=self._oauth_scope_prefix)
 
         self.keyword_data_store['message_type'] = 'Microsoft.OutlookServices.Message'
         self.keyword_data_store['file_attachment_type'] = '#Microsoft.OutlookServices.FileAttachment'
         self.keyword_data_store['item_attachment_type'] = '#Microsoft.OutlookServices.ItemAttachment'
         self.max_top_value = 999  # Max $top parameter value
+
+
+class BasicAuthProtocol(MSOffice365Protocol):
+    """
+    A Microsoft Office 365 Protocol Implementation that works with basic auth
+    Basic auth only works on 'https://outlook.office365.com/api/ protocol url
+        with api version v1.0 and until November 1 2018.
+    """
+
+    _protocol_url = 'https://outlook.office365.com/api/'
+
+    def __init__(self, api_version='v1.0', default_resource=ME_RESOURCE):
+        super().__init__(api_version=api_version, default_resource=default_resource)
 
 
 class Connection:

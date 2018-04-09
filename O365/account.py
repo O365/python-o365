@@ -1,8 +1,9 @@
-from O365.connection import Connection, Protocol, MSGraphProtocol, MSOffice365Protocol, AUTH_METHOD
+from O365.connection import Connection, Protocol, MSGraphProtocol, BasicAuthProtocol, AUTH_METHOD
 from O365.utils import ME_RESOURCE
 from O365.message import Message
 from O365.mailbox import MailBox
 from O365.address_book import AddressBook, GlobalAddressList
+from O365.calendar import Schedule
 
 
 class Account(object):
@@ -17,9 +18,9 @@ class Account(object):
                 raise e
 
         if auth_method is AUTH_METHOD.BASIC:
-            protocol = protocol or MSOffice365Protocol  # using basic auth defaults to Office 365 protocol
+            protocol = protocol or BasicAuthProtocol  # using basic auth defaults to Office 365 protocol
             self.protocol = protocol(default_resource=main_resource) if isinstance(protocol, type) else protocol
-            if self.protocol.api_version != 'v1.0' or isinstance(self.protocol, MSGraphProtocol):
+            if self.protocol.api_version != 'v1.0' or not isinstance(self.protocol, BasicAuthProtocol):
                 raise RuntimeError(
                     'Basic Authentication only works with Office 365 Api version v1.0 and until November 1 2018.')
         elif auth_method is AUTH_METHOD.OAUTH:
@@ -68,3 +69,10 @@ class Account(object):
             return GlobalAddressList(parent=self)
         else:
             raise RuntimeError('Addres_book must be either "personal" (resource address book) or "gal" (Global Address List)')
+
+    def schedule(self, *, resource=None):
+        """
+        Creates Schedule instance to handle calendars
+        :param resource: Custom resource to be used in this schedule object. defaults to parent main_resource.
+        """
+        return Schedule(parent=self, main_resource=resource)

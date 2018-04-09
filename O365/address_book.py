@@ -70,13 +70,20 @@ class Contact(ApiComponent, MixinHandleRecipients):
         mail = cloud_data.get(cc('mail'), None)
         user_principal_name = cloud_data.get(cc('userPrincipalName'), None)
         if mail and mail not in self.emails:
-            self.emails.add([mail])
+            self.emails.add(mail)
         if user_principal_name and user_principal_name not in self.emails:
-            self.emails.add([user_principal_name])
+            self.emails.add(user_principal_name)
 
     @property
     def emails(self):
         return self.__emails
+
+    @property
+    def main_email(self):
+        """ Returns the first email on the emails"""
+        if not self.emails:
+            return None
+        return self.emails[0].address
 
     @property
     def full_name(self):
@@ -325,7 +332,7 @@ class ContactFolder(BaseContactFolder):
 
     def get_folder(self, folder_id=None, folder_name=None):
         """
-        Returns a ContactFolder by it's id
+        Returns a ContactFolder by it's id or name
         :param folder_id: the folder_id to be retrieved. Can be any folder Id (child or not)
         :param folder_name: the folder name to be retrieved. Must be a child of this folder.
         """
@@ -351,7 +358,7 @@ class ContactFolder(BaseContactFolder):
         try:
             response = self.con.get(url, params=params)
         except Exception as e:
-            log.error('Error getting contact folder {}. Error: {}'.format(folder_id, str(e)))
+            log.error('Error getting contact folder {}. Error: {}'.format(folder_id or folder_name, str(e)))
             return None
 
         if response.status_code != 200:
@@ -513,7 +520,7 @@ class ContactFolder(BaseContactFolder):
             return False
 
         if response.status_code != 204:
-            log.debug('Deleteing contact folder Request failed: {}'.format(response.reason))
+            log.debug('Deleting contact folder Request failed: {}'.format(response.reason))
             return False
 
         self.folder_id = None
