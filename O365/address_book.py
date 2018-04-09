@@ -304,10 +304,14 @@ class BaseContactFolder(ApiComponent):
 
         params = {'$top': batch if batch else limit}
 
-        if query:
-            params['$filter'] = str(query)
         if order_by:
             params['$orderby'] = order_by
+
+        if query:
+            if isinstance(query, str):
+                params['$filter'] = query
+            else:
+                params.update(query.as_params())
 
         try:
             response = self.con.get(url, params=params)
@@ -401,10 +405,15 @@ class ContactFolder(BaseContactFolder):
 
         if limit:
             params['$top'] = limit
-        if query:
-            params['$filter'] = str(query)
+
         if order_by:
             params['$orderby'] = order_by
+
+        if query:
+            if isinstance(query, str):
+                params['$filter'] = query
+            else:
+                params.update(query.as_params())
 
         try:
             response = self.con.get(url, params=params or None)
