@@ -126,7 +126,7 @@ class HandleRecipientsMixin:
         """ Transform a recipient from cloud data to object data """
 
         if recipient:
-            recipient = recipient.get(self._cc('emailAddress'), {})
+            recipient = recipient.get(self._cc('emailAddress'), recipient if isinstance(recipient, dict) else {})
             address = recipient.get(self._cc('address'), '')
             name = recipient.get(self._cc('name'), '')
             return Recipient(address=address, name=name)
@@ -576,7 +576,7 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
             return bs(self.body, 'html.parser')
 
     def __str__(self):
-        return 'subject: {}'.format(self.subject)
+        return 'Subject: {}'.format(self.subject)
 
     def __repr__(self):
         return self.__str__()

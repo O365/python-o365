@@ -257,6 +257,7 @@ class Attachments(ApiComponent):
 
     def download_attachments(self):
         """ Downloads this message attachments into memory. Need a call to 'attachment.save' to save them on disk. """
+
         if not self.__parent.has_attachments:
             log.debug('Parent {} has no attachments, skipping out early.'.format(self.__parent.__class__.__name__))
             return False
