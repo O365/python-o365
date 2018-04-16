@@ -15,6 +15,12 @@ log = logging.getLogger(__name__)
 MAX_RECIPIENTS_PER_MESSAGE = 500  # Actual limit on Office 365
 
 
+class ImportanceLevel(Enum):
+    Normal = 'normal'
+    Low = 'low'
+    High = 'high'
+
+
 class WellKnowFolderNames(Enum):
     INBOX = 'Inbox'
     JUNK = 'JunkEmail'
@@ -183,7 +189,9 @@ class Query:
     """ Helper to conform OData filters """
     _mapping = {
         'from': 'from/emailAddress/address',
-        'to': 'toRecipients/emailAddress/address'
+        'to': 'toRecipients/emailAddress/address',
+        'start': 'start/DateTime',
+        'end': 'end/DateTime'
     }
 
     def __init__(self, attribute=None, *, protocol):
@@ -195,27 +203,55 @@ class Query:
         self._filters = []
         self._localtz = None  # lazy attribute
         self._order_by = OrderedDict()
+        self._selects = set()
 
     def __str__(self):
-        return 'Filters: {}\nOrder: {}'.format(self.get_filters(), self.get_order())
+        return 'Filter: {}\nOrder: {}\nSelect: {}'.format(self.get_filters(), self.get_order(), self.get_selects())
 
     def __repr__(self):
         return self.__str__()
 
+    def select(self, *attributes):
+        """
+        Adds the attribute to the $select parameter
+        :param attributes: the attributes tuple to select. If empty, the on_attribute previously set is added.
+        """
+        if attributes:
+            for attribute in attributes:
+                attribute = self.protocol.convert_case(attribute) if attribute and isinstance(attribute, str) else None
+                if attribute:
+                    if '/' in attribute:
+                        # only parent attribute can be selected
+                        attribute = attribute.split('/')[0]
+                    self._selects.add(attribute)
+        else:
+            if self._attribute:
+                self._selects.add(self._attribute)
+
+        return self
+
     def as_params(self):
         """ Returns the filters and orders as query parameters"""
         params = {}
-        if self.has_filters():
+        if self.has_filters:
             params['$filter'] = self.get_filters()
-        if self.has_order():
+        if self.has_order:
             params['$orderby'] = self.get_order()
+        if self.has_selects:
+            params['$select'] = self.get_selects()
         return params
 
+    @property
     def has_filters(self):
         return bool(self._filters)
 
+    @property
     def has_order(self):
         return bool(self._order_by)
+
+    @property
+    def has_selects(self):
+        return bool(self._selects)
 
     def get_filters(self):
         """ Returns the result filters """
@@ -230,6 +266,8 @@ class Query:
     def get_order(self):
         """ Returns the result order by clauses """
         # first get the filtered attributes in order as they must appear in the order_by first
+        if not self.has_order:
+            return None
         filter_order_clauses = OrderedDict([(filter_attr[0], None)
                                             for filter_attr in self._filters
                                             if isinstance(filter_attr, tuple)])
@@ -244,6 +282,13 @@ class Query:
         if filter_order_clauses:
             return ','.join(['{} {}'.format(attribute, direction if direction else '').strip()
                              for attribute, direction in filter_order_clauses.items()])
+        else:
+            return None
+
+    def get_selects(self):
+        """ Returns the result select clause """
+        if self._selects:
+            return ','.join(self._selects)
         else:
             return None
 
@@ -275,6 +320,7 @@ class Query:
     def clear(self):
         self._filters = []
         self._order_by = OrderedDict()
+        self._selects = set()
         self.new(None)
         return self
 

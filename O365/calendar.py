@@ -2,9 +2,10 @@ import logging
 from enum import Enum
 from dateutil.parser import parse
 from tzlocal import get_localzone
+import datetime as dt
 import pytz
 
-from O365.utils import Pagination, NEXT_LINK_KEYWORD, ApiComponent, Attachments, Attachment, AttachableMixin
+from O365.utils import Pagination, NEXT_LINK_KEYWORD, ApiComponent, Attachments, Attachment, AttachableMixin, ImportanceLevel
 from O365.message import HandleRecipientsMixin
 
 log = logging.getLogger(__name__)
@@ -47,14 +48,142 @@ class CalendarColors(Enum):
 
 
 class EventAttachment(Attachment):
-    _endpoints = {}
+    _endpoints = {}  # TODO: set attachment endpoints..
 
 
 class EventAttachments(Attachments):
-    pass
+    _endpoints = {}  # TODO: set attachments endpoints..
+
+
+class DailyEventFrequency:
+
+    def __init__(self, recurrence_type, interval):
+        self.recurrence_type = recurrence_type
+        self.interval = interval
+
+
+class EventRecurrence(ApiComponent):
+    """ A representation of an event recurrence properties """
+
+    def __init__(self, parent, recurrence):
+        super().__init__(protocol=parent.protocol, main_resource=parent.main_resource)
+
+        recurrence = recurrence or {}
+        # recurrence pattern
+        recurrence_pattern = recurrence.get(self._cc('pattern'), {})
+
+        self.interval = recurrence_pattern.get(self._cc('interval'), None)
+        self.days_of_week = recurrence_pattern.get(self._cc('daysOfWeek'), set())
+        self.first_day_of_week = recurrence_pattern.get(self._cc('firstDayOfWeek'), None)
+        self.day_of_month = recurrence_pattern.get(self._cc('dayOfMonth'), None)
+        self.month = recurrence_pattern.get(self._cc('month'), None)
+        self.index = recurrence_pattern.get(self._cc('index'), None)
+
+        # recurrence range
+        recurrence_range = recurrence.get(self._cc('range'), {})
+
+        self.ocurrences = recurrence_range.get(self._cc('numberOfOccurrences'), None)
+        self.start_date = recurrence_range.get(self._cc('startDate'), None)
+        self.end_date = recurrence_range.get(self._cc('endDate'), None)
+        if recurrence_range:
+            local_tz = get_localzone()
+            try:
+                # recurrenceTimeZone is expressed using CLDR timezones .. there's no simple way of translating this to tzinfo objects
+                timezone = pytz.timezone(recurrence_range.get(self._cc('recurrenceTimeZone'), 'utc'))
+            except pytz.UnknownTimeZoneError:
+                timezone = local_tz
+            self.start_date = parse(self.start_date).astimezone(timezone) if self.start_date else None
+            if self.start_date and timezone != local_tz:
+                self.start_date = self.start_date.astimezone(local_tz)
+            self.end_date = parse(self.end_date).astimezone(timezone) if self.end_date else None
+            if self.end_date and timezone != local_tz:
+                self.end_date = self.end_date.astimezone(local_tz)
+
+    def __bool__(self):
+        return bool(self.interval)
+
+    def to_api_data(self):
+        data = {}
+        # recurrence pattern
+        if self.interval and isinstance(self.interval, int):
+            recurrence_pattern = data[self._cc('pattern')] = {}
+            recurrence_pattern[self._cc('type')] = 'daily'
+            recurrence_pattern[self._cc('interval')] = self.interval
+            if self.days_of_week and isinstance(self.days_of_week, (list, tuple, set)):
+                recurrence_pattern[self._cc('type')] = 'relativeMonthly'
+                recurrence_pattern[self._cc('daysOfWeek')] = list(self.days_of_week)
+                if self.first_day_of_week:
+                    recurrence_pattern[self._cc('type')] = 'weekly'
+                    recurrence_pattern[self._cc('firstDayOfWeek')] = self.first_day_of_week
+                elif self.month and isinstance(self.month, int):
+                    recurrence_pattern[self._cc('type')] = 'relativeYearly'
+                    recurrence_pattern[self._cc('month')] = self.month
+                    if self.index:
+                        recurrence_pattern[self._cc('index')] = self.index
+                else:
+                    if self.index:
+                        recurrence_pattern[self._cc('index')] = self.index
+
+            elif self.day_of_month and isinstance(self.day_of_month, int):
+                recurrence_pattern[self._cc('type')] = 'absoluteMonthly'
+                recurrence_pattern[self._cc('dayOfMonth')] = self.day_of_month
+                if self.month and isinstance(self.month, int):
+                    recurrence_pattern[self._cc('type')] = 'absoluteYearly'
+                    recurrence_pattern[self._cc('month')] = self.month
+
+        # recurrence range
+        if self.start_date:
+            recurrence_range = data[self._cc('range')] = {}
+            recurrence_range[self._cc('type')] = 'noEnd'
+            recurrence_range[self._cc('startDate')] = self.start_date.astimezone(pytz.utc).isoformat()
+
+            if self.end_date:
+                recurrence_range[self._cc('type')] = 'endDate'
+                recurrence_range[self._cc('endDate')] = self.end_date.astimezone(pytz.utc).isoformat()
+            elif self.ocurrences is not None and isinstance(self.ocurrences, int):
+                recurrence_range[self._cc('type')] = 'numbered'
+                recurrence_range[self._cc('numberOfOccurrences')] = self.ocurrences
+
+        return data
+
+    def _clear_pattern(self):
+        """ Clears this event recurrence """
+        self.interval = None
+        self.days_of_week = set()
+        self.first_day_of_week = None
+        self.day_of_month = None
+        self.month = None
+        self.index = None
+
+    def set_daily(self, interval):
+        self._clear_pattern()
+        self.interval = interval
+
+    def set_weekly(self, interval, days_of_week, first_day_of_week):
+        self.set_daily(interval)
+        self.days_of_week = set(days_of_week)
+        self.first_day_of_week = first_day_of_week
+
+    def set_monthly(self, interval, day_of_month=None, days_of_week=None, index=None):
+        if not day_of_month and not days_of_week:
+            raise ValueError('Must provide day_of_month or days_of_week values')
+        if day_of_month and days_of_week:
+            raise ValueError('Must provide only one of the two options')
+        self.set_daily(interval)
+        if day_of_month:
+            self.day_of_month = day_of_month
+        elif days_of_week:
+            self.days_of_week = set(days_of_week)
+            if index:
+                self.index = index
+
+    def set_yearly(self, interval, month, day_of_month=None, days_of_week=None, index=None):
+        self.set_monthly(interval, day_of_month==day_of_month, days_of_week=days_of_week, index=index)
+        self.month = month
 
 
 class ResponseStatus(ApiComponent):
+    """ An event response status (status, time) """
 
     def __init__(self, parent, response_status):
         super().__init__(protocol=parent.protocol, main_resource=parent.main_resource)
@@ -128,11 +257,17 @@ class Attendees(ApiComponent):
 
     def clear(self):
         self.__attendees = []
+        self._track_changes()
+
+    def _track_changes(self):
+        """ Update the track_changes on the event to reflect a needed update on this field """
+        self._event._track_changes.add('attendees')
 
     def add(self, attendees):
-        """ attendees must be a list of path strings or dictionary elements """
+        """ Add attendees to the parent event """
 
         if attendees:
+            total_attendees = len(self.__attendees)
             if isinstance(attendees, str):
                 self.__attendees.append(Attendee(address=attendees))
             elif isinstance(attendees, Attendee):
@@ -160,6 +295,27 @@ class Attendees(ApiComponent):
                 raise ValueError('Attendees must be an address string, an'
                                  ' Attendee instance, a (name, address) tuple or a list')
 
+            if total_attendees < len(self.__attendees):
+                self._track_changes()
+
+    def remove(self, attendees):
+        """ Remove the provided attendees from the event """
+        if isinstance(attendees, (list, tuple)):
+            attendees = {attendee.address if isinstance(attendee, Attendee) else attendee for attendee in attendees}
+        elif isinstance(attendees, str):
+            attendees = {attendees}
+        elif isinstance(attendees, Attendee):
+            attendees = {attendees.address}
+        else:
+            raise ValueError('Incorrect parameter type for attendees')
+
+        new_attendees = []
+        for attendee in self.__attendees:
+            if attendee.address not in attendees:
+                new_attendees.append(attendee)
+        self.__attendees = new_attendees
+        self._track_changes()
+
     def to_api_data(self):
         data = []
         for attendee in self.__attendees:
@@ -180,9 +336,10 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
 
     _endpoints = {
         'calendar': '/calendars/{id}',
+        'event': '/calendar/events/{id}',
+        'event_default': '/calendar/events',
+        'event_calendar': '/calendars/{id}/events'
     }
-
-    _importance_options = {'normal': 'normal', 'low': 'low', 'high': 'high'}
 
     def __init__(self, *, parent=None, con=None, **kwargs):
         assert parent or con, 'Need a parent or a connection'
@@ -192,14 +349,16 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         main_resource = kwargs.pop('main_resource', None) or getattr(parent, 'main_resource', None) if parent else None
         super().__init__(protocol=parent.protocol if parent else kwargs.get('protocol'), main_resource=main_resource)
 
+        self._track_changes = set()  # internal to know which properties need to be updated on the server
+        self.calendar_id = kwargs.get('calendar_id', None)
         download_attachments = kwargs.get('download_attachments')
         cloud_data = kwargs.get(self._cloud_data_key, {})
 
         cc = self._cc  # alias
         self.object_id = cloud_data.get(cc('id'), None)
-        self.subject = cloud_data.get(cc('subject'), kwargs.get('subject', '') or '')
+        self.__subject = cloud_data.get(cc('subject'), kwargs.get('subject', '') or '')
         body = cloud_data.get(cc('body'), {})
-        self.body = body.get(cc('content'), '')
+        self.__body = body.get(cc('content'), '')
         self.body_type = body.get(cc('contentType'), 'HTML')  # default to HTML for new messages
 
         self.__attendees = Attendees(event=self, attendees={self._cloud_data_key: cloud_data.get(cc('attendees'), [])})
@@ -213,46 +372,60 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         self.modified = parse(self.modified).astimezone(local_tz) if self.modified else None
 
         start = cloud_data.get(cc('start'), {})
-        timezone = pytz.timezone(start.get(cc('timeZone'), local_tz))
-
-        start = start.get(cc('dateTime'), None)
-        start = parse(start).astimezone(timezone) if start else None
-        if start and timezone != local_tz:
-            start = start.astimezone(local_tz)
-        self.start = start
+        if isinstance(start, dict):
+            try:
+                # start is expressed using CLDR timezones .. there's no simple way of translating this to tzinfo objects
+                timezone = pytz.timezone(start.get(self._cc('timeZone'), 'utc'))
+            except pytz.UnknownTimeZoneError:
+                timezone = local_tz
+            start = start.get(cc('dateTime'), None)
+            start = timezone.localize(parse(start)) if start else None
+            if start and timezone != local_tz:
+                start = start.astimezone(local_tz)
+        else:
+            # Outlook v1.0 api compatibility
+            start = local_tz.localize(parse(start)) if start else None
+        self.__start = start
 
         end = cloud_data.get(cc('end'), {})
-        timezone = pytz.timezone(end.get(cc('timeZone'), local_tz))
-
-        end = end.get(cc('dateTime'), None)
-        end = parse(end).astimezone(timezone) if end else None
-        if end and timezone != local_tz:
-            end = start.astimezone(local_tz)
-        self.end = end
+        if isinstance(end, dict):
+            try:
+                # end is expressed using CLDR timezones .. there's no simple way of translating this to tzinfo objects
+                timezone = pytz.timezone(end.get(self._cc('timeZone'), 'utc'))
+            except pytz.UnknownTimeZoneError:
+                timezone = local_tz
+            end = end.get(cc('dateTime'), None)
+            end = timezone.localize(parse(end)) if end else None
+            if end and timezone != local_tz:
+                end = end.astimezone(local_tz)
+        else:
+            # Outlook v1.0 api compatibility
+            end = local_tz.localize(parse(end)) if end else None
+        self.__end = end
 
         self.has_attachments = cloud_data.get(cc('hasAttachments'), False)
         self.__attachments = EventAttachments(parent=self, attachments=[])
         if self.has_attachments and download_attachments:
             self.attachments.download_attachments()
-        self.categories = cloud_data.get(cc('categories'), [])
+        self.__categories = cloud_data.get(cc('categories'), [])
         self.ical_uid = cloud_data.get(cc('iCalUId'), None)
-        self.importance = self._importance_options.get(cloud_data.get(cc('importance'), 'normal'), 'normal')  # only allow valid importance
-        self.is_all_day = cloud_data.get(cc('isAllDay'), False)
-        self.is_cancelled = cloud_data.get(cc('isCancelled'), False)
+        self.__importance = ImportanceLevel(cloud_data.get(cc('importance'), 'normal') or 'normal')
+        self.__is_all_day = cloud_data.get(cc('isAllDay'), False)
+        self.__is_cancelled = cloud_data.get(cc('isCancelled'), False)
         self.is_organizer = cloud_data.get(cc('isOrganizer'), True)
-        self.is_reminder_on = cloud_data.get(cc('isReminderOn'), None)
-        self.location = cloud_data.get(cc('location'), {})  # TODO
+        self.__location = cloud_data.get(cc('location'), {}).get(cc('displayName'), '')
         self.locations = cloud_data.get(cc('locations'), [])  # TODO
         self.online_meeting_url = cloud_data.get(cc('onlineMeetingUrl'), None)
         self.__organizer = self._recipient_from_cloud(cloud_data.get(cc('organizer'), None))
-        self.recurrence = cloud_data.get(cc('recurrence'), None)  # TODO:
-        self.remind_before_minutes = cloud_data.get(cc('reminderMinutesBeforeStart'), 15)
-        self.response_requested = cloud_data.get(cc('responseRequested'), True)
+        self.__recurrence = EventRecurrence(parent=self, recurrence=cloud_data.get(cc('recurrence'), None))
+        self.__is_reminder_on = cloud_data.get(cc('isReminderOn'), None)
+        self.__remind_before_minutes = cloud_data.get(cc('reminderMinutesBeforeStart'), 15)
+        self.__response_requested = cloud_data.get(cc('responseRequested'), True)
         self.__response_status = ResponseStatus(parent=self, response_status=cloud_data.get(cc('responseStatus'), {}))
         self.__sensitivity = EventSensitivity(cloud_data.get(cc('sensitivity'), 'normal'))
         self.series_master_id = cloud_data.get(cc('seriesMasterId'), None)
         self.__show_as = EventShowAs(cloud_data.get(cc('showAs'), 'busy'))
-        self.event_type = cloud_data.get(cc('type'), None)  # TODO: Enumerate type
+        self.event_type = cloud_data.get(cc('type'), None)
 
     def __str__(self):
         return 'Subject: {}'.format(self.subject)
@@ -260,8 +433,156 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
     def __repr__(self):
         return self.__str__()
 
-    def to_api_data(self):
-        pass
+    def to_api_data(self, restrict_keys=None):
+        """ Returns a dict to comunicate with the server
+
+        :param restrict_keys: a set of keys to restrict the returned data to.
+        """
+        cc = self._cc  # alias
+        data = {
+            cc('subject'): self.__subject,
+            cc('body'): {
+                cc('contentType'): self.body_type,
+                cc('content'): self.__body},
+            cc('start'): {
+                cc('dateTime'): self.__start.astimezone(pytz.utc).isoformat()
+            },
+            cc('end'): {
+                cc('dateTime'): self.__end.astimezone(pytz.utc).isoformat()
+            },
+            cc('attendees'): self.__attendees.to_api_data(),
+            cc('location'): {cc('displayName'): self.__location},
+            cc('categories'): self.__categories,
+            cc('isAllDay'): self.__is_all_day,
+            cc('importance'): self.__importance.value,
+            cc('isReminderOn'): self.__is_reminder_on,
+            cc('reminderMinutesBeforeStart'): self.__remind_before_minutes,
+            cc('responseRequested'): self.__response_requested,
+            cc('sensitivity'): self.__sensitivity.value,
+            cc('showAs'): self.__show_as.value,
+        }
+
+        if self.__recurrence:
+            data[cc('recurrence')] = self.__recurrence.to_api_data()
+
+        if self.has_attachments:
+            data[cc('attachments')] = self.__attachments.to_api_data()
+
+        if restrict_keys:
+            for key in restrict_keys:
+                if key in data:
+                    del data[key]
+        return data
+
+    @property
+    def body(self):
+        return self.__body
+
+    @body.setter
+    def body(self, value):
+        self.__body = value
+        self._track_changes.add('body')
+
+    @property
+    def subject(self):
+        return self.__subject
+
+    @subject.setter
+    def subject(self, value):
+        self.__subject = value
+        self._track_changes.add('subject')
+
+    @property
+    def start(self):
+        return self.__start
+
+    @start.setter
+    def start(self, value):
+        if not isinstance(value, dt.date):
+            raise ValueError("'start' must be a valid datime object")
+        self.__start = value
+        if not self.end:
+            self.end = self.__start + dt.timedelta(minutes=30)
+        self._track_changes.add('start')
+
+    @property
+    def end(self):
+        return self.__end
+
+    @end.setter
+    def end(self, value):
+        self.__end = value
+        self._track_changes.add('end')
+
+    @property
+    def importance(self):
+        return self.__importance
+
+    @importance.setter
+    def importance(self, value):
+        self.__importance = value if isinstance(value, ImportanceLevel) else ImportanceLevel(value)
+        self._track_changes.add('importance')
+
+    @property
+    def is_all_day(self):
+        return self.__is_all_day
+
+    @is_all_day.setter
+    def is_all_day(self, value):
+        self.__is_all_day = value
+        self._track_changes.add('isAllDay')
+
+    @property
+    def is_cancelled(self):
+        return self.__is_cancelled
+
+    @is_cancelled.setter
+    def is_cancelled(self, value):
+        self.__is_cancelled = value
+        self._track_changes.add('isCancelled')
+
+    @property
+    def location(self):
+        return self.__location
+
+    @location.setter
+    def location(self, value):
+        self.__location = value
+        self._track_changes.add('location')
+
+    @property
+    def is_reminder_on(self):
+        return self.__is_reminder_on
+
+    @is_reminder_on.setter
+    def is_reminder_on(self, value):
+        self.__is_reminder_on = value
+        self._track_changes.add('isReminderOn')
+        self._track_changes.add('reminderMinutesBeforeStart')
+
+    @property
+    def remind_before_minutes(self):
+        return self.__remind_before_minutes
+
+    @remind_before_minutes.setter
+    def remind_before_minutes(self, value):
+        self.__is_reminder_on = True
+        self.__remind_before_minutes = int(value)
+        self._track_changes.add('isReminderOn')
+        self._track_changes.add('reminderMinutesBeforeStart')
+
+    @property
+    def response_requested(self):
+        return self.__response_requested
+
+    @response_requested.setter
+    def response_requested(self, value):
+        self.__response_requested = value
+        self._track_changes.add('responseRequested')
+
+    @property
+    def recurrence(self):
+        return self.__recurrence
 
     @property
     def organizer(self):
@@ -273,7 +594,8 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
 
     @show_as.setter
     def show_as(self, value):
-        self.__show_as = EventShowAs(value)
+        self.__show_as = value if isinstance(value, EventShowAs) else EventShowAs(value)
+        self._track_changes.add('showAs')
 
     @property
     def sensitivity(self):
@@ -281,7 +603,8 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
 
     @sensitivity.setter
     def sensitivity(self, value):
-        self.__sensitivity = EventSensitivity(value)
+        self.__sensitivity = value if isinstance(value, EventSensitivity) else EventSensitivity(value)
+        self._track_changes.add('sensitivity')
 
     @property
     def response_status(self):
@@ -309,6 +632,73 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
             self.__categories = list(value)
         else:
             raise ValueError('categories must be a list')
+        self._track_changes.add('categories')
+
+    def delete(self):
+        """ Deletes a stored event """
+        if self.object_id is None:
+            raise RuntimeError('Attempting to delete an unsaved event')
+
+        url = self.build_url(self._endpoints.get('event').format(id=self.object_id))
+
+        try:
+            response = self.con.delete(url)
+        except Exception as e:
+            log.error('Event (id: {}) could not be deleted. Error: {}'.format(self.object_id, str(e)))
+            return False
+
+        if response.status_code != 204:
+            log.debug('Event (id: {}) could not be deleted. Reason: {}'.format(self.object_id, response.reason))
+            return False
+
+        return True
+
+    def save(self):
+        """ Create a new event or update an existing one by checking what
+        values have changed and update them on the server
+        """
+
+        if self.object_id:
+            # update event
+            if not self._track_changes:
+                return False  # there's nothing to update
+            url = self.build_url(self._endpoints.get('event').format(id=self.object_id))
+            method = self.con.patch
+            data = self.to_api_data(restrict_keys=self._track_changes)
+        else:
+            # new event
+            if self.calendar_id:
+                url = self.build_url(self._endpoints.get('event_calendar').format(id=self.calendar_id))
+            else:
+                url = self.build_url(self._endpoints.get('event_default'))
+            method = self.con.post
+            data = self.to_api_data()
+
+        try:
+            response = method(url, data=data)
+        except Exception as e:
+            log.error('Error while saving event. Error: {error}'.format(error=str(e)))
+            return False
+
+        if response.status_code not in (200, 201):  # 200 updated, 201 created
+            log.debug('Saving event Request failed: {}'.format(response.reason))
+            return False
+
+        local_tz = get_localzone()
+        if not self.object_id:
+            # new event
+            event = response.json()
+
+            self.object_id = event.get(self._cc('id'), None)
+            self.created = event.get(self._cc('createdDateTime'), None)
+            self.modified = event.get(self._cc('lastModifiedDateTime'), None)
+
+            self.created = parse(self.created).astimezone(local_tz) if self.created else None
+            self.modified = parse(self.modified).astimezone(local_tz) if self.modified else None
+        else:
+            self.modified = dt.datetime.now().astimezone(local_tz)
+
+        return True
 
 
 class Calendar(ApiComponent, HandleRecipientsMixin):
@@ -412,7 +802,7 @@ class Calendar(ApiComponent, HandleRecipientsMixin):
         :param download_attachments: downloads event attachments
         """
 
-        url = self.build_url(self._endpoints.get('get_events'))
+        url = self.build_url(self._endpoints.get('get_events').format(id=self.calendar_id))
 
         if limit is None or limit > self.protocol.max_top_value:
             batch = self.protocol.max_top_value
@@ -432,7 +822,7 @@ class Calendar(ApiComponent, HandleRecipientsMixin):
                 params.update(query.as_params())
 
         try:
-            response = self.con.get(url, params=params)
+            response = self.con.get(url, params=params, headers={'Prefer': 'outlook.timezone="UTC"'})
         except Exception as e:
             log.error('Error donwloading events. Error {}'.format(e))
             return []
@@ -455,7 +845,7 @@ class Calendar(ApiComponent, HandleRecipientsMixin):
 
     def new_event(self, subject=None):
         """ Returns a new (unsaved) Event object """
-        return self.event_constructor(parent=self, subject=subject)
+        return self.event_constructor(parent=self, subject=subject, calendar_id=self.calendar_id)
 
     def get_event(self, param):
         """Returns an Event instance by it's id
@@ -473,7 +863,7 @@ class Calendar(ApiComponent, HandleRecipientsMixin):
             params.update(param.as_params())
 
         try:
-            response = self.con.get(url, params=params)
+            response = self.con.get(url, params=params, headers={'Prefer': 'outlook.timezone="UTC"'})
         except Exception as e:
             log.error('Error getting event: {}. Error {}'.format(param, e))
             return None
@@ -500,7 +890,7 @@ class Schedule(ApiComponent):
         'root_calendars': '/calendars',
         'get_calendar': '/calendars/{id}',
         'default_calendar': '/calendar',
-        'get_events': '/calendar/events'
+        'events': '/calendar/events'
     }
 
     calendar_constructor = Calendar
@@ -660,7 +1050,7 @@ class Schedule(ApiComponent):
         :param download_attachments: downloads event attachments
         """
 
-        url = self.build_url(self._endpoints.get('get_events'))
+        url = self.build_url(self._endpoints.get('events'))
 
         if limit is None or limit > self.protocol.max_top_value:
             batch = self.protocol.max_top_value
@@ -680,7 +1070,7 @@ class Schedule(ApiComponent):
                 params.update(query.as_params())
 
         try:
-            response = self.con.get(url, params=params)
+            response = self.con.get(url, params=params, headers={'Prefer': 'outlook.timezone="UTC"'})
         except Exception as e:
             log.error('Error donwloading events. Error {}'.format(e))
             return []
@@ -700,3 +1090,7 @@ class Schedule(ApiComponent):
                               next_link=data.get(NEXT_LINK_KEYWORD, None), limit=limit)
         else:
             return events
+
+    def new_event(self, subject=None):
+        """ Returns a new (unsaved) Event object in the default calendar """
+        return self.event_constructor(parent=self, subject=subject)

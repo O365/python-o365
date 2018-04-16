@@ -1,12 +1,10 @@
 import logging
-import base64
 from dateutil.parser import parse
 from tzlocal import get_localzone
 import pytz
-from pathlib import Path
 from bs4 import BeautifulSoup as bs
 
-from O365.utils import WellKnowFolderNames, ApiComponent, Attachments, Attachment, AttachableMixin
+from O365.utils import WellKnowFolderNames, ApiComponent, Attachments, Attachment, AttachableMixin, ImportanceLevel
 
 log = logging.getLogger(__name__)
 
@@ -177,8 +175,6 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         'forward_message': '/messages/{id}/createForward'
     }
 
-    _importance_options = {'normal': 'normal', 'low': 'low', 'high': 'high'}
-
     def __init__(self, *, parent=None, con=None, **kwargs):
         """
         Makes a new message wrapper for sending and receiving messages.
@@ -199,6 +195,7 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         cloud_data = kwargs.get(self._cloud_data_key, {})
         cc = self._cc  # alias to shorten the code
 
+        self._track_changes = set()  # TODO: change update method on message...
         self.object_id = cloud_data.get(cc('id'), None)
         self.created = cloud_data.get(cc('createdDateTime'), None)
         self.received = cloud_data.get(cc('receivedDateTime'), None)
@@ -223,7 +220,7 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         self.__bcc = self._recipients_from_cloud(cloud_data.get(cc('bccRecipients'), []))
         self.__reply_to = self._recipients_from_cloud(cloud_data.get(cc('replyTo'), []))
         self.__categories = cloud_data.get(cc('categories'), [])
-        self.importance = self._importance_options.get(cloud_data.get(cc('importance'), 'normal'), 'normal')  # only allow valid importance
+        self.__importance = ImportanceLevel(cloud_data.get(cc('importance'), 'normal') or 'normal')
         self.is_read = cloud_data.get(cc('isRead'), None)
         self.is_draft = cloud_data.get(cc('isDraft'), kwargs.get('is_draft', True))  # a message is a draft by default
         self.conversation_id = cloud_data.get(cc('conversationId'), None)
@@ -284,6 +281,14 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         else:
             raise ValueError('categories must be a list')
 
+    @property
+    def importance(self):
+        return self.__importance
+
+    @importance.setter
+    def importance(self, value):
+        self.__importance = value if isinstance(value, ImportanceLevel) else ImportanceLevel(value)
+
     def to_api_data(self):
         """ Returns a dict representation of this message prepared to be send to the cloud """
 
@@ -298,7 +303,8 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
             cc('ccRecipients'): [self._recipient_to_cloud(recipient) for recipient in self.cc],
             cc('bccRecipients'): [self._recipient_to_cloud(recipient) for recipient in self.bcc],
             cc('replyTo'): [self._recipient_to_cloud(recipient) for recipient in self.reply_to],
-            cc('attachments'): self.attachments.to_api_data()
+            cc('attachments'): self.attachments.to_api_data(),
+            cc('importance'): self.importance.value
         }
 
         if self.object_id and not self.is_draft:
@@ -311,7 +317,6 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
             message[cc('hasAttachments')] = len(self.attachments) > 0
             message[cc('from')] = self._recipient_to_cloud(self.sender)
             message[cc('categories')] = self.categories
-            message[cc('importance')] = self.importance
             message[cc('isRead')] = self.is_read
             message[cc('isDraft')] = self.is_draft
             message[cc('conversationId')] = self.conversation_id

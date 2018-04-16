@@ -198,7 +198,7 @@ class Attachments(ApiComponent):
     def __init__(self, parent, attachments=None):
         """ Attachments must be a list of path strings or dictionary elements """
         super().__init__(protocol=parent.protocol, main_resource=parent.main_resource)
-        self.__parent = parent
+        self._parent = parent
         self.__attachments = []
         if attachments:
             self.add(attachments)
@@ -217,19 +217,34 @@ class Attachments(ApiComponent):
 
     def __str__(self):
         attachments = len(self.__attachments)
-        parent_has_attachments = getattr(self.__parent, 'has_attachments', False)
+        parent_has_attachments = getattr(self._parent, 'has_attachments', False)
         if parent_has_attachments and attachments == 0:
             return 'Number of Attachments: unknown'
         else:
             return 'Number of Attachments: {}'.format(attachments)
+
+    def __bool__(self):
+        return bool(len(self.__attachments))
 
     def to_api_data(self):
         return [attachment.to_api_data() for attachment in self.__attachments]
 
     def clear(self):
         self.__attachments = []
-        if getattr(self.__parent, 'has_attachments', None) is not None:
-            setattr(self.__parent, 'has_attachments', False)
+        if getattr(self._parent, 'has_attachments', None) is not None:
+            setattr(self._parent, 'has_attachments', False)
+
+    def _track_changes(self):
+        """ Update the track_changes on the parent to reflect a needed update on this field """
+        if getattr(self._parent, '_track_changes', None):
+            self._parent._track_changes.add('attachments')
+
+    def _update_parent_attachments(self):
+        """ Tries to update the parent property 'has_attachments' """
+        try:
+            self._parent.has_attachments = bool(len(self.__attachments))
+        except AttributeError:
+            pass
 
     def add(self, attachments):
         """ Attachments must be a list of path strings or dictionary elements """
@@ -247,35 +262,49 @@ class Attachments(ApiComponent):
                 raise ValueError('Attachments must be a list or tuple')
 
             self.__attachments.extend(attachments_temp)
-            try:
-                if getattr(self.__parent, 'has_attachments'):
-                    return
-            except AttributeError:
-                pass
-            finally:
-                self.__parent.has_attachments = True
+            self._update_parent_attachments()
+            self._track_changes()
+
+    def remove(self, attachments):
+        """ Remove attachments from this collection of attachments """
+        if isinstance(attachments, (list, tuple)):
+            attachments = {attachment.name if isinstance(attachment, Attachment) else attachment for attachment in attachments}
+        elif isinstance(attachments, str):
+            attachments = {attachments}
+        elif isinstance(attachments, Attachment):
+            attachments = {attachments.name}
+        else:
+            raise ValueError('Incorrect parameter type for attachments')
+
+        new_attachments = []
+        for attachment in self.__attachments:
+            if attachment.name not in attachments:
+                new_attachments.append(attachment)
+        self.__attachments = new_attachments
+        self._update_parent_attachments()
+        self._track_changes()
 
     def download_attachments(self):
         """ Downloads this message attachments into memory. Need a call to 'attachment.save' to save them on disk. """
 
-        if not self.__parent.has_attachments:
-            log.debug('Parent {} has no attachments, skipping out early.'.format(self.__parent.__class__.__name__))
+        if not self._parent.has_attachments:
+            log.debug('Parent {} has no attachments, skipping out early.'.format(self._parent.__class__.__name__))
             return False
 
-        if not self.__parent.object_id:
-            raise RuntimeError('Attempt to download attachments of an unsaved {}'.format(self.__parent.__class__.__name__))
+        if not self._parent.object_id:
+            raise RuntimeError('Attempt to download attachments of an unsaved {}'.format(self._parent.__class__.__name__))
 
-        url = self.build_url(self._endpoints.get('attachments').format(id=self.__parent.object_id))
+        url = self.build_url(self._endpoints.get('attachments').format(id=self._parent.object_id))
 
         try:
-            response = self.__parent.con.get(url)
+            response = self._parent.con.get(url)
         except Exception as e:
-            log.error('Error downloading attachments for message id: {}'.format(self.__parent.object_id))
+            log.error('Error downloading attachments for message id: {}'.format(self._parent.object_id))
             return False
 
         if response.status_code != 200:
             return False
-        log.debug('successfully downloaded attachments for message id: {}'.format(self.__parent.object_id))
+        log.debug('successfully downloaded attachments for message id: {}'.format(self._parent.object_id))
 
         attachments = response.json().get('value', [])
 

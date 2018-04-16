@@ -187,7 +187,7 @@ class Contact(ApiComponent, AttachableMixin, HandleRecipientsMixin):
             url = self.build_url(self._endpoints.get('root_contact'))
 
         try:
-            response = self.con.psot(url, data=self.to_api_data())
+            response = self.con.post(url, data=self.to_api_data())
         except Exception as e:
             log.error('Error while saving contact. Error: {error}'.format(error=str(e)))
             return False
