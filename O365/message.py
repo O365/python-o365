@@ -104,13 +104,31 @@ class Recipients:
 
 class MessageAttachment(Attachment):
 
-    _endpoints = {'attach': '/messages/{id}/attachments'}
+    _endpoints = {
+        'attach': '/messages/{id}/attachments',
+        'attachment': '/messages/{id}/attachments/{ida}'
+    }
 
 
 class MessageAttachments(Attachments):
 
-    _endpoints = {'attachments': '/messages/{id}/attachments'}
+    _endpoints = {
+        'attachments': '/messages/{id}/attachments',
+        'attachment': '/messages/{id}/attachments/{ida}'
+    }
     _attachment_constructor = MessageAttachment
+
+    def get_attachement(self, attachment):
+
+        # TODO: esto son pruebas
+
+        url = self.build_url(self._endpoints.get('attachment').format(id=self.parent.object_id, ida=attachment.attachment_id))
+
+        response = self.parent.con.get(url, params={'$expand': 'microsoft.graph.itemAttachment/Item'})
+
+        attachment = response.json()
+
+        return attachment
 
 
 class HandleRecipientsMixin:

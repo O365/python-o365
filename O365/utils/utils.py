@@ -3,7 +3,7 @@ from enum import Enum
 from tzlocal import get_localzone
 import pytz
 import datetime as dt
-
+from collections import OrderedDict
 
 ME_RESOURCE = 'me'
 USERS_RESOURCE = 'users'
@@ -11,7 +11,6 @@ USERS_RESOURCE = 'users'
 NEXT_LINK_KEYWORD = '@odata.nextLink'
 
 log = logging.getLogger(__name__)
-
 
 MAX_RECIPIENTS_PER_MESSAGE = 500  # Actual limit on Office 365
 
@@ -195,16 +194,10 @@ class Query:
         self._negation = False
         self._filters = []
         self._localtz = None  # lazy attribute
-        self._order_by = []
+        self._order_by = OrderedDict()
 
     def __str__(self):
-        if self._filters:
-            filters_list = self._filters
-            if isinstance(filters_list[-1], Enum):
-                filters_list = filters_list[:-1]
-            return ' '.join([fs.value if isinstance(fs, Enum) else fs[1] for fs in filters_list]).strip()
-        else:
-            return ''
+        return 'Filters: {}\nOrder: {}'.format(self.get_filters(), self.get_order())
 
     def __repr__(self):
         return self.__str__()
@@ -235,9 +228,22 @@ class Query:
             return None
 
     def get_order(self):
-        order_clauses = [filter_attr[0] for filter_attr in self._filters if isinstance(filter_attr, tuple)]
-        if self._order_by:
-            return ','.join(order_clauses + self._order_by)
+        """ Returns the result order by clauses """
+        # first get the filtered attributes in order as they must appear in the order_by first
+        filter_order_clauses = OrderedDict([(filter_attr[0], None)
+                                            for filter_attr in self._filters
+                                            if isinstance(filter_attr, tuple)])
+
+        # any order_by attribute that appears in the filters is is ignored
+        for filter_oc in filter_order_clauses.keys():
+            direction = self._order_by.pop(filter_oc, None)
+            filter_order_clauses[filter_oc] = direction
+
+        filter_order_clauses.update(self._order_by)  # append any remaining order_by clause
+
+        if filter_order_clauses:
+            return ','.join(['{} {}'.format(attribute, direction if direction else '').strip()
+                             for attribute, direction in filter_order_clauses.items()])
         else:
             return None
 
@@ -268,7 +274,7 @@ class Query:
 
     def clear(self):
         self._filters = []
-        self._order_by = []
+        self._order_by = OrderedDict()
         self.new(None)
         return self
 
@@ -288,8 +294,9 @@ class Query:
 
     def _add_filter(self, filter_str):
         if self._attribute:
+            if self._filters and not isinstance(self._filters[-1], ChainOperator):
+                self._filters.append(self._chain)
             self._filters.append((self._attribute, filter_str))
-            self._filters.append(self._chain)
         else:
             raise ValueError('Attribute property needed. call on_attribute(attribute) or new(attribute)')
 
@@ -335,7 +342,8 @@ class Query:
     def function(self, function_name, word):
         word = self._parse_filter_word(word)
 
-        self._add_filter("{} {}({}, {})".format('not' if self._negation else '', function_name, self._attribute, word).strip())
+        self._add_filter(
+            "{} {}({}, {})".format('not' if self._negation else '', function_name, self._attribute, word).strip())
         return self
 
     def contains(self, word):
@@ -351,7 +359,7 @@ class Query:
         """ applies a order_by clause"""
         attribute = self._get_mapping(attribute) or self._attribute
         if attribute:
-            self._order_by.append('{} {}'.format(attribute, '' if ascending else 'desc').strip())
+            self._order_by[attribute] = None if ascending else 'desc'
         else:
             raise ValueError('Attribute property needed. call on_attribute(attribute) or new(attribute)')
         return self
