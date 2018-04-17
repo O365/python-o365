@@ -4,6 +4,9 @@ import os
 import time
 from pathlib import Path
 from enum import Enum
+from tzlocal import get_localzone
+from datetime import tzinfo
+import pytz
 
 from stringcase import pascalcase, camelcase
 import requests
@@ -13,7 +16,7 @@ from requests.exceptions import HTTPError
 from oauthlib.oauth2 import TokenExpiredError
 from requests_oauthlib import OAuth2Session
 
-from O365.utils import ME_RESOURCE
+from O365.utils import ME_RESOURCE, IANA_TO_WIN, WIN_TO_IANA
 
 log = logging.getLogger(__name__)
 
@@ -85,13 +88,14 @@ class Protocol:
     _oauth_scopes = {}  # dictionary of {scopes_name: [scope1, scope2]}
 
     def __init__(self, *, protocol_url=None, api_version=None, default_resource=ME_RESOURCE,
-                 casing_function=None, protocol_scope_prefix=None):
+                 casing_function=None, protocol_scope_prefix=None, timezone=None):
         """
         :param protocol_url: the base url used to comunicate with the server
         :param api_version: the api version
         :param default_resource: the default resource to use when there's no other option
         :param casing_function: the casing transform function to be used on api keywords
         :param protocol_scope_prefix: prefix for scopes (in MS GRAPH is 'https://graph.microsoft.com/' + SCOPE)
+        :param timezone: prefered timezone, defaults to the system timezone
         """
         if protocol_url is None or api_version is None:
             raise ValueError('Must provide valid protocol_url and api_version values')
@@ -102,6 +106,7 @@ class Protocol:
         self.default_resource = default_resource
         self.use_default_casing = True if casing_function is None else False  # if true just returns the key without transform
         self.casing_function = casing_function or camelcase
+        self.timezone = timezone or get_localzone()  # pytz timezone
 
         # define any keyword that can be different in this protocol
         self.keyword_data_store = {}
@@ -158,6 +163,34 @@ class Protocol:
             else:
                 return scope
 
+    @staticmethod
+    def get_iana_tz(windows_tz):
+        """ Returns a valid pytz TimeZone (Iana/Olson Timezones) from a given windows TimeZone
+        Note: Windows Timezones are SHIT!
+        """
+        timezone = WIN_TO_IANA.get(windows_tz)
+        if timezone is None:
+            # Nope, that didn't work. Try adding "Standard Time",
+            # it seems to work a lot of times:
+            timezone = WIN_TO_IANA.get(windows_tz + ' Standard Time')
+
+        # Return what we have.
+        if timezone is None:
+            raise pytz.UnknownTimeZoneError("Can't find Windows TimeZone " + windows_tz)
+
+        return timezone
+
+    def get_windows_tz(self, iana_tz=None):
+        """ Returns a valid windows TimeZone from a given pytz TimeZone (Iana/Olson Timezones)
+        Note: Windows Timezones are SHIT!.. no .. really THEY ARE HOLY FUCKING SHIT!
+        """
+        iana_tz = iana_tz or self.timezone
+        timezone = IANA_TO_WIN.get(iana_tz.zone if isinstance(iana_tz, tzinfo) else iana_tz)
+        if timezone is None:
+            raise pytz.UnknownTimeZoneError("Can't find Iana TimeZone " + iana_tz)
+
+        return timezone
+
 
 class MSGraphProtocol(Protocol):
     """ A Microsoft Graph Protocol Implementation """
@@ -166,10 +199,10 @@ class MSGraphProtocol(Protocol):
     _oauth_scope_prefix = 'https://graph.microsoft.com/'
     _oauth_scopes = DEFAULT_SCOPES
 
-    def __init__(self, api_version='v1.0', default_resource=ME_RESOURCE):
+    def __init__(self, api_version='v1.0', default_resource=ME_RESOURCE, **kwargs):
         super().__init__(protocol_url=self._protocol_url, api_version=api_version,
                          default_resource=default_resource, casing_function=camelcase,
-                         protocol_scope_prefix=self._oauth_scope_prefix)
+                         protocol_scope_prefix=self._oauth_scope_prefix, **kwargs)
 
         self.keyword_data_store['message_type'] = 'microsoft.graph.message'
         self.keyword_data_store['file_attachment_type'] = '#microsoft.graph.fileAttachment'
@@ -184,10 +217,10 @@ class MSOffice365Protocol(Protocol):
     _oauth_scope_prefix = 'https://outlook.office.com/'
     _oauth_scopes = DEFAULT_SCOPES
 
-    def __init__(self, api_version='v2.0', default_resource=ME_RESOURCE):
+    def __init__(self, api_version='v2.0', default_resource=ME_RESOURCE, **kwargs):
         super().__init__(protocol_url=self._protocol_url, api_version=api_version,
                          default_resource=default_resource, casing_function=pascalcase,
-                         protocol_scope_prefix=self._oauth_scope_prefix)
+                         protocol_scope_prefix=self._oauth_scope_prefix, **kwargs)
 
         self.keyword_data_store['message_type'] = 'Microsoft.OutlookServices.Message'
         self.keyword_data_store['file_attachment_type'] = '#Microsoft.OutlookServices.FileAttachment'
@@ -204,8 +237,8 @@ class BasicAuthProtocol(MSOffice365Protocol):
 
     _protocol_url = 'https://outlook.office365.com/api/'
 
-    def __init__(self, api_version='v1.0', default_resource=ME_RESOURCE):
-        super().__init__(api_version=api_version, default_resource=default_resource)
+    def __init__(self, api_version='v1.0', default_resource=ME_RESOURCE, **kwargs):
+        super().__init__(api_version=api_version, default_resource=default_resource, **kwargs)
 
 
 class Connection:
@@ -419,11 +452,8 @@ class Connection:
             if 'data' in kwargs and kwargs['headers']['Content-type'] == 'application/json':
                 kwargs['data'] = json.dumps(kwargs['data'])  # autoconvert to json
 
-        # no needed as proxies is set in the session.
-        # if self.proxy:
-        #     kwargs['proxies'] = self.proxy
-
-        log.info('Requesting URL: {}'.format(url))
+        log.info('Requesting ({}) URL: {}'.format(method.upper(), url))
+        log.info('Request parameters: {}'.format(kwargs))
 
         if self.auth_method is AUTH_METHOD.BASIC:
             # # basic authentication
@@ -445,7 +475,7 @@ class Connection:
                 log.info('New token fetched')
                 response = self.session.request(method, url, **kwargs)
 
-        log.info('Received response from URL {}'.format(response.url))
+        log.info('Received response ({}) from URL {}'.format(response.status_code, response.url))
 
         if not response.ok and self.raise_http_errors:
             raise self.raise_api_exception(response)

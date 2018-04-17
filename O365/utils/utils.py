@@ -1,8 +1,7 @@
 import logging
 from enum import Enum
-from tzlocal import get_localzone
-import pytz
 import datetime as dt
+import pytz
 from collections import OrderedDict
 
 ME_RESOURCE = 'me'
@@ -201,7 +200,6 @@ class Query:
         self.new(attribute)
         self._negation = False
         self._filters = []
-        self._localtz = None  # lazy attribute
         self._order_by = OrderedDict()
         self._selects = set()
 
@@ -272,12 +270,13 @@ class Query:
                                             for filter_attr in self._filters
                                             if isinstance(filter_attr, tuple)])
 
-        # any order_by attribute that appears in the filters is is ignored
+        # any order_by attribute that appears in the filters is ignored
+        order_by_dict = self._order_by.copy()
         for filter_oc in filter_order_clauses.keys():
-            direction = self._order_by.pop(filter_oc, None)
+            direction = order_by_dict.pop(filter_oc, None)
             filter_order_clauses[filter_oc] = direction
 
-        filter_order_clauses.update(self._order_by)  # append any remaining order_by clause
+        filter_order_clauses.update(order_by_dict)  # append any remaining order_by clause
 
         if filter_order_clauses:
             return ','.join(['{} {}'.format(attribute, direction if direction else '').strip()
@@ -291,13 +290,6 @@ class Query:
             return ','.join(self._selects)
         else:
             return None
-
-    @property
-    def localtz(self):
-        """ Returns the cached local time zone """
-        if self._localtz is None:
-            self._localtz = get_localzone()
-        return self._localtz
 
     def _get_mapping(self, attribute):
         if attribute:
@@ -354,9 +346,10 @@ class Query:
             if isinstance(word, dt.datetime):
                 if word.tzinfo is None:
                     # if it's a naive datetime, localize the datetime.
-                    word = self.localtz.localize(word)  # localize datetime into local tz
+                    word = self.protocol.timezone.localize(word)  # localize datetime into local tz
+                if word.tzinfo != pytz.utc:
                     word = word.astimezone(pytz.utc)  # transform local datetime to utc
-            word = "'{}'".format(word.isoformat())  # convert datetime utc to isoformat
+            word = "'{}'".format(word.isoformat())  # convert datetime to isoformat
         elif isinstance(word, bool):
             word = str(word).lower()
         return word

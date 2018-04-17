@@ -1,6 +1,5 @@
 import logging
 from dateutil.parser import parse
-from tzlocal import get_localzone
 from enum import Enum
 
 from O365.message import HandleRecipientsMixin, Recipients, Message
@@ -48,7 +47,7 @@ class Contact(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         self.created = cloud_data.get(cc('createdDateTime'), None)
         self.modified = cloud_data.get(cc('lastModifiedDateTime'), None)
 
-        local_tz = get_localzone()
+        local_tz = self.protocol.timezone
         self.created = parse(self.created).astimezone(local_tz) if self.created else None
         self.modified = parse(self.modified).astimezone(local_tz) if self.modified else None
 
@@ -202,7 +201,7 @@ class Contact(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         self.created = contact.get(self._cc('createdDateTime'), None)
         self.modified = contact.get(self._cc('lastModifiedDateTime'), None)
 
-        local_tz = get_localzone()
+        local_tz = self.protocol.timezone
         self.created = parse(self.created).astimezone(local_tz) if self.created else None
         self.modified = parse(self.modified).astimezone(local_tz) if self.modified else None
 

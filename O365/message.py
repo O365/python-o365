@@ -1,6 +1,5 @@
 import logging
 from dateutil.parser import parse
-from tzlocal import get_localzone
 import pytz
 from bs4 import BeautifulSoup as bs
 
@@ -201,7 +200,7 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         self.received = cloud_data.get(cc('receivedDateTime'), None)
         self.sent = cloud_data.get(cc('sentDateTime'), None)
 
-        local_tz = get_localzone()
+        local_tz = self.protocol.timezone
         self.created = parse(self.created).astimezone(local_tz) if self.created else None
         self.received = parse(self.received).astimezone(local_tz) if self.received else None
         self.sent = parse(self.sent).astimezone(local_tz) if self.sent else None

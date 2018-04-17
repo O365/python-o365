@@ -20,13 +20,13 @@ class Account(object):
 
         if auth_method is AUTH_METHOD.BASIC:
             protocol = protocol or BasicAuthProtocol  # using basic auth defaults to Office 365 protocol
-            self.protocol = protocol(default_resource=main_resource) if isinstance(protocol, type) else protocol
+            self.protocol = protocol(default_resource=main_resource, **kwargs) if isinstance(protocol, type) else protocol
             if self.protocol.api_version != 'v1.0' or not isinstance(self.protocol, BasicAuthProtocol):
                 raise RuntimeError(
                     'Basic Authentication only works with Office 365 Api version v1.0 and until November 1 2018.')
         elif auth_method is AUTH_METHOD.OAUTH:
             protocol = protocol or MSGraphProtocol  # using oauth auth defaults to Graph protocol
-            self.protocol = protocol(default_resource=main_resource) if isinstance(protocol, type) else protocol
+            self.protocol = protocol(default_resource=main_resource, **kwargs) if isinstance(protocol, type) else protocol
 
         if not isinstance(self.protocol, Protocol):
             raise ValueError("'protocol' must be a subclass of Protocol")

@@ -223,6 +223,9 @@ class Attachments(ApiComponent):
         else:
             return 'Number of Attachments: {}'.format(attachments)
 
+    def __repr__(self):
+        return self.__str__()
+
     def __bool__(self):
         return bool(len(self.__attachments))
 

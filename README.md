@@ -25,16 +25,17 @@ m.body = "George Best quote: I've stopped drinking, but only while I'm asleep."
 m.send()
 ```
 
-Python 3.4 is the minimum required... I was very tempted to just go for 3.6 and use f-strings. Those are fantastic!
+**Python 3.4 is the minimum required**... I was very tempted to just go for 3.6 and use f-strings. Those are fantastic!
 
 This project was also a learning resource for me. This is a list of not so common python characteristics used in this project:
 - New unpacking technics: `def method(argument, *, with_name=None, **other_params):`
 - Enums: `from enum import Enum`
 - Factory paradigm
 - Package organization
+- Timezone conversion and timezone aware datetimes
 - Etc. (see the code!)
 
-> This project is in early development.
+> **This project is in early development.** Changes that can break your code may be commited. If you want to help please fell free to fork and make pull requests.
 
 ## Table of contents
 
@@ -78,7 +79,7 @@ protocol = MSGraphProtocol(api_version='beta')  # MSGraphProtocol defaults to v1
 
 ##### Resources:
 Each API endpoint requires a resource. This usually defines the owner of the data.
-Every protocol defaults to resource 'ME'. 'ME' is the user which has given consent, but you can change this behaviour but providing a different default resource to the protocol constructor.
+Every protocol defaults to resource 'ME'. 'ME' is the user which has given consent, but you can change this behaviour by providing a different default resource to the protocol constructor.
 
 For example when accesing a shared mailbox:
 
@@ -111,8 +112,6 @@ There are two types of authentication provided:
 - Basic authentication: using just the username and password
 - Oauth authentication: using an authentication token provided after user consent. This is the default authentication.
 
-<span style="color:red">Basic Authentication only works with Office 365 Api version v1.0 and until November 1 2018.</span>
-
 The `Connection` Class handles the authentication.
 
 #### Basic Authentication
@@ -125,6 +124,9 @@ credentials = ('username@example.com', 'my_password')
 
 account = Account(credentials, auth_method=AUTH_METHOD.BASIC)
 ```
+
+**Basic Authentication only works with Office 365 Api version v1.0 and until November 1 2018.**
+
 #### Oauth Authentication
 This is the recommended way of authenticating.
 This section is explained using Microsoft Graph Protocol, almost the same applies to the Office 365 REST API.
@@ -310,7 +312,7 @@ message.save_draft()  # save the message on the cloud as a draft in the drafts f
 
 Working with saved emails is also easy:
 ```python
-query = mailbox.new_query().on_attribute('subject').contains('george best')  # see query object in Utils
+query = mailbox.new_query().on_attribute('subject').contains('george best')  # see Query object in Utils
 messages = mailbox.get_messages(limit=25, query=query)
 
 message = messages[0]  # get the first one
@@ -417,8 +419,52 @@ new_contact.delete()  # Bonus: deteled from the cloud
 
 
 ## Calendar
-Work in progress
+The calendar and events functionality is group in a Schedule object.
 
+A Schedule instance can list and create calendars. It can also list or create events on the default user calendar.
+To use other calendars use a Calendar instance.  
+
+Working with the Schedule instance:
+```python
+import datetime as dt
+
+# ...
+schedule = account.schedule()
+
+new_event = schedule.new_event()  # creates a new event in the user default calendar
+new_event.subject = 'Recruit George Best!'
+new_event.location = 'England'
+
+# naive datetimes will automatically be converted to timezone aware datetime
+#  objects using the local timezone detected or the protocol provided timezone
+new_event.start = dt.datetime(2018, 9, 5, 19, 45) 
+# so new_event.start becomes: datetime.datetime(2018, 9, 5, 19, 45, tzinfo=<DstTzInfo 'Europe/Paris' CEST+2:00:00 DST>)
+
+new_event.recurrence.set_daily(1, end=dt.datetime(2018, 9, 10))
+new_event.remind_before_minutes = 45
+
+new_event.save()
+```
+
+Working with Calendar instances:
+```python
+calendar = schedule.get_calendar(calendar_name='Birthdays')
+
+calendar.name = 'Football players birthdays'
+calendar.update()
+
+q = calendar.new_query('start').ge(dt.datetime(2018, 5, 20)).chain('and').on_attribute('end').le(dt.datetime(2018, 5, 24))
+
+birthdays = calendar.get_events(query=q)
+
+for event in birthdays:
+    if event.subject == 'George Best Birthday':
+        # He died in 2005... but we celebrate anyway!
+        event.accept("I'll attend!")  # send a response accepting
+    else:
+        event.decline("No way I'm comming, I'll be in England", send_response=False)  # decline the event but don't send a reponse to the organizer
+
+```
 
 ## OneDrive
 Work in progress
@@ -472,7 +518,7 @@ When using the Office 365 API you can filter some fields.
 This filtering is tedious as is using [Open Data Protocol (OData)](http://docs.oasis-open.org/odata/odata/v4.0/errata03/os/complete/part2-url-conventions/odata-v4.0-errata03-os-part2-url-conventions-complete.html).
 
 Every `ApiComponent` (such as `MailBox`) implements a new_query method that will return a `Query` instance.
-This `Query` instance can handle the filtering very easily.
+This `Query` instance can handle the filtering (and sorting and selecting) very easily.
 
 For example:
 

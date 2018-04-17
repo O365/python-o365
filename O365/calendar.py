@@ -1,14 +1,25 @@
 import logging
 from enum import Enum
 from dateutil.parser import parse
-from tzlocal import get_localzone
 import datetime as dt
 import pytz
+import calendar
+from bs4 import BeautifulSoup as bs
 
 from O365.utils import Pagination, NEXT_LINK_KEYWORD, ApiComponent, Attachments, Attachment, AttachableMixin, ImportanceLevel
 from O365.message import HandleRecipientsMixin
 
 log = logging.getLogger(__name__)
+
+MONTH_NAMES = [calendar.month_name[x] for x in range(1, 13)]
+
+
+class EventResponse(Enum):
+    Organizer = 'organizer'
+    TentativelyAccepted = 'tentativelyAccepted'
+    Accepted = 'accepted'
+    Declined = 'declined'
+    NotResponded = 'notResponded'
 
 
 class AttendeeType(Enum):
@@ -48,11 +59,11 @@ class CalendarColors(Enum):
 
 
 class EventAttachment(Attachment):
-    _endpoints = {}  # TODO: set attachment endpoints..
+    _endpoints = {'attach': '/events/{id}/attachments'}
 
 
 class EventAttachments(Attachments):
-    _endpoints = {}  # TODO: set attachments endpoints..
+    _endpoints = {'attachments': '/events/{id}/attachments'}
 
 
 class DailyEventFrequency:
@@ -65,121 +76,274 @@ class DailyEventFrequency:
 class EventRecurrence(ApiComponent):
     """ A representation of an event recurrence properties """
 
-    def __init__(self, parent, recurrence):
-        super().__init__(protocol=parent.protocol, main_resource=parent.main_resource)
+    def __init__(self, event, recurrence=None):
+        super().__init__(protocol=event.protocol, main_resource=event.main_resource)
 
+        self._event = event
         recurrence = recurrence or {}
         # recurrence pattern
         recurrence_pattern = recurrence.get(self._cc('pattern'), {})
 
-        self.interval = recurrence_pattern.get(self._cc('interval'), None)
-        self.days_of_week = recurrence_pattern.get(self._cc('daysOfWeek'), set())
-        self.first_day_of_week = recurrence_pattern.get(self._cc('firstDayOfWeek'), None)
-        self.day_of_month = recurrence_pattern.get(self._cc('dayOfMonth'), None)
-        self.month = recurrence_pattern.get(self._cc('month'), None)
-        self.index = recurrence_pattern.get(self._cc('index'), None)
+        self.__interval = recurrence_pattern.get(self._cc('interval'), None)
+        self.__days_of_week = recurrence_pattern.get(self._cc('daysOfWeek'), set())
+        self.__first_day_of_week = recurrence_pattern.get(self._cc('firstDayOfWeek'), None)
+        self.__day_of_month = recurrence_pattern.get(self._cc('dayOfMonth'), None)
+        self.__month = recurrence_pattern.get(self._cc('month'), None)
+        self.__index = recurrence_pattern.get(self._cc('index'), 'first')
 
         # recurrence range
         recurrence_range = recurrence.get(self._cc('range'), {})
 
-        self.ocurrences = recurrence_range.get(self._cc('numberOfOccurrences'), None)
-        self.start_date = recurrence_range.get(self._cc('startDate'), None)
-        self.end_date = recurrence_range.get(self._cc('endDate'), None)
+        self.__ocurrences = recurrence_range.get(self._cc('numberOfOccurrences'), None)
+        self.__start_date = recurrence_range.get(self._cc('startDate'), None)
+        self.__end_date = recurrence_range.get(self._cc('endDate'), None)
+        self.__recurrence_time_zone = recurrence_range.get(self._cc('recurrenceTimeZone'), self.protocol.get_windows_tz())
+        # time and time zones are not considered in recurrence ranges...
+        # I don't know why 'recurrenceTimeZone' is present here
+        # Sending a startDate datetime to the server results in an Error:
+        # "Cannot convert the literal 'datetime' to the expected type 'Edm.Date'"
         if recurrence_range:
-            local_tz = get_localzone()
-            try:
-                # recurrenceTimeZone is expressed using CLDR timezones .. there's no simple way of translating this to tzinfo objects
-                timezone = pytz.timezone(recurrence_range.get(self._cc('recurrenceTimeZone'), 'utc'))
-            except pytz.UnknownTimeZoneError:
-                timezone = local_tz
-            self.start_date = parse(self.start_date).astimezone(timezone) if self.start_date else None
-            if self.start_date and timezone != local_tz:
-                self.start_date = self.start_date.astimezone(local_tz)
-            self.end_date = parse(self.end_date).astimezone(timezone) if self.end_date else None
-            if self.end_date and timezone != local_tz:
-                self.end_date = self.end_date.astimezone(local_tz)
+            self.__start_date = parse(self.__start_date).date() if self.__start_date else None
+            self.__end_date = parse(self.__end_date).date() if self.__end_date else None
+
+    def __str__(self):
+        if self.__interval:
+            pattern = 'Daily: every {} day/s'.format(self.__interval)
+            if self.__days_of_week:
+                days = ' or '.join(list(self.__days_of_week))
+                pattern = 'Relative Monthly: {} {} every {} month/s'.format(self.__index, days, self.__interval)
+                if self.__first_day_of_week:
+                    pattern = 'Weekly: every {} week/s on {}'.format(self.__interval, days)
+                elif self.__month:
+                    pattern = 'Relative Yearly: {} {} every {} year/s on {}'.format(self.__index, days,
+                                                                                    self.__interval,
+                                                                                    MONTH_NAMES[self.__month - 1])
+            elif self.__day_of_month:
+                pattern = 'Absolute Monthly: on day {} every {} month/s'.format(self.__day_of_month, self.__interval)
+                if self.__month:
+                    pattern = 'Absolute Yearly: on {} {} every {} year/s'.format(MONTH_NAMES[self.__month - 1],
+                                                                                 self.__day_of_month,
+                                                                                 self.__interval)
+
+            r_range = ''
+            if self.__start_date:
+                r_range = 'Starting on {}'.format(self.__start_date)
+                ends_on = 'with no end'
+                if self.__end_date:
+                    ends_on = 'ending on {}'.format(self.__end_date)
+                elif self.__ocurrences:
+                    ends_on = 'up to {} ocurrences'.format(self.__ocurrences)
+                r_range = '{} {}'.format(r_range, ends_on)
+            return '{}. {}'.format(pattern, r_range)
+        else:
+            return 'No recurrence enabled'
+
+    def __repr__(self):
+        return self.__str__()
 
     def __bool__(self):
-        return bool(self.interval)
+        return bool(self.__interval)
+
+    def _track_changes(self):
+        """ Update the track_changes on the event to reflect a needed update on this field """
+        self._event._track_changes.add('recurrence')
+
+    @property
+    def interval(self):
+        return self.__interval
+
+    @interval.setter
+    def interval(self, value):
+        self.__interval = value
+        self._track_changes()
+
+    @property
+    def days_of_week(self):
+        return self.__days_of_week
+
+    @days_of_week.setter
+    def days_of_week(self, value):
+        self.__days_of_week = value
+        self._track_changes()
+
+    @property
+    def first_day_of_week(self):
+        return self.__first_day_of_week
+
+    @first_day_of_week.setter
+    def first_day_of_week(self, value):
+        self.__first_day_of_week = value
+        self._track_changes()
+
+    @property
+    def day_of_month(self):
+        return self.__day_of_month
+
+    @day_of_month.setter
+    def day_of_month(self, value):
+        self.__day_of_month = value
+        self._track_changes()
+
+    @property
+    def month(self):
+        return self.__month
+
+    @month.setter
+    def month(self, value):
+        self.__month = value
+        self._track_changes()
+
+    @property
+    def index(self):
+        return self.__index
+
+    @index.setter
+    def index(self, value):
+        self.__index = value
+        self._track_changes()
+
+    @property
+    def ocurrences(self):
+        return self.__ocurrences
+
+    @ocurrences.setter
+    def ocurrences(self, value):
+        self.__ocurrences = value
+        self._track_changes()
+
+    @property
+    def recurrence_time_zone(self):
+        return self.__recurrence_time_zone
+
+    @recurrence_time_zone.setter
+    def recurrence_time_zone(self, value):
+        self.__recurrence_time_zone = value
+        self._track_changes()
+
+    @property
+    def start_date(self):
+        return self.__start_date
+
+    @start_date.setter
+    def start_date(self, value):
+        if not isinstance(value, dt.date):
+            raise ValueError('start_date value must be a valid date object')
+        if isinstance(value, dt.datetime):
+            value = value.date()
+        self.__start_date = value
+        self._track_changes()
+
+    @property
+    def end_date(self):
+        return self.__start_date
+
+    @end_date.setter
+    def end_date(self, value):
+        if not isinstance(value, dt.date):
+            raise ValueError('end_date value must be a valid date object')
+        if isinstance(value, dt.datetime):
+            value = value.date()
+        self.__end_date = value
+        self._track_changes()
 
     def to_api_data(self):
         data = {}
         # recurrence pattern
-        if self.interval and isinstance(self.interval, int):
+        if self.__interval and isinstance(self.__interval, int):
             recurrence_pattern = data[self._cc('pattern')] = {}
             recurrence_pattern[self._cc('type')] = 'daily'
-            recurrence_pattern[self._cc('interval')] = self.interval
-            if self.days_of_week and isinstance(self.days_of_week, (list, tuple, set)):
+            recurrence_pattern[self._cc('interval')] = self.__interval
+            if self.__days_of_week and isinstance(self.__days_of_week, (list, tuple, set)):
                 recurrence_pattern[self._cc('type')] = 'relativeMonthly'
-                recurrence_pattern[self._cc('daysOfWeek')] = list(self.days_of_week)
-                if self.first_day_of_week:
+                recurrence_pattern[self._cc('daysOfWeek')] = list(self.__days_of_week)
+                if self.__first_day_of_week:
                     recurrence_pattern[self._cc('type')] = 'weekly'
-                    recurrence_pattern[self._cc('firstDayOfWeek')] = self.first_day_of_week
-                elif self.month and isinstance(self.month, int):
+                    recurrence_pattern[self._cc('firstDayOfWeek')] = self.__first_day_of_week
+                elif self.__month and isinstance(self.__month, int):
                     recurrence_pattern[self._cc('type')] = 'relativeYearly'
-                    recurrence_pattern[self._cc('month')] = self.month
-                    if self.index:
-                        recurrence_pattern[self._cc('index')] = self.index
+                    recurrence_pattern[self._cc('month')] = self.__month
+                    if self.__index:
+                        recurrence_pattern[self._cc('index')] = self.__index
                 else:
-                    if self.index:
-                        recurrence_pattern[self._cc('index')] = self.index
+                    if self.__index:
+                        recurrence_pattern[self._cc('index')] = self.__index
 
-            elif self.day_of_month and isinstance(self.day_of_month, int):
+            elif self.__day_of_month and isinstance(self.__day_of_month, int):
                 recurrence_pattern[self._cc('type')] = 'absoluteMonthly'
-                recurrence_pattern[self._cc('dayOfMonth')] = self.day_of_month
-                if self.month and isinstance(self.month, int):
+                recurrence_pattern[self._cc('dayOfMonth')] = self.__day_of_month
+                if self.__month and isinstance(self.__month, int):
                     recurrence_pattern[self._cc('type')] = 'absoluteYearly'
-                    recurrence_pattern[self._cc('month')] = self.month
+                    recurrence_pattern[self._cc('month')] = self.__month
 
         # recurrence range
-        if self.start_date:
+        if self.__start_date:
             recurrence_range = data[self._cc('range')] = {}
             recurrence_range[self._cc('type')] = 'noEnd'
-            recurrence_range[self._cc('startDate')] = self.start_date.astimezone(pytz.utc).isoformat()
+            recurrence_range[self._cc('startDate')] = self.__start_date.isoformat()
+            recurrence_range[self._cc('recurrenceTimeZone')] = self.__recurrence_time_zone
 
-            if self.end_date:
+            if self.__end_date:
                 recurrence_range[self._cc('type')] = 'endDate'
-                recurrence_range[self._cc('endDate')] = self.end_date.astimezone(pytz.utc).isoformat()
-            elif self.ocurrences is not None and isinstance(self.ocurrences, int):
+                recurrence_range[self._cc('endDate')] = self.__end_date.isoformat()
+            elif self.__ocurrences is not None and isinstance(self.__ocurrences, int):
                 recurrence_range[self._cc('type')] = 'numbered'
-                recurrence_range[self._cc('numberOfOccurrences')] = self.ocurrences
+                recurrence_range[self._cc('numberOfOccurrences')] = self.__ocurrences
 
         return data
 
     def _clear_pattern(self):
         """ Clears this event recurrence """
-        self.interval = None
-        self.days_of_week = set()
-        self.first_day_of_week = None
-        self.day_of_month = None
-        self.month = None
-        self.index = None
+        # pattern group
+        self.__interval = None
+        self.__days_of_week = set()
+        self.__first_day_of_week = None
+        self.__day_of_month = None
+        self.__month = None
+        self.__index = 'first'
+        # range group
+        self.__start_date = None
+        self.__end_date = None
+        self.__ocurrences = None
 
-    def set_daily(self, interval):
+    def set_range(self, start=None, end=None, ocurrences=None):
+        if start is None:
+            if self.__start_date is None:
+                self.__start_date = dt.date.today()
+        else:
+            self.start_date = start
+
+        if end:
+            self.end_date = end
+        elif ocurrences:
+            self.__ocurrences = ocurrences
+        self._track_changes()
+
+    def set_daily(self, interval, **kwargs):
         self._clear_pattern()
-        self.interval = interval
+        self.__interval = interval
+        self.set_range(**kwargs)
 
-    def set_weekly(self, interval, days_of_week, first_day_of_week):
-        self.set_daily(interval)
-        self.days_of_week = set(days_of_week)
-        self.first_day_of_week = first_day_of_week
+    def set_weekly(self, interval, *, days_of_week, first_day_of_week, **kwargs):
+        self.set_daily(interval, **kwargs)
+        self.__days_of_week = set(days_of_week)
+        self.__first_day_of_week = first_day_of_week
 
-    def set_monthly(self, interval, day_of_month=None, days_of_week=None, index=None):
+    def set_monthly(self, interval, *, day_of_month=None, days_of_week=None, index=None, **kwargs):
         if not day_of_month and not days_of_week:
             raise ValueError('Must provide day_of_month or days_of_week values')
         if day_of_month and days_of_week:
             raise ValueError('Must provide only one of the two options')
-        self.set_daily(interval)
+        self.set_daily(interval, **kwargs)
         if day_of_month:
-            self.day_of_month = day_of_month
+            self.__day_of_month = day_of_month
         elif days_of_week:
-            self.days_of_week = set(days_of_week)
+            self.__days_of_week = set(days_of_week)
             if index:
-                self.index = index
+                self.__index = index
 
-    def set_yearly(self, interval, month, day_of_month=None, days_of_week=None, index=None):
-        self.set_monthly(interval, day_of_month==day_of_month, days_of_week=days_of_week, index=index)
-        self.month = month
+    def set_yearly(self, interval, month, *, day_of_month=None, days_of_week=None, index=None, **kwargs):
+        self.set_monthly(interval, day_of_month=day_of_month, days_of_week=days_of_week, index=index, **kwargs)
+        self.__month = month
 
 
 class ResponseStatus(ApiComponent):
@@ -187,11 +351,14 @@ class ResponseStatus(ApiComponent):
 
     def __init__(self, parent, response_status):
         super().__init__(protocol=parent.protocol, main_resource=parent.main_resource)
-        self.status = response_status.get(self._cc('response'))
-        self.response_time = response_status.get(self._cc('time'))
-        if self.response_time:
-            local_tz = get_localzone()  # calls to get_localzone() are cached so no problem here
-            self.response_time = parse(self.response_time).astimezone(local_tz)
+        self.status = response_status.get(self._cc('response'), None)
+        self.status = None if self.status == 'none' else self.status
+        if self.status:
+            self.response_time = response_status.get(self._cc('time'), None)
+            if self.response_time:
+                self.response_time = parse(self.response_time).astimezone(self.protocol.timezone)
+        else:
+            self.response_time = None
 
     def __str__(self):
         return self.status
@@ -213,6 +380,15 @@ class Attendee:
         self.__attendee_type = AttendeeType.Required
         if attendee_type:
             self.attendee_type = attendee_type
+
+    def __str__(self):
+        if self.name:
+            return '{}: {} ({})'.format(self.attendee_type.name, self.name, self.address)
+        else:
+            return '{}: {}'.format(self.attendee_type.name, self.address)
+
+    def __repr__(self):
+        return self.__str__()
 
     @property
     def response_status(self):
@@ -255,6 +431,9 @@ class Attendees(ApiComponent):
     def __str__(self):
         return 'Attendees Count: {}'.format(len(self.__attendees))
 
+    def __repr__(self):
+        return self.__str__()
+
     def clear(self):
         self.__attendees = []
         self._track_changes()
@@ -267,15 +446,17 @@ class Attendees(ApiComponent):
         """ Add attendees to the parent event """
 
         if attendees:
-            total_attendees = len(self.__attendees)
             if isinstance(attendees, str):
                 self.__attendees.append(Attendee(address=attendees))
+                self._track_changes()
             elif isinstance(attendees, Attendee):
                 self.__attendees.append(attendees)
+                self._track_changes()
             elif isinstance(attendees, tuple):
                 name, address = attendees
                 if address:
                     self.__attendees.append(Attendee(address=address, name=name))
+                    self._track_changes()
             elif isinstance(attendees, list):
                 for attendee in attendees:
                     self.add(attendee)
@@ -294,9 +475,6 @@ class Attendees(ApiComponent):
             else:
                 raise ValueError('Attendees must be an address string, an'
                                  ' Attendee instance, a (name, address) tuple or a list')
-
-            if total_attendees < len(self.__attendees):
-                self._track_changes()
 
     def remove(self, attendees):
         """ Remove the provided attendees from the event """
@@ -336,7 +514,7 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
 
     _endpoints = {
         'calendar': '/calendars/{id}',
-        'event': '/calendar/events/{id}',
+        'event': '/events/{id}',
         'event_default': '/calendar/events',
         'event_calendar': '/calendars/{id}/events'
     }
@@ -367,40 +545,38 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         self.created = cloud_data.get(cc('createdDateTime'), None)
         self.modified = cloud_data.get(cc('lastModifiedDateTime'), None)
 
-        local_tz = get_localzone()
+        local_tz = self.protocol.timezone
         self.created = parse(self.created).astimezone(local_tz) if self.created else None
         self.modified = parse(self.modified).astimezone(local_tz) if self.modified else None
 
-        start = cloud_data.get(cc('start'), {})
-        if isinstance(start, dict):
+        start_obj = cloud_data.get(cc('start'), {})
+        if isinstance(start_obj, dict):
             try:
-                # start is expressed using CLDR timezones .. there's no simple way of translating this to tzinfo objects
-                timezone = pytz.timezone(start.get(self._cc('timeZone'), 'utc'))
+                timezone = pytz.timezone(self.protocol.get_iana_tz(start_obj.get(self._cc('timeZone'), 'UTC')))
             except pytz.UnknownTimeZoneError:
                 timezone = local_tz
-            start = start.get(cc('dateTime'), None)
+            start = start_obj.get(cc('dateTime'), None)
             start = timezone.localize(parse(start)) if start else None
             if start and timezone != local_tz:
                 start = start.astimezone(local_tz)
         else:
             # Outlook v1.0 api compatibility
-            start = local_tz.localize(parse(start)) if start else None
+            start = local_tz.localize(parse(start_obj)) if start_obj else None
         self.__start = start
 
-        end = cloud_data.get(cc('end'), {})
-        if isinstance(end, dict):
+        end_obj = cloud_data.get(cc('end'), {})
+        if isinstance(end_obj, dict):
             try:
-                # end is expressed using CLDR timezones .. there's no simple way of translating this to tzinfo objects
-                timezone = pytz.timezone(end.get(self._cc('timeZone'), 'utc'))
+                timezone = pytz.timezone(self.protocol.get_iana_tz(end_obj.get(self._cc('timeZone'), 'UTC')))
             except pytz.UnknownTimeZoneError:
                 timezone = local_tz
-            end = end.get(cc('dateTime'), None)
+            end = end_obj.get(cc('dateTime'), None)
             end = timezone.localize(parse(end)) if end else None
             if end and timezone != local_tz:
                 end = end.astimezone(local_tz)
         else:
             # Outlook v1.0 api compatibility
-            end = local_tz.localize(parse(end)) if end else None
+            end = local_tz.localize(parse(end_obj)) if end_obj else None
         self.__end = end
 
         self.has_attachments = cloud_data.get(cc('hasAttachments'), False)
@@ -411,13 +587,13 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         self.ical_uid = cloud_data.get(cc('iCalUId'), None)
         self.__importance = ImportanceLevel(cloud_data.get(cc('importance'), 'normal') or 'normal')
         self.__is_all_day = cloud_data.get(cc('isAllDay'), False)
-        self.__is_cancelled = cloud_data.get(cc('isCancelled'), False)
+        self.is_cancelled = cloud_data.get(cc('isCancelled'), False)
         self.is_organizer = cloud_data.get(cc('isOrganizer'), True)
         self.__location = cloud_data.get(cc('location'), {}).get(cc('displayName'), '')
         self.locations = cloud_data.get(cc('locations'), [])  # TODO
         self.online_meeting_url = cloud_data.get(cc('onlineMeetingUrl'), None)
         self.__organizer = self._recipient_from_cloud(cloud_data.get(cc('organizer'), None))
-        self.__recurrence = EventRecurrence(parent=self, recurrence=cloud_data.get(cc('recurrence'), None))
+        self.__recurrence = EventRecurrence(event=self, recurrence=cloud_data.get(cc('recurrence'), None))
         self.__is_reminder_on = cloud_data.get(cc('isReminderOn'), None)
         self.__remind_before_minutes = cloud_data.get(cc('reminderMinutesBeforeStart'), 15)
         self.__response_requested = cloud_data.get(cc('responseRequested'), True)
@@ -445,10 +621,12 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
                 cc('contentType'): self.body_type,
                 cc('content'): self.__body},
             cc('start'): {
-                cc('dateTime'): self.__start.astimezone(pytz.utc).isoformat()
+                cc('dateTime'): self.__start.strftime('%Y-%m-%dT%H:%M:%S'),
+                cc('timeZone'): self.protocol.get_windows_tz(self.__start.tzinfo.zone)
             },
             cc('end'): {
-                cc('dateTime'): self.__end.astimezone(pytz.utc).isoformat()
+                cc('dateTime'): self.__end.strftime('%Y-%m-%dT%H:%M:%S'),
+                cc('timeZone'): self.protocol.get_windows_tz(self.__end.tzinfo.zone)
             },
             cc('attendees'): self.__attendees.to_api_data(),
             cc('location'): {cc('displayName'): self.__location},
@@ -469,8 +647,8 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
             data[cc('attachments')] = self.__attachments.to_api_data()
 
         if restrict_keys:
-            for key in restrict_keys:
-                if key in data:
+            for key in list(data.keys()):
+                if key not in restrict_keys:
                     del data[key]
         return data
 
@@ -499,7 +677,15 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
     @start.setter
     def start(self, value):
         if not isinstance(value, dt.date):
-            raise ValueError("'start' must be a valid datime object")
+            raise ValueError("'start' must be a valid datetime object")
+        if not isinstance(value, dt.datetime):
+            # force datetime
+            value = dt.datetime(value.year, value.month, value.day)
+        if value.tzinfo is None:
+            # localize datetime
+            value = self.protocol.timezone.localize(value)
+        elif value.tzinfo != self.protocol.timezone:
+            value = value.astimezone(self.protocol.timezone)
         self.__start = value
         if not self.end:
             self.end = self.__start + dt.timedelta(minutes=30)
@@ -511,6 +697,16 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
 
     @end.setter
     def end(self, value):
+        if not isinstance(value, dt.date):
+            raise ValueError("'end' must be a valid datetime object")
+        if not isinstance(value, dt.datetime):
+            # force datetime
+            value = dt.datetime(value.year, value.month, value.day)
+        if value.tzinfo is None:
+            # localize datetime
+            value = self.protocol.timezone.localize(value)
+        elif value.tzinfo != self.protocol.timezone:
+            value = value.astimezone(self.protocol.timezone)
         self.__end = value
         self._track_changes.add('end')
 
@@ -530,16 +726,24 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
     @is_all_day.setter
     def is_all_day(self, value):
         self.__is_all_day = value
+        if value:
+            # Api requirement: start and end must be set to midnight
+            # is_all_day needs event.start included in the request on updates
+            # is_all_day needs event.end included in the request on updates
+            start = self.__start or dt.date.today()
+            end = self.__end or dt.date.today()
+
+            if (start + dt.timedelta(hours=24)) > end:
+                # Api requires that under is_all_day=True start and end must be at least 24 hours away
+                end = start + dt.timedelta(hours=24)
+
+            # set to midnight
+            start = dt.datetime(start.year, start.month, start.day)
+            end = dt.datetime(end.year, end.month, end.day)
+
+            self.start = start
+            self.end = end
         self._track_changes.add('isAllDay')
-
-    @property
-    def is_cancelled(self):
-        return self.__is_cancelled
-
-    @is_cancelled.setter
-    def is_cancelled(self, value):
-        self.__is_cancelled = value
-        self._track_changes.add('isCancelled')
 
     @property
     def location(self):
@@ -664,6 +868,9 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
                 return False  # there's nothing to update
             url = self.build_url(self._endpoints.get('event').format(id=self.object_id))
             method = self.con.patch
+            if not self._track_changes:
+                # no changes to save...
+                return True
             data = self.to_api_data(restrict_keys=self._track_changes)
         else:
             # new event
@@ -675,6 +882,7 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
             data = self.to_api_data()
 
         try:
+            log.debug('Saving event properties: {}'.format(data.keys()))
             response = method(url, data=data)
         except Exception as e:
             log.error('Error while saving event. Error: {error}'.format(error=str(e)))
@@ -684,7 +892,6 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
             log.debug('Saving event Request failed: {}'.format(response.reason))
             return False
 
-        local_tz = get_localzone()
         if not self.object_id:
             # new event
             event = response.json()
@@ -693,12 +900,83 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
             self.created = event.get(self._cc('createdDateTime'), None)
             self.modified = event.get(self._cc('lastModifiedDateTime'), None)
 
-            self.created = parse(self.created).astimezone(local_tz) if self.created else None
-            self.modified = parse(self.modified).astimezone(local_tz) if self.modified else None
+            self.created = parse(self.created).astimezone(self.protocol.timezone) if self.created else None
+            self.modified = parse(self.modified).astimezone(self.protocol.timezone) if self.modified else None
         else:
-            self.modified = dt.datetime.now().astimezone(local_tz)
+            self.modified = self.protocol.timezone.localize(dt.datetime.now())
 
         return True
+
+    def accept_event(self, comment=None, *, send_response=True, tentatively=False):
+
+        if not self.object_id:
+            raise RuntimeError("Can't accept event that doesn't exist")
+
+        url = self.build_url(self._endpoints.get('event').format(id=self.object_id))
+        url = url + '/tentativelyAccept' if tentatively else '/accept'
+
+        data = {}
+        if comment and isinstance(comment, str):
+            data[self._cc('comment')] = comment
+        if send_response is False:
+            data[self._cc('sendResponse')] = send_response
+
+        try:
+            response = self.con.post(url, data=data or None)
+        except Exception as e:
+            log.error('Error while accepting event. Error: {error}'.format(error=str(e)))
+            return False
+
+        if response.status_code != 202:
+            log.debug('Accepting event Request failed: {}'.format(response.reason))
+            return False
+
+        return True
+
+    def decline_event(self, comment=None, *, send_response=True):
+
+        if not self.object_id:
+            raise RuntimeError("Can't accept event that doesn't exist")
+
+        url = self.build_url(self._endpoints.get('event').format(id=self.object_id))
+        url = url + '/decline'
+
+        data = {}
+        if comment and isinstance(comment, str):
+            data[self._cc('comment')] = comment
+        if send_response is False:
+            data[self._cc('sendResponse')] = send_response
+
+        try:
+            response = self.con.post(url, data=data or None)
+        except Exception as e:
+            log.error('Error while declining event. Error: {error}'.format(error=str(e)))
+            return False
+
+        if response.status_code != 202:
+            log.debug('Declining event Request failed: {}'.format(response.reason))
+            return False
+
+        return True
+
+    def get_body_text(self):
+        """ Parse the body html and returns the body text using bs4 """
+        if self.body_type != 'HTML':
+            return self.body
+
+        try:
+            soup = bs(self.body, 'html.parser')
+        except Exception as e:
+            return self.body
+        else:
+            return soup.body.text
+
+    def get_body_soup(self):
+        """ Returns the beautifulsoup4 of the html body"""
+        if self.body_type != 'HTML':
+            return None
+        else:
+            return bs(self.body, 'html.parser')
 
 
 class Calendar(ApiComponent, HandleRecipientsMixin):
