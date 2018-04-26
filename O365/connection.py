@@ -86,6 +86,7 @@ class Protocol:
     _protocol_url = 'not_defined'  # Main url to request. Override in subclass
     _oauth_scope_prefix = ''  # prefix for scopes (in MS GRAPH is 'https://graph.microsoft.com/' + SCOPE)
     _oauth_scopes = {}  # dictionary of {scopes_name: [scope1, scope2]}
+    _protocol_endpoint_transform = {}  # a dictionary of endpoints transformations
 
     def __init__(self, *, protocol_url=None, api_version=None, default_resource=ME_RESOURCE,
                  casing_function=None, protocol_scope_prefix=None, timezone=None):
@@ -163,6 +164,13 @@ class Protocol:
             else:
                 return scope
 
+    def transform_endpoint(self, endpoint):
+        """ Converts and endpoint by replacing keywords """
+        for key_word, replacement in self._protocol_endpoint_transform.items():
+            if key_word in endpoint:
+                endpoint = endpoint.replace(key_word, replacement)
+        return endpoint
+
     @staticmethod
     def get_iana_tz(windows_tz):
         """ Returns a valid pytz TimeZone (Iana/Olson Timezones) from a given windows TimeZone
@@ -193,7 +201,9 @@ class Protocol:
 
 
 class MSGraphProtocol(Protocol):
-    """ A Microsoft Graph Protocol Implementation """
+    """ A Microsoft Graph Protocol Implementation
+    https://docs.microsoft.com/en-us/outlook/rest/compare-graph-outlook
+    """
 
     _protocol_url = 'https://graph.microsoft.com/'
     _oauth_scope_prefix = 'https://graph.microsoft.com/'
@@ -211,7 +221,9 @@ class MSGraphProtocol(Protocol):
 
 
 class MSOffice365Protocol(Protocol):
-    """ A Microsoft Office 365 Protocol Implementation """
+    """ A Microsoft Office 365 Protocol Implementation
+    https://docs.microsoft.com/en-us/outlook/rest/compare-graph-outlook
+    """
 
     _protocol_url = 'https://outlook.office.com/api/'
     _oauth_scope_prefix = 'https://outlook.office.com/'
@@ -236,6 +248,9 @@ class BasicAuthProtocol(MSOffice365Protocol):
     """
 
     _protocol_url = 'https://outlook.office365.com/api/'
+    _protocol_endpoint_transform = {
+        'mailFolders': 'Folders'
+    }
 
     def __init__(self, api_version='v1.0', default_resource=ME_RESOURCE, **kwargs):
         super().__init__(api_version=api_version, default_resource=default_resource, **kwargs)
@@ -476,6 +491,18 @@ class Connection:
                 response = self.session.request(method, url, **kwargs)
 
         log.info('Received response ({}) from URL {}'.format(response.status_code, response.url))
+
+        if response.status_code == 429:  # too many requests
+            # Status Code 429 is not automatically retried by default.
+            retry_after = response.headers.get('retry-after')
+            reason = response.headers.get('rate-limit-reason')
+            log.info('The Server respond with 429: Too Many Requests. Reason {}. Retry After {} seconds.'.format(reason, retry_after))
+            # retry after seconds:
+            if retry_after < 6:
+                time.sleep(retry_after)
+            log.info('Retrying request now after waiting for {} seconds'.format(retry_after))
+            response = self.session.request(method, url, **kwargs)  # retrying request
+            log.info('Received response ({}) from URL {}'.format(response.status_code, response.url))
 
         if not response.ok and self.raise_http_errors:
             raise self.raise_api_exception(response)
