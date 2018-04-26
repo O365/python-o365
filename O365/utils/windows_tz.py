@@ -411,6 +411,7 @@ IANA_TO_WIN = {
     'Europe/Zaporozhye': 'FLE Standard Time',
     'Europe/Zurich': 'W. Europe Standard Time',
     'GMT': 'GMT Standard Time',
+    'GB': 'GMT Standard Time',
     'Indian/Antananarivo': 'E. Africa Standard Time',
     'Indian/Chagos': 'Central Asia Standard Time',
     'Indian/Christmas': 'SE Asia Standard Time',
