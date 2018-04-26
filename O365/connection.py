@@ -182,12 +182,12 @@ class Protocol:
 
     def get_windows_tz(self, iana_tz=None):
         """ Returns a valid windows TimeZone from a given pytz TimeZone (Iana/Olson Timezones)
-        Note: Windows Timezones are SHIT!.. no .. really THEY ARE HOLY FUCKING SHIT!
+        Note: Windows Timezones are SHIT!.. no .. really THEY ARE HOLY FUCKING SHIT!. I AGREE
         """
         iana_tz = iana_tz or self.timezone
         timezone = IANA_TO_WIN.get(iana_tz.zone if isinstance(iana_tz, tzinfo) else iana_tz)
         if timezone is None:
-            raise pytz.UnknownTimeZoneError("Can't find Iana TimeZone " + iana_tz)
+            raise pytz.UnknownTimeZoneError("Can't find Iana TimeZone " + iana_tz.zone)
 
         return timezone
 
