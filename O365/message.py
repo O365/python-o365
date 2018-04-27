@@ -1,4 +1,5 @@
 import logging
+import datetime as dt
 from dateutil.parser import parse
 import pytz
 from bs4 import BeautifulSoup as bs
@@ -11,9 +12,11 @@ log = logging.getLogger(__name__)
 class Recipient:
     """ A single Recipient """
 
-    def __init__(self, address=None, name=None):
-            self.address = address or ''
-            self.name = name or ''
+    def __init__(self, address=None, name=None, parent=None, field=None):
+        self._address = address or ''
+        self._name = name or ''
+        self._parent = parent
+        self._field = field
 
     def __bool__(self):
         return bool(self.address)
@@ -27,72 +30,109 @@ class Recipient:
     def __repr__(self):
         return self.__str__()
 
+    def _track_changes(self):
+        """ Update the track_changes on the parent to reflect a needed update on this field """
+        if self._field and getattr(self._parent, '_track_changes', None):
+            self._parent._track_changes.add(self._field)
+
+    @property
+    def address(self):
+        return self._address
+
+    @address.setter
+    def address(self, value):
+        self._address = value
+        self._track_changes()
+
+    @property
+    def name(self):
+        return self._name
+
+    @name.setter
+    def name(self, value):
+        self._name = value
+        self._track_changes()
+
 
 class Recipients:
     """ A Sequence of Recipients """
 
-    def __init__(self, recipients=None):
+    def __init__(self, recipients=None, parent=None, field=None):
         """ Recipients must be a list of either address strings or tuples (name, address) or dictionary elements """
-        self.recipients = []
+        self._parent = parent
+        self._field = field
+        self._recipients = []
         if recipients:
             self.add(recipients)
 
     def __iter__(self):
-        return iter(self.recipients)
+        return iter(self._recipients)
 
     def __getitem__(self, key):
-        return self.recipients[key]
+        return self._recipients[key]
 
     def __contains__(self, item):
-        return item in {recipient.address for recipient in self.recipients}
+        return item in {recipient.address for recipient in self._recipients}
 
     def __bool__(self):
-        return bool(len(self.recipients))
+        return bool(len(self._recipients))
 
     def __len__(self):
-        return len(self.recipients)
+        return len(self._recipients)
 
     def __str__(self):
-        return 'Recipients count: {}'.format(len(self.recipients))
+        return 'Recipients count: {}'.format(len(self._recipients))
 
     def __repr__(self):
         return self.__str__()
 
+    def _track_changes(self):
+        """ Update the track_changes on the parent to reflect a needed update on this field """
+        if self._field and getattr(self._parent, '_track_changes', None):
+            self._parent._track_changes.add(self._field)
+
     def clear(self):
-        self.recipients = []
+        self._recipients = []
+        self._track_changes()
 
     def add(self, recipients):
         """ Recipients must be a list of either address strings or tuples (name, address) or dictionary elements """
 
         if recipients:
             if isinstance(recipients, str):
-                self.recipients.append(Recipient(address=recipients))
+                self._recipients.append(Recipient(address=recipients, parent=self._parent, field=self._field))
             elif isinstance(recipients, Recipient):
-                self.recipients.append(recipients)
+                self._recipients.append(recipients)
             elif isinstance(recipients, tuple):
                 name, address = recipients
                 if address:
-                    self.recipients.append(Recipient(address=address, name=name))
+                    self._recipients.append(Recipient(address=address, name=name, parent=self._parent, field=self._field))
             elif isinstance(recipients, list):
                 for recipient in recipients:
                     self.add(recipient)
             else:
                 raise ValueError('Recipients must be an address string, a'
                                  ' Recipient instance, a (name, address) tuple or a list')
+            self._track_changes()
 
     def remove(self, address):
         """ Remove an address or multiple addreses """
         recipients = []
         if isinstance(address, str):
             address = {address}  # set
-        for recipient in self.recipients:
+        elif isinstance(address, (list, tuple)):
+            address = set(address)
+
+        for recipient in self._recipients:
             if recipient.address not in address:
                 recipients.append(recipient)
-        self.recipients = recipients
+        if len(recipients) != len(self._recipients):
+            self._track_changes()
+        self._recipients = recipients
 
     def get_first_recipient_with_address(self):
         """ Returns the first recipient found with a non blank address"""
-        recipients_with_address = [recipient for recipient in self.recipients if recipient.address]
+        recipients_with_address = [recipient for recipient in self._recipients if recipient.address]
         if recipients_with_address:
             return recipients_with_address[0]
         else:
@@ -117,11 +157,11 @@ class MessageAttachments(Attachments):
 
     def get_attachement(self, attachment):
 
-        # TODO: esto son pruebas
+        # TODO: testing ...
 
-        url = self.build_url(self._endpoints.get('attachment').format(id=self.parent.object_id, ida=attachment.attachment_id))
+        url = self.build_url(self._endpoints.get('attachment').format(id=self._parent.object_id, ida=attachment.attachment_id))
 
-        response = self.parent.con.get(url, params={'$expand': 'microsoft.graph.itemAttachment/Item'})
+        response = self._parent.con.get(url, params={'$expand': 'microsoft.graph.itemAttachment/Item'})
 
         attachment = response.json()
 
@@ -130,21 +170,21 @@ class MessageAttachments(Attachments):
 
 class HandleRecipientsMixin:
 
-    def _recipients_from_cloud(self, recipients):
+    def _recipients_from_cloud(self, recipients, field=None):
         """ Transform a recipient from cloud data to object data """
         recipients_data = []
         for recipient in recipients:
-            recipients_data.append(self._recipient_from_cloud(recipient))
-        return Recipients(recipients_data)
+            recipients_data.append(self._recipient_from_cloud(recipient, field=field))
+        return Recipients(recipients_data, parent=self, field=field)
 
-    def _recipient_from_cloud(self, recipient):
+    def _recipient_from_cloud(self, recipient, field=None):
         """ Transform a recipient from cloud data to object data """
 
         if recipient:
             recipient = recipient.get(self._cc('emailAddress'), recipient if isinstance(recipient, dict) else {})
             address = recipient.get(self._cc('address'), '')
             name = recipient.get(self._cc('name'), '')
-            return Recipient(address=address, name=name)
+            return Recipient(address=address, name=name, parent=self, field=field)
         else:
             return Recipient()
 
@@ -194,36 +234,86 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         cloud_data = kwargs.get(self._cloud_data_key, {})
         cc = self._cc  # alias to shorten the code
 
-        self._track_changes = set()  # TODO: change update method on message...
+        self._track_changes = set()  # internal to know which properties need to be updated on the server
         self.object_id = cloud_data.get(cc('id'), None)
-        self.created = cloud_data.get(cc('createdDateTime'), cloud_data.get(cc('dateTimeCreated'), None))  # fallback to office365 v1.0
-        self.received = cloud_data.get(cc('receivedDateTime'), cloud_data.get(cc('dateTimeReceived'), None))  # fallback to office365 v1.0
-        self.sent = cloud_data.get(cc('sentDateTime'), cloud_data.get(cc('dateTimeSent'), None))  # fallback to office365 v1.0
+
+        self.__created = cloud_data.get(cc('createdDateTime'), cloud_data.get(cc('dateTimeCreated'), None))  # fallback to office365 v1.0
+        self.__modified = cloud_data.get(cc('lastModifiedDateTime'), cloud_data.get(cc('dateTimeModified'), None))  # fallback to office365 v1.0
+        self.__received = cloud_data.get(cc('receivedDateTime'), cloud_data.get(cc('dateTimeReceived'), None))  # fallback to office365 v1.0
+        self.__sent = cloud_data.get(cc('sentDateTime'), cloud_data.get(cc('dateTimeSent'), None))  # fallback to office365 v1.0
 
         local_tz = self.protocol.timezone
-        self.created = parse(self.created).astimezone(local_tz) if self.created else None
-        self.received = parse(self.received).astimezone(local_tz) if self.received else None
-        self.sent = parse(self.sent).astimezone(local_tz) if self.sent else None
+        self.__created = parse(self.__created).astimezone(local_tz) if self.__created else None
+        self.__modified = parse(self.__modified).astimezone(local_tz) if self.__modified else None
+        self.__received = parse(self.__received).astimezone(local_tz) if self.__received else None
+        self.__sent = parse(self.__sent).astimezone(local_tz) if self.__sent else None
 
         self.__attachments = MessageAttachments(parent=self, attachments=[])
         self.has_attachments = cloud_data.get(cc('hasAttachments'), 0)
         if self.has_attachments and download_attachments:
             self.attachments.download_attachments()
-        self.subject = cloud_data.get(cc('subject'), '')
+        self.__subject = cloud_data.get(cc('subject'), '')
         body = cloud_data.get(cc('body'), {})
-        self.body = body.get(cc('content'), '')
+        self.__body = body.get(cc('content'), '')
         self.body_type = body.get(cc('contentType'), 'HTML')  # default to HTML for new messages
-        self.__sender = self._recipient_from_cloud(cloud_data.get(cc('from'), None))
-        self.__to = self._recipients_from_cloud(cloud_data.get(cc('toRecipients'), []))
-        self.__cc = self._recipients_from_cloud(cloud_data.get(cc('ccRecipients'), []))
-        self.__bcc = self._recipients_from_cloud(cloud_data.get(cc('bccRecipients'), []))
-        self.__reply_to = self._recipients_from_cloud(cloud_data.get(cc('replyTo'), []))
+        self.__sender = self._recipient_from_cloud(cloud_data.get(cc('from'), None), field='from')
+        self.__to = self._recipients_from_cloud(cloud_data.get(cc('toRecipients'), []), field='toRecipients')
+        self.__cc = self._recipients_from_cloud(cloud_data.get(cc('ccRecipients'), []), field='ccRecipients')
+        self.__bcc = self._recipients_from_cloud(cloud_data.get(cc('bccRecipients'), []), field='bccRecipients')
+        self.__reply_to = self._recipients_from_cloud(cloud_data.get(cc('replyTo'), []), field='replyTo')
         self.__categories = cloud_data.get(cc('categories'), [])
         self.__importance = ImportanceLevel((cloud_data.get(cc('importance'), 'normal') or 'normal').lower())   # lower because of office365 v1.0
-        self.is_read = cloud_data.get(cc('isRead'), None)
-        self.is_draft = cloud_data.get(cc('isDraft'), kwargs.get('is_draft', True))  # a message is a draft by default
+        self.__is_read = cloud_data.get(cc('isRead'), None)
+        self.__is_draft = cloud_data.get(cc('isDraft'), kwargs.get('is_draft', True))  # a message is a draft by default
         self.conversation_id = cloud_data.get(cc('conversationId'), None)
         self.folder_id = cloud_data.get(cc('parentFolderId'), None)
+
+    @property
+    def is_read(self):
+        return self.__is_read
+
+    @is_read.setter
+    def is_read(self, value):
+        self.__is_read = value
+        self._track_changes.add('isRead')
+
+    @property
+    def is_draft(self):
+        return self.__is_draft
+
+    @property
+    def subject(self):
+        return self.__subject
+
+    @subject.setter
+    def subject(self, value):
+        self.__subject = value
+        self._track_changes.add('subject')
+
+    @property
+    def body(self):
+        return self.__body
+
+    @body.setter
+    def body(self, value):
+        self.__body = value
+        self._track_changes.add('body')
+
+    @property
+    def created(self):
+        return self.__created
+
+    @property
+    def modified(self):
+        return self.__modified
+
+    @property
+    def received(self):
+        return self.__received
+
+    @property
+    def sent(self):
+        return self.__sent
 
     @property
     def attachments(self):
@@ -239,11 +329,16 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
     def sender(self, value):
         """ sender is a property to force to be allways a Recipient class """
         if isinstance(value, Recipient):
+            if value._parent is None:
+                value._parent = self
+                value._field = 'from'
             self.__sender = value
         elif isinstance(value, str):
             self.__sender.address = value
+            self.__sender.name = ''
         else:
             raise ValueError('sender must be an address string or a Recipient object')
+        self._track_changes.add('from')
 
     @property
     def to(self):
@@ -279,6 +374,7 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
             self.__categories = list(value)
         else:
             raise ValueError('categories must be a list')
+        self._track_changes.add('categories')
 
     @property
     def importance(self):
@@ -287,9 +383,12 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
     @importance.setter
     def importance(self, value):
         self.__importance = value if isinstance(value, ImportanceLevel) else ImportanceLevel(value)
+        self._track_changes.add('importance')
 
-    def to_api_data(self):
-        """ Returns a dict representation of this message prepared to be send to the cloud """
+    def to_api_data(self, restrict_keys=None):
+        """ Returns a dict representation of this message prepared to be send to the cloud
+        :param restrict_keys: a set of keys to restrict the returned data to.
+        """
 
         cc = self._cc  # alias to shorten the code
 
@@ -306,7 +405,7 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
             cc('importance'): self.importance.value
         }
 
-        if self.object_id and not self.is_draft:
+        if self.object_id and not self.__is_draft:
             # return the whole signature of this message
 
             message[cc('id')] = self.object_id
@@ -317,22 +416,27 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
             message[cc('from')] = self._recipient_to_cloud(self.sender)
             message[cc('categories')] = self.categories
             message[cc('isRead')] = self.is_read
-            message[cc('isDraft')] = self.is_draft
+            message[cc('isDraft')] = self.__is_draft
             message[cc('conversationId')] = self.conversation_id
             message[cc('parentFolderId')] = self.folder_id  # this property does not form part of the message itself
         else:
             if self.sender and self.sender.address:
                 message[cc('from')] = self._recipient_to_cloud(self.sender)
 
+        if restrict_keys:
+            for key in list(message.keys()):
+                if key not in restrict_keys:
+                    del message[key]
+
         return message
 
     def send(self, save_to_sent_folder=True):
         """ Sends this message. """
 
-        if self.object_id and not self.is_draft:
+        if self.object_id and not self.__is_draft:
             return RuntimeError('Not possible to send a message that is not new or a draft. Use Reply or Forward instead.')
 
-        if self.is_draft and self.object_id:
+        if self.__is_draft and self.object_id:
             url = self.build_url(self._endpoints.get('send_draft').format(id=self.object_id))
             data = None
         else:
@@ -352,7 +456,7 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
             return False
 
         self.object_id = 'sent_message' if not self.object_id else self.object_id
-        self.is_draft = False
+        self.__is_draft = False
 
         return True
 
@@ -361,7 +465,7 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         Creates a new message that is a reply to this message.
         :param to_all: replies to all the recipients instead to just the sender
         """
-        if not self.object_id or self.is_draft:
+        if not self.object_id or self.__is_draft:
             raise RuntimeError("Can't reply to this message")
 
         if to_all:
@@ -388,7 +492,7 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         """
         Creates a new message that is a forward of this message.
         """
-        if not self.object_id or self.is_draft:
+        if not self.object_id or self.__is_draft:
             raise RuntimeError("Can't forward this message")
 
         url = self.build_url(self._endpoints.get('forward_message').format(id=self.object_id))
@@ -429,7 +533,7 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
 
     def mark_as_read(self):
         """ Marks this message as read in the cloud."""
-        if self.object_id is None or self.is_draft:
+        if self.object_id is None or self.__is_draft:
             raise RuntimeError('Attempting to mark as read an unsaved Message')
 
         data = {self._cc('isRead'): True}
@@ -520,61 +624,57 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         # Everything received from the cloud must be passed with self._cloud_data_key
         return self.__class__(parent=self, **{self._cloud_data_key: message})
 
-    def update_category(self, categories):
-        """ Update this message categories """
-        if not isinstance(categories, (list, tuple)):
-            raise ValueError('Categories must be a list or tuple')
-
-        if self.object_id is None:
-            raise RuntimeError('Attempting to update an unsaved Message')
-
-        data = {self._cc('categories'): categories}
-
-        url = self.build_url(self._endpoints.get('get_message').format(id=self.object_id))
-        try:
-            response = self.con.patch(url, data=data)
-        except Exception as e:
-            log.error('Categories not updated. Error: {}'.format(str(e)))
-            return False
-
-        if response.status_code != 200:
-            log.debug('Categories not updated. Reason: {}'.format(response.reason))
-            return False
-
-        self.categories = response.json().get(self._cc('categories'), [])
-        return True
-
     def save_draft(self, target_folder=WellKnowFolderNames.DRAFTS):
         """ Save this message as a draft on the cloud """
 
-        if not self.is_draft:
-            raise RuntimeError('Only draft messages can be saved as drafts')
         if self.object_id:
-            raise RuntimeError('This message has been already saved to the cloud')
+            # update message
+            if not self.__is_draft:
+                raise RuntimeError('Only draft messages can be updated')
+            if not self._track_changes:
+                return True  # there's nothing to update
+            url = self.build_url(self._endpoints.get('get_message').format(id=self.object_id))
+            method = self.con.patch
+            data = self.to_api_data(restrict_keys=self._track_changes)
+        else:
+            # new message
+            if not self.__is_draft:
+                raise RuntimeError('Only draft messages can be saved as drafts')
+            if not isinstance(target_folder, str):
+                target_folder = getattr(target_folder, 'folder_id', None)
 
-        data = self.to_api_data()
-
-        if not isinstance(target_folder, str):
-            target_folder = getattr(target_folder, 'folder_id', None)
-
-        target_folder = target_folder or WellKnowFolderNames.DRAFTS
-        target_folder = target_folder.value if isinstance(target_folder, WellKnowFolderNames) else target_folder
-
-        url = self.build_url(self._endpoints.get('create_draft_folder').format(id=target_folder))
+            target_folder = target_folder or WellKnowFolderNames.DRAFTS
+            target_folder = target_folder.value if isinstance(target_folder, WellKnowFolderNames) else target_folder
+            url = self.build_url(self._endpoints.get('create_draft_folder').format(id=target_folder))
+            method = self.con.post
+            data = self.to_api_data()
 
         try:
-            response = self.con.post(url, data=data)
+            log.debug('Saving message properties: {}'.format(data.keys()))
+            response = method(url, data=data)
         except Exception as e:
-            log.error('Error saving draft. Error: {}'.format(str(e)))
+            log.error('Error saving message. Error: {}'.format(str(e)))
             return False
 
-        if response.status_code != 201:
+        if response.status_code not in (200, 201):  # 200 updated, 201 created
             log.debug('Saving draft Request failed: {}'.format(response.reason))
             return False
 
-        message = response.json()
-        self.object_id = message.get(self._cc('id'), None)
-        self.folder_id = message.get(self._cc('parentFolderId'), None)
+        if not self.object_id:
+            # new message
+            message = response.json()
+
+            self.object_id = message.get(self._cc('id'), None)
+            self.folder_id = message.get(self._cc('parentFolderId'), None)
+
+            self.__created = message.get(self._cc('createdDateTime'), message.get(self._cc('dateTimeCreated'), None))  # fallback to office365 v1.0
+            self.__modified = message.get(self._cc('lastModifiedDateTime'), message.get(self._cc('dateTimeModified'), None))  # fallback to office365 v1.0
+
+            self.__created = parse(self.__created).astimezone(self.protocol.timezone) if self.__created else None
+            self.__modified = parse(self.__modified).astimezone(self.protocol.timezone) if self.__modified else None
+
+        else:
+            self.__modified = self.protocol.timezone.localize(dt.datetime.now())
 
         return True
 

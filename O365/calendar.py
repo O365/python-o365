@@ -542,12 +542,12 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         self.__attendees = Attendees(event=self, attendees={self._cloud_data_key: cloud_data.get(cc('attendees'), [])})
         self.__categories = cloud_data.get(cc('categories'), [])
 
-        self.created = cloud_data.get(cc('createdDateTime'), None)
-        self.modified = cloud_data.get(cc('lastModifiedDateTime'), None)
+        self.__created = cloud_data.get(cc('createdDateTime'), None)
+        self.__modified = cloud_data.get(cc('lastModifiedDateTime'), None)
 
         local_tz = self.protocol.timezone
-        self.created = parse(self.created).astimezone(local_tz) if self.created else None
-        self.modified = parse(self.modified).astimezone(local_tz) if self.modified else None
+        self.__created = parse(self.__created).astimezone(local_tz) if self.__created else None
+        self.__modified = parse(self.__modified).astimezone(local_tz) if self.__modified else None
 
         start_obj = cloud_data.get(cc('start'), {})
         if isinstance(start_obj, dict):
@@ -592,7 +592,7 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         self.__location = cloud_data.get(cc('location'), {}).get(cc('displayName'), '')
         self.locations = cloud_data.get(cc('locations'), [])  # TODO
         self.online_meeting_url = cloud_data.get(cc('onlineMeetingUrl'), None)
-        self.__organizer = self._recipient_from_cloud(cloud_data.get(cc('organizer'), None))
+        self.__organizer = self._recipient_from_cloud(cloud_data.get(cc('organizer'), None), field='organizer')
         self.__recurrence = EventRecurrence(event=self, recurrence=cloud_data.get(cc('recurrence'), None))
         self.__is_reminder_on = cloud_data.get(cc('isReminderOn'), None)
         self.__remind_before_minutes = cloud_data.get(cc('reminderMinutesBeforeStart'), 15)
@@ -651,6 +651,14 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
                 if key not in restrict_keys:
                     del data[key]
         return data
+
+    @property
+    def created(self):
+        return self.__created
+
+    @property
+    def modified(self):
+        return self.__modified
 
     @property
     def body(self):
@@ -865,12 +873,9 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         if self.object_id:
             # update event
             if not self._track_changes:
-                return False  # there's nothing to update
+                return True  # there's nothing to update
             url = self.build_url(self._endpoints.get('event').format(id=self.object_id))
             method = self.con.patch
-            if not self._track_changes:
-                # no changes to save...
-                return True
             data = self.to_api_data(restrict_keys=self._track_changes)
         else:
             # new event
@@ -897,13 +902,14 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
             event = response.json()
 
             self.object_id = event.get(self._cc('id'), None)
-            self.created = event.get(self._cc('createdDateTime'), None)
-            self.modified = event.get(self._cc('lastModifiedDateTime'), None)
 
-            self.created = parse(self.created).astimezone(self.protocol.timezone) if self.created else None
-            self.modified = parse(self.modified).astimezone(self.protocol.timezone) if self.modified else None
+            self.__created = event.get(self._cc('createdDateTime'), None)
+            self.__modified = event.get(self._cc('lastModifiedDateTime'), None)
+
+            self.__created = parse(self.__created).astimezone(self.protocol.timezone) if self.__created else None
+            self.__modified = parse(self.__modified).astimezone(self.protocol.timezone) if self.__modified else None
         else:
-            self.modified = self.protocol.timezone.localize(dt.datetime.now())
+            self.__modified = self.protocol.timezone.localize(dt.datetime.now())
 
         return True
 
@@ -1001,7 +1007,7 @@ class Calendar(ApiComponent, HandleRecipientsMixin):
 
         self.name = cloud_data.get(self._cc('name'), '')
         self.calendar_id = cloud_data.get(self._cc('id'), None)
-        self.__owner = self._recipient_from_cloud(cloud_data.get(self._cc('owner'), {}))
+        self.__owner = self._recipient_from_cloud(cloud_data.get(self._cc('owner'), {}), field='owner')
         color = cloud_data.get(self._cc('color'), -1)
         if isinstance(color, str):
             color = -1 if color == 'auto' else color
