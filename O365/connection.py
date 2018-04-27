@@ -329,7 +329,7 @@ class Connection:
 
         return path.exists()
 
-    def get_authorization_url(self, requested_scopes=None):
+    def get_authorization_url(self, requested_scopes=None,redirect_uri=OAUTH_REDIRECT_URL):
         """
         Inicialices the oauth authorization flow, getting the authorization url that the user must approve.
         This is a two step process, first call this function. Then get the url result from the user and then
