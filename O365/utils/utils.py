@@ -72,7 +72,7 @@ class ApiComponent:
 
     def build_url(self, endpoint):
         """ Returns a url for a given endpoint using the protocol service url """
-        return '{}{}'.format(self._base_url, endpoint)
+        return '{}{}'.format(self._base_url, self.protocol.transform_endpoint(endpoint))
 
     def _gk(self, keyword):
         """ Alias for protocol.get_service_keyword """

@@ -196,9 +196,9 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
 
         self._track_changes = set()  # TODO: change update method on message...
         self.object_id = cloud_data.get(cc('id'), None)
-        self.created = cloud_data.get(cc('createdDateTime'), None)
-        self.received = cloud_data.get(cc('receivedDateTime'), None)
-        self.sent = cloud_data.get(cc('sentDateTime'), None)
+        self.created = cloud_data.get(cc('createdDateTime'), cloud_data.get(cc('dateTimeCreated'), None))  # fallback to office365 v1.0
+        self.received = cloud_data.get(cc('receivedDateTime'), cloud_data.get(cc('dateTimeReceived'), None))  # fallback to office365 v1.0
+        self.sent = cloud_data.get(cc('sentDateTime'), cloud_data.get(cc('dateTimeSent'), None))  # fallback to office365 v1.0
 
         local_tz = self.protocol.timezone
         self.created = parse(self.created).astimezone(local_tz) if self.created else None
@@ -219,7 +219,7 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         self.__bcc = self._recipients_from_cloud(cloud_data.get(cc('bccRecipients'), []))
         self.__reply_to = self._recipients_from_cloud(cloud_data.get(cc('replyTo'), []))
         self.__categories = cloud_data.get(cc('categories'), [])
-        self.__importance = ImportanceLevel(cloud_data.get(cc('importance'), 'normal') or 'normal')
+        self.__importance = ImportanceLevel((cloud_data.get(cc('importance'), 'normal') or 'normal').lower())   # lower because of office365 v1.0
         self.is_read = cloud_data.get(cc('isRead'), None)
         self.is_draft = cloud_data.get(cc('isDraft'), kwargs.get('is_draft', True))  # a message is a draft by default
         self.conversation_id = cloud_data.get(cc('conversationId'), None)
@@ -557,10 +557,10 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         if not isinstance(target_folder, str):
             target_folder = getattr(target_folder, 'folder_id', None)
 
-        if target_folder and target_folder is not WellKnowFolderNames.DRAFTS:
-            url = self.build_url(self._endpoints.get('create_draft_folder').format(id=target_folder))
-        else:
-            url = self.build_url(self._endpoints.get('create_draft'))
+        target_folder = target_folder or WellKnowFolderNames.DRAFTS
+        target_folder = target_folder.value if isinstance(target_folder, WellKnowFolderNames) else target_folder
+
+        url = self.build_url(self._endpoints.get('create_draft_folder').format(id=target_folder))
 
         try:
             response = self.con.post(url, data=data)
