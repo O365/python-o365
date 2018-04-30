@@ -4,7 +4,7 @@ from dateutil.parser import parse
 import pytz
 from bs4 import BeautifulSoup as bs
 
-from O365.utils import WellKnowFolderNames, ApiComponent, Attachments, Attachment, AttachableMixin, ImportanceLevel
+from O365.utils import WellKnowFolderNames, ApiComponent, Attachments, Attachment, AttachableMixin, ImportanceLevel, TrackerSet
 
 log = logging.getLogger(__name__)
 
@@ -32,7 +32,7 @@ class Recipient:
 
     def _track_changes(self):
         """ Update the track_changes on the parent to reflect a needed update on this field """
-        if self._field and getattr(self._parent, '_track_changes', None):
+        if self._field and getattr(self._parent, '_track_changes', None) is not None:
             self._parent._track_changes.add(self._field)
 
     @property
@@ -88,7 +88,7 @@ class Recipients:
 
     def _track_changes(self):
         """ Update the track_changes on the parent to reflect a needed update on this field """
-        if self._field and getattr(self._parent, '_track_changes', None):
+        if self._field and getattr(self._parent, '_track_changes', None) is not None:
             self._parent._track_changes.add(self._field)
 
     def clear(self):
@@ -234,7 +234,7 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         cloud_data = kwargs.get(self._cloud_data_key, {})
         cc = self._cc  # alias to shorten the code
 
-        self._track_changes = set()  # internal to know which properties need to be updated on the server
+        self._track_changes = TrackerSet(casing=cc)  # internal to know which properties need to be updated on the server
         self.object_id = cloud_data.get(cc('id'), None)
 
         self.__created = cloud_data.get(cc('createdDateTime'), cloud_data.get(cc('dateTimeCreated'), None))  # fallback to office365 v1.0
@@ -640,11 +640,14 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
             # new message
             if not self.__is_draft:
                 raise RuntimeError('Only draft messages can be saved as drafts')
-            if not isinstance(target_folder, str):
-                target_folder = getattr(target_folder, 'folder_id', None)
 
             target_folder = target_folder or WellKnowFolderNames.DRAFTS
-            target_folder = target_folder.value if isinstance(target_folder, WellKnowFolderNames) else target_folder
+            if isinstance(target_folder, WellKnowFolderNames):
+                target_folder = target_folder.value
+            elif not isinstance(target_folder, str):
+                # a Folder instance
+                target_folder = getattr(target_folder, 'folder_id', WellKnowFolderNames.DRAFTS.value)
+
             url = self.build_url(self._endpoints.get('create_draft_folder').format(id=target_folder))
             method = self.con.post
             data = self.to_api_data()

@@ -190,7 +190,7 @@ class Protocol:
 
     def get_windows_tz(self, iana_tz=None):
         """ Returns a valid windows TimeZone from a given pytz TimeZone (Iana/Olson Timezones)
-        Note: Windows Timezones are SHIT!.. no .. really THEY ARE HOLY FUCKING SHIT!. I AGREE
+        Note: Windows Timezones are SHIT!... no ... really THEY ARE HOLY FUCKING SHIT!.
         """
         iana_tz = iana_tz or self.timezone
         timezone = IANA_TO_WIN.get(iana_tz.zone if isinstance(iana_tz, tzinfo) else iana_tz)
@@ -329,7 +329,7 @@ class Connection:
 
         return path.exists()
 
-    def get_authorization_url(self, requested_scopes=None,redirect_uri=OAUTH_REDIRECT_URL):
+    def get_authorization_url(self, requested_scopes=None, redirect_uri=OAUTH_REDIRECT_URL):
         """
         Inicialices the oauth authorization flow, getting the authorization url that the user must approve.
         This is a two step process, first call this function. Then get the url result from the user and then

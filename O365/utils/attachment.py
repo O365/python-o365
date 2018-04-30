@@ -240,7 +240,7 @@ class Attachments(ApiComponent):
 
     def _track_changes(self):
         """ Update the track_changes on the parent to reflect a needed update on this field """
-        if getattr(self._parent, '_track_changes', None):
+        if getattr(self._parent, '_track_changes', None) is not None:
             self._parent._track_changes.add('attachments')
 
     def _update_parent_attachments(self):

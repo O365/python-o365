@@ -6,7 +6,8 @@ import pytz
 import calendar
 from bs4 import BeautifulSoup as bs
 
-from O365.utils import Pagination, NEXT_LINK_KEYWORD, ApiComponent, Attachments, Attachment, AttachableMixin, ImportanceLevel
+from O365.utils import Pagination, NEXT_LINK_KEYWORD, ApiComponent, Attachments, Attachment, \
+    AttachableMixin, ImportanceLevel, TrackerSet
 from O365.message import HandleRecipientsMixin
 
 log = logging.getLogger(__name__)
@@ -370,9 +371,10 @@ class ResponseStatus(ApiComponent):
 class Attendee:
     """ A Event attendee """
 
-    def __init__(self, address, *, name=None, attendee_type=None, response_status=None):
-        self.address = address
-        self.name = name
+    def __init__(self, address, *, name=None, attendee_type=None, response_status=None, event=None):
+        self._address = address
+        self._name = name
+        self._event = event
         if isinstance(response_status, ResponseStatus):
             self.__response_status = response_status
         else:
@@ -391,6 +393,29 @@ class Attendee:
         return self.__str__()
 
     @property
+    def address(self):
+        return self._address
+
+    @address.setter
+    def address(self, value):
+        self._address = value
+        self._name = ''
+        self._track_changes()
+
+    @property
+    def name(self):
+        return self._name
+
+    @name.setter
+    def name(self, value):
+        self._name = value
+        self._track_changes()
+
+    def _track_changes(self):
+        """ Update the track_changes on the event to reflect a needed update on this field """
+        self._event._track_changes.add('attendees')
+
+    @property
     def response_status(self):
         return self.__response_status
 
@@ -404,6 +429,7 @@ class Attendee:
             self.__attendee_type = value
         else:
             self.__attendee_type = AttendeeType(value)
+        self._track_changes()
 
 
 class Attendees(ApiComponent):
@@ -447,7 +473,7 @@ class Attendees(ApiComponent):
 
         if attendees:
             if isinstance(attendees, str):
-                self.__attendees.append(Attendee(address=attendees))
+                self.__attendees.append(Attendee(address=attendees, event=self._event))
                 self._track_changes()
             elif isinstance(attendees, Attendee):
                 self.__attendees.append(attendees)
@@ -455,7 +481,7 @@ class Attendees(ApiComponent):
             elif isinstance(attendees, tuple):
                 name, address = attendees
                 if address:
-                    self.__attendees.append(Attendee(address=address, name=name))
+                    self.__attendees.append(Attendee(address=address, name=name, event=self._event))
                     self._track_changes()
             elif isinstance(attendees, list):
                 for attendee in attendees:
@@ -469,7 +495,7 @@ class Attendees(ApiComponent):
                         name = email.get(self._cc('name'), None)
                         attendee_type = attendee.get(self._cc('type'), 'required')  # default value
                         self.__attendees.append(
-                            Attendee(address=address, name=name, attendee_type=attendee_type,
+                            Attendee(address=address, name=name, attendee_type=attendee_type, event=self._event,
                                      response_status=ResponseStatus(parent=self,
                                                                     response_status=attendee.get(self._cc('status'), {}))))
             else:
@@ -527,12 +553,12 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         main_resource = kwargs.pop('main_resource', None) or getattr(parent, 'main_resource', None) if parent else None
         super().__init__(protocol=parent.protocol if parent else kwargs.get('protocol'), main_resource=main_resource)
 
-        self._track_changes = set()  # internal to know which properties need to be updated on the server
+        cc = self._cc  # alias
+        self._track_changes = TrackerSet(casing=cc)  # internal to know which properties need to be updated on the server
         self.calendar_id = kwargs.get('calendar_id', None)
         download_attachments = kwargs.get('download_attachments')
         cloud_data = kwargs.get(self._cloud_data_key, {})
 
-        cc = self._cc  # alias
         self.object_id = cloud_data.get(cc('id'), None)
         self.__subject = cloud_data.get(cc('subject'), kwargs.get('subject', '') or '')
         body = cloud_data.get(cc('body'), {})

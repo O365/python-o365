@@ -34,6 +34,18 @@ class ChainOperator(Enum):
     OR = 'or'
 
 
+class TrackerSet(set):
+    """ A Custom Set that changes the casing of it's keys """
+
+    def __init__(self, *args, casing=None, **kwargs):
+        self.cc = casing
+        super().__init__(*args, **kwargs)
+
+    def add(self, value):
+        value = self.cc(value)
+        super().add(value)
+
+
 class ApiComponent:
     """ Base class for all object interactions with the Cloud Service API
 
