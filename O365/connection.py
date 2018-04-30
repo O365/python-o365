@@ -347,7 +347,7 @@ class Connection:
         else:
             raise ValueError('Must provide at least one scope')
 
-        self.session = oauth = OAuth2Session(client_id=client_id, redirect_uri=OAUTH_REDIRECT_URL, scope=scopes)
+        self.session = oauth = OAuth2Session(client_id=client_id, redirect_uri=redirect_uri, scope=scopes)
         self.session.proxies = self.proxy
         if self.request_retries:
             retry = Retry(total=self.request_retries, read=self.request_retries, connect=self.request_retries,
