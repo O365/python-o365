@@ -58,7 +58,7 @@ def post(url,data,headers,auth):
 	else:
 		return Resp(None,202)
 
-		
+
 
 message.requests.post = post
 
@@ -72,7 +72,7 @@ def patch(url,data,headers,auth):
 	if headers['Content-type'] != 'application/json':
 		raise
 	if headers['Accept'] != 'application/json':
-		raise	
+		raise
 	return True
 
 message.requests.patch = patch
@@ -80,7 +80,7 @@ message.requests.patch = patch
 auth = ('test@unit.com','pass')
 
 class TestMessage (unittest.TestCase):
-	
+
 	def setUp(self):
 		ur = json.loads(un_rep)['value'][0]
 		self.unread = message.Message(ur,auth)
@@ -88,7 +88,7 @@ class TestMessage (unittest.TestCase):
 		self.read = message.Message(re,auth)
 		att = json.loads(att_m_rep)['value'][0]
 		self.att = message.Message(att,auth)
-		
+
 		self.newm = message.Message(auth=auth)
 
 	def test_fetchAttachments(self):
@@ -117,6 +117,9 @@ class TestMessage (unittest.TestCase):
 	def test_markAsRead(self):
 		self.unread.markAsRead()
 
+	def test_setCategories(self):
+		self.unread.setCategories(["Green", "Yellow"])
+
 	def test_setRecipients(self):
 		self.assertTrue(len(self.read.json['ToRecipients']) == 1)
 		self.assertTrue(len(self.unread.json['ToRecipients']) == 1)
@@ -125,7 +128,7 @@ class TestMessage (unittest.TestCase):
 		self.read.setRecipients('bob@unit.com')
 		self.assertTrue(self.read.json['ToRecipients'][0]['EmailAddress']['Address'] == 'bob@unit.com')
 
-		self.unread.setRecipients({'EmailAddress':{'Address':'bob@unit.com','Name':'What about'}})		
+		self.unread.setRecipients({'EmailAddress':{'Address':'bob@unit.com','Name':'What about'}})
 		self.assertTrue(self.unread.json['ToRecipients'][0]['EmailAddress']['Address'] == 'bob@unit.com')
 		self.assertTrue(self.unread.json['ToRecipients'][0]['EmailAddress']['Name'] == 'What about')
 

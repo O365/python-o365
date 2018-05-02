@@ -20,6 +20,8 @@ class Message(object):
 					fetchAttachments -- kicks off the process that downloads attachments.
 					sendMessage -- take local variables and form them to send the message.
 					markAsRead -- marks the analougs message in the cloud as read.
+					setCategories -- sets the list of categories in the cloud
+					getCategories -- gets the email's categories
 					getSender -- gets a dictionary with the sender's information.
 					getSenderEmail -- gets the email address of the sender.
 					getSenderName -- gets the name of the sender, if possible.
@@ -127,6 +129,21 @@ class Message(object):
 		except:
 			return False
 		return True
+
+	def setCategories(self, categories=""):
+		'''sets message categories in the cloud.'''
+		categories = json.dumps(dict(Categories=categories))
+		headers = {'Content-type': 'application/json', 'Accept': 'application/json'}
+		try:
+			response = requests.patch(self.update_url.format(
+					self.json['Id']), categories, headers=headers, auth=self.auth,verify=self.verify)
+		except:
+			return False
+		return True
+
+	def getCategories(self):
+		'''gets the message's categories'''
+		return self.json['Categories']
 
 	def getSender(self):
 		'''get all available information for the sender of the email.'''
