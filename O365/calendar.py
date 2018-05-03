@@ -620,7 +620,7 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         self.online_meeting_url = cloud_data.get(cc('onlineMeetingUrl'), None)
         self.__organizer = self._recipient_from_cloud(cloud_data.get(cc('organizer'), None), field='organizer')
         self.__recurrence = EventRecurrence(event=self, recurrence=cloud_data.get(cc('recurrence'), None))
-        self.__is_reminder_on = cloud_data.get(cc('isReminderOn'), None)
+        self.__is_reminder_on = cloud_data.get(cc('isReminderOn'), True)
         self.__remind_before_minutes = cloud_data.get(cc('reminderMinutesBeforeStart'), 15)
         self.__response_requested = cloud_data.get(cc('responseRequested'), True)
         self.__response_status = ResponseStatus(parent=self, response_status=cloud_data.get(cc('responseStatus'), {}))
