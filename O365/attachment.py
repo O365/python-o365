@@ -4,16 +4,18 @@ binary of the file directly. The file is stored locally as a string using base64
 '''
 
 import base64
-import logging
 import json
-import requests
+import logging
 import sys
 from os import path
 
+import requests
+
 log = logging.getLogger(__name__)
 
-class Attachment( object ):
-	'''
+
+class Attachment(object):
+    '''
 	Attachment class is the object for dealing with attachments in your messages. To add one to
 	a message, simply append it to the message's attachment list (message.attachments). 
 
@@ -31,10 +33,10 @@ class Attachment( object ):
 	setBase64 - set the attached file using a base64 encoded string.
 	'''
 
-	create_url = 'https://outlook.office365.com/api/v1.0/me/messages/{0}/attachments'
+    create_url = 'https://outlook.office365.com/api/v1.0/me/messages/{0}/attachments'
 
-	def __init__(self,json=None,path=None,verify=True):
-		'''
+    def __init__(self, json=None, path=None, verify=True):
+        '''
 		Creates a new attachment class, optionally from existing JSON.
 		
 		Keyword Arguments:
@@ -46,124 +48,125 @@ class Attachment( object ):
 		the rest of the process of making an attachment. Note that passing in json as well
 		will cause this argument to be ignored.
 		'''
-		if json:
-			self.json = json
-			self.isPDF = '.pdf' in self.json['Name'].lower()
-		elif path:
-			with open(path,'rb') as val:
-				self.json = {'@odata.type':'#Microsoft.OutlookServices.FileAttachment'}
-				self.isPDF = '.pdf' in path.lower()
+        if json:
+            self.json = json
+            self.isPDF = '.pdf' in self.json['Name'].lower()
+        elif path:
+            with open(path, 'rb') as val:
+                self.json = {'@odata.type': '#Microsoft.OutlookServices.FileAttachment'}
+                self.isPDF = '.pdf' in path.lower()
 
-				self.setByteString(val.read())
-				try:
-					self.setName(path[path.rindex('/')+1:])
-				except:
-					self.setName(path)
-		else:
-			self.json = {'@odata.type':'#Microsoft.OutlookServices.FileAttachment'}
+                self.setByteString(val.read())
+                try:
+                    self.setName(path[path.rindex('/') + 1:])
+                except:
+                    self.setName(path)
+        else:
+            self.json = {'@odata.type': '#Microsoft.OutlookServices.FileAttachment'}
 
-		self.verify = verify
+        self.verify = verify
 
-	def isType(self,typeString):
-		'''Test to if the attachment is the same type as you are seeking. Do not include a period.'''
-		return '.'+typeString.lower() in self.json['Name'].lower()
+    def isType(self, typeString):
+        '''Test to if the attachment is the same type as you are seeking. Do not include a period.'''
+        return '.' + typeString.lower() in self.json['Name'].lower()
 
-	def getType(self):
-		'''returns the file extension'''
-		try:
-			return self.json['Name'][self.json['Name'].rindex('.'):]
-		except ValueError:
-			log.debug('No file extension found on file ', self.json['Name'])
-			return ""
+    def getType(self):
+        '''returns the file extension'''
+        try:
+            return self.json['Name'][self.json['Name'].rindex('.'):]
+        except ValueError:
+            log.debug('No file extension found on file ', self.json['Name'])
+            return ""
 
-	def save(self,location):
-		'''Save the attachment locally to disk.
+    def save(self, location):
+        '''Save the attachment locally to disk.
 
 		location -- path to where the file is to be saved.
 		'''
-		try:
-			outs = open(path.join(location, self.json['Name']),'wb')
-			outs.write(base64.b64decode(self.json['ContentBytes']))
-			outs.close()
-			log.debug('file saved locally.')
-			
-		except Exception as e:
-			log.debug('file failed to be saved: %s',str(e))
-			return False
+        try:
+            outs = open(path.join(location, self.json['Name']), 'wb')
+            outs.write(base64.b64decode(self.json['ContentBytes']))
+            outs.close()
+            log.debug('file saved locally.')
 
-		log.debug('file saving successful')
-		return True
+        except Exception as e:
+            log.debug('file failed to be saved: %s', str(e))
+            return False
 
-	def attach(self,message):
-		'''
+        log.debug('file saving successful')
+        return True
+
+    def attach(self, message):
+        '''
 		This does the actual creating of the attachment as well as attaching to a message.
 
 		message -- a Message type, the message to be attached to.
 		'''
-		mid = message.json['Id']
+        mid = message.json['Id']
 
-		headers = {'Content-type': 'application/json', 'Accept': 'application/json'}
+        headers = {'Content-type': 'application/json', 'Accept': 'application/json'}
 
-		data = json.dumps(self.json)
+        data = json.dumps(self.json)
 
-		response = requests.post(self.create_url.format(mid),data,header=headers,auth=message.auth,verify=self.verify)
-		log.debug('Response from server for attaching: {0}'.format(str(response)))
+        response = requests.post(self.create_url.format(mid), data, header=headers, auth=message.auth,
+                                 verify=self.verify)
+        log.debug('Response from server for attaching: {0}'.format(str(response)))
 
-		return response
+        return response
 
-	def getByteString(self):
-		'''Fetch the binary representation of the file. useful for times you want to
+    def getByteString(self):
+        '''Fetch the binary representation of the file. useful for times you want to
 		skip the step of saving before sending it to another program. This allows
 		you to make scripts that use linux pipe lines in their execution.
 		'''
-		try:
-			return base64.b64decode(self.json['ContentBytes'])
+        try:
+            return base64.b64decode(self.json['ContentBytes'])
 
-		except Exception as e:
-			log.debug('what? no clue what went wrong here. cannot decode attachment.')
+        except Exception as e:
+            log.debug('what? no clue what went wrong here. cannot decode attachment.')
 
-		return False
+        return False
 
-	def getBase64(self):
-		'''Returns the base64 encoding representation of the attachment.'''
-		try:
-			return self.json['ContentBytes']
-		except Exception as e:
-			log.debug('what? no clue what went wrong here. probably no attachment.')
-		return False
+    def getBase64(self):
+        '''Returns the base64 encoding representation of the attachment.'''
+        try:
+            return self.json['ContentBytes']
+        except Exception as e:
+            log.debug('what? no clue what went wrong here. probably no attachment.')
+        return False
 
-	def getName(self):
-		'''Returns the file name.'''
-		try:
-			return self.json['Name']
-		except Exception as e:
-			log.error('The attachment does not appear to have a name.')
-		return False
+    def getName(self):
+        '''Returns the file name.'''
+        try:
+            return self.json['Name']
+        except Exception as e:
+            log.error('The attachment does not appear to have a name.')
+        return False
 
-	def setName(self,val):
-		'''Set the name for the file.'''
-		self.json['Name'] = val
+    def setName(self, val):
+        '''Set the name for the file.'''
+        self.json['Name'] = val
 
-	def setByteString(self,val):
-		'''Sets the file for this attachment from a byte string.'''
-		try:
-			if sys.version_info[0] == 2:
-				self.json['ContentBytes'] = base64.b64encode(val)
-			else:
-				self.json['ContentBytes'] = str(base64.encodebytes(val),'utf-8')
-		except Exception as e:
-			log.debug('error encoding attachment: {0}'.format(e))
-			return False
-		return True
+    def setByteString(self, val):
+        '''Sets the file for this attachment from a byte string.'''
+        try:
+            if sys.version_info[0] == 2:
+                self.json['ContentBytes'] = base64.b64encode(val)
+            else:
+                self.json['ContentBytes'] = str(base64.encodebytes(val), 'utf-8')
+        except Exception as e:
+            log.debug('error encoding attachment: {0}'.format(e))
+            return False
+        return True
 
-	def setBase64(self,val):
-		'''Sets the file for this attachment from a base64 encoding.'''
-		try:
-			base64.decodestring(val)
-		except:
-			log.error('tried to give me an attachment as a base64 and it is not.')
-			raise
-		self.json['ContentBytes'] = val
-		return True
+    def setBase64(self, val):
+        '''Sets the file for this attachment from a base64 encoding.'''
+        try:
+            base64.decodestring(val)
+        except:
+            log.error('tried to give me an attachment as a base64 and it is not.')
+            raise
+        self.json['ContentBytes'] = val
+        return True
 
-#To the King!
+# To the King!
