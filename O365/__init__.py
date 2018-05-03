@@ -14,7 +14,7 @@
 '''
 Python library for interfacing with the Microsoft Office 365 online. 
 '''
-#__all__ = ['attachment','cal','contact','event','group','inbox','message','schedule']
+# __all__ = ['attachment','cal','contact','event','group','inbox','message','schedule']
 
 # This imports all the libraries into the local namespace. This makes it easy to work with.
 
@@ -29,5 +29,4 @@ from .schedule import Schedule
 from .connection import Connection
 from .fluent_inbox import FluentInbox
 
-
-#To the King!
+# To the King!
