@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from distutils.core import setup
+from setuptools import setup
 
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',
@@ -34,7 +34,7 @@ That's it. making and sending emails and events is now very simple and straight 
 https://github.com/janscas/py-o365
 """
 
-setup(name='O365',
+setup(name='py-o365',
       version='0.1.0',
       description='Python library for working with Microsoft Office 365 REST API',
       long_description=long_desc,
