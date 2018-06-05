@@ -24,7 +24,7 @@ O365_API_VERSION = 'v1.0'  # v2.0 does not allow basic auth
 GRAPH_API_VERSION = 'v1.0'
 OAUTH_REDIRECT_URL = 'https://outlook.office365.com/owa/'
 
-RETRIES_STATUS_LIST = [500, 502, 503, 504]
+RETRIES_STATUS_LIST = (500, 502, 503, 504)
 RETRIES_BACKOFF_FACTOR = 0.5
 
 

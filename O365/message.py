@@ -397,13 +397,21 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
             cc('body'): {
                 cc('contentType'): self.body_type,
                 cc('content'): self.body},
-            cc('toRecipients'): [self._recipient_to_cloud(recipient) for recipient in self.to],
-            cc('ccRecipients'): [self._recipient_to_cloud(recipient) for recipient in self.cc],
-            cc('bccRecipients'): [self._recipient_to_cloud(recipient) for recipient in self.bcc],
-            cc('replyTo'): [self._recipient_to_cloud(recipient) for recipient in self.reply_to],
-            cc('attachments'): self.attachments.to_api_data(),
             cc('importance'): self.importance.value
         }
+
+        if self.to:
+            message[cc('toRecipients')] = [self._recipient_to_cloud(recipient) for recipient in self.to]
+        if self.cc:
+            message[cc('ccRecipients')] = [self._recipient_to_cloud(recipient) for recipient in self.cc]
+        if self.bcc:
+            message[cc('bccRecipients')] = [self._recipient_to_cloud(recipient) for recipient in self.bcc]
+        if self.reply_to:
+            message[cc('replyTo')] = [self._recipient_to_cloud(recipient) for recipient in self.reply_to]
+        if self.attachments:
+            message[cc('attachments')] = self.attachments.to_api_data()
+        if self.sender and self.sender.address:
+            message[cc('from')] = self._recipient_to_cloud(self.sender)
 
         if self.object_id and not self.__is_draft:
             # return the whole signature of this message
@@ -413,15 +421,11 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
             message[cc('receivedDateTime')] = self.received.astimezone(pytz.utc).isoformat()
             message[cc('sentDateTime')] = self.sent.astimezone(pytz.utc).isoformat()
             message[cc('hasAttachments')] = len(self.attachments) > 0
-            message[cc('from')] = self._recipient_to_cloud(self.sender)
             message[cc('categories')] = self.categories
             message[cc('isRead')] = self.is_read
             message[cc('isDraft')] = self.__is_draft
             message[cc('conversationId')] = self.conversation_id
             message[cc('parentFolderId')] = self.folder_id  # this property does not form part of the message itself
-        else:
-            if self.sender and self.sender.address:
-                message[cc('from')] = self._recipient_to_cloud(self.sender)
 
         if restrict_keys:
             for key in list(message.keys()):
