@@ -217,6 +217,9 @@ class Connection(with_metaclass(Singleton)):
 
 		log.info('Received response from URL {}'.format(response.url))
 
+		if response.status_code == 401:
+			raise RuntimeError('API returned status code 401 Unauthorized, check the connection credentials')
+
 		response_json = response.json()
 		if 'value' not in response_json:
 			raise RuntimeError('Something went wrong, received an unexpected result \n{}'.format(response_json))
