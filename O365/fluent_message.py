@@ -30,6 +30,7 @@ class Message(object):
 					setRecipients -- sets the list of recipients.
 					setSubject -- sets the subject line.
 					setBody -- sets the body.
+					setCategory -- sets the email's category
 
 	Variables:
 					att_url -- url for requestiong attachments. takes message GUID
@@ -279,13 +280,16 @@ class Message(object):
 			except:
 				self.json['Body'] = {}
 
+	def setCategory(self, category_name, **kwargs):
+		"Sets the email's category"
+		self.update_category(self, category_name, **kwargs)
+
 	def update_category(self, category_name, **kwargs):
 		category = '{{"Categories":["{}"]}}'.format(category_name)
 		headers = {'Content-type': 'application/json', 'Accept': 'application/json'}
 		try:
 			response = requests.patch(self.update_url.format(
 				self.json['Id']), category, headers=headers, auth=self.auth, verify=self.verify, **kwargs)
-			print(response.url)
 		except:
 			return False
 		return True

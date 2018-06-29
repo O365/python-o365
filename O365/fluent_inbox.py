@@ -12,12 +12,10 @@ class FluentInbox(object):
 			'1.0': 'https://outlook.office365.com/api/v1.0/me/messages',
 			'2.0': 'https://graph.microsoft.com/v1.0/me/messages',
 		},
-
 		'folders': {
 			'1.0': 'https://outlook.office365.com/api/v1.0/me/Folders',
 			'2.0': 'https://graph.microsoft.com/v1.0/me/MailFolders',
 		},
-
 		'folder': {
 			'1.0': 'https://outlook.office365.com/api/v1.0/me/Folders/{folder_id}/messages',
 			'2.0': 'https://graph.microsoft.com/v1.0/me/MailFolders/{folder_id}/messages',
@@ -26,6 +24,14 @@ class FluentInbox(object):
 			'1.0': 'https://outlook.office365.com/api/v1.0/me/Folders/{folder_id}/childfolders',
 			'2.0': 'https://graph.microsoft.com/v1.0/me/MailFolders/{folder_id}/childfolders',
 		},
+		'user_folders': {
+			'1.0': 'https://outlook.office365.com/api/v1.0/users/{user_id}/Folders',
+			'2.0': 'https://graph.microsoft.com/v1.0/users/{user_id}/MailFolders',
+		},
+		'user_folder': {
+			'1.0': 'https://outlook.office365.com/api/v1.0/users/{user_id}/Folders/{folder_id}/messages',
+			'2.0': 'https://graph.microsoft.com/v1.0/users/{user_id}/MailFolders/{folder_id}/messages',
+		}
 	}
 
 	def __init__(self, verify=True):
@@ -40,35 +46,28 @@ class FluentInbox(object):
 		self.verify = verify
 		self.messages = []
 
-	def from_folder(self, folder_name):
+	def from_folder(self, folder_name, user_id=None):
 		""" Configure to use this folder for fetching the mails
 
 		:param folder_name: name of the outlook folder
+		:param user_id: user id the folder belongs to (shared mailboxes)
 		"""
 		self._reset()
-		response = Connection.get_response(FluentInbox._get_url('folders'),
-										   verify=self.verify,
-										   params={'$top': 100})
 
-		folder_id = None
-		all_folders = []
+		folder_id = self.get_folder(value=folder_name,
+									by='DisplayName',
+									user_id=user_id)['Id']
 
-		for folder in response:
-			if folder['displayName'] == folder_name:
-				folder_id = folder['id']
-				break
-
-			all_folders.append(folder['displayName'])
-
-		if not folder_id:
-			raise RuntimeError('Folder "{}" is not found, available folders '
-							   'are {}'.format(folder_name, all_folders))
-
-		self.url = FluentInbox._get_url('folder').format(folder_id=folder_id)
+		if user_id:
+			self.url = FluentInbox._get_url('user_folder').format(
+				user_id=user_id, folder_id=folder_id)
+		else:
+			self.url = FluentInbox._get_url('folder').format(
+				folder_id=folder_id)
 
 		return self
 
-	def get_folder(self, value, by='Id', parent_id=None):
+	def get_folder(self, value, by='Id', parent_id=None, user_id=None):
 		"""
 		Return a folder by a given attribute.  If multiple folders exist by
 		this attribute, only the first will be returned
@@ -84,11 +83,15 @@ class FluentInbox(object):
 
 		:param value: Value that we are searching for
 		:param by: Search on this key (default: Id)
+		:param user_id: user id the folder belongs to (shared mailboxes)
 		:returns: Single folder data
 		"""
 		if parent_id:
 			folders_url = FluentInbox._get_url('child_folders').format(
 				folder_id=parent_id)
+		elif user_id:
+			folders_url = FluentInbox._get_url('user_folders').format(
+				user_id=user_id)
 		else:
 			folders_url = FluentInbox._get_url('folders')
 
@@ -110,7 +113,7 @@ class FluentInbox(object):
 				'Folder "{}" is not found by "{}", available folders '
 				'are {}'.format(value, by, all_folders))
 
-	def list_folders(self, parent_id=None):
+	def list_folders(self, parent_id=None, user_id=None):
 		"""
 		:param parent_id: Id of parent folder to list.  Default to top folder
 		:return: List of all folder data
@@ -118,6 +121,9 @@ class FluentInbox(object):
 		if parent_id:
 			folders_url = FluentInbox._get_url('child_folders').format(
 				folder_id=parent_id)
+		elif user_id:
+			folders_url = FluentInbox._get_url('user_folders').format(
+				user_id=user_id)
 		else:
 			folders_url = FluentInbox._get_url('folders')
 
