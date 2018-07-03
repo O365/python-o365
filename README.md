@@ -34,7 +34,7 @@ if m.json['IsReadReceiptRequested']:
 ## Email
 There are two classes for working with emails in O365.
 #### Inbox
-A collection of emails. This is used when ever you are requesting an email or emails. It can be set with filters so that you only download the emails which your script is interested in. 
+A collection of emails. This is used when ever you are requesting an email or emails. It can be set with filters so that you only download the emails which your script is interested in.
 #### Message
 An actual email with all it's associated data.
 
@@ -180,7 +180,7 @@ Connection.oauth2("your client_id", "your client_secret", store_token=True)
 # Proxy call is required only if you are behind proxy
 Connection.proxy(url='proxy.company.com', port=8080, username='proxy_username', password='proxy_password')
 ```
-    
+
 
 
 ## Fluent Inbox
@@ -221,5 +221,12 @@ for message in inbox.search('Category:some_cat').skip(1).fetch(1):
 # If you want the results from beginning by ignoring any currently read count
 inbox.fetch_first(10)
 ```
+
+### Support for shared mailboxes
+Basic support for working with shared mailboxes exists. The following functions take `user_id` as a keyword argument specifying the email address of the shared mailbox.
+
+* `FluentInbox.from_folder(..)` - read messages messages
+* `FluentInbox.get_folder(..)` - list folders
+* `FluentMessage.sendMessage(..)` - send as shared mailbox
 
 #### Soli Deo Gloria

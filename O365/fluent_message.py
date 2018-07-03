@@ -41,6 +41,7 @@ class Message(object):
 
 	att_url = 'https://outlook.office365.com/api/v1.0/me/messages/{0}/attachments'
 	send_url = 'https://outlook.office365.com/api/v1.0/me/sendmail'
+	send_as_url = 'https://outlook.office365.com/api/v1.0/users/{user_id}/sendmail'
 	draft_url = 'https://outlook.office365.com/api/v1.0/me/folders/{folder_id}/messages'
 	update_url = 'https://outlook.office365.com/api/v1.0/me/messages/{0}'
 
@@ -89,8 +90,12 @@ class Message(object):
 
 		return len(self.attachments)
 
-	def sendMessage(self, **kwargs):
-		'''takes local variabls and forms them into a message to be sent.'''
+	def sendMessage(self, user_id=None, **kwargs):
+		'''
+		Takes local variabls and forms them into a message to be sent.
+
+		:param user_id: User id (email) if sending as other user
+		'''
 
 		headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
 
@@ -109,8 +114,12 @@ class Message(object):
 				'Error while trying to compile the json string to send: {0}'.format(str(e)))
 			return False
 
+		if user_id:
+			url = self.send_as_url.format(user_id=user_id)
+		else:
+			usl = self.send_url
 		response = requests.post(
-			self.send_url, data, headers=headers, auth=self.auth, verify=self.verify, **kwargs)
+			url, data, headers=headers, auth=self.auth, verify=self.verify, **kwargs)
 		log.debug('response from server for sending message:' + str(response))
 		log.debug("respnse body: {}".format(response.text))
 		if response.status_code != 202:
