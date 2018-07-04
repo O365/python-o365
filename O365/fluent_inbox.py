@@ -31,6 +31,10 @@ class FluentInbox(object):
 		'user_folder': {
 			'1.0': 'https://outlook.office365.com/api/v1.0/users/{user_id}/Folders/{folder_id}/messages',
 			'2.0': 'https://graph.microsoft.com/v1.0/users/{user_id}/MailFolders/{folder_id}/messages',
+		},
+		'user_child_folders': {
+			'1.0': 'https://outlook.office365.com/api/v1.0/users/{user_id}/Folders/{folder_id}/childfolders',
+			'2.0': 'https://graph.microsoft.com/v1.0/users/{user_id}/MailFolders/{folder_id}/childfolders',
 		}
 	}
 
@@ -86,7 +90,10 @@ class FluentInbox(object):
 		:param user_id: user id the folder belongs to (shared mailboxes)
 		:returns: Single folder data
 		"""
-		if parent_id:
+		if parent_id and user_id:
+			folders_url = FluentInbox._get_url('user_child_folders').format(
+				folder_id=parent_id, user_id=user_id)
+		elif parent_id:
 			folders_url = FluentInbox._get_url('child_folders').format(
 				folder_id=parent_id)
 		elif user_id:
@@ -118,7 +125,10 @@ class FluentInbox(object):
 		:param parent_id: Id of parent folder to list.  Default to top folder
 		:return: List of all folder data
 		"""
-		if parent_id:
+		if parent_id and user_id:
+			folders_url = FluentInbox._get_url('user_child_folders').format(
+				folder_id=parent_id, user_id=user_id)
+		elif parent_id:
 			folders_url = FluentInbox._get_url('child_folders').format(
 				folder_id=parent_id)
 		elif user_id:
