@@ -17,6 +17,8 @@ class MicroDict(dict):
 		result = super(MicroDict, self).get(key[:1].lower() + key[1:], None)
 		if result is None:
 			result = super(MicroDict, self).get(key[:1].upper() + key[1:])
+		if type(result) is dict:
+			result = MicroDict(result)
 		return result
 
 
@@ -211,7 +213,7 @@ class Connection(with_metaclass(Singleton)):
 				response = connection.oauth.get(request_url, **con_params)
 			except TokenExpiredError:
 				log.info('Token is expired, fetching a new token')
-				token = connection.oauth.refresh_token(Connection._oauth2_token_url, client_id=connection.client_id,
+				token = connection.oauth.refresdh_token(Connection._oauth2_token_url, client_id=connection.client_id,
 													   client_secret=connection.client_secret)
 				log.info('New token fetched')
 				save_token(token)
