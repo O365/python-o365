@@ -45,7 +45,7 @@ class Message(object):
 	draft_url = 'https://outlook.office365.com/api/v1.0/me/folders/{folder_id}/messages'
 	update_url = 'https://outlook.office365.com/api/v1.0/me/messages/{0}'
 
-	def __init__(self, json=None, auth=None, verify=True):
+	def __init__(self, json=None, auth=None, verify=True, oauth=None):
 		'''
 		Makes a new message wrapper for sending and receiving messages.
 
@@ -67,8 +67,8 @@ class Message(object):
 		self.auth = auth
 		self.attachments = []
 		self.receiver = None
-
 		self.verify = verify
+		self.oauth = oauth
 
 	def fetchAttachments(self,**kwargs):
 		'''kicks off the process that downloads attachments locally.'''
@@ -76,7 +76,7 @@ class Message(object):
 			log.debug('message has no attachments, skipping out early.')
 			return False
 
-		response = requests.get(self.att_url.format(
+		response = (self.oauth, requests)[self.oauth is None].get(self.att_url.format(
 			self.json['Id']), auth=self.auth, verify=self.verify, **kwargs)
 		log.info('response from O365 for retriving message attachments: %s', str(response))
 		json = response.json()
@@ -97,7 +97,7 @@ class Message(object):
 		:param user_id: User id (email) if sending as other user
 		'''
 
-		headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
+		headers = {'Content-Type': 'application/json', 'Accept': 'text/plain'}
 
 		try:
 			data = {'Message': {'Body': {}}}
@@ -118,7 +118,7 @@ class Message(object):
 			url = self.send_as_url.format(user_id=user_id)
 		else:
 			usl = self.send_url
-		response = requests.post(
+		response = (self.oauth, requests)[self.oauth is None].post(
 			url, data, headers=headers, auth=self.auth, verify=self.verify, **kwargs)
 		log.debug('response from server for sending message:' + str(response))
 		log.debug("respnse body: {}".format(response.text))
@@ -130,13 +130,13 @@ class Message(object):
 	def markAsRead(self):
 		'''marks analogous message as read in the cloud.'''
 		read = '{"IsRead":true}'
-		headers = {'Content-type': 'application/json', 'Accept': 'application/json'}
+		headers = {'Content-Type': 'application/json', 'Accept': 'application/json'}
 		try:
-			response = requests.patch(self.update_url.format(
+			response = (self.oauth, requests)[self.oauth is None].patch(self.update_url.format(
 				self.json['Id']), read, headers=headers, auth=self.auth, verify=self.verify)
 		except:
 			return False
-		return True
+		return response.ok
 
 	def moveToFolder(self, folder_id):
 		"""
@@ -146,17 +146,17 @@ class Message(object):
 		:returns: True on success
 		"""
 		move_url = 'https://outlook.office365.com/api/v1.0/me/messages/{0}/move'
-		headers = {'Content-type': 'application/json',
+		headers = {'Content-Type': 'application/json',
 				   'Accept': 'application/json'}
 		post_data = {"DestinationId": folder_id}
 		try:
-			response = requests.post(move_url.format(self.json['Id']),
+			response = (self.oauth, requests)[self.oauth is None].post(move_url.format(self.json['Id']),
 									 json=post_data, headers=headers,
 									 auth=self.auth, verify=self.verify)
 		except:
 			return False
 
-		return True
+		return response.ok
 
 	def getSender(self):
 		'''get all available information for the sender of the email.'''
@@ -295,12 +295,12 @@ class Message(object):
 
 	def update_category(self, category_name, **kwargs):
 		category = '{{"Categories":["{}"]}}'.format(category_name)
-		headers = {'Content-type': 'application/json', 'Accept': 'application/json'}
+		headers = {'Content-Type': 'application/json', 'Accept': 'application/json'}
 		try:
-			response = requests.patch(self.update_url.format(
+			response = (self.oauth, requests)[self.oauth is None].patch(self.update_url.format(
 				self.json['Id']), category, headers=headers, auth=self.auth, verify=self.verify, **kwargs)
 		except:
 			return False
-		return True
+		return response.ok
 
 # To the King!

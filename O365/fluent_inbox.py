@@ -205,9 +205,10 @@ class FluentInbox(object):
 										   params=params)
 		self.fetched_count += count
 
+		connection = Connection()
 		messages = []
 		for message in response:
-			messages.append(Message(message, Connection().auth))
+			messages.append(Message(message, connection.auth, oauth=connection.oauth))
 
 		return messages
 
