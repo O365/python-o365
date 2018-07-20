@@ -82,6 +82,7 @@ def delete_token(token_path=None):
 class Connection(with_metaclass(Singleton)):
 	_oauth2_authorize_url = 'https://login.microsoftonline.com/common/oauth2/v2.0/authorize'
 	_oauth2_token_url = 'https://login.microsoftonline.com/common/oauth2/v2.0/token'
+	default_headers = None
 
 	def __init__(self):
 		""" Creates a O365 connection object """
@@ -196,6 +197,8 @@ class Connection(with_metaclass(Singleton)):
 		con_params = {}
 		if connection.proxy_dict:
 			con_params['proxies'] = connection.proxy_dict
+		if connection.default_headers:
+			con_params['headers'] = connection.default_headers
 		con_params.update(kwargs)
 
 		log.info('Requesting URL: {}'.format(request_url))
