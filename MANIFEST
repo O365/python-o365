@@ -10,6 +10,7 @@ O365/event.py
 O365/fluent_inbox.py
 O365/fluent_message.py
 O365/group.py
+O365/handlers.py
 O365/inbox.py
 O365/message.py
 O365/schedule.py
