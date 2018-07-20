@@ -93,7 +93,7 @@ class Connection(with_metaclass(Singleton)):
 		self.client_id = None
 		self.client_secret = None
 		self.token = None
-
+		self.token_path = None
 		self.proxy_dict = None
 
 	def is_valid(self):
@@ -134,6 +134,7 @@ class Connection(with_metaclass(Singleton)):
 		connection.api_version = '2.0'
 		connection.client_id = client_id
 		connection.client_secret = client_secret
+		connection.token_path = token_path
 
 		if not store_token:
 			delete_token(token_path)
@@ -214,7 +215,7 @@ class Connection(with_metaclass(Singleton)):
 				token = connection.oauth.refresh_token(Connection._oauth2_token_url, client_id=connection.client_id,
 													   client_secret=connection.client_secret)
 				log.info('New token fetched')
-				save_token(token)
+				save_token(token, connection.token_path)
 
 				response = connection.oauth.get(request_url, **con_params)
 
