@@ -17,6 +17,8 @@ class MicroDict(dict):
 		result = super(MicroDict, self).get(key[:1].lower() + key[1:], None)
 		if result is None:
 			result = super(MicroDict, self).get(key[:1].upper() + key[1:])
+		if type(result) is dict:
+			result = MicroDict(result)
 		return result
 
 
