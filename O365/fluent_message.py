@@ -70,6 +70,15 @@ class Message(object):
 		self.verify = verify
 		self.oauth = oauth
 
+		# Update to 2.0 versions
+		if self.oauth:
+			self.att_url = self.att_url.replace('https://outlook.office365.com/api', 'https://graph.microsoft.com')
+			self.send_url = self.send_url.replace('https://outlook.office365.com/api', 'https://graph.microsoft.com')
+			self.send_as_url = self.send_as_url.replace('https://outlook.office365.com/api', 'https://graph.microsoft.com')
+			self.draft_url = self.draft_url.replace('https://outlook.office365.com/api', 'https://graph.microsoft.com').replace(
+				'folders', 'MailFolders', 1)
+			self.update_url = self.update_url.replace('https://outlook.office365.com/api', 'https://graph.microsoft.com')
+
 	def fetchAttachments(self,**kwargs):
 		'''kicks off the process that downloads attachments locally.'''
 		if not self.hasAttachments:
