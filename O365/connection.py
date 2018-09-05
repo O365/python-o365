@@ -89,7 +89,7 @@ class Protocol:
     _protocol_endpoint_transform = {}  # a dictionary of endpoints transformations
 
     def __init__(self, *, protocol_url=None, api_version=None, default_resource=ME_RESOURCE,
-                 casing_function=None, protocol_scope_prefix=None, timezone=None):
+                 casing_function=None, protocol_scope_prefix=None, timezone=None, **kwargs):
         """
         :param protocol_url: the base url used to comunicate with the server
         :param api_version: the api version
@@ -314,11 +314,17 @@ class Connection:
 
     def set_proxy(self, proxy_server, proxy_port, proxy_username, proxy_password):
         """ Sets a proxy on the Session """
-        if proxy_server and proxy_port and proxy_username and proxy_password:
-            self.proxy = {
-                "http": "http://{}:{}@{}:{}".format(proxy_username, proxy_password, proxy_server, proxy_port),
-                "https": "https://{}:{}@{}:{}".format(proxy_username, proxy_password, proxy_server, proxy_port),
-            }
+        if proxy_server and proxy_port:
+            if proxy_username and proxy_password:
+                self.proxy = {
+                    "http": "http://{}:{}@{}:{}".format(proxy_username, proxy_password, proxy_server, proxy_port),
+                    "https": "https://{}:{}@{}:{}".format(proxy_username, proxy_password, proxy_server, proxy_port),
+                }
+            else:
+                self.proxy = {
+                    "http": "http://{}:{}".format(proxy_server, proxy_port),
+                    "https": "https://{}:{}".format(proxy_server, proxy_port),
+                }
 
     def check_token_file(self):
         """ Checks if the token file exists at the given position"""
