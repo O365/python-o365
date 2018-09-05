@@ -53,6 +53,10 @@ class TestMailBox:
         message = messages[0] if messages else None
         if message:
             reply = message.reply()
+            reply.body = 'Y bien que lo sé. España es lo máximo.'
+            reply.save_draft()
+            reply.send()
+
             print(reply.body)
 
         assert reply is not None

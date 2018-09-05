@@ -296,7 +296,15 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
 
     @body.setter
     def body(self, value):
-        self.__body = value
+        if self.__body:
+            if not value:
+                self.__body = ''
+            else:
+                soup = bs(self.__body, 'html.parser')
+                soup.body.insert(0, value)
+                self.__body = str(soup)
+        else:
+            self.__body = value
         self._track_changes.add('body')
 
     @property
