@@ -1,4 +1,4 @@
-from O365.connection import Connection, Protocol, MSGraphProtocol, BasicAuthProtocol, AUTH_METHOD
+from O365.connection import Connection, Protocol, MSGraphProtocol
 from O365.utils import ME_RESOURCE
 from O365.message import Message
 from O365.mailbox import MailBox
@@ -9,32 +9,15 @@ from O365.calendar import Schedule
 class Account(object):
     """ Class helper to integrate all components into a single object """
 
-    def __init__(self, credentials, *, auth_method=AUTH_METHOD.OAUTH, scopes=None,
-                 protocol=None, main_resource=ME_RESOURCE, **kwargs):
+    def __init__(self, credentials, *, scopes=None, protocol=None, main_resource=ME_RESOURCE, **kwargs):
 
-        if isinstance(auth_method, str):
-            try:
-                auth_method = AUTH_METHOD(auth_method)
-            except ValueError as e:
-                raise e
-
-        if auth_method is AUTH_METHOD.BASIC:
-            protocol = protocol or BasicAuthProtocol  # using basic auth defaults to Office 365 protocol
-            self.protocol = protocol(default_resource=main_resource, **kwargs) if isinstance(protocol, type) else protocol
-            if self.protocol.api_version != 'v1.0' or not isinstance(self.protocol, BasicAuthProtocol):
-                raise RuntimeError(
-                    'Basic Authentication only works with Office 365 Api version v1.0 and until November 1 2018.')
-        elif auth_method is AUTH_METHOD.OAUTH:
-            protocol = protocol or MSGraphProtocol  # using oauth auth defaults to Graph protocol
-            self.protocol = protocol(default_resource=main_resource, **kwargs) if isinstance(protocol, type) else protocol
+        protocol = protocol or MSGraphProtocol  # using oauth auth defaults to Graph protocol
+        self.protocol = protocol(default_resource=main_resource, **kwargs) if isinstance(protocol, type) else protocol
 
         if not isinstance(self.protocol, Protocol):
             raise ValueError("'protocol' must be a subclass of Protocol")
 
-        self.con = kwargs.get('connection') or Connection(credentials,
-                                                          auth_method=auth_method,
-                                                          scopes=self.protocol.get_scopes_for(scopes))
-
+        self.con = kwargs.get('connection') or Connection(credentials, scopes=self.protocol.get_scopes_for(scopes))
         self.main_resource = main_resource
 
     @property
@@ -65,8 +48,6 @@ class Account(object):
         if address_book == 'personal':
             return AddressBook(parent=self, main_resource=resource, name='Personal Address Book')
         elif address_book == 'gal':
-            if self.con.auth_method == AUTH_METHOD.BASIC and self.protocol.api_version == 'v1.0':
-                raise RuntimeError('v1.0 with basic Authentication does not have access to the Global Addres List (Users API)')
             return GlobalAddressList(parent=self)
         else:
             raise RuntimeError('Addres_book must be either "personal" (resource address book) or "gal" (Global Address List)')

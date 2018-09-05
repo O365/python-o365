@@ -237,10 +237,10 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         self._track_changes = TrackerSet(casing=cc)  # internal to know which properties need to be updated on the server
         self.object_id = cloud_data.get(cc('id'), None)
 
-        self.__created = cloud_data.get(cc('createdDateTime'), cloud_data.get(cc('dateTimeCreated'), None))  # fallback to office365 v1.0
-        self.__modified = cloud_data.get(cc('lastModifiedDateTime'), cloud_data.get(cc('dateTimeModified'), None))  # fallback to office365 v1.0
-        self.__received = cloud_data.get(cc('receivedDateTime'), cloud_data.get(cc('dateTimeReceived'), None))  # fallback to office365 v1.0
-        self.__sent = cloud_data.get(cc('sentDateTime'), cloud_data.get(cc('dateTimeSent'), None))  # fallback to office365 v1.0
+        self.__created = cloud_data.get(cc('createdDateTime'), None)
+        self.__modified = cloud_data.get(cc('lastModifiedDateTime'), None)
+        self.__received = cloud_data.get(cc('receivedDateTime'), None)
+        self.__sent = cloud_data.get(cc('sentDateTime'), None)
 
         local_tz = self.protocol.timezone
         self.__created = parse(self.__created).astimezone(local_tz) if self.__created else None
@@ -262,7 +262,7 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         self.__bcc = self._recipients_from_cloud(cloud_data.get(cc('bccRecipients'), []), field='bccRecipients')
         self.__reply_to = self._recipients_from_cloud(cloud_data.get(cc('replyTo'), []), field='replyTo')
         self.__categories = cloud_data.get(cc('categories'), [])
-        self.__importance = ImportanceLevel((cloud_data.get(cc('importance'), 'normal') or 'normal').lower())   # lower because of office365 v1.0
+        self.__importance = ImportanceLevel((cloud_data.get(cc('importance'), 'normal') or 'normal').lower())  # lower because of office365 v1.0
         self.__is_read = cloud_data.get(cc('isRead'), None)
         self.__is_draft = cloud_data.get(cc('isDraft'), kwargs.get('is_draft', True))  # a message is a draft by default
         self.conversation_id = cloud_data.get(cc('conversationId'), None)
@@ -382,7 +382,7 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
 
     @importance.setter
     def importance(self, value):
-        self.__importance = value if isinstance(value, ImportanceLevel) else ImportanceLevel(value)
+        self.__importance = value if isinstance(value, ImportanceLevel) else ImportanceLevel(value.lower())
         self._track_changes.add('importance')
 
     def to_api_data(self, restrict_keys=None):

@@ -17,7 +17,7 @@ Python library for interfacing with the Microsoft Office 365 online.
 """
 
 from .account import Account
-from .connection import Connection, Protocol, MSGraphProtocol, MSOffice365Protocol, BasicAuthProtocol, AUTH_METHOD
+from .connection import Connection, Protocol, MSGraphProtocol, MSOffice365Protocol
 from .mailbox import MailBox
 from .message import Message, MessageAttachment, Recipient
 from .address_book import AddressBook, Contact

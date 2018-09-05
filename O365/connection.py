@@ -3,7 +3,6 @@ import json
 import os
 import time
 from pathlib import Path
-from enum import Enum
 from tzlocal import get_localzone
 from datetime import tzinfo
 import pytz
@@ -20,7 +19,7 @@ from O365.utils import ME_RESOURCE, IANA_TO_WIN, WIN_TO_IANA
 
 log = logging.getLogger(__name__)
 
-O365_API_VERSION = 'v1.0'  # v2.0 does not allow basic auth
+O365_API_VERSION = 'v2.0'  # v2.0 does not allow basic auth
 GRAPH_API_VERSION = 'v1.0'
 OAUTH_REDIRECT_URL = 'https://outlook.office365.com/owa/'
 
@@ -75,18 +74,12 @@ DEFAULT_SCOPES = {
 }
 
 
-class AUTH_METHOD(Enum):
-    BASIC = 'basic'
-    OAUTH = 'oauth'
-
-
 class Protocol:
     """ Base class for all protocols """
 
     _protocol_url = 'not_defined'  # Main url to request. Override in subclass
     _oauth_scope_prefix = ''  # prefix for scopes (in MS GRAPH is 'https://graph.microsoft.com/' + SCOPE)
     _oauth_scopes = {}  # dictionary of {scopes_name: [scope1, scope2]}
-    _protocol_endpoint_transform = {}  # a dictionary of endpoints transformations
 
     def __init__(self, *, protocol_url=None, api_version=None, default_resource=ME_RESOURCE,
                  casing_function=None, protocol_scope_prefix=None, timezone=None, **kwargs):
@@ -108,6 +101,7 @@ class Protocol:
         self.use_default_casing = True if casing_function is None else False  # if true just returns the key without transform
         self.casing_function = casing_function or camelcase
         self.timezone = timezone or get_localzone()  # pytz timezone
+        self.max_top_value = 500  # Max $top parameter value
 
         # define any keyword that can be different in this protocol
         self.keyword_data_store = {}
@@ -121,7 +115,7 @@ class Protocol:
 
         Converts case to send/read from the cloud
         When using Microsoft Graph API, the keywords of the API use lowerCamelCase Casing.
-        When using ffice 365 API, the keywords of the API use PascalCase Casing.
+        When using Office 365 API, the keywords of the API use PascalCase Casing.
 
         Default case in this API is lowerCamelCase.
 
@@ -163,13 +157,6 @@ class Protocol:
                 return scope[0]
             else:
                 return scope
-
-    def transform_endpoint(self, endpoint):
-        """ Converts and endpoint by replacing keywords """
-        for key_word, replacement in self._protocol_endpoint_transform.items():
-            if key_word in endpoint:
-                endpoint = endpoint.replace(key_word, replacement)
-        return endpoint
 
     @staticmethod
     def get_iana_tz(windows_tz):
@@ -240,22 +227,6 @@ class MSOffice365Protocol(Protocol):
         self.max_top_value = 999  # Max $top parameter value
 
 
-class BasicAuthProtocol(MSOffice365Protocol):
-    """
-    A Microsoft Office 365 Protocol Implementation that works with basic auth
-    Basic auth only works on 'https://outlook.office365.com/api/ protocol url
-        with api version v1.0 and until November 1 2018.
-    """
-
-    _protocol_url = 'https://outlook.office365.com/api/'
-    _protocol_endpoint_transform = {
-        'mailFolders': 'Folders'
-    }
-
-    def __init__(self, api_version='v1.0', default_resource=ME_RESOURCE, **kwargs):
-        super().__init__(api_version=api_version, default_resource=default_resource, **kwargs)
-
-
 class Connection:
     """ Handles all comunication (requests) between the app and the server """
 
@@ -265,7 +236,7 @@ class Connection:
     _default_token_path = Path() / _default_token_file
     _allowed_methods = ['get', 'post', 'put', 'patch', 'delete']
 
-    def __init__(self, credentials, *, auth_method=AUTH_METHOD.OAUTH, scopes=None,
+    def __init__(self, credentials, *, scopes=None,
                  proxy_server=None, proxy_port=8080, proxy_username=None, proxy_password=None,
                  requests_delay=200, raise_http_errors=True, request_retries=3):
         """ Creates an API connection object
@@ -273,7 +244,6 @@ class Connection:
         :param credentials: a tuple containing the credentials for this connection.
             This could be either (username, password) using basic authentication or (client_id, client_secret) using oauth.
             Generate client_id and client_secret in https://apps.dev.microsoft.com.
-        :param auth_method: the method used when connecting to the service API.
         :param scopes: oauth2: a list of scopes permissions to request access to
         :param proxy_server: the proxy server
         :param proxy_port: the proxy port, defaults to 8080
@@ -288,21 +258,11 @@ class Connection:
         if not isinstance(credentials, tuple) or len(credentials) != 2 or (not credentials[0] and not credentials[1]):
             raise ValueError('Provide valid auth credentials')
 
-        if isinstance(auth_method, str):
-            auth_method = AUTH_METHOD(auth_method)
-
-        if auth_method is AUTH_METHOD.BASIC:
-            self.auth_method = AUTH_METHOD.BASIC
-            self.auth = credentials
-        elif auth_method is AUTH_METHOD.OAUTH:
-            self.auth_method = AUTH_METHOD.OAUTH
-            self.auth = credentials
-            self.scopes = scopes
-            self.store_token = True
-            self.token_path = self._default_token_path
-            self.token = None
-        else:
-            raise ValueError("Auth Method must be 'basic' or 'oauth'")
+        self.auth = credentials
+        self.scopes = scopes
+        self.store_token = True
+        self.token_path = self._default_token_path
+        self.token = None
 
         self.session = None  # requests Session object
         self.proxy = {}
@@ -341,8 +301,6 @@ class Connection:
         This is a two step process, first call this function. Then get the url result from the user and then
         call 'request_token' to get and store the access token.
         """
-        if self.auth_method is AUTH_METHOD.BASIC:
-            raise RuntimeError('Method not allowed using basic authentication')
 
         client_id, client_secret = self.auth
 
@@ -376,8 +334,6 @@ class Connection:
                             so u don't have to keep opening the auth link and authenticating every time
         :param token_path: full path to where the token should be saved to
         """
-        if self.auth_method is AUTH_METHOD.BASIC:
-            raise RuntimeError('Method not allowed using basic authentication')
 
         if self.session is None:
             raise RuntimeError("Fist call 'get_authorization_url' to generate a valid oauth object")
@@ -410,17 +366,13 @@ class Connection:
 
         :param token_path: Only oauth: full path to where the token should be load from
         """
-        if self.auth_method is AUTH_METHOD.BASIC:
-            self.session = requests.Session()
-            self.session.auth = self.auth
-        else:
-            self.token = self.token or self._load_token(token_path)
+        self.token = self.token or self._load_token(token_path)
 
-            if self.token:
-                client_id, _ = self.auth
-                self.session = OAuth2Session(client_id=client_id, token=self.token)
-            else:
-                raise RuntimeError('No auth token found. Authentication Flow needed')
+        if self.token:
+            client_id, _ = self.auth
+            self.session = OAuth2Session(client_id=client_id, token=self.token)
+        else:
+            raise RuntimeError('No auth token found. Authentication Flow needed')
 
         self.session.proxies = self.proxy
 
@@ -435,9 +387,6 @@ class Connection:
 
     def refresh_token(self):
         """ Gets another token """
-
-        if self.auth_method is AUTH_METHOD.BASIC:
-            raise RuntimeError('Method not allowed using basic authentication')
 
         client_id, client_secret = self.auth
         self.token = token = self.session.refresh_token(self._oauth2_token_url, client_id=client_id,
@@ -476,25 +425,17 @@ class Connection:
         log.info('Requesting ({}) URL: {}'.format(method.upper(), url))
         log.info('Request parameters: {}'.format(kwargs))
 
-        if self.auth_method is AUTH_METHOD.BASIC:
-            # # basic authentication
-            # kwargs['auth'] = self.auth  # set in get_session
-            if not self.session:
-                self.get_session()
-            self._check_delay()  # sleeps if needed
+        # oauth2 authentication
+        if not self.session:
+            self.get_session()
+        self._check_delay()  # sleeps if needed
+        try:
             response = self.session.request(method, url, **kwargs)
-        else:
-            # oauth2 authentication
-            if not self.session:
-                self.get_session()
-            self._check_delay()  # sleeps if needed
-            try:
-                response = self.session.request(method, url, **kwargs)
-            except TokenExpiredError:
-                log.info('Token is expired, fetching a new token')
-                self.refresh_token()
-                log.info('New token fetched')
-                response = self.session.request(method, url, **kwargs)
+        except TokenExpiredError:
+            log.info('Token is expired, fetching a new token')
+            self.refresh_token()
+            log.info('New token fetched')
+            response = self.session.request(method, url, **kwargs)
 
         log.info('Received response ({}) from URL {}'.format(response.status_code, response.url))
 
@@ -540,8 +481,6 @@ class Connection:
         :param token: token dictionary returned by the oauth token request
         :param token_path: Path object to where the file is to be saved
         """
-        if self.auth_method is AUTH_METHOD.BASIC:
-            raise RuntimeError('Method not allowed using basic authentication')
 
         if not token_path:
             token_path = self._default_token_path
@@ -559,8 +498,6 @@ class Connection:
 
         :param token_path: Path object to the file with token information saved
         """
-        if self.auth_method is AUTH_METHOD.BASIC:
-            raise RuntimeError('Method not allowed using basic authentication')
 
         if not token_path:
             token_path = self._default_token_path
@@ -579,8 +516,6 @@ class Connection:
 
         :param token_path: Path object to where the token is saved
         """
-        if self.auth_method is AUTH_METHOD.BASIC:
-            raise RuntimeError('Method not allowed using basic authentication')
 
         if not token_path:
             token_path = self._default_token_path
