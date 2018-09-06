@@ -175,10 +175,13 @@ from O365 import Connection, FluentInbox
 
 # Setup connection object
 # This will provide you with auth url, open it and authentication and copy the resulting page url and paste it back in the input
-Connection.oauth2("your client_id", "your client_secret", store_token=True)
+c = Connection.oauth2("your client_id", "your client_secret", store_token=True)
 
 # Proxy call is required only if you are behind proxy
 Connection.proxy(url='proxy.company.com', port=8080, username='proxy_username', password='proxy_password')
+
+# Start a message with OAuth2 
+m = Message(oauth=c.oauth)
 ```
 
 
