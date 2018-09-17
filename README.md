@@ -95,7 +95,7 @@ for veh in vj:
 	e = veh['email']
 	p = veh['password']
 
-	schedule = Schedule(e,p)
+	schedule = Schedule((e,p))
 	try:
 		result = schedule.getCalendars()
 		print 'Fetched calendars for',e,'was successful:',result
@@ -120,7 +120,7 @@ for veh in vj:
 
 Events can be made relatively easily too. You just have to create a event class:
 ```python
-e = Event(authentication,parentCalendar)
+e = Event(auth=authentication,cal=parentCalendar)
 ```
 and give it a few nesessary details:
 ```python
