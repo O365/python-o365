@@ -126,7 +126,7 @@ class Message(object):
 		if user_id:
 			url = self.send_as_url.format(user_id=user_id)
 		else:
-			usl = self.send_url
+			url = self.send_url
 		response = (self.oauth, requests)[self.oauth is None].post(
 			url, data, headers=headers, auth=self.auth, verify=self.verify, **kwargs)
 		log.debug('response from server for sending message:' + str(response))
