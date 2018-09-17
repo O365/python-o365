@@ -41,6 +41,10 @@ class Calendar( object ):
 
 		self.verify = verify
 
+	def __str__(self):
+		'''Return informal, nicely printable string.'''
+		return self.getName()
+
 	def getName(self):
 		'''Get the calendar's Name.'''
 		return self.json['Name']
