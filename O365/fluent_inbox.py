@@ -44,13 +44,14 @@ class FluentInbox(object):
 		:param verify: whether or not to verify SSL certificate
 		"""
 		self.url = FluentInbox._get_url('inbox')
+		self.folder = None
 		self.fetched_count = 0
 		self._filter = ''
 		self._search = ''
 		self.verify = verify
 		self.messages = []
 
-	def from_folder(self, folder_name, user_id=None):
+	def from_folder(self, folder_name, parent_id=None, user_id=None):
 		""" Configure to use this folder for fetching the mails
 
 		:param folder_name: name of the outlook folder
@@ -60,6 +61,7 @@ class FluentInbox(object):
 
 		folder_id = self.get_folder(value=folder_name,
 									by='DisplayName',
+									parent_id=parent_id,
 									user_id=user_id)['Id']
 
 		if user_id:
@@ -111,6 +113,7 @@ class FluentInbox(object):
 
 		for folder in response:
 			if folder[by] == value:
+				self.folder = folder				
 				return(folder)
 
 			all_folders.append(folder['displayName'])
