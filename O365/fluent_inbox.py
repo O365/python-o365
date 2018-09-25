@@ -1,240 +1,239 @@
 import logging
 
 from O365.connection import Connection
-from O365.fluent_message import Message
+from O365.fluent_message import FluentMessage
 
 log = logging.getLogger(__name__)
 
 
 class FluentInbox(object):
-	url_dict = {
-		'inbox': {
-			'1.0': 'https://outlook.office365.com/api/v1.0/me/messages',
-			'2.0': 'https://graph.microsoft.com/v1.0/me/messages',
-		},
-		'folders': {
-			'1.0': 'https://outlook.office365.com/api/v1.0/me/Folders',
-			'2.0': 'https://graph.microsoft.com/v1.0/me/MailFolders',
-		},
-		'folder': {
-			'1.0': 'https://outlook.office365.com/api/v1.0/me/Folders/{folder_id}/messages',
-			'2.0': 'https://graph.microsoft.com/v1.0/me/MailFolders/{folder_id}/messages',
-		},
-		'child_folders': {
-			'1.0': 'https://outlook.office365.com/api/v1.0/me/Folders/{folder_id}/childfolders',
-			'2.0': 'https://graph.microsoft.com/v1.0/me/MailFolders/{folder_id}/childfolders',
-		},
-		'user_folders': {
-			'1.0': 'https://outlook.office365.com/api/v1.0/users/{user_id}/Folders',
-			'2.0': 'https://graph.microsoft.com/v1.0/users/{user_id}/MailFolders',
-		},
-		'user_folder': {
-			'1.0': 'https://outlook.office365.com/api/v1.0/users/{user_id}/Folders/{folder_id}/messages',
-			'2.0': 'https://graph.microsoft.com/v1.0/users/{user_id}/MailFolders/{folder_id}/messages',
-		},
-		'user_child_folders': {
-			'1.0': 'https://outlook.office365.com/api/v1.0/users/{user_id}/Folders/{folder_id}/childfolders',
-			'2.0': 'https://graph.microsoft.com/v1.0/users/{user_id}/MailFolders/{folder_id}/childfolders',
-		}
-	}
+    url_dict = {
+        'inbox': '/me/messages',
+        'folders': '/me/MailFolders',
+        'folder': '/me/Folders/{folder_id}/messages',
+        'child_folders': '/me/MailFolders/{folder_id}/childfolders',
+        'user_folders': '/users/{user_id}/Folders',
+        'user_folder': '/users/{user_id}/MailFolders/{folder_id}/messages',
+        'user_child_folders': '/users/{user_id}/MailFolders/'
+                              '{folder_id}/childfolders',
+    }
 
-	def __init__(self, verify=True):
-		""" Creates a new inbox wrapper.
+    def __init__(self, verify=True):
+        """ Creates a new inbox wrapper.
 
-		:param verify: whether or not to verify SSL certificate
-		"""
-		self.url = FluentInbox._get_url('inbox')
-		self.folder = None
-		self.fetched_count = 0
-		self._filter = ''
-		self._search = ''
-		self.verify = verify
-		self.messages = []
+        :param verify: whether or not to verify SSL certificate
+        """
+        self.url = FluentInbox._get_url('inbox')
+        self.folder = None
+        self.fetched_count = 0
+        self._filter = ''
+        self._search = ''
+        self.verify = verify
+        self.messages = []
 
-	def from_folder(self, folder_name, parent_id=None, user_id=None):
-		""" Configure to use this folder for fetching the mails
+    def from_folder(self, folder_name, parent_id=None, user_id=None):
+        """ Configure to use this folder for fetching the mails
 
-		:param folder_name: name of the outlook folder
-		:param user_id: user id the folder belongs to (shared mailboxes)
-		"""
-		self._reset()
+        :param parent_id: parent folder id to search folder_name
+        :param folder_name: name of the outlook folder
+        :param user_id: user id the folder belongs to (shared mailboxes)
+        """
+        self._reset()
 
-		folder_id = self.get_folder(value=folder_name,
-									by='DisplayName',
-									parent_id=parent_id,
-									user_id=user_id)['Id']
+        folder_id = self.get_folder(value=folder_name,
+                                    by='DisplayName',
+                                    parent_id=parent_id,
+                                    user_id=user_id)['Id']
 
-		if user_id:
-			self.url = FluentInbox._get_url('user_folder').format(
-				user_id=user_id, folder_id=folder_id)
-		else:
-			self.url = FluentInbox._get_url('folder').format(
-				folder_id=folder_id)
+        if user_id:
+            self.url = FluentInbox._get_url('user_folder').format(
+                user_id=user_id, folder_id=folder_id)
+        else:
+            self.url = FluentInbox._get_url('folder').format(
+                folder_id=folder_id)
 
-		return self
+        return self
 
-	def get_folder(self, value, by='Id', parent_id=None, user_id=None):
-		"""
-		Return a folder by a given attribute.  If multiple folders exist by
-		this attribute, only the first will be returned
+    def get_folder(self, value, by='Id', parent_id=None, user_id=None):
+        """
+        Return a folder by a given attribute.  If multiple folders exist by
+        this attribute, only the first will be returned
 
-		Example:
-		   get_folder(by='DisplayName', value='Inbox')
+        Example:
+           get_folder(by='DisplayName', value='Inbox')
 
-		   or
+           or
 
-		   get_folder(by='Id', value='AAKrWFG...')
+           get_folder(by='Id', value='AAKrWFG...')
 
-		   Would both return the requested folder attributes
+           Would both return the requested folder attributes
 
-		:param value: Value that we are searching for
-		:param by: Search on this key (default: Id)
-		:param user_id: user id the folder belongs to (shared mailboxes)
-		:returns: Single folder data
-		"""
-		if parent_id and user_id:
-			folders_url = FluentInbox._get_url('user_child_folders').format(
-				folder_id=parent_id, user_id=user_id)
-		elif parent_id:
-			folders_url = FluentInbox._get_url('child_folders').format(
-				folder_id=parent_id)
-		elif user_id:
-			folders_url = FluentInbox._get_url('user_folders').format(
-				user_id=user_id)
-		else:
-			folders_url = FluentInbox._get_url('folders')
+        :param parent_id: parent folder id to search in
+        :param value: Value that we are searching for
+        :param by: Search on this key (default: Id)
+        :param user_id: user id the folder belongs to (shared mailboxes)
+        :returns: Single folder data
+        """
+        if parent_id and user_id:
+            folders_url = FluentInbox._get_url('user_child_folders').format(
+                folder_id=parent_id, user_id=user_id)
+        elif parent_id:
+            folders_url = FluentInbox._get_url('child_folders').format(
+                folder_id=parent_id)
+        elif user_id:
+            folders_url = FluentInbox._get_url('user_folders').format(
+                user_id=user_id)
+        else:
+            folders_url = FluentInbox._get_url('folders')
 
-		response = Connection.get_response(folders_url,
-										   verify=self.verify,
-										   params={'$top': 100})
+        response = Connection.get_response(folders_url,
+                                           verify=self.verify,
+                                           params={'$top': 100})
 
-		folder_id = None
-		all_folders = []
+        folder_id = None
+        all_folders = []
 
-		for folder in response:
-			if folder[by] == value:
-				self.folder = folder				
-				return(folder)
+        for folder in response:
+            if folder[by] == value:
+                self.folder = folder
+                return folder
 
-			all_folders.append(folder['displayName'])
+            all_folders.append(folder['displayName'])
 
-		if not folder_id:
-			raise RuntimeError(
-				'Folder "{}" is not found by "{}", available folders '
-				'are {}'.format(value, by, all_folders))
+        if not folder_id:
+            raise RuntimeError(
+                'Folder "{}" is not found by "{}", available folders '
+                'are {}'.format(value, by, all_folders))
 
-	def list_folders(self, parent_id=None, user_id=None):
-		"""
-		:param parent_id: Id of parent folder to list.  Default to top folder
-		:return: List of all folder data
-		"""
-		if parent_id and user_id:
-			folders_url = FluentInbox._get_url('user_child_folders').format(
-				folder_id=parent_id, user_id=user_id)
-		elif parent_id:
-			folders_url = FluentInbox._get_url('child_folders').format(
-				folder_id=parent_id)
-		elif user_id:
-			folders_url = FluentInbox._get_url('user_folders').format(
-				user_id=user_id)
-		else:
-			folders_url = FluentInbox._get_url('folders')
+    def list_folders(self, parent_id=None, user_id=None):
+        """
+        :param user_id: user id to list folder from (default is None)
+        :param parent_id: Id of parent folder to list.  Default to top folder
+        :return: List of all folder data
+        """
+        if parent_id and user_id:
+            folders_url = FluentInbox._get_url('user_child_folders').format(
+                folder_id=parent_id, user_id=user_id)
+        elif parent_id:
+            folders_url = FluentInbox._get_url('child_folders').format(
+                folder_id=parent_id)
+        elif user_id:
+            folders_url = FluentInbox._get_url('user_folders').format(
+                user_id=user_id)
+        else:
+            folders_url = FluentInbox._get_url('folders')
 
-		response = Connection.get_response(folders_url,
-										   verify=self.verify,
-										   params={'$top': 100})
+        response = Connection.get_response(folders_url,
+                                           verify=self.verify,
+                                           params={'$top': 100})
 
-		folders = []
-		for folder in response:
-			folders.append(folder)
+        folders = []
+        for folder in response:
+            folders.append(folder)
 
-		return folders
+        return folders
 
-	def filter(self, filter_string):
-		""" Set the value of a filter. More information on what filters are available can be found here:
-		https://msdn.microsoft.com/office/office365/APi/complex-types-for-mail-contacts-calendar#RESTAPIResourcesMessage
-		More improvements coming soon
+    def filter(self, filter_string):
+        """ Set the value of a filter.
 
-		:param filter_string: The string that represents the filters you want to enact.
-				should be something like: (HasAttachments eq true) and (IsRead eq false) or just: IsRead eq false
-				test your filter string here: https://outlook.office365.com/api/v1.0/me/messages?$filter=
-				if that accepts it then you know it works.
-		"""
-		self._filter = filter_string
-		return self
+        More information on what filters are available can be found here:
+        https://msdn.microsoft.com/office/office365/APi/
+        complex-types-for-mail-contacts-calendar#RESTAPIResourcesMessage
 
-	def search(self, search_string):
-		""" Set the value of a search. More information on what searches are available can be found here:
-		https://msdn.microsoft.com/office/office365/APi/complex-types-for-mail-contacts-calendar#RESTAPIResourcesMessage
-		More improvements coming soon
+        Should be something like: (HasAttachments eq true) and
+        (IsRead eq false) or just: IsRead eq false.
 
-		:param search_string: The search string you want to use
+        Test your filter string here:
+        https://outlook.office365.com/api/v1.0/me/messages?$filter=
+        if that accepts it then you know it works.
 
-		Should be something like: "Category:Action AND Subject:Test" or just: "Subject:Test".
+        More improvements coming soon
 
-		Test your search string here: "https://outlook.office365.com/api/v1.0/me/messages?$search="
-		or directly in your mailbox, if that accepts it then you know it works.
-		"""
-		self._search = search_string
-		return self
+        :param filter_string: The string that represents the filters
+         you want to enact.
+        """
+        self._filter = filter_string
+        return self
 
-	def fetch_first(self, count=10):
-		""" Fetch the first n messages, where n is the specified count
+    def search(self, search_string):
+        """ Set the value of a search.
 
-		:param count: no.of messages to fetch
-		"""
-		self.fetched_count = 0
-		return self.fetch_next(count=count)
+        More information on what searches are available can be found here:
+        https://msdn.microsoft.com/office/office365/APi/
+        complex-types-for-mail-contacts-calendar#RESTAPIResourcesMessage
 
-	def skip(self, count):
-		""" Skips the first n messages, where n is the specified count
+        Should be something like: "Category:Action AND Subject:Test"
+        or just: "Subject:Test".
 
-		:param count: no.of messages to skip
-		"""
-		self.fetched_count = count
-		return self
+        Test your search string here:
+        "https://outlook.office365.com/api/v1.0/me/messages?$search="
+        or directly in your mailbox, if that accepts it then you know it works.
 
-	def fetch(self, count=10):
-		""" Fetch n messages from the result, where n is the specified count
+        More improvements coming soon
 
-		:param count: no.of messages to fetch
-		"""
-		return self.fetch_next(count=count)
+        :param search_string: The search string you want to use
+        """
+        self._search = search_string
+        return self
 
-	def fetch_next(self, count=1):
-		""" Fetch the next n messages after the previous fetch, where n is the specified count
+    def fetch_first(self, count=10):
+        """ Fetch the first n messages, where n is the specified count
 
-		:param count: no.of messages to fetch
-		"""
-		skip_count = self.fetched_count
-		if self._search:
-			params = {'$filter': self._filter, '$top': count,
-					  '$search': '"{}"'.format(self._search)}
-		else:
-			params = {'$filter': self._filter, '$top': count,
-					  '$skip': skip_count}
+        :param count: no.of messages to fetch
+        """
+        self.fetched_count = 0
+        return self.fetch_next(count=count)
 
-		response = Connection.get_response(self.url, verify=self.verify,
-										   params=params)
-		self.fetched_count += count
+    def skip(self, count):
+        """ Skips the first n messages, where n is the specified count
 
-		connection = Connection()
-		messages = []
-		for message in response:
-			messages.append(Message(message, connection.auth, oauth=connection.oauth))
+        :param count: no.of messages to skip
+        """
+        self.fetched_count = count
+        return self
 
-		return messages
+    def fetch(self, count=10):
+        """ Fetch n messages from the result, where n is the specified count
 
-	@staticmethod
-	def _get_url(key):
-		""" Fetches the url for specified key as per the connection version configured
+        :param count: no.of messages to fetch
+        """
+        return self.fetch_next(count=count)
 
-		:param key: the key for which url is required
-		:return: URL to use for requests
-		"""
-		return FluentInbox.url_dict[key][Connection().api_version]
+    def fetch_next(self, count=1):
+        """ Fetch the next n messages after the previous fetch,
+        where n is the specified count
 
-	def _reset(self):
-		""" Resets the current reference """
-		self.fetched_count = 0
-		self.messages = []
+        :param count: no.of messages to fetch
+        """
+        skip_count = self.fetched_count
+        if self._search:
+            params = {'$filter': self._filter, '$top': count,
+                      '$search': '"{}"'.format(self._search)}
+        else:
+            params = {'$filter': self._filter, '$top': count,
+                      '$skip': skip_count}
+
+        response = Connection.get_response(self.url, verify=self.verify,
+                                           params=params)
+        self.fetched_count += count
+
+        messages = []
+        for message in response:
+            messages.append(FluentMessage(message))
+
+        return messages
+
+    @staticmethod
+    def _get_url(key):
+        """ Fetches the url for specified key as per the connection version
+        configured
+
+        :param key: the key for which url is required
+        :return: URL to use for requests
+        """
+        return Connection().root_url + FluentInbox.url_dict[key]
+
+    def _reset(self):
+        """ Resets the current reference """
+        self.fetched_count = 0
+        self.messages = []
