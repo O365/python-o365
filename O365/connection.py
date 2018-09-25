@@ -226,9 +226,9 @@ class Connection(with_metaclass(Singleton)):
 		if response.status_code == 401:
 			raise RuntimeError('API returned status code 401 Unauthorized, check the connection credentials')
 
-		response_json = response.json()
+		response_json = response.json(object_pairs_hook=MicroDict)
 		if 'value' not in response_json:
 			raise RuntimeError('Something went wrong, received an unexpected result \n{}'.format(response_json))
 
-		response_values = [MicroDict(x) for x in response_json['value']]
+		response_values=response_json['value']
 		return response_values
