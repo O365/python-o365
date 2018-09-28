@@ -1,14 +1,14 @@
+import json
 import logging
 import os
 import os.path as path
-import json
 
 import requests
+from future.utils import with_metaclass
 from oauthlib.oauth2 import TokenExpiredError
 from requests_oauthlib import OAuth2Session
-from future.utils import with_metaclass
 
-from .utils import deprecated, fluent
+from .utils import fluent
 
 log = logging.getLogger(__name__)
 

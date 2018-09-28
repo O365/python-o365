@@ -1,7 +1,6 @@
 import inspect
 import logging
 from functools import wraps
-import os
 
 log = logging.getLogger(__name__)
 
@@ -9,15 +8,9 @@ log = logging.getLogger(__name__)
 def deprecated(version, *replacement):
     """ Decorator to mark a specified function as deprecated
 
-    :param replacement: replacement function to use
-    :param removed: whether the function is removed completely
+    :param version: version in which it is deprecated
+    :param replacement: replacement functions to use
     """
-    outer = inspect.getouterframes(inspect.currentframe())
-    for i, temp in enumerate(outer):
-        if temp[3] == 'run':
-            break
-    frame = outer[i - 1]
-
     def deprecated_wrapper(func):
         replacement_message = 'Use {} instead'.format(', '.join(
             ["'{}'".format(_get_func_fq_name(x))

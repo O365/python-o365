@@ -1,10 +1,10 @@
 import json
 import logging
 
-from .contact import Contact
-from .group import Group
 from .attachment import Attachment
 from .connection import MicroDict, Connection
+from .contact import Contact
+from .group import Group
 from .utils import deprecated
 
 log = logging.getLogger(__name__)
@@ -255,7 +255,7 @@ class Message(object):
         """ Send the email
 
         :param user_id: User id (email) if sending as other user
-        :return: Succes or Fail
+        :return: Success or Fail
         :rtype: bool
         """
 
@@ -280,7 +280,8 @@ class Message(object):
             data = json.dumps(data)
         except RuntimeError as e:
             raise RuntimeError(
-                'Error while trying to compile the json string to send: {0}'.format(
+                'Error while trying to compile the json string to send: '
+                '{0}'.format(
                     str(e)))
 
         if user_id:
@@ -421,7 +422,7 @@ class Message(object):
     def set_categories(self, *category_names, **kwargs):
         """ Set the category of the message
 
-        :param category_name: category to add to the message
+        :param category_names: category to add to the message
         :return: True or False (Success or Fail)
         :rtype: bool
         """
