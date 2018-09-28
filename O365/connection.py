@@ -7,6 +7,7 @@ import requests
 from future.utils import with_metaclass
 from oauthlib.oauth2 import TokenExpiredError
 from requests_oauthlib import OAuth2Session
+from builtins import input
 
 from .utils import fluent
 
