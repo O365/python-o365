@@ -1,5 +1,5 @@
 
-from O365 import message
+from O365 import _old_message
 import unittest
 import json
 
@@ -8,7 +8,7 @@ class Attachment:
 	def __init__(self,json):
 		self.json = json
 
-message.Attachment = Attachment
+_old_message.Attachment = Attachment
 
 class Resp:
 	def __init__(self,json_string,code=200):
@@ -36,7 +36,7 @@ def get(url,**params):
 
 	return ret
 
-message.requests.get = get
+_old_message.requests.get = get
 
 def post(url,data,headers,auth):
 	if url != 'https://outlook.office365.com/api/v1.0/me/sendmail':
@@ -60,7 +60,7 @@ def post(url,data,headers,auth):
 
 
 
-message.requests.post = post
+_old_message.requests.post = post
 
 def patch(url,data,headers,auth):
 	if url != 'https://outlook.office365.com/api/v1.0/me/messages/big guid=':
@@ -75,7 +75,7 @@ def patch(url,data,headers,auth):
 		raise
 	return True
 
-message.requests.patch = patch
+_old_message.requests.patch = patch
 
 auth = ('test@unit.com','pass')
 
@@ -83,13 +83,13 @@ class TestMessage (unittest.TestCase):
 
 	def setUp(self):
 		ur = json.loads(un_rep)['value'][0]
-		self.unread = message.Message(ur,auth)
+		self.unread = _old_message.Message(ur, auth)
 		re = json.loads(read_rep)['value'][0]
-		self.read = message.Message(re,auth)
+		self.read = _old_message.Message(re, auth)
 		att = json.loads(att_m_rep)['value'][0]
-		self.att = message.Message(att,auth)
+		self.att = _old_message.Message(att, auth)
 
-		self.newm = message.Message(auth=auth)
+		self.newm = _old_message.Message(auth=auth)
 
 	def test_fetchAttachments(self):
 		self.assertTrue(len(self.att.attachments) == 0)

@@ -11,7 +11,7 @@ be sent straight way.
 
 For attachments, include the path to the attachment in the call and the script
 will attach the files or crash trying. (hopefully not the latter) 
-e.g.: python simple-message.py that_file_you_want_but_could_only_ssh_in.jpg
+e.g.: python simple-_old_message.py that_file_you_want_but_could_only_ssh_in.jpg
 '''
 
 if len(argv) > 1:

@@ -1,21 +1,26 @@
 import logging
 
-from O365.connection import Connection
-from O365.fluent_message import FluentMessage
+from O365.utils import fluent
+from .connection import Connection
+from .message import Message
 
 log = logging.getLogger(__name__)
 
 
 class FluentInbox(object):
+    """ Creates a new inbox wrapper.
+
+    :param verify: whether or not to verify SSL certificate
+    """
     url_dict = {
         'inbox': '/me/messages',
-        'folders': '/me/MailFolders',
-        'folder': '/me/Folders/{folder_id}/messages',
-        'child_folders': '/me/MailFolders/{folder_id}/childfolders',
-        'user_folders': '/users/{user_id}/Folders',
-        'user_folder': '/users/{user_id}/MailFolders/{folder_id}/messages',
-        'user_child_folders': '/users/{user_id}/MailFolders/'
-                              '{folder_id}/childfolders',
+        'folders': '/me/mailFolders',
+        'folder': '/me/mailFolders/{folder_id}/messages',
+        'child_folders': '/me/mailFolders/{folder_id}/childFolders',
+        'user_folders': '/users/{user_id}/mailFolders',
+        'user_folder': '/users/{user_id}/mailFolders/{folder_id}/messages',
+        'user_child_folders': '/users/{user_id}/mailFolders/'
+                              '{folder_id}/childFolders',
     }
 
     def __init__(self, verify=True):
@@ -31,12 +36,15 @@ class FluentInbox(object):
         self.verify = verify
         self.messages = []
 
+    @fluent
     def from_folder(self, folder_name, parent_id=None, user_id=None):
         """ Configure to use this folder for fetching the mails
 
         :param parent_id: parent folder id to search folder_name
         :param folder_name: name of the outlook folder
         :param user_id: user id the folder belongs to (shared mailboxes)
+        :return: copy of this object
+        :rtype: FluentInbox
         """
         self._reset()
 
@@ -73,6 +81,7 @@ class FluentInbox(object):
         :param by: Search on this key (default: Id)
         :param user_id: user id the folder belongs to (shared mailboxes)
         :returns: Single folder data
+        :rtype: dict
         """
         if parent_id and user_id:
             folders_url = FluentInbox._get_url('user_child_folders').format(
@@ -110,6 +119,7 @@ class FluentInbox(object):
         :param user_id: user id to list folder from (default is None)
         :param parent_id: Id of parent folder to list.  Default to top folder
         :return: List of all folder data
+        :rtype: list
         """
         if parent_id and user_id:
             folders_url = FluentInbox._get_url('user_child_folders').format(
@@ -133,6 +143,7 @@ class FluentInbox(object):
 
         return folders
 
+    @fluent
     def filter(self, filter_string):
         """ Set the value of a filter.
 
@@ -144,17 +155,21 @@ class FluentInbox(object):
         (IsRead eq false) or just: IsRead eq false.
 
         Test your filter string here:
-        https://outlook.office365.com/api/v1.0/me/messages?$filter=
+        "https://developer.microsoft.com/en-us/graph/graph-explorer" using GET
+        "https://graph.microsoft.com/v1.0/me/messages?$filter="
         if that accepts it then you know it works.
 
         More improvements coming soon
 
         :param filter_string: The string that represents the filters
          you want to enact.
+        :return: copy of this object
+        :rtype: FluentInbox
         """
         self._filter = filter_string
         return self
 
+    @fluent
     def search(self, search_string):
         """ Set the value of a search.
 
@@ -166,12 +181,15 @@ class FluentInbox(object):
         or just: "Subject:Test".
 
         Test your search string here:
-        "https://outlook.office365.com/api/v1.0/me/messages?$search="
+        "https://developer.microsoft.com/en-us/graph/graph-explorer" using GET
+        "https://graph.microsoft.com/v1.0/me/messages?$search="
         or directly in your mailbox, if that accepts it then you know it works.
 
         More improvements coming soon
 
         :param search_string: The search string you want to use
+        :return: copy of this object
+        :rtype: FluentInbox
         """
         self._search = search_string
         return self
@@ -180,14 +198,19 @@ class FluentInbox(object):
         """ Fetch the first n messages, where n is the specified count
 
         :param count: no.of messages to fetch
+        :return: list of messages
+        :rtype: Message
         """
         self.fetched_count = 0
         return self.fetch_next(count=count)
 
+    @fluent
     def skip(self, count):
         """ Skips the first n messages, where n is the specified count
 
         :param count: no.of messages to skip
+        :return: copy of this object
+        :rtype: FluentInbox
         """
         self.fetched_count = count
         return self
@@ -196,6 +219,8 @@ class FluentInbox(object):
         """ Fetch n messages from the result, where n is the specified count
 
         :param count: no.of messages to fetch
+        :return: list of messages
+        :rtype: Message
         """
         return self.fetch_next(count=count)
 
@@ -204,6 +229,8 @@ class FluentInbox(object):
         where n is the specified count
 
         :param count: no.of messages to fetch
+        :return: list of messages
+        :rtype: Message
         """
         skip_count = self.fetched_count
         if self._search:
@@ -219,7 +246,7 @@ class FluentInbox(object):
 
         messages = []
         for message in response:
-            messages.append(FluentMessage(message))
+            messages.append(Message(message))
 
         return messages
 
@@ -230,8 +257,14 @@ class FluentInbox(object):
 
         :param key: the key for which url is required
         :return: URL to use for requests
+        :rtype: str
         """
-        return Connection().root_url + FluentInbox.url_dict[key]
+        url = Connection().root_url + FluentInbox.url_dict[key]
+
+        # To be removed post 1 Nov, 2018 (1.0 removal)
+        if Connection().api_version == "1.0":
+            url.replace('mailFolders', 'folders')
+        return url
 
     def _reset(self):
         """ Resets the current reference """

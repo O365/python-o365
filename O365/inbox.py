@@ -1,4 +1,4 @@
-from O365.message import Message
+from O365._old_message import Message
 import logging
 import json
 import requests

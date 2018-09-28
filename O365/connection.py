@@ -8,10 +8,16 @@ from oauthlib.oauth2 import TokenExpiredError
 from requests_oauthlib import OAuth2Session
 from future.utils import with_metaclass
 
+from .utils import deprecated, fluent
+
 log = logging.getLogger(__name__)
 
 
 class MicroDict(dict):
+    """ Dictionary to handle camelCase and PascalCase differences between
+    api v1.0 and 2.0
+    """
+
     def __getitem__(self, key):
         result = super(MicroDict, self).get(key[:1].lower() + key[1:], None)
         if result is None:
@@ -20,8 +26,21 @@ class MicroDict(dict):
             result = MicroDict(result)
         return result
 
+    def __setitem__(self, key, value):
+        if Connection().api_version == "1.0":
+            key = key[:1].upper() + key[1:]
+        super(MicroDict, self).__setitem__(key, value)
+
+    def __contains__(self, key):
+        result = super(MicroDict, self).__contains__(key[:1].lower() + key[1:])
+        if not result:
+            result = super(MicroDict, self).__contains__(
+                key[:1].upper() + key[1:])
+        return result
+
 
 class Singleton(type):
+    """ Superclass to help create the singleton pattern """
     _instance = None
 
     def __call__(cls, *args, **kwargs):
@@ -41,7 +60,7 @@ _home_path = path.expanduser("~")
 default_token_path = path.join(_home_path, _default_token_file)
 
 
-def save_token(token, token_path=None):
+def _save_token(token, token_path=None):
     """ Save the specified token dictionary to a specified file path
 
     :param token: token dictionary returned by the oauth token request
@@ -54,7 +73,7 @@ def save_token(token, token_path=None):
         json.dump(token, token_file, indent=True)
 
 
-def load_token(token_path=None):
+def _load_token(token_path=None):
     """ Save the specified token dictionary to a specified file path
 
     :param token_path: path to the file with token information saved
@@ -69,7 +88,7 @@ def load_token(token_path=None):
     return token
 
 
-def delete_token(token_path=None):
+def _delete_token(token_path=None):
     """ Save the specified token dictionary to a specified file path
 
     :param token_path: path to where the token is saved
@@ -82,6 +101,7 @@ def delete_token(token_path=None):
 
 
 class Connection(with_metaclass(Singleton)):
+    """ Create a singleton O365 connection object """
     _oauth2_authorize_url = 'https://login.microsoftonline.com' \
                             '/common/oauth2/v2.0/authorize'
     _oauth2_token_url = 'https://login.microsoftonline.com' \
@@ -92,6 +112,12 @@ class Connection(with_metaclass(Singleton)):
         '1.0': 'https://outlook.office365.com/api/v1.0',
         '2.0': 'https://graph.microsoft.com/v1.0'
     }
+
+    scopes = [
+        'https://graph.microsoft.com/Mail.ReadWrite',
+        'https://graph.microsoft.com/Mail.Send',
+        'offline_access'
+    ]
 
     def __init__(self):
         """ Creates a O365 connection object """
@@ -107,7 +133,11 @@ class Connection(with_metaclass(Singleton)):
         self.proxy_dict = None
 
     def is_valid(self):
-        """ Check if the connection singleton is initialized or not"""
+        """ Check if the connection singleton is initialized or not
+
+        :return: Valid or Not
+        :rtype: bool
+        """
         valid = False
 
         if self.api_version == '1.0':
@@ -118,8 +148,16 @@ class Connection(with_metaclass(Singleton)):
         return valid
 
     @staticmethod
+    @fluent
     def login(username, password):
-        """ Connect to office 365 using specified username and password
+        """
+        .. deprecated:: 0.10.0
+            Use :func:`oauth2` instead
+
+        .. note::  Microsoft drops support to basic authentication
+         on Nov 1, 2018
+
+        Connect to office 365 using specified username and password
 
         :param username: username to login with
         :param password: password for authentication
@@ -132,6 +170,7 @@ class Connection(with_metaclass(Singleton)):
         return connection
 
     @staticmethod
+    @fluent
     def oauth2(client_id, client_secret, store_token=True, token_path=None):
         """ Connect to office 365 using specified Open Authentication protocol
 
@@ -141,7 +180,7 @@ class Connection(with_metaclass(Singleton)):
         :param store_token: whether or not to store the token in file system,
          so u don't have to keep opening the auth link and
          authenticating every time
-        :param token_path: full path to where the token should be saved to
+        :param token_path: full path to where the token file should be saved to
         """
         connection = Connection()
 
@@ -152,18 +191,15 @@ class Connection(with_metaclass(Singleton)):
         connection.token_path = token_path
 
         if not store_token:
-            delete_token(token_path)
+            _delete_token(token_path)
 
-        token = load_token(token_path)
+        token = _load_token(token_path)
 
         if not token:
             connection.oauth = OAuth2Session(
                 client_id=client_id,
                 redirect_uri='https://outlook.office365.com/owa/',
-                scope=[
-                    'https://graph.microsoft.com/Mail.ReadWrite',
-                    'https://graph.microsoft.com/Mail.Send',
-                    'offline_access'], )
+                scope=Connection.scopes, )
             oauth = connection.oauth
             auth_url, state = oauth.authorization_url(
                 url=Connection._oauth2_authorize_url,
@@ -175,14 +211,14 @@ class Connection(with_metaclass(Singleton)):
             token = oauth.fetch_token(token_url=Connection._oauth2_token_url,
                                       authorization_response=auth_resp,
                                       client_secret=client_secret)
-            save_token(token, token_path)
+            _save_token(token, token_path)
         else:
             connection.oauth = OAuth2Session(client_id=client_id,
                                              token=token)
-
         return connection
 
     @staticmethod
+    @fluent
     def proxy(url, port, username, password):
         """ Connect to Office 365 though the specified proxy
 
@@ -206,9 +242,10 @@ class Connection(with_metaclass(Singleton)):
         adding the auth and proxy information to the url
 
         :param request_url: url to request
-        :param method: GET or POST the request
+        :param method: GET or POST or PATCH the request
         :param kwargs: any keyword arguments to pass to the requests api
-        :return: json data (for GET), response object (for POST)
+        :return: json data (for GET), response object (for POST, PATCH)
+        :rtype: dict (for GET), Response (for POST, PATCH)
         """
         connection = Connection()
 
@@ -257,7 +294,7 @@ class Connection(with_metaclass(Singleton)):
                     client_id=connection.client_id,
                     client_secret=connection.client_secret)
                 log.debug('New token fetched')
-                save_token(token, connection.token_path)
+                _save_token(token, connection.token_path)
                 response = process_request(request_url, **con_params)
 
         log.debug('Received response from URL {}'.format(response.url))
@@ -275,5 +312,5 @@ class Connection(with_metaclass(Singleton)):
 
             response_values = response_json['value']
             return response_values
-        elif method == 'POST':
+        elif method in ('POST', 'PATCH'):
             return response
