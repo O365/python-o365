@@ -1,0 +1,731 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>O365.message &mdash; O365  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> O365
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">O365 API</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">O365</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>O365.message</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for O365.message</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+
+<span class="kn">from</span> <span class="nn">.contact</span> <span class="k">import</span> <span class="n">Contact</span>
+<span class="kn">from</span> <span class="nn">.group</span> <span class="k">import</span> <span class="n">Group</span>
+<span class="kn">from</span> <span class="nn">.attachment</span> <span class="k">import</span> <span class="n">Attachment</span>
+<span class="kn">from</span> <span class="nn">.connection</span> <span class="k">import</span> <span class="n">MicroDict</span><span class="p">,</span> <span class="n">Connection</span>
+<span class="kn">from</span> <span class="nn">.utils</span> <span class="k">import</span> <span class="n">deprecated</span>
+
+<span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="Message"><a class="viewcode-back" href="../../api/message.html#O365.message.Message">[docs]</a><span class="k">class</span> <span class="nc">Message</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Makes a new message wrapper for sending and receiving messages.</span>
+
+<span class="sd">    :param json_data: Takes json if you have a pre-existing message to</span>
+<span class="sd">     create from. this is mostly used inside the library for</span>
+<span class="sd">     when new messages are downloaded.</span>
+<span class="sd">    :param verify: whether or not to verify SSL certificate</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">url_dict</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;attachments&#39;</span><span class="p">:</span> <span class="s1">&#39;/me/messages/</span><span class="si">{message_id}</span><span class="s1">/attachments&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;send&#39;</span><span class="p">:</span> <span class="s1">&#39;/me/sendmail&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;send_as&#39;</span><span class="p">:</span> <span class="s1">&#39;/me/users/</span><span class="si">{user_id}</span><span class="s1">/sendmail&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;update&#39;</span><span class="p">:</span> <span class="s1">&#39;/me/messages/</span><span class="si">{message_id}</span><span class="s1">&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;move&#39;</span><span class="p">:</span> <span class="s1">&#39;/me/messages/</span><span class="si">{0}</span><span class="s1">/move&#39;</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">json_data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verify</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Makes a new message wrapper for sending and receiving messages.</span>
+
+<span class="sd">        :param json_data: Takes json if you have a pre-existing message to</span>
+<span class="sd">         create from. this is mostly used inside the library for</span>
+<span class="sd">         when new messages are downloaded.</span>
+<span class="sd">        :param verify: whether or not to verify SSL certificate</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">json_data</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">json</span> <span class="o">=</span> <span class="n">json_data</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">json</span> <span class="o">=</span> <span class="n">MicroDict</span><span class="p">({</span><span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;body&#39;</span><span class="p">:</span> <span class="p">{}},</span>
+                                   <span class="s1">&#39;toRecipients&#39;</span><span class="p">:</span> <span class="p">[],</span> <span class="s1">&#39;ccRecipients&#39;</span><span class="p">:</span> <span class="p">[],</span>
+                                   <span class="s1">&#39;bccRecipients&#39;</span><span class="p">:</span> <span class="p">[]})</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">attachments</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">verify</span> <span class="o">=</span> <span class="n">verify</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">action_success</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_get_url</span><span class="p">(</span><span class="n">key</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Fetches the url for specified key as per the connection version</span>
+<span class="sd">        configured</span>
+
+<span class="sd">        :param key: the key for which url is required</span>
+<span class="sd">        :return: URL to use for requests</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">()</span><span class="o">.</span><span class="n">root_url</span> <span class="o">+</span> <span class="n">Message</span><span class="o">.</span><span class="n">url_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+
+        <span class="c1"># To be removed post 1 Nov, 2018 (1.0 removal)</span>
+        <span class="k">if</span> <span class="n">Connection</span><span class="p">()</span><span class="o">.</span><span class="n">api_version</span> <span class="o">==</span> <span class="s2">&quot;1.0&quot;</span><span class="p">:</span>
+            <span class="n">url</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;mailFolders&#39;</span><span class="p">,</span> <span class="s1">&#39;folders&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">url</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">sender</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get all available information for the sender of email</span>
+
+<span class="sd">        :return: Sender details</span>
+<span class="sd">        :rtype: dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">json</span><span class="p">[</span><span class="s1">&#39;sender&#39;</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">sender_email</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get email address of the sender</span>
+
+<span class="sd">        :return: Sender email-id</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sender</span><span class="p">[</span><span class="s1">&#39;emailAddress&#39;</span><span class="p">][</span><span class="s1">&#39;address&#39;</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">sender_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get name of the sender if exists</span>
+
+<span class="sd">        :return: Sender name</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sender</span><span class="p">[</span><span class="s1">&#39;emailAddress&#39;</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">_</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;&#39;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">to</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; *TO* list of the recipients</span>
+
+<span class="sd">        :getter: Returns list of email id&#39;s the mail is/will be sent to</span>
+<span class="sd">        :setter: Sets the list of email id&#39;s the mail will be sent to</span>
+<span class="sd">        :type: List</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="s1">&#39;emailAddress&#39;</span><span class="p">][</span><span class="s1">&#39;address&#39;</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">json</span><span class="p">[</span><span class="s1">&#39;toRecipients&#39;</span><span class="p">]]</span>
+
+    <span class="nd">@to</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">recipients</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_recipients</span><span class="p">(</span><span class="o">*</span><span class="n">recipients</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s1">&#39;to&#39;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">cc</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; *CC* list of the recipients</span>
+
+<span class="sd">        :getter: Returns list of email id&#39;s the mail is/will be CC&#39;ed to</span>
+<span class="sd">        :setter: Sets the list of email id&#39;s the mail will be CC&#39;ed to</span>
+<span class="sd">        :type: List</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="s1">&#39;emailAddress&#39;</span><span class="p">][</span><span class="s1">&#39;address&#39;</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">json</span><span class="p">[</span><span class="s1">&#39;ccRecipients&#39;</span><span class="p">]]</span>
+
+    <span class="nd">@cc</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">cc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">recipients</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_recipients</span><span class="p">(</span><span class="o">*</span><span class="n">recipients</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s1">&#39;cc&#39;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">bcc</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; *BCC* list of the recipients</span>
+
+<span class="sd">        :getter: Returns list of email id&#39;s the mail is/will be BCC&#39;ed to</span>
+<span class="sd">        :setter: Sets the list of email id&#39;s the mail will be BCC&#39;ed to</span>
+<span class="sd">        :type: List</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="s1">&#39;emailAddress&#39;</span><span class="p">][</span><span class="s1">&#39;address&#39;</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">json</span><span class="p">[</span><span class="s1">&#39;bccRecipients&#39;</span><span class="p">]]</span>
+
+    <span class="nd">@bcc</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">bcc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">recipients</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_recipients</span><span class="p">(</span><span class="o">*</span><span class="n">recipients</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s1">&#39;bcc&#39;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">subject</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Subject of the email</span>
+
+<span class="sd">        :getter: Returns the subject of this email message</span>
+<span class="sd">        :setter: Sets the subject of this email message</span>
+<span class="sd">        :type: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">json</span><span class="p">[</span><span class="s1">&#39;subject&#39;</span><span class="p">]</span>
+
+    <span class="nd">@subject</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">subject</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">json</span><span class="p">[</span><span class="s1">&#39;subject&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Body of the email</span>
+
+<span class="sd">        :getter: Returns the text content of this email message</span>
+<span class="sd">        :setter: Sets the text content of this email message</span>
+<span class="sd">        :type: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="s1">&#39;content&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">json</span><span class="p">[</span><span class="s1">&#39;body&#39;</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">json</span><span class="p">[</span><span class="s1">&#39;body&#39;</span><span class="p">][</span><span class="s1">&#39;content&#39;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Fluent inbox getBody: No body content.&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="s2">&quot;&quot;</span>
+
+    <span class="nd">@body</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">body</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">json</span><span class="p">[</span><span class="s1">&#39;body&#39;</span><span class="p">][</span><span class="s1">&#39;content&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">json</span><span class="p">[</span><span class="s1">&#39;body&#39;</span><span class="p">][</span><span class="s1">&#39;contentType&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Text&#39;</span>
+
+<div class="viewcode-block" id="Message.set_html_body"><a class="viewcode-back" href="../../api/message.html#O365.message.Message.set_html_body">[docs]</a>    <span class="k">def</span> <span class="nf">set_html_body</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">html_text</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Sets the html text for body</span>
+
+<span class="sd">        :param html_text: html content to set as body</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">json</span><span class="p">[</span><span class="s1">&#39;body&#39;</span><span class="p">][</span><span class="s1">&#39;content&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">html_text</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">json</span><span class="p">[</span><span class="s1">&#39;body&#39;</span><span class="p">][</span><span class="s1">&#39;contentType&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;HTML&#39;</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">has_attachments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns if the message has attachments or not</span>
+
+<span class="sd">        :return: True or False</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;hasAttachments&#39;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">attachments</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_set_recipients</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">recipients</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s1">&#39;to&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Set the `TO` or `CC` or `BCC` recipients list.</span>
+
+<span class="sd">            Each recipient can be either of the below:</span>
+
+<span class="sd">            :type: dict - this must to be a dictionary formatted as such</span>
+
+<span class="sd">                .. code-block:: json</span>
+
+<span class="sd">                    {</span>
+<span class="sd">                        &quot;EmailAddress&quot;: {</span>
+<span class="sd">                            &quot;Address&quot;:&quot;user@domain.com&quot;</span>
+<span class="sd">                        }</span>
+<span class="sd">                    }</span>
+<span class="sd">                with other options such as &quot;Name&quot; with address. but at minimum</span>
+<span class="sd">                it must have this.</span>
+<span class="sd">            :type: str - simple email address in form of &quot;user@domain.com&quot;</span>
+<span class="sd">            :type: Contact - Contact object (Contact is part of this library)</span>
+<span class="sd">            :type: Group - Group object, which is a list of contacts</span>
+<span class="sd">             (Group is part of this library)</span>
+
+<span class="sd">        :param recipients: List of recipients</span>
+<span class="sd">        :param kind: &#39;to&#39; or &#39;bcc&#39; or &#39;cc&#39;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">kind</span> <span class="o">=</span> <span class="n">kind</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">json</span><span class="p">[</span><span class="n">kind</span> <span class="o">+</span> <span class="s1">&#39;Recipients&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">recipients</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+            <span class="n">recipients</span> <span class="o">=</span> <span class="p">[</span><span class="n">recipients</span><span class="p">]</span>
+
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Setting recipients for </span><span class="si">{}</span><span class="s1">: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">kind</span><span class="p">,</span> <span class="n">recipients</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">recipient</span> <span class="ow">in</span> <span class="n">recipients</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">recipient</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">json</span><span class="p">[</span><span class="n">kind</span> <span class="o">+</span> <span class="s1">&#39;Recipients&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">recipient</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">add_recipient</span><span class="p">(</span><span class="n">recipient</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">kind</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Message.add_recipient"><a class="viewcode-back" href="../../api/message.html#O365.message.Message.add_recipient">[docs]</a>    <span class="k">def</span> <span class="nf">add_recipient</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">address</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;to&quot;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Adds a recipient to the recipients list.</span>
+
+<span class="sd">        :param address: the email address of the person you are sending to.</span>
+<span class="sd">         Address can also be of type Contact or type Group.</span>
+<span class="sd">        :param name: Name of the contact</span>
+<span class="sd">        :param kind: &#39;to&#39; or &#39;bcc&#39; or &#39;cc&#39;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">Contact</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">json</span><span class="p">[</span><span class="n">kind</span> <span class="o">+</span> <span class="s1">&#39;Recipients&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">MicroDict</span><span class="p">({</span><span class="s1">&#39;emailAddress&#39;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s1">&#39;address&#39;</span><span class="p">:</span> <span class="n">address</span><span class="o">.</span><span class="n">getFirstEmailAddress</span><span class="p">()}})</span>
+            <span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">Group</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">contact</span> <span class="ow">in</span> <span class="n">address</span><span class="o">.</span><span class="n">contacts</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">json</span><span class="p">[</span><span class="n">kind</span> <span class="o">+</span> <span class="s1">&#39;Recipients&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="n">MicroDict</span><span class="p">({</span><span class="s1">&#39;emailAddress&#39;</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="s1">&#39;address&#39;</span><span class="p">:</span> <span class="n">contact</span><span class="o">.</span><span class="n">getFirstEmailAddress</span><span class="p">()}})</span>
+                <span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="n">address</span><span class="p">[:</span><span class="n">address</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;@&#39;</span><span class="p">)]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">json</span><span class="p">[</span><span class="n">kind</span> <span class="o">+</span> <span class="s1">&#39;Recipients&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">MicroDict</span><span class="p">({</span><span class="s1">&#39;emailAddress&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;address&#39;</span><span class="p">:</span> <span class="n">address</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">name</span><span class="p">}}))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Unknown contact information </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">address</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Message.send"><a class="viewcode-back" href="../../api/message.html#O365.message.Message.send">[docs]</a>    <span class="k">def</span> <span class="nf">send</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Send the email</span>
+
+<span class="sd">        :param user_id: User id (email) if sending as other user</span>
+<span class="sd">        :return: Succes or Fail</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">return_status</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="s1">&#39;return_status&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="n">return_status</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;return_status&#39;</span><span class="p">]</span>
+            <span class="k">del</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;return_status&#39;</span><span class="p">]</span>
+
+        <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Content-Type&#39;</span><span class="p">:</span> <span class="s1">&#39;application/json&#39;</span><span class="p">,</span> <span class="s1">&#39;Accept&#39;</span><span class="p">:</span> <span class="s1">&#39;text/plain&#39;</span><span class="p">}</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;body&#39;</span><span class="p">:</span> <span class="p">{}}}</span>
+            <span class="n">data</span><span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">][</span><span class="s1">&#39;subject&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">json</span><span class="p">[</span><span class="s1">&#39;subject&#39;</span><span class="p">]</span>
+            <span class="n">data</span><span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">][</span><span class="s1">&#39;body&#39;</span><span class="p">][</span><span class="s1">&#39;content&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">json</span><span class="p">[</span><span class="s1">&#39;body&#39;</span><span class="p">][</span><span class="s1">&#39;content&#39;</span><span class="p">]</span>
+            <span class="n">data</span><span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">][</span><span class="s1">&#39;body&#39;</span><span class="p">][</span><span class="s1">&#39;contentType&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">json</span><span class="p">[</span><span class="s1">&#39;body&#39;</span><span class="p">][</span>
+                <span class="s1">&#39;contentType&#39;</span><span class="p">]</span>
+            <span class="n">data</span><span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">][</span><span class="s1">&#39;toRecipients&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">json</span><span class="p">[</span><span class="s1">&#39;toRecipients&#39;</span><span class="p">]</span>
+            <span class="n">data</span><span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">][</span><span class="s1">&#39;ccRecipients&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">json</span><span class="p">[</span><span class="s1">&#39;ccRecipients&#39;</span><span class="p">]</span>
+            <span class="n">data</span><span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">][</span><span class="s1">&#39;bccRecipients&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">json</span><span class="p">[</span><span class="s1">&#39;bccRecipients&#39;</span><span class="p">]</span>
+            <span class="n">data</span><span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">][</span><span class="s1">&#39;attachments&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">att</span><span class="o">.</span><span class="n">json</span> <span class="k">for</span> <span class="n">att</span> <span class="ow">in</span>
+                                              <span class="bp">self</span><span class="o">.</span><span class="n">attachments</span><span class="p">]</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">RuntimeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="s1">&#39;Error while trying to compile the json string to send: </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)))</span>
+
+        <span class="k">if</span> <span class="n">user_id</span><span class="p">:</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="n">Message</span><span class="o">.</span><span class="n">_get_url</span><span class="p">(</span><span class="s1">&#39;send_as&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">user_id</span><span class="o">=</span><span class="n">user_id</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="n">Message</span><span class="o">.</span><span class="n">_get_url</span><span class="p">(</span><span class="s1">&#39;send&#39;</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="n">Connection</span><span class="o">.</span><span class="n">get_response</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;POST&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+                                               <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">,</span>
+                                               <span class="n">verify</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">verify</span><span class="p">,</span>
+                                               <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">RuntimeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">return_status</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">!=</span> <span class="mi">202</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">return_status</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="p">(</span><span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">, </span><span class="si">{}</span><span class="s1">&#39;</span>
+                                   <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span>
+                                             <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">(</span>
+                                                 <span class="n">object_pairs_hook</span><span class="o">=</span><span class="n">MicroDict</span><span class="p">)[</span>
+                                                 <span class="s1">&#39;error&#39;</span><span class="p">][</span><span class="s1">&#39;message&#39;</span><span class="p">]))</span>
+                <span class="k">return</span> <span class="kc">False</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">return_status</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">None</span>
+                <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="Message.fetch_attachments"><a class="viewcode-back" href="../../api/message.html#O365.message.Message.fetch_attachments">[docs]</a>    <span class="k">def</span> <span class="nf">fetch_attachments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Downloads the attachments to local cache</span>
+
+<span class="sd">        :return: no. of attachments</span>
+<span class="sd">        :rtype: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_attachments</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Message has no attachments, skipping out early.&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="n">url</span> <span class="o">=</span> <span class="n">Message</span><span class="o">.</span><span class="n">_get_url</span><span class="p">(</span><span class="s1">&#39;attachments&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">message_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">json</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">])</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">Connection</span><span class="o">.</span><span class="n">get_response</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">verify</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">verify</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">attachment</span> <span class="ow">in</span> <span class="n">response</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">attachments</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Attachment</span><span class="p">(</span><span class="n">attachment</span><span class="p">))</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Successfully downloaded attachment </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">attachment</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]))</span>
+            <span class="k">except</span> <span class="ne">RuntimeError</span> <span class="k">as</span> <span class="n">_</span><span class="p">:</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Failed downloading attachment </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">attachment</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]))</span>
+
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">attachments</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Message.mark_as_read"><a class="viewcode-back" href="../../api/message.html#O365.message.Message.mark_as_read">[docs]</a>    <span class="k">def</span> <span class="nf">mark_as_read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Marks this message as read in the cloud</span>
+
+<span class="sd">        :return: True or False (Success or Fail)</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">return_status</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="s1">&#39;return_status&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="n">return_status</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;return_status&#39;</span><span class="p">]</span>
+            <span class="k">del</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;return_status&#39;</span><span class="p">]</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="n">MicroDict</span><span class="p">({</span><span class="s2">&quot;isRead&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
+        <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Content-Type&#39;</span><span class="p">:</span> <span class="s1">&#39;application/json&#39;</span><span class="p">,</span>
+                   <span class="s1">&#39;Accept&#39;</span><span class="p">:</span> <span class="s1">&#39;application/json&#39;</span><span class="p">}</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="n">Message</span><span class="o">.</span><span class="n">_get_url</span><span class="p">(</span><span class="s1">&#39;update&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">message_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">json</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">])</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="n">Connection</span><span class="o">.</span><span class="n">get_response</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;PATCH&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+                                               <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">,</span>
+                                               <span class="n">verify</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">verify</span><span class="p">,</span>
+                                               <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">RuntimeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">return_status</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">!=</span> <span class="mi">202</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">return_status</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="p">(</span><span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">, </span><span class="si">{}</span><span class="s1">&#39;</span>
+                                   <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span>
+                                             <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">(</span>
+                                                 <span class="n">object_pairs_hook</span><span class="o">=</span><span class="n">MicroDict</span><span class="p">)[</span>
+                                                 <span class="s1">&#39;error&#39;</span><span class="p">][</span><span class="s1">&#39;message&#39;</span><span class="p">]))</span>
+                <span class="k">return</span> <span class="kc">False</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">return_status</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">None</span>
+                <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="Message.move_to"><a class="viewcode-back" href="../../api/message.html#O365.message.Message.move_to">[docs]</a>    <span class="k">def</span> <span class="nf">move_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">folder_id</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Move the message to a given folder</span>
+
+<span class="sd">        :param folder_id: Folder ID to move this message to</span>
+<span class="sd">        :return: True or False (Success or Fail)</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">return_status</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="s1">&#39;return_status&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="n">return_status</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;return_status&#39;</span><span class="p">]</span>
+            <span class="k">del</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;return_status&#39;</span><span class="p">]</span>
+
+        <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Content-Type&#39;</span><span class="p">:</span> <span class="s1">&#39;application/json&#39;</span><span class="p">,</span>
+                   <span class="s1">&#39;Accept&#39;</span><span class="p">:</span> <span class="s1">&#39;application/json&#39;</span><span class="p">}</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">MicroDict</span><span class="p">({</span><span class="s2">&quot;destinationId&quot;</span><span class="p">:</span> <span class="n">folder_id</span><span class="p">})</span>
+
+        <span class="n">url</span> <span class="o">=</span> <span class="n">Message</span><span class="o">.</span><span class="n">_get_url</span><span class="p">(</span><span class="s1">&#39;move&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">message_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">json</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">])</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="n">Connection</span><span class="o">.</span><span class="n">get_response</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;POST&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+                                               <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">,</span>
+                                               <span class="n">verify</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">verify</span><span class="p">,</span>
+                                               <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">RuntimeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">return_status</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">!=</span> <span class="mi">202</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">return_status</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="p">(</span><span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">, </span><span class="si">{}</span><span class="s1">&#39;</span>
+                                   <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span>
+                                             <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">(</span>
+                                                 <span class="n">object_pairs_hook</span><span class="o">=</span><span class="n">MicroDict</span><span class="p">)[</span>
+                                                 <span class="s1">&#39;error&#39;</span><span class="p">][</span><span class="s1">&#39;message&#39;</span><span class="p">]))</span>
+                <span class="k">return</span> <span class="kc">False</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">return_status</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">None</span>
+                <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="Message.set_categories"><a class="viewcode-back" href="../../api/message.html#O365.message.Message.set_categories">[docs]</a>    <span class="k">def</span> <span class="nf">set_categories</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">category_names</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Set the category of the message</span>
+
+<span class="sd">        :param category_name: category to add to the message</span>
+<span class="sd">        :return: True or False (Success or Fail)</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">return_status</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="s1">&#39;return_status&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="n">return_status</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;return_status&#39;</span><span class="p">]</span>
+            <span class="k">del</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;return_status&#39;</span><span class="p">]</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="n">MicroDict</span><span class="p">({</span><span class="s2">&quot;categories&quot;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="n">category_names</span><span class="p">)})</span>
+        <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Content-Type&#39;</span><span class="p">:</span> <span class="s1">&#39;application/json&#39;</span><span class="p">,</span>
+                   <span class="s1">&#39;Accept&#39;</span><span class="p">:</span> <span class="s1">&#39;application/json&#39;</span><span class="p">}</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="n">Message</span><span class="o">.</span><span class="n">_get_url</span><span class="p">(</span><span class="s1">&#39;update&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">message_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">json</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">])</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="n">Connection</span><span class="o">.</span><span class="n">get_response</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;PATCH&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+                                               <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">,</span>
+                                               <span class="n">verify</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">verify</span><span class="p">,</span>
+                                               <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">RuntimeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">return_status</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">!=</span> <span class="mi">202</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">return_status</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="p">(</span><span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">, </span><span class="si">{}</span><span class="s1">&#39;</span>
+                                   <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span>
+                                             <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">(</span>
+                                                 <span class="n">object_pairs_hook</span><span class="o">=</span><span class="n">MicroDict</span><span class="p">)[</span>
+                                                 <span class="s1">&#39;error&#39;</span><span class="p">][</span><span class="s1">&#39;message&#39;</span><span class="p">]))</span>
+                <span class="k">return</span> <span class="kc">False</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">return_status</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">None</span>
+                <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="Message.setCategory"><a class="viewcode-back" href="../../api/message.html#O365.message.Message.setCategory">[docs]</a>    <span class="nd">@deprecated</span><span class="p">(</span><span class="s1">&#39;0.10.0&#39;</span><span class="p">,</span> <span class="n">set_categories</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">setCategory</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">category_name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_categories</span><span class="p">(</span><span class="n">category_name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Message.update_category"><a class="viewcode-back" href="../../api/message.html#O365.message.Message.update_category">[docs]</a>    <span class="nd">@deprecated</span><span class="p">(</span><span class="s1">&#39;0.10.0&#39;</span><span class="p">,</span> <span class="n">set_categories</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">update_category</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">category_name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_categories</span><span class="p">(</span><span class="n">category_name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Message.fetchAttachments"><a class="viewcode-back" href="../../api/message.html#O365.message.Message.fetchAttachments">[docs]</a>    <span class="nd">@deprecated</span><span class="p">(</span><span class="s1">&#39;0.10.0&#39;</span><span class="p">,</span> <span class="n">fetch_attachments</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">fetchAttachments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fetch_attachments</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Message.sendMessage"><a class="viewcode-back" href="../../api/message.html#O365.message.Message.sendMessage">[docs]</a>    <span class="nd">@deprecated</span><span class="p">(</span><span class="s1">&#39;0.10.0&#39;</span><span class="p">,</span> <span class="n">send</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">sendMessage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">user_id</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Message.markAsRead"><a class="viewcode-back" href="../../api/message.html#O365.message.Message.markAsRead">[docs]</a>    <span class="nd">@deprecated</span><span class="p">(</span><span class="s1">&#39;0.10.0&#39;</span><span class="p">,</span> <span class="n">mark_as_read</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">markAsRead</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mark_as_read</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Message.moveToFolder"><a class="viewcode-back" href="../../api/message.html#O365.message.Message.moveToFolder">[docs]</a>    <span class="nd">@deprecated</span><span class="p">(</span><span class="s1">&#39;0.10.0&#39;</span><span class="p">,</span> <span class="n">move_to</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">moveToFolder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">folder_id</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span><span class="n">folder_id</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Message.setRecipients"><a class="viewcode-back" href="../../api/message.html#O365.message.Message.setRecipients">[docs]</a>    <span class="nd">@deprecated</span><span class="p">(</span><span class="s1">&#39;0.10.0&#39;</span><span class="p">,</span> <span class="n">to</span><span class="p">,</span> <span class="n">cc</span><span class="p">,</span> <span class="n">bcc</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">setRecipients</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">r_type</span><span class="o">=</span><span class="s2">&quot;To&quot;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_set_recipients</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">r_type</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Message.addRecipient"><a class="viewcode-back" href="../../api/message.html#O365.message.Message.addRecipient">[docs]</a>    <span class="nd">@deprecated</span><span class="p">(</span><span class="s1">&#39;0.10.0&#39;</span><span class="p">,</span> <span class="n">add_recipient</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">addRecipient</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">address</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">r_type</span><span class="o">=</span><span class="s2">&quot;To&quot;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_recipient</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">r_type</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Message.getSender"><a class="viewcode-back" href="../../api/message.html#O365.message.Message.getSender">[docs]</a>    <span class="nd">@deprecated</span><span class="p">(</span><span class="s1">&#39;0.10.0&#39;</span><span class="p">,</span> <span class="n">sender</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">getSender</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sender</span></div>
+
+<div class="viewcode-block" id="Message.getSenderEmail"><a class="viewcode-back" href="../../api/message.html#O365.message.Message.getSenderEmail">[docs]</a>    <span class="nd">@deprecated</span><span class="p">(</span><span class="s1">&#39;0.10.0&#39;</span><span class="p">,</span> <span class="n">sender_email</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">getSenderEmail</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sender_email</span></div>
+
+<div class="viewcode-block" id="Message.getSenderName"><a class="viewcode-back" href="../../api/message.html#O365.message.Message.getSenderName">[docs]</a>    <span class="nd">@deprecated</span><span class="p">(</span><span class="s1">&#39;0.10.0&#39;</span><span class="p">,</span> <span class="n">sender_name</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">getSenderName</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sender_name</span></div>
+
+<div class="viewcode-block" id="Message.hasAttachments"><a class="viewcode-back" href="../../api/message.html#O365.message.Message.hasAttachments">[docs]</a>    <span class="nd">@deprecated</span><span class="p">(</span><span class="s1">&#39;0.10.0&#39;</span><span class="p">,</span> <span class="n">has_attachments</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">hasAttachments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_attachments</span></div>
+
+<div class="viewcode-block" id="Message.getSubject"><a class="viewcode-back" href="../../api/message.html#O365.message.Message.getSubject">[docs]</a>    <span class="nd">@deprecated</span><span class="p">(</span><span class="s1">&#39;0.10.0&#39;</span><span class="p">,</span> <span class="n">subject</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">getSubject</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">subject</span></div>
+
+<div class="viewcode-block" id="Message.getBody"><a class="viewcode-back" href="../../api/message.html#O365.message.Message.getBody">[docs]</a>    <span class="nd">@deprecated</span><span class="p">(</span><span class="s1">&#39;0.10.0&#39;</span><span class="p">,</span> <span class="n">body</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">getBody</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">body</span></div>
+
+<div class="viewcode-block" id="Message.setSubject"><a class="viewcode-back" href="../../api/message.html#O365.message.Message.setSubject">[docs]</a>    <span class="nd">@deprecated</span><span class="p">(</span><span class="s1">&#39;0.10.0&#39;</span><span class="p">,</span> <span class="n">subject</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">setSubject</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">subject</span> <span class="o">=</span> <span class="n">val</span></div>
+
+<div class="viewcode-block" id="Message.setBody"><a class="viewcode-back" href="../../api/message.html#O365.message.Message.setBody">[docs]</a>    <span class="nd">@deprecated</span><span class="p">(</span><span class="s1">&#39;0.10.0&#39;</span><span class="p">,</span> <span class="n">body</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">setBody</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="n">val</span></div>
+
+<div class="viewcode-block" id="Message.setBodyHTML"><a class="viewcode-back" href="../../api/message.html#O365.message.Message.setBodyHTML">[docs]</a>    <span class="nd">@deprecated</span><span class="p">(</span><span class="s1">&#39;0.10.0&#39;</span><span class="p">,</span> <span class="n">set_html_body</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">setBodyHTML</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_html_body</span><span class="p">(</span><span class="n">val</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Narcolapser.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

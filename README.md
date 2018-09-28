@@ -2,6 +2,8 @@
 
 The objective O365 is to make it easy to make utilities that are to be run against an Office 365 account. If you wanted to script sending an email it could be as simple as:
 
+Major part of documentation has moved to [O365 Documenation](https://o365.github.io/python-o365/html/index.html)
+
 ```python
 from O365 import Message
 authenticiation = ('YourAccount@office365.com','YourPassword')
@@ -143,93 +145,5 @@ m.setBody(open('news.html','r').read())
 m.setRecipients(group)
 m.sendMessage()
 ```
-## Connection
-Connection is a singleton class to take care of all authentication to the Office 365 api.
-
-Connection has 2 different types of authentication and 1 additional function
-1. Basic - using Username and Password
-2. OAuth2 - using client id and client secret
-
-#### Basic Authentication
-```python
-from O365 import Connection, FluentInbox
-
-# Setup connection object
-# Proxy call is required only if you are behind proxy
-Connection.login('email_id@company.com', 'password to login')
-Connection.proxy(url='proxy.company.com', port=8080, username='proxy_username', password='proxy_password')
-```
-#### OAuth2 Authentication
-You will need to register your application at Microsoft Apps(https://apps.dev.microsoft.com/). Steps below
-1. Login to https://apps.dev.microsoft.com/
-2. Create an app, note your app id (client_id)
-3. Generate a new password (client_secret) under "Application Secrets" section
-4. Under the "Platform" section, add a new Web platform and set "https://outlook.office365.com/owa/" as the redirect URL
-5. Under "Microsoft Graph Permissions" section, Add the below delegated permission
-    1. email
-    2. Mail.ReadWrite
-    3. Mail.Send
-    4. User.Read
-```python
-from O365 import Connection, FluentInbox
-
-# Setup connection object
-# This will provide you with auth url, open it and authentication and copy the resulting page url and paste it back in the input
-c = Connection.oauth2("your client_id", "your client_secret", store_token=True)
-
-# Proxy call is required only if you are behind proxy
-Connection.proxy(url='proxy.company.com', port=8080, username='proxy_username', password='proxy_password')
-
-# Start a message with OAuth2 
-m = Message(oauth=c.oauth)
-```
-
-
-
-## Fluent Inbox
-FluentInbox is a new class introduced to enhance usage of inbox fluently (check the below example to understand clearly)
-```python
-from O365 import Connection, FluentInbox
-
-# Setup connection object
-# Proxy call is required only if you are behind proxy
-Connection.login('email_id@company.com', 'password to login')
-Connection.proxy(url='proxy.company.com', port=8080, username='proxy_username', password='proxy_password')
-
-# Create an inbox reference
-inbox = FluentInbox()
-
-# Fetch 20 messages from "Temp" folder containing "Test" in the subject
-for message in inbox.from_folder('Temp').search('Subject:Test').fetch(count=20):
-    # Just print the message subject
-    print(message.getSubject())
-
-# Fetch the next 15 messages from the results
-for message in inbox.fetch_next(15):
-    # Just print the message subject
-    print(message.getSubject())
-
-# Alternately you can do the below for same result, just a different way of accessing the messages
-inbox.from_folder('Temp').search('Subject:Test').fetch(count=20)
-inbox.fetch_next(15)
-for message in inbox.messages:
-    # Just print the message subject
-    print(message.getSubject())
-
-# If you would like to get only the 2nd result
-for message in inbox.search('Category:some_cat').skip(1).fetch(1):
-    # Just print the message subject
-    print(message.getSubject())
-
-# If you want the results from beginning by ignoring any currently read count
-inbox.fetch_first(10)
-```
-
-### Support for shared mailboxes
-Basic support for working with shared mailboxes exists. The following functions take `user_id` as a keyword argument specifying the email address of the shared mailbox.
-
-* `FluentInbox.from_folder(..)` - read messages messages
-* `FluentInbox.get_folder(..)` - list folders
-* `FluentMessage.sendMessage(..)` - send as shared mailbox
 
 #### Soli Deo Gloria

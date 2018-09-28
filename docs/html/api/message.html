@@ -1,0 +1,672 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Message &mdash; O365  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="FluentInbox" href="fluent_inbox.html" />
+    <link rel="prev" title="Connection" href="connection.html" /> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> O365
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../examples.html">Examples</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">O365 API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="connection.html">Connection</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Message</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fluent_inbox.html">FluentInbox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fluent_message.html">FluentMessage</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">O365</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../api.html">O365 API</a> &raquo;</li>
+        
+      <li>Message</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/message.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
+      
+        <a href="fluent_inbox.html" class="btn btn-neutral float-right" title="FluentInbox" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="connection.html" class="btn btn-neutral" title="Connection" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+  </div>
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-O365.message">
+<span id="message"></span><h1>Message<a class="headerlink" href="#module-O365.message" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="O365.message.Message">
+<em class="property">class </em><code class="descclassname">O365.message.</code><code class="descname">Message</code><span class="sig-paren">(</span><em>json_data=None</em>, <em>verify=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Message"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.Message" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Makes a new message wrapper for sending and receiving messages.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>json_data</strong> – Takes json if you have a pre-existing message to
+create from. this is mostly used inside the library for
+when new messages are downloaded.</li>
+<li><strong>verify</strong> – whether or not to verify SSL certificate</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="O365.message.Message.addRecipient">
+<code class="descname">addRecipient</code><span class="sig-paren">(</span><em>address</em>, <em>name=None</em>, <em>r_type='To'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Message.addRecipient"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.Message.addRecipient" title="Permalink to this definition">¶</a></dt>
+<dd><div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 0.10.0: </span>Use <a class="reference internal" href="#O365.message.Message.add_recipient" title="O365.message.Message.add_recipient"><code class="xref py py-func docutils literal notranslate"><span class="pre">add_recipient()</span></code></a> instead</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.message.Message.add_recipient">
+<code class="descname">add_recipient</code><span class="sig-paren">(</span><em>address</em>, <em>name=None</em>, <em>kind='to'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Message.add_recipient"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.Message.add_recipient" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds a recipient to the recipients list.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>address</strong> – the email address of the person you are sending to.
+Address can also be of type Contact or type Group.</li>
+<li><strong>name</strong> – Name of the contact</li>
+<li><strong>kind</strong> – ‘to’ or ‘bcc’ or ‘cc’</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.message.Message.bcc">
+<code class="descname">bcc</code><a class="headerlink" href="#O365.message.Message.bcc" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>BCC</em> list of the recipients</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Getter:</th><td class="field-body">Returns list of email id’s the mail is/will be BCC’ed to</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Setter:</th><td class="field-body">Sets the list of email id’s the mail will be BCC’ed to</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">List</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.message.Message.body">
+<code class="descname">body</code><a class="headerlink" href="#O365.message.Message.body" title="Permalink to this definition">¶</a></dt>
+<dd><p>Body of the email</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Getter:</th><td class="field-body">Returns the text content of this email message</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Setter:</th><td class="field-body">Sets the text content of this email message</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.message.Message.cc">
+<code class="descname">cc</code><a class="headerlink" href="#O365.message.Message.cc" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>CC</em> list of the recipients</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Getter:</th><td class="field-body">Returns list of email id’s the mail is/will be CC’ed to</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Setter:</th><td class="field-body">Sets the list of email id’s the mail will be CC’ed to</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">List</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.message.Message.fetchAttachments">
+<code class="descname">fetchAttachments</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Message.fetchAttachments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.Message.fetchAttachments" title="Permalink to this definition">¶</a></dt>
+<dd><div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 0.10.0: </span>Use <a class="reference internal" href="#O365.message.Message.fetch_attachments" title="O365.message.Message.fetch_attachments"><code class="xref py py-func docutils literal notranslate"><span class="pre">fetch_attachments()</span></code></a> instead</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.message.Message.fetch_attachments">
+<code class="descname">fetch_attachments</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Message.fetch_attachments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.Message.fetch_attachments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Downloads the attachments to local cache</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">no. of attachments</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.message.Message.getBody">
+<code class="descname">getBody</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Message.getBody"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.Message.getBody" title="Permalink to this definition">¶</a></dt>
+<dd><div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 0.10.0: </span>Use <a class="reference internal" href="#O365.message.Message.body" title="O365.message.Message.body"><code class="xref py py-func docutils literal notranslate"><span class="pre">body()</span></code></a> instead</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.message.Message.getSender">
+<code class="descname">getSender</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Message.getSender"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.Message.getSender" title="Permalink to this definition">¶</a></dt>
+<dd><div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 0.10.0: </span>Use <a class="reference internal" href="#O365.message.Message.sender" title="O365.message.Message.sender"><code class="xref py py-func docutils literal notranslate"><span class="pre">sender()</span></code></a> instead</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.message.Message.getSenderEmail">
+<code class="descname">getSenderEmail</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Message.getSenderEmail"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.Message.getSenderEmail" title="Permalink to this definition">¶</a></dt>
+<dd><div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 0.10.0: </span>Use <a class="reference internal" href="#O365.message.Message.sender_email" title="O365.message.Message.sender_email"><code class="xref py py-func docutils literal notranslate"><span class="pre">sender_email()</span></code></a> instead</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.message.Message.getSenderName">
+<code class="descname">getSenderName</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Message.getSenderName"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.Message.getSenderName" title="Permalink to this definition">¶</a></dt>
+<dd><div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 0.10.0: </span>Use <a class="reference internal" href="#O365.message.Message.sender_name" title="O365.message.Message.sender_name"><code class="xref py py-func docutils literal notranslate"><span class="pre">sender_name()</span></code></a> instead</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.message.Message.getSubject">
+<code class="descname">getSubject</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Message.getSubject"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.Message.getSubject" title="Permalink to this definition">¶</a></dt>
+<dd><div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 0.10.0: </span>Use <a class="reference internal" href="#O365.message.Message.subject" title="O365.message.Message.subject"><code class="xref py py-func docutils literal notranslate"><span class="pre">subject()</span></code></a> instead</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.message.Message.hasAttachments">
+<code class="descname">hasAttachments</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Message.hasAttachments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.Message.hasAttachments" title="Permalink to this definition">¶</a></dt>
+<dd><div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 0.10.0: </span>Use <a class="reference internal" href="#O365.message.Message.has_attachments" title="O365.message.Message.has_attachments"><code class="xref py py-func docutils literal notranslate"><span class="pre">has_attachments()</span></code></a> instead</p>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.message.Message.has_attachments">
+<code class="descname">has_attachments</code><a class="headerlink" href="#O365.message.Message.has_attachments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns if the message has attachments or not</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">True or False</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.message.Message.markAsRead">
+<code class="descname">markAsRead</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Message.markAsRead"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.Message.markAsRead" title="Permalink to this definition">¶</a></dt>
+<dd><div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 0.10.0: </span>Use <a class="reference internal" href="#O365.message.Message.mark_as_read" title="O365.message.Message.mark_as_read"><code class="xref py py-func docutils literal notranslate"><span class="pre">mark_as_read()</span></code></a> instead</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.message.Message.mark_as_read">
+<code class="descname">mark_as_read</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Message.mark_as_read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.Message.mark_as_read" title="Permalink to this definition">¶</a></dt>
+<dd><p>Marks this message as read in the cloud</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">True or False (Success or Fail)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.message.Message.moveToFolder">
+<code class="descname">moveToFolder</code><span class="sig-paren">(</span><em>folder_id</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Message.moveToFolder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.Message.moveToFolder" title="Permalink to this definition">¶</a></dt>
+<dd><div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 0.10.0: </span>Use <a class="reference internal" href="#O365.message.Message.move_to" title="O365.message.Message.move_to"><code class="xref py py-func docutils literal notranslate"><span class="pre">move_to()</span></code></a> instead</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.message.Message.move_to">
+<code class="descname">move_to</code><span class="sig-paren">(</span><em>folder_id</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Message.move_to"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.Message.move_to" title="Permalink to this definition">¶</a></dt>
+<dd><p>Move the message to a given folder</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>folder_id</strong> – Folder ID to move this message to</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">True or False (Success or Fail)</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.message.Message.send">
+<code class="descname">send</code><span class="sig-paren">(</span><em>user_id=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Message.send"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.Message.send" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send the email</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>user_id</strong> – User id (email) if sending as other user</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Succes or Fail</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.message.Message.sendMessage">
+<code class="descname">sendMessage</code><span class="sig-paren">(</span><em>user_id=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Message.sendMessage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.Message.sendMessage" title="Permalink to this definition">¶</a></dt>
+<dd><div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 0.10.0: </span>Use <a class="reference internal" href="#O365.message.Message.send" title="O365.message.Message.send"><code class="xref py py-func docutils literal notranslate"><span class="pre">send()</span></code></a> instead</p>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.message.Message.sender">
+<code class="descname">sender</code><a class="headerlink" href="#O365.message.Message.sender" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get all available information for the sender of email</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Sender details</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">dict</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.message.Message.sender_email">
+<code class="descname">sender_email</code><a class="headerlink" href="#O365.message.Message.sender_email" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get email address of the sender</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Sender email-id</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.message.Message.sender_name">
+<code class="descname">sender_name</code><a class="headerlink" href="#O365.message.Message.sender_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get name of the sender if exists</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Sender name</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.message.Message.setBody">
+<code class="descname">setBody</code><span class="sig-paren">(</span><em>val</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Message.setBody"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.Message.setBody" title="Permalink to this definition">¶</a></dt>
+<dd><div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 0.10.0: </span>Use <a class="reference internal" href="#O365.message.Message.body" title="O365.message.Message.body"><code class="xref py py-func docutils literal notranslate"><span class="pre">body()</span></code></a> instead</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.message.Message.setBodyHTML">
+<code class="descname">setBodyHTML</code><span class="sig-paren">(</span><em>val=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Message.setBodyHTML"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.Message.setBodyHTML" title="Permalink to this definition">¶</a></dt>
+<dd><div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 0.10.0: </span>Use <a class="reference internal" href="#O365.message.Message.set_html_body" title="O365.message.Message.set_html_body"><code class="xref py py-func docutils literal notranslate"><span class="pre">set_html_body()</span></code></a> instead</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.message.Message.setCategory">
+<code class="descname">setCategory</code><span class="sig-paren">(</span><em>category_name</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Message.setCategory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.Message.setCategory" title="Permalink to this definition">¶</a></dt>
+<dd><div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 0.10.0: </span>Use <a class="reference internal" href="#O365.message.Message.set_categories" title="O365.message.Message.set_categories"><code class="xref py py-func docutils literal notranslate"><span class="pre">set_categories()</span></code></a> instead</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.message.Message.setRecipients">
+<code class="descname">setRecipients</code><span class="sig-paren">(</span><em>val</em>, <em>r_type='To'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Message.setRecipients"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.Message.setRecipients" title="Permalink to this definition">¶</a></dt>
+<dd><div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 0.10.0: </span>Use <a class="reference internal" href="#O365.message.Message.to" title="O365.message.Message.to"><code class="xref py py-func docutils literal notranslate"><span class="pre">to()</span></code></a>, <a class="reference internal" href="#O365.message.Message.cc" title="O365.message.Message.cc"><code class="xref py py-func docutils literal notranslate"><span class="pre">cc()</span></code></a>, <a class="reference internal" href="#O365.message.Message.bcc" title="O365.message.Message.bcc"><code class="xref py py-func docutils literal notranslate"><span class="pre">bcc()</span></code></a> instead</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.message.Message.setSubject">
+<code class="descname">setSubject</code><span class="sig-paren">(</span><em>val</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Message.setSubject"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.Message.setSubject" title="Permalink to this definition">¶</a></dt>
+<dd><div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 0.10.0: </span>Use <a class="reference internal" href="#O365.message.Message.subject" title="O365.message.Message.subject"><code class="xref py py-func docutils literal notranslate"><span class="pre">subject()</span></code></a> instead</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.message.Message.set_categories">
+<code class="descname">set_categories</code><span class="sig-paren">(</span><em>*category_names</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Message.set_categories"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.Message.set_categories" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the category of the message</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>category_name</strong> – category to add to the message</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">True or False (Success or Fail)</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.message.Message.set_html_body">
+<code class="descname">set_html_body</code><span class="sig-paren">(</span><em>html_text=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Message.set_html_body"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.Message.set_html_body" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the html text for body</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>html_text</strong> – html content to set as body</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.message.Message.subject">
+<code class="descname">subject</code><a class="headerlink" href="#O365.message.Message.subject" title="Permalink to this definition">¶</a></dt>
+<dd><p>Subject of the email</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Getter:</th><td class="field-body">Returns the subject of this email message</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Setter:</th><td class="field-body">Sets the subject of this email message</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.message.Message.to">
+<code class="descname">to</code><a class="headerlink" href="#O365.message.Message.to" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>TO</em> list of the recipients</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Getter:</th><td class="field-body">Returns list of email id’s the mail is/will be sent to</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Setter:</th><td class="field-body">Sets the list of email id’s the mail will be sent to</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">List</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.message.Message.update_category">
+<code class="descname">update_category</code><span class="sig-paren">(</span><em>category_name</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Message.update_category"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.Message.update_category" title="Permalink to this definition">¶</a></dt>
+<dd><div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 0.10.0: </span>Use <a class="reference internal" href="#O365.message.Message.set_categories" title="O365.message.Message.set_categories"><code class="xref py py-func docutils literal notranslate"><span class="pre">set_categories()</span></code></a> instead</p>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.message.Message.url_dict">
+<code class="descname">url_dict</code><em class="property"> = {'attachments': '/me/messages/{message_id}/attachments', 'move': '/me/messages/{0}/move', 'send': '/me/sendmail', 'send_as': '/me/users/{user_id}/sendmail', 'update': '/me/messages/{message_id}'}</em><a class="headerlink" href="#O365.message.Message.url_dict" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="fluent_inbox.html" class="btn btn-neutral float-right" title="FluentInbox" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="connection.html" class="btn btn-neutral" title="Connection" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Narcolapser.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

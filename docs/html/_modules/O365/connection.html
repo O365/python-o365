@@ -1,0 +1,520 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>O365.connection &mdash; O365  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> O365
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">O365 API</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">O365</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>O365.connection</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for O365.connection</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">os.path</span> <span class="k">as</span> <span class="nn">path</span>
+<span class="kn">import</span> <span class="nn">json</span>
+
+<span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">from</span> <span class="nn">oauthlib.oauth2</span> <span class="k">import</span> <span class="n">TokenExpiredError</span>
+<span class="kn">from</span> <span class="nn">requests_oauthlib</span> <span class="k">import</span> <span class="n">OAuth2Session</span>
+<span class="kn">from</span> <span class="nn">future.utils</span> <span class="k">import</span> <span class="n">with_metaclass</span>
+
+<span class="kn">from</span> <span class="nn">.utils</span> <span class="k">import</span> <span class="n">deprecated</span><span class="p">,</span> <span class="n">fluent</span>
+
+<span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="MicroDict"><a class="viewcode-back" href="../../api/connection.html#O365.connection.MicroDict">[docs]</a><span class="k">class</span> <span class="nc">MicroDict</span><span class="p">(</span><span class="nb">dict</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Dictionary to handle camelCase and PascalCase differences between</span>
+<span class="sd">    api v1.0 and 2.0</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">MicroDict</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">[:</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">+</span> <span class="n">key</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">MicroDict</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">[:</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">+</span> <span class="n">key</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">dict</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">MicroDict</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span>
+
+    <span class="k">def</span> <span class="nf">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">Connection</span><span class="p">()</span><span class="o">.</span><span class="n">api_version</span> <span class="o">==</span> <span class="s2">&quot;1.0&quot;</span><span class="p">:</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="n">key</span><span class="p">[:</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">+</span> <span class="n">key</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">MicroDict</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__setitem__</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">MicroDict</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__contains__</span><span class="p">(</span><span class="n">key</span><span class="p">[:</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">+</span> <span class="n">key</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">result</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">MicroDict</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__contains__</span><span class="p">(</span>
+                <span class="n">key</span><span class="p">[:</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">+</span> <span class="n">key</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="Singleton"><a class="viewcode-back" href="../../api/connection.html#O365.connection.Singleton">[docs]</a><span class="k">class</span> <span class="nc">Singleton</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Superclass to help create the singleton pattern &quot;&quot;&quot;</span>
+    <span class="n">_instance</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_instance</span><span class="p">:</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">_instance</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">Singleton</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_instance</span></div>
+
+
+<span class="c1"># def __new__(cls, *args, **kwargs):</span>
+<span class="c1"># 	 if not cls._instance:</span>
+<span class="c1"># 		 cls._instance = object.__new__(cls)</span>
+<span class="c1"># 	 return cls._instance</span>
+
+
+<span class="n">_default_token_file</span> <span class="o">=</span> <span class="s1">&#39;.o365_token&#39;</span>
+<span class="n">_home_path</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="s2">&quot;~&quot;</span><span class="p">)</span>
+<span class="n">default_token_path</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">_home_path</span><span class="p">,</span> <span class="n">_default_token_file</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_save_token</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">token_path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Save the specified token dictionary to a specified file path</span>
+
+<span class="sd">    :param token: token dictionary returned by the oauth token request</span>
+<span class="sd">    :param token_path: path to where the files is to be saved</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">token_path</span><span class="p">:</span>
+        <span class="n">token_path</span> <span class="o">=</span> <span class="n">default_token_path</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">token_path</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">token_file</span><span class="p">:</span>
+        <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">token_file</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_load_token</span><span class="p">(</span><span class="n">token_path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Save the specified token dictionary to a specified file path</span>
+
+<span class="sd">    :param token_path: path to the file with token information saved</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">token_path</span><span class="p">:</span>
+        <span class="n">token_path</span> <span class="o">=</span> <span class="n">default_token_path</span>
+
+    <span class="n">token</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">token_path</span><span class="p">):</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">token_path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">token_file</span><span class="p">:</span>
+            <span class="n">token</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">token_file</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">token</span>
+
+
+<span class="k">def</span> <span class="nf">_delete_token</span><span class="p">(</span><span class="n">token_path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Save the specified token dictionary to a specified file path</span>
+
+<span class="sd">    :param token_path: path to where the token is saved</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">token_path</span><span class="p">:</span>
+        <span class="n">token_path</span> <span class="o">=</span> <span class="n">default_token_path</span>
+
+    <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">token_path</span><span class="p">):</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="n">token_path</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="Connection"><a class="viewcode-back" href="../../api/connection.html#O365.connection.Connection">[docs]</a><span class="k">class</span> <span class="nc">Connection</span><span class="p">(</span><span class="n">with_metaclass</span><span class="p">(</span><span class="n">Singleton</span><span class="p">)):</span>
+    <span class="sd">&quot;&quot;&quot; Create a singleton O365 connection object &quot;&quot;&quot;</span>
+    <span class="n">_oauth2_authorize_url</span> <span class="o">=</span> <span class="s1">&#39;https://login.microsoftonline.com&#39;</span> \
+                            <span class="s1">&#39;/common/oauth2/v2.0/authorize&#39;</span>
+    <span class="n">_oauth2_token_url</span> <span class="o">=</span> <span class="s1">&#39;https://login.microsoftonline.com&#39;</span> \
+                        <span class="s1">&#39;/common/oauth2/v2.0/token&#39;</span>
+    <span class="n">default_headers</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="n">url_dict</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;1.0&#39;</span><span class="p">:</span> <span class="s1">&#39;https://outlook.office365.com/api/v1.0&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;2.0&#39;</span><span class="p">:</span> <span class="s1">&#39;https://graph.microsoft.com/v1.0&#39;</span>
+    <span class="p">}</span>
+
+    <span class="n">scopes</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s1">&#39;https://graph.microsoft.com/Mail.ReadWrite&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;https://graph.microsoft.com/Mail.Send&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;offline_access&#39;</span>
+    <span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Creates a O365 connection object &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">api_version</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">auth</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">root_url</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">oauth</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client_id</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client_secret</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">token</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">token_path</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">proxy_dict</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="Connection.is_valid"><a class="viewcode-back" href="../../api/connection.html#O365.connection.Connection.is_valid">[docs]</a>    <span class="k">def</span> <span class="nf">is_valid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Check if the connection singleton is initialized or not</span>
+
+<span class="sd">        :return: Valid or Not</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">valid</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">api_version</span> <span class="o">==</span> <span class="s1">&#39;1.0&#39;</span><span class="p">:</span>
+            <span class="n">valid</span> <span class="o">=</span> <span class="kc">True</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">auth</span> <span class="k">else</span> <span class="kc">False</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">api_version</span> <span class="o">==</span> <span class="s1">&#39;2.0&#39;</span><span class="p">:</span>
+            <span class="n">valid</span> <span class="o">=</span> <span class="kc">True</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">oauth</span> <span class="k">else</span> <span class="kc">False</span>
+
+        <span class="k">return</span> <span class="n">valid</span></div>
+
+<div class="viewcode-block" id="Connection.login"><a class="viewcode-back" href="../../api/connection.html#O365.connection.Connection.login">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="nd">@fluent</span>
+    <span class="k">def</span> <span class="nf">login</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        .. deprecated:: 0.10.0</span>
+<span class="sd">            Use :func:`oauth2` instead</span>
+
+<span class="sd">        .. note::  Microsoft drops support to basic authentication</span>
+<span class="sd">         on Nov 1, 2018</span>
+
+<span class="sd">        Connect to office 365 using specified username and password</span>
+
+<span class="sd">        :param username: username to login with</span>
+<span class="sd">        :param password: password for authentication</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">()</span>
+
+        <span class="n">connection</span><span class="o">.</span><span class="n">api_version</span> <span class="o">=</span> <span class="s1">&#39;1.0&#39;</span>
+        <span class="n">connection</span><span class="o">.</span><span class="n">root_url</span> <span class="o">=</span> <span class="n">Connection</span><span class="o">.</span><span class="n">url_dict</span><span class="p">[</span><span class="n">connection</span><span class="o">.</span><span class="n">api_version</span><span class="p">]</span>
+        <span class="n">connection</span><span class="o">.</span><span class="n">auth</span> <span class="o">=</span> <span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">connection</span></div>
+
+<div class="viewcode-block" id="Connection.oauth2"><a class="viewcode-back" href="../../api/connection.html#O365.connection.Connection.oauth2">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="nd">@fluent</span>
+    <span class="k">def</span> <span class="nf">oauth2</span><span class="p">(</span><span class="n">client_id</span><span class="p">,</span> <span class="n">client_secret</span><span class="p">,</span> <span class="n">store_token</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">token_path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Connect to office 365 using specified Open Authentication protocol</span>
+
+<span class="sd">        :param client_id: application_id generated by</span>
+<span class="sd">         https://apps.dev.microsoft.com when you register your app</span>
+<span class="sd">        :param client_secret: secret password key generated for your application</span>
+<span class="sd">        :param store_token: whether or not to store the token in file system,</span>
+<span class="sd">         so u don&#39;t have to keep opening the auth link and</span>
+<span class="sd">         authenticating every time</span>
+<span class="sd">        :param token_path: full path to where the token file should be saved to</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">()</span>
+
+        <span class="n">connection</span><span class="o">.</span><span class="n">api_version</span> <span class="o">=</span> <span class="s1">&#39;2.0&#39;</span>
+        <span class="n">connection</span><span class="o">.</span><span class="n">root_url</span> <span class="o">=</span> <span class="n">Connection</span><span class="o">.</span><span class="n">url_dict</span><span class="p">[</span><span class="n">connection</span><span class="o">.</span><span class="n">api_version</span><span class="p">]</span>
+        <span class="n">connection</span><span class="o">.</span><span class="n">client_id</span> <span class="o">=</span> <span class="n">client_id</span>
+        <span class="n">connection</span><span class="o">.</span><span class="n">client_secret</span> <span class="o">=</span> <span class="n">client_secret</span>
+        <span class="n">connection</span><span class="o">.</span><span class="n">token_path</span> <span class="o">=</span> <span class="n">token_path</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">store_token</span><span class="p">:</span>
+            <span class="n">_delete_token</span><span class="p">(</span><span class="n">token_path</span><span class="p">)</span>
+
+        <span class="n">token</span> <span class="o">=</span> <span class="n">_load_token</span><span class="p">(</span><span class="n">token_path</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">token</span><span class="p">:</span>
+            <span class="n">connection</span><span class="o">.</span><span class="n">oauth</span> <span class="o">=</span> <span class="n">OAuth2Session</span><span class="p">(</span>
+                <span class="n">client_id</span><span class="o">=</span><span class="n">client_id</span><span class="p">,</span>
+                <span class="n">redirect_uri</span><span class="o">=</span><span class="s1">&#39;https://outlook.office365.com/owa/&#39;</span><span class="p">,</span>
+                <span class="n">scope</span><span class="o">=</span><span class="n">Connection</span><span class="o">.</span><span class="n">scopes</span><span class="p">,</span> <span class="p">)</span>
+            <span class="n">oauth</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">oauth</span>
+            <span class="n">auth_url</span><span class="p">,</span> <span class="n">state</span> <span class="o">=</span> <span class="n">oauth</span><span class="o">.</span><span class="n">authorization_url</span><span class="p">(</span>
+                <span class="n">url</span><span class="o">=</span><span class="n">Connection</span><span class="o">.</span><span class="n">_oauth2_authorize_url</span><span class="p">,</span>
+                <span class="n">access_type</span><span class="o">=</span><span class="s1">&#39;offline&#39;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span>
+                <span class="s1">&#39;Please open </span><span class="si">{}</span><span class="s1"> and authorize the application&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">auth_url</span><span class="p">))</span>
+            <span class="n">auth_resp</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s1">&#39;Enter the full result url: &#39;</span><span class="p">)</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;OAUTHLIB_RELAX_TOKEN_SCOPE&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Y&#39;</span>
+            <span class="n">token</span> <span class="o">=</span> <span class="n">oauth</span><span class="o">.</span><span class="n">fetch_token</span><span class="p">(</span><span class="n">token_url</span><span class="o">=</span><span class="n">Connection</span><span class="o">.</span><span class="n">_oauth2_token_url</span><span class="p">,</span>
+                                      <span class="n">authorization_response</span><span class="o">=</span><span class="n">auth_resp</span><span class="p">,</span>
+                                      <span class="n">client_secret</span><span class="o">=</span><span class="n">client_secret</span><span class="p">)</span>
+            <span class="n">_save_token</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">token_path</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">connection</span><span class="o">.</span><span class="n">oauth</span> <span class="o">=</span> <span class="n">OAuth2Session</span><span class="p">(</span><span class="n">client_id</span><span class="o">=</span><span class="n">client_id</span><span class="p">,</span>
+                                             <span class="n">token</span><span class="o">=</span><span class="n">token</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">connection</span></div>
+
+<div class="viewcode-block" id="Connection.proxy"><a class="viewcode-back" href="../../api/connection.html#O365.connection.Connection.proxy">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="nd">@fluent</span>
+    <span class="k">def</span> <span class="nf">proxy</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Connect to Office 365 though the specified proxy</span>
+
+<span class="sd">        :param url: url of the proxy server</span>
+<span class="sd">        :param port: port to connect to proxy server</span>
+<span class="sd">        :param username: username for authentication in the proxy server</span>
+<span class="sd">        :param password: password for the specified username</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">()</span>
+
+        <span class="n">connection</span><span class="o">.</span><span class="n">proxy_dict</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;http&quot;</span><span class="p">:</span> <span class="s2">&quot;http://</span><span class="si">{}</span><span class="s2">:</span><span class="si">{}</span><span class="s2">@</span><span class="si">{}</span><span class="s2">:</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">port</span><span class="p">),</span>
+            <span class="s2">&quot;https&quot;</span><span class="p">:</span> <span class="s2">&quot;https://</span><span class="si">{}</span><span class="s2">:</span><span class="si">{}</span><span class="s2">@</span><span class="si">{}</span><span class="s2">:</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span>
+                                                  <span class="n">port</span><span class="p">),</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="n">connection</span></div>
+
+<div class="viewcode-block" id="Connection.get_response"><a class="viewcode-back" href="../../api/connection.html#O365.connection.Connection.get_response">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_response</span><span class="p">(</span><span class="n">request_url</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Fetches the response for specified url and arguments,</span>
+<span class="sd">        adding the auth and proxy information to the url</span>
+
+<span class="sd">        :param request_url: url to request</span>
+<span class="sd">        :param method: GET or POST or PATCH the request</span>
+<span class="sd">        :param kwargs: any keyword arguments to pass to the requests api</span>
+<span class="sd">        :return: json data (for GET), response object (for POST, PATCH)</span>
+<span class="sd">        :rtype: dict (for GET), Response (for POST, PATCH)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;GET&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">connection</span><span class="o">.</span><span class="n">api_version</span> <span class="o">==</span> <span class="s1">&#39;1.0&#39;</span><span class="p">:</span>
+                <span class="n">process_request</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">process_request</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">oauth</span><span class="o">.</span><span class="n">get</span>
+        <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;POST&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">connection</span><span class="o">.</span><span class="n">api_version</span> <span class="o">==</span> <span class="s1">&#39;1.0&#39;</span><span class="p">:</span>
+                <span class="n">process_request</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">process_request</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">oauth</span><span class="o">.</span><span class="n">post</span>
+        <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;PATCH&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">connection</span><span class="o">.</span><span class="n">api_version</span> <span class="o">==</span> <span class="s1">&#39;1.0&#39;</span><span class="p">:</span>
+                <span class="n">process_request</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">patch</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">process_request</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">oauth</span><span class="o">.</span><span class="n">patch</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Unknown method </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">method</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">connection</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="s1">&#39;Connection is not configured, please use &quot;O365.Connection&quot; &#39;</span>
+                <span class="s1">&#39;to set username and password or OAuth2 authentication&#39;</span><span class="p">)</span>
+
+        <span class="n">con_params</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="n">connection</span><span class="o">.</span><span class="n">proxy_dict</span><span class="p">:</span>
+            <span class="n">con_params</span><span class="p">[</span><span class="s1">&#39;proxies&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">proxy_dict</span>
+        <span class="k">if</span> <span class="n">connection</span><span class="o">.</span><span class="n">default_headers</span><span class="p">:</span>
+            <span class="n">con_params</span><span class="p">[</span><span class="s1">&#39;headers&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">default_headers</span>
+        <span class="n">con_params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Requesting URL: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">request_url</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">connection</span><span class="o">.</span><span class="n">api_version</span> <span class="o">==</span> <span class="s1">&#39;1.0&#39;</span><span class="p">:</span>
+            <span class="n">con_params</span><span class="p">[</span><span class="s1">&#39;auth&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">auth</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="n">process_request</span><span class="p">(</span><span class="n">request_url</span><span class="p">,</span> <span class="o">**</span><span class="n">con_params</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">response</span> <span class="o">=</span> <span class="n">process_request</span><span class="p">(</span><span class="n">request_url</span><span class="p">,</span> <span class="o">**</span><span class="n">con_params</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">TokenExpiredError</span><span class="p">:</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Token is expired, fetching a new token&#39;</span><span class="p">)</span>
+                <span class="n">token</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">oauth</span><span class="o">.</span><span class="n">refresh_token</span><span class="p">(</span>
+                    <span class="n">Connection</span><span class="o">.</span><span class="n">_oauth2_token_url</span><span class="p">,</span>
+                    <span class="n">client_id</span><span class="o">=</span><span class="n">connection</span><span class="o">.</span><span class="n">client_id</span><span class="p">,</span>
+                    <span class="n">client_secret</span><span class="o">=</span><span class="n">connection</span><span class="o">.</span><span class="n">client_secret</span><span class="p">)</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;New token fetched&#39;</span><span class="p">)</span>
+                <span class="n">_save_token</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">connection</span><span class="o">.</span><span class="n">token_path</span><span class="p">)</span>
+                <span class="n">response</span> <span class="o">=</span> <span class="n">process_request</span><span class="p">(</span><span class="n">request_url</span><span class="p">,</span> <span class="o">**</span><span class="n">con_params</span><span class="p">)</span>
+
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Received response from URL </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">url</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">401</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;API returned status code 401 Unauthorized, &#39;</span>
+                               <span class="s1">&#39;check the connection credentials&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;GET&#39;</span><span class="p">:</span>
+            <span class="n">response_json</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">(</span><span class="n">object_pairs_hook</span><span class="o">=</span><span class="n">MicroDict</span><span class="p">)</span>
+            <span class="k">if</span> <span class="s1">&#39;value&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">response_json</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Something went wrong, &#39;</span>
+                                   <span class="s1">&#39;received an unexpected result </span><span class="se">\n</span><span class="s1">&#39;</span>
+                                   <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">response_json</span><span class="p">))</span>
+
+            <span class="n">response_values</span> <span class="o">=</span> <span class="n">response_json</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">response_values</span>
+        <span class="k">elif</span> <span class="n">method</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;POST&#39;</span><span class="p">,</span> <span class="s1">&#39;PATCH&#39;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">response</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Narcolapser.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

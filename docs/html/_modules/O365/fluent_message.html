@@ -1,0 +1,405 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>O365.fluent_message &mdash; O365  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> O365
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">O365 API</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">O365</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>O365.fluent_message</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for O365.fluent_message</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">logging</span>
+
+<span class="kn">from</span> <span class="nn">.message</span> <span class="k">import</span> <span class="n">Message</span>
+<span class="kn">from</span> <span class="nn">.utils</span> <span class="k">import</span> <span class="n">fluent</span><span class="p">,</span> <span class="n">action</span>
+
+<span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="FluentMessage"><a class="viewcode-back" href="../../api/fluent_message.html#O365.fluent_message.FluentMessage">[docs]</a><span class="k">class</span> <span class="nc">FluentMessage</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Makes a wrapper for message object</span>
+<span class="sd">    to make fluent api calls for sending</span>
+
+<span class="sd">    :param message: Message object to wrap in fluent api</span>
+<span class="sd">    :param json_data: Takes json if you have a pre-existing message to</span>
+<span class="sd">     create from. this is mostly used inside the library for</span>
+<span class="sd">     when new messages are downloaded.</span>
+<span class="sd">    :param verify: whether or not to verify SSL certificate</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">json_data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verify</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Makes a wrapper for message object</span>
+<span class="sd">        to make fluent api calls for sending</span>
+
+<span class="sd">        :param message: Message object to wrap in fluent api</span>
+<span class="sd">        :param json_data: Takes json if you have a pre-existing message to</span>
+<span class="sd">         create from. this is mostly used inside the library for</span>
+<span class="sd">         when new messages are downloaded.</span>
+<span class="sd">        :param verify: whether or not to verify SSL certificate</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">message</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_real_message</span> <span class="o">=</span> <span class="n">message</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_real_message</span> <span class="o">=</span> <span class="n">Message</span><span class="p">(</span><span class="n">json_data</span><span class="o">=</span><span class="n">json_data</span><span class="p">,</span> <span class="n">verify</span><span class="o">=</span><span class="n">verify</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_success</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_error_message</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_success</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns if the previous action is success or not</span>
+
+<span class="sd">        :return: True or False</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_success</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">error_message</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns the error message if any for the previous action</span>
+
+<span class="sd">        :return: Error Message</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_error_message</span>
+
+<div class="viewcode-block" id="FluentMessage.extract"><a class="viewcode-back" href="../../api/fluent_message.html#O365.fluent_message.FluentMessage.extract">[docs]</a>    <span class="k">def</span> <span class="nf">extract</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Unwraps the message object from fluent api for general usage</span>
+
+<span class="sd">        :return: Underlying message object</span>
+<span class="sd">        :rtype: Message</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_real_message</span></div>
+
+<div class="viewcode-block" id="FluentMessage.to"><a class="viewcode-back" href="../../api/fluent_message.html#O365.fluent_message.FluentMessage.to">[docs]</a>    <span class="nd">@fluent</span>
+    <span class="k">def</span> <span class="nf">to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">recipients</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Set the `TO` recipients list.</span>
+
+<span class="sd">            Each recipient can be either of the below:</span>
+
+<span class="sd">            :type: dict - this must to be a dictionary formatted as such</span>
+
+<span class="sd">                .. code-block:: json</span>
+
+<span class="sd">                    {</span>
+<span class="sd">                        &quot;EmailAddress&quot;: {</span>
+<span class="sd">                            &quot;Address&quot;:&quot;user@domain.com&quot;</span>
+<span class="sd">                        }</span>
+<span class="sd">                    }</span>
+
+<span class="sd">                with other options such as &quot;Name&quot; with address. but at minimum</span>
+<span class="sd">                it must have this.</span>
+<span class="sd">            :type: str - simple email address in form of &quot;user@domain.com&quot;</span>
+<span class="sd">            :type: Contact - Contact object (Contact is part of this library)</span>
+<span class="sd">            :type: Group - Group object, which is a list of contacts</span>
+<span class="sd">             (Group is part of this library)</span>
+
+<span class="sd">        :param recipients: List of recipients</span>
+<span class="sd">        :return: copy of this object</span>
+<span class="sd">        :rtype: FluentMessage</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_real_message</span><span class="o">.</span><span class="n">_set_recipients</span><span class="p">(</span><span class="o">*</span><span class="n">recipients</span><span class="p">,</span> <span class="s1">&#39;to&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="FluentMessage.cc"><a class="viewcode-back" href="../../api/fluent_message.html#O365.fluent_message.FluentMessage.cc">[docs]</a>    <span class="nd">@fluent</span>
+    <span class="k">def</span> <span class="nf">cc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">recipients</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Set the `CC` recipients list.</span>
+
+<span class="sd">            Each recipient can be either of the below:</span>
+
+<span class="sd">            :type: dict - this must to be a dictionary formatted as such</span>
+
+<span class="sd">                .. code-block:: json</span>
+
+<span class="sd">                    {</span>
+<span class="sd">                        &quot;EmailAddress&quot;: {</span>
+<span class="sd">                            &quot;Address&quot;:&quot;user@domain.com&quot;</span>
+<span class="sd">                        }</span>
+<span class="sd">                    }</span>
+
+<span class="sd">                with other options such as &quot;Name&quot; with address. but at minimum</span>
+<span class="sd">                it must have this.</span>
+<span class="sd">            :type: str - simple email address in form of &quot;user@domain.com&quot;</span>
+<span class="sd">            :type: Contact - Contact object (Contact is part of this library)</span>
+<span class="sd">            :type: Group - Group object, which is a list of contacts</span>
+<span class="sd">             (Group is part of this library)</span>
+
+<span class="sd">        :param recipients: List of recipients</span>
+<span class="sd">        :return: copy of this object</span>
+<span class="sd">        :rtype: FluentMessage</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_real_message</span><span class="o">.</span><span class="n">_set_recipients</span><span class="p">(</span><span class="o">*</span><span class="n">recipients</span><span class="p">,</span> <span class="s1">&#39;cc&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="FluentMessage.bcc"><a class="viewcode-back" href="../../api/fluent_message.html#O365.fluent_message.FluentMessage.bcc">[docs]</a>    <span class="nd">@fluent</span>
+    <span class="k">def</span> <span class="nf">bcc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">recipients</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Set the `BCC` recipients list.</span>
+
+<span class="sd">            Each recipient can be either of the below:</span>
+
+<span class="sd">            :type: dict - this must to be a dictionary formatted as such</span>
+
+<span class="sd">                .. code-block:: json</span>
+
+<span class="sd">                    {</span>
+<span class="sd">                        &quot;EmailAddress&quot;: {</span>
+<span class="sd">                            &quot;Address&quot;:&quot;user@domain.com&quot;</span>
+<span class="sd">                        }</span>
+<span class="sd">                    }</span>
+
+<span class="sd">                with other options such as &quot;Name&quot; with address. but at minimum</span>
+<span class="sd">                it must have this.</span>
+<span class="sd">            :type: str - simple email address in form of &quot;user@domain.com&quot;</span>
+<span class="sd">            :type: Contact - Contact object (Contact is part of this library)</span>
+<span class="sd">            :type: Group - Group object, which is a list of contacts</span>
+<span class="sd">             (Group is part of this library)</span>
+
+<span class="sd">        :param recipients: List of recipients</span>
+<span class="sd">        :return: copy of this object</span>
+<span class="sd">        :rtype: FluentMessage</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_real_message</span><span class="o">.</span><span class="n">_set_recipients</span><span class="p">(</span><span class="o">*</span><span class="n">recipients</span><span class="p">,</span> <span class="s1">&#39;bcc&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="FluentMessage.subject"><a class="viewcode-back" href="../../api/fluent_message.html#O365.fluent_message.FluentMessage.subject">[docs]</a>    <span class="nd">@fluent</span>
+    <span class="k">def</span> <span class="nf">subject</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Set the subject of the message</span>
+
+<span class="sd">        :param text: text to set as subject</span>
+<span class="sd">        :return: copy of this object</span>
+<span class="sd">        :rtype: FluentMessage</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_real_message</span><span class="o">.</span><span class="n">subject</span> <span class="o">=</span> <span class="n">text</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="FluentMessage.body"><a class="viewcode-back" href="../../api/fluent_message.html#O365.fluent_message.FluentMessage.body">[docs]</a>    <span class="nd">@fluent</span>
+    <span class="k">def</span> <span class="nf">body</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Set the body of the message</span>
+
+<span class="sd">        :param text: text content to set as body</span>
+<span class="sd">        :return: copy of this object</span>
+<span class="sd">        :rtype: FluentMessage</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_real_message</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="n">text</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="FluentMessage.html_body"><a class="viewcode-back" href="../../api/fluent_message.html#O365.fluent_message.FluentMessage.html_body">[docs]</a>    <span class="nd">@fluent</span>
+    <span class="k">def</span> <span class="nf">html_body</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Set the body of the message using a html</span>
+
+<span class="sd">        :param text: html text to set as body</span>
+<span class="sd">        :return: copy of this object</span>
+<span class="sd">        :rtype: FluentMessage</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_real_message</span><span class="o">.</span><span class="n">set_html_body</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="FluentMessage.send"><a class="viewcode-back" href="../../api/fluent_message.html#O365.fluent_message.FluentMessage.send">[docs]</a>    <span class="nd">@action</span>
+    <span class="nd">@fluent</span>
+    <span class="k">def</span> <span class="nf">send</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Send the email</span>
+
+<span class="sd">        :param user_id: User id (email) if sending as other user</span>
+<span class="sd">        :return: copy of this object</span>
+<span class="sd">        :rtype: FluentMessage</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_success</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_error_message</span> <span class="o">=</span> \
+            <span class="bp">self</span><span class="o">.</span><span class="n">_real_message</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">user_id</span><span class="o">=</span><span class="n">user_id</span><span class="p">,</span>
+                                    <span class="n">return_status</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                    <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Narcolapser.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

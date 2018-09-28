@@ -1,0 +1,485 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>FluentInbox &mdash; O365  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="FluentMessage" href="fluent_message.html" />
+    <link rel="prev" title="Message" href="message.html" /> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> O365
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../examples.html">Examples</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">O365 API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="connection.html">Connection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="message.html">Message</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">FluentInbox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fluent_message.html">FluentMessage</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">O365</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../api.html">O365 API</a> &raquo;</li>
+        
+      <li>FluentInbox</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/fluent_inbox.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
+      
+        <a href="fluent_message.html" class="btn btn-neutral float-right" title="FluentMessage" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="message.html" class="btn btn-neutral" title="Message" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+  </div>
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-O365.fluent_inbox">
+<span id="fluentinbox"></span><h1>FluentInbox<a class="headerlink" href="#module-O365.fluent_inbox" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="O365.fluent_inbox.FluentInbox">
+<em class="property">class </em><code class="descclassname">O365.fluent_inbox.</code><code class="descname">FluentInbox</code><span class="sig-paren">(</span><em>verify=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/fluent_inbox.html#FluentInbox"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.fluent_inbox.FluentInbox" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Creates a new inbox wrapper.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>verify</strong> – whether or not to verify SSL certificate</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="O365.fluent_inbox.FluentInbox.fetch">
+<code class="descname">fetch</code><span class="sig-paren">(</span><em>count=10</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/fluent_inbox.html#FluentInbox.fetch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.fluent_inbox.FluentInbox.fetch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fetch n messages from the result, where n is the specified count</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>count</strong> – no.of messages to fetch</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">list of messages</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="message.html#O365.message.Message" title="O365.message.Message">Message</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.fluent_inbox.FluentInbox.fetch_first">
+<code class="descname">fetch_first</code><span class="sig-paren">(</span><em>count=10</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/fluent_inbox.html#FluentInbox.fetch_first"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.fluent_inbox.FluentInbox.fetch_first" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fetch the first n messages, where n is the specified count</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>count</strong> – no.of messages to fetch</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">list of messages</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="message.html#O365.message.Message" title="O365.message.Message">Message</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.fluent_inbox.FluentInbox.fetch_next">
+<code class="descname">fetch_next</code><span class="sig-paren">(</span><em>count=1</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/fluent_inbox.html#FluentInbox.fetch_next"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.fluent_inbox.FluentInbox.fetch_next" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fetch the next n messages after the previous fetch,
+where n is the specified count</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>count</strong> – no.of messages to fetch</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">list of messages</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="message.html#O365.message.Message" title="O365.message.Message">Message</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.fluent_inbox.FluentInbox.filter">
+<code class="descname">filter</code><span class="sig-paren">(</span><em>filter_string</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/fluent_inbox.html#FluentInbox.filter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.fluent_inbox.FluentInbox.filter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the value of a filter.</p>
+<p>More information on what filters are available can be found here:
+<a class="reference external" href="https://msdn.microsoft.com/office/office365/APi/">https://msdn.microsoft.com/office/office365/APi/</a>
+complex-types-for-mail-contacts-calendar#RESTAPIResourcesMessage</p>
+<p>Should be something like: (HasAttachments eq true) and
+(IsRead eq false) or just: IsRead eq false.</p>
+<p>Test your filter string here:
+“<a class="reference external" href="https://developer.microsoft.com/en-us/graph/graph-explorer">https://developer.microsoft.com/en-us/graph/graph-explorer</a>” using GET
+“<a class="reference external" href="https://graph.microsoft.com/v1.0/me/messages?$filter=">https://graph.microsoft.com/v1.0/me/messages?$filter=</a>”
+if that accepts it then you know it works.</p>
+<p>More improvements coming soon</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filter_string</strong> – The string that represents the filters
+you want to enact.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">copy of this object</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#O365.fluent_inbox.FluentInbox" title="O365.fluent_inbox.FluentInbox">FluentInbox</a></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This method is part of fluent api and can be chained</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.fluent_inbox.FluentInbox.from_folder">
+<code class="descname">from_folder</code><span class="sig-paren">(</span><em>folder_name</em>, <em>parent_id=None</em>, <em>user_id=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/fluent_inbox.html#FluentInbox.from_folder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.fluent_inbox.FluentInbox.from_folder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Configure to use this folder for fetching the mails</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>parent_id</strong> – parent folder id to search folder_name</li>
+<li><strong>folder_name</strong> – name of the outlook folder</li>
+<li><strong>user_id</strong> – user id the folder belongs to (shared mailboxes)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">copy of this object</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#O365.fluent_inbox.FluentInbox" title="O365.fluent_inbox.FluentInbox">FluentInbox</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This method is part of fluent api and can be chained</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.fluent_inbox.FluentInbox.get_folder">
+<code class="descname">get_folder</code><span class="sig-paren">(</span><em>value</em>, <em>by='Id'</em>, <em>parent_id=None</em>, <em>user_id=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/fluent_inbox.html#FluentInbox.get_folder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.fluent_inbox.FluentInbox.get_folder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a folder by a given attribute.  If multiple folders exist by
+this attribute, only the first will be returned</p>
+<dl class="docutils">
+<dt>Example:</dt>
+<dd><p class="first">get_folder(by=’DisplayName’, value=’Inbox’)</p>
+<p>or</p>
+<p>get_folder(by=’Id’, value=’AAKrWFG…’)</p>
+<p class="last">Would both return the requested folder attributes</p>
+</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>parent_id</strong> – parent folder id to search in</li>
+<li><strong>value</strong> – Value that we are searching for</li>
+<li><strong>by</strong> – Search on this key (default: Id)</li>
+<li><strong>user_id</strong> – user id the folder belongs to (shared mailboxes)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Single folder data</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">dict</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.fluent_inbox.FluentInbox.list_folders">
+<code class="descname">list_folders</code><span class="sig-paren">(</span><em>parent_id=None</em>, <em>user_id=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/fluent_inbox.html#FluentInbox.list_folders"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.fluent_inbox.FluentInbox.list_folders" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>user_id</strong> – user id to list folder from (default is None)</li>
+<li><strong>parent_id</strong> – Id of parent folder to list.  Default to top folder</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">List of all folder data</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">list</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.fluent_inbox.FluentInbox.search">
+<code class="descname">search</code><span class="sig-paren">(</span><em>search_string</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/fluent_inbox.html#FluentInbox.search"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.fluent_inbox.FluentInbox.search" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the value of a search.</p>
+<p>More information on what searches are available can be found here:
+<a class="reference external" href="https://msdn.microsoft.com/office/office365/APi/">https://msdn.microsoft.com/office/office365/APi/</a>
+complex-types-for-mail-contacts-calendar#RESTAPIResourcesMessage</p>
+<p>Should be something like: “Category:Action AND Subject:Test”
+or just: “Subject:Test”.</p>
+<p>Test your search string here:
+“<a class="reference external" href="https://developer.microsoft.com/en-us/graph/graph-explorer">https://developer.microsoft.com/en-us/graph/graph-explorer</a>” using GET
+“<a class="reference external" href="https://graph.microsoft.com/v1.0/me/messages?$search=">https://graph.microsoft.com/v1.0/me/messages?$search=</a>”
+or directly in your mailbox, if that accepts it then you know it works.</p>
+<p>More improvements coming soon</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>search_string</strong> – The search string you want to use</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">copy of this object</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#O365.fluent_inbox.FluentInbox" title="O365.fluent_inbox.FluentInbox">FluentInbox</a></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This method is part of fluent api and can be chained</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.fluent_inbox.FluentInbox.skip">
+<code class="descname">skip</code><span class="sig-paren">(</span><em>count</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/fluent_inbox.html#FluentInbox.skip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.fluent_inbox.FluentInbox.skip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Skips the first n messages, where n is the specified count</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>count</strong> – no.of messages to skip</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">copy of this object</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#O365.fluent_inbox.FluentInbox" title="O365.fluent_inbox.FluentInbox">FluentInbox</a></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This method is part of fluent api and can be chained</p>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.fluent_inbox.FluentInbox.url_dict">
+<code class="descname">url_dict</code><em class="property"> = {'child_folders': '/me/mailFolders/{folder_id}/childFolders', 'folder': '/me/mailFolders/{folder_id}/messages', 'folders': '/me/mailFolders', 'inbox': '/me/messages', 'user_child_folders': '/users/{user_id}/mailFolders/{folder_id}/childFolders', 'user_folder': '/users/{user_id}/mailFolders/{folder_id}/messages', 'user_folders': '/users/{user_id}/mailFolders'}</em><a class="headerlink" href="#O365.fluent_inbox.FluentInbox.url_dict" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="fluent_message.html" class="btn btn-neutral float-right" title="FluentMessage" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="message.html" class="btn btn-neutral" title="Message" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Narcolapser.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
