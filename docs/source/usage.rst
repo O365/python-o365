@@ -72,8 +72,16 @@ If you would like to do more with the api which has not yet been implemented in 
 
     Connection.oauth2("your client_id", "your client_secret", store_token=True)
 
+
+Email Handling
+==============
+There are two major types of classes for working with emails in O365.
+
+#. **FluentInbox** - is a representation of your mailbox and is used to fetch the messages from your mailbox using various options available
+#. **Message & FluentMessage** - is representation of a single email message and is used to create or manipulate a message
+
 Fluent Inbox
-============
+------------
 FluentInbox is a new class introduced to enhance usage of inbox fluently (check the below example to understand clearly)
 
 .. code-block:: python
@@ -122,13 +130,11 @@ Basic support for working with shared mailboxes exists. The following functions 
 * :func:`FluentMessage.sendMessage` - send as shared mailbox
 
 
-Message
-=======
+Reading & Updating Existing Message
+------------------------------------
 Message class is representation of a single mail in your inbox.
 You can fetch the messages in your mailbox using `FluentInbox`.
 
-Reading & Updating Existing Message
-------------------------------------
 .. code-block:: python
 
     # Assuming message is object obtained by reading the inbox
@@ -149,7 +155,7 @@ Reading & Updating Existing Message
     print(message.sender_name)
     print(message.sender_email)
 
-    # Download attachments
+    # Download and Save attachments
     count = message.fetch_attachments()
 
     # Mark the message as read
@@ -183,7 +189,7 @@ Creating & Sending Message
     message.send()
 
 Fluent Interface for creating Message
-=====================================
+-------------------------------------
 FluentMessage is an alternative way of creating message using a fluent interface
 
 .. code-block:: python
