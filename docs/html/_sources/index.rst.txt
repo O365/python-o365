@@ -7,10 +7,10 @@ Welcome to O365's documentation!
 ================================
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
    :caption: Contents:
 
-   examples
+   usage
    api
 
 Indices and tables

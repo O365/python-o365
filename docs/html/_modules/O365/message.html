@@ -78,7 +78,7 @@
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api.html">O365 API</a></li>
 </ul>
 
@@ -146,10 +146,10 @@
 <span></span><span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 
-<span class="kn">from</span> <span class="nn">.contact</span> <span class="k">import</span> <span class="n">Contact</span>
-<span class="kn">from</span> <span class="nn">.group</span> <span class="k">import</span> <span class="n">Group</span>
 <span class="kn">from</span> <span class="nn">.attachment</span> <span class="k">import</span> <span class="n">Attachment</span>
 <span class="kn">from</span> <span class="nn">.connection</span> <span class="k">import</span> <span class="n">MicroDict</span><span class="p">,</span> <span class="n">Connection</span>
+<span class="kn">from</span> <span class="nn">.contact</span> <span class="k">import</span> <span class="n">Contact</span>
+<span class="kn">from</span> <span class="nn">.group</span> <span class="k">import</span> <span class="n">Group</span>
 <span class="kn">from</span> <span class="nn">.utils</span> <span class="k">import</span> <span class="n">deprecated</span>
 
 <span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
@@ -400,7 +400,7 @@
         <span class="sd">&quot;&quot;&quot; Send the email</span>
 
 <span class="sd">        :param user_id: User id (email) if sending as other user</span>
-<span class="sd">        :return: Succes or Fail</span>
+<span class="sd">        :return: Success or Fail</span>
 <span class="sd">        :rtype: bool</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -425,7 +425,8 @@
             <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">RuntimeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                <span class="s1">&#39;Error while trying to compile the json string to send: </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="s1">&#39;Error while trying to compile the json string to send: &#39;</span>
+                <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                     <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)))</span>
 
         <span class="k">if</span> <span class="n">user_id</span><span class="p">:</span>
@@ -566,7 +567,7 @@
 <div class="viewcode-block" id="Message.set_categories"><a class="viewcode-back" href="../../api/message.html#O365.message.Message.set_categories">[docs]</a>    <span class="k">def</span> <span class="nf">set_categories</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">category_names</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Set the category of the message</span>
 
-<span class="sd">        :param category_name: category to add to the message</span>
+<span class="sd">        :param category_names: category to add to the message</span>
 <span class="sd">        :return: True or False (Success or Fail)</span>
 <span class="sd">        :rtype: bool</span>
 <span class="sd">        &quot;&quot;&quot;</span>

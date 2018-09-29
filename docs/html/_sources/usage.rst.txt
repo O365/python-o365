@@ -1,6 +1,6 @@
-########
-Examples
-########
+###############
+Getting Started
+###############
 
 
 Connection
@@ -49,6 +49,28 @@ You will need to register your application at Microsoft Apps(https://apps.dev.mi
     # Proxy call is required only if you are behind proxy
     Connection.proxy(url='proxy.company.com', port=8080, username='proxy_username', password='proxy_password')
 
+
+Scopes
+------
+OAuth2 requires you to send the scope of the authentication, by default we have set it to use Mail.ReadWrite and Mail.Send
+This will allow you to read, update and send mails
+
+If you would like to do more with the api which has not yet been implemented in this library you can set the scopes
+
+.. code-block:: python
+
+    from O365 import Connection
+
+    # Set the list of scopes
+    Connection.scopes = ['https://graph.microsoft.com/Mail.ReadWrite',
+        'https://graph.microsoft.com/Mail.Send',
+        'https://graph.microsoft.com/Calendars.ReadWrite',
+        'offline_access']
+
+    # Or append the new ones to the list
+    Connection.scopes.append('https://graph.microsoft.com/Calendars.ReadWrite')
+
+    Connection.oauth2("your client_id", "your client_secret", store_token=True)
 
 Fluent Inbox
 ============
@@ -105,7 +127,7 @@ Message
 Message class is representation of a single mail in your inbox.
 You can fetch the messages in your mailbox using `FluentInbox`.
 
-Reading or Updating Existing Message
+Reading & Updating Existing Message
 ------------------------------------
 .. code-block:: python
 
@@ -139,8 +161,8 @@ Reading or Updating Existing Message
     # Set categories for the message
     message.set_categories('prod incidents', 'resolved')
 
-Sending Message
----------------
+Creating & Sending Message
+--------------------------
 .. code-block:: python
 
     from O365 import Message
@@ -160,15 +182,15 @@ Sending Message
     message.set_html_body('<html><p>hey how are you<p><html>')
     message.send()
 
-FluentMessage
-=============
+Fluent Interface for creating Message
+=====================================
 FluentMessage is an alternative way of creating message using a fluent interface
 
 .. code-block:: python
 
     from O365 import FluentMessage
 
-    message = (FluentMessage()
+    f_message =(FluentMessage()
                .to('user@gmail.com', 'user@outlook.com', 'example@domain.com')
                .cc('cc_user@gmail.com')
                .bcc('user_bcc@gmail.com', 'user_bcc@outlook.com')
@@ -178,5 +200,9 @@ FluentMessage is an alternative way of creating message using a fluent interface
                .send())
 
 
-    if not message.is_success:
-        print(message.error_message)
+    if not f_message.is_success:
+        print(f_message.error_message)
+
+
+    # Extract the underlying message
+    message = message.extract()
