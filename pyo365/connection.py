@@ -8,14 +8,13 @@ from datetime import tzinfo
 import pytz
 
 from stringcase import pascalcase, camelcase
-import requests
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry  # dynamic loading of module Retry by requests.packages
 from requests.exceptions import HTTPError
 from oauthlib.oauth2 import TokenExpiredError
 from requests_oauthlib import OAuth2Session
 
-from O365.utils import ME_RESOURCE, IANA_TO_WIN, WIN_TO_IANA
+from pyo365.utils import ME_RESOURCE, IANA_TO_WIN, WIN_TO_IANA
 
 log = logging.getLogger(__name__)
 
@@ -70,7 +69,9 @@ DEFAULT_SCOPES = {
     'address_book_all': ['Contacts.ReadWrite'],
     'address_book_all_shared': ['Contacts.ReadWrite.Shared'],
     'calendar': ['Calendars.ReadWrite'],
-    'users': ['User.ReadBasic.All']
+    'users': ['User.ReadBasic.All'],
+    'onedrive': ['Files.ReadWrite.All'],
+    'sharepoint_dl': ['Sites.ReadWrite.All'],
 }
 
 

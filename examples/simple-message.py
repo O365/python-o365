@@ -1,10 +1,10 @@
-from O365 import *
+from pyo365 import *
 import getpass
 import json
 
 from sys import argv
 
-usage = '''Welcome to the O365 simple message script! Usage is pretty straight forward.
+usage = '''Welcome to the pyo365 simple message script! Usage is pretty straight forward.
 Run the script and you will be asked for username, password, reciving address,
 subject, and then a body. When these have all come and gone your message will
 be sent straight way. 

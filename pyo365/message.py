@@ -4,7 +4,7 @@ from dateutil.parser import parse
 import pytz
 from bs4 import BeautifulSoup as bs
 
-from O365.utils import WellKnowFolderNames, ApiComponent, Attachments, Attachment, AttachableMixin, ImportanceLevel, TrackerSet
+from pyo365.utils import WellKnowFolderNames, ApiComponent, Attachments, Attachment, AttachableMixin, ImportanceLevel, TrackerSet
 
 log = logging.getLogger(__name__)
 
@@ -22,13 +22,13 @@ class Recipient:
         return bool(self.address)
 
     def __str__(self):
+        return self.__repr__()
+
+    def __repr__(self):
         if self.name:
             return '{} ({})'.format(self.name, self.address)
         else:
             return self.address
-
-    def __repr__(self):
-        return self.__str__()
 
     def _track_changes(self):
         """ Update the track_changes on the parent to reflect a needed update on this field """
@@ -81,10 +81,10 @@ class Recipients:
         return len(self._recipients)
 
     def __str__(self):
-        return 'Recipients count: {}'.format(len(self._recipients))
+        return self.__repr__()
 
     def __repr__(self):
-        return self.__str__()
+        return 'Recipients count: {}'.format(len(self._recipients))
 
     def _track_changes(self):
         """ Update the track_changes on the parent to reflect a needed update on this field """
@@ -713,7 +713,7 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
             return bs(self.body, 'html.parser')
 
     def __str__(self):
-        return 'Subject: {}'.format(self.subject)
+        return self.__repr__()
 
     def __repr__(self):
-        return self.__str__()
+        return 'Subject: {}'.format(self.subject)

@@ -2,8 +2,8 @@ import logging
 from dateutil.parser import parse
 from enum import Enum
 
-from O365.message import HandleRecipientsMixin, Recipients, Message
-from O365.utils import Pagination, NEXT_LINK_KEYWORD, ApiComponent, AttachableMixin
+from pyo365.message import HandleRecipientsMixin, Recipients, Message
+from pyo365.utils import Pagination, NEXT_LINK_KEYWORD, ApiComponent, AttachableMixin
 
 GAL_MAIN_RESOURCE = 'users'
 
@@ -64,6 +64,10 @@ class Contact(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         self.mobile_phone = cloud_data.get(cc('mobilePhone'), '')
         self.home_phones = cloud_data.get(cc('homePhones'), []) or []
         self.__emails = self._recipients_from_cloud(cloud_data.get(cc('emailAddresses'), []))
+        email = cloud_data.get(cc('email'))
+        if email and email not in self.__emails:
+            # a Contact from OneDrive?
+            self.__emails.add(email)
         self.business_addresses = cloud_data.get(cc('businessAddress'), {})
         self.home_addresses = cloud_data.get(cc('homesAddress'), {})
         self.other_addresses = cloud_data.get(cc('otherAddress'), {})
@@ -97,10 +101,10 @@ class Contact(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         return '{} {}'.format(self.name, self.surname).strip()
 
     def __str__(self):
-        return self.display_name or self.full_name or 'Unknwon Name'
+        return self.__repr__()
 
     def __repr__(self):
-        return self.__str__()
+        return self.display_name or self.full_name or 'Unknwon Name'
 
     def to_api_data(self):
         """ Returns a dictionary in cloud format """
@@ -227,7 +231,7 @@ class Contact(ApiComponent, AttachableMixin, HandleRecipientsMixin):
 
         new_message = self.message_constructor(parent=self, is_draft=True)
 
-        target_recipients = getattr(new_message, recipient_type.value)
+        target_recipients = getattr(new_message, str(recipient_type.value))
         target_recipients.add(recipient)
 
         return new_message
@@ -265,10 +269,10 @@ class BaseContactFolder(ApiComponent):
         self.parent_id = cloud_data.get(self._cc('parentFolderId'), None)
 
     def __str__(self):
-        return 'Contact Folder: {}'.format(self.name)
+        return self.__repr__()
 
     def __repr__(self):
-        return self.__str__()
+        return 'Contact Folder: {}'.format(self.name)
 
     def get_contacts(self, limit=100, *, query=None, order_by=None, batch=None):
         """
@@ -569,7 +573,7 @@ class ContactFolder(BaseContactFolder):
             return None
 
         new_message = self.message_constructor(parent=self, is_draft=True)
-        target_recipients = getattr(new_message, recipient_type.value)
+        target_recipients = getattr(new_message, str(recipient_type.value))
         target_recipients.add(recipients)
 
         return new_message
@@ -582,7 +586,7 @@ class AddressBook(ContactFolder):
         # set instance to be a root instance
         super().__init__(parent=parent, con=con, root=True, **kwargs)
 
-    def __str__(self):
+    def __repr__(self):
         return 'Address Book resource: {}'.format(self.main_resource)
 
 
@@ -594,7 +598,7 @@ class GlobalAddressList(BaseContactFolder):
         super().__init__(parent=parent, con=con, root=True, main_resource=GAL_MAIN_RESOURCE,
                          name='Global Address List', **kwargs)
 
-    def __str__(self):
+    def __repr__(self):
         return 'Global Address List'
 
     def get_contact_by_email(self, email):

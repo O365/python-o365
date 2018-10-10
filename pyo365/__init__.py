@@ -22,3 +22,4 @@ from .mailbox import MailBox
 from .message import Message, MessageAttachment, Recipient
 from .address_book import AddressBook, Contact
 from .calendar import Schedule, Calendar, Event
+from .drive import Drive

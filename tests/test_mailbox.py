@@ -1,5 +1,5 @@
 from tests.config import CLIENT_ID, CLIENT_SECRET
-from O365 import Account
+from pyo365 import Account
 
 
 class TestMailBox:
@@ -48,18 +48,18 @@ class TestMailBox:
         assert messages and message2 and message2.to and message2.to[0].address == 'test@example.com'
 
     def test_reply(self):
-        drafts = self.mailbox.inbox_folder()
-        messages = drafts.get_messages(1)
+        inbox = self.mailbox.inbox_folder()
+        messages = inbox.get_messages(1)
         message = messages[0] if messages else None
+
+        reply = None
+        reply_text = 'New reply on top of the message trail.'
+
         if message:
             reply = message.reply()
-            reply.body = 'Y bien que lo sé. España es lo máximo.'
-            reply.save_draft()
-            reply.send()
+            reply.body = reply_text
 
-            print(reply.body)
-
-        assert reply is not None
+        assert message and reply and reply.body != reply_text
 
     def test_delete_email(self):
         drafts = self.mailbox.drafts_folder()

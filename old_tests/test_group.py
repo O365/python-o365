@@ -1,4 +1,4 @@
-from O365 import group
+from pyo365 import group
 import unittest
 import json
 

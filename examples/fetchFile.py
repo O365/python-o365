@@ -1,4 +1,4 @@
-from O365 import *
+from pyo365 import *
 import json
 import os
 import sys

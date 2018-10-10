@@ -1,6 +1,6 @@
 import sys
 import getpass
-from O365 import Connection, FluentInbox
+from pyo365 import Connection, FluentInbox
 
 
 def main():

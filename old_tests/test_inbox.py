@@ -1,4 +1,4 @@
-from O365 import inbox
+from pyo365 import inbox
 import unittest
 import json
 

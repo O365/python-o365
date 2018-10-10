@@ -15,7 +15,7 @@ When I started making this library I was looking for something that would provid
 The objective here is to make it easy to make utilities that are to be run against an office 365 account. for example, the code for sending an email is:
 
 
-from O365 import Message
+from pyo365 import Message
 
 authenticiation = ('YourAccount@office365.com','YourPassword')
 

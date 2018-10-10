@@ -108,7 +108,7 @@ class Pagination(ApiComponent):
         Stops when no more data exists or limit is reached.
 
         :param parent: the parent class. Must implement attributes:
-            con, api_version, main_resource, auth_method
+            con, api_version, main_resource
         :param data: the start data to be return
         :param constructor: the data constructor for the next batch
         :param next_link: the link to request more data to
@@ -320,6 +320,9 @@ class Query:
         self._attribute = self._get_mapping(attribute) if attribute else None
         self._negation = False
         return self
+
+    def clear_filters(self):
+        self._filters = []
 
     def clear(self):
         self._filters = []

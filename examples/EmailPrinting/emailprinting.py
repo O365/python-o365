@@ -1,4 +1,4 @@
-from O365 import *
+from pyo365 import *
 from printing import *
 import json
 import os
@@ -11,7 +11,7 @@ logging.basicConfig(filename='ep.log',level=logging.DEBUG)
 log = logging.getLogger('ep')
 
 '''
-This script represents a way that O365 could be used to integrate parts of your enviorment. This is
+This script represents a way that pyo365 could be used to integrate parts of your enviorment. This is
 not a theoretical example, this is a production script that I use at our facility. The objective
 here is to aliviate a problem where the printer rests inside a protected network but students who
 want to print are outside of that network. By sending print jobs they have to send it to an email address they

@@ -1,7 +1,7 @@
 #!/usr/bin/env python 
 #this is a simple script that can be used in conjunction with a unix pipeline.
 # args must still provide: sending email, sending email password, reciving email, and subject.
-from O365 import *
+from pyo365 import *
 from sys import argv
 import sys
 

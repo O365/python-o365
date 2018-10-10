@@ -1,4 +1,4 @@
-from O365 import cal
+from pyo365 import cal
 import unittest
 import json
 import time

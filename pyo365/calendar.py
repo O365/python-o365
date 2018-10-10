@@ -6,9 +6,9 @@ import pytz
 import calendar
 from bs4 import BeautifulSoup as bs
 
-from O365.utils import Pagination, NEXT_LINK_KEYWORD, ApiComponent, Attachments, Attachment, \
+from pyo365.utils import Pagination, NEXT_LINK_KEYWORD, ApiComponent, Attachments, Attachment, \
     AttachableMixin, ImportanceLevel, TrackerSet
-from O365.message import HandleRecipientsMixin
+from pyo365.message import HandleRecipientsMixin
 
 log = logging.getLogger(__name__)
 
@@ -107,7 +107,7 @@ class EventRecurrence(ApiComponent):
             self.__start_date = parse(self.__start_date).date() if self.__start_date else None
             self.__end_date = parse(self.__end_date).date() if self.__end_date else None
 
-    def __str__(self):
+    def __repr__(self):
         if self.__interval:
             pattern = 'Daily: every {} day/s'.format(self.__interval)
             if self.__days_of_week:
@@ -139,8 +139,8 @@ class EventRecurrence(ApiComponent):
         else:
             return 'No recurrence enabled'
 
-    def __repr__(self):
-        return self.__str__()
+    def __str__(self):
+        return self.__repr__()
 
     def __bool__(self):
         return bool(self.__interval)
@@ -361,11 +361,11 @@ class ResponseStatus(ApiComponent):
         else:
             self.response_time = None
 
-    def __str__(self):
+    def __repr__(self):
         return self.status
 
-    def __repr__(self):
-        return self.__str__()
+    def __str__(self):
+        return self.__repr__()
 
 
 class Attendee:
@@ -383,14 +383,14 @@ class Attendee:
         if attendee_type:
             self.attendee_type = attendee_type
 
-    def __str__(self):
+    def __repr__(self):
         if self.name:
             return '{}: {} ({})'.format(self.attendee_type.name, self.name, self.address)
         else:
             return '{}: {}'.format(self.attendee_type.name, self.address)
 
-    def __repr__(self):
-        return self.__str__()
+    def __str__(self):
+        return self.__repr__()
 
     @property
     def address(self):
@@ -455,10 +455,10 @@ class Attendees(ApiComponent):
         return len(self.__attendees)
 
     def __str__(self):
-        return 'Attendees Count: {}'.format(len(self.__attendees))
+        return self.__repr__()
 
     def __repr__(self):
-        return self.__str__()
+        return 'Attendees Count: {}'.format(len(self.__attendees))
 
     def clear(self):
         self.__attendees = []
@@ -630,10 +630,10 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         self.event_type = cloud_data.get(cc('type'), None)
 
     def __str__(self):
-        return 'Subject: {}'.format(self.subject)
+        return self.__repr__()
 
     def __repr__(self):
-        return self.__str__()
+        return 'Subject: {}'.format(self.subject)
 
     def to_api_data(self, restrict_keys=None):
         """ Returns a dict to comunicate with the server
@@ -1044,10 +1044,10 @@ class Calendar(ApiComponent, HandleRecipientsMixin):
         self.can_view_private_items = cloud_data.get(self._cc('canViewPrivateItems'), False)
 
     def __str__(self):
-        return 'Calendar: {} from {}'.format(self.name, self.owner)
+        return self.__repr__()
 
     def __repr__(self):
-        return self.__str__()
+        return 'Calendar: {} from {}'.format(self.name, self.owner)
 
     @property
     def owner(self):
@@ -1215,10 +1215,10 @@ class Schedule(ApiComponent):
         super().__init__(protocol=parent.protocol if parent else kwargs.get('protocol'), main_resource=main_resource)
 
     def __str__(self):
-        return 'Schedule resource: {}'.format(self.main_resource)
+        return self.__repr__()
 
     def __repr__(self):
-        return self.__str__()
+        return 'Schedule resource: {}'.format(self.main_resource)
 
     def list_calendars(self, limit=None, *, query=None, order_by=None):
         """

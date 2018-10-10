@@ -1,4 +1,4 @@
-from O365 import event
+from pyo365 import event
 import unittest
 import json
 import time

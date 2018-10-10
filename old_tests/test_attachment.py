@@ -1,4 +1,4 @@
-from O365 import attachment
+from pyo365 import attachment
 import unittest
 import json
 import base64

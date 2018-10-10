@@ -1,8 +1,8 @@
 import logging
 import datetime as dt
 
-from O365.message import Message
-from O365.utils import Pagination, NEXT_LINK_KEYWORD, WellKnowFolderNames, ApiComponent
+from pyo365.message import Message
+from pyo365.utils import Pagination, NEXT_LINK_KEYWORD, WellKnowFolderNames, ApiComponent
 
 log = logging.getLogger(__name__)
 
@@ -44,10 +44,10 @@ class Folder(ApiComponent):
             self.updated_at = dt.datetime.now()
 
     def __str__(self):
-        return '{} from resource: {}'.format(self.name, self.main_resource)
+        return self.__repr__()
 
     def __repr__(self):
-        return self.__str__()
+        return '{} from resource: {}'.format(self.name, self.main_resource)
 
     def get_folders(self, limit=None, *, query=None, order_by=None, batch=None):
         """

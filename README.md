@@ -13,11 +13,11 @@ The result is a package that provides a lot of the Office 365 API capabilities.
 This is for example how you send a message:
 
 ```python
-from O365 import Account
+from pyo365 import Account
 
-credentials = ('username@example.com', 'my_password')
+credentials = ('client_id', 'client_secret')
 
-account = Account(credentials, auth_method='basic')
+account = Account(credentials, auth_method='oauth')
 m = account.new_message()
 m.to.add('to_example@example.com')
 m.subject = 'Testing!'
@@ -59,19 +59,15 @@ You can use one or the other:
 - `MSOffice365Protocol` to use the [Office 365 API](https://msdn.microsoft.com/en-us/office/office365/api/api-catalog)
 - `MSGraphProtocol` to use the [Microsoft Graph API](https://developer.microsoft.com/en-us/graph/docs/concepts/overview)
 
-To have a protocol that works with basic authentication a `BasicAuthProtocol` (that inherits from `MSOffice365Protocol`) is also provided for convenience.
-
 Both protocols allow pretty much the same options (depending on the api version used).
 
-The `Account` Class  will select the most apropriate protocol based on the auth method:
-- When using basic authentication the protocol defaults to `BasicAuthProtocol` (`MSOffice365Protocol`) api version 1.0 on office365 endpoint (because Microsoft Graph doesn't allow basic authentication).
-- When using oauth authentication the protocol defaults to `MSGraphProtocol`.
+The default protocol used by the `Account` Class is `MSGraphProtocol`.
 
 You can implement your own protocols by inheriting from `Protocol` to communicate with other Microsoft APIs.
 
 You can instantiate protocols like this:
 ```python
-from O365 import MSGraphProtocol
+from pyo365 import MSGraphProtocol
 
 # try the api version beta of the Microsoft Graph endpoint.
 protocol = MSGraphProtocol(api_version='beta')  # MSGraphProtocol defaults to v1.0 api version
@@ -107,28 +103,13 @@ message = Message(parent=account, main_resource='shared_mailbox@example.com')  #
 
 
 ## Authentication
-There are two types of authentication provided:
+You can only authenticate using oauth athentication as Microsoft deprecated basic oauth on November 1st 2018.
 
-- Basic authentication: using just the username and password
-- Oauth authentication: using an authentication token provided after user consent. This is the default authentication.
+- Oauth authentication: using an authentication token provided after user consent.
 
 The `Connection` Class handles the authentication.
 
-#### Basic Authentication
-Just pass auth_method argument with 'basic' (or `AUTH_METHOD.BASIC` enum) parameter and provide the username and password as a tuple to the credentials argument of either the `Account` or the `Connection` class.
-`Account` already creates a connection for you so you don't need to create a specific Connection object (See [Account Class and Modularity](#account)).
-```python
-from O365 import Account, AUTH_METHOD
-
-credentials = ('username@example.com', 'my_password')
-
-account = Account(credentials, auth_method=AUTH_METHOD.BASIC)
-```
-
-**Basic Authentication only works with Office 365 Api version v1.0 and until November 1 2018.**
-
 #### Oauth Authentication
-This is the recommended way of authenticating.
 This section is explained using Microsoft Graph Protocol, almost the same applies to the Office 365 REST API.
 
 ##### Permissions and Scopes:
@@ -138,13 +119,13 @@ Then the user can request access to one or more of this resources by providing s
 For example your application can have Calendar.Read, Mail.ReadWrite and Mail.Send permissions, but the application can request access only to the Mail.ReadWrite and Mail.Send permission.
 This is done by providing scopes to the connection object like so:
 ```python
-from O365 import Connection, AUTH_METHOD
+from pyo365 import Connection
 
 credentials = ('client_id', 'client_secret')
 
 scopes = ['https://graph.microsoft.com/Mail.ReadWrite', 'https://graph.microsoft.com/Mail.Send']
 
-con = Connection(credentials, auth_method=AUTH_METHOD.OAUTH, scopes=scopes)
+con = Connection(credentials, scopes=scopes)
 ```
 
 Scope implementation depends on the protocol used. So by using protocol data you can automatically set the scopes needed:
@@ -162,7 +143,7 @@ protocol_office = MSOffice365Protocol()
 scopes_office = protocol.get_scopes_for('message all')
 # scopes here are: ['https://outlook.office.com/Mail.ReadWrite', 'https://outlook.office.com/Mail.Send']
 
-con = Connection(credentials, auth_method=AUTH_METHOD.OAUTH, scopes=scopes_graph)
+con = Connection(credentials, scopes=scopes_graph)
 ```
 
 
@@ -188,7 +169,6 @@ con = Connection(credentials, auth_method=AUTH_METHOD.OAUTH, scopes=scopes_graph
        Then the user must copy the resulting page url and give it to the connection object:
 
         ```python
-
         result_url = input('Paste the result url here...')
 
         account.connection.request_token(result_url)  # This, if succesful, will store the token in a txt file on the user project folder.
@@ -199,6 +179,8 @@ con = Connection(credentials, auth_method=AUTH_METHOD.OAUTH, scopes=scopes_graph
     3. At this point you will have an access token that will provide valid credentials when using the api. If you change the scope requested, then the current token won't work, and you will need the user to give consent again on the application to gain access to the new scopes requested.
 
     The access token only lasts 60 minutes, but the app will automatically request new tokens through the refresh tokens, but note that a refresh token only lasts for 90 days. So you must use it before or you will need to request a new access token again (no new consent needed by the user, just a login).
+    
+    If your application needs to work for more than 90 days without user interaction and without interacting with the API, then you must implement a periodic call to `Connection.refresh_token` before the 90 days have passed.
 
 ## Account Class and Modularity <a name="account"></a>
 Usually you will only need to work with the `Account` Class. This is a wrapper around all functionality.
@@ -207,9 +189,9 @@ But you can also work only with the pieces you want.
 
 For example, instead of:
 ```python
-from O365 import Account
+from pyo365 import Account
 
-account = Account(('client_id', 'client_secret'), auth_method='oauth')
+account = Account(('client_id', 'client_secret'))
 message = account.new_message()
 # ...
 mailbox = account.mailbox()
@@ -219,14 +201,14 @@ mailbox = account.mailbox()
 You can work only with the required pieces:
 
 ```python
-from O365 import Connection, MSGraphProtocol, Message, MailBox,
+from pyo365 import Connection, MSGraphProtocol, Message, MailBox
 
 my_protocol = MSGraphProtocol()
-con = Connection(('client_id', 'client_secret'), auth_method='oauth')
+con = Connection(('client_id', 'client_secret'))
 
 message = Message(con=con, protocol=my_protocol)
 # ...
-mailbox = Mailbox(con=con, protocol=my_protocol)
+mailbox = MailBox(con=con, protocol=my_protocol)
 message2 = Message(parent=mailbox)  # message will inherit the connection and protocol from mailbox when using parent.
 # ...
 ```
@@ -236,6 +218,8 @@ It's also easy to implement a custom Class.
 Just Inherit from ApiComponent, define the endpoints, and use the connection to make requests. If needed also inherit from Protocol to handle different comunications aspects with the API server.
 
 ```python
+from pyo365.utils import ApiComponent 
+
 class CustomClass(ApiComponent):
     _endpoints = {'my_url_key': '/customendpoint'}
     
@@ -368,7 +352,7 @@ address_book.create_child_folder('new folder')
 
 #### The Global Address List
 Office 365 API (Nor MS Graph API) has no concept such as the Outlook Global Address List.
-However you can use the Users API to access all the users within your organization.
+However you can use the [Users API](https://developer.microsoft.com/en-us/graph/docs/api-reference/v1.0/resources/users) to access all the users within your organization.
 
 Without admin consent you can only access a few properties of each user such as name and email and litte more.
 You can search by name or retrieve a contact specifying the complete email.
@@ -437,6 +421,7 @@ new_event.location = 'England'
 
 # naive datetimes will automatically be converted to timezone aware datetime
 #  objects using the local timezone detected or the protocol provided timezone
+
 new_event.start = dt.datetime(2018, 9, 5, 19, 45) 
 # so new_event.start becomes: datetime.datetime(2018, 9, 5, 19, 45, tzinfo=<DstTzInfo 'Europe/Paris' CEST+2:00:00 DST>)
 
@@ -462,8 +447,7 @@ for event in birthdays:
         # He died in 2005... but we celebrate anyway!
         event.accept("I'll attend!")  # send a response accepting
     else:
-        event.decline("No way I'm comming, I'll be in England", send_response=False)  # decline the event but don't send a reponse to the organizer
-
+        event.decline("No way I'm comming, I'll be in Spain", send_response=False)  # decline the event but don't send a reponse to the organizer
 ```
 
 ## OneDrive
@@ -499,6 +483,7 @@ for message in messages:
 
 When using certain methods you will have the option to specify not only a limit option (the number of items to be returned) but a batch option.
 This option will indicate the method to request data to the api in batches until the limit is reached or the data consumed.
+This is usefull when you want to optimize memory or network latency.
 
 For example:
 
@@ -539,6 +524,15 @@ print(query)
 
 # To use Query objetcs just pass it to the query parameter:
 filtered_messages = mailbox.get_messages(query=query)
+```
+
+You can also specify specific data to be retrieved with "select":
+
+```python
+# select only some properties for the retrieved messages:
+query = mailbox.new_query().select('subject', 'to_recipients', 'created_date_time')
+
+messages_with_selected_properties = mailbox.get_messages(query=query)
 ```
 
 #### Request Error Handling and Custom Errors
