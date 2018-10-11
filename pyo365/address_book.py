@@ -336,7 +336,7 @@ class BaseContactFolder(ApiComponent):
 
         if batch and next_link:
             return Pagination(parent=self, data=contacts, constructor=self.contact_constructor,
-                              next_link=data.get(NEXT_LINK_KEYWORD, None), limit=limit)
+                              next_link=next_link, limit=limit)
         else:
             return contacts
 

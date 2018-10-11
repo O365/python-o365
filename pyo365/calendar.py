@@ -1147,9 +1147,10 @@ class Calendar(ApiComponent, HandleRecipientsMixin):
         events = [self.event_constructor(parent=self, download_attachments=download_attachments,
                                          **{self._cloud_data_key: event})
                   for event in data.get('value', [])]
-        if batch:
+        next_link = data.get(NEXT_LINK_KEYWORD, None)
+        if batch and next_link:
             return Pagination(parent=self, data=events, constructor=self.event_constructor,
-                              next_link=data.get(NEXT_LINK_KEYWORD, None), limit=limit)
+                              next_link=next_link, limit=limit)
         else:
             return events
 
@@ -1395,9 +1396,10 @@ class Schedule(ApiComponent):
         events = [self.event_constructor(parent=self, download_attachments=download_attachments,
                                          **{self._cloud_data_key: event})
                   for event in data.get('value', [])]
-        if batch:
+        next_link = data.get(NEXT_LINK_KEYWORD, None)
+        if batch and next_link:
             return Pagination(parent=self, data=events, constructor=self.event_constructor,
-                              next_link=data.get(NEXT_LINK_KEYWORD, None), limit=limit)
+                              next_link=next_link, limit=limit)
         else:
             return events
 

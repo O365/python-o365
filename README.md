@@ -35,7 +35,7 @@ This project was also a learning resource for me. This is a list of not so commo
 - Timezone conversion and timezone aware datetimes
 - Etc. (see the code!)
 
-> **This project is in early development.** Changes that can break your code may be commited. If you want to help please fell free to fork and make pull requests.
+> **This project is in early development.** Changes that can break your code may be commited. If you want to help please feel free to fork and make pull requests.
 
 ## Table of contents
 

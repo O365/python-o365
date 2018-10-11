@@ -70,17 +70,18 @@ class ApiComponent:
 
     @staticmethod
     def _parse_resource(resource):
+        resource = resource.strip() if resource else resource
         """ Parses and completes resource information """
         if resource == ME_RESOURCE:
             return resource
         elif resource == USERS_RESOURCE:
             return resource
+        elif '/' not in resource and USERS_RESOURCE not in resource:
+            # when for example accesing a shared mailbox the resouse is set to the email address.
+            # we have to prefix the email with the resource 'users/' so --> 'users/email_address'
+            return '{}/{}'.format(USERS_RESOURCE, resource)
         else:
-            if USERS_RESOURCE not in resource:
-                resource = resource.replace('/', '')
-                return '{}/{}'.format(USERS_RESOURCE, resource)
-            else:
-                return resource
+            return resource
 
     def build_url(self, endpoint):
         """ Returns a url for a given endpoint using the protocol service url """
@@ -110,7 +111,7 @@ class Pagination(ApiComponent):
         :param parent: the parent class. Must implement attributes:
             con, api_version, main_resource
         :param data: the start data to be return
-        :param constructor: the data constructor for the next batch
+        :param constructor: the data constructor for the next batch. It can be a function.
         :param next_link: the link to request more data to
         :param limit: when to stop retrieving more data
         """
@@ -135,10 +136,13 @@ class Pagination(ApiComponent):
         self.state = 0
 
     def __str__(self):
-        return "'{}' Iterator".format(self.constructor.__name__ if self.constructor else 'Unknown')
+        return self.__repr__()
 
     def __repr__(self):
-        return self.__str__()
+        if callable(self.constructor):
+            return 'Pagination Iterator'
+        else:
+            return "'{}' Iterator".format(self.constructor.__name__ if self.constructor else 'Unknown')
 
     def __bool__(self):
         return bool(self.data) or bool(self.next_link)
@@ -173,8 +177,10 @@ class Pagination(ApiComponent):
         data = data.get('value', [])
         if self.constructor:
             # Everything received from the cloud must be passed with self._cloud_data_key
-            self.data = [self.constructor(parent=self, **{self._cloud_data_key: value})
-                         for value in data]
+            if callable(self.constructor):
+                self.data = [self.constructor(value)(parent=self, **{self._cloud_data_key: value}) for value in data]
+            else:
+                self.data = [self.constructor(parent=self, **{self._cloud_data_key: value}) for value in data]
         else:
             self.data = data
 

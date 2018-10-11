@@ -1,5 +1,5 @@
 from pyo365.connection import Connection, Protocol, MSGraphProtocol
-from pyo365.drive import OneDrive, DocumentLibrary
+from pyo365.drive import Storage
 from pyo365.utils import ME_RESOURCE
 from pyo365.message import Message
 from pyo365.mailbox import MailBox
@@ -66,17 +66,13 @@ class Account(object):
         """
         return Schedule(parent=self, main_resource=resource)
 
-    def drive(self, *, resource=None, site_id=None):
+    def storage(self, *, resource=None):
         """
-        Creates a Drive instance to handle file storage like OneDrive or Sharepoint document libraries
+        Creates a Storage instance to handle file storage like OneDrive or Sharepoint document libraries
         :param resource: Custom resource to be used in this drive object. Defaults to parent main_resource.
-        :param site_id: if provided will return a DocumentLibrary
         """
         if not isinstance(self.protocol, MSGraphProtocol):
-            # TODO: a custom protocol accessing OneDrive Api will fail here.
+            # TODO: a custom protocol accessing OneDrive or Sharepoint Api will fail here.
             raise RuntimeError('Drive options only works on Microsoft Graph API')
 
-        if site_id:
-            return DocumentLibrary(parent=self, main_resource=resource)
-        else:
-            return OneDrive(parent=self, main_resource=resource)
+        return Storage(parent=self, main_resource=resource)

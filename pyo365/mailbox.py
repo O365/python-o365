@@ -92,9 +92,10 @@ class Folder(ApiComponent):
 
         # Everything received from the cloud must be passed with self._cloud_data_key
         folders = [Folder(parent=self, **{self._cloud_data_key: folder}) for folder in data.get('value', [])]
-        if batch:
+        next_link = data.get(NEXT_LINK_KEYWORD, None)
+        if batch and next_link:
             return Pagination(parent=self, data=folders, constructor=self.__class__,
-                              next_link=data.get(NEXT_LINK_KEYWORD, None), limit=limit)
+                              next_link=next_link, limit=limit)
         else:
             return folders
 
@@ -149,9 +150,11 @@ class Folder(ApiComponent):
         messages = [self.message_constructor(parent=self, download_attachments=download_attachments,
                                              **{self._cloud_data_key: message})
                     for message in data.get('value', [])]
-        if batch:
+
+        next_link = data.get(NEXT_LINK_KEYWORD, None)
+        if batch and next_link:
             return Pagination(parent=self, data=messages, constructor=self.message_constructor,
-                              next_link=data.get(NEXT_LINK_KEYWORD, None), limit=limit)
+                              next_link=next_link, limit=limit)
         else:
             return messages
 

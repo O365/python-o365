@@ -239,7 +239,7 @@ class Connection:
 
     def __init__(self, credentials, *, scopes=None,
                  proxy_server=None, proxy_port=8080, proxy_username=None, proxy_password=None,
-                 requests_delay=200, raise_http_errors=True, request_retries=3):
+                 requests_delay=200, raise_http_errors=True, request_retries=3, token_file_name=None):
         """ Creates an API connection object
 
         :param credentials: a tuple containing the credentials for this connection.
@@ -255,6 +255,7 @@ class Connection:
             Defaults to 200 miliseconds just in case more than 1 connection is making requests across multiple processes.
         :param raise_http_errors: If True Http 4xx and 5xx status codes will raise a custom exception
         :param request_retries: number of retries done when the server responds with 5xx error codes.
+        :param token_file_name: custom token file name to be used when storing the token credentials.
         """
         if not isinstance(credentials, tuple) or len(credentials) != 2 or (not credentials[0] and not credentials[1]):
             raise ValueError('Provide valid auth credentials')
@@ -262,7 +263,7 @@ class Connection:
         self.auth = credentials
         self.scopes = scopes
         self.store_token = True
-        self.token_path = self._default_token_path
+        self.token_path = Path() / token_file_name if token_file_name else self._default_token_path
         self.token = None
 
         self.session = None  # requests Session object
