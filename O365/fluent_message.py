@@ -199,3 +199,33 @@ class FluentMessage(object):
                                     return_status=True,
                                     **kwargs)
         return self
+
+    @action
+    @fluent
+    def reply(self, text, **kwargs):
+        """ ReplyAll to the mail
+
+        :param text: content to add in the reply message
+        :return: copy of this object
+        :rtype: FluentMessage
+        """
+        self._success, self._error_message = \
+            self._real_message.reply(text=text,
+                                     return_status=True,
+                                     **kwargs)
+        return self
+
+    @action
+    @fluent
+    def reply_all(self, text, **kwargs):
+        """ ReplyAll to the mail
+
+        :param text: content to add in the reply message
+        :return: copy of this object
+        :rtype: FluentMessage
+        """
+        self._success, self._error_message = \
+            self._real_message.reply_all(text=text,
+                                         return_status=True,
+                                         **kwargs)
+        return self

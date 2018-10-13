@@ -25,6 +25,8 @@ class Message(object):
         'send_as': '/me/users/{user_id}/sendmail',
         'update': '/me/messages/{message_id}',
         'move': '/me/messages/{0}/move',
+        'reply': '/me/messages/{id}/reply',
+        'reply_all': '/me/messages/{id}/replyAll',
     }
 
     def __init__(self, json_data=None, verify=True):
@@ -259,13 +261,6 @@ class Message(object):
         :rtype: bool
         """
 
-        return_status = False
-        if 'return_status' in kwargs:
-            return_status = kwargs['return_status']
-            del kwargs['return_status']
-
-        headers = {'Content-Type': 'application/json', 'Accept': 'text/plain'}
-
         try:
             data = {'message': {'body': {}}}
             data['message']['subject'] = self.json['subject']
@@ -289,28 +284,35 @@ class Message(object):
         else:
             url = Message._get_url('send')
 
-        try:
-            response = Connection.get_response(url, method='POST', data=data,
-                                               headers=headers,
-                                               verify=self.verify,
-                                               **kwargs)
-        except RuntimeError as e:
-            if return_status:
-                return False, str(e)
-            return False
-        else:
-            if response.status_code != 202:
-                if return_status:
-                    return (False, '{}, {}'
-                                   ''.format(response.status_code,
-                                             response.json(
-                                                 object_pairs_hook=MicroDict)[
-                                                 'error']['message']))
-                return False
-            else:
-                if return_status:
-                    return True, None
-                return True
+        return _handle_request(url, method='POST', data=data,
+                               verify=self.verify,
+                               **kwargs)
+
+    def reply(self, text, **kwargs):
+        """ Reply to the mail
+
+        :param text: content to add in the reply message
+        :return: Success or Fail
+        :rtype: bool
+        """
+        url = Message._get_url('reply').format(id=self.json['id'])
+        data = {'comment': text}
+        return _handle_request(url, method='POST', data=data,
+                               verify=self.verify,
+                               **kwargs)
+
+    def reply_all(self, text, **kwargs):
+        """ ReplyAll to the mail
+
+        :param text: content to add in the reply message
+        :return: Success or Fail
+        :rtype: bool
+        """
+        url = Message._get_url('reply_all').format(id=self.json['id'])
+        data = {'comment': text}
+        return _handle_request(url, method='POST', data=data,
+                               verify=self.verify,
+                               **kwargs)
 
     def fetch_attachments(self, **kwargs):
         """ Downloads the attachments to local cache
@@ -344,38 +346,12 @@ class Message(object):
         :rtype: bool
         """
 
-        return_status = False
-        if 'return_status' in kwargs:
-            return_status = kwargs['return_status']
-            del kwargs['return_status']
-
         data = MicroDict({"isRead": True})
-        headers = {'Content-Type': 'application/json',
-                   'Accept': 'application/json'}
         url = Message._get_url('update').format(
             message_id=self.json['id'])
-        try:
-            response = Connection.get_response(url, method='PATCH', data=data,
-                                               headers=headers,
-                                               verify=self.verify,
-                                               **kwargs)
-        except RuntimeError as e:
-            if return_status:
-                return False, str(e)
-            return False
-        else:
-            if response.status_code != 202:
-                if return_status:
-                    return (False, '{}, {}'
-                                   ''.format(response.status_code,
-                                             response.json(
-                                                 object_pairs_hook=MicroDict)[
-                                                 'error']['message']))
-                return False
-            else:
-                if return_status:
-                    return True, None
-                return True
+        return _handle_request(url, method='PATCH', data=data,
+                               verify=self.verify,
+                               **kwargs)
 
     def move_to(self, folder_id, **kwargs):
         """ Move the message to a given folder
@@ -385,39 +361,13 @@ class Message(object):
         :rtype: bool
         """
 
-        return_status = False
-        if 'return_status' in kwargs:
-            return_status = kwargs['return_status']
-            del kwargs['return_status']
-
-        headers = {'Content-Type': 'application/json',
-                   'Accept': 'application/json'}
         data = MicroDict({"destinationId": folder_id})
 
         url = Message._get_url('move').format(
             message_id=self.json['id'])
-        try:
-            response = Connection.get_response(url, method='POST', data=data,
-                                               headers=headers,
-                                               verify=self.verify,
-                                               **kwargs)
-        except RuntimeError as e:
-            if return_status:
-                return False, str(e)
-            return False
-        else:
-            if response.status_code != 202:
-                if return_status:
-                    return (False, '{}, {}'
-                                   ''.format(response.status_code,
-                                             response.json(
-                                                 object_pairs_hook=MicroDict)[
-                                                 'error']['message']))
-                return False
-            else:
-                if return_status:
-                    return True, None
-                return True
+        return _handle_request(url, method='POST', data=data,
+                               verify=self.verify,
+                               **kwargs)
 
     def set_categories(self, *category_names, **kwargs):
         """ Set the category of the message
@@ -426,38 +376,12 @@ class Message(object):
         :return: True or False (Success or Fail)
         :rtype: bool
         """
-        return_status = False
-        if 'return_status' in kwargs:
-            return_status = kwargs['return_status']
-            del kwargs['return_status']
-
         data = MicroDict({"categories": list(category_names)})
-        headers = {'Content-Type': 'application/json',
-                   'Accept': 'application/json'}
         url = Message._get_url('update').format(
             message_id=self.json['id'])
-        try:
-            response = Connection.get_response(url, method='PATCH', data=data,
-                                               headers=headers,
-                                               verify=self.verify,
-                                               **kwargs)
-        except RuntimeError as e:
-            if return_status:
-                return False, str(e)
-            return False
-        else:
-            if response.status_code != 202:
-                if return_status:
-                    return (False, '{}, {}'
-                                   ''.format(response.status_code,
-                                             response.json(
-                                                 object_pairs_hook=MicroDict)[
-                                                 'error']['message']))
-                return False
-            else:
-                if return_status:
-                    return True, None
-                return True
+        return _handle_request(url, method='PATCH', data=data,
+                               verify=self.verify,
+                               **kwargs)
 
     @deprecated('0.10.0', set_categories)
     def setCategory(self, category_name, **kwargs):
@@ -526,3 +450,30 @@ class Message(object):
     @deprecated('0.10.0', set_html_body)
     def setBodyHTML(self, val=None):
         self.set_html_body(val)
+
+
+def _handle_request(*args, **kwargs):
+    return_status = False
+    if 'return_status' in kwargs:
+        return_status = kwargs['return_status']
+        del kwargs['return_status']
+
+    try:
+        response = Connection.get_response(*args, **kwargs)
+    except RuntimeError as e:
+        if return_status:
+            return False, str(e)
+        return False
+    else:
+        if response.status_code != 202:
+            if return_status:
+                return (False, '{}, {}'
+                               ''.format(response.status_code,
+                                         response.json(
+                                             object_pairs_hook=MicroDict)[
+                                             'error']['message']))
+            return False
+        else:
+            if return_status:
+                return True, None
+            return True

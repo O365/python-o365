@@ -107,7 +107,8 @@ class Connection(with_metaclass(Singleton)):
                             '/common/oauth2/v2.0/authorize'
     _oauth2_token_url = 'https://login.microsoftonline.com' \
                         '/common/oauth2/v2.0/token'
-    default_headers = None
+    default_headers = {'Content-Type': 'application/json',
+                       'Accept': 'text/plain'}
 
     url_dict = {
         '1.0': 'https://outlook.office365.com/api/v1.0',
