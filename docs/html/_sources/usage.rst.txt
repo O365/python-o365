@@ -167,6 +167,17 @@ You can fetch the messages in your mailbox using `FluentInbox`.
     # Set categories for the message
     message.set_categories('prod incidents', 'resolved')
 
+Reply to Message
+----------------
+.. code-block:: python
+
+    # Assuming message is object obtained by reading the inbox
+    # Reply to the sender alone
+    message.reply('got your mail buddy')
+
+    # Reply to all users included in the mail
+    message.reply_all('thanks, will look at it later')
+
 Creating & Sending Message
 --------------------------
 .. code-block:: python
@@ -187,6 +198,7 @@ Creating & Sending Message
     # Use html to set body
     message.set_html_body('<html><p>hey how are you<p><html>')
     message.send()
+
 
 Fluent Interface for creating Message
 -------------------------------------

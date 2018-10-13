@@ -91,6 +91,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#fluent-inbox">Fluent Inbox</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#support-for-shared-mailboxes">Support for shared mailboxes</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#reading-updating-existing-message">Reading &amp; Updating Existing Message</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reply-to-message">Reply to Message</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#creating-sending-message">Creating &amp; Sending Message</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#fluent-interface-for-creating-message">Fluent Interface for creating Message</a></li>
 </ul>
@@ -333,6 +334,17 @@ You can fetch the messages in your mailbox using <cite>FluentInbox</cite>.</p>
 
 <span class="c1"># Set categories for the message</span>
 <span class="n">message</span><span class="o">.</span><span class="n">set_categories</span><span class="p">(</span><span class="s1">&#39;prod incidents&#39;</span><span class="p">,</span> <span class="s1">&#39;resolved&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="reply-to-message">
+<h3>Reply to Message<a class="headerlink" href="#reply-to-message" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Assuming message is object obtained by reading the inbox</span>
+<span class="c1"># Reply to the sender alone</span>
+<span class="n">message</span><span class="o">.</span><span class="n">reply</span><span class="p">(</span><span class="s1">&#39;got your mail buddy&#39;</span><span class="p">)</span>
+
+<span class="c1"># Reply to all users included in the mail</span>
+<span class="n">message</span><span class="o">.</span><span class="n">reply_all</span><span class="p">(</span><span class="s1">&#39;thanks, will look at it later&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>

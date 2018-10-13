@@ -405,6 +405,42 @@ Address can also be of type Contact or type Group.</li>
 </dd></dl>
 
 <dl class="method">
+<dt id="O365.message.Message.reply">
+<code class="descname">reply</code><span class="sig-paren">(</span><em>text</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Message.reply"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.Message.reply" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reply to the mail</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>text</strong> – content to add in the reply message</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Success or Fail</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.message.Message.reply_all">
+<code class="descname">reply_all</code><span class="sig-paren">(</span><em>text</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Message.reply_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.Message.reply_all" title="Permalink to this definition">¶</a></dt>
+<dd><p>ReplyAll to the mail</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>text</strong> – content to add in the reply message</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Success or Fail</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="O365.message.Message.send">
 <code class="descname">send</code><span class="sig-paren">(</span><em>user_id=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Message.send"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.Message.send" title="Permalink to this definition">¶</a></dt>
 <dd><p>Send the email</p>
@@ -596,7 +632,7 @@ Address can also be of type Contact or type Group.</li>
 
 <dl class="attribute">
 <dt id="O365.message.Message.url_dict">
-<code class="descname">url_dict</code><em class="property"> = {'attachments': '/me/messages/{message_id}/attachments', 'move': '/me/messages/{0}/move', 'send': '/me/sendmail', 'send_as': '/me/users/{user_id}/sendmail', 'update': '/me/messages/{message_id}'}</em><a class="headerlink" href="#O365.message.Message.url_dict" title="Permalink to this definition">¶</a></dt>
+<code class="descname">url_dict</code><em class="property"> = {'attachments': '/me/messages/{message_id}/attachments', 'move': '/me/messages/{0}/move', 'reply': '/me/messages/{id}/reply', 'reply_all': '/me/messages/{id}/replyAll', 'send': '/me/sendmail', 'send_as': '/me/users/{user_id}/sendmail', 'update': '/me/messages/{message_id}'}</em><a class="headerlink" href="#O365.message.Message.url_dict" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>

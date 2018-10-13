@@ -252,7 +252,8 @@
                             <span class="s1">&#39;/common/oauth2/v2.0/authorize&#39;</span>
     <span class="n">_oauth2_token_url</span> <span class="o">=</span> <span class="s1">&#39;https://login.microsoftonline.com&#39;</span> \
                         <span class="s1">&#39;/common/oauth2/v2.0/token&#39;</span>
-    <span class="n">default_headers</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">default_headers</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Content-Type&#39;</span><span class="p">:</span> <span class="s1">&#39;application/json&#39;</span><span class="p">,</span>
+                       <span class="s1">&#39;Accept&#39;</span><span class="p">:</span> <span class="s1">&#39;text/plain&#39;</span><span class="p">}</span>
 
     <span class="n">url_dict</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s1">&#39;1.0&#39;</span><span class="p">:</span> <span class="s1">&#39;https://outlook.office365.com/api/v1.0&#39;</span><span class="p">,</span>
