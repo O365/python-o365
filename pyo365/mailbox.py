@@ -2,7 +2,7 @@ import logging
 import datetime as dt
 
 from pyo365.message import Message
-from pyo365.utils import Pagination, NEXT_LINK_KEYWORD, WellKnowFolderNames, ApiComponent
+from pyo365.utils import Pagination, NEXT_LINK_KEYWORD, OutlookWellKnowFolderNames, ApiComponent
 
 log = logging.getLogger(__name__)
 
@@ -390,7 +390,7 @@ class Folder(ApiComponent):
         draft_message = self.message_constructor(parent=self, is_draft=True)
 
         if self.root:
-            draft_message.folder_id = WellKnowFolderNames.DRAFTS.value
+            draft_message.folder_id = OutlookWellKnowFolderNames.DRAFTS.value
         else:
             draft_message.folder_id = self.folder_id
 
@@ -404,24 +404,24 @@ class MailBox(Folder):
 
     def inbox_folder(self):
         """ Returns this mailbox Inbox """
-        return Folder(parent=self, name='Inbox', folder_id=WellKnowFolderNames.INBOX.value)
+        return Folder(parent=self, name='Inbox', folder_id=OutlookWellKnowFolderNames.INBOX.value)
 
     def junk_folder(self):
         """ Returns this mailbox Junk Folder """
-        return Folder(parent=self, name='Junk', folder_id=WellKnowFolderNames.JUNK.value)
+        return Folder(parent=self, name='Junk', folder_id=OutlookWellKnowFolderNames.JUNK.value)
 
     def deleted_folder(self):
         """ Returns this mailbox DeletedItems Folder """
-        return Folder(parent=self, name='DeletedItems', folder_id=WellKnowFolderNames.DELETED.value)
+        return Folder(parent=self, name='DeletedItems', folder_id=OutlookWellKnowFolderNames.DELETED.value)
 
     def drafts_folder(self):
         """ Returns this mailbox Drafs Folder """
-        return Folder(parent=self, name='Drafs', folder_id=WellKnowFolderNames.DRAFTS.value)
+        return Folder(parent=self, name='Drafs', folder_id=OutlookWellKnowFolderNames.DRAFTS.value)
 
     def sent_folder(self):
         """ Returns this mailbox SentItems Folder """
-        return Folder(parent=self, name='SentItems', folder_id=WellKnowFolderNames.SENT.value)
+        return Folder(parent=self, name='SentItems', folder_id=OutlookWellKnowFolderNames.SENT.value)
 
     def outbox_folder(self):
         """ Returns this mailbox Outbox Folder """
-        return Folder(parent=self, name='Outbox', folder_id=WellKnowFolderNames.OUTBOX.value)
+        return Folder(parent=self, name='Outbox', folder_id=OutlookWellKnowFolderNames.OUTBOX.value)

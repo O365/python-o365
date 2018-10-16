@@ -79,6 +79,14 @@ Every protocol defaults to resource 'ME'. 'ME' is the user which has given conse
 
 For example when accesing a shared mailbox:
 
+
+```python
+# ...
+account = Account(credentials=my_credentials, main_resource='shared_mailbox@example.com')
+# Any instance created using account will inherit the resource defined for account.
+```
+
+This can be done however at any point. For example at the protocol level:
 ```python
 # ...
 my_protocol = MSGraphProtocol(default_resource='shared_mailbox@example.com')
@@ -88,8 +96,10 @@ account = Account(credentials=my_credentials, protocol=my_protocol)
 # now account is accesing the shared_mailbox@example.com in every api call.
 shared_mailbox_messages = account.mailbox().get_messages()
 ```
+ 
 
-Instead of defining the resource used at the protocol level, you can provide it per use case as follows:
+
+Instead of defining the resource used at the account or protocol level, you can provide it per use case as follows:
 ```python
 # ...
 account = Account(credentials=my_credentials)  # account defaults to 'ME' resource
@@ -101,6 +111,12 @@ mailbox = account.mailbox('shared_mailbox@example.com')  # mailbox is using 'sha
 message = Message(parent=account, main_resource='shared_mailbox@example.com')  # message is using 'shared_mailbox@example.com' resource
 ```
 
+Usually you will work with the default 'ME' resuorce, but you can also use one of the following:
+
+- **'me'**: the user which has given consent. the default for every protocol.
+- **'user:user@domain.com'**: a shared mailbox or a user account for which you have permissions. If you don't provide 'user:' will be infered anyways.
+- **'sharepoint:sharepoint-site-id'**: A sharepoint site id.
+- **'group:group-site-id'**: A office365 group id.  
 
 ## Authentication
 You can only authenticate using oauth athentication as Microsoft deprecated basic oauth on November 1st 2018.
@@ -451,8 +467,54 @@ for event in birthdays:
 ```
 
 ## OneDrive
-Work in progress
+The Storage class handles all functionality around One Drive and Document Library Storage in Sharepoint.
 
+The `Storage` instance allows to retrieve `Drive` instances which handles all the Files and Folders from within the selected `Storage`.
+Usually you will only need to work with the default drive. But the `Storage` instances can handle multiple drives.
+
+
+A `Drive` will allow you to work with Folders and Files.
+
+```python
+account = Account(credentials=my_credentials)
+
+storage = account.storage()  # here we get the storage instance that handles all the storage options.
+
+# list all the drives:
+drives = storage.get_drives()
+
+# get the default drive
+my_drive = storage.get_default_drive()  # or get_drive('drive-id')
+
+# get some folders:
+root_folder = my_drive.get_root_folder()
+attachments_folder = my_drive.get_special_folder('attachments')
+
+# iterate over the first 25 items on the root folder
+for item in root_folder.get_items(limit=25):
+    if item.is_folder:
+        print(item.get_items(2))  # print the first to element on this folder.
+    elif item.is_file:
+        if item.is_photo:
+            print(item.camera_model)  # print some metadata of this photo
+        elif item.is_image:
+            print(item.dimensione)  # print the image dimensions
+        else:
+            # regular file:
+            print(item.mime_type)  # print the mime type
+```
+
+Both Files and Folders are DriveItems. Both Image and Photo are Files, but Photo is also an Image.
+Take care when using 'is_xxxx'.
+
+There are two operations that can be async:
+
+- a DriveItem copy operation
+- a DriveItem upload
+
+When performing any of the former the api will return a special object.
+
+To be continued...
 
 ## Utils
 

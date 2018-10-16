@@ -4,7 +4,7 @@ from dateutil.parser import parse
 import pytz
 from bs4 import BeautifulSoup as bs
 
-from pyo365.utils import WellKnowFolderNames, ApiComponent, Attachments, Attachment, AttachableMixin, ImportanceLevel, TrackerSet
+from pyo365.utils import OutlookWellKnowFolderNames, ApiComponent, Attachments, Attachment, AttachableMixin, ImportanceLevel, TrackerSet
 
 log = logging.getLogger(__name__)
 
@@ -636,7 +636,7 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         # Everything received from the cloud must be passed with self._cloud_data_key
         return self.__class__(parent=self, **{self._cloud_data_key: message})
 
-    def save_draft(self, target_folder=WellKnowFolderNames.DRAFTS):
+    def save_draft(self, target_folder=OutlookWellKnowFolderNames.DRAFTS):
         """ Save this message as a draft on the cloud """
 
         if self.object_id:
@@ -653,12 +653,12 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
             if not self.__is_draft:
                 raise RuntimeError('Only draft messages can be saved as drafts')
 
-            target_folder = target_folder or WellKnowFolderNames.DRAFTS
-            if isinstance(target_folder, WellKnowFolderNames):
+            target_folder = target_folder or OutlookWellKnowFolderNames.DRAFTS
+            if isinstance(target_folder, OutlookWellKnowFolderNames):
                 target_folder = target_folder.value
             elif not isinstance(target_folder, str):
                 # a Folder instance
-                target_folder = getattr(target_folder, 'folder_id', WellKnowFolderNames.DRAFTS.value)
+                target_folder = getattr(target_folder, 'folder_id', OutlookWellKnowFolderNames.DRAFTS.value)
 
             url = self.build_url(self._endpoints.get('create_draft_folder').format(id=target_folder))
             method = self.con.post

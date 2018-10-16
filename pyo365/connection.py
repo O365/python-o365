@@ -7,7 +7,7 @@ from tzlocal import get_localzone
 from datetime import tzinfo
 import pytz
 
-from stringcase import pascalcase, camelcase
+from stringcase import pascalcase, camelcase, snakecase
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry  # dynamic loading of module Retry by requests.packages
 from requests.exceptions import HTTPError
@@ -123,6 +123,11 @@ class Protocol:
         :param dict_key: a dictionary key to convert
         """
         return dict_key if self.use_default_casing else self.casing_function(dict_key)
+
+    @staticmethod
+    def to_api_case(dict_key):
+        """ Converts keys to snake case """
+        return snakecase(dict_key)
 
     def get_scopes_for(self, user_provided_scopes):
         """ Returns a list of scopes needed for each of the scope_helpers provided

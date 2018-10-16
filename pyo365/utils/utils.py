@@ -20,13 +20,22 @@ class ImportanceLevel(Enum):
     High = 'high'
 
 
-class WellKnowFolderNames(Enum):
+class OutlookWellKnowFolderNames(Enum):
     INBOX = 'Inbox'
     JUNK = 'JunkEmail'
     DELETED = 'DeletedItems'
     DRAFTS = 'Drafts'
     SENT = 'SentItems'
     OUTBOX = 'Outbox'
+
+
+class OneDriveWellKnowFolderNames(Enum):
+    DOCUMENTS = 'documents'
+    PHOTOS = 'photos'
+    CAMERA_ROLL = 'cameraroll'
+    APP_ROOT = 'approot'
+    MUSIC = 'music'
+    ATTACHMENTS = 'attachments'
 
 
 class ChainOperator(Enum):
@@ -120,6 +129,7 @@ class Pagination(ApiComponent):
 
         super().__init__(protocol=parent.protocol, main_resource=parent.main_resource)
 
+        self.parent = parent
         self.con = parent.con
         self.constructor = constructor
         self.next_link = next_link
@@ -178,9 +188,9 @@ class Pagination(ApiComponent):
         if self.constructor:
             # Everything received from the cloud must be passed with self._cloud_data_key
             if callable(self.constructor):
-                self.data = [self.constructor(value)(parent=self, **{self._cloud_data_key: value}) for value in data]
+                self.data = [self.constructor(value)(parent=self.parent, **{self._cloud_data_key: value}) for value in data]
             else:
-                self.data = [self.constructor(parent=self, **{self._cloud_data_key: value}) for value in data]
+                self.data = [self.constructor(parent=self.parent, **{self._cloud_data_key: value}) for value in data]
         else:
             self.data = data
 
