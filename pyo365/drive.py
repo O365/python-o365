@@ -1,12 +1,87 @@
 import logging
 import warnings
+from time import sleep
 from dateutil.parser import parse
 from urllib.parse import urlparse
+from pathlib import Path
 
 from pyo365.address_book import Contact
 from pyo365.utils import ApiComponent, Pagination, NEXT_LINK_KEYWORD, OneDriveWellKnowFolderNames
 
 log = logging.getLogger(__name__)
+
+SIZE_THERSHOLD = (1024 * 1024) * 2  # 2 MB
+
+ALLOWED_PDF_EXTENSIONS = {'.csv', '.doc', '.docx', '.odp', '.ods', '.odt', '.pot', '.potm', '.potx',
+                          '.pps', '.ppsx', '.ppsxm', '.ppt', '.pptm', '.pptx', '.rtf', '.xls', '.xlsx'}
+
+
+class DownloadableMixin:
+
+    def download(self, to_path=None, name=None, chunk_size='auto', convert_to_pdf=False):
+        """
+        Downloads this file to the local drive. Can download the file in chunks with multiple requests to the server.
+        :param to_path: a path to store the downloaded file
+        :param name: the name you want the stored file to have.
+        :param chunk_size: number of bytes to retrieve from each api call to the server.
+                if auto, files bigger than SIZE_THERSHOLD will be chunked (into memory, will be however only 1 request)
+        :param convert_to_pdf: will try to donwload the converted pdf if file extension in ALLOWED_PDF_EXTENSIONS
+        """
+        # TODO: Add download with more than one request (chunk_requests) with header 'Range'. For example: 'Range': 'bytes=0-1024'
+
+        if to_path is None:
+            to_path = Path()
+        else:
+            if not isinstance(to_path, Path):
+                to_path = Path(to_path)
+
+        if not to_path.exists():
+            raise FileNotFoundError('{} does not exist'.format(to_path))
+
+        if name and not Path(name).suffix and self.name:
+            name = name + Path(self.name).suffix
+
+        name = name or self.name
+        to_path = to_path / name
+
+        url = self.build_url(self._endpoints.get('download').format(id=self.object_id))
+
+        try:
+            if chunk_size is None:
+                stream = False
+            elif chunk_size == 'auto':
+                if self.size and self.size > SIZE_THERSHOLD:
+                    stream = True
+                else:
+                    stream = False
+            elif isinstance(chunk_size, int):
+                stream = True
+            else:
+                raise ValueError("Argument chunk_size must be either 'auto' or any integer number representing bytes")
+
+            params = {}
+            if convert_to_pdf and Path(name).suffix in ALLOWED_PDF_EXTENSIONS:
+                params['format'] = 'pdf'
+
+            with self.con.get(url, stream=stream, params=params) as response:
+                if response.status_code != 200:
+                    log.debug('Donwloading driveitem Request failed: {}'.format(response.reason))
+                    return False
+                with to_path.open(mode='wb') as output:
+                    if stream:
+                        for chunk in response.iter_content(chunk_size=chunk_size):
+                            if chunk:
+                                output.write(chunk)
+                    else:
+                        output.write(response.content)
+        except Exception as e:
+            log.error('Error downloading driveitem {}. Error: {}'.format(self.name, str(e)))
+            return False
+
+        if response.status_code != 200:
+            log.debug('Copying driveitem Request failed: {}'.format(response.reason))
+            return False
+        return True
 
 
 class CopyOperation(ApiComponent):
@@ -42,8 +117,8 @@ class CopyOperation(ApiComponent):
             self.status = 'inProgress'
             self.completition_percentage = 0.0
 
-    def check_status(self):
-        """ Checks the api enpoint to """
+    def _request_status(self):
+        """ Checks the api enpoint to check if the async job progress """
         if self.item_id:
             return True
 
@@ -63,18 +138,91 @@ class CopyOperation(ApiComponent):
         self.completition_percentage = data.get(self._cc('percentageComplete'), 0)
         self.item_id = data.get(self._cc('resourceId'), None)
 
-        if self.item_id:
-            return True
+        return self.item_id is not None
+
+    def check_status(self, delay=0):
+        """
+        Checks the api enpoint in a loop
+        :param delay: number of seconds to wait between api calls. Note Connection 'requests_delay' also apply.
+        """
+        if not self.item_id:
+            while not self._request_status():
+                # wait until _request_status returns True
+                yield self.status, self.completition_percentage
+                if self.item_id is None:
+                    sleep(delay)
         else:
-            return False
+            yield self.status, self.completition_percentage
 
     def get_item(self):
-        """ Returns the item copied. Calls the monitor endpoint if the operation is performed async. """
-        if not self.item_id:
-            while not self.check_status():
-                # wait until check_status returns True
-                yield None, self.status, self.completition_percentage
-        yield self.parent.get_item(self.item_id), self.status, self.completition_percentage
+        """ Returns the item copied. """
+        return self.parent.get_item(self.item_id) if self.item_id is not None else None
+
+
+class DriveItemVersion(ApiComponent, DownloadableMixin):
+    """ A version of a DriveItem """
+
+    _endpoints = {
+        'download': '/versions/{id}/content',
+        'restore': '/versions/{id}/restoreVersion'
+    }
+
+    def __init__(self, *, parent=None, con=None, **kwargs):
+        assert parent or con, 'Need a parent or a connection'
+        self.con = parent.con if parent else con
+        self._parent = parent if isinstance(parent, DriveItem) else None
+
+        protocol = parent.protocol if parent else kwargs.get('protocol')
+        # Choose the main_resource passed in kwargs over the parent main_resource
+        main_resource = kwargs.pop('main_resource', None) or getattr(parent, 'main_resource', None) if parent else None
+
+        resource_prefix = '/items/{item_id}'.format(item_id=self._parent.object_id)
+        main_resource = '{}{}'.format(main_resource or (protocol.default_resource if protocol else ''), resource_prefix)
+        super().__init__(protocol=protocol, main_resource=main_resource)
+
+        cloud_data = kwargs.get(self._cloud_data_key, {})
+
+        self.driveitem_id = self._parent.object_id
+        self.object_id = cloud_data.get('id', '1.0')
+        self.name = self.object_id
+        modified = cloud_data.get(self._cc('lastModifiedDateTime'), None)
+        local_tz = self.protocol.timezone
+        self.modified = parse(modified).astimezone(local_tz) if modified else None
+        self.size = cloud_data.get('size', 0)
+        modified_by = cloud_data.get(self._cc('lastModifiedBy'), {}).get('user', None)
+        self.modified_by = Contact(con=self.con, protocol=self.protocol, **{self._cloud_data_key: modified_by}) if modified_by else None
+
+    def __str__(self):
+        return self.__repr__()
+
+    def __repr__(self):
+        return 'Versión Id: {} | Modified on: {} | by: {}'.format(self.name, self.modified, self.modified_by.display_name if self.modified_by else None)
+
+    def restore(self):
+        """
+        Restores this DriveItem Version.
+        You can not restore the current version (last one).
+        """
+        url = self.build_url(self._endpoints.get('restore').format(id=self.object_id))
+
+        try:
+            response = self.con.post(url)
+        except Exception as e:
+            log.error('Error restoring driveitem version {}. Error: {}'.format(self.name, str(e)))
+            return False
+
+        if response.status_code != 204:
+            log.debug('Restoring driveitem version Request failed: {}'.format(response.reason))
+            return False
+
+        return True
+
+    def download(self, to_path=None, name=None, chunk_size='auto', convert_to_pdf=False):
+        """
+        Downloads this version.
+        You can not download the current version (last one).
+        """
+        return super().download(to_path=to_path, name=name, chunk_size=chunk_size, convert_to_pdf=convert_to_pdf)
 
 
 class DriveItem(ApiComponent):
@@ -85,7 +233,11 @@ class DriveItem(ApiComponent):
         'list_items': '/items/{id}/children',
         'thumbnails': '/items/{id}/thumbnails',
         'item': '/items/{id}',
-        'copy': '/items/{id}/copy'
+        'copy': '/items/{id}/copy',
+        'download': '/items/{id}/content',
+        'search': "/items/{id}/search(q='{search_text}')",
+        'versions': '/items/{id}/versions',
+        'version': '/items/{id}/versions/{version_id}',
     }
 
     def __init__(self, *, parent=None, con=None, **kwargs):
@@ -354,6 +506,9 @@ class DriveItem(ApiComponent):
         else:
             data = {}
         if name:
+            # incorporate the extension if the name provided has none.
+            if not Path(name).suffix and self.name:
+                name = name + Path(self.name).suffix
             data['name'] = name
 
         try:
@@ -378,8 +533,52 @@ class DriveItem(ApiComponent):
             item_id = path.split('/')[-1]
             return CopyOperation(parent=self.drive, item_id=item_id)
 
+    def get_versions(self):
+        """ Returns a list of available versions for this item """
 
-class File(DriveItem):
+        if not self.object_id:
+            return []
+        url = self.build_url(self._endpoints.get('versions').format(id=self.object_id))
+
+        try:
+            response = self.con.get(url)
+        except Exception as e:
+            log.error('Error requesting versions of {}. Error: {}'.format(self.name, str(e)))
+            return []
+
+        if response.status_code != 200:
+            log.debug('Getting item versions Request failed: {}'.format(response.reason))
+            return []
+
+        data = response.json()
+
+        # Everything received from the cloud must be passed with self._cloud_data_key
+        return [DriveItemVersion(parent=self, **{self._cloud_data_key: item}) for item in data.get('value', [])]
+
+    def get_version(self, version_id):
+        """ Returns a DriveItem version """
+        if not self.object_id:
+            return None
+
+        url = self.build_url(self._endpoints.get('version').format(id=self.object_id, version_id=version_id))
+
+        try:
+            response = self.con.get(url)
+        except Exception as e:
+            log.error('Error requesting version {} of {}. Error: {}'.format(version_id, self.name, str(e)))
+            return []
+
+        if response.status_code != 200:
+            log.debug('Getting item version Request failed: {}'.format(response.reason))
+            return []
+
+        data = response.json()
+
+        # Everything received from the cloud must be passed with self._cloud_data_key
+        return DriveItemVersion(parent=self, **{self._cloud_data_key: data})
+
+
+class File(DriveItem, DownloadableMixin):
     """ A File """
 
     def __init__(self, **kwargs):
@@ -509,6 +708,73 @@ class Folder(DriveItem):
 
         return self._classifier(folder)(parent=self, **{self._cloud_data_key: folder})
 
+    def download_contents(self, to_folder=None):
+        """
+        This will download each file and folder sequencially.
+        Caution when downloading big folder structures
+        :param to_folder: folder where to store the contents
+        """
+        to_folder = to_folder or Path()
+        if not to_folder.exists():
+            to_folder.mkdir()
+
+        for item in self.get_items(query=self.new_query().select('id', 'size')):
+            if item.is_folder and item.child_count > 0:
+                item.download_contents(to_folder=to_folder / item.name)
+            else:
+                item.download(to_folder)
+
+    def search(self, search_text, limit=None, *, query=None, order_by=None, batch=None):
+        """
+        Search for DriveItems under this folder
+        The search API uses a search service under the covers, which requires indexing of content.
+        As a result, there will be some time between creation of an item and when it will appear in search results.
+        :param search_text: The query text used to search for items.
+            Values may be matched across several fields including filename, metadata, and file content.
+        """
+        if not isinstance(search_text, str) or not search_text:
+            raise ValueError('Provide a valid search_text')
+
+        url = self.build_url(self._endpoints.get('search').format(id=self.object_id, search_text=search_text))
+
+        if limit is None or limit > self.protocol.max_top_value:
+            batch = self.protocol.max_top_value
+
+        params = {'$top': batch if batch else limit}
+
+        if order_by:
+            params['$orderby'] = order_by
+
+        if query:
+            if query.has_filters:
+                warnings.warn('Filters are not allowed by the Api Provider in this method')
+                query.clear_filters()
+            if isinstance(query, str):
+                params['$filter'] = query
+            else:
+                params.update(query.as_params())
+
+        try:
+            response = self.con.get(url, params=params)
+        except Exception as e:
+            log.error('Error requesting search for {} on folder {}. Error: {}'.format(search_text, self.name, str(e)))
+            return []
+
+        if response.status_code != 200:
+            log.debug('Getting search Request failed: {}'.format(response.reason))
+            return []
+
+        data = response.json()
+
+        # Everything received from the cloud must be passed with self._cloud_data_key
+        items = [self._classifier(item)(parent=self, **{self._cloud_data_key: item}) for item in data.get('value', [])]
+        next_link = data.get(NEXT_LINK_KEYWORD, None)
+        if batch and next_link:
+            return Pagination(parent=self, data=items, constructor=self._classifier,
+                              next_link=next_link, limit=limit)
+        else:
+            return items
+
 
 class Drive(ApiComponent):
     """ A Drive representation. A Drive is a Container of Folders and Files and act as a root item """
@@ -528,6 +794,8 @@ class Drive(ApiComponent):
         'shared_with_me': '/drives/{id}/sharedWithMe',
         'get_special_default': '/drive/special/{name}',
         'get_special': '/drives/{id}/special/{name}',
+        'search_default': "/drive/search(q='{search_text}')",
+        'search': "/drives/{id}/search(q='{search_text}')",
     }
 
     def __init__(self, *, parent=None, con=None, **kwargs):
@@ -751,6 +1019,62 @@ class Drive(ApiComponent):
 
         self._update_data({self._cloud_data_key: drive})
         return True
+
+    def search(self, search_text, limit=None, *, query=None, order_by=None, batch=None):
+        """
+        Search for DriveItems under this drive.
+        Your app can search more broadly to include items shared with the current user.
+        To broaden the search scope, use this seach instead the Folder Search.
+        The search API uses a search service under the covers, which requires indexing of content.
+        As a result, there will be some time between creation of an item and when it will appear in search results.
+        :param search_text: The query text used to search for items.
+            Values may be matched across several fields including filename, metadata, and file content.
+        """
+        if not isinstance(search_text, str) or not search_text:
+            raise ValueError('Provide a valid search_text')
+
+        if self.object_id is None:
+            url = self.build_url(self._endpoints.get('search_default').format(search_text=search_text))
+        else:
+            url = self.build_url(self._endpoints.get('search').format(id=self.object_id, search_text=search_text))
+
+        if limit is None or limit > self.protocol.max_top_value:
+            batch = self.protocol.max_top_value
+
+        params = {'$top': batch if batch else limit}
+
+        if order_by:
+            params['$orderby'] = order_by
+
+        if query:
+            if query.has_filters:
+                warnings.warn('Filters are not allowed by the Api Provider in this method')
+                query.clear_filters()
+            if isinstance(query, str):
+                params['$filter'] = query
+            else:
+                params.update(query.as_params())
+
+        try:
+            response = self.con.get(url, params=params)
+        except Exception as e:
+            log.error('Error requesting search for {} on drive {}. Error: {}'.format(search_text, self.name, str(e)))
+            return []
+
+        if response.status_code != 200:
+            log.debug('Getting search Request failed: {}'.format(response.reason))
+            return []
+
+        data = response.json()
+
+        # Everything received from the cloud must be passed with self._cloud_data_key
+        items = [self._classifier(item)(parent=self, **{self._cloud_data_key: item}) for item in data.get('value', [])]
+        next_link = data.get(NEXT_LINK_KEYWORD, None)
+        if batch and next_link:
+            return Pagination(parent=self, data=items, constructor=self._classifier,
+                              next_link=next_link, limit=limit)
+        else:
+            return items
 
 
 class Storage(ApiComponent):

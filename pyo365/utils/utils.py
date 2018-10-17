@@ -107,6 +107,8 @@ class ApiComponent:
     def new_query(self, attribute=None):
         return Query(attribute=attribute, protocol=self.protocol)
 
+    q = new_query  # alias for new query
+
 
 class Pagination(ApiComponent):
     """ Utility class that allows batching requests to the server """
