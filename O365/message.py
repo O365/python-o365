@@ -113,7 +113,7 @@ class Message(object):
 		response = requests.post(
 				self.send_url, data, headers=headers, auth=self.auth,verify=self.verify)
 		log.debug('response from server for sending message:' + str(response))
-		log.debug("respnse body: {}".format(response.text))
+		log.debug("response body: {}".format(response.text))
 		if response.status_code != 202:
 			return False
 

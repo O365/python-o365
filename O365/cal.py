@@ -46,6 +46,10 @@ class Calendar( object ):
 			return self.json['Name']
 		return "Unnamed calendar"
 
+	def __str__(self):
+		'''Return informal, nicely printable string.'''
+		return self.getName()
+
 	def getName(self):
 		'''Get the calendar's Name.'''
 		return self.json['Name']
