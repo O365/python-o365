@@ -1,0 +1,9 @@
+## Principle requirement for the entire library ##
+requests
+
+## Required to get OAuth to work                ##
+oauthlib
+requests_oauthlib
+
+## Used for the metaclass functionality         ##
+future
