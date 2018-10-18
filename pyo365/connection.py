@@ -8,6 +8,7 @@ from datetime import tzinfo
 import pytz
 
 from stringcase import pascalcase, camelcase, snakecase
+from requests import Session
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry  # dynamic loading of module Retry by requests.packages
 from requests.exceptions import HTTPError
@@ -271,13 +272,24 @@ class Connection:
         self.token_path = Path() / token_file_name if token_file_name else self._default_token_path
         self.token = None
 
-        self.session = None  # requests Session object
+        self.session = None  # requests Oauth2Session object
+
         self.proxy = {}
         self.set_proxy(proxy_server, proxy_port, proxy_username, proxy_password)
         self.requests_delay = requests_delay or 0
         self.previous_request_at = None  # store the time of the previous request
         self.raise_http_errors = raise_http_errors
         self.request_retries = request_retries
+
+        self.naive_session = Session()  # requests Session object
+        self.naive_session.proxies = self.proxy
+
+        if self.request_retries:
+            retry = Retry(total=self.request_retries, read=self.request_retries, connect=self.request_retries,
+                          backoff_factor=RETRIES_BACKOFF_FACTOR, status_forcelist=RETRIES_STATUS_LIST)
+            adapter = HTTPAdapter(max_retries=retry)
+            self.naive_session.mount('http://', adapter)
+            self.naive_session.mount('https://', adapter)
 
     def set_proxy(self, proxy_server, proxy_port, proxy_username, proxy_password):
         """ Sets a proxy on the Session """
@@ -409,6 +421,24 @@ class Connection:
                 time.sleep((self.requests_delay - dif) / 1000)  # sleep needs seconds
         self.previous_request_at = time.time()
 
+    def naive_request(self, url, method, **kwargs):
+        """ A naive request without any Authorization headers """
+        method = method.lower()
+        assert method in self._allowed_methods, 'Method must be one of the allowed ones'
+
+        self._check_delay()  # sleeps if needed
+
+        log.info('Requesting ({}) URL: {}'.format(method.upper(), url))
+        log.info('Request parameters: {}'.format(kwargs))
+
+        response = self.naive_session.request(method, url, **kwargs)
+
+        log.info('Received response ({}) from URL {}'.format(response.status_code, response.url))
+        if not response.ok and self.raise_http_errors:
+            raise self.raise_api_exception(response)
+
+        return response
+
     def request(self, url, method, **kwargs):
         """ Makes a request to url
 
@@ -424,9 +454,9 @@ class Connection:
         elif method in ['post', 'put', 'patch']:
             if 'headers' not in kwargs:
                 kwargs['headers'] = {}
-            if kwargs['headers'].get('Content-type') is None:
+            if kwargs['headers'] and kwargs['headers'].get('Content-type') is None:
                 kwargs['headers']['Content-type'] = 'application/json'
-            if 'data' in kwargs and kwargs['headers']['Content-type'] == 'application/json':
+            if 'data' in kwargs and kwargs['headers'].get('Content-type') == 'application/json':
                 kwargs['data'] = json.dumps(kwargs['data'])  # autoconvert to json
 
         log.info('Requesting ({}) URL: {}'.format(method.upper(), url))

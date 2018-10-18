@@ -1,14 +1,14 @@
-# Py-O365 - Office 365 API made easy
+# pyo365 - Microsoft Graph and Office 365 API made easy
 
-This project aims is to make it easy to interact with Office 365 Email, Contacts, Calendar, OneDrive, etc.
+This project aims is to make it easy to interact with Microsoft Graph and Office 365 Email, Contacts, Calendar, OneDrive, etc.
 
-This project is based on the super work done by [Toben Archer](https://github.com/Narcolapser) [Python-O365](https://github.com/Narcolapser/python-o365).
+This project is inspired on the super work done by [Toben Archer](https://github.com/Narcolapser) [Python-O365](https://github.com/Narcolapser/python-o365).
 The oauth part is based on the work done by [Royce Melborn](https://github.com/roycem90) which is now integrated with the original project.
 
-I just want to make this project different in almost every sense, and make it also more pythonic (no getters and setters, etc.) and make it also compatible with oauth and basic auth.
+I just want to make this project different in almost every sense, and make it also more pythonic.
 So I ended up rewriting the hole project from scratch.
 
-The result is a package that provides a lot of the Office 365 API capabilities.
+The result is a package that provides a lot of the Microsoft Graph and Office 365 API capabilities.
 
 This is for example how you send a message:
 
@@ -25,6 +25,8 @@ m.body = "George Best quote: I've stopped drinking, but only while I'm asleep."
 m.send()
 ```
 
+>To use it: **pip install pyo365**
+
 **Python 3.4 is the minimum required**... I was very tempted to just go for 3.6 and use f-strings. Those are fantastic!
 
 This project was also a learning resource for me. This is a list of not so common python characteristics used in this project:
@@ -37,6 +39,9 @@ This project was also a learning resource for me. This is a list of not so commo
 
 > **This project is in early development.** Changes that can break your code may be commited. If you want to help please feel free to fork and make pull requests.
 
+
+What follows is kind of a wiki... but you will get more insights by looking at the code.
+
 ## Table of contents
 
 - [Protocols](#protocols)
@@ -46,6 +51,7 @@ This project was also a learning resource for me. This is a list of not so commo
 - [AddressBook](#addressbook)
 - [Calendar](#calendar)
 - [OneDrive](#onedrive)
+- [Sharepoint](#sharepoint)
 - [Utils](#utils)
 
 
@@ -504,17 +510,70 @@ for item in root_folder.get_items(limit=25):
             print(item.mime_type)  # print the mime type
 ```
 
-Both Files and Folders are DriveItems. Both Image and Photo are Files, but Photo is also an Image.
+Both Files and Folders are DriveItems. Both Image and Photo are Files, but Photo is also an Image. All have some different methods and properties. 
 Take care when using 'is_xxxx'.
 
-There are two operations that can be async:
+When coping a DriveItem the api can return a direct copy of the item or a pointer to a resource that will inform on the progress of the copy operation.
 
-- a DriveItem copy operation
-- a DriveItem upload
+```python
+# copy a file to the documents special folder
 
-When performing any of the former the api will return a special object.
+documents_folder = drive.get_special_folder('documents')
 
-To be continued...
+files = drive.search('george best quotes', limit=1)
+
+if files:
+    george_best_quotes = files[0]
+    operation = george_best_quotes.copy(target=documents_folder)  # operation here is an instance of CopyOperation
+    
+    # to check for the result just loop over check_status.
+    # check_status is a generator that will yield a new status and progress until the file is finally copied
+    for status, progress in operation.check_status():  # if it's an async operations, this will request to the api for the status in every loop
+        print('{} - {}'.format(status, progress))  # prints 'in progress - 77.3' until finally completed: 'completed - 100.0'
+    copied_item = operation.get_item()  # the copy operation is completed so you can get the item.
+    if copied_item:
+        copied_item.delete()  # ... oops!
+```
+
+You can also work with share permissions:
+
+```python
+current_permisions = file.get_permissions()  # get all the current permissions on this drive_item (some may be inherited)
+
+# share with link
+permission = file.share_with_link(share_type='edit')
+if permission:
+    print(permission.share_link)  # the link you can use to share this drive item
+# share with invite
+permission = file.share_with_invite(recipients='george_best@best.com', send_email=True, message='Greetings!!', share_type='edit')
+if permission:
+    print(permission.granted_to)  # the person you share this item with
+```
+
+You can also:
+```python
+# download files:
+file.download(to_path='/quotes/')
+
+# upload files:
+
+# if the uploaded file is bigger than 4MB the file will be uploaded in chunks of 5 MB until completed.
+# this can take several requests and can be time consuming.
+uploaded_file = folder.upload_file(item='path_to_my_local_file')
+
+# restore versions:
+versiones = file.get_versions()
+for version in versions:
+    if version.name == '2.0':
+        version.restore()  # restore the version 2.0 of this file
+
+# ... and much more ...
+```
+
+
+## Sharepoint
+Work in progress
+
 
 ## Utils
 

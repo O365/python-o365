@@ -10,8 +10,11 @@ from pyo365.utils import ApiComponent, Pagination, NEXT_LINK_KEYWORD, OneDriveWe
 
 log = logging.getLogger(__name__)
 
-SIZE_THERSHOLD = (1024 * 1024) * 2  # 2 MB
-
+SIZE_THERSHOLD = 1024 * 1024 * 2  # 2 MB
+UPLOAD_SIZE_LIMIT_SIMPLE = 1024 * 1024 * 4  # 4 MB
+UPLOAD_SIZE_LIMIT_SESSION = 1024 * 1024 * 60  # 60 MB
+CHUNK_SIZE_BASE = 1024 * 320  # 320 Kb
+DEFAULT_UPLOAD_CHUNK_SIZE = 1024 * 1024 * 5  # 5 MB --> Must be a multiple of CHUNK_SIZE_BASE
 ALLOWED_PDF_EXTENSIONS = {'.csv', '.doc', '.docx', '.odp', '.ods', '.odt', '.pot', '.potm', '.potx',
                           '.pps', '.ppsx', '.ppsxm', '.ppt', '.pptm', '.pptx', '.rtf', '.xls', '.xlsx'}
 
@@ -225,6 +228,102 @@ class DriveItemVersion(ApiComponent, DownloadableMixin):
         return super().download(to_path=to_path, name=name, chunk_size=chunk_size, convert_to_pdf=convert_to_pdf)
 
 
+class DriveItemPermission(ApiComponent):
+    """ A Permission representation for a DriveItem """
+    _endpoints = {
+        'permission': '/items/{driveitem_id}/permissions/{id}'
+    }
+
+    def __init__(self, *, parent=None, con=None, **kwargs):
+        assert parent or con, 'Need a parent or a connection'
+        self.con = parent.con if parent else con
+        self._parent = parent if isinstance(parent, DriveItem) else None
+        # Choose the main_resource passed in kwargs over the parent main_resource
+        main_resource = kwargs.pop('main_resource', None) or getattr(parent, 'main_resource', None) if parent else None
+        protocol = parent.protocol if parent else kwargs.get('protocol')
+        super().__init__(protocol=protocol, main_resource=main_resource)
+
+        self.driveitem_id = self._parent.object_id
+        cloud_data = kwargs.get(self._cloud_data_key, {})
+        self.object_id = cloud_data.get(self._cc('id'))
+        self.inherited_from = cloud_data.get(self._cc('inheritedFrom'), None)
+
+        link = cloud_data.get(self._cc('link'), None)
+        self.permission_type = 'owner'
+        if link:
+            self.permission_type = 'link'
+            self.share_type = link.get('type', 'view')
+            self.share_scope = link.get('scope', 'anonymous')
+            self.share_link = link.get('webUrl', None)
+
+        invitation = cloud_data.get(self._cc('invitation'), None)
+        if invitation:
+            self.permission_type = 'invitation'
+            self.share_email = invitation.get('email', '')
+            invited_by = invitation.get('invitedBy', {})
+            self.invited_by = invited_by.get('user', {}).get(self._cc('displayName'), None) or invited_by.get('application', {}).get(self._cc('displayName'), None)
+            self.require_sign_in = invitation.get(self._cc('signInRequired'), True)
+
+        self.roles = cloud_data.get(self._cc('roles'), [])
+        granted_to = cloud_data.get(self._cc('grantedTo'), {})
+        self.granted_to = granted_to.get('user', {}).get(self._cc('displayName')) or granted_to.get('application', {}).get(self._cc('displayName'))
+        self.share_id = cloud_data.get(self._cc('shareId'), None)
+
+    def __str__(self):
+        return self.__repr__()
+
+    def __repr__(self):
+        return 'Permission for {} of type: {}'.format(self._parent.name, self.permission_type)
+
+    def update_roles(self, roles='view'):
+        """ Updates the roles of this permission"""
+
+        if not self.object_id:
+            return False
+
+        url = self.build_url(self._endpoints.get('permission').format(driveitem_id=self.driveitem_id, id=self.object_id))
+
+        if roles in {'view', 'read'}:
+            data = {'roles': ['read']}
+        elif roles == {'edit', 'write'}:
+            data = {'roles': ['write']}
+        else:
+            raise ValueError('"{}" is not a valid share_type'.format(roles))
+
+        try:
+            response = self.con.patch(url, data=data)
+        except Exception as e:
+            log.error('Error updateing permission {}. Error: {}'.format(self.object_id, str(e)))
+            return False
+
+        if response.status_code != 200:
+            log.debug('Updating permission Request failed: {}'.format(response.reason))
+            return False
+
+        self.roles = data.get('roles', [])
+        return True
+
+    def delete(self):
+        """ Deletes this permission. Only permissions that are not inherited can be deleted. """
+        if not self.object_id:
+            return False
+
+        url = self.build_url(self._endpoints.get('permission').format(driveitem_id=self.driveitem_id, id=self.object_id))
+
+        try:
+            response = self.con.delete(url)
+        except Exception as e:
+            log.error('Error deleting permission {}. Error: {}'.format(self.object_id, str(e)))
+            return False
+
+        if response.status_code != 204:
+            log.debug('Deleting permission Request failed: {}'.format(response.reason))
+            return False
+
+        self.object_id = None
+        return True
+
+
 class DriveItem(ApiComponent):
     """ A DriveItem representation. Groups all funcionality """
 
@@ -238,6 +337,11 @@ class DriveItem(ApiComponent):
         'search': "/items/{id}/search(q='{search_text}')",
         'versions': '/items/{id}/versions',
         'version': '/items/{id}/versions/{version_id}',
+        'simple_upload': '/items/{id}:/{filename}:/content',
+        'create_upload_session': '/items/{id}:/{filename}:/createUploadSession',
+        'share_link': '/items/{id}/createLink',
+        'share_invite': '/items/{id}/invite',
+        'permissions': '/items/{id}/permissions',
     }
 
     def __init__(self, *, parent=None, con=None, **kwargs):
@@ -523,7 +627,7 @@ class DriveItem(ApiComponent):
 
         # Find out if the server has run a Sync or Async operation
         location = response.headers.get('Location', None)
-        print(location)
+
         if 'monitor' in location:
             # Async operation
             return CopyOperation(parent=self.drive, monitor_url=location)
@@ -576,6 +680,119 @@ class DriveItem(ApiComponent):
 
         # Everything received from the cloud must be passed with self._cloud_data_key
         return DriveItemVersion(parent=self, **{self._cloud_data_key: data})
+
+    def share_with_link(self, share_type='view', share_scope='anonymous'):
+        """
+        Creates or returns a link you can share with others
+        :param share_type: 'view' to allow only view access, 'edit' to allow editions, and 'embed' to allow the DriveItem to be embeded
+        :param share_scope: 'anonymoues': anyone with the link can access. 'organization' Only organization members can access.s
+        """
+
+        if not self.object_id:
+            return None
+
+        url = self.build_url(self._endpoints.get('share_link').format(id=self.object_id))
+
+        data = {
+            'type': share_type,
+            'scope': share_scope
+        }
+        try:
+            response = self.con.post(url, data=data)
+        except Exception as e:
+            log.error('Error requesting share link of {}. Error: {}'.format(self.name, str(e)))
+            return None
+
+        if response.status_code != 201:
+            log.debug('Getting share link Request failed: {}'.format(response.reason))
+            return None
+
+        data = response.json()
+
+        # return data.get('link', {}).get('webUrl')
+        return DriveItemPermission(parent=self, **{self._cloud_data_key: data})
+
+    def share_with_invite(self, recipients, require_sign_in=True, send_email=True, message=None, share_type='view'):
+        """
+        Sends an invitation to access or edit this DriveItem
+        :param recipients: a string or Contact or a list of the former representing recipients of this invitation
+        :param require_sign_in: if True the recipients invited will need to log in to view the contents
+        :param send_email: if True an email will be send to the recipients
+        :param message: the body text of the message emailed
+        :param share_type: 'view': will allow to read the contents. 'edit' will allow to modify the contents
+        """
+        if not self.object_id:
+            return None
+
+        to = []
+        if recipients is None:
+            raise ValueError('Provide a valir to parameter')
+        elif isinstance(recipients, (list, tuple)):
+            for x in recipients:
+                if isinstance(x, str):
+                    to.append({'email': x})
+                elif isinstance(x, Contact):
+                    to.append({'email': x.main_email})
+                else:
+                    raise ValueError('All the recipients must be either strings or Contacts')
+        elif isinstance(recipients, str):
+            to.append({'email': recipients})
+        elif isinstance(recipients, Contact):
+            to.append({'email': recipients.main_email})
+        else:
+            raise ValueError('All the recipients must be either strings or Contacts')
+
+        url = self.build_url(self._endpoints.get('share_invite').format(id=self.object_id))
+
+        data = {
+            'recipients': to,
+            self._cc('requireSignIn'): require_sign_in,
+            self._cc('sendInvitation'): send_email,
+        }
+        if share_type in {'view', 'read'}:
+            data['roles'] = ['read']
+        elif share_type == {'edit', 'write'}:
+            data['roles'] = ['write']
+        else:
+            raise ValueError('"{}" is not a valid share_type'.format(share_type))
+        if send_email and message:
+            data['message'] = message
+
+        try:
+            response = self.con.post(url, data=data)
+        except Exception as e:
+            log.error('Error requesting share link of {}. Error: {}'.format(self.name, str(e)))
+            return None
+
+        if response.status_code != 200:
+            log.debug('Getting share link Request failed: {}'.format(response.reason))
+            return None
+
+        data = response.json()
+
+        return DriveItemPermission(parent=self, **{self._cloud_data_key: data})
+
+    def get_permissions(self):
+        """ Returns a list of DriveItemPermissions with the permissions granted for this DriveItem. """
+        if not self.object_id:
+            return []
+
+        url = self.build_url(self._endpoints.get('permissions').format(id=self.object_id))
+
+        try:
+            response = self.con.get(url)
+        except Exception as e:
+            log.error('Error requesting permissions of {}. Error: {}'.format(self.name, str(e)))
+            return None
+
+        if response.status_code != 200:
+            log.debug('Getting permissions Request failed: {}'.format(response.reason))
+            return None
+
+        data = response.json()
+
+        # Everything received from the cloud must be passed with self._cloud_data_key
+        return [DriveItemPermission(parent=self, **{self._cloud_data_key: item}) for item in data.get('value', [])]
 
 
 class File(DriveItem, DownloadableMixin):
@@ -774,6 +991,89 @@ class Folder(DriveItem):
                               next_link=next_link, limit=limit)
         else:
             return items
+
+    def upload_file(self, item, chunk_size=DEFAULT_UPLOAD_CHUNK_SIZE):
+        """
+        Uploads a file
+        :param item: a Path instance or string path to the item you want to upload.
+        :param chunk_size: Only applies if file is bigger than 4MB. Chunk size for uploads. Must be a multiple of 327.680 bytes
+        """
+
+        if item is None:
+            raise ValueError('Item must be a valid path to file')
+        item = Path(item) if not isinstance(item, Path) else item
+
+        if not item.exists():
+            raise ValueError('Item must exist')
+        if not item.is_file():
+            raise ValueError('Item must be a file')
+
+        file_size = item.stat().st_size
+
+        if file_size <= UPLOAD_SIZE_LIMIT_SIMPLE:
+            # Simple Upload
+            url = self.build_url(self._endpoints.get('simple_upload').format(id=self.object_id, filename=item.name))
+            # headers = {'Content-type': 'text/plain'}
+            headers = {'Content-type': 'application/octet-stream'}
+            # headers = None
+            with item.open(mode='rb') as file:
+                data = file.read()
+            try:
+                response = self.con.put(url, headers=headers, data=data)
+            except Exception as e:
+                log.error('Error uploading file {} on folder {}. Error: {}'.format(item.name, self.name, str(e)))
+                return None
+
+            if response.status_code != 201:
+                log.debug('Getting search Request failed: {}'.format(response.reason))
+                return None
+
+            data = response.json()
+            return self._classifier(data)(parent=self, **{self._cloud_data_key: data})
+        else:
+            # Resumable Upload
+            url = self.build_url(self._endpoints.get('create_upload_session').format(id=self.object_id, filename=item.name))
+            try:
+                response = self.con.post(url)
+            except Exception as e:
+                log.error('Error creating upload session for file {} on folder {}. Error: {}'.format(item.name, self.name, str(e)))
+                return None
+            if response.status_code != 200:
+                log.debug('Creating upload session Request failed: {}'.format(response.reason))
+                return None
+            data = response.json()
+            upload_url = data.get(self._cc('uploadUrl'), None)
+            if upload_url is None:
+                log.error('Create upload session response without upload_url for file {}'.format(item.name))
+                return None
+
+            current_bytes = 0
+            with item.open(mode='rb') as file:
+                while True:
+                    data = file.read(chunk_size)
+                    if not data:
+                        break
+                    transfer_bytes = len(data)
+                    headers = {
+                        'Content-type': 'application/octet-stream',
+                        'Content-Length': str(len(data)),
+                        'Content-Range': 'bytes {}-{}/{}'.format(current_bytes, current_bytes + transfer_bytes - 1, file_size)
+                    }
+                    current_bytes += transfer_bytes
+                    try:
+                        # this request mut NOT send the authorization header. so we use a naive simple request.
+                        response = self.con.naive_request(upload_url, 'PUT', data=data, headers=headers)
+                    except Exception as e:
+                        log.error('Error uploading chunk for file {} on folder {}. Error: {}'.format(item.name, self.name, str(e)))
+                        return None
+                    if response.status_code not in (200, 201, 202):
+                        log.debug('Uploadong chunk Request failed: {}'.format(response.reason))
+                        return None
+
+                    if response.status_code != 202:
+                        # file is completed
+                        data = response.json()
+                        return self._classifier(data)(parent=self, **{self._cloud_data_key: data})
 
 
 class Drive(ApiComponent):
