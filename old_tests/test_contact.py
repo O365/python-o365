@@ -1,4 +1,4 @@
-from O365 import contact
+from pyo365 import contact
 import unittest
 import json
 import time

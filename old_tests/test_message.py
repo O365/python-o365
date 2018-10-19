@@ -1,5 +1,5 @@
 
-from O365 import message
+from pyo365 import message
 import unittest
 import json
 

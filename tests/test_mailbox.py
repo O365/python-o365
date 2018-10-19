@@ -1,12 +1,12 @@
-from tests.config import USERNAME, PASSWORD, CLIENT_ID, CLIENT_SECRET
-from O365 import Account, Connection, MSOffice365Protocol, AUTH_METHOD
+from tests.config import CLIENT_ID, CLIENT_SECRET
+from pyo365 import Account
 
 
-class TestMailBoxBasicAuth:
+class TestMailBox:
 
     def setup_class(self):
-        credentials = (USERNAME, PASSWORD)
-        self.account = Account(credentials, auth_method=AUTH_METHOD.BASIC)
+        credentials = (CLIENT_ID, CLIENT_SECRET)
+        self.account = Account(credentials)
         self.mailbox = self.account.mailbox()
         self.inbox = self.mailbox.inbox_folder()
 
@@ -47,6 +47,20 @@ class TestMailBoxBasicAuth:
 
         assert messages and message2 and message2.to and message2.to[0].address == 'test@example.com'
 
+    def test_reply(self):
+        inbox = self.mailbox.inbox_folder()
+        messages = inbox.get_messages(1)
+        message = messages[0] if messages else None
+
+        reply = None
+        reply_text = 'New reply on top of the message trail.'
+
+        if message:
+            reply = message.reply()
+            reply.body = reply_text
+
+        assert message and reply and reply.body != reply_text
+
     def test_delete_email(self):
         drafts = self.mailbox.drafts_folder()
 
@@ -60,12 +74,3 @@ class TestMailBoxBasicAuth:
         messages = drafts.get_messages(1, query=q)
 
         assert len(messages) == 0
-
-
-class TestMailBoxOauth(TestMailBoxBasicAuth):
-
-    def setup_class(self):
-        credentials = (CLIENT_ID, CLIENT_SECRET)
-        self.account = Account(credentials, auth_method=AUTH_METHOD.OAUTH)
-        self.mailbox = self.account.mailbox()
-        self.inbox = self.mailbox.inbox_folder()

@@ -1,4 +1,4 @@
-from O365 import schedule
+from pyo365 import schedule
 import unittest
 import json
 

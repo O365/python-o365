@@ -20,13 +20,22 @@ class ImportanceLevel(Enum):
     High = 'high'
 
 
-class WellKnowFolderNames(Enum):
+class OutlookWellKnowFolderNames(Enum):
     INBOX = 'Inbox'
     JUNK = 'JunkEmail'
     DELETED = 'DeletedItems'
     DRAFTS = 'Drafts'
     SENT = 'SentItems'
     OUTBOX = 'Outbox'
+
+
+class OneDriveWellKnowFolderNames(Enum):
+    DOCUMENTS = 'documents'
+    PHOTOS = 'photos'
+    CAMERA_ROLL = 'cameraroll'
+    APP_ROOT = 'approot'
+    MUSIC = 'music'
+    ATTACHMENTS = 'attachments'
 
 
 class ChainOperator(Enum):
@@ -70,21 +79,22 @@ class ApiComponent:
 
     @staticmethod
     def _parse_resource(resource):
+        resource = resource.strip() if resource else resource
         """ Parses and completes resource information """
         if resource == ME_RESOURCE:
             return resource
         elif resource == USERS_RESOURCE:
             return resource
+        elif '/' not in resource and USERS_RESOURCE not in resource:
+            # when for example accesing a shared mailbox the resouse is set to the email address.
+            # we have to prefix the email with the resource 'users/' so --> 'users/email_address'
+            return '{}/{}'.format(USERS_RESOURCE, resource)
         else:
-            if USERS_RESOURCE not in resource:
-                resource = resource.replace('/', '')
-                return '{}/{}'.format(USERS_RESOURCE, resource)
-            else:
-                return resource
+            return resource
 
     def build_url(self, endpoint):
         """ Returns a url for a given endpoint using the protocol service url """
-        return '{}{}'.format(self._base_url, self.protocol.transform_endpoint(endpoint))
+        return '{}{}'.format(self._base_url, endpoint)
 
     def _gk(self, keyword):
         """ Alias for protocol.get_service_keyword """
@@ -97,6 +107,8 @@ class ApiComponent:
     def new_query(self, attribute=None):
         return Query(attribute=attribute, protocol=self.protocol)
 
+    q = new_query  # alias for new query
+
 
 class Pagination(ApiComponent):
     """ Utility class that allows batching requests to the server """
@@ -108,9 +120,9 @@ class Pagination(ApiComponent):
         Stops when no more data exists or limit is reached.
 
         :param parent: the parent class. Must implement attributes:
-            con, api_version, main_resource, auth_method
+            con, api_version, main_resource
         :param data: the start data to be return
-        :param constructor: the data constructor for the next batch
+        :param constructor: the data constructor for the next batch. It can be a function.
         :param next_link: the link to request more data to
         :param limit: when to stop retrieving more data
         """
@@ -119,6 +131,7 @@ class Pagination(ApiComponent):
 
         super().__init__(protocol=parent.protocol, main_resource=parent.main_resource)
 
+        self.parent = parent
         self.con = parent.con
         self.constructor = constructor
         self.next_link = next_link
@@ -135,10 +148,13 @@ class Pagination(ApiComponent):
         self.state = 0
 
     def __str__(self):
-        return "'{}' Iterator".format(self.constructor.__name__ if self.constructor else 'Unknown')
+        return self.__repr__()
 
     def __repr__(self):
-        return self.__str__()
+        if callable(self.constructor):
+            return 'Pagination Iterator'
+        else:
+            return "'{}' Iterator".format(self.constructor.__name__ if self.constructor else 'Unknown')
 
     def __bool__(self):
         return bool(self.data) or bool(self.next_link)
@@ -173,8 +189,10 @@ class Pagination(ApiComponent):
         data = data.get('value', [])
         if self.constructor:
             # Everything received from the cloud must be passed with self._cloud_data_key
-            self.data = [self.constructor(parent=self, **{self._cloud_data_key: value})
-                         for value in data]
+            if callable(self.constructor):
+                self.data = [self.constructor(value)(parent=self.parent, **{self._cloud_data_key: value}) for value in data]
+            else:
+                self.data = [self.constructor(parent=self.parent, **{self._cloud_data_key: value}) for value in data]
         else:
             self.data = data
 
@@ -320,6 +338,9 @@ class Query:
         self._attribute = self._get_mapping(attribute) if attribute else None
         self._negation = False
         return self
+
+    def clear_filters(self):
+        self._filters = []
 
     def clear(self):
         self._filters = []

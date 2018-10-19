@@ -1,8 +1,8 @@
 import logging
 import datetime as dt
 
-from O365.message import Message
-from O365.utils import Pagination, NEXT_LINK_KEYWORD, WellKnowFolderNames, ApiComponent
+from pyo365.message import Message
+from pyo365.utils import Pagination, NEXT_LINK_KEYWORD, OutlookWellKnowFolderNames, ApiComponent
 
 log = logging.getLogger(__name__)
 
@@ -44,10 +44,10 @@ class Folder(ApiComponent):
             self.updated_at = dt.datetime.now()
 
     def __str__(self):
-        return '{} from resource: {}'.format(self.name, self.main_resource)
+        return self.__repr__()
 
     def __repr__(self):
-        return self.__str__()
+        return '{} from resource: {}'.format(self.name, self.main_resource)
 
     def get_folders(self, limit=None, *, query=None, order_by=None, batch=None):
         """
@@ -92,9 +92,10 @@ class Folder(ApiComponent):
 
         # Everything received from the cloud must be passed with self._cloud_data_key
         folders = [Folder(parent=self, **{self._cloud_data_key: folder}) for folder in data.get('value', [])]
-        if batch:
+        next_link = data.get(NEXT_LINK_KEYWORD, None)
+        if batch and next_link:
             return Pagination(parent=self, data=folders, constructor=self.__class__,
-                              next_link=data.get(NEXT_LINK_KEYWORD, None), limit=limit)
+                              next_link=next_link, limit=limit)
         else:
             return folders
 
@@ -149,9 +150,11 @@ class Folder(ApiComponent):
         messages = [self.message_constructor(parent=self, download_attachments=download_attachments,
                                              **{self._cloud_data_key: message})
                     for message in data.get('value', [])]
-        if batch:
+
+        next_link = data.get(NEXT_LINK_KEYWORD, None)
+        if batch and next_link:
             return Pagination(parent=self, data=messages, constructor=self.message_constructor,
-                              next_link=data.get(NEXT_LINK_KEYWORD, None), limit=limit)
+                              next_link=next_link, limit=limit)
         else:
             return messages
 
@@ -387,7 +390,7 @@ class Folder(ApiComponent):
         draft_message = self.message_constructor(parent=self, is_draft=True)
 
         if self.root:
-            draft_message.folder_id = WellKnowFolderNames.DRAFTS.value
+            draft_message.folder_id = OutlookWellKnowFolderNames.DRAFTS.value
         else:
             draft_message.folder_id = self.folder_id
 
@@ -401,24 +404,24 @@ class MailBox(Folder):
 
     def inbox_folder(self):
         """ Returns this mailbox Inbox """
-        return Folder(parent=self, name='Inbox', folder_id=WellKnowFolderNames.INBOX.value)
+        return Folder(parent=self, name='Inbox', folder_id=OutlookWellKnowFolderNames.INBOX.value)
 
     def junk_folder(self):
         """ Returns this mailbox Junk Folder """
-        return Folder(parent=self, name='Junk', folder_id=WellKnowFolderNames.JUNK.value)
+        return Folder(parent=self, name='Junk', folder_id=OutlookWellKnowFolderNames.JUNK.value)
 
     def deleted_folder(self):
         """ Returns this mailbox DeletedItems Folder """
-        return Folder(parent=self, name='DeletedItems', folder_id=WellKnowFolderNames.DELETED.value)
+        return Folder(parent=self, name='DeletedItems', folder_id=OutlookWellKnowFolderNames.DELETED.value)
 
     def drafts_folder(self):
         """ Returns this mailbox Drafs Folder """
-        return Folder(parent=self, name='Drafs', folder_id=WellKnowFolderNames.DRAFTS.value)
+        return Folder(parent=self, name='Drafs', folder_id=OutlookWellKnowFolderNames.DRAFTS.value)
 
     def sent_folder(self):
         """ Returns this mailbox SentItems Folder """
-        return Folder(parent=self, name='SentItems', folder_id=WellKnowFolderNames.SENT.value)
+        return Folder(parent=self, name='SentItems', folder_id=OutlookWellKnowFolderNames.SENT.value)
 
     def outbox_folder(self):
         """ Returns this mailbox Outbox Folder """
-        return Folder(parent=self, name='Outbox', folder_id=WellKnowFolderNames.OUTBOX.value)
+        return Folder(parent=self, name='Outbox', folder_id=OutlookWellKnowFolderNames.OUTBOX.value)

@@ -4,7 +4,7 @@ from dateutil.parser import parse
 import pytz
 from bs4 import BeautifulSoup as bs
 
-from O365.utils import WellKnowFolderNames, ApiComponent, Attachments, Attachment, AttachableMixin, ImportanceLevel, TrackerSet
+from pyo365.utils import OutlookWellKnowFolderNames, ApiComponent, Attachments, Attachment, AttachableMixin, ImportanceLevel, TrackerSet
 
 log = logging.getLogger(__name__)
 
@@ -22,13 +22,13 @@ class Recipient:
         return bool(self.address)
 
     def __str__(self):
+        return self.__repr__()
+
+    def __repr__(self):
         if self.name:
             return '{} ({})'.format(self.name, self.address)
         else:
             return self.address
-
-    def __repr__(self):
-        return self.__str__()
 
     def _track_changes(self):
         """ Update the track_changes on the parent to reflect a needed update on this field """
@@ -81,10 +81,10 @@ class Recipients:
         return len(self._recipients)
 
     def __str__(self):
-        return 'Recipients count: {}'.format(len(self._recipients))
+        return self.__repr__()
 
     def __repr__(self):
-        return self.__str__()
+        return 'Recipients count: {}'.format(len(self._recipients))
 
     def _track_changes(self):
         """ Update the track_changes on the parent to reflect a needed update on this field """
@@ -237,10 +237,10 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         self._track_changes = TrackerSet(casing=cc)  # internal to know which properties need to be updated on the server
         self.object_id = cloud_data.get(cc('id'), None)
 
-        self.__created = cloud_data.get(cc('createdDateTime'), cloud_data.get(cc('dateTimeCreated'), None))  # fallback to office365 v1.0
-        self.__modified = cloud_data.get(cc('lastModifiedDateTime'), cloud_data.get(cc('dateTimeModified'), None))  # fallback to office365 v1.0
-        self.__received = cloud_data.get(cc('receivedDateTime'), cloud_data.get(cc('dateTimeReceived'), None))  # fallback to office365 v1.0
-        self.__sent = cloud_data.get(cc('sentDateTime'), cloud_data.get(cc('dateTimeSent'), None))  # fallback to office365 v1.0
+        self.__created = cloud_data.get(cc('createdDateTime'), None)
+        self.__modified = cloud_data.get(cc('lastModifiedDateTime'), None)
+        self.__received = cloud_data.get(cc('receivedDateTime'), None)
+        self.__sent = cloud_data.get(cc('sentDateTime'), None)
 
         local_tz = self.protocol.timezone
         self.__created = parse(self.__created).astimezone(local_tz) if self.__created else None
@@ -262,7 +262,7 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         self.__bcc = self._recipients_from_cloud(cloud_data.get(cc('bccRecipients'), []), field='bccRecipients')
         self.__reply_to = self._recipients_from_cloud(cloud_data.get(cc('replyTo'), []), field='replyTo')
         self.__categories = cloud_data.get(cc('categories'), [])
-        self.__importance = ImportanceLevel((cloud_data.get(cc('importance'), 'normal') or 'normal').lower())   # lower because of office365 v1.0
+        self.__importance = ImportanceLevel((cloud_data.get(cc('importance'), 'normal') or 'normal').lower())  # lower because of office365 v1.0
         self.__is_read = cloud_data.get(cc('isRead'), None)
         self.__is_draft = cloud_data.get(cc('isDraft'), kwargs.get('is_draft', True))  # a message is a draft by default
         self.conversation_id = cloud_data.get(cc('conversationId'), None)
@@ -390,7 +390,7 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
 
     @importance.setter
     def importance(self, value):
-        self.__importance = value if isinstance(value, ImportanceLevel) else ImportanceLevel(value)
+        self.__importance = value if isinstance(value, ImportanceLevel) else ImportanceLevel(value.lower())
         self._track_changes.add('importance')
 
     def to_api_data(self, restrict_keys=None):
@@ -636,7 +636,7 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         # Everything received from the cloud must be passed with self._cloud_data_key
         return self.__class__(parent=self, **{self._cloud_data_key: message})
 
-    def save_draft(self, target_folder=WellKnowFolderNames.DRAFTS):
+    def save_draft(self, target_folder=OutlookWellKnowFolderNames.DRAFTS):
         """ Save this message as a draft on the cloud """
 
         if self.object_id:
@@ -653,12 +653,12 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
             if not self.__is_draft:
                 raise RuntimeError('Only draft messages can be saved as drafts')
 
-            target_folder = target_folder or WellKnowFolderNames.DRAFTS
-            if isinstance(target_folder, WellKnowFolderNames):
+            target_folder = target_folder or OutlookWellKnowFolderNames.DRAFTS
+            if isinstance(target_folder, OutlookWellKnowFolderNames):
                 target_folder = target_folder.value
             elif not isinstance(target_folder, str):
                 # a Folder instance
-                target_folder = getattr(target_folder, 'folder_id', WellKnowFolderNames.DRAFTS.value)
+                target_folder = getattr(target_folder, 'folder_id', OutlookWellKnowFolderNames.DRAFTS.value)
 
             url = self.build_url(self._endpoints.get('create_draft_folder').format(id=target_folder))
             method = self.con.post
@@ -713,7 +713,7 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
             return bs(self.body, 'html.parser')
 
     def __str__(self):
-        return 'Subject: {}'.format(self.subject)
+        return self.__repr__()
 
     def __repr__(self):
-        return self.__str__()
+        return 'Subject: {}'.format(self.subject)
