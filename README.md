@@ -6,7 +6,7 @@ This project is inspired on the super work done by [Toben Archer](https://github
 The oauth part is based on the work done by [Royce Melborn](https://github.com/roycem90) which is now integrated with the original project.
 
 I just want to make this project different in almost every sense, and make it also more pythonic.
-So I ended up rewriting the hole project from scratch.
+So I ended up rewriting the whole project from scratch.
 
 The result is a package that provides a lot of the Microsoft Graph and Office 365 API capabilities.
 
