@@ -25,7 +25,6 @@ m.body = "George Best quote: I've stopped drinking, but only while I'm asleep."
 m.send()
 ```
 
->To use it: **pip install pyo365**
 
 **Python 3.4 is the minimum required**... I was very tempted to just go for 3.6 and use f-strings. Those are fantastic!
 
@@ -44,6 +43,7 @@ What follows is kind of a wiki... but you will get more insights by looking at t
 
 ## Table of contents
 
+- [Install](#install)
 - [Protocols](#protocols)
 - [Authentication](#authentication)
 - [Account Class and Modularity](#account)
@@ -54,6 +54,18 @@ What follows is kind of a wiki... but you will get more insights by looking at t
 - [Sharepoint](#sharepoint)
 - [Utils](#utils)
 
+
+## Install
+pyo365 is available on pypi.org. Simply run `pip install pyo365` to install it.
+
+Project dependencies installed by pip:
+ - requests
+ - requests-oauthlib
+ - beatifulsoup4
+ - stringcase
+ - python-dateutil
+ - tzlocal
+ - pytz
 
 ## Protocols
 Protocols handles the aspects of comunications between different APIs.

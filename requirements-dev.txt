@@ -5,3 +5,5 @@ requests==2.20.0
 requests-oauthlib==1.0.0
 stringcase==1.2.0
 tzlocal==1.5.1
+Click==7.0
+pytest==3.9.1
