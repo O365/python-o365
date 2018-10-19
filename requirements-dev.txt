@@ -7,3 +7,5 @@ stringcase==1.2.0
 tzlocal==1.5.1
 Click==7.0
 pytest==3.9.1
+twine==1.12.1
+wheel==0.32.1

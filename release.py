@@ -12,19 +12,23 @@ import click
 
 
 DIST_PATH = 'dist'
+DIST_PATH_DELETE = 'dist_delete'
+CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 
 
-@click.group()
+@click.group(context_settings=CONTEXT_SETTINGS)
 def cli():
     pass
 
 
 @cli.command()
 def build():
+    """ Builds the distribution files: wheels and source. """
     dist_path = Path(DIST_PATH)
     if dist_path.exists() and list(dist_path.glob('*')):
         if click.confirm('{} is not empty - delete contents?'.format(dist_path)):
-            shutil.rmtree(dist_path)
+            dist_path.rename(DIST_PATH_DELETE)
+            shutil.rmtree(Path(DIST_PATH_DELETE))
             dist_path.mkdir()
         else:
             click.echo('Aborting')
@@ -38,14 +42,19 @@ def build():
 @cli.command()
 @click.option('--release/--no-release', default=False)
 def upload(release):
+    """ Uploads distribuition files to pypi or pypitest. """
+    dist_path = Path(DIST_PATH)
+    if not dist_path.exists() or not list(dist_path.glob('*')):
+        print("No distribution files found. Please run 'build' command first")
+        return
+
     if release:
-        repository = 'pypi'
+        args = ['twine', 'upload', 'dist/*']
     else:
-        repository = 'pypitest'
+        repository = 'https://test.pypi.org/legacy/'
+        args = ['twine', 'upload', '--repository-url', repository, 'dist/*']
 
     env = os.environ.copy()
-
-    args = ['twine', 'upload', '-r', repository, 'dist/*']
 
     p = subprocess.Popen(args, env=env)
     p.wait()
@@ -53,7 +62,12 @@ def upload(release):
 
 @cli.command()
 def check():
-    """ Checks the long description """
+    """ Checks the long description. """
+    dist_path = Path(DIST_PATH)
+    if not dist_path.exists() or not list(dist_path.glob('*')):
+        print("No distribution files found. Please run 'build' command first")
+        return
+
     subprocess.check_call(['twine', 'check', 'dist/*'])
 
 
