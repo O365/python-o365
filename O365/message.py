@@ -262,11 +262,9 @@ class Message(object):
         """
 
         try:
-            data = {'message': {'body': {}}}
+            data = {'message': {}}
             data['message']['subject'] = self.json['subject']
-            data['message']['body']['content'] = self.json['body']['content']
-            data['message']['body']['contentType'] = self.json['body'][
-                'contentType']
+            data['message']['body'] = self.json['body']
             data['message']['toRecipients'] = self.json['toRecipients']
             data['message']['ccRecipients'] = self.json['ccRecipients']
             data['message']['bccRecipients'] = self.json['bccRecipients']

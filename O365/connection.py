@@ -23,14 +23,15 @@ class MicroDict(dict):
         result = super(MicroDict, self).get(key[:1].lower() + key[1:], None)
         if result is None:
             result = super(MicroDict, self).get(key[:1].upper() + key[1:])
-        if type(result) is dict:
-            result = MicroDict(result)
         return result
 
     def __setitem__(self, key, value):
         if Connection().api_version == "1.0":
             key = key[:1].upper() + key[1:]
-        super(MicroDict, self).__setitem__(key, value)
+        if type(value) is dict:
+            super(MicroDict, self).__setitem__(key, MicroDict(value))
+        else:
+            super(MicroDict, self).__setitem__(key, value)
 
     def __contains__(self, key):
         result = super(MicroDict, self).__contains__(key[:1].lower() + key[1:])
@@ -281,7 +282,15 @@ class Connection(with_metaclass(Singleton)):
             con_params['headers'] = connection.default_headers
         con_params.update(kwargs)
 
-        log.debug('Requesting URL: {}'.format(request_url))
+        log.debug('Processing Request\n'
+                  '\tMethod: {}\n'
+                  '\tURL: {}\n'
+                  '\tParams: {}\n'
+                  '\tRequest Body: {}'
+                  .format(method,
+                          request_url,
+                          {i: con_params[i] for i in con_params if i != 'data'},
+                          con_params.get('data', None)))
 
         if connection.api_version == '1.0':
             con_params['auth'] = connection.auth
