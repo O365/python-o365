@@ -86,7 +86,7 @@ def fluent(func):
 
     @wraps(func)
     def inner(self, *args, **kwargs):
-        func(self, *args, **kwargs)
+        return func(self, *args, **kwargs)
 
     return inner
 

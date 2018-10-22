@@ -41,7 +41,7 @@ class Message(object):
             self.json = json_data
 
         else:
-            self.json = MicroDict({'message': {'body': {}},
+            self.json = MicroDict({'body': {},
                                    'toRecipients': [], 'ccRecipients': [],
                                    'bccRecipients': []})
 
