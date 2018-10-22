@@ -37,7 +37,7 @@ requires = [
 
 setup(
     name='pyo365',
-    version='0.1.0',
+    version='0.1.1',
     # packages=['pyo365', 'pyo365.utils'],
     packages=find_packages(),
     url=' https://github.com/janscas/pyo365',

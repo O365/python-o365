@@ -48,7 +48,8 @@ def build(force):
 @cli.command()
 @click.option('--release/--no-release', default=False)
 @click.option('--rebuild/--no-rebuild', default=True)
-def upload(release, rebuild):
+@click.pass_context
+def upload(ctx, release, rebuild):
     """ Uploads distribuition files to pypi or pypitest. """
     dist_path = Path(DIST_PATH)
     if rebuild is False:
@@ -56,7 +57,7 @@ def upload(release, rebuild):
             print("No distribution files found. Please run 'build' command first")
             return
     else:
-        build(force=True)
+        ctx.invoke(build, force=True)
 
     if release:
         args = ['twine', 'upload', 'dist/*']
