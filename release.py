@@ -22,17 +22,23 @@ def cli():
 
 
 @cli.command()
-def build():
+@click.option('--force/--no-force', default=False)
+def build(force):
     """ Builds the distribution files: wheels and source. """
     dist_path = Path(DIST_PATH)
     if dist_path.exists() and list(dist_path.glob('*')):
-        if click.confirm('{} is not empty - delete contents?'.format(dist_path)):
+        if force:
             dist_path.rename(DIST_PATH_DELETE)
             shutil.rmtree(Path(DIST_PATH_DELETE))
             dist_path.mkdir()
         else:
-            click.echo('Aborting')
-            sys.exit(1)
+            if click.confirm('{} is not empty - delete contents?'.format(dist_path)):
+                dist_path.rename(DIST_PATH_DELETE)
+                shutil.rmtree(Path(DIST_PATH_DELETE))
+                dist_path.mkdir()
+            else:
+                click.echo('Aborting')
+                sys.exit(1)
 
     subprocess.check_call(['python', 'setup.py', 'bdist_wheel'])
     subprocess.check_call(['python', 'setup.py', 'sdist',
@@ -41,12 +47,16 @@ def build():
 
 @cli.command()
 @click.option('--release/--no-release', default=False)
-def upload(release):
+@click.option('--rebuild/--no-rebuild', default=True)
+def upload(release, rebuild):
     """ Uploads distribuition files to pypi or pypitest. """
     dist_path = Path(DIST_PATH)
-    if not dist_path.exists() or not list(dist_path.glob('*')):
-        print("No distribution files found. Please run 'build' command first")
-        return
+    if rebuild is False:
+        if not dist_path.exists() or not list(dist_path.glob('*')):
+            print("No distribution files found. Please run 'build' command first")
+            return
+    else:
+        build(force=True)
 
     if release:
         args = ['twine', 'upload', 'dist/*']

@@ -21,6 +21,6 @@ from .connection import Connection, Protocol, MSGraphProtocol, MSOffice365Protoc
 from .mailbox import MailBox
 from .message import Message, MessageAttachment, Recipient
 from .address_book import AddressBook, Contact, RecipientType
-from .calendar import Schedule, Calendar, Event, EventResponse, AttendeeType, EventSensitivity, EventShowAs, CalendarColors
+from .calendar import Schedule, Calendar, Event, EventResponse, AttendeeType, EventSensitivity, EventShowAs, CalendarColors, EventAttachment
 from .drive import Storage, Drive, Folder, File, Image, Photo
 from .utils import OneDriveWellKnowFolderNames, OutlookWellKnowFolderNames, ImportanceLevel

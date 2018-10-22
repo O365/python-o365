@@ -4,7 +4,7 @@ from dateutil.parser import parse
 import pytz
 from bs4 import BeautifulSoup as bs
 
-from pyo365.utils import OutlookWellKnowFolderNames, ApiComponent, Attachments, Attachment, AttachableMixin, ImportanceLevel, TrackerSet
+from pyo365.utils import OutlookWellKnowFolderNames, ApiComponent, BaseAttachments, BaseAttachment, AttachableMixin, ImportanceLevel, TrackerSet
 
 log = logging.getLogger(__name__)
 
@@ -62,8 +62,10 @@ class Recipients:
         self._parent = parent
         self._field = field
         self._recipients = []
+        self.untrack = True
         if recipients:
             self.add(recipients)
+        self.untrack = False
 
     def __iter__(self):
         return iter(self._recipients)
@@ -88,7 +90,7 @@ class Recipients:
 
     def _track_changes(self):
         """ Update the track_changes on the parent to reflect a needed update on this field """
-        if self._field and getattr(self._parent, '_track_changes', None) is not None:
+        if self._field and getattr(self._parent, '_track_changes', None) is not None and self.untrack is False:
             self._parent._track_changes.add(self._field)
 
     def clear(self):
@@ -139,7 +141,7 @@ class Recipients:
             return None
 
 
-class MessageAttachment(Attachment):
+class MessageAttachment(BaseAttachment):
 
     _endpoints = {
         'attach': '/messages/{id}/attachments',
@@ -147,25 +149,13 @@ class MessageAttachment(Attachment):
     }
 
 
-class MessageAttachments(Attachments):
+class MessageAttachments(BaseAttachments):
 
     _endpoints = {
         'attachments': '/messages/{id}/attachments',
         'attachment': '/messages/{id}/attachments/{ida}'
     }
     _attachment_constructor = MessageAttachment
-
-    def get_attachement(self, attachment):
-
-        # TODO: testing ...
-
-        url = self.build_url(self._endpoints.get('attachment').format(id=self._parent.object_id, ida=attachment.attachment_id))
-
-        response = self._parent.con.get(url, params={'$expand': 'microsoft.graph.itemAttachment/Item'})
-
-        attachment = response.json()
-
-        return attachment
 
 
 class HandleRecipientsMixin:
@@ -267,6 +257,10 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         self.__is_draft = cloud_data.get(cc('isDraft'), kwargs.get('is_draft', True))  # a message is a draft by default
         self.conversation_id = cloud_data.get(cc('conversationId'), None)
         self.folder_id = cloud_data.get(cc('parentFolderId'), None)
+
+    def _clear_tracker(self):
+        # reset the tracked changes. Usually after a server update
+        self._track_changes = TrackerSet(casing=self._cc)
 
     @property
     def is_read(self):
@@ -640,7 +634,7 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         """ Save this message as a draft on the cloud """
 
         if self.object_id:
-            # update message
+            # update message. Attachments are NOT included nor saved.
             if not self.__is_draft:
                 raise RuntimeError('Only draft messages can be updated')
             if not self._track_changes:
@@ -648,8 +642,11 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
             url = self.build_url(self._endpoints.get('get_message').format(id=self.object_id))
             method = self.con.patch
             data = self.to_api_data(restrict_keys=self._track_changes)
+
+            data.pop(self._cc('attachments'), None)  # attachments are handled by the next method call
+            self.attachments._update_attachments_to_cloud()
         else:
-            # new message
+            # new message. Attachments are included and saved.
             if not self.__is_draft:
                 raise RuntimeError('Only draft messages can be saved as drafts')
 
@@ -663,6 +660,10 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
             url = self.build_url(self._endpoints.get('create_draft_folder').format(id=target_folder))
             method = self.con.post
             data = self.to_api_data()
+
+        self._clear_tracker()  # reset the tracked changes as they are all saved.
+        if not data:
+            return True
 
         try:
             log.debug('Saving message properties: {}'.format(data.keys()))

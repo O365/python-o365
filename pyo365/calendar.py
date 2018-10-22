@@ -6,7 +6,7 @@ import pytz
 import calendar
 from bs4 import BeautifulSoup as bs
 
-from pyo365.utils import Pagination, NEXT_LINK_KEYWORD, ApiComponent, Attachments, Attachment, \
+from pyo365.utils import Pagination, NEXT_LINK_KEYWORD, ApiComponent, BaseAttachments, BaseAttachment, \
     AttachableMixin, ImportanceLevel, TrackerSet
 from pyo365.message import HandleRecipientsMixin
 
@@ -59,12 +59,14 @@ class CalendarColors(Enum):
     Auto = -1
 
 
-class EventAttachment(Attachment):
+class EventAttachment(BaseAttachment):
     _endpoints = {'attach': '/events/{id}/attachments'}
 
 
-class EventAttachments(Attachments):
+class EventAttachments(BaseAttachments):
     _endpoints = {'attachments': '/events/{id}/attachments'}
+
+    _attachment_constructor = EventAttachment
 
 
 class DailyEventFrequency:

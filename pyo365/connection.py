@@ -454,7 +454,7 @@ class Connection:
         elif method in ['post', 'put', 'patch']:
             if 'headers' not in kwargs:
                 kwargs['headers'] = {}
-            if kwargs['headers'] and kwargs['headers'].get('Content-type') is None:
+            if kwargs.get('headers') is not None and kwargs['headers'].get('Content-type') is None:
                 kwargs['headers']['Content-type'] = 'application/json'
             if 'data' in kwargs and kwargs['headers'].get('Content-type') == 'application/json':
                 kwargs['data'] = json.dumps(kwargs['data'])  # autoconvert to json

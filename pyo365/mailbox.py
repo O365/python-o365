@@ -17,7 +17,8 @@ class Folder(ApiComponent):
         'root_messages': '/messages',
         'folder_messages': '/mailFolders/{id}/messages',
         'copy_folder': '/mailFolders/{id}/copy',
-        'move_folder': '/mailFolders/{id}/move'
+        'move_folder': '/mailFolders/{id}/move',
+        'delete_message': '/messages/{id}',
     }
     message_constructor = Message
 
@@ -98,6 +99,12 @@ class Folder(ApiComponent):
                               next_link=next_link, limit=limit)
         else:
             return folders
+
+    def get_message(self, query=None, *, download_attachments=False):
+        """ A shorcut to get_messages with limit=1 """
+        messages = self.get_messages(limit=1, query=query, download_attachments=download_attachments)
+
+        return messages[0] if messages else None
 
     def get_messages(self, limit=25, *, query=None, order_by=None, batch=None, download_attachments=False):
         """
@@ -395,6 +402,28 @@ class Folder(ApiComponent):
             draft_message.folder_id = self.folder_id
 
         return draft_message
+
+    def delete_message(self, message):
+        """ Deletes a stored message by it's id """
+
+        message_id = message.object_id if isinstance(message, Message) else message
+
+        if message_id is None:
+            raise RuntimeError('Provide a valid Message or a message id')
+
+        url = self.build_url(self._endpoints.get('delete_message').format(id=message_id))
+
+        try:
+            response = self.con.delete(url)
+        except Exception as e:
+            log.error('Message (id: {}) could not be deleted. Error: {}'.format(message_id, str(e)))
+            return False
+
+        if response.status_code != 204:
+            log.debug('Message (id: {}) could not be deleted. Reason: {}'.format(message_id, response.reason))
+            return False
+
+        return True
 
 
 class MailBox(Folder):

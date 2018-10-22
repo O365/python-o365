@@ -75,7 +75,7 @@ class ApiComponent:
             raise ValueError('Protocol not provided to Api Component')
         self.main_resource = self._parse_resource(main_resource or protocol.default_resource)
         self._base_url = '{}{}'.format(self.protocol.service_url, self.main_resource)
-        super().__init__(**kwargs)
+        super().__init__()
 
     @staticmethod
     def _parse_resource(resource):
