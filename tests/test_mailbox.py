@@ -1,4 +1,3 @@
-from pathlib import Path
 from tests.config import CLIENT_ID, CLIENT_SECRET
 from pyo365 import Account
 
@@ -9,102 +8,91 @@ class TestMailBox:
         credentials = (CLIENT_ID, CLIENT_SECRET)
         self.account = Account(credentials)
         self.mailbox = self.account.mailbox()
-        self.inbox = self.mailbox.inbox_folder()
-        self.drafts = self.mailbox.drafts_folder()
-        self.test_msg_subject1 = 'Test Msg 1548lop102'
-        self.test_msg_subject2 = 'Test Msg 1548lop103'
+        self.folder_name = 'Test Drafts Subfolder'
 
     def teardown_class(self):
         pass
 
-    def test_get_inbox_mails(self):
-        messages = self.inbox.get_messages(5)
+    def test_get_mailbox_folders(self):
+        folders = self.mailbox.get_folders(limit=5)
 
-        assert len(messages) != 0
+        assert len(folders) > 0
 
-    def test_new_email_draft(self):
-        msg = self.account.new_message()
-        msg.subject = self.test_msg_subject1
-        msg.body = 'A message test'
-        msg.save_draft()
+    def test_create_child_folder(self):
+        drafts = self.mailbox.drafts_folder()
 
-        message = self.drafts.get_message(self.drafts.q('subject').equals(self.test_msg_subject1))
+        new_folder = drafts.create_child_folder(self.folder_name)
 
-        assert message is not None
+        assert new_folder is not None
 
-    def test_update_email(self):
-        q = self.drafts.q('subject').equals(self.test_msg_subject1)
+    def test_get_folder_by_name(self):
+        drafts = self.mailbox.drafts_folder()
 
-        message = self.drafts.get_message(q)
-        message2 = None
+        q = self.mailbox.q('display_name').equals(self.folder_name)
 
-        if message:
-            message.to.add('test@example.com')
-            saved = message.save_draft()
+        folder = drafts.get_folder(folder_name=self.folder_name)
 
-            message2 = self.drafts.get_message(q)
+        assert folder is not None
 
-        assert message and saved and message2 and message2.to and message2.to[0].address == 'test@example.com'
+    def test_get_parent_folder(self):
+        new_folder = self.mailbox.drafts_folder().get_folder(folder_name=self.folder_name)
 
-    def test_add_attachment(self):
-        q = self.drafts.q('subject').equals(self.test_msg_subject1)
+        if new_folder:
+            parent_folder = new_folder.get_parent_folder()
 
-        message = self.drafts.get_message(q)
-        message2 = None
+        assert new_folder and parent_folder is not None
 
-        if message:
-            dummy_file = Path('dummy.txt')
-            with dummy_file.open(mode='w') as file:
-                file.write('Test file')
-            message.attachments.add(Path() / 'adjuntar.xls')  # add this file as an attachment
-            saved = message.save_draft()
-            dummy_file.unlink()  # delete dummy file
+    def test_get_child_folders(self):
+        new_folder = self.mailbox.drafts_folder().get_folder(folder_name=self.folder_name)
 
-            message2 = self.drafts.get_message(q)
+        if new_folder:
+            parent_folder = new_folder.get_parent_folder()
+            child_folders = parent_folder.get_folders(limit=2)
 
-        assert message and saved and message2 and message2.has_attachments
+        assert new_folder and parent_folder and len(child_folders) >= 1 and any(folder.name == self.folder_name for folder in child_folders)
 
-    def test_remove_attachment(self):
-        q = self.drafts.q('subject').equals(self.test_msg_subject1)
+    def test_move_folder(self):
+        new_folder = self.mailbox.drafts_folder().get_folder(folder_name=self.folder_name)
+        sent_folder = self.mailbox.sent_folder()
+        if new_folder:
+            moved = new_folder.move_folder(sent_folder)
 
-        message = self.drafts.get_message(q, download_attachments=True)
-        message2 = None
+        assert new_folder and moved
 
-        if message:
-            message.attachments.clear()
-            saved = message.save_draft()
+    def test_copy_folder(self):
+        new_folder = self.mailbox.sent_folder().get_folder(folder_name=self.folder_name)  # new_folder is in sent folder now
+        drafts_folder = self.mailbox.drafts_folder()
 
-            message2 = self.drafts.get_message(q)
+        if new_folder:
+            copied_folder = new_folder.copy_folder(drafts_folder)
+            deleted = copied_folder.delete()  # delete this copy early on
 
-        assert message and saved and message2 and not message2.has_attachments
+        assert new_folder and copied_folder is not None and deleted
 
-    def test_delete_email(self):
-        q = self.drafts.q('subject').equals(self.test_msg_subject1)
+    def test_refresh_folder(self):
+        # new_folder = self.mailbox.sent_folder().get_folder(folder_name=self.folder_name)  # new_folder is in sent folder now
 
-        message = self.drafts.get_message(q)
+        sent_folder = self.mailbox.sent_folder()
 
-        if message:
-            deleted = message.delete()
+        old_id = sent_folder.folder_id
+        refreshed = sent_folder.refresh_folder()
+        new_id = sent_folder.folder_id
 
-        message = self.drafts.get_message(q)
+        assert refreshed and old_id != new_id
 
-        assert deleted and message is None
+    def test_update_folder_name(self):
+        new_folder = self.mailbox.sent_folder().get_folder(folder_name=self.folder_name)  # new_folder is in sent folder now
 
-    def test_reply(self):
-        message = self.inbox.get_message()  # get first message in inbox
+        if new_folder:
+            old_name = new_folder.name
+            updated = new_folder.update_folder_name(self.folder_name + ' new name!')
 
-        reply = None
-        reply_text = 'New reply on top of the message trail.'
+        assert new_folder and updated and old_name != new_folder.name
 
-        if message:
-            reply = message.reply()
-            reply.body = reply_text
-            reply.subject = self.test_msg_subject2
-            saved = reply.save_draft()
+    def test_delete_folder(self):
+        new_folder = self.mailbox.sent_folder().get_folder(folder_name=self.folder_name)  # new_folder is in sent folder now
 
-        # delete reply:
-        deleted = reply.delete()
+        if new_folder:
+            deleted = new_folder.delete()
 
-        assert message and reply and reply.body != reply_text and saved and deleted
-
-
+        assert new_folder and deleted

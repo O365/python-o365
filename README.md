@@ -312,7 +312,7 @@ child_folders = archive.get_folders(25) # get at most 25 child folders of 'archi
 for folder in child_folders:
     print(folder.name, folder.parent_id)
 
-archive.create_child_folder('George Best Quotes')
+new_folder = archive.create_child_folder('George Best Quotes')
 ```
 
 #### Message

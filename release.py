@@ -27,18 +27,13 @@ def build(force):
     """ Builds the distribution files: wheels and source. """
     dist_path = Path(DIST_PATH)
     if dist_path.exists() and list(dist_path.glob('*')):
-        if force:
+        if force or click.confirm('{} is not empty - delete contents?'.format(dist_path)):
             dist_path.rename(DIST_PATH_DELETE)
             shutil.rmtree(Path(DIST_PATH_DELETE))
             dist_path.mkdir()
         else:
-            if click.confirm('{} is not empty - delete contents?'.format(dist_path)):
-                dist_path.rename(DIST_PATH_DELETE)
-                shutil.rmtree(Path(DIST_PATH_DELETE))
-                dist_path.mkdir()
-            else:
-                click.echo('Aborting')
-                sys.exit(1)
+            click.echo('Aborting')
+            sys.exit(1)
 
     subprocess.check_call(['python', 'setup.py', 'bdist_wheel'])
     subprocess.check_call(['python', 'setup.py', 'sdist',

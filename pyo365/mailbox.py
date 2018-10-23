@@ -92,10 +92,11 @@ class Folder(ApiComponent):
         data = response.json()
 
         # Everything received from the cloud must be passed with self._cloud_data_key
-        folders = [Folder(parent=self, **{self._cloud_data_key: folder}) for folder in data.get('value', [])]
+        self_class = getattr(self, 'folder_constructor', type(self))
+        folders = [self_class(parent=self, **{self._cloud_data_key: folder}) for folder in data.get('value', [])]
         next_link = data.get(NEXT_LINK_KEYWORD, None)
         if batch and next_link:
-            return Pagination(parent=self, data=folders, constructor=self.__class__,
+            return Pagination(parent=self, data=folders, constructor=self_class,
                               next_link=next_link, limit=limit)
         else:
             return folders
@@ -170,7 +171,6 @@ class Folder(ApiComponent):
         Creates a new child folder
         :return the new Folder Object or None
         """
-
         if not folder_name:
             return None
 
@@ -191,10 +191,11 @@ class Folder(ApiComponent):
 
         folder = response.json()
 
+        self_class = getattr(self, 'folder_constructor', type(self))
         # Everything received from the cloud must be passed with self._cloud_data_key
-        return Folder(parent=self, **{self._cloud_data_key: folder})
+        return self_class(parent=self, **{self._cloud_data_key: folder})
 
-    def get_folder(self, folder_id=None, folder_name=None):
+    def get_folder(self, *, folder_id=None, folder_name=None):
         """
         Returns a folder by it's id or name
         :param folder_id: the folder_id to be retrieved. Can be any folder Id (child or not)
@@ -236,9 +237,10 @@ class Folder(ApiComponent):
             if folder is None:
                 return None
 
+        self_class = getattr(self, 'folder_constructor', type(self))
         # Everything received from the cloud must be passed with self._cloud_data_key
         # we don't pass parent, as this folder may not be a child of self.
-        return Folder(con=self.con, protocol=self.protocol, main_resource=self.main_resource, **{self._cloud_data_key: folder})
+        return self_class(con=self.con, protocol=self.protocol, main_resource=self.main_resource, **{self._cloud_data_key: folder})
 
     def refresh_folder(self, update_parent_if_changed=False):
         """
@@ -250,7 +252,7 @@ class Folder(ApiComponent):
         if self.root or folder_id is None:
             return False
 
-        folder = self.get_folder(folder_id)
+        folder = self.get_folder(folder_id=folder_id)
         if folder is None:
             return False
 
@@ -274,7 +276,7 @@ class Folder(ApiComponent):
             return self.parent
 
         if self.parent_id:
-            self.parent = self.get_folder(self.parent_id)
+            self.parent = self.get_folder(folder_id=self.parent_id)
         return self.parent
 
     def update_folder_name(self, name, update_folder_data=True):
@@ -332,12 +334,13 @@ class Folder(ApiComponent):
         self.folder_id = None
         return True
 
-    def copy_folder(self, to_folder_id):
+    def copy_folder(self, to_folder):
         """
         Copy this folder and it's contents to into another folder
-        :param to_folder_id: the destination folder_id
+        :param to_folder: the destination Folder instance or a string folder_id
         :return The copied folder object
         """
+        to_folder_id = to_folder.folder_id if isinstance(to_folder, Folder) else to_folder
 
         if self.root or not self.folder_id or not to_folder_id:
             return None
@@ -356,15 +359,18 @@ class Folder(ApiComponent):
 
         folder = response.json()
 
+        self_class = getattr(self, 'folder_constructor', type(self))
         # Everything received from the cloud must be passed with self._cloud_data_key
-        return Folder(con=self.con, main_resource=self.main_resource, **{self._cloud_data_key: folder})
+        return self_class(con=self.con, main_resource=self.main_resource, **{self._cloud_data_key: folder})
 
-    def move_folder(self, to_folder_id, update_parent_if_changed=False):
+    def move_folder(self, to_folder, *, update_parent_if_changed=False):
         """
         Move this folder to another folder
-        :param to_folder_id: the destination folder_id
+        :param to_folder: the destination Folder instance or a string folder_id
         :param update_parent_if_changed: updates self.parent with the new parent Folder if changed
         """
+        to_folder_id = to_folder.folder_id if isinstance(to_folder, Folder) else to_folder
+
         if self.root or not self.folder_id or not to_folder_id:
             return False
 
@@ -376,7 +382,7 @@ class Folder(ApiComponent):
             log.error('Error moving folder {}. Error: {}'.format(self.name, str(e)))
             return False
 
-        if response.status_code != 200:
+        if response.status_code not in (200, 201):  # sometimes this api call retuns a 201 code (not mentioned in the docs)
             log.debug('Moving folder Request failed: {}'.format(response.reason))
             return False
 
@@ -428,29 +434,31 @@ class Folder(ApiComponent):
 
 class MailBox(Folder):
 
+    folder_constructor = Folder
+
     def __init__(self, *, parent=None, con=None, **kwargs):
         super().__init__(parent=parent, con=con, root=True, **kwargs)
 
     def inbox_folder(self):
         """ Returns this mailbox Inbox """
-        return Folder(parent=self, name='Inbox', folder_id=OutlookWellKnowFolderNames.INBOX.value)
+        return self.folder_constructor(parent=self, name='Inbox', folder_id=OutlookWellKnowFolderNames.INBOX.value)
 
     def junk_folder(self):
         """ Returns this mailbox Junk Folder """
-        return Folder(parent=self, name='Junk', folder_id=OutlookWellKnowFolderNames.JUNK.value)
+        return self.folder_constructor(parent=self, name='Junk', folder_id=OutlookWellKnowFolderNames.JUNK.value)
 
     def deleted_folder(self):
         """ Returns this mailbox DeletedItems Folder """
-        return Folder(parent=self, name='DeletedItems', folder_id=OutlookWellKnowFolderNames.DELETED.value)
+        return self.folder_constructor(parent=self, name='DeletedItems', folder_id=OutlookWellKnowFolderNames.DELETED.value)
 
     def drafts_folder(self):
         """ Returns this mailbox Drafs Folder """
-        return Folder(parent=self, name='Drafs', folder_id=OutlookWellKnowFolderNames.DRAFTS.value)
+        return self.folder_constructor(parent=self, name='Drafs', folder_id=OutlookWellKnowFolderNames.DRAFTS.value)
 
     def sent_folder(self):
         """ Returns this mailbox SentItems Folder """
-        return Folder(parent=self, name='SentItems', folder_id=OutlookWellKnowFolderNames.SENT.value)
+        return self.folder_constructor(parent=self, name='SentItems', folder_id=OutlookWellKnowFolderNames.SENT.value)
 
     def outbox_folder(self):
         """ Returns this mailbox Outbox Folder """
-        return Folder(parent=self, name='Outbox', folder_id=OutlookWellKnowFolderNames.OUTBOX.value)
+        return self.folder_constructor(parent=self, name='Outbox', folder_id=OutlookWellKnowFolderNames.OUTBOX.value)
