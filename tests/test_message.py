@@ -56,7 +56,7 @@ class TestMessage:
             dummy_file = Path('dummy.txt')
             with dummy_file.open(mode='w') as file:
                 file.write('Test file')
-            message.attachments.add(Path() / 'adjuntar.xls')  # add this file as an attachment
+            message.attachments.add(dummy_file)  # add this file as an attachment
             saved = message.save_draft()
             dummy_file.unlink()  # delete dummy file
 
