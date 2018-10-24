@@ -40,6 +40,11 @@ class Calendar( object ):
 			self.name = json['Name']
 
 		self.verify = verify
+	
+	def __str__(self):
+		if self.json and 'Name' in self.json:
+			return self.json['Name']
+		return "Unnamed calendar"
 
 	def __str__(self):
 		'''Return informal, nicely printable string.'''

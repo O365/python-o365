@@ -4,7 +4,6 @@ import json
 import base64
 from random import randint
 
-
 att_rep = open('attachment.json','r').read()
 att_j = json.loads(att_rep)
 
