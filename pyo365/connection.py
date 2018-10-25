@@ -577,12 +577,14 @@ class Connection:
             return ApiOtherException(response)
 
 
-def oauth_authentication_flow(client_id, client_secret, scopes=None):
+def oauth_authentication_flow(client_id, client_secret, scopes=None, protocol=None):
     """ A helper method to get authenticate and get the oauth token """
 
     credentials = (client_id, client_secret)
 
-    con = Connection(credentials, scopes=scopes)
+    protocol = protocol or MSGraphProtocol()
+
+    con = Connection(credentials, scopes=protocol.get_scopes_for(scopes))
 
     consent_url = con.get_authorization_url()
     print('Visit the following url to give consent:')
