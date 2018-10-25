@@ -27,36 +27,6 @@ RETRIES_STATUS_LIST = (429, 500, 502, 503, 504)  # 429 is the TooManyRequests st
 RETRIES_BACKOFF_FACTOR = 0.5
 
 
-# Custom Exceptions
-class BaseApiException(HTTPError):
-
-    def __init__(self, response):
-        try:
-            error = response.json()
-        except ValueError:
-            error = {}
-        error = error.get('error', {})
-        super().__init__('{}: {} - {}'.format(response.status_code,
-                                              error.get('code', response.reason),
-                                              error.get('message', '')),
-                         response=response)
-
-
-class ApiBadRequestError(BaseApiException):
-    """ Generic Error for 400 Bad Request error code """
-    pass
-
-
-class ApiInternalServerError(BaseApiException):
-    """ Generic Error for 500 Internal Server Error error code """
-    pass
-
-
-class ApiOtherException(BaseApiException):
-    """ Group of all other posible exceptions """
-    pass
-
-
 DEFAULT_SCOPES = {
     'basic': [('offline_access',), 'User.Read'],  # wrap any scope in a 1 element tuple to avoid prefixing
     'mailbox': ['Mail.Read'],
@@ -573,14 +543,3 @@ class Connection:
             token_path.unlink()
             return True
         return False
-
-    @staticmethod
-    def raise_api_exception(response):
-        """ Raises a custom exception """
-        code = int(response.status_code / 100)
-        if code == 4:
-            return ApiBadRequestError(response)
-        elif code == 5:
-            return ApiInternalServerError(response)
-        else:
-            return ApiOtherException(response)

@@ -79,14 +79,8 @@ class Folder(ApiComponent):
             else:
                 params.update(query.as_params())
 
-        try:
-            response = self.con.get(url, params=params)
-        except Exception as e:
-            log.error('Error requesting child folders of {}. Error: {}'.format(self.name, str(e)))
-            return []
-
-        if response.status_code != 200:
-            log.debug('Getting folders Request failed: {}'.format(response.reason))
+        response = self.con.get(url, params=params)
+        if not response:
             return []
 
         data = response.json()
@@ -141,15 +135,8 @@ class Folder(ApiComponent):
             else:
                 params.update(query.as_params())
 
-        try:
-            response = self.con.get(url, params=params)
-        except Exception as e:
-            log.error('Error donwloading messages in folder {}. Error {}'.format(self.name, e))
-            return []
-        log.debug('Getting messages in folder {} Response: {}'.format(self.name, str(response)))
-
-        if response.status_code != 200:
-            log.debug('Getting messages Request failed: {}'.format(response.reason))
+        response = self.con.get(url, params=params)
+        if not response:
             return []
 
         data = response.json()
@@ -179,14 +166,8 @@ class Folder(ApiComponent):
         else:
             url = self.build_url(self._endpoints.get('child_folders').format(id=self.folder_id))
 
-        try:
-            response = self.con.post(url, data={self._cc('displayName'): folder_name})
-        except Exception as e:
-            log.error('Error creating child folder of {}. Error: {}'.format(self.name, str(e)))
-            return None
-
-        if response.status_code != 201:
-            log.debug('Creating folder Request failed: {}'.format(response.reason))
+        response = self.con.post(url, data={self._cc('displayName'): folder_name})
+        if not response:
             return None
 
         folder = response.json()
@@ -219,14 +200,8 @@ class Folder(ApiComponent):
                 url = self.build_url(self._endpoints.get('child_folders').format(id=self.folder_id))
             params = {'$filter': "{} eq '{}'".format(self._cc('displayName'), folder_name), '$top': 1}
 
-        try:
-            response = self.con.get(url, params=params)
-        except Exception as e:
-            log.error('Error getting folder {}. Error: {}'.format(folder_id or folder_name, str(e)))
-            return None
-
-        if response.status_code != 200:
-            log.debug('Getting folder Request failed: {}'.format(response.reason))
+        response = self.con.get(url, params=params)
+        if not response:
             return None
 
         if folder_id:
@@ -288,14 +263,8 @@ class Folder(ApiComponent):
 
         url = self.build_url(self._endpoints.get('get_folder').format(id=self.folder_id))
 
-        try:
-            response = self.con.patch(url, data={self._cc('displayName'): name})
-        except Exception as e:
-            log.error('Error updating folder {}. Error: {}'.format(self.name, str(e)))
-            return False
-
-        if response.status_code != 200:
-            log.debug('Updating folder Request failed: {}'.format(response.reason))
+        response = self.con.patch(url, data={self._cc('displayName'): name})
+        if not response:
             return False
 
         self.name = name
@@ -321,14 +290,8 @@ class Folder(ApiComponent):
 
         url = self.build_url(self._endpoints.get('get_folder').format(id=self.folder_id))
 
-        try:
-            response = self.con.delete(url)
-        except Exception as e:
-            log.error('Error deleting folder {}. Error: {}'.format(self.name, str(e)))
-            return False
-
-        if response.status_code != 204:
-            log.debug('Deleting folder Request failed: {}'.format(response.reason))
+        response = self.con.delete(url)
+        if not response:
             return False
 
         self.folder_id = None
@@ -347,14 +310,8 @@ class Folder(ApiComponent):
 
         url = self.build_url(self._endpoints.get('copy_folder').format(id=self.folder_id))
 
-        try:
-            response = self.con.post(url, data={self._cc('destinationId'): to_folder_id})
-        except Exception as e:
-            log.error('Error copying folder {}. Error: {}'.format(self.name, str(e)))
-            return None
-
-        if response.status_code != 200:
-            log.debug('Copying folder Request failed: {}'.format(response.reason))
+        response = self.con.post(url, data={self._cc('destinationId'): to_folder_id})
+        if not response:
             return None
 
         folder = response.json()
@@ -376,14 +333,8 @@ class Folder(ApiComponent):
 
         url = self.build_url(self._endpoints.get('move_folder').format(id=self.folder_id))
 
-        try:
-            response = self.con.post(url, data={self._cc('destinationId'): to_folder_id})
-        except Exception as e:
-            log.error('Error moving folder {}. Error: {}'.format(self.name, str(e)))
-            return False
-
-        if response.status_code not in (200, 201):  # sometimes this api call retuns a 201 code (not mentioned in the docs)
-            log.debug('Moving folder Request failed: {}'.format(response.reason))
+        response = self.con.post(url, data={self._cc('destinationId'): to_folder_id})
+        if not response:
             return False
 
         folder = response.json()
@@ -419,17 +370,9 @@ class Folder(ApiComponent):
 
         url = self.build_url(self._endpoints.get('delete_message').format(id=message_id))
 
-        try:
-            response = self.con.delete(url)
-        except Exception as e:
-            log.error('Message (id: {}) could not be deleted. Error: {}'.format(message_id, str(e)))
-            return False
+        response = self.con.delete(url)
 
-        if response.status_code != 204:
-            log.debug('Message (id: {}) could not be deleted. Reason: {}'.format(message_id, response.reason))
-            return False
-
-        return True
+        return bool(response)
 
 
 class MailBox(Folder):

@@ -171,14 +171,10 @@ class BaseAttachment(ApiComponent):
                     raise RuntimeError('A valid object id is needed in order to attach a file')
                 # api_object builds its own url using its resource and main configuration
                 url = api_object.build_url(self._endpoints.get('attach').format(id=api_object.object_id))
-                try:
-                    response = api_object.con.post(url, data=self.to_api_data())
-                except Exception as e:
-                    log.error('Error attaching file to api_object')
-                    return False
 
-                log.debug('attached file to api_object')
-                return response.status_code == 201
+                response = api_object.con.post(url, data=self.to_api_data())
+
+                return bool(response)
             else:
                 if self.attachment_type == 'file':
                     api_object.attachments.add([{
@@ -322,15 +318,9 @@ class BaseAttachments(ApiComponent):
 
         url = self.build_url(self._endpoints.get('attachments').format(id=self._parent.object_id))
 
-        try:
-            response = self._parent.con.get(url)
-        except Exception as e:
-            log.error('Error downloading attachments for message id: {}'.format(self._parent.object_id))
+        response = self._parent.con.get(url)
+        if not response:
             return False
-
-        if response.status_code != 200:
-            return False
-        log.debug('successfully downloaded attachments for message id: {}'.format(self._parent.object_id))
 
         attachments = response.json().get('value', [])
 
@@ -356,15 +346,9 @@ class BaseAttachments(ApiComponent):
         for attachment in self.__attachments:
             if attachment.on_cloud is False:
                 # upload attachment:
-                try:
-                    response = self._parent.con.post(url, data=attachment.to_api_data())
-                except Exception as e:
-                    log.error('Error uploading attachment {} for message id: {}'.format(attachment.name, self._parent.object_id))
+                response = self._parent.con.post(url, data=attachment.to_api_data())
+                if not response:
                     return False
-
-                if response.status_code != 201:
-                    return False
-                log.debug('successfully uploaded attachment {} for message id: {}'.format(attachment.name, self._parent.object_id))
 
                 data = response.json()
 
@@ -378,15 +362,9 @@ class BaseAttachments(ApiComponent):
                 # delete attachment
                 url = self.build_url(self._endpoints.get('attachment').format(id=self._parent.object_id, ida=attachment.attachment_id))
 
-                try:
-                    response = self._parent.con.delete(url)
-                except Exception as e:
-                    log.error('Error deleting attachment {} for message id: {}'.format(attachment.name, self._parent.object_id))
+                response = self._parent.con.delete(url)
+                if not response:
                     return False
-
-                if response.status_code != 204:
-                    return False
-                log.debug('successfully deleted attachment for message id: {}'.format(self._parent.object_id))
 
         self.__removed_attachments = []  # reset the removed attachments
 

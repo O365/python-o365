@@ -441,8 +441,10 @@ class Attendees(ApiComponent):
         super().__init__(protocol=event.protocol, main_resource=event.main_resource)
         self._event = event
         self.__attendees = []
+        self.untrack = True
         if attendees:
             self.add(attendees)
+        self.untrack = False
 
     def __iter__(self):
         return iter(self.__attendees)
@@ -468,7 +470,8 @@ class Attendees(ApiComponent):
 
     def _track_changes(self):
         """ Update the track_changes on the event to reflect a needed update on this field """
-        self._event._track_changes.add('attendees')
+        if self.untrack is False:
+            self._event._track_changes.add('attendees')
 
     def add(self, attendees):
         """ Add attendees to the parent event """
@@ -881,17 +884,9 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
 
         url = self.build_url(self._endpoints.get('event').format(id=self.object_id))
 
-        try:
-            response = self.con.delete(url)
-        except Exception as e:
-            log.error('Event (id: {}) could not be deleted. Error: {}'.format(self.object_id, str(e)))
-            return False
+        response = self.con.delete(url)
 
-        if response.status_code != 204:
-            log.debug('Event (id: {}) could not be deleted. Reason: {}'.format(self.object_id, response.reason))
-            return False
-
-        return True
+        return bool(response)
 
     def save(self):
         """ Create a new event or update an existing one by checking what
@@ -914,15 +909,8 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
             method = self.con.post
             data = self.to_api_data()
 
-        try:
-            log.debug('Saving event properties: {}'.format(data.keys()))
-            response = method(url, data=data)
-        except Exception as e:
-            log.error('Error while saving event. Error: {error}'.format(error=str(e)))
-            return False
-
-        if response.status_code not in (200, 201):  # 200 updated, 201 created
-            log.debug('Saving event Request failed: {}'.format(response.reason))
+        response = method(url, data=data)
+        if not response:
             return False
 
         if not self.object_id:
@@ -955,17 +943,9 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         if send_response is False:
             data[self._cc('sendResponse')] = send_response
 
-        try:
-            response = self.con.post(url, data=data or None)
-        except Exception as e:
-            log.error('Error while accepting event. Error: {error}'.format(error=str(e)))
-            return False
+        response = self.con.post(url, data=data or None)
 
-        if response.status_code != 202:
-            log.debug('Accepting event Request failed: {}'.format(response.reason))
-            return False
-
-        return True
+        return bool(response)
 
     def decline_event(self, comment=None, *, send_response=True):
 
@@ -981,17 +961,9 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         if send_response is False:
             data[self._cc('sendResponse')] = send_response
 
-        try:
-            response = self.con.post(url, data=data or None)
-        except Exception as e:
-            log.error('Error while declining event. Error: {error}'.format(error=str(e)))
-            return False
+        response = self.con.post(url, data=data or None)
 
-        if response.status_code != 202:
-            log.debug('Declining event Request failed: {}'.format(response.reason))
-            return False
-
-        return True
+        return bool(response)
 
     def get_body_text(self):
         """ Parse the body html and returns the body text using bs4 """
@@ -1068,17 +1040,9 @@ class Calendar(ApiComponent, HandleRecipientsMixin):
             self._cc('color'): self.color.value if isinstance(self.color, CalendarColors) else self.color
         }
 
-        try:
-            response = self.con.patch(url, data=data)
-        except Exception as e:
-            log.error('Error updating calendar {}. Error: {}'.format(self.calendar_id, str(e)))
-            return False
+        response = self.con.patch(url, data=data)
 
-        if response.status_code != 201:
-            log.debug('Updating calendar (id: {}) Request failed: {}'.format(self.calendar_id, response.reason))
-            return False
-
-        return True
+        return bool(response)
 
     def delete(self):
         """ Deletes this calendar """
@@ -1088,14 +1052,8 @@ class Calendar(ApiComponent, HandleRecipientsMixin):
 
         url = self.build_url(self._endpoints.get('calendar').format(id=self.calendar_id))
 
-        try:
-            response = self.con.delete(url)
-        except Exception as e:
-            log.error('Error deleting calendar {}. Error: {}'.format(self.name, str(e)))
-            return False
-
-        if response.status_code != 204:
-            log.debug('Deleting calendar Request failed: {}'.format(response.reason))
+        response = self.con.delete(url)
+        if not response:
             return False
 
         self.calendar_id = None
@@ -1133,14 +1091,8 @@ class Calendar(ApiComponent, HandleRecipientsMixin):
             else:
                 params.update(query.as_params())
 
-        try:
-            response = self.con.get(url, params=params, headers={'Prefer': 'outlook.timezone="UTC"'})
-        except Exception as e:
-            log.error('Error donwloading events. Error {}'.format(e))
-            return []
-
-        if response.status_code != 200:
-            log.debug('Getting events Request failed: {}'.format(response.reason))
+        response = self.con.get(url, params=params, headers={'Prefer': 'outlook.timezone="UTC"'})
+        if not response:
             return []
 
         data = response.json()
@@ -1175,14 +1127,8 @@ class Calendar(ApiComponent, HandleRecipientsMixin):
             params = {'$top': 1}
             params.update(param.as_params())
 
-        try:
-            response = self.con.get(url, params=params, headers={'Prefer': 'outlook.timezone="UTC"'})
-        except Exception as e:
-            log.error('Error getting event: {}. Error {}'.format(param, e))
-            return None
-
-        if response.status_code != 200:
-            log.debug('Getting event Request failed: {}'.format(response.reason))
+        response = self.con.get(url, params=params, headers={'Prefer': 'outlook.timezone="UTC"'})
+        if not response:
             return None
 
         if isinstance(param, str):
@@ -1245,14 +1191,8 @@ class Schedule(ApiComponent):
         if order_by:
             params['$orderby'] = order_by
 
-        try:
-            response = self.con.get(url, params=params or None)
-        except Exception as e:
-            log.error('Error getting calendars. Error {}'.format(str(e)))
-            return []
-
-        if response.status_code != 200:
-            log.debug('Getting calendars Request failed: {}'.format(response.reason))
+        response = self.con.get(url, params=params or None)
+        if not response:
             return []
 
         data = response.json()
@@ -1274,14 +1214,8 @@ class Schedule(ApiComponent):
 
         url = self.build_url(self._endpoints.get('root_calendars'))
 
-        try:
-            response = self.con.post(url, data={self._cc('name'): calendar_name})
-        except Exception as e:
-            log.error('Error creating new calendar. Error: {}'.format(str(e)))
-            return None
-
-        if response.status_code != 201:
-            log.debug('Creating new calendar Request failed: {}'.format(response.reason))
+        response = self.con.post(url, data={self._cc('name'): calendar_name})
+        if not response:
             return None
 
         calendar = response.json()
@@ -1310,14 +1244,8 @@ class Schedule(ApiComponent):
             url = self.build_url(self._endpoints.get('root_calendars'))
             params = {'$filter': "{} eq '{}'".format(self._cc('name'), calendar_name), '$top': 1}
 
-        try:
-            response = self.con.get(url, params=params)
-        except Exception as e:
-            log.error('Error getting calendar {}. Error: {}'.format(calendar_id or calendar_name, str(e)))
-            return None
-
-        if response.status_code != 200:
-            log.debug('Getting calendar Request failed: {}'.format(response.reason))
+        response = self.con.get(url, params=params)
+        if not response:
             return None
 
         if calendar_id:
@@ -1336,14 +1264,8 @@ class Schedule(ApiComponent):
 
         url = self.build_url(self._endpoints.get('default_calendar'))
 
-        try:
-            response = self.con.get(url)
-        except Exception as e:
-            log.error('Error getting default calendar. Error: {}'.format(e))
-            return None
-
-        if response.status_code != 200:
-            log.debug('Getting default calendar Request failed: {}'.format(response.reason))
+        response = self.con.get(url)
+        if not response:
             return None
 
         calendar = response.json()
@@ -1382,14 +1304,8 @@ class Schedule(ApiComponent):
             else:
                 params.update(query.as_params())
 
-        try:
-            response = self.con.get(url, params=params, headers={'Prefer': 'outlook.timezone="UTC"'})
-        except Exception as e:
-            log.error('Error donwloading events. Error {}'.format(e))
-            return []
-
-        if response.status_code != 200:
-            log.debug('Getting events Request failed: {}'.format(response.reason))
+        response = self.con.get(url, params=params, headers={'Prefer': 'outlook.timezone="UTC"'})
+        if not response:
             return []
 
         data = response.json()

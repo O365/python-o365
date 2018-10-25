@@ -451,22 +451,9 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
             if save_to_sent_folder is False:
                 data[self._cc('saveToSentItems')] = False
 
-
-        # Exception Handling OPTION 1:
-        try:
-            response = self.con.post(url, data=data)
-        except Exception as e:
-            log.error('Message could not be send. Error: {}'.format(str(e)))
-            return False
-        if not response:
-            log.debug('Message failed to be sent. Reason: {}'.format(response.reason))
-            return False
-
-        # Exception Handling OPTION 2:
         response = self.con.post(url, data=data)
         if not response:  # response evaluates to false if 4XX or 5XX status codes are returned
             return False
-        # ------------------------------------------------------
 
         self.object_id = 'sent_message' if not self.object_id else self.object_id
         self.__is_draft = False
@@ -486,14 +473,8 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         else:
             url = self.build_url(self._endpoints.get('create_reply').format(id=self.object_id))
 
-        try:
-            response = self.con.post(url)
-        except Exception as e:
-            log.error('message (id: {}) could not be replied. Error: {}'.format(self.object_id, str(e)))
-            return None
-
-        if response.status_code != 201:
-            log.debug('message (id: {}) could not be replied. Reason: {}'.format(self.object_id, response.reason))
+        response = self.con.post(url)
+        if not response:
             return None
 
         message = response.json()
@@ -510,14 +491,8 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
 
         url = self.build_url(self._endpoints.get('forward_message').format(id=self.object_id))
 
-        try:
-            response = self.con.post(url)
-        except Exception as e:
-            log.error('message (id: {}) could not be forward. Error: {}'.format(self.object_id, str(e)))
-            return None
-
-        if response.status_code != 201:
-            log.debug('message (id: {}) could not be forward. Reason: {}'.format(self.object_id, response.reason))
+        response = self.con.post(url)
+        if not response:
             return None
 
         message = response.json()
@@ -532,17 +507,9 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
 
         url = self.build_url(self._endpoints.get('get_message').format(id=self.object_id))
 
-        try:
-            response = self.con.delete(url)
-        except Exception as e:
-            log.error('Message (id: {}) could not be deleted. Error: {}'.format(self.object_id, str(e)))
-            return False
+        response = self.con.delete(url)
 
-        if response.status_code != 204:
-            log.debug('Message (id: {}) could not be deleted. Reason: {}'.format(self.object_id, response.reason))
-            return False
-
-        return True
+        return bool(response)
 
     def mark_as_read(self):
         """ Marks this message as read in the cloud."""
@@ -552,17 +519,12 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         data = {self._cc('isRead'): True}
 
         url = self.build_url(self._endpoints.get('get_message').format(id=self.object_id))
-        try:
-            response = self.con.patch(url, data=data)
-        except Exception as e:
-            log.error('Message (id: {}) could not be marked as read. Error: {}'.format(self.object_id, str(e)))
+
+        response = self.con.patch(url, data=data)
+        if not response:
             return False
 
-        if response.status_code != 200:
-            log.debug('Message (id: {}) could not be marked as read. Reason: {}'.format(self.object_id, response.reason))
-            return False
-
-        self.is_read = True
+        self.__is_read = True
 
         return True
 
@@ -587,14 +549,9 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
             raise RuntimeError('Must Provide a valid folder_id')
 
         data = {self._cc('destinationId'): folder_id}
-        try:
-            response = self.con.post(url, data=data)
-        except Exception as e:
-            log.error('Message (id: {}) could not be moved to folder id: {}. Error: {}'.format(self.object_id, folder_id, str(e)))
-            return False
 
-        if response.status_code != 201:
-            log.debug('Message (id: {}) could not be moved to folder id: {}. Reason: {}'.format(self.object_id, folder_id, response.reason))
+        response = self.con.post(url, data=data)
+        if not response:
             return False
 
         self.folder_id = folder_id
@@ -622,14 +579,9 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
             raise RuntimeError('Must Provide a valid folder_id')
 
         data = {self._cc('destinationId'): folder_id}
-        try:
-            response = self.con.post(url, data=data)
-        except Exception as e:
-            log.error('Message (id: {}) could not be copied to folder id: {}. Error: {}'.format(self.object_id, folder_id, str(e)))
-            return None
 
-        if response.status_code != 201:
-            log.debug('Message (id: {}) could not be copied to folder id: {}. Error: {}'.format(self.object_id, folder_id, response.reason))
+        response = self.con.post(url, data=data)
+        if not response:
             return None
 
         message = response.json()
@@ -672,15 +624,8 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         if not data:
             return True
 
-        try:
-            log.debug('Saving message properties: {}'.format(data.keys()))
-            response = method(url, data=data)
-        except Exception as e:
-            log.error('Error saving message. Error: {}'.format(str(e)))
-            return False
-
-        if response.status_code not in (200, 201):  # 200 updated, 201 created
-            log.debug('Saving draft Request failed: {}'.format(response.reason))
+        response = method(url, data=data)
+        if not response:
             return False
 
         if not self.object_id:
