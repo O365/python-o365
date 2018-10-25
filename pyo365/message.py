@@ -451,15 +451,22 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
             if save_to_sent_folder is False:
                 data[self._cc('saveToSentItems')] = False
 
+
+        # Exception Handling OPTION 1:
         try:
             response = self.con.post(url, data=data)
         except Exception as e:
             log.error('Message could not be send. Error: {}'.format(str(e)))
             return False
-
-        if response.status_code != 202:
+        if not response:
             log.debug('Message failed to be sent. Reason: {}'.format(response.reason))
             return False
+
+        # Exception Handling OPTION 2:
+        response = self.con.post(url, data=data)
+        if not response:  # response evaluates to false if 4XX or 5XX status codes are returned
+            return False
+        # ------------------------------------------------------
 
         self.object_id = 'sent_message' if not self.object_id else self.object_id
         self.__is_draft = False
