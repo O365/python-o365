@@ -575,3 +575,22 @@ class Connection:
             return ApiInternalServerError(response)
         else:
             return ApiOtherException(response)
+
+
+def oauth_authentication_flow(client_id, client_secret, scopes=None):
+    """ A helper method to get authenticate and get the oauth token """
+
+    credentials = (client_id, client_secret)
+
+    con = Connection(credentials, scopes=scopes)
+
+    consent_url = con.get_authorization_url()
+    print('Visit the following url to give consent:')
+    print(consent_url)
+
+    token_url = input('Paste the authenticated url here: ')
+    result = con.request_token(token_url)
+    if result:
+        print('Authentication Flow Completed. Oauth Access Token Stored. You can now use the API.')
+    else:
+        print('Something go wrong. Please try again.')

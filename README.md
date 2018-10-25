@@ -17,7 +17,7 @@ from pyo365 import Account
 
 credentials = ('client_id', 'client_secret')
 
-account = Account(credentials, auth_method='oauth')
+account = Account(credentials)
 m = account.new_message()
 m.to.add('to_example@example.com')
 m.subject = 'Testing!'
@@ -74,10 +74,10 @@ But, you can use many other Microsoft APIs as long as you implement the protocol
 
 You can use one or the other:
 
-- `MSOffice365Protocol` to use the [Office 365 API](https://msdn.microsoft.com/en-us/office/office365/api/api-catalog)
 - `MSGraphProtocol` to use the [Microsoft Graph API](https://developer.microsoft.com/en-us/graph/docs/concepts/overview)
+- `MSOffice365Protocol` to use the [Office 365 API](https://msdn.microsoft.com/en-us/office/office365/api/api-catalog)
 
-Both protocols allow pretty much the same options (depending on the api version used).
+Both protocols are similar but the Graph one has access to more resources (for example OneDrive). It also depends on the api version used.
 
 The default protocol used by the `Account` Class is `MSGraphProtocol`.
 
@@ -133,8 +133,8 @@ Usually you will work with the default 'ME' resuorce, but you can also use one o
 
 - **'me'**: the user which has given consent. the default for every protocol.
 - **'user:user@domain.com'**: a shared mailbox or a user account for which you have permissions. If you don't provide 'user:' will be infered anyways.
-- **'sharepoint:sharepoint-site-id'**: A sharepoint site id.
-- **'group:group-site-id'**: A office365 group id.  
+- **'sharepoint:sharepoint-site-id'**: a sharepoint site id.
+- **'group:group-site-id'**: a office365 group id.  
 
 ## Authentication
 You can only authenticate using oauth athentication as Microsoft deprecated basic oauth on November 1st 2018.
@@ -216,6 +216,14 @@ con = Connection(credentials, scopes=scopes_graph)
     
     If your application needs to work for more than 90 days without user interaction and without interacting with the API, then you must implement a periodic call to `Connection.refresh_token` before the 90 days have passed.
 
+    __You can use the helper method `oauth_authentication_flow`__ to follow the authentication flow easely.
+     
+    ```python
+    from pyo365 import oauth_authentication_flow
+    
+    oauth_authentication_flow('client_id', 'client_secret', ['scopes_required'])
+    ```
+    
 ## Account Class and Modularity <a name="account"></a>
 Usually you will only need to work with the `Account` Class. This is a wrapper around all functionality.
 
@@ -249,7 +257,7 @@ message2 = Message(parent=mailbox)  # message will inherit the connection and pr
 
 It's also easy to implement a custom Class.
 
-Just Inherit from ApiComponent, define the endpoints, and use the connection to make requests. If needed also inherit from Protocol to handle different comunications aspects with the API server.
+Just Inherit from `ApiComponent`, define the endpoints, and use the connection to make requests. If needed also inherit from Protocol to handle different comunications aspects with the API server.
 
 ```python
 from pyo365.utils import ApiComponent 
@@ -298,7 +306,7 @@ m.save_draft()
 ```
 
 #### Email Folder
-Represents a Folder within your email mailbox.
+Represents a `Folder` within your email mailbox.
 
 You can get any folder in your mailbox by requesting child folders or filtering by name.
 
@@ -347,7 +355,7 @@ reply_msg.send()
 ```
 
 ## AddressBook
-AddressBook groups the funcionality of both the Contact Folders and Contacts. Outlook Distribution Groups are not supported.
+AddressBook groups the funcionality of both the Contact Folders and Contacts. Outlook Distribution Groups are not supported (By the Microsoft API's).
 
 #### Contact Folders
 Represents a Folder within your Contacts Section in Office 365.
@@ -437,12 +445,12 @@ new_contact.delete()  # Bonus: deteled from the cloud
 
 
 ## Calendar
-The calendar and events functionality is group in a Schedule object.
+The calendar and events functionality is group in a `Schedule` object.
 
-A Schedule instance can list and create calendars. It can also list or create events on the default user calendar.
-To use other calendars use a Calendar instance.  
+A `Schedule` instance can list and create calendars. It can also list or create events on the default user calendar.
+To use other calendars use a `Calendar` instance.  
 
-Working with the Schedule instance:
+Working with the `Schedule` instance:
 ```python
 import datetime as dt
 
@@ -465,7 +473,7 @@ new_event.remind_before_minutes = 45
 new_event.save()
 ```
 
-Working with Calendar instances:
+Working with `Calendar` instances:
 ```python
 calendar = schedule.get_calendar(calendar_name='Birthdays')
 
@@ -485,7 +493,7 @@ for event in birthdays:
 ```
 
 ## OneDrive
-The Storage class handles all functionality around One Drive and Document Library Storage in Sharepoint.
+The `Storage` class handles all functionality around One Drive and Document Library Storage in Sharepoint.
 
 The `Storage` instance allows to retrieve `Drive` instances which handles all the Files and Folders from within the selected `Storage`.
 Usually you will only need to work with the default drive. But the `Storage` instances can handle multiple drives.
