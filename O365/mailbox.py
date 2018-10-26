@@ -1,8 +1,8 @@
 import logging
 import datetime as dt
 
-from pyo365.message import Message
-from pyo365.utils import Pagination, NEXT_LINK_KEYWORD, OutlookWellKnowFolderNames, ApiComponent
+from O365.message import Message
+from O365.utils import Pagination, NEXT_LINK_KEYWORD, OutlookWellKnowFolderNames, ApiComponent
 
 log = logging.getLogger(__name__)
 

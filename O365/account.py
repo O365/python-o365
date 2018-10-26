@@ -1,10 +1,10 @@
-from pyo365.connection import Connection, Protocol, MSGraphProtocol
-from pyo365.drive import Storage
-from pyo365.utils import ME_RESOURCE
-from pyo365.message import Message
-from pyo365.mailbox import MailBox
-from pyo365.address_book import AddressBook, GlobalAddressList
-from pyo365.calendar import Schedule
+from O365.connection import Connection, Protocol, MSGraphProtocol
+from O365.drive import Storage
+from O365.utils import ME_RESOURCE
+from O365.message import Message
+from O365.mailbox import MailBox
+from O365.address_book import AddressBook, GlobalAddressList
+from O365.calendar import Schedule
 
 
 class Account(object):

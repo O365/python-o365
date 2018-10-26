@@ -5,8 +5,8 @@ from dateutil.parser import parse
 from urllib.parse import urlparse
 from pathlib import Path
 
-from pyo365.address_book import Contact
-from pyo365.utils import ApiComponent, Pagination, NEXT_LINK_KEYWORD, OneDriveWellKnowFolderNames
+from O365.address_book import Contact
+from O365.utils import ApiComponent, Pagination, NEXT_LINK_KEYWORD, OneDriveWellKnowFolderNames
 
 log = logging.getLogger(__name__)
 

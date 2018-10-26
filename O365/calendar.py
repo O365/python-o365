@@ -6,9 +6,9 @@ import pytz
 import calendar
 from bs4 import BeautifulSoup as bs
 
-from pyo365.utils import Pagination, NEXT_LINK_KEYWORD, ApiComponent, BaseAttachments, BaseAttachment, \
+from O365.utils import Pagination, NEXT_LINK_KEYWORD, ApiComponent, BaseAttachments, BaseAttachment, \
     AttachableMixin, ImportanceLevel, TrackerSet
-from pyo365.message import HandleRecipientsMixin
+from O365.message import HandleRecipientsMixin
 
 log = logging.getLogger(__name__)
 

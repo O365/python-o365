@@ -4,7 +4,7 @@ from dateutil.parser import parse
 import pytz
 from bs4 import BeautifulSoup as bs
 
-from pyo365.utils import OutlookWellKnowFolderNames, ApiComponent, BaseAttachments, BaseAttachment, AttachableMixin, ImportanceLevel, TrackerSet
+from O365.utils import OutlookWellKnowFolderNames, ApiComponent, BaseAttachments, BaseAttachment, AttachableMixin, ImportanceLevel, TrackerSet
 
 log = logging.getLogger(__name__)
 

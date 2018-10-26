@@ -36,11 +36,11 @@ requires = [
 ]
 
 setup(
-    name='pyo365',
-    version='0.1.1',
-    # packages=['pyo365', 'pyo365.utils'],
+    name='O365',
+    version='1.0.0',
+    # packages=['O365', 'O365.utils'],
     packages=find_packages(),
-    url=' https://github.com/janscas/pyo365',
+    url='https://github.com/O365/python-o365',
     license='Apache License 2.0',
     author='Janscas',
     author_email='janscas@users.noreply.github.com',

@@ -15,7 +15,7 @@ from requests.exceptions import HTTPError, RequestException, ProxyError, SSLErro
 from oauthlib.oauth2 import TokenExpiredError
 from requests_oauthlib import OAuth2Session
 
-from pyo365.utils import ME_RESOURCE, IANA_TO_WIN, WIN_TO_IANA
+from O365.utils import ME_RESOURCE, IANA_TO_WIN, WIN_TO_IANA
 
 log = logging.getLogger(__name__)
 

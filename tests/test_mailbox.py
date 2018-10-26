@@ -1,5 +1,5 @@
 from tests.config import CLIENT_ID, CLIENT_SECRET
-from pyo365 import Account
+from O365 import Account
 
 
 class TestMailBox:

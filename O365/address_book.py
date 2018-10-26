@@ -2,8 +2,8 @@ import logging
 from dateutil.parser import parse
 from enum import Enum
 
-from pyo365.message import HandleRecipientsMixin, Recipients, Message
-from pyo365.utils import Pagination, NEXT_LINK_KEYWORD, ApiComponent, AttachableMixin
+from O365.message import HandleRecipientsMixin, Recipients, Message
+from O365.utils import Pagination, NEXT_LINK_KEYWORD, ApiComponent, AttachableMixin
 
 GAL_MAIN_RESOURCE = 'users'
 
