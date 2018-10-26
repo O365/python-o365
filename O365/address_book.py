@@ -1,6 +1,5 @@
 import logging
 from dateutil.parser import parse
-from tzlocal import get_localzone
 from enum import Enum
 
 from O365.message import HandleRecipientsMixin, Recipients, Message
@@ -48,7 +47,7 @@ class Contact(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         self.created = cloud_data.get(cc('createdDateTime'), None)
         self.modified = cloud_data.get(cc('lastModifiedDateTime'), None)
 
-        local_tz = get_localzone()
+        local_tz = self.protocol.timezone
         self.created = parse(self.created).astimezone(local_tz) if self.created else None
         self.modified = parse(self.modified).astimezone(local_tz) if self.modified else None
 
@@ -65,6 +64,10 @@ class Contact(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         self.mobile_phone = cloud_data.get(cc('mobilePhone'), '')
         self.home_phones = cloud_data.get(cc('homePhones'), []) or []
         self.__emails = self._recipients_from_cloud(cloud_data.get(cc('emailAddresses'), []))
+        email = cloud_data.get(cc('email'))
+        if email and email not in self.__emails:
+            # a Contact from OneDrive?
+            self.__emails.add(email)
         self.business_addresses = cloud_data.get(cc('businessAddress'), {})
         self.home_addresses = cloud_data.get(cc('homesAddress'), {})
         self.other_addresses = cloud_data.get(cc('otherAddress'), {})
@@ -98,10 +101,10 @@ class Contact(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         return '{} {}'.format(self.name, self.surname).strip()
 
     def __str__(self):
-        return self.display_name or self.full_name or 'Unknwon Name'
+        return self.__repr__()
 
     def __repr__(self):
-        return self.__str__()
+        return self.display_name or self.full_name or 'Unknwon Name'
 
     def to_api_data(self):
         """ Returns a dictionary in cloud format """
@@ -133,14 +136,9 @@ class Contact(ApiComponent, AttachableMixin, HandleRecipientsMixin):
 
         url = self.build_url(self._endpoints.get('contact').format(id=self.object_id))
 
-        try:
-            response = self.con.delete(url)
-        except Exception as e:
-            log.error('Error while deleting Contact id: {}'.format(self.object_id))
-            return False
-        log.debug('response from delete attempt: {0}'.format(str(response)))
+        response = self.con.delete(url)
 
-        return response.status_code == 204
+        return bool(response)
 
     def update(self, fields):
         """ Updates a contact
@@ -165,16 +163,10 @@ class Contact(ApiComponent, AttachableMixin, HandleRecipientsMixin):
                 data[self._cc(mapping)] = update_value
 
         url = self.build_url(self._endpoints.get('contact'.format(id=self.object_id)))
-        try:
-            response = self.con.patch(url, data=data)
-            log.debug('sent update request')
-        except Exception as e:
-            log.error('Error while updating Contact id: {id}. Error: {error}'.format(id=self.object_id, error=str(e)))
-            return False
 
-        log.debug('Response to contact update: {0}'.format(str(response)))
+        response = self.con.patch(url, data=data)
 
-        return response.status_code == 200
+        return bool(response)
 
     def save(self):
         """ Saves this Contact to the cloud """
@@ -186,14 +178,8 @@ class Contact(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         else:
             url = self.build_url(self._endpoints.get('root_contact'))
 
-        try:
-            response = self.con.psot(url, data=self.to_api_data())
-        except Exception as e:
-            log.error('Error while saving contact. Error: {error}'.format(error=str(e)))
-            return False
-
-        if response.status_code != 201:
-            log.debug('Creating contact Request failed: {}'.format(response.reason))
+        response = self.con.post(url, data=self.to_api_data())
+        if not response:
             return False
 
         contact = response.json()
@@ -202,7 +188,7 @@ class Contact(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         self.created = contact.get(self._cc('createdDateTime'), None)
         self.modified = contact.get(self._cc('lastModifiedDateTime'), None)
 
-        local_tz = get_localzone()
+        local_tz = self.protocol.timezone
         self.created = parse(self.created).astimezone(local_tz) if self.created else None
         self.modified = parse(self.modified).astimezone(local_tz) if self.modified else None
 
@@ -228,7 +214,7 @@ class Contact(ApiComponent, AttachableMixin, HandleRecipientsMixin):
 
         new_message = self.message_constructor(parent=self, is_draft=True)
 
-        target_recipients = getattr(new_message, recipient_type.value)
+        target_recipients = getattr(new_message, str(recipient_type.value))
         target_recipients.add(recipient)
 
         return new_message
@@ -266,10 +252,10 @@ class BaseContactFolder(ApiComponent):
         self.parent_id = cloud_data.get(self._cc('parentFolderId'), None)
 
     def __str__(self):
-        return 'Contact Folder: {}'.format(self.name)
+        return self.__repr__()
 
     def __repr__(self):
-        return self.__str__()
+        return 'Contact Folder: {}'.format(self.name)
 
     def get_contacts(self, limit=100, *, query=None, order_by=None, batch=None):
         """
@@ -313,14 +299,8 @@ class BaseContactFolder(ApiComponent):
             else:
                 params.update(query.as_params())
 
-        try:
-            response = self.con.get(url, params=params)
-        except Exception as e:
-            log.error('Error getting contacts. Error {}'.format(str(e)))
-            return []
-
-        if response.status_code != 200:
-            log.debug('Getting contacts Request failed: {}'.format(response.reason))
+        response = self.con.get(url, params=params)
+        if not response:
             return []
 
         data = response.json()
@@ -333,7 +313,7 @@ class BaseContactFolder(ApiComponent):
 
         if batch and next_link:
             return Pagination(parent=self, data=contacts, constructor=self.contact_constructor,
-                              next_link=data.get(NEXT_LINK_KEYWORD, None), limit=limit)
+                              next_link=next_link, limit=limit)
         else:
             return contacts
 
@@ -366,14 +346,9 @@ class ContactFolder(BaseContactFolder):
                 url = self.build_url(self._endpoints.get('child_folders').format(id=self.folder_id))
 
             params = {'$filter': "{} eq '{}'".format(self._cc('displayName'), folder_name), '$top': 1}
-        try:
-            response = self.con.get(url, params=params)
-        except Exception as e:
-            log.error('Error getting contact folder {}. Error: {}'.format(folder_id or folder_name, str(e)))
-            return None
 
-        if response.status_code != 200:
-            log.debug('Getting contact folder Request failed: {}'.format(response.reason))
+        response = self.con.get(url, params=params)
+        if not response:
             return None
 
         if folder_id:
@@ -415,14 +390,8 @@ class ContactFolder(BaseContactFolder):
             else:
                 params.update(query.as_params())
 
-        try:
-            response = self.con.get(url, params=params or None)
-        except Exception as e:
-            log.error('Error getting child contact folders. Error {}'.format(str(e)))
-            return []
-
-        if response.status_code != 200:
-            log.debug('Getting child contact folders Request failed: {}'.format(response.reason))
+        response = self.con.get(url, params=params or None)
+        if not response:
             return []
 
         data = response.json()
@@ -444,14 +413,8 @@ class ContactFolder(BaseContactFolder):
         else:
             url = self.build_url(self._endpoints.get('child_folders').format(id=self.folder_id))
 
-        try:
-            response = self.con.post(url, data={self._cc('displayName'): folder_name})
-        except Exception as e:
-            log.error('Error creating contact folder of {}. Error: {}'.format(self.name, str(e)))
-            return None
-
-        if response.status_code != 201:
-            log.debug('Creating contact folder Request failed: {}'.format(response.reason))
+        response = self.con.post(url, data={self._cc('displayName'): folder_name})
+        if not response:
             return None
 
         folder = response.json()
@@ -468,14 +431,8 @@ class ContactFolder(BaseContactFolder):
 
         url = self.build_url(self._endpoints.get('get_folder').format(id=self.folder_id))
 
-        try:
-            response = self.con.patch(url, data={self._cc('displayName'): name})
-        except Exception as e:
-            log.error('Error updating contact folder {}. Error: {}'.format(self.name, str(e)))
-            return False
-
-        if response.status_code != 200:
-            log.debug('Updating contact folder Request failed: {}'.format(response.reason))
+        response = self.con.patch(url, data={self._cc('displayName'): name})
+        if not response:
             return False
 
         folder = response.json()
@@ -504,14 +461,8 @@ class ContactFolder(BaseContactFolder):
         else:
             return False
 
-        try:
-            response = self.con.patch(url, data={self._cc('parentFolderId'): folder_id})
-        except Exception as e:
-            log.error('Error moving contact folder {}. Error: {}'.format(self.name, str(e)))
-            return False
-
-        if response.status_code != 200:
-            log.debug('Moving contact folder Request failed: {}'.format(response.reason))
+        response = self.con.patch(url, data={self._cc('parentFolderId'): folder_id})
+        if not response:
             return False
 
         folder = response.json()
@@ -529,14 +480,8 @@ class ContactFolder(BaseContactFolder):
 
         url = self.build_url(self._endpoints.get('get_folder').format(id=self.folder_id))
 
-        try:
-            response = self.con.delete(url)
-        except Exception as e:
-            log.error('Error deleting contact folder {}. Error: {}'.format(self.name, str(e)))
-            return False
-
-        if response.status_code != 204:
-            log.debug('Deleting contact folder Request failed: {}'.format(response.reason))
+        response = self.con.delete(url)
+        if not response:
             return False
 
         self.folder_id = None
@@ -570,7 +515,7 @@ class ContactFolder(BaseContactFolder):
             return None
 
         new_message = self.message_constructor(parent=self, is_draft=True)
-        target_recipients = getattr(new_message, recipient_type.value)
+        target_recipients = getattr(new_message, str(recipient_type.value))
         target_recipients.add(recipients)
 
         return new_message
@@ -583,7 +528,7 @@ class AddressBook(ContactFolder):
         # set instance to be a root instance
         super().__init__(parent=parent, con=con, root=True, **kwargs)
 
-    def __str__(self):
+    def __repr__(self):
         return 'Address Book resource: {}'.format(self.main_resource)
 
 
@@ -595,7 +540,7 @@ class GlobalAddressList(BaseContactFolder):
         super().__init__(parent=parent, con=con, root=True, main_resource=GAL_MAIN_RESOURCE,
                          name='Global Address List', **kwargs)
 
-    def __str__(self):
+    def __repr__(self):
         return 'Global Address List'
 
     def get_contact_by_email(self, email):
@@ -608,14 +553,8 @@ class GlobalAddressList(BaseContactFolder):
 
         url = self.build_url('{}/{}'.format(self._endpoints.get('gal'), email))
 
-        try:
-            response = self.con.get(url)
-        except Exception as e:
-            log.error('Error getting contact by email. Error {}'.format(str(e)))
-            return []
-
-        if response.status_code != 200:
-            log.debug('Getting contact by email Request failed: {}'.format(response.reason))
+        response = self.con.get(url)
+        if not response:
             return []
 
         data = response.json()

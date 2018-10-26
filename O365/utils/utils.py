@@ -1,9 +1,8 @@
 import logging
 from enum import Enum
-from tzlocal import get_localzone
-import pytz
 import datetime as dt
-
+import pytz
+from collections import OrderedDict
 
 ME_RESOURCE = 'me'
 USERS_RESOURCE = 'users'
@@ -12,11 +11,16 @@ NEXT_LINK_KEYWORD = '@odata.nextLink'
 
 log = logging.getLogger(__name__)
 
-
 MAX_RECIPIENTS_PER_MESSAGE = 500  # Actual limit on Office 365
 
 
-class WellKnowFolderNames(Enum):
+class ImportanceLevel(Enum):
+    Normal = 'normal'
+    Low = 'low'
+    High = 'high'
+
+
+class OutlookWellKnowFolderNames(Enum):
     INBOX = 'Inbox'
     JUNK = 'JunkEmail'
     DELETED = 'DeletedItems'
@@ -25,9 +29,30 @@ class WellKnowFolderNames(Enum):
     OUTBOX = 'Outbox'
 
 
+class OneDriveWellKnowFolderNames(Enum):
+    DOCUMENTS = 'documents'
+    PHOTOS = 'photos'
+    CAMERA_ROLL = 'cameraroll'
+    APP_ROOT = 'approot'
+    MUSIC = 'music'
+    ATTACHMENTS = 'attachments'
+
+
 class ChainOperator(Enum):
     AND = 'and'
     OR = 'or'
+
+
+class TrackerSet(set):
+    """ A Custom Set that changes the casing of it's keys """
+
+    def __init__(self, *args, casing=None, **kwargs):
+        self.cc = casing
+        super().__init__(*args, **kwargs)
+
+    def add(self, value):
+        value = self.cc(value)
+        super().add(value)
 
 
 class ApiComponent:
@@ -50,21 +75,22 @@ class ApiComponent:
             raise ValueError('Protocol not provided to Api Component')
         self.main_resource = self._parse_resource(main_resource or protocol.default_resource)
         self._base_url = '{}{}'.format(self.protocol.service_url, self.main_resource)
-        super().__init__(**kwargs)
+        super().__init__()
 
     @staticmethod
     def _parse_resource(resource):
+        resource = resource.strip() if resource else resource
         """ Parses and completes resource information """
         if resource == ME_RESOURCE:
             return resource
         elif resource == USERS_RESOURCE:
             return resource
+        elif '/' not in resource and USERS_RESOURCE not in resource:
+            # when for example accesing a shared mailbox the resouse is set to the email address.
+            # we have to prefix the email with the resource 'users/' so --> 'users/email_address'
+            return '{}/{}'.format(USERS_RESOURCE, resource)
         else:
-            if USERS_RESOURCE not in resource:
-                resource = resource.replace('/', '')
-                return '{}/{}'.format(USERS_RESOURCE, resource)
-            else:
-                return resource
+            return resource
 
     def build_url(self, endpoint):
         """ Returns a url for a given endpoint using the protocol service url """
@@ -81,6 +107,8 @@ class ApiComponent:
     def new_query(self, attribute=None):
         return Query(attribute=attribute, protocol=self.protocol)
 
+    q = new_query  # alias for new query
+
 
 class Pagination(ApiComponent):
     """ Utility class that allows batching requests to the server """
@@ -92,9 +120,9 @@ class Pagination(ApiComponent):
         Stops when no more data exists or limit is reached.
 
         :param parent: the parent class. Must implement attributes:
-            con, api_version, main_resource, auth_method
+            con, api_version, main_resource
         :param data: the start data to be return
-        :param constructor: the data constructor for the next batch
+        :param constructor: the data constructor for the next batch. It can be a function.
         :param next_link: the link to request more data to
         :param limit: when to stop retrieving more data
         """
@@ -103,6 +131,7 @@ class Pagination(ApiComponent):
 
         super().__init__(protocol=parent.protocol, main_resource=parent.main_resource)
 
+        self.parent = parent
         self.con = parent.con
         self.constructor = constructor
         self.next_link = next_link
@@ -119,10 +148,13 @@ class Pagination(ApiComponent):
         self.state = 0
 
     def __str__(self):
-        return "'{}' Iterator".format(self.constructor.__name__ if self.constructor else 'Unknown')
+        return self.__repr__()
 
     def __repr__(self):
-        return self.__str__()
+        if callable(self.constructor):
+            return 'Pagination Iterator'
+        else:
+            return "'{}' Iterator".format(self.constructor.__name__ if self.constructor else 'Unknown')
 
     def __bool__(self):
         return bool(self.data) or bool(self.next_link)
@@ -142,23 +174,20 @@ class Pagination(ApiComponent):
         if self.next_link is None:
             raise StopIteration()
 
-        try:
-            response = self.con.get(self.next_link)
-        except Exception as e:
-            log.error('Error while Paginating. Error: {}'.format(str(e)))
-            raise e
-
-        if response.status_code != 200:
-            log.debug('Failed Request while Paginating. Reason: {}'.format(response.reason))
+        response = self.con.get(self.next_link)
+        if not response:
             raise StopIteration()
 
         data = response.json()
+
         self.next_link = data.get(NEXT_LINK_KEYWORD, None) or None
         data = data.get('value', [])
         if self.constructor:
             # Everything received from the cloud must be passed with self._cloud_data_key
-            self.data = [self.constructor(parent=self, **{self._cloud_data_key: value})
-                         for value in data]
+            if callable(self.constructor):
+                self.data = [self.constructor(value)(parent=self.parent, **{self._cloud_data_key: value}) for value in data]
+            else:
+                self.data = [self.constructor(parent=self.parent, **{self._cloud_data_key: value}) for value in data]
         else:
             self.data = data
 
@@ -184,7 +213,9 @@ class Query:
     """ Helper to conform OData filters """
     _mapping = {
         'from': 'from/emailAddress/address',
-        'to': 'toRecipients/emailAddress/address'
+        'to': 'toRecipients/emailAddress/address',
+        'start': 'start/DateTime',
+        'end': 'end/DateTime'
     }
 
     def __init__(self, attribute=None, *, protocol):
@@ -194,35 +225,56 @@ class Query:
         self.new(attribute)
         self._negation = False
         self._filters = []
-        self._localtz = None  # lazy attribute
-        self._order_by = []
+        self._order_by = OrderedDict()
+        self._selects = set()
 
     def __str__(self):
-        if self._filters:
-            filters_list = self._filters
-            if isinstance(filters_list[-1], Enum):
-                filters_list = filters_list[:-1]
-            return ' '.join([fs.value if isinstance(fs, Enum) else fs[1] for fs in filters_list]).strip()
-        else:
-            return ''
+        return 'Filter: {}\nOrder: {}\nSelect: {}'.format(self.get_filters(), self.get_order(), self.get_selects())
 
     def __repr__(self):
         return self.__str__()
 
+    def select(self, *attributes):
+        """
+        Adds the attribute to the $select parameter
+        :param attributes: the attributes tuple to select. If empty, the on_attribute previously set is added.
+        """
+        if attributes:
+            for attribute in attributes:
+                attribute = self.protocol.convert_case(attribute) if attribute and isinstance(attribute, str) else None
+                if attribute:
+                    if '/' in attribute:
+                        # only parent attribute can be selected
+                        attribute = attribute.split('/')[0]
+                    self._selects.add(attribute)
+        else:
+            if self._attribute:
+                self._selects.add(self._attribute)
+
+        return self
+
     def as_params(self):
         """ Returns the filters and orders as query parameters"""
         params = {}
-        if self.has_filters():
+        if self.has_filters:
             params['$filter'] = self.get_filters()
-        if self.has_order():
+        if self.has_order:
             params['$orderby'] = self.get_order()
+        if self.has_selects:
+            params['$select'] = self.get_selects()
         return params
 
+    @property
     def has_filters(self):
         return bool(self._filters)
 
+    @property
     def has_order(self):
         return bool(self._order_by)
+
+    @property
+    def has_selects(self):
+        return bool(self._selects)
 
     def get_filters(self):
         """ Returns the result filters """
@@ -235,18 +287,34 @@ class Query:
             return None
 
     def get_order(self):
-        order_clauses = [filter_attr[0] for filter_attr in self._filters if isinstance(filter_attr, tuple)]
-        if self._order_by:
-            return ','.join(order_clauses + self._order_by)
+        """ Returns the result order by clauses """
+        # first get the filtered attributes in order as they must appear in the order_by first
+        if not self.has_order:
+            return None
+        filter_order_clauses = OrderedDict([(filter_attr[0], None)
+                                            for filter_attr in self._filters
+                                            if isinstance(filter_attr, tuple)])
+
+        # any order_by attribute that appears in the filters is ignored
+        order_by_dict = self._order_by.copy()
+        for filter_oc in filter_order_clauses.keys():
+            direction = order_by_dict.pop(filter_oc, None)
+            filter_order_clauses[filter_oc] = direction
+
+        filter_order_clauses.update(order_by_dict)  # append any remaining order_by clause
+
+        if filter_order_clauses:
+            return ','.join(['{} {}'.format(attribute, direction if direction else '').strip()
+                             for attribute, direction in filter_order_clauses.items()])
         else:
             return None
 
-    @property
-    def localtz(self):
-        """ Returns the cached local time zone """
-        if self._localtz is None:
-            self._localtz = get_localzone()
-        return self._localtz
+    def get_selects(self):
+        """ Returns the result select clause """
+        if self._selects:
+            return ','.join(self._selects)
+        else:
+            return None
 
     def _get_mapping(self, attribute):
         if attribute:
@@ -266,9 +334,13 @@ class Query:
         self._negation = False
         return self
 
+    def clear_filters(self):
+        self._filters = []
+
     def clear(self):
         self._filters = []
-        self._order_by = []
+        self._order_by = OrderedDict()
+        self._selects = set()
         self.new(None)
         return self
 
@@ -288,8 +360,9 @@ class Query:
 
     def _add_filter(self, filter_str):
         if self._attribute:
+            if self._filters and not isinstance(self._filters[-1], ChainOperator):
+                self._filters.append(self._chain)
             self._filters.append((self._attribute, filter_str))
-            self._filters.append(self._chain)
         else:
             raise ValueError('Attribute property needed. call on_attribute(attribute) or new(attribute)')
 
@@ -301,9 +374,10 @@ class Query:
             if isinstance(word, dt.datetime):
                 if word.tzinfo is None:
                     # if it's a naive datetime, localize the datetime.
-                    word = self.localtz.localize(word)  # localize datetime into local tz
+                    word = self.protocol.timezone.localize(word)  # localize datetime into local tz
+                if word.tzinfo != pytz.utc:
                     word = word.astimezone(pytz.utc)  # transform local datetime to utc
-            word = "'{}'".format(word.isoformat())  # convert datetime utc to isoformat
+            word = "'{}'".format(word.isoformat())  # convert datetime to isoformat
         elif isinstance(word, bool):
             word = str(word).lower()
         return word
@@ -335,7 +409,8 @@ class Query:
     def function(self, function_name, word):
         word = self._parse_filter_word(word)
 
-        self._add_filter("{} {}({}, {})".format('not' if self._negation else '', function_name, self._attribute, word).strip())
+        self._add_filter(
+            "{} {}({}, {})".format('not' if self._negation else '', function_name, self._attribute, word).strip())
         return self
 
     def contains(self, word):
@@ -351,7 +426,7 @@ class Query:
         """ applies a order_by clause"""
         attribute = self._get_mapping(attribute) or self._attribute
         if attribute:
-            self._order_by.append('{} {}'.format(attribute, '' if ascending else 'desc').strip())
+            self._order_by[attribute] = None if ascending else 'desc'
         else:
             raise ValueError('Attribute property needed. call on_attribute(attribute) or new(attribute)')
         return self

@@ -59,5 +59,8 @@ target/
 */pid
 
 .idea/
+
 trail.py
 sample_run.py
+
+

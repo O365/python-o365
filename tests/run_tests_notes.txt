@@ -1,0 +1,8 @@
+To run this tests you will need pytest installed.
+
+This tests also needs a "config.py" file with two variables:
+
+CLIENT_ID = 'you client_id'
+CLIENT_SECRET = 'your client_secret'
+
+For oauth to work you will need to include the o365_token.txt file inside the tests folder once it's configured from the standard oauth authorization flow.
