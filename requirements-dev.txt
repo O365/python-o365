@@ -1,6 +1,6 @@
 beautifulsoup4==4.6.3
-python-dateutil==2.7.3
-pytz==2018.5
+python-dateutil==2.7.4
+pytz==2018.6
 requests==2.20.0
 requests-oauthlib==1.0.0
 stringcase==1.2.0
