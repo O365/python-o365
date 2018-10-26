@@ -8,7 +8,6 @@ from O365.utils import OutlookWellKnowFolderNames, ApiComponent, BaseAttachments
 
 log = logging.getLogger(__name__)
 
-
 class Recipient:
     """ A single Recipient """
 

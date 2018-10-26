@@ -42,7 +42,7 @@ setup(
     packages=find_packages(),
     url='https://github.com/O365/python-o365',
     license='Apache License 2.0',
-    author='Janscas',
+    author='Janscas, Roycem90, Narcolapser',
     author_email='janscas@users.noreply.github.com',
     maintainer='Janscas',
     maintainer_email='janscas@users.noreply.github.com',

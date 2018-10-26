@@ -2,7 +2,6 @@ from pathlib import Path
 from tests.config import CLIENT_ID, CLIENT_SECRET
 from O365 import Account
 
-
 class TestMessage:
 
     def setup_class(self):
