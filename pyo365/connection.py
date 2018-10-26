@@ -11,7 +11,7 @@ from stringcase import pascalcase, camelcase, snakecase
 from requests import Session
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry  # dynamic loading of module Retry by requests.packages
-from requests.exceptions import HTTPError
+from requests.exceptions import HTTPError, RequestException, ProxyError, SSLError, Timeout, ConnectionError
 from oauthlib.oauth2 import TokenExpiredError
 from requests_oauthlib import OAuth2Session
 
@@ -23,38 +23,8 @@ O365_API_VERSION = 'v2.0'  # v2.0 does not allow basic auth
 GRAPH_API_VERSION = 'v1.0'
 OAUTH_REDIRECT_URL = 'https://outlook.office365.com/owa/'
 
-RETRIES_STATUS_LIST = (500, 502, 503, 504)
+RETRIES_STATUS_LIST = (429, 500, 502, 503, 504)  # 429 is the TooManyRequests status code.
 RETRIES_BACKOFF_FACTOR = 0.5
-
-
-# Custom Exceptions
-class BaseApiException(HTTPError):
-
-    def __init__(self, response):
-        try:
-            error = response.json()
-        except ValueError:
-            error = {}
-        error = error.get('error', {})
-        super().__init__('{}: {} - {}'.format(response.status_code,
-                                              error.get('code', response.reason),
-                                              error.get('message', '')),
-                         response=response)
-
-
-class ApiBadRequestError(BaseApiException):
-    """ Generic Error for 400 Bad Request error code """
-    pass
-
-
-class ApiInternalServerError(BaseApiException):
-    """ Generic Error for 500 Internal Server Error error code """
-    pass
-
-
-class ApiOtherException(BaseApiException):
-    """ Group of all other posible exceptions """
-    pass
 
 
 DEFAULT_SCOPES = {
@@ -259,7 +229,7 @@ class Connection:
         :param requests_delay: number of miliseconds to wait between api calls
             The Api will respond with 429 Too many requests if more than 17 requests are made per second.
             Defaults to 200 miliseconds just in case more than 1 connection is making requests across multiple processes.
-        :param raise_http_errors: If True Http 4xx and 5xx status codes will raise a custom exception
+        :param raise_http_errors: If True Http 4xx and 5xx status codes will raise as exceptions
         :param request_retries: number of retries done when the server responds with 5xx error codes.
         :param token_file_name: custom token file name to be used when storing the token credentials.
         """
@@ -421,29 +391,14 @@ class Connection:
                 time.sleep((self.requests_delay - dif) / 1000)  # sleep needs seconds
         self.previous_request_at = time.time()
 
-    def naive_request(self, url, method, **kwargs):
-        """ A naive request without any Authorization headers """
-        method = method.lower()
-        assert method in self._allowed_methods, 'Method must be one of the allowed ones'
+    def _internal_request(self, request_obj, url, method, **kwargs):
+        """
+        Internal handling of requests. Handles Exceptions.
 
-        self._check_delay()  # sleeps if needed
-
-        log.info('Requesting ({}) URL: {}'.format(method.upper(), url))
-        log.info('Request parameters: {}'.format(kwargs))
-
-        response = self.naive_session.request(method, url, **kwargs)
-
-        log.info('Received response ({}) from URL {}'.format(response.status_code, response.url))
-        if not response.ok and self.raise_http_errors:
-            raise self.raise_api_exception(response)
-
-        return response
-
-    def request(self, url, method, **kwargs):
-        """ Makes a request to url
-
-        :param url: the requested url
-        :param method: method to use
+        :param request_obj: a requests session.
+        :param url: the url to be requested
+        :param method: the method used on the request
+        :param kwargs: any other payload to be passed to requests
         """
 
         method = method.lower()
@@ -459,58 +414,82 @@ class Connection:
             if 'data' in kwargs and kwargs['headers'].get('Content-type') == 'application/json':
                 kwargs['data'] = json.dumps(kwargs['data'])  # autoconvert to json
 
-        log.info('Requesting ({}) URL: {}'.format(method.upper(), url))
-        log.info('Request parameters: {}'.format(kwargs))
+        request_done = False
+        token_refreshed = False
 
-        # oauth2 authentication
+        while not request_done:
+            self._check_delay()  # sleeps if needed
+            try:
+                log.info('Requesting ({}) URL: {}'.format(method.upper(), url))
+                log.info('Request parameters: {}'.format(kwargs))
+                response = request_obj.request(method, url, **kwargs)  # auto_retry will occur inside this funcion call if enabled
+                response.raise_for_status()  # raise 4XX and 5XX error codes.
+                log.info('Received response ({}) from URL {}'.format(response.status_code, response.url))
+                request_done = True
+                return response
+            except TokenExpiredError:
+                # Token has expired refresh token and try again on the next loop
+                if token_refreshed:
+                    # Refresh token done but still TolenExpiredError raise
+                    raise RuntimeError('Token Refresh Operation not working')
+                log.info('Oauth Token is expired, fetching a new token')
+                self.refresh_token()
+                log.info('New oauth token fetched')
+                token_refreshed = True
+            except (ConnectionError, ProxyError, SSLError, Timeout) as e:
+                # We couldn't connect to the target url, raise error
+                log.debug('Connection Error calling: {}.{}'.format(url, 'Using proxy: {}'.format(self.proxy) if self.proxy else ''))
+                raise e  # re-raise exception
+            except HTTPError as e:
+                # Server response with 4XX or 5XX error status codes
+                status_code = int(e.response.status_code / 100)
+                if status_code == 4:
+                    # Client Error
+                    log.error('Client Error: {}'.format(str(e)))  # logged as error. Could be a library error or Api changes
+                else:
+                    # Server Error
+                    log.debug('Server Error: {}'.format(str(e)))
+                if self.raise_http_errors:
+                    raise e
+                else:
+                    return e.response
+            except RequestException as e:
+                # catch any other exception raised by requests
+                log.debug('Request Exception: {}'.format(str(e)))
+                raise e
+
+    def naive_request(self, url, method, **kwargs):
+        """ A naive request without any Authorization headers """
+        return self._internal_request(self.naive_session, url, method, **kwargs)
+
+    def oauth_request(self, url, method, **kwargs):
+        """ Makes a request to url using an oauth session """
+
+        # oauth authentication
         if not self.session:
             self.get_session()
-        self._check_delay()  # sleeps if needed
-        try:
-            response = self.session.request(method, url, **kwargs)
-        except TokenExpiredError:
-            log.info('Token is expired, fetching a new token')
-            self.refresh_token()
-            log.info('New token fetched')
-            response = self.session.request(method, url, **kwargs)
 
-        log.info('Received response ({}) from URL {}'.format(response.status_code, response.url))
-
-        if response.status_code == 429:  # too many requests
-            # Status Code 429 is not automatically retried by default.
-            retry_after = response.headers.get('retry-after')
-            reason = response.headers.get('rate-limit-reason')
-            log.info('The Server respond with 429: Too Many Requests. Reason {}. Retry After {} seconds.'.format(reason, retry_after))
-            # retry after seconds:
-            if retry_after < 6:
-                time.sleep(retry_after)
-            log.info('Retrying request now after waiting for {} seconds'.format(retry_after))
-            response = self.session.request(method, url, **kwargs)  # retrying request
-            log.info('Received response ({}) from URL {}'.format(response.status_code, response.url))
-
-        if not response.ok and self.raise_http_errors:
-            raise self.raise_api_exception(response)
-        return response
+        return self._internal_request(self.session, url, method, **kwargs)
 
     def get(self, url, params=None, **kwargs):
         """ Shorthand for self.request(url, 'get') """
-        return self.request(url, 'get', params=params, **kwargs)
+        return self.oauth_request(url, 'get', params=params, **kwargs)
 
     def post(self, url, data=None, **kwargs):
         """ Shorthand for self.request(url, 'post') """
-        return self.request(url, 'post', data=data, **kwargs)
+        return self.oauth_request(url, 'post', data=data, **kwargs)
 
     def put(self, url, data=None, **kwargs):
         """ Shorthand for self.request(url, 'put') """
-        return self.request(url, 'put', data=data, **kwargs)
+        return self.oauth_request(url, 'put', data=data, **kwargs)
 
     def patch(self, url, data=None, **kwargs):
         """ Shorthand for self.request(url, 'patch') """
-        return self.request(url, 'patch', data=data, **kwargs)
+        return self.oauth_request(url, 'patch', data=data, **kwargs)
 
     def delete(self, url, **kwargs):
         """ Shorthand for self.request(url, 'delete') """
-        return self.request(url, 'delete', **kwargs)
+        return self.oauth_request(url, 'delete', **kwargs)
 
     def _save_token(self, token, token_path=None):
         """ Save the specified token dictionary to a specified file path
@@ -564,17 +543,6 @@ class Connection:
             token_path.unlink()
             return True
         return False
-
-    @staticmethod
-    def raise_api_exception(response):
-        """ Raises a custom exception """
-        code = int(response.status_code / 100)
-        if code == 4:
-            return ApiBadRequestError(response)
-        elif code == 5:
-            return ApiInternalServerError(response)
-        else:
-            return ApiOtherException(response)
 
 
 def oauth_authentication_flow(client_id, client_secret, scopes=None, protocol=None):

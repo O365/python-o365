@@ -174,17 +174,12 @@ class Pagination(ApiComponent):
         if self.next_link is None:
             raise StopIteration()
 
-        try:
-            response = self.con.get(self.next_link)
-        except Exception as e:
-            log.error('Error while Paginating. Error: {}'.format(str(e)))
-            raise e
-
-        if response.status_code != 200:
-            log.debug('Failed Request while Paginating. Reason: {}'.format(response.reason))
+        response = self.con.get(self.next_link)
+        if not response:
             raise StopIteration()
 
         data = response.json()
+
         self.next_link = data.get(NEXT_LINK_KEYWORD, None) or None
         data = data.get('value', [])
         if self.constructor:

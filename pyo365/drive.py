@@ -67,7 +67,7 @@ class DownloadableMixin:
                 params['format'] = 'pdf'
 
             with self.con.get(url, stream=stream, params=params) as response:
-                if response.status_code != 200:
+                if not response:
                     log.debug('Donwloading driveitem Request failed: {}'.format(response.reason))
                     return False
                 with to_path.open(mode='wb') as output:
@@ -81,9 +81,6 @@ class DownloadableMixin:
             log.error('Error downloading driveitem {}. Error: {}'.format(self.name, str(e)))
             return False
 
-        if response.status_code != 200:
-            log.debug('Copying driveitem Request failed: {}'.format(response.reason))
-            return False
         return True
 
 
@@ -125,14 +122,8 @@ class CopyOperation(ApiComponent):
         if self.item_id:
             return True
 
-        try:
-            response = self.con.get(self.monitor_url)
-        except Exception as e:
-            log.error('Error retrieving monitor url: {}. Error: {}'.format(self.monitor_url, str(e)))
-            return False
-
-        if response.status_code != 202:
-            log.debug('Retrieving monitor url Request failed: {}'.format(response.reason))
+        response = self.con.get(self.monitor_url)
+        if not response:
             return False
 
         data = response.json()
@@ -208,17 +199,9 @@ class DriveItemVersion(ApiComponent, DownloadableMixin):
         """
         url = self.build_url(self._endpoints.get('restore').format(id=self.object_id))
 
-        try:
-            response = self.con.post(url)
-        except Exception as e:
-            log.error('Error restoring driveitem version {}. Error: {}'.format(self.name, str(e)))
-            return False
+        response = self.con.post(url)
 
-        if response.status_code != 204:
-            log.debug('Restoring driveitem version Request failed: {}'.format(response.reason))
-            return False
-
-        return True
+        return bool(response)
 
     def download(self, to_path=None, name=None, chunk_size='auto', convert_to_pdf=False):
         """
@@ -290,14 +273,8 @@ class DriveItemPermission(ApiComponent):
         else:
             raise ValueError('"{}" is not a valid share_type'.format(roles))
 
-        try:
-            response = self.con.patch(url, data=data)
-        except Exception as e:
-            log.error('Error updateing permission {}. Error: {}'.format(self.object_id, str(e)))
-            return False
-
-        if response.status_code != 200:
-            log.debug('Updating permission Request failed: {}'.format(response.reason))
+        response = self.con.patch(url, data=data)
+        if not response:
             return False
 
         self.roles = data.get('roles', [])
@@ -310,14 +287,8 @@ class DriveItemPermission(ApiComponent):
 
         url = self.build_url(self._endpoints.get('permission').format(driveitem_id=self.driveitem_id, id=self.object_id))
 
-        try:
-            response = self.con.delete(url)
-        except Exception as e:
-            log.error('Error deleting permission {}. Error: {}'.format(self.object_id, str(e)))
-            return False
-
-        if response.status_code != 204:
-            log.debug('Deleting permission Request failed: {}'.format(response.reason))
+        response = self.con.delete(url)
+        if not response:
             return False
 
         self.object_id = None
@@ -458,14 +429,8 @@ class DriveItem(ApiComponent):
         if size is not None:
             params['select'] = size
 
-        try:
-            response = self.con.get(url, params=params)
-        except Exception as e:
-            log.error('Error requesting thumbnails for item {}. Error: {}'.format(self.object_id, str(e)))
-            return []
-
-        if response.status_code != 200:
-            log.debug('Getting item thumbnails Request failed: {}'.format(response.reason))
+        response = self.con.get(url, params=params)
+        if not response:
             return []
 
         data = response.json()
@@ -489,14 +454,8 @@ class DriveItem(ApiComponent):
         if not data:
             return False
 
-        try:
-            response = self.con.patch(url, data=data)
-        except Exception as e:
-            log.error('Error updating driveitem {}. Error: {}'.format(self.name, str(e)))
-            return False
-
-        if response.status_code != 200:
-            log.debug('Updating driveitem Request failed: {}'.format(response.reason))
+        response = self.con.patch(url, data=data)
+        if not response:
             return False
 
         new_data = response.json()
@@ -516,14 +475,8 @@ class DriveItem(ApiComponent):
 
         url = self.build_url(self._endpoints.get('item').format(id=self.object_id))
 
-        try:
-            response = self.con.delete(url)
-        except Exception as e:
-            log.error('Error deleting driveitem {}. Error: {}'.format(self.name, str(e)))
-            return False
-
-        if response.status_code != 204:
-            log.debug('Deleting driveitem Request failed: {}'.format(response.reason))
+        response = self.con.delete(url)
+        if not response:
             return False
 
         self.object_id = None
@@ -559,14 +512,8 @@ class DriveItem(ApiComponent):
 
         data = {'parentReference': {'id': target_id}}
 
-        try:
-            response = self.con.patch(url, data=data)
-        except Exception as e:
-            log.error('Error moving driveitem {}. Error: {}'.format(self.name, str(e)))
-            return False
-
-        if response.status_code != 200:
-            log.debug('Moving driveitem Request failed: {}'.format(response.reason))
+        response = self.con.patch(url, data=data)
+        if not response:
             return False
 
         self.parent_id = target_id
@@ -615,14 +562,8 @@ class DriveItem(ApiComponent):
                 name = name + Path(self.name).suffix
             data['name'] = name
 
-        try:
-            response = self.con.post(url, data=data)
-        except Exception as e:
-            log.error('Error copying driveitem {}. Error: {}'.format(self.name, str(e)))
-            return None
-
-        if response.status_code != 202:
-            log.debug('Copying driveitem Request failed: {}'.format(response.reason))
+        response = self.con.post(url, data=data)
+        if not response:
             return None
 
         # Find out if the server has run a Sync or Async operation
@@ -644,14 +585,8 @@ class DriveItem(ApiComponent):
             return []
         url = self.build_url(self._endpoints.get('versions').format(id=self.object_id))
 
-        try:
-            response = self.con.get(url)
-        except Exception as e:
-            log.error('Error requesting versions of {}. Error: {}'.format(self.name, str(e)))
-            return []
-
-        if response.status_code != 200:
-            log.debug('Getting item versions Request failed: {}'.format(response.reason))
+        response = self.con.get(url)
+        if not response:
             return []
 
         data = response.json()
@@ -666,15 +601,9 @@ class DriveItem(ApiComponent):
 
         url = self.build_url(self._endpoints.get('version').format(id=self.object_id, version_id=version_id))
 
-        try:
-            response = self.con.get(url)
-        except Exception as e:
-            log.error('Error requesting version {} of {}. Error: {}'.format(version_id, self.name, str(e)))
-            return []
-
-        if response.status_code != 200:
-            log.debug('Getting item version Request failed: {}'.format(response.reason))
-            return []
+        response = self.con.get(url)
+        if not response:
+            return None
 
         data = response.json()
 
@@ -697,14 +626,9 @@ class DriveItem(ApiComponent):
             'type': share_type,
             'scope': share_scope
         }
-        try:
-            response = self.con.post(url, data=data)
-        except Exception as e:
-            log.error('Error requesting share link of {}. Error: {}'.format(self.name, str(e)))
-            return None
 
-        if response.status_code != 201:
-            log.debug('Getting share link Request failed: {}'.format(response.reason))
+        response = self.con.post(url, data=data)
+        if not response:
             return None
 
         data = response.json()
@@ -758,14 +682,8 @@ class DriveItem(ApiComponent):
         if send_email and message:
             data['message'] = message
 
-        try:
-            response = self.con.post(url, data=data)
-        except Exception as e:
-            log.error('Error requesting share link of {}. Error: {}'.format(self.name, str(e)))
-            return None
-
-        if response.status_code != 200:
-            log.debug('Getting share link Request failed: {}'.format(response.reason))
+        response = self.con.post(url, data=data)
+        if not response:
             return None
 
         data = response.json()
@@ -779,14 +697,8 @@ class DriveItem(ApiComponent):
 
         url = self.build_url(self._endpoints.get('permissions').format(id=self.object_id))
 
-        try:
-            response = self.con.get(url)
-        except Exception as e:
-            log.error('Error requesting permissions of {}. Error: {}'.format(self.name, str(e)))
-            return None
-
-        if response.status_code != 200:
-            log.debug('Getting permissions Request failed: {}'.format(response.reason))
+        response = self.con.get(url)
+        if not response:
             return None
 
         data = response.json()
@@ -874,14 +786,8 @@ class Folder(DriveItem):
             else:
                 params.update(query.as_params())
 
-        try:
-            response = self.con.get(url, params=params)
-        except Exception as e:
-            log.error('Error requesting child folders of {}. Error: {}'.format(self.name, str(e)))
-            return []
-
-        if response.status_code != 200:
-            log.debug('Getting folders Request failed: {}'.format(response.reason))
+        response = self.con.get(url, params=params)
+        if not response:
             return []
 
         data = response.json()
@@ -911,14 +817,8 @@ class Folder(DriveItem):
         if description:
             data['description'] = description
 
-        try:
-            response = self.con.post(url, data=data)
-        except Exception as e:
-            log.error('Error creating folder {}. Error: {}'.format(self.name, str(e)))
-            return None
-
-        if response.status_code != 201:
-            log.debug('Creating folder Request failed: {}'.format(response.reason))
+        response = self.con.post(url, data=data)
+        if not response:
             return None
 
         folder = response.json()
@@ -971,14 +871,8 @@ class Folder(DriveItem):
             else:
                 params.update(query.as_params())
 
-        try:
-            response = self.con.get(url, params=params)
-        except Exception as e:
-            log.error('Error requesting search for {} on folder {}. Error: {}'.format(search_text, self.name, str(e)))
-            return []
-
-        if response.status_code != 200:
-            log.debug('Getting search Request failed: {}'.format(response.reason))
+        response = self.con.get(url, params=params)
+        if not response:
             return []
 
         data = response.json()
@@ -1018,30 +912,24 @@ class Folder(DriveItem):
             # headers = None
             with item.open(mode='rb') as file:
                 data = file.read()
-            try:
-                response = self.con.put(url, headers=headers, data=data)
-            except Exception as e:
-                log.error('Error uploading file {} on folder {}. Error: {}'.format(item.name, self.name, str(e)))
-                return None
 
-            if response.status_code != 201:
-                log.debug('Getting search Request failed: {}'.format(response.reason))
+            response = self.con.put(url, headers=headers, data=data)
+            if not response:
                 return None
 
             data = response.json()
+
             return self._classifier(data)(parent=self, **{self._cloud_data_key: data})
         else:
             # Resumable Upload
             url = self.build_url(self._endpoints.get('create_upload_session').format(id=self.object_id, filename=item.name))
-            try:
-                response = self.con.post(url)
-            except Exception as e:
-                log.error('Error creating upload session for file {} on folder {}. Error: {}'.format(item.name, self.name, str(e)))
+
+            response = self.con.post(url)
+            if not response:
                 return None
-            if response.status_code != 200:
-                log.debug('Creating upload session Request failed: {}'.format(response.reason))
-                return None
+
             data = response.json()
+
             upload_url = data.get(self._cc('uploadUrl'), None)
             if upload_url is None:
                 log.error('Create upload session response without upload_url for file {}'.format(item.name))
@@ -1060,14 +948,10 @@ class Folder(DriveItem):
                         'Content-Range': 'bytes {}-{}/{}'.format(current_bytes, current_bytes + transfer_bytes - 1, file_size)
                     }
                     current_bytes += transfer_bytes
-                    try:
-                        # this request mut NOT send the authorization header. so we use a naive simple request.
-                        response = self.con.naive_request(upload_url, 'PUT', data=data, headers=headers)
-                    except Exception as e:
-                        log.error('Error uploading chunk for file {} on folder {}. Error: {}'.format(item.name, self.name, str(e)))
-                        return None
-                    if response.status_code not in (200, 201, 202):
-                        log.debug('Uploadong chunk Request failed: {}'.format(response.reason))
+
+                    # this request mut NOT send the authorization header. so we use a naive simple request.
+                    response = self.con.naive_request(upload_url, 'PUT', data=data, headers=headers)
+                    if not response:
                         return None
 
                     if response.status_code != 202:
@@ -1143,15 +1027,9 @@ class Drive(ApiComponent):
             # we don't know the drive_id so go to the default drive
             url = self.build_url(self._endpoints.get('get_root_item_default'))
 
-        try:
-            response = self.con.get(url)
-        except Exception as e:
-            log.error('Error requesting root folder for drive: {}. Error: {}'.format(self.object_id, str(e)))
-            return []
-
-        if response.status_code != 200:
-            log.debug('Getting root folder Request failed: {}'.format(response.reason))
-            return []
+        response = self.con.get(url)
+        if not response:
+            return None
 
         data = response.json()
 
@@ -1178,14 +1056,8 @@ class Drive(ApiComponent):
             else:
                 params.update(query.as_params())
 
-        try:
-            response = self.con.get(url, params=params)
-        except Exception as e:
-            log.error('Error requesting child items of {}. Error: {}'.format(self.name, str(e)))
-            return []
-
-        if response.status_code != 200:
-            log.debug('Getting child items Request failed: {}'.format(response.reason))
+        response = self.con.get(url, params=params)
+        if not response:
             return []
 
         data = response.json()
@@ -1243,14 +1115,8 @@ class Drive(ApiComponent):
             # we don't know the drive_id so go to the default drive
             url = self.build_url(self._endpoints.get('get_item_default').format(item_id=item_id))
 
-        try:
-            response = self.con.get(url)
-        except Exception as e:
-            log.error('Error requesting item {}. Error: {}'.format(item_id, str(e)))
-            return None
-
-        if response.status_code != 200:
-            log.debug('Getting item Request failed: {}'.format(response.reason))
+        response = self.con.get(url)
+        if not response:
             return None
 
         data = response.json()
@@ -1270,14 +1136,8 @@ class Drive(ApiComponent):
             # we don't know the drive_id so go to the default
             url = self.build_url(self._endpoints.get('get_special_default'))
 
-        try:
-            response = self.con.get(url)
-        except Exception as e:
-            log.error('Error requesting special folder {}. Error: {}'.format(name, str(e)))
-            return None
-
-        if response.status_code != 200:
-            log.debug('Getting special folder Request failed: {}'.format(response.reason))
+        response = self.con.get(url)
+        if not response:
             return None
 
         data = response.json()
@@ -1305,14 +1165,8 @@ class Drive(ApiComponent):
         else:
             url = self.build_url(self._endpoints.get('get_drive').format(id=self.object_id))
 
-        try:
-            response = self.con.get(url)
-        except Exception as e:
-            log.error('Error getting drive {}. Error: {}'.format('default_drive', str(e)))
-            return False
-
-        if response.status_code != 200:
-            log.debug('Getting drive Request failed: {}'.format(response.reason))
+        response = self.con.get(url)
+        if not response:
             return False
 
         drive = response.json()
@@ -1355,14 +1209,8 @@ class Drive(ApiComponent):
             else:
                 params.update(query.as_params())
 
-        try:
-            response = self.con.get(url, params=params)
-        except Exception as e:
-            log.error('Error requesting search for {} on drive {}. Error: {}'.format(search_text, self.name, str(e)))
-            return []
-
-        if response.status_code != 200:
-            log.debug('Getting search Request failed: {}'.format(response.reason))
+        response = self.con.get(url, params=params)
+        if not response:
             return []
 
         data = response.json()
@@ -1415,14 +1263,8 @@ class Storage(ApiComponent):
 
         url = self.build_url(self._endpoints.get('default_drive'))
 
-        try:
-            response = self.con.get(url)
-        except Exception as e:
-            log.error('Error getting drive {}. Error: {}'.format('default_drive', str(e)))
-            return None
-
-        if response.status_code != 200:
-            log.debug('Getting drive Request failed: {}'.format(response.reason))
+        response = self.con.get(url)
+        if not response:
             return None
 
         drive = response.json()
@@ -1441,14 +1283,8 @@ class Storage(ApiComponent):
 
         url = self.build_url(self._endpoints.get('get_drive').format(id=drive_id))
 
-        try:
-            response = self.con.get(url)
-        except Exception as e:
-            log.error('Error getting drive {}. Error: {}'.format(drive_id, str(e)))
-            return None
-
-        if response.status_code != 200:
-            log.debug('Getting drive Request failed: {}'.format(response.reason))
+        response = self.con.get(url)
+        if not response:
             return None
 
         drive = response.json()
@@ -1476,14 +1312,8 @@ class Storage(ApiComponent):
             else:
                 params.update(query.as_params())
 
-        try:
-            response = self.con.get(url, params=params)
-        except Exception as e:
-            log.error('Error requesting drives. Error: {}'.format(str(e)))
-            return []
-
-        if response.status_code != 200:
-            log.debug('Getting drives Request failed: {}'.format(response.reason))
+        response = self.con.get(url, params=params)
+        if not response:
             return []
 
         data = response.json()
