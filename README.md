@@ -66,6 +66,8 @@ Project dependencies installed by pip:
  - python-dateutil
  - tzlocal
  - pytz
+ 
+ The first step to be able to work with this library is to register an application and retrieve the auth token. See [Authentication](#authentication).
 
 ## Protocols
 Protocols handles the aspects of comunications between different APIs.
@@ -116,7 +118,6 @@ shared_mailbox_messages = account.mailbox().get_messages()
 ```
  
 
-
 Instead of defining the resource used at the account or protocol level, you can provide it per use case as follows:
 ```python
 # ...
@@ -145,6 +146,7 @@ The `Connection` Class handles the authentication.
 
 #### Oauth Authentication
 This section is explained using Microsoft Graph Protocol, almost the same applies to the Office 365 REST API.
+
 
 ##### Permissions and Scopes:
 When using oauth you create an application and allow some resources to be accesed and used by it's users.
@@ -216,12 +218,33 @@ con = Connection(credentials, scopes=scopes_graph)
     
     If your application needs to work for more than 90 days without user interaction and without interacting with the API, then you must implement a periodic call to `Connection.refresh_token` before the 90 days have passed.
 
-    __You can use the helper method `oauth_authentication_flow`__ to follow the authentication flow easely.
+
+##### Using pyo365 to authenticate
+
+You can manually authenticate by using a single `Connection` instance as described before or use the helper methods provided by the library.
+
+1. `account.authenticate`:
+    
+    This is the preferred way for performing authentication.
+    
+    Create an `Account` instance and authenticate using the `authenticate` method:
+    ```python
+    from pyo365 import Account
+ 
+    account = Account(credentials=('client_id', 'client_secret'))
+    result = account.authenticate(scopes=['basic', 'message_all'])  # request a token for this scopes
+ 
+    # this will ask to visit the app consent screen where the user will be asked to give consent on the requested scopes.
+    # then the user will have to provide the result url afeter consent. 
+    # if all goes as expected, result will be True and a token will be stored in the default location.
+    ```
+    
+2. `oauth_authentication_flow`:
      
     ```python
     from pyo365 import oauth_authentication_flow
     
-    oauth_authentication_flow('client_id', 'client_secret', ['scopes_required'])
+    result = oauth_authentication_flow('client_id', 'client_secret', ['scopes_required'])
     ```
     
 ## Account Class and Modularity <a name="account"></a>
