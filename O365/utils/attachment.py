@@ -269,7 +269,7 @@ class BaseAttachments(ApiComponent):
         if attachments:
             if isinstance(attachments, (str, Path)):
                 attachments = [attachments]
-            if isinstance(attachments, (list, tuple)):
+            if isinstance(attachments, (list, tuple, set)):
                 # User provided attachments
                 attachments_temp = [self._attachment_constructor(attachment, parent=self)
                                     for attachment in attachments]
@@ -278,7 +278,7 @@ class BaseAttachments(ApiComponent):
                 attachments_temp = [self._attachment_constructor({self._cloud_data_key: attachment}, parent=self, on_cloud=True)
                                     for attachment in attachments.get(self._cloud_data_key, [])]
             else:
-                raise ValueError('Attachments must be a list or tuple')
+                raise ValueError('Attachments must be a str or Path or a list, tuple or set of the former')
 
             self.__attachments.extend(attachments_temp)
             self._update_parent_attachments()

@@ -1,4 +1,4 @@
-from O365.connection import Connection, Protocol, MSGraphProtocol
+from O365.connection import Connection, Protocol, MSGraphProtocol, oauth_authentication_flow
 from O365.drive import Storage
 from O365.utils import ME_RESOURCE
 from O365.message import Message
@@ -10,7 +10,14 @@ from O365.calendar import Schedule
 class Account(object):
     """ Class helper to integrate all components into a single object """
 
-    def __init__(self, credentials, *, scopes=None, protocol=None, main_resource=ME_RESOURCE, **kwargs):
+    def __init__(self, credentials, *, protocol=None, main_resource=ME_RESOURCE, **kwargs):
+        """
+        Account constructor.
+        :param credentials: a tuple containing the client_id and client_secret
+        :param protocol: the protocol to be used in this account instance
+        :param main_resource: the resource to be used by this account
+        :param kwargs: any extra args to be passed to the Connection instance
+        """
 
         protocol = protocol or MSGraphProtocol  # defaults to Graph protocol
         self.protocol = protocol(default_resource=main_resource, **kwargs) if isinstance(protocol, type) else protocol
@@ -18,7 +25,7 @@ class Account(object):
         if not isinstance(self.protocol, Protocol):
             raise ValueError("'protocol' must be a subclass of Protocol")
 
-        self.con = kwargs.get('connection') or Connection(credentials, scopes=self.protocol.get_scopes_for(scopes))
+        self.con = Connection(credentials, **kwargs)
         self.main_resource = main_resource
 
     def __repr__(self):
@@ -26,6 +33,17 @@ class Account(object):
             return 'Account Client Id: {}'.format(self.con.auth[0])
         else:
             return 'Unidentified Account'
+
+    def authenticate(self, *, scopes, **kwargs):
+        """
+        Performs the oauth authentication flow resulting in a stored token.
+        It uses the credentials passed on instantiation
+        :param scopes: a list of protocol user scopes to be converted by the protocol
+        :param kwargs: other configuration to be passed to the Connection instance
+        """
+        kwargs.setdefault('token_file_name', self.con.token_path.name)
+
+        return oauth_authentication_flow(*self.con.auth, scopes=scopes, protocol=self.protocol, **kwargs)
 
     @property
     def connection(self):

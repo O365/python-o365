@@ -327,7 +327,7 @@ class Connection:
         if self.session is None:
             raise RuntimeError("Fist call 'get_authorization_url' to generate a valid oauth object")
 
-        _, client_secret = self.auth
+        client_id, client_secret = self.auth
 
         # Allow token scope to not match requested scope. (Other auth libraries allow
         # this, but Requests-OAuthlib raises exception on scope mismatch by default.)
@@ -337,6 +337,7 @@ class Connection:
         try:
             self.token = self.session.fetch_token(token_url=self._oauth2_token_url,
                                                   authorization_response=authorizated_url,
+                                                  client_id=client_id,
                                                   client_secret=client_secret)
         except Exception as e:
             log.error('Unable to fetch auth token. Error: {}'.format(str(e)))
@@ -545,22 +546,36 @@ class Connection:
         return False
 
 
-def oauth_authentication_flow(client_id, client_secret, scopes=None, protocol=None):
-    """ A helper method to get authenticate and get the oauth token """
+def oauth_authentication_flow(client_id, client_secret, scopes=None, protocol=None, **kwargs):
+    """
+    A helper method to authenticate and get the oauth token
+    :param client_id: the client_id
+    :param client_secret: the client_secret
+    :param scopes: a list of protocol user scopes to be converted by the protocol
+    :param protocol: the protocol to be used. Defaults to MSGraphProtocol
+    :param kwargs: other configuration to be passed to the Connection instance
+    """
 
     credentials = (client_id, client_secret)
 
     protocol = protocol or MSGraphProtocol()
 
-    con = Connection(credentials, scopes=protocol.get_scopes_for(scopes))
+    con = Connection(credentials, scopes=protocol.get_scopes_for(scopes), **kwargs)
 
     consent_url = con.get_authorization_url()
     print('Visit the following url to give consent:')
     print(consent_url)
 
     token_url = input('Paste the authenticated url here: ')
-    result = con.request_token(token_url)
-    if result:
-        print('Authentication Flow Completed. Oauth Access Token Stored. You can now use the API.')
+
+    if token_url:
+        result = con.request_token(token_url)
+        if result:
+            print('Authentication Flow Completed. Oauth Access Token Stored. You can now use the API.')
+        else:
+            print('Something go wrong. Please try again.')
+
+        return bool(result)
     else:
-        print('Something go wrong. Please try again.')
+        print('Authentication Flow aborted.')
+        return False
