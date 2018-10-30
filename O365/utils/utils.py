@@ -184,7 +184,7 @@ class Pagination(ApiComponent):
         data = data.get('value', [])
         if self.constructor:
             # Everything received from the cloud must be passed with self._cloud_data_key
-            if callable(self.constructor):
+            if callable(self.constructor) and not isinstance(self.constructor, type):  # it's callable but its not a Class
                 self.data = [self.constructor(value)(parent=self.parent, **{self._cloud_data_key: value}) for value in data]
             else:
                 self.data = [self.constructor(parent=self.parent, **{self._cloud_data_key: value}) for value in data]
@@ -377,7 +377,7 @@ class Query:
                     word = self.protocol.timezone.localize(word)  # localize datetime into local tz
                 if word.tzinfo != pytz.utc:
                     word = word.astimezone(pytz.utc)  # transform local datetime to utc
-            word = "'{}'".format(word.isoformat())  # convert datetime to isoformat
+            word = '{}'.format(word.isoformat())  # convert datetime to isoformat
         elif isinstance(word, bool):
             word = str(word).lower()
         return word

@@ -239,7 +239,7 @@ class Connection:
         self.auth = credentials
         self.scopes = scopes
         self.store_token = True
-        self.token_path = Path() / token_file_name if token_file_name else self._default_token_path
+        self.token_path = (Path() / token_file_name) if token_file_name else self._default_token_path
         self.token = None
 
         self.session = None  # requests Oauth2Session object
@@ -356,7 +356,7 @@ class Connection:
 
         :param token_path: Only oauth: full path to where the token should be load from
         """
-        self.token = self.token or self._load_token(token_path)
+        self.token = self.token or self._load_token(token_path or self.token_path)
 
         if self.token:
             client_id, _ = self.auth
@@ -498,9 +498,8 @@ class Connection:
         :param token: token dictionary returned by the oauth token request
         :param token_path: Path object to where the file is to be saved
         """
-
         if not token_path:
-            token_path = self._default_token_path
+            token_path = self.token_path or self._default_token_path
         else:
             if not isinstance(token_path, Path):
                 raise ValueError('token_path must be a valid Path from pathlib')
@@ -515,9 +514,8 @@ class Connection:
 
         :param token_path: Path object to the file with token information saved
         """
-
         if not token_path:
-            token_path = self._default_token_path
+            token_path = self.token_path or self._default_token_path
         else:
             if not isinstance(token_path, Path):
                 raise ValueError('token_path must be a valid Path from pathlib')
@@ -533,9 +531,8 @@ class Connection:
 
         :param token_path: Path object to where the token is saved
         """
-
         if not token_path:
-            token_path = self._default_token_path
+            token_path = self.token_path or self._default_token_path
         else:
             if not isinstance(token_path, Path):
                 raise ValueError('token_path must be a valid Path from pathlib')
