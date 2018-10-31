@@ -79,7 +79,14 @@ You can use one or the other:
 - `MSGraphProtocol` to use the [Microsoft Graph API](https://developer.microsoft.com/en-us/graph/docs/concepts/overview)
 - `MSOffice365Protocol` to use the [Office 365 API](https://msdn.microsoft.com/en-us/office/office365/api/api-catalog)
 
-Both protocols are similar but the Graph one has access to more resources (for example OneDrive). It also depends on the api version used.
+Both protocols are similar but consider the following:
+
+Reasons to use `MSGraphProtocol`:
+- It is the recommended Protocol by Microsoft.
+- It can access more resources over Office 365 (for example OneDrive)
+
+Reasons to use `MSOffice365Protocol`:
+- It can send emails with attachments up to 150 MB. MSGraph only allows 4MB on each request.
 
 The default protocol used by the `Account` Class is `MSGraphProtocol`.
 
