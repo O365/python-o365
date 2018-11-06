@@ -1,8 +1,7 @@
-from pathlib import Path
 #from O365 import Account
 
-class TestMessage:
 
+class TestMailBox:
 
     def setup_class(self):
         pass
