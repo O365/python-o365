@@ -813,7 +813,7 @@ class Folder(DriveItem):
 
         url = self.build_url(self._endpoints.get('list_items').format(id=self.object_id))
 
-        data = {'name': name}
+        data = {'name': name, 'folder': {}}
         if description:
             data['description'] = description
 
