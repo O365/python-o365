@@ -79,8 +79,8 @@ class ApiComponent:
 
     @staticmethod
     def _parse_resource(resource):
-        resource = resource.strip() if resource else resource
         """ Parses and completes resource information """
+        resource = resource.strip() if resource else resource
         if resource == ME_RESOURCE:
             return resource
         elif resource == USERS_RESOURCE:
