@@ -1,0 +1,395 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Mailbox &mdash; O365  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> O365
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">O365 API</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">O365</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Mailbox</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/mailbox.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-O365.mailbox">
+<span id="mailbox"></span><h1>Mailbox<a class="headerlink" href="#module-O365.mailbox" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="O365.mailbox.Folder">
+<em class="property">class </em><code class="descclassname">O365.mailbox.</code><code class="descname">Folder</code><span class="sig-paren">(</span><em>*</em>, <em>parent=None</em>, <em>con=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#Folder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.mailbox.Folder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">O365.utils.utils.ApiComponent</span></code></p>
+<p>A Mail Folder representation</p>
+<dl class="method">
+<dt id="O365.mailbox.Folder.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>*</em>, <em>parent=None</em>, <em>con=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#Folder.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.mailbox.Folder.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Object initialization
+:param protocol: A protocol class or instance to be used with this connection
+:param main_resource: main_resource to be used in these API comunications
+:param kwargs: Extra arguments</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.mailbox.Folder.copy_folder">
+<code class="descname">copy_folder</code><span class="sig-paren">(</span><em>to_folder</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#Folder.copy_folder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.mailbox.Folder.copy_folder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Copy this folder and it’s contents to into another folder
+:param to_folder: the destination Folder instance or a string folder_id
+:return The copied folder object</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.mailbox.Folder.create_child_folder">
+<code class="descname">create_child_folder</code><span class="sig-paren">(</span><em>folder_name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#Folder.create_child_folder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.mailbox.Folder.create_child_folder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a new child folder
+:return the new Folder Object or None</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.mailbox.Folder.delete">
+<code class="descname">delete</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#Folder.delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.mailbox.Folder.delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deletes this folder</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.mailbox.Folder.delete_message">
+<code class="descname">delete_message</code><span class="sig-paren">(</span><em>message</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#Folder.delete_message"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.mailbox.Folder.delete_message" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deletes a stored message by it’s id</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.mailbox.Folder.get_folder">
+<code class="descname">get_folder</code><span class="sig-paren">(</span><em>*</em>, <em>folder_id=None</em>, <em>folder_name=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#Folder.get_folder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.mailbox.Folder.get_folder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a folder by it’s id or name
+:param folder_id: the folder_id to be retrieved. Can be any folder Id (child or not)
+:param folder_name: the folder name to be retrieved. Must be a child of this folder.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.mailbox.Folder.get_folders">
+<code class="descname">get_folders</code><span class="sig-paren">(</span><em>limit=None</em>, <em>*</em>, <em>query=None</em>, <em>order_by=None</em>, <em>batch=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#Folder.get_folders"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.mailbox.Folder.get_folders" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of child folders</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>limit</strong> – limits the result set. Over 999 uses batch.</li>
+<li><strong>query</strong> – applies a filter to the request such as “displayName eq ‘HelloFolder’”</li>
+<li><strong>order_by</strong> – orders the result set based on this condition</li>
+<li><strong>batch</strong> – Returns a custom iterator that retrieves items in batches allowing to retrieve more items than the limit.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.mailbox.Folder.get_message">
+<code class="descname">get_message</code><span class="sig-paren">(</span><em>query=None</em>, <em>*</em>, <em>download_attachments=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#Folder.get_message"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.mailbox.Folder.get_message" title="Permalink to this definition">¶</a></dt>
+<dd><p>A shorcut to get_messages with limit=1</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.mailbox.Folder.get_messages">
+<code class="descname">get_messages</code><span class="sig-paren">(</span><em>limit=25</em>, <em>*</em>, <em>query=None</em>, <em>order_by=None</em>, <em>batch=None</em>, <em>download_attachments=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#Folder.get_messages"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.mailbox.Folder.get_messages" title="Permalink to this definition">¶</a></dt>
+<dd><p>Downloads messages from this folder</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>limit</strong> – limits the result set. Over 999 uses batch.</li>
+<li><strong>query</strong> – applies a filter to the request such as ‘displayName:HelloFolder’</li>
+<li><strong>order_by</strong> – orders the result set based on this condition</li>
+<li><strong>batch</strong> – Returns a custom iterator that retrieves items in batches allowing
+to retrieve more items than the limit. Download_attachments is ignored.</li>
+<li><strong>download_attachments</strong> – downloads message attachments</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.mailbox.Folder.get_parent_folder">
+<code class="descname">get_parent_folder</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#Folder.get_parent_folder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.mailbox.Folder.get_parent_folder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the parent folder from attribute self.parent or getting it from the cloud</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.mailbox.Folder.message_constructor">
+<code class="descname">message_constructor</code><a class="headerlink" href="#O365.mailbox.Folder.message_constructor" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="message.html#O365.message.Message" title="O365.message.Message"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.message.Message</span></code></a></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.mailbox.Folder.move_folder">
+<code class="descname">move_folder</code><span class="sig-paren">(</span><em>to_folder</em>, <em>*</em>, <em>update_parent_if_changed=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#Folder.move_folder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.mailbox.Folder.move_folder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Move this folder to another folder
+:param to_folder: the destination Folder instance or a string folder_id
+:param update_parent_if_changed: updates self.parent with the new parent Folder if changed</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.mailbox.Folder.new_message">
+<code class="descname">new_message</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#Folder.new_message"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.mailbox.Folder.new_message" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a new draft message in this folder</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.mailbox.Folder.refresh_folder">
+<code class="descname">refresh_folder</code><span class="sig-paren">(</span><em>update_parent_if_changed=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#Folder.refresh_folder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.mailbox.Folder.refresh_folder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Re-donwload folder data
+Inbox Folder will be unable to download its own data (no folder_id)
+:param update_parent_if_changed: updates self.parent with the new parent Folder if changed</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.mailbox.Folder.update_folder_name">
+<code class="descname">update_folder_name</code><span class="sig-paren">(</span><em>name</em>, <em>update_folder_data=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#Folder.update_folder_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.mailbox.Folder.update_folder_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Change this folder name</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="O365.mailbox.MailBox">
+<em class="property">class </em><code class="descclassname">O365.mailbox.</code><code class="descname">MailBox</code><span class="sig-paren">(</span><em>*</em>, <em>parent=None</em>, <em>con=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#MailBox"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.mailbox.MailBox" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#O365.mailbox.Folder" title="O365.mailbox.Folder"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.mailbox.Folder</span></code></a></p>
+<dl class="method">
+<dt id="O365.mailbox.MailBox.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>*</em>, <em>parent=None</em>, <em>con=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#MailBox.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.mailbox.MailBox.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Object initialization
+:param protocol: A protocol class or instance to be used with this connection
+:param main_resource: main_resource to be used in these API comunications
+:param kwargs: Extra arguments</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.mailbox.MailBox.deleted_folder">
+<code class="descname">deleted_folder</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#MailBox.deleted_folder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.mailbox.MailBox.deleted_folder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns this mailbox DeletedItems Folder</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.mailbox.MailBox.drafts_folder">
+<code class="descname">drafts_folder</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#MailBox.drafts_folder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.mailbox.MailBox.drafts_folder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns this mailbox Drafs Folder</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.mailbox.MailBox.folder_constructor">
+<code class="descname">folder_constructor</code><a class="headerlink" href="#O365.mailbox.MailBox.folder_constructor" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="#O365.mailbox.Folder" title="O365.mailbox.Folder"><code class="xref py py-class docutils literal notranslate"><span class="pre">Folder</span></code></a></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.mailbox.MailBox.inbox_folder">
+<code class="descname">inbox_folder</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#MailBox.inbox_folder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.mailbox.MailBox.inbox_folder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns this mailbox Inbox</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.mailbox.MailBox.junk_folder">
+<code class="descname">junk_folder</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#MailBox.junk_folder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.mailbox.MailBox.junk_folder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns this mailbox Junk Folder</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.mailbox.MailBox.outbox_folder">
+<code class="descname">outbox_folder</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#MailBox.outbox_folder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.mailbox.MailBox.outbox_folder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns this mailbox Outbox Folder</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.mailbox.MailBox.sent_folder">
+<code class="descname">sent_folder</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#MailBox.sent_folder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.mailbox.MailBox.sent_folder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns this mailbox SentItems Folder</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Narcolapser
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

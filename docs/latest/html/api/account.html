@@ -171,13 +171,17 @@ specified credentials</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>credentials</strong> – a tuple containing the client_id and client_secret</li>
-<li><strong>protocol</strong> – the protocol to be used in this account instance</li>
-<li><strong>main_resource</strong> – the resource to be used by this account
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>credentials</strong> (<em>tuple</em>) – a tuple containing the client_id
+and client_secret</li>
+<li><strong>protocol</strong> (<a class="reference internal" href="connection.html#O365.connection.Protocol" title="O365.connection.Protocol"><em>Protocol</em></a>) – the protocol to be used in this account</li>
+<li><strong>main_resource</strong> (<em>str</em>) – the resource to be used by this account
 (‘me’ or ‘users’)</li>
 <li><strong>kwargs</strong> – any extra args to be passed to the Connection instance</li>
 </ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><strong>ValueError</strong> – if an invalid protocol is passed</p>
 </td>
 </tr>
 </tbody>
@@ -187,26 +191,54 @@ specified credentials</p>
 <dl class="method">
 <dt id="O365.account.Account.address_book">
 <code class="descname">address_book</code><span class="sig-paren">(</span><em>*</em>, <em>resource=None</em>, <em>address_book='personal'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/account.html#Account.address_book"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.account.Account.address_book" title="Permalink to this definition">¶</a></dt>
-<dd><p>Creates Address Book instance
-:param resource: Custom resource to be used in this address book. Defaults to parent main_resource.
-:param address_book: Choose from Personal or Gal (Global Address List)</p>
+<dd><p>Get an instance to the specified address book for the
+specified account resource</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>resource</strong> (<em>str</em>) – Custom resource to be used in this address book
+(Defaults to parent main_resource)</li>
+<li><strong>address_book</strong> (<em>str</em>) – Choose from ‘Personal’ or
+‘GAL’ (Global Address List)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">a representation of the specified address book</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference internal" href="address_book.html#O365.address_book.AddressBook" title="O365.address_book.AddressBook">AddressBook</a> or <a class="reference internal" href="address_book.html#O365.address_book.GlobalAddressList" title="O365.address_book.GlobalAddressList">GlobalAddressList</a></p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><strong>RuntimeError</strong> – if invalid address_book is specified</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="O365.account.Account.authenticate">
 <code class="descname">authenticate</code><span class="sig-paren">(</span><em>*</em>, <em>scopes</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/account.html#Account.authenticate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.account.Account.authenticate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Performs the oauth authentication flow resulting in a stored token.
+<dd><p>Performs the oauth authentication flow resulting in a stored token
 It uses the credentials passed on instantiation</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>scopes</strong> – list of protocol user scopes to be converted by
-the protocol</li>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>scopes</strong> (<em>list</em><em>[</em><em>int</em><em>]</em>) – list of protocol user scopes to be converted
+by the protocol</li>
 <li><strong>kwargs</strong> – other configurations to be passed to the
 Connection instance</li>
 </ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Success / Failure</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">bool</p>
 </td>
 </tr>
 </tbody>
@@ -221,7 +253,7 @@ Connection instance</li>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">Connection</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="connection.html#O365.connection.Connection" title="O365.connection.Connection">Connection</a></td>
 </tr>
 </tbody>
 </table>
@@ -230,17 +262,17 @@ Connection instance</li>
 <dl class="method">
 <dt id="O365.account.Account.mailbox">
 <code class="descname">mailbox</code><span class="sig-paren">(</span><em>resource=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/account.html#Account.mailbox"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.account.Account.mailbox" title="Permalink to this definition">¶</a></dt>
-<dd><p>Creates MailBox Folder instance</p>
+<dd><p>Get an instance to the mailbox for the specified account resource</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>resource</strong> – Custom resource to be used in this mailbox.
-Defaults to parent main_resource.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>resource</strong> (<em>str</em>) – Custom resource to be used in this mailbox
+(Defaults to parent main_resource)</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">New empty message</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">a representation of account mailbox</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">MailBox</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="mailbox.html#O365.mailbox.MailBox" title="O365.mailbox.MailBox">MailBox</a></td>
 </tr>
 </tbody>
 </table>
@@ -254,12 +286,12 @@ Defaults to parent main_resource.</td>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>resource</strong> – Custom resource to be used in this message.
-Defaults to parent main_resource.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>resource</strong> (<em>str</em>) – Custom resource to be used in this message
+(Defaults to parent main_resource)</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">New empty message</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">Message</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="message.html#O365.message.Message" title="O365.message.Message">Message</a></td>
 </tr>
 </tbody>
 </table>
@@ -268,15 +300,43 @@ Defaults to parent main_resource.</td>
 <dl class="method">
 <dt id="O365.account.Account.schedule">
 <code class="descname">schedule</code><span class="sig-paren">(</span><em>*</em>, <em>resource=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/account.html#Account.schedule"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.account.Account.schedule" title="Permalink to this definition">¶</a></dt>
-<dd><p>Creates Schedule instance to handle calendars
-:param resource: Custom resource to be used in this schedule object. Defaults to parent main_resource.</p>
+<dd><p>Get an instance to work with calendar events for the
+specified account resource</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>resource</strong> (<em>str</em>) – Custom resource to be used in this schedule object
+(Defaults to parent main_resource)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">a representation of calendar events</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">Schedule</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="O365.account.Account.storage">
 <code class="descname">storage</code><span class="sig-paren">(</span><em>*</em>, <em>resource=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/account.html#Account.storage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.account.Account.storage" title="Permalink to this definition">¶</a></dt>
-<dd><p>Creates a Storage instance to handle file storage like OneDrive or Sharepoint document libraries
-:param resource: Custom resource to be used in this drive object. Defaults to parent main_resource.</p>
+<dd><p>Get an instance to handle file storage like OneDrive or
+Sharepoint document libraries for the specified account resource</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>resource</strong> (<em>str</em>) – Custom resource to be used in this drive object
+(Defaults to parent main_resource)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">a representation of File Storage</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">Storage</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><strong>RuntimeError</strong> – if protocol doesn’t support the feature</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </dd></dl>

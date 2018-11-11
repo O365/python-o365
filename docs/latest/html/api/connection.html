@@ -78,7 +78,6 @@
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../usage.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../api.html">O365 API</a></li>
 </ul>
 
@@ -151,6 +150,36 @@
 <em class="property">class </em><code class="descclassname">O365.connection.</code><code class="descname">Connection</code><span class="sig-paren">(</span><em>credentials</em>, <em>*</em>, <em>scopes=None</em>, <em>proxy_server=None</em>, <em>proxy_port=8080</em>, <em>proxy_username=None</em>, <em>proxy_password=None</em>, <em>requests_delay=200</em>, <em>raise_http_errors=True</em>, <em>request_retries=3</em>, <em>token_file_name=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/connection.html#Connection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.connection.Connection" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Handles all comunication (requests) between the app and the server</p>
+<dl class="method">
+<dt id="O365.connection.Connection.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>credentials</em>, <em>*</em>, <em>scopes=None</em>, <em>proxy_server=None</em>, <em>proxy_port=8080</em>, <em>proxy_username=None</em>, <em>proxy_password=None</em>, <em>requests_delay=200</em>, <em>raise_http_errors=True</em>, <em>request_retries=3</em>, <em>token_file_name=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/connection.html#Connection.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.connection.Connection.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates an API connection object</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>credentials</strong> – a tuple containing the credentials for this connection.
+This could be either (username, password) using basic authentication or (client_id, client_secret) using oauth.
+Generate client_id and client_secret in <a class="reference external" href="https://apps.dev.microsoft.com">https://apps.dev.microsoft.com</a>.</li>
+<li><strong>scopes</strong> – oauth2: a list of scopes permissions to request access to</li>
+<li><strong>proxy_server</strong> – the proxy server</li>
+<li><strong>proxy_port</strong> – the proxy port, defaults to 8080</li>
+<li><strong>proxy_username</strong> – the proxy username</li>
+<li><strong>proxy_password</strong> – the proxy password</li>
+<li><strong>requests_delay</strong> – number of miliseconds to wait between api calls
+The Api will respond with 429 Too many requests if more than 17 requests are made per second.
+Defaults to 200 miliseconds just in case more than 1 connection is making requests across multiple processes.</li>
+<li><strong>raise_http_errors</strong> – If True Http 4xx and 5xx status codes will raise as exceptions</li>
+<li><strong>request_retries</strong> – number of retries done when the server responds with 5xx error codes.</li>
+<li><strong>token_file_name</strong> – custom token file name to be used when storing the token credentials.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="method">
 <dt id="O365.connection.Connection.check_token_file">
 <code class="descname">check_token_file</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/connection.html#Connection.check_token_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.connection.Connection.check_token_file" title="Permalink to this definition">¶</a></dt>
@@ -261,6 +290,27 @@ so u don’t have to keep opening the auth link and authenticating every time</l
 <dd><p>Bases: <a class="reference internal" href="#O365.connection.Protocol" title="O365.connection.Protocol"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.connection.Protocol</span></code></a></p>
 <p>A Microsoft Graph Protocol Implementation
 <a class="reference external" href="https://docs.microsoft.com/en-us/outlook/rest/compare-graph-outlook">https://docs.microsoft.com/en-us/outlook/rest/compare-graph-outlook</a></p>
+<dl class="method">
+<dt id="O365.connection.MSGraphProtocol.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>api_version='v1.0'</em>, <em>default_resource='me'</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/connection.html#MSGraphProtocol.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.connection.MSGraphProtocol.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>protocol_url</strong> – the base url used to comunicate with the server</li>
+<li><strong>api_version</strong> – the api version</li>
+<li><strong>default_resource</strong> – the default resource to use when there’s no other option</li>
+<li><strong>casing_function</strong> – the casing transform function to be used on api keywords</li>
+<li><strong>protocol_scope_prefix</strong> – prefix for scopes (in MS GRAPH is ‘<a class="reference external" href="https://graph.microsoft.com/">https://graph.microsoft.com/</a>’ + SCOPE)</li>
+<li><strong>timezone</strong> – prefered timezone, defaults to the system timezone</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="class">
@@ -269,6 +319,27 @@ so u don’t have to keep opening the auth link and authenticating every time</l
 <dd><p>Bases: <a class="reference internal" href="#O365.connection.Protocol" title="O365.connection.Protocol"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.connection.Protocol</span></code></a></p>
 <p>A Microsoft Office 365 Protocol Implementation
 <a class="reference external" href="https://docs.microsoft.com/en-us/outlook/rest/compare-graph-outlook">https://docs.microsoft.com/en-us/outlook/rest/compare-graph-outlook</a></p>
+<dl class="method">
+<dt id="O365.connection.MSOffice365Protocol.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>api_version='v2.0'</em>, <em>default_resource='me'</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/connection.html#MSOffice365Protocol.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.connection.MSOffice365Protocol.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>protocol_url</strong> – the base url used to comunicate with the server</li>
+<li><strong>api_version</strong> – the api version</li>
+<li><strong>default_resource</strong> – the default resource to use when there’s no other option</li>
+<li><strong>casing_function</strong> – the casing transform function to be used on api keywords</li>
+<li><strong>protocol_scope_prefix</strong> – prefix for scopes (in MS GRAPH is ‘<a class="reference external" href="https://graph.microsoft.com/">https://graph.microsoft.com/</a>’ + SCOPE)</li>
+<li><strong>timezone</strong> – prefered timezone, defaults to the system timezone</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="class">
@@ -276,6 +347,27 @@ so u don’t have to keep opening the auth link and authenticating every time</l
 <em class="property">class </em><code class="descclassname">O365.connection.</code><code class="descname">Protocol</code><span class="sig-paren">(</span><em>*</em>, <em>protocol_url=None</em>, <em>api_version=None</em>, <em>default_resource='me'</em>, <em>casing_function=None</em>, <em>protocol_scope_prefix=None</em>, <em>timezone=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/connection.html#Protocol"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.connection.Protocol" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Base class for all protocols</p>
+<dl class="method">
+<dt id="O365.connection.Protocol.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>*</em>, <em>protocol_url=None</em>, <em>api_version=None</em>, <em>default_resource='me'</em>, <em>casing_function=None</em>, <em>protocol_scope_prefix=None</em>, <em>timezone=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/connection.html#Protocol.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.connection.Protocol.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>protocol_url</strong> – the base url used to comunicate with the server</li>
+<li><strong>api_version</strong> – the api version</li>
+<li><strong>default_resource</strong> – the default resource to use when there’s no other option</li>
+<li><strong>casing_function</strong> – the casing transform function to be used on api keywords</li>
+<li><strong>protocol_scope_prefix</strong> – prefix for scopes (in MS GRAPH is ‘<a class="reference external" href="https://graph.microsoft.com/">https://graph.microsoft.com/</a>’ + SCOPE)</li>
+<li><strong>timezone</strong> – prefered timezone, defaults to the system timezone</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="method">
 <dt id="O365.connection.Protocol.convert_case">
 <code class="descname">convert_case</code><span class="sig-paren">(</span><em>dict_key</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/connection.html#Protocol.convert_case"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.connection.Protocol.convert_case" title="Permalink to this definition">¶</a></dt>

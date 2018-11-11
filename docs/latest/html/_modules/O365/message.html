@@ -156,11 +156,11 @@
 <div class="viewcode-block" id="Recipient"><a class="viewcode-back" href="../../api/message.html#O365.address_book.Recipient">[docs]</a><span class="k">class</span> <span class="nc">Recipient</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot; A single Recipient &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">address</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Recipient.__init__"><a class="viewcode-back" href="../../api/message.html#O365.address_book.Recipient.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">address</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_address</span> <span class="o">=</span> <span class="n">address</span> <span class="ow">or</span> <span class="s1">&#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span> <span class="ow">or</span> <span class="s1">&#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span> <span class="o">=</span> <span class="n">parent</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_field</span> <span class="o">=</span> <span class="n">field</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_field</span> <span class="o">=</span> <span class="n">field</span></div>
 
     <span class="k">def</span> <span class="nf">__bool__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">address</span><span class="p">)</span>
@@ -201,7 +201,7 @@
 <div class="viewcode-block" id="Recipients"><a class="viewcode-back" href="../../api/message.html#O365.address_book.Recipients">[docs]</a><span class="k">class</span> <span class="nc">Recipients</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot; A Sequence of Recipients &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">recipients</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Recipients.__init__"><a class="viewcode-back" href="../../api/message.html#O365.address_book.Recipients.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">recipients</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Recipients must be a list of either address strings or tuples (name, address) or dictionary elements &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span> <span class="o">=</span> <span class="n">parent</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_field</span> <span class="o">=</span> <span class="n">field</span>
@@ -209,7 +209,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">untrack</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="k">if</span> <span class="n">recipients</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">recipients</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">untrack</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">untrack</span> <span class="o">=</span> <span class="kc">False</span></div>
 
     <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_recipients</span><span class="p">)</span>
@@ -348,7 +348,7 @@
         <span class="s1">&#39;forward_message&#39;</span><span class="p">:</span> <span class="s1">&#39;/messages/</span><span class="si">{id}</span><span class="s1">/createForward&#39;</span>
     <span class="p">}</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">con</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="Message.__init__"><a class="viewcode-back" href="../../api/message.html#O365.address_book.Message.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">con</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Makes a new message wrapper for sending and receiving messages.</span>
 
@@ -400,7 +400,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">__is_read</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cc</span><span class="p">(</span><span class="s1">&#39;isRead&#39;</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__is_draft</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cc</span><span class="p">(</span><span class="s1">&#39;isDraft&#39;</span><span class="p">),</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;is_draft&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">))</span>  <span class="c1"># a message is a draft by default</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">conversation_id</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cc</span><span class="p">(</span><span class="s1">&#39;conversationId&#39;</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">folder_id</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cc</span><span class="p">(</span><span class="s1">&#39;parentFolderId&#39;</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">folder_id</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cc</span><span class="p">(</span><span class="s1">&#39;parentFolderId&#39;</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">_clear_tracker</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># reset the tracked changes. Usually after a server update</span>

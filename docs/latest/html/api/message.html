@@ -78,7 +78,6 @@
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../usage.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../api.html">O365 API</a></li>
 </ul>
 
@@ -157,6 +156,24 @@
 <em class="property">class </em><code class="descclassname">O365.message.</code><code class="descname">Message</code><span class="sig-paren">(</span><em>*</em>, <em>parent=None</em>, <em>con=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Message"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.Message" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">O365.utils.utils.ApiComponent</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">O365.utils.attachment.AttachableMixin</span></code>, <a class="reference internal" href="#O365.message.HandleRecipientsMixin" title="O365.message.HandleRecipientsMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.message.HandleRecipientsMixin</span></code></a></p>
 <p>Management of the process of sending, receiving, reading, and editing emails.</p>
+<dl class="method">
+<dt id="O365.message.Message.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>*</em>, <em>parent=None</em>, <em>con=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Message.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.Message.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Makes a new message wrapper for sending and receiving messages.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>parent</strong> – the parent object</li>
+<li><strong>con</strong> – the id of this message if it exists</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="attribute">
 <dt id="O365.message.Message.attachments">
 <code class="descname">attachments</code><a class="headerlink" href="#O365.message.Message.attachments" title="Permalink to this definition">¶</a></dt>
@@ -350,6 +367,12 @@
 <em class="property">class </em><code class="descclassname">O365.message.</code><code class="descname">Recipient</code><span class="sig-paren">(</span><em>address=None</em>, <em>name=None</em>, <em>parent=None</em>, <em>field=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Recipient"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.Recipient" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>A single Recipient</p>
+<dl class="method">
+<dt id="O365.message.Recipient.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>address=None</em>, <em>name=None</em>, <em>parent=None</em>, <em>field=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Recipient.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.Recipient.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
 <dl class="attribute">
 <dt id="O365.message.Recipient.address">
 <code class="descname">address</code><a class="headerlink" href="#O365.message.Recipient.address" title="Permalink to this definition">¶</a></dt>
@@ -367,6 +390,12 @@
 <em class="property">class </em><code class="descclassname">O365.message.</code><code class="descname">Recipients</code><span class="sig-paren">(</span><em>recipients=None</em>, <em>parent=None</em>, <em>field=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Recipients"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.Recipients" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>A Sequence of Recipients</p>
+<dl class="method">
+<dt id="O365.message.Recipients.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>recipients=None</em>, <em>parent=None</em>, <em>field=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Recipients.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.Recipients.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Recipients must be a list of either address strings or tuples (name, address) or dictionary elements</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="O365.message.Recipients.add">
 <code class="descname">add</code><span class="sig-paren">(</span><em>recipients</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Recipients.add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.Recipients.add" title="Permalink to this definition">¶</a></dt>
