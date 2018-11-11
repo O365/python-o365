@@ -1,0 +1,428 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Address Book &mdash; O365  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> O365
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../usage.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">O365 API</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">O365</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Address Book</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/address_book.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-O365.address_book">
+<span id="address-book"></span><h1>Address Book<a class="headerlink" href="#module-O365.address_book" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="O365.address_book.AddressBook">
+<em class="property">class </em><code class="descclassname">O365.address_book.</code><code class="descname">AddressBook</code><span class="sig-paren">(</span><em>*</em>, <em>parent=None</em>, <em>con=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/address_book.html#AddressBook"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.address_book.AddressBook" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#O365.address_book.ContactFolder" title="O365.address_book.ContactFolder"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.address_book.ContactFolder</span></code></a></p>
+<p>A class representing an address book</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="O365.address_book.BaseContactFolder">
+<em class="property">class </em><code class="descclassname">O365.address_book.</code><code class="descname">BaseContactFolder</code><span class="sig-paren">(</span><em>*</em>, <em>parent=None</em>, <em>con=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/address_book.html#BaseContactFolder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.address_book.BaseContactFolder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">O365.utils.utils.ApiComponent</span></code></p>
+<p>Base Contact Folder Grouping Functionality</p>
+<dl class="attribute">
+<dt id="O365.address_book.BaseContactFolder.contact_constructor">
+<code class="descname">contact_constructor</code><a class="headerlink" href="#O365.address_book.BaseContactFolder.contact_constructor" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="#O365.address_book.Contact" title="O365.address_book.Contact"><code class="xref py py-class docutils literal notranslate"><span class="pre">Contact</span></code></a></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.address_book.BaseContactFolder.get_contacts">
+<code class="descname">get_contacts</code><span class="sig-paren">(</span><em>limit=100</em>, <em>*</em>, <em>query=None</em>, <em>order_by=None</em>, <em>batch=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/address_book.html#BaseContactFolder.get_contacts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.address_book.BaseContactFolder.get_contacts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets a list of contacts from this address book</p>
+<p>When quering the Global Address List the Users enpoint will be used.
+Only a limited set of information will be available unless you have acces to</p>
+<blockquote>
+<div>scope ‘User.Read.All’ wich requires App Administration Consent.</div></blockquote>
+<p>Also using the Users enpoint has some limitations on the quering capabilites.</p>
+<p>To use query an order_by check the OData specification here:
+<a class="reference external" href="http://docs.oasis-open.org/odata/odata/v4.0/errata03/os/complete/part2-url-conventions/odata-v4.0-errata03-os-part2-url-conventions-complete.html">http://docs.oasis-open.org/odata/odata/v4.0/errata03/os/complete/part2-url-conventions/odata-v4.0-errata03-os-part2-url-conventions-complete.html</a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>limit</strong> – Number of elements to return. Over 999 uses batch.</li>
+<li><strong>query</strong> – a OData valid filter clause</li>
+<li><strong>order_by</strong> – OData valid order by clause</li>
+<li><strong>batch</strong> – Returns a custom iterator that retrieves items in batches allowing
+to retrieve more items than the limit.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.address_book.BaseContactFolder.message_constructor">
+<code class="descname">message_constructor</code><a class="headerlink" href="#O365.address_book.BaseContactFolder.message_constructor" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="message.html#O365.message.Message" title="O365.message.Message"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.message.Message</span></code></a></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="O365.address_book.Contact">
+<em class="property">class </em><code class="descclassname">O365.address_book.</code><code class="descname">Contact</code><span class="sig-paren">(</span><em>*</em>, <em>parent=None</em>, <em>con=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/address_book.html#Contact"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.address_book.Contact" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">O365.utils.utils.ApiComponent</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">O365.utils.attachment.AttachableMixin</span></code>, <a class="reference internal" href="message.html#O365.message.HandleRecipientsMixin" title="O365.message.HandleRecipientsMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.message.HandleRecipientsMixin</span></code></a></p>
+<p>Contact manages lists of events on an associated contact on office365.</p>
+<dl class="method">
+<dt id="O365.address_book.Contact.delete">
+<code class="descname">delete</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/address_book.html#Contact.delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.address_book.Contact.delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deletes this contact</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.address_book.Contact.emails">
+<code class="descname">emails</code><a class="headerlink" href="#O365.address_book.Contact.emails" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="O365.address_book.Contact.full_name">
+<code class="descname">full_name</code><a class="headerlink" href="#O365.address_book.Contact.full_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns name + surname</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.address_book.Contact.main_email">
+<code class="descname">main_email</code><a class="headerlink" href="#O365.address_book.Contact.main_email" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the first email on the emails</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.address_book.Contact.message_constructor">
+<code class="descname">message_constructor</code><a class="headerlink" href="#O365.address_book.Contact.message_constructor" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="message.html#O365.message.Message" title="O365.message.Message"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.message.Message</span></code></a></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.address_book.Contact.new_message">
+<code class="descname">new_message</code><span class="sig-paren">(</span><em>recipient=None</em>, <em>*</em>, <em>recipient_type=&lt;RecipientType.TO: 'to'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/address_book.html#Contact.new_message"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.address_book.Contact.new_message" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method returns a new draft Message instance with this contact first email as a recipient
+:param recipient: a Recipient instance where to send this message. If None, first recipient with address.
+:param recipient_type: a RecipientType Enum.
+:return: a new draft Message or None if recipient has no addresses</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.address_book.Contact.save">
+<code class="descname">save</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/address_book.html#Contact.save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.address_book.Contact.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Saves this Contact to the cloud</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.address_book.Contact.to_api_data">
+<code class="descname">to_api_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/address_book.html#Contact.to_api_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.address_book.Contact.to_api_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a dictionary in cloud format</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.address_book.Contact.update">
+<code class="descname">update</code><span class="sig-paren">(</span><em>fields</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/address_book.html#Contact.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.address_book.Contact.update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates a contact
+:param fields: a dict of fields to update (field: value).</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="O365.address_book.ContactFolder">
+<em class="property">class </em><code class="descclassname">O365.address_book.</code><code class="descname">ContactFolder</code><span class="sig-paren">(</span><em>*</em>, <em>parent=None</em>, <em>con=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/address_book.html#ContactFolder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.address_book.ContactFolder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#O365.address_book.BaseContactFolder" title="O365.address_book.BaseContactFolder"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.address_book.BaseContactFolder</span></code></a></p>
+<p>A Contact Folder representation</p>
+<dl class="method">
+<dt id="O365.address_book.ContactFolder.create_child_folder">
+<code class="descname">create_child_folder</code><span class="sig-paren">(</span><em>folder_name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/address_book.html#ContactFolder.create_child_folder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.address_book.ContactFolder.create_child_folder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a new child folder
+:return the new Folder Object or None</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.address_book.ContactFolder.delete">
+<code class="descname">delete</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/address_book.html#ContactFolder.delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.address_book.ContactFolder.delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deletes this folder</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.address_book.ContactFolder.get_folder">
+<code class="descname">get_folder</code><span class="sig-paren">(</span><em>folder_id=None</em>, <em>folder_name=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/address_book.html#ContactFolder.get_folder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.address_book.ContactFolder.get_folder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a ContactFolder by it’s id or name
+:param folder_id: the folder_id to be retrieved. Can be any folder Id (child or not)
+:param folder_name: the folder name to be retrieved. Must be a child of this folder.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.address_book.ContactFolder.get_folders">
+<code class="descname">get_folders</code><span class="sig-paren">(</span><em>limit=None</em>, <em>*</em>, <em>query=None</em>, <em>order_by=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/address_book.html#ContactFolder.get_folders"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.address_book.ContactFolder.get_folders" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of child folders</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>limit</strong> – Number of elements to return.</li>
+<li><strong>query</strong> – a OData valid filter clause</li>
+<li><strong>order_by</strong> – OData valid order by clause</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.address_book.ContactFolder.move_folder">
+<code class="descname">move_folder</code><span class="sig-paren">(</span><em>to_folder</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/address_book.html#ContactFolder.move_folder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.address_book.ContactFolder.move_folder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Change this folder name
+:param to_folder: a folder_id str or a ContactFolder</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.address_book.ContactFolder.new_contact">
+<code class="descname">new_contact</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/address_book.html#ContactFolder.new_contact"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.address_book.ContactFolder.new_contact" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a new contact to be saved into it’s parent folder</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.address_book.ContactFolder.new_message">
+<code class="descname">new_message</code><span class="sig-paren">(</span><em>recipient_type=&lt;RecipientType.TO: 'to'&gt;</em>, <em>*</em>, <em>query=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/address_book.html#ContactFolder.new_message"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.address_book.ContactFolder.new_message" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method returns a new draft Message instance with all the contacts first email as a recipient
+:param recipient_type: a RecipientType Enum.
+:param query: a query to filter the contacts (passed to get_contacts)
+:return: a draft Message or None if no contacts could be retrieved</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.address_book.ContactFolder.update_folder_name">
+<code class="descname">update_folder_name</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/address_book.html#ContactFolder.update_folder_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.address_book.ContactFolder.update_folder_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Change this folder name</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="O365.address_book.GlobalAddressList">
+<em class="property">class </em><code class="descclassname">O365.address_book.</code><code class="descname">GlobalAddressList</code><span class="sig-paren">(</span><em>*</em>, <em>parent=None</em>, <em>con=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/address_book.html#GlobalAddressList"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.address_book.GlobalAddressList" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#O365.address_book.BaseContactFolder" title="O365.address_book.BaseContactFolder"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.address_book.BaseContactFolder</span></code></a></p>
+<p>A class representing the Global Address List (Users API)</p>
+<dl class="method">
+<dt id="O365.address_book.GlobalAddressList.get_contact_by_email">
+<code class="descname">get_contact_by_email</code><span class="sig-paren">(</span><em>email</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/address_book.html#GlobalAddressList.get_contact_by_email"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.address_book.GlobalAddressList.get_contact_by_email" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a Contact by it’s email</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="O365.address_book.RecipientType">
+<em class="property">class </em><code class="descclassname">O365.address_book.</code><code class="descname">RecipientType</code><a class="reference internal" href="../_modules/O365/address_book.html#RecipientType"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.address_book.RecipientType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
+<p>An enumeration.</p>
+<dl class="attribute">
+<dt id="O365.address_book.RecipientType.BCC">
+<code class="descname">BCC</code><em class="property"> = 'bcc'</em><a class="headerlink" href="#O365.address_book.RecipientType.BCC" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="O365.address_book.RecipientType.CC">
+<code class="descname">CC</code><em class="property"> = 'cc'</em><a class="headerlink" href="#O365.address_book.RecipientType.CC" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="O365.address_book.RecipientType.TO">
+<code class="descname">TO</code><em class="property"> = 'to'</em><a class="headerlink" href="#O365.address_book.RecipientType.TO" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Narcolapser
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

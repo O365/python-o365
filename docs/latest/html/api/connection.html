@@ -1,0 +1,394 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Connection &mdash; O365  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> O365
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../usage.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">O365 API</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">O365</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Connection</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/connection.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-O365.connection">
+<span id="connection"></span><h1>Connection<a class="headerlink" href="#module-O365.connection" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="O365.connection.Connection">
+<em class="property">class </em><code class="descclassname">O365.connection.</code><code class="descname">Connection</code><span class="sig-paren">(</span><em>credentials</em>, <em>*</em>, <em>scopes=None</em>, <em>proxy_server=None</em>, <em>proxy_port=8080</em>, <em>proxy_username=None</em>, <em>proxy_password=None</em>, <em>requests_delay=200</em>, <em>raise_http_errors=True</em>, <em>request_retries=3</em>, <em>token_file_name=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/connection.html#Connection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.connection.Connection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Handles all comunication (requests) between the app and the server</p>
+<dl class="method">
+<dt id="O365.connection.Connection.check_token_file">
+<code class="descname">check_token_file</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/connection.html#Connection.check_token_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.connection.Connection.check_token_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if the token file exists at the given position</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.connection.Connection.delete">
+<code class="descname">delete</code><span class="sig-paren">(</span><em>url</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/connection.html#Connection.delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.connection.Connection.delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shorthand for self.request(url, ‘delete’)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.connection.Connection.get">
+<code class="descname">get</code><span class="sig-paren">(</span><em>url</em>, <em>params=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/connection.html#Connection.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.connection.Connection.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shorthand for self.request(url, ‘get’)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.connection.Connection.get_authorization_url">
+<code class="descname">get_authorization_url</code><span class="sig-paren">(</span><em>requested_scopes=None</em>, <em>redirect_uri='https://outlook.office365.com/owa/'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/connection.html#Connection.get_authorization_url"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.connection.Connection.get_authorization_url" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inicialices the oauth authorization flow, getting the authorization url that the user must approve.
+This is a two step process, first call this function. Then get the url result from the user and then
+call ‘request_token’ to get and store the access token.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.connection.Connection.get_session">
+<code class="descname">get_session</code><span class="sig-paren">(</span><em>token_path=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/connection.html#Connection.get_session"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.connection.Connection.get_session" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a requests Session object</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>token_path</strong> – Only oauth: full path to where the token should be load from</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.connection.Connection.naive_request">
+<code class="descname">naive_request</code><span class="sig-paren">(</span><em>url</em>, <em>method</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/connection.html#Connection.naive_request"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.connection.Connection.naive_request" title="Permalink to this definition">¶</a></dt>
+<dd><p>A naive request without any Authorization headers</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.connection.Connection.oauth_request">
+<code class="descname">oauth_request</code><span class="sig-paren">(</span><em>url</em>, <em>method</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/connection.html#Connection.oauth_request"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.connection.Connection.oauth_request" title="Permalink to this definition">¶</a></dt>
+<dd><p>Makes a request to url using an oauth session</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.connection.Connection.patch">
+<code class="descname">patch</code><span class="sig-paren">(</span><em>url</em>, <em>data=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/connection.html#Connection.patch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.connection.Connection.patch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shorthand for self.request(url, ‘patch’)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.connection.Connection.post">
+<code class="descname">post</code><span class="sig-paren">(</span><em>url</em>, <em>data=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/connection.html#Connection.post"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.connection.Connection.post" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shorthand for self.request(url, ‘post’)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.connection.Connection.put">
+<code class="descname">put</code><span class="sig-paren">(</span><em>url</em>, <em>data=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/connection.html#Connection.put"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.connection.Connection.put" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shorthand for self.request(url, ‘put’)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.connection.Connection.refresh_token">
+<code class="descname">refresh_token</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/connection.html#Connection.refresh_token"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.connection.Connection.refresh_token" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets another token</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.connection.Connection.request_token">
+<code class="descname">request_token</code><span class="sig-paren">(</span><em>authorizated_url</em>, <em>store_token=True</em>, <em>token_path=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/connection.html#Connection.request_token"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.connection.Connection.request_token" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns and saves the token with the authorizated_url provided by the user</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>authorizated_url</strong> – url given by the authorization flow</li>
+<li><strong>store_token</strong> – whether or not to store the token in file system,
+so u don’t have to keep opening the auth link and authenticating every time</li>
+<li><strong>token_path</strong> – full path to where the token should be saved to</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.connection.Connection.set_proxy">
+<code class="descname">set_proxy</code><span class="sig-paren">(</span><em>proxy_server</em>, <em>proxy_port</em>, <em>proxy_username</em>, <em>proxy_password</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/connection.html#Connection.set_proxy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.connection.Connection.set_proxy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets a proxy on the Session</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="O365.connection.MSGraphProtocol">
+<em class="property">class </em><code class="descclassname">O365.connection.</code><code class="descname">MSGraphProtocol</code><span class="sig-paren">(</span><em>api_version='v1.0'</em>, <em>default_resource='me'</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/connection.html#MSGraphProtocol"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.connection.MSGraphProtocol" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#O365.connection.Protocol" title="O365.connection.Protocol"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.connection.Protocol</span></code></a></p>
+<p>A Microsoft Graph Protocol Implementation
+<a class="reference external" href="https://docs.microsoft.com/en-us/outlook/rest/compare-graph-outlook">https://docs.microsoft.com/en-us/outlook/rest/compare-graph-outlook</a></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="O365.connection.MSOffice365Protocol">
+<em class="property">class </em><code class="descclassname">O365.connection.</code><code class="descname">MSOffice365Protocol</code><span class="sig-paren">(</span><em>api_version='v2.0'</em>, <em>default_resource='me'</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/connection.html#MSOffice365Protocol"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.connection.MSOffice365Protocol" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#O365.connection.Protocol" title="O365.connection.Protocol"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.connection.Protocol</span></code></a></p>
+<p>A Microsoft Office 365 Protocol Implementation
+<a class="reference external" href="https://docs.microsoft.com/en-us/outlook/rest/compare-graph-outlook">https://docs.microsoft.com/en-us/outlook/rest/compare-graph-outlook</a></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="O365.connection.Protocol">
+<em class="property">class </em><code class="descclassname">O365.connection.</code><code class="descname">Protocol</code><span class="sig-paren">(</span><em>*</em>, <em>protocol_url=None</em>, <em>api_version=None</em>, <em>default_resource='me'</em>, <em>casing_function=None</em>, <em>protocol_scope_prefix=None</em>, <em>timezone=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/connection.html#Protocol"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.connection.Protocol" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Base class for all protocols</p>
+<dl class="method">
+<dt id="O365.connection.Protocol.convert_case">
+<code class="descname">convert_case</code><span class="sig-paren">(</span><em>dict_key</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/connection.html#Protocol.convert_case"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.connection.Protocol.convert_case" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a key converted with this protocol casing method</p>
+<p>Converts case to send/read from the cloud
+When using Microsoft Graph API, the keywords of the API use lowerCamelCase Casing.
+When using Office 365 API, the keywords of the API use PascalCase Casing.</p>
+<p>Default case in this API is lowerCamelCase.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>dict_key</strong> – a dictionary key to convert</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="O365.connection.Protocol.get_iana_tz">
+<em class="property">static </em><code class="descname">get_iana_tz</code><span class="sig-paren">(</span><em>windows_tz</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/connection.html#Protocol.get_iana_tz"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.connection.Protocol.get_iana_tz" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a valid pytz TimeZone (Iana/Olson Timezones) from a given windows TimeZone
+Note: Windows Timezones are SHIT!</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.connection.Protocol.get_scopes_for">
+<code class="descname">get_scopes_for</code><span class="sig-paren">(</span><em>user_provided_scopes</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/connection.html#Protocol.get_scopes_for"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.connection.Protocol.get_scopes_for" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of scopes needed for each of the scope_helpers provided
+:param user_provided_scopes: a list of scopes or scope helpers</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.connection.Protocol.get_service_keyword">
+<code class="descname">get_service_keyword</code><span class="sig-paren">(</span><em>keyword</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/connection.html#Protocol.get_service_keyword"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.connection.Protocol.get_service_keyword" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the data set to the key in the internal data-key dict</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.connection.Protocol.get_windows_tz">
+<code class="descname">get_windows_tz</code><span class="sig-paren">(</span><em>iana_tz=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/connection.html#Protocol.get_windows_tz"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.connection.Protocol.get_windows_tz" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a valid windows TimeZone from a given pytz TimeZone (Iana/Olson Timezones)
+Note: Windows Timezones are SHIT!… no … really THEY ARE HOLY FUCKING SHIT!.</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="O365.connection.Protocol.to_api_case">
+<em class="property">static </em><code class="descname">to_api_case</code><span class="sig-paren">(</span><em>dict_key</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/connection.html#Protocol.to_api_case"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.connection.Protocol.to_api_case" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts keys to snake case</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="O365.connection.oauth_authentication_flow">
+<code class="descclassname">O365.connection.</code><code class="descname">oauth_authentication_flow</code><span class="sig-paren">(</span><em>client_id</em>, <em>client_secret</em>, <em>scopes=None</em>, <em>protocol=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/connection.html#oauth_authentication_flow"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.connection.oauth_authentication_flow" title="Permalink to this definition">¶</a></dt>
+<dd><p>A helper method to authenticate and get the oauth token
+:param client_id: the client_id
+:param client_secret: the client_secret
+:param scopes: a list of protocol user scopes to be converted by the protocol
+:param protocol: the protocol to be used. Defaults to MSGraphProtocol
+:param kwargs: other configuration to be passed to the Connection instance</p>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Narcolapser
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
