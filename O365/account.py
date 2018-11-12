@@ -1,6 +1,6 @@
 from O365.connection import Connection, Protocol, MSGraphProtocol, oauth_authentication_flow
 from O365.drive import Storage
-from O365.utils import ME_RESOURCE, USERS_RESOURCE
+from O365.utils import ME_RESOURCE
 from O365.message import Message
 from O365.mailbox import MailBox
 from O365.address_book import AddressBook, GlobalAddressList
