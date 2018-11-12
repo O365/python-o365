@@ -11,3 +11,4 @@ from .address_book import AddressBook, Contact, RecipientType
 from .calendar import Schedule, Calendar, Event, EventResponse, AttendeeType, EventSensitivity, EventShowAs, CalendarColors, EventAttachment
 from .drive import Storage, Drive, Folder, File, Image, Photo
 from .utils import OneDriveWellKnowFolderNames, OutlookWellKnowFolderNames, ImportanceLevel
+from .sharepoint import Sharepoint, Site

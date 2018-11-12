@@ -1,10 +1,11 @@
 from O365.connection import Connection, Protocol, MSGraphProtocol, oauth_authentication_flow
 from O365.drive import Storage
-from O365.utils import ME_RESOURCE
+from O365.utils import ME_RESOURCE, USERS_RESOURCE
 from O365.message import Message
 from O365.mailbox import MailBox
 from O365.address_book import AddressBook, GlobalAddressList
 from O365.calendar import Schedule
+from O365.sharepoint import Sharepoint
 
 
 class Account(object):
@@ -91,6 +92,18 @@ class Account(object):
         """
         if not isinstance(self.protocol, MSGraphProtocol):
             # TODO: a custom protocol accessing OneDrive or Sharepoint Api will fail here.
-            raise RuntimeError('Drive options only works on Microsoft Graph API')
+            raise RuntimeError('Drive api only works on Microsoft Graph API')
 
         return Storage(parent=self, main_resource=resource)
+
+    def sharepoint(self, *, resource=''):
+        """
+        Creates a new Sharepoint instance
+        :param resource: Custom resource to be used in this sharepoint object. Defaults to blank.
+        """
+
+        if not isinstance(self.protocol, MSGraphProtocol):
+            # TODO: a custom protocol accessing OneDrive or Sharepoint Api will fail here.
+            raise RuntimeError('Sharepoint api only works on Microsoft Graph API')
+
+        return Sharepoint(parent=self, main_resource=resource)

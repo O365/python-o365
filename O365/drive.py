@@ -1016,7 +1016,7 @@ class Drive(ApiComponent):
         return self.__repr__()
 
     def __repr__(self):
-        return 'Drive: {}'.format(self.name or self.object_id)
+        return 'Drive: {}'.format(self.name or self.object_id or 'Default Drive')
 
     def get_root_folder(self):
         """ Returns the Root Folder of this drive """
@@ -1243,15 +1243,11 @@ class Storage(ApiComponent):
         main_resource = kwargs.pop('main_resource', None) or getattr(parent, 'main_resource', None) if parent else None
         super().__init__(protocol=parent.protocol if parent else kwargs.get('protocol'), main_resource=main_resource)
 
-        cloud_data = kwargs.get(self._cloud_data_key, {})
-
-        self.name = cloud_data.get(self._cc('name'), kwargs.get('name', ''))  # Fallback to manual drive
-
     def __str__(self):
         return self.__repr__()
 
     def __repr__(self):
-        return 'Storage: {}'.format(self.name)
+        return 'Storage for resource: {}'.format(self.main_resource)
 
     def get_default_drive(self, request_drive=False):
         """
@@ -1259,7 +1255,7 @@ class Storage(ApiComponent):
         :param request_drive: True will make an api call to retrieve the drive data
         """
         if request_drive is False:
-            return Drive(con=self.con, protocol=self.protocol, main_resource=self.main_resource, name=self.name)
+            return Drive(con=self.con, protocol=self.protocol, main_resource=self.main_resource, name='Default Drive')
 
         url = self.build_url(self._endpoints.get('default_drive'))
 
