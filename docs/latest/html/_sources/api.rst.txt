@@ -1,3 +1,4 @@
+========
 O365 API
 ========
 
@@ -6,3 +7,4 @@ O365 API
    :caption: Contents:
 
    api/account
+   api/connection

@@ -5,7 +5,9 @@ Welcome to O365's documentation!
    :maxdepth: 3
    :caption: Contents:
 
+   getting_started
    api
+   usage
 
 Indices and tables
 ==================

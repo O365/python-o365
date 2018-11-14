@@ -50,7 +50,7 @@ class Account(object):
         """ Performs the oauth authentication flow resulting in a stored token
         It uses the credentials passed on instantiation
 
-        :param list[int] scopes: list of protocol user scopes to be converted
+        :param list[str] scopes: list of protocol user scopes to be converted
          by the protocol
         :param kwargs: other configurations to be passed to the
          Connection instance
