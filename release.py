@@ -76,6 +76,30 @@ def check():
 
     subprocess.check_call(['twine', 'check', 'dist/*'])
 
+@cli.command()
+@click.option('--annotate/--no-annotate',default=False)
+@click.option('--coverage/--no-coverage',default=False)
+@click.option('-v/-nv',default=False)
+@click.option('-vv/-nvv',default=False)
+def test(annotate,coverage,v,vv):
+    """ runs tests and optionally creates annotated files of coverage. """
+    args = ["python3","-m","pytest","tests/"]
+    if coverage:
+        args.append("--cov=O365")
+        if annotate:
+            args.append("--cov-report")
+            args.append("annotate")
+        if v:#Verbose
+            args.append("-v")
+        if vv and not v:#Very verbose
+            args.append("-vv")
+    
+    env = os.environ.copy()
+    
+    p = subprocess.Popen(args,env=env)
+    
+    p.wait()
+
 
 if __name__ == "__main__":
     cli()
