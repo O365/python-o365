@@ -26,6 +26,17 @@ m.send()
 ```
 
 
+### Why choose O365?
+- Almost Full Support for MsGraph and Office 365 Rest Api.
+- Good Abstraction layer between each Api. Change the api (Graph vs Office365) and don't worry about the api internal implementation.
+- Full oauth support with automatic handling of refresh tokens.
+- Automatic handling between local datetimes and server datetimes. Work with your local datetime and let this library do the rest.
+- Change between different resource with ease: access shared mailboxes, other users resources, sharepoint resources, etc.
+- Pagination support through a custom iterator that handles future requests automatically. Request Infinite items!
+- A query helper to help you build custom OData queries (filter, order and select).
+- Modular ApiComponents can be created and build to achieve further functionality.
+
+
 **Python 3.4 is the minimum required**... I was very tempted to just go for 3.6 and use f-strings. Those are fantastic!
 
 This project was also a learning resource for me. This is a list of not so common python characteristics used in this project:
@@ -610,7 +621,7 @@ query = mailbox.new_query().select('subject', 'to_recipients', 'created_date_tim
 messages_with_selected_properties = mailbox.get_messages(query=query)
 ```
 
-#### Request Error Handling and Custom Errors
+#### Request Error Handling
 
 Whenever a Request error raises, the connection object will raise an exception.
 Then the exception will be captured and logged it to the stdout with it's message, an return Falsy (None, False, [], etc...)

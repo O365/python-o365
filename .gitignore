@@ -49,6 +49,7 @@ coverage.xml
 
 # Sphinx documentation
 docs/_build/
+doctrees/
 
 # PyBuilder
 target/
@@ -64,3 +65,5 @@ trail.py
 sample_run.py
 
 
+
+o365_token\.txt

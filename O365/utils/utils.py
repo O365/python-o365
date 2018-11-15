@@ -73,20 +73,27 @@ class ApiComponent:
         self.protocol = protocol() if isinstance(protocol, type) else protocol
         if self.protocol is None:
             raise ValueError('Protocol not provided to Api Component')
-        self.main_resource = self._parse_resource(main_resource or protocol.default_resource)
+        self.main_resource = self._parse_resource(main_resource if main_resource is not None else protocol.default_resource)
         self._base_url = '{}{}'.format(self.protocol.service_url, self.main_resource)
+        if self._base_url.endswith('/'):
+            # when self.main_resource is an empty string then remove the last slash.
+            self._base_url = self._base_url[:-1]
         super().__init__()
+
+    def __str__(self):
+        return self.__repr__()
+
+    def __repr__(self):
+        return 'Api Component on resource: {}'.format(self.main_resource)
 
     @staticmethod
     def _parse_resource(resource):
-        resource = resource.strip() if resource else resource
         """ Parses and completes resource information """
-        if resource == ME_RESOURCE:
+        resource = resource.strip() if resource else resource
+        if resource in {ME_RESOURCE, USERS_RESOURCE}:
             return resource
-        elif resource == USERS_RESOURCE:
-            return resource
-        elif '/' not in resource and USERS_RESOURCE not in resource:
-            # when for example accesing a shared mailbox the resouse is set to the email address.
+        elif '@' in resource and not resource.startswith(USERS_RESOURCE):
+            # when for example accesing a shared mailbox the resource is set to the email address.
             # we have to prefix the email with the resource 'users/' so --> 'users/email_address'
             return '{}/{}'.format(USERS_RESOURCE, resource)
         else:

@@ -3,7 +3,8 @@ from dateutil.parser import parse
 from enum import Enum
 
 from O365.message import HandleRecipientsMixin, Recipients, Message
-from O365.utils import Pagination, NEXT_LINK_KEYWORD, ApiComponent, AttachableMixin
+from O365.utils import Pagination, NEXT_LINK_KEYWORD, ApiComponent
+from O365.utils import AttachableMixin
 
 GAL_MAIN_RESOURCE = 'users'
 
@@ -17,28 +18,51 @@ class RecipientType(Enum):
 
 
 class Contact(ApiComponent, AttachableMixin, HandleRecipientsMixin):
-    """ Contact manages lists of events on an associated contact on office365. """
+    """ Contact manages lists of events on associated contact on office365. """
 
-    _mapping = {'display_name': 'displayName', 'name': 'givenName', 'surname': 'surname', 'title': 'title', 'job_title': 'jobTitle',
-                'company_name': 'companyName', 'department': 'department', 'office_location': 'officeLocation',
-                'business_phones': 'businessPhones', 'mobile_phone': 'mobilePhone', 'home_phones': 'homePhones',
-                'emails': 'emailAddresses', 'business_addresses': 'businessAddress', 'home_addresses': 'homesAddress',
-                'other_addresses': 'otherAddress', 'categories': 'categories'}
+    _mapping = {
+        'display_name': 'displayName',
+        'name': 'givenName',
+        'surname': 'surname',
+        'title': 'title',
+        'job_title': 'jobTitle',
+        'company_name': 'companyName',
+        'department': 'department',
+        'office_location': 'officeLocation',
+        'business_phones': 'businessPhones',
+        'mobile_phone': 'mobilePhone',
+        'home_phones': 'homePhones',
+        'emails': 'emailAddresses',
+        'business_addresses': 'businessAddress',
+        'home_addresses': 'homesAddress',
+        'other_addresses': 'otherAddress',
+        'categories': 'categories'
+    }
 
     _endpoints = {
         'root_contact': '/contacts/{id}',
         'child_contact': '/contactFolders/{id}/contacts'
     }
+
     message_constructor = Message
 
     def __init__(self, *, parent=None, con=None, **kwargs):
+        """
 
+        :param parent:
+        :param con:
+        :param kwargs:
+        """
         assert parent or con, 'Need a parent or a connection'
         self.con = parent.con if parent else con
 
         # Choose the main_resource passed in kwargs over the parent main_resource
-        main_resource = kwargs.pop('main_resource', None) or getattr(parent, 'main_resource', None) if parent else None
-        super().__init__(protocol=parent.protocol if parent else kwargs.get('protocol'), main_resource=main_resource)
+        main_resource = kwargs.pop('main_resource', None) or getattr(parent,
+                                                                     'main_resource',
+                                                                     None) if parent else None
+        super().__init__(
+            protocol=parent.protocol if parent else kwargs.get('protocol'),
+            main_resource=main_resource)
 
         cloud_data = kwargs.get(self._cloud_data_key, {})
         cc = self._cc  # alias to shorten the code
@@ -48,8 +72,10 @@ class Contact(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         self.modified = cloud_data.get(cc('lastModifiedDateTime'), None)
 
         local_tz = self.protocol.timezone
-        self.created = parse(self.created).astimezone(local_tz) if self.created else None
-        self.modified = parse(self.modified).astimezone(local_tz) if self.modified else None
+        self.created = parse(self.created).astimezone(
+            local_tz) if self.created else None
+        self.modified = parse(self.modified).astimezone(
+            local_tz) if self.modified else None
 
         self.display_name = cloud_data.get(cc('displayName'), '')
         self.name = cloud_data.get(cc('givenName'), '')
@@ -63,7 +89,8 @@ class Contact(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         self.business_phones = cloud_data.get(cc('businessPhones'), []) or []
         self.mobile_phone = cloud_data.get(cc('mobilePhone'), '')
         self.home_phones = cloud_data.get(cc('homePhones'), []) or []
-        self.__emails = self._recipients_from_cloud(cloud_data.get(cc('emailAddresses'), []))
+        self.__emails = self._recipients_from_cloud(
+            cloud_data.get(cc('emailAddresses'), []))
         email = cloud_data.get(cc('email'))
         if email and email not in self.__emails:
             # a Contact from OneDrive?
@@ -134,7 +161,8 @@ class Contact(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         if not self.object_id:
             raise RuntimeError('Attemping to delete an usaved Contact')
 
-        url = self.build_url(self._endpoints.get('contact').format(id=self.object_id))
+        url = self.build_url(
+            self._endpoints.get('contact').format(id=self.object_id))
 
         response = self.con.delete(url)
 
@@ -155,14 +183,18 @@ class Contact(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         for field in fields:
             mapping = self._mapping.get(field)
             if mapping is None:
-                raise ValueError('{} is not a valid updatable field from Contact'.format(field))
+                raise ValueError(
+                    '{} is not a valid updatable field from Contact'.format(
+                        field))
             update_value = getattr(self, field)
             if isinstance(update_value, Recipients):
-                data[self._cc(mapping)] = [self._recipient_to_cloud(recipient) for recipient in update_value]
+                data[self._cc(mapping)] = [self._recipient_to_cloud(recipient)
+                                           for recipient in update_value]
             else:
                 data[self._cc(mapping)] = update_value
 
-        url = self.build_url(self._endpoints.get('contact'.format(id=self.object_id)))
+        url = self.build_url(
+            self._endpoints.get('contact'.format(id=self.object_id)))
 
         response = self.con.patch(url, data=data)
 
@@ -171,10 +203,12 @@ class Contact(ApiComponent, AttachableMixin, HandleRecipientsMixin):
     def save(self):
         """ Saves this Contact to the cloud """
         if self.object_id:
-            raise RuntimeError("Can't save an existing Contact. Use Update instead. ")
+            raise RuntimeError(
+                "Can't save an existing Contact. Use Update instead. ")
 
         if self.folder_id:
-            url = self.build_url(self._endpoints.get('child_contact').format(self.folder_id))
+            url = self.build_url(
+                self._endpoints.get('child_contact').format(self.folder_id))
         else:
             url = self.build_url(self._endpoints.get('root_contact'))
 
@@ -189,8 +223,10 @@ class Contact(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         self.modified = contact.get(self._cc('lastModifiedDateTime'), None)
 
         local_tz = self.protocol.timezone
-        self.created = parse(self.created).astimezone(local_tz) if self.created else None
-        self.modified = parse(self.modified).astimezone(local_tz) if self.modified else None
+        self.created = parse(self.created).astimezone(
+            local_tz) if self.created else None
+        self.modified = parse(self.modified).astimezone(
+            local_tz) if self.modified else None
 
         return True
 
@@ -203,7 +239,8 @@ class Contact(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         """
         if self.main_resource == GAL_MAIN_RESOURCE:
             # preventing the contact lookup to explode for big organizations..
-            raise RuntimeError('Sending a message to all users within an Organization is not allowed')
+            raise RuntimeError(
+                'Sending a message to all users within an Organization is not allowed')
 
         if isinstance(recipient_type, str):
             recipient_type = RecipientType(recipient_type)
@@ -240,14 +277,20 @@ class BaseContactFolder(ApiComponent):
         self.con = parent.con if parent else con
 
         # Choose the main_resource passed in kwargs over the parent main_resource
-        main_resource = kwargs.pop('main_resource', None) or getattr(parent, 'main_resource', None) if parent else None
-        super().__init__(protocol=parent.protocol if parent else kwargs.get('protocol'), main_resource=main_resource)
+        main_resource = kwargs.pop('main_resource', None) or getattr(parent,
+                                                                     'main_resource',
+                                                                     None) if parent else None
+        super().__init__(
+            protocol=parent.protocol if parent else kwargs.get('protocol'),
+            main_resource=main_resource)
 
-        self.root = kwargs.pop('root', False)  # This folder has no parents if root = True.
+        self.root = kwargs.pop('root',
+                               False)  # This folder has no parents if root = True.
 
         cloud_data = kwargs.get(self._cloud_data_key, {})
 
-        self.name = cloud_data.get(self._cc('displayName'), kwargs.get('name', None))  # Fallback to manual folder
+        self.name = cloud_data.get(self._cc('displayName'), kwargs.get('name',
+                                                                       None))  # Fallback to manual folder
         self.folder_id = cloud_data.get(self._cc('id'), None)
         self.parent_id = cloud_data.get(self._cc('parentFolderId'), None)
 
@@ -283,7 +326,9 @@ class BaseContactFolder(ApiComponent):
             if self.root:
                 url = self.build_url(self._endpoints.get('root_contacts'))
             else:
-                url = self.build_url(self._endpoints.get('folder_contacts').format(self.folder_id))
+                url = self.build_url(
+                    self._endpoints.get('folder_contacts').format(
+                        self.folder_id))
 
         if limit is None or limit > self.protocol.max_top_value:
             batch = self.protocol.max_top_value
@@ -306,13 +351,15 @@ class BaseContactFolder(ApiComponent):
         data = response.json()
 
         # Everything received from the cloud must be passed with self._cloud_data_key
-        contacts = [self.contact_constructor(parent=self, **{self._cloud_data_key: contact})
+        contacts = [self.contact_constructor(parent=self,
+                                             **{self._cloud_data_key: contact})
                     for contact in data.get('value', [])]
 
         next_link = data.get(NEXT_LINK_KEYWORD, None)
 
         if batch and next_link:
-            return Pagination(parent=self, data=contacts, constructor=self.contact_constructor,
+            return Pagination(parent=self, data=contacts,
+                              constructor=self.contact_constructor,
                               next_link=next_link, limit=limit)
         else:
             return contacts
@@ -336,16 +383,20 @@ class ContactFolder(BaseContactFolder):
 
         if folder_id:
             # get folder by it's id, independent of the parent of this folder_id
-            url = self.build_url(self._endpoints.get('get_folder').format(id=folder_id))
+            url = self.build_url(
+                self._endpoints.get('get_folder').format(id=folder_id))
             params = None
         else:
             # get folder by name. Only looks up in child folders.
             if self.root:
                 url = self.build_url(self._endpoints.get('root_folders'))
             else:
-                url = self.build_url(self._endpoints.get('child_folders').format(id=self.folder_id))
+                url = self.build_url(
+                    self._endpoints.get('child_folders').format(
+                        id=self.folder_id))
 
-            params = {'$filter': "{} eq '{}'".format(self._cc('displayName'), folder_name), '$top': 1}
+            params = {'$filter': "{} eq '{}'".format(self._cc('displayName'),
+                                                     folder_name), '$top': 1}
 
         response = self.con.get(url, params=params)
         if not response:
@@ -361,7 +412,9 @@ class ContactFolder(BaseContactFolder):
 
         # Everything received from the cloud must be passed with self._cloud_data_key
         # we don't pass parent, as this folder may not be a child of self.
-        return ContactFolder(con=self.con, protocol=self.protocol, main_resource=self.main_resource, **{self._cloud_data_key: folder})
+        return ContactFolder(con=self.con, protocol=self.protocol,
+                             main_resource=self.main_resource,
+                             **{self._cloud_data_key: folder})
 
     def get_folders(self, limit=None, *, query=None, order_by=None):
         """
@@ -374,7 +427,8 @@ class ContactFolder(BaseContactFolder):
         if self.root:
             url = self.build_url(self._endpoints.get('root_folders'))
         else:
-            url = self.build_url(self._endpoints.get('child_folders').format(self.folder_id))
+            url = self.build_url(
+                self._endpoints.get('child_folders').format(self.folder_id))
 
         params = {}
 
@@ -411,9 +465,11 @@ class ContactFolder(BaseContactFolder):
         if self.root:
             url = self.build_url(self._endpoints.get('root_folders'))
         else:
-            url = self.build_url(self._endpoints.get('child_folders').format(id=self.folder_id))
+            url = self.build_url(
+                self._endpoints.get('child_folders').format(id=self.folder_id))
 
-        response = self.con.post(url, data={self._cc('displayName'): folder_name})
+        response = self.con.post(url,
+                                 data={self._cc('displayName'): folder_name})
         if not response:
             return None
 
@@ -429,7 +485,8 @@ class ContactFolder(BaseContactFolder):
         if not name:
             return False
 
-        url = self.build_url(self._endpoints.get('get_folder').format(id=self.folder_id))
+        url = self.build_url(
+            self._endpoints.get('get_folder').format(id=self.folder_id))
 
         response = self.con.patch(url, data={self._cc('displayName'): name})
         if not response:
@@ -452,7 +509,8 @@ class ContactFolder(BaseContactFolder):
         if not to_folder:
             return False
 
-        url = self.build_url(self._endpoints.get('get_folder').format(id=self.folder_id))
+        url = self.build_url(
+            self._endpoints.get('get_folder').format(id=self.folder_id))
 
         if isinstance(to_folder, ContactFolder):
             folder_id = to_folder.folder_id
@@ -461,7 +519,8 @@ class ContactFolder(BaseContactFolder):
         else:
             return False
 
-        response = self.con.patch(url, data={self._cc('parentFolderId'): folder_id})
+        response = self.con.patch(url,
+                                  data={self._cc('parentFolderId'): folder_id})
         if not response:
             return False
 
@@ -478,7 +537,8 @@ class ContactFolder(BaseContactFolder):
         if self.root or not self.folder_id:
             return False
 
-        url = self.build_url(self._endpoints.get('get_folder').format(id=self.folder_id))
+        url = self.build_url(
+            self._endpoints.get('get_folder').format(id=self.folder_id))
 
         response = self.con.delete(url)
         if not response:
@@ -537,7 +597,8 @@ class GlobalAddressList(BaseContactFolder):
 
     def __init__(self, *, parent=None, con=None, **kwargs):
         # set instance to be a root instance and the main_resource to be the GAL_MAIN_RESOURCE
-        super().__init__(parent=parent, con=con, root=True, main_resource=GAL_MAIN_RESOURCE,
+        super().__init__(parent=parent, con=con, root=True,
+                         main_resource=GAL_MAIN_RESOURCE,
                          name='Global Address List', **kwargs)
 
     def __repr__(self):
@@ -560,4 +621,5 @@ class GlobalAddressList(BaseContactFolder):
         data = response.json()
 
         # Everything received from the cloud must be passed with self._cloud_data_key
-        return self.contact_constructor(parent=self, **{self._cloud_data_key: data})
+        return self.contact_constructor(parent=self,
+                                        **{self._cloud_data_key: data})
