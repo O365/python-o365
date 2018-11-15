@@ -1,11 +1,15 @@
 language: python
 python:
-        - "3.5"
-        - "3.6"
-
+- '3.5'
+- '3.6'
 install:
-        - pip install -r requirements-dev.txt
-        - python setup.py install
-
+- pip install -r requirements-dev.txt
+- python setup.py install
 script: pytest
-
+deploy:
+  provider: pypi
+  user: O365
+  password:
+    secure: Lbz3GiQvV5Kzzn79wI/sEMR1bysZNPONekp3TrlJ6PLNKGYaAz3HurBqvDQ0IlAKsnRVch4kjB1FXgEx20dhuGznBooSfe9JoXGEWox7zprsZOHYq9iD4Q1Ay8Q24IEtK7Ey+g+zb2Mj6DsMhafaPMuHS6uWQNdvRSPCNvONOjUtv4w54Jk8UViZvffLaZocn17/+qOjS+Z0ZDyj7NiMh4gDJmKHayE3WgF88wv7TTtikTCQ4+yBHkYhYmqp4lzMcJfM++XscGHhv/dKiUnDvd8ig+KqqSEevIOBylQy3M5ApT3u4khS9tv57yq+nowJ8ddtz0+TAr5Sjm4TBMYjOMl6X7hEvoXY40s3RL7IongyF/zTZgUk2VuAVPE9OUXwDeOWFqu1CP/RYEQxgxEMyCakhsEGcIS8eT/1DROxgvAvNX8kq2f/WPWmKgNoanbNO+0TAvzqdPhzNjL0NcpwUz+0FE24m00iroRJkU0IlFJosx4TvXh+Jb6ihUA+yCdjOzLu0GAPXP8oKkJ4rj7/2qwh4w/5AvtmYMc0XA0w2VSNQxJpBkpieZ2z13oUbrrjLtEhmyuJFKAhsU0va+l853xInbL4pQzCzodb36R+FCihEOonaFORkEATtltYG98T3DmhzFu40dvd2+1lIHPkLhvBBuR5iFR+tqjkVFTcS8o=
+  on:
+    tags: true
