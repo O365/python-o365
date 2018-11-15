@@ -25,10 +25,10 @@ class TestProtocol:
         assert(self.proto.to_api_case("CaseTest") == "case_test")
 
     def test_get_iana_tz(self):
-        assert(self.proto.get_iana_tz('Greenwich Standard Time') == 'Atlantic/St_Helena')
+        assert(self.proto.get_iana_tz('Sudan Standard Time') == 'Africa/Khartoum')
 
     def test_get_iana_tz_standard_time(self):
-        assert(self.proto.get_iana_tz('Greenwich') == 'Atlantic/St_Helena')
+        assert(self.proto.get_iana_tz('Sudan') == 'Africa/Khartoum')
 
     def test_get_iana_tz_not_found(self):
         with pytest.raises(UnknownTimeZoneError):
