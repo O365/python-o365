@@ -9,6 +9,7 @@ from bs4 import BeautifulSoup as bs
 from O365.utils import Pagination, NEXT_LINK_KEYWORD, ApiComponent, BaseAttachments, BaseAttachment, \
     AttachableMixin, ImportanceLevel, TrackerSet
 from O365.message import HandleRecipientsMixin
+from O365.utils.windows_tz import get_iana_tz, get_windows_tz
 
 log = logging.getLogger(__name__)
 
@@ -100,7 +101,7 @@ class EventRecurrence(ApiComponent):
         self.__ocurrences = recurrence_range.get(self._cc('numberOfOccurrences'), None)
         self.__start_date = recurrence_range.get(self._cc('startDate'), None)
         self.__end_date = recurrence_range.get(self._cc('endDate'), None)
-        self.__recurrence_time_zone = recurrence_range.get(self._cc('recurrenceTimeZone'), self.protocol.get_windows_tz())
+        self.__recurrence_time_zone = recurrence_range.get(self._cc('recurrenceTimeZone'), get_windows_tz(self.protocol.timezone))
         # time and time zones are not considered in recurrence ranges...
         # I don't know why 'recurrenceTimeZone' is present here
         # Sending a startDate datetime to the server results in an Error:
@@ -583,7 +584,7 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         start_obj = cloud_data.get(cc('start'), {})
         if isinstance(start_obj, dict):
             try:
-                timezone = pytz.timezone(self.protocol.get_iana_tz(start_obj.get(self._cc('timeZone'), 'UTC')))
+                timezone = pytz.timezone(get_iana_tz(start_obj.get(self._cc('timeZone'), 'UTC')))
             except pytz.UnknownTimeZoneError:
                 timezone = local_tz
             start = start_obj.get(cc('dateTime'), None)
@@ -598,7 +599,7 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         end_obj = cloud_data.get(cc('end'), {})
         if isinstance(end_obj, dict):
             try:
-                timezone = pytz.timezone(self.protocol.get_iana_tz(end_obj.get(self._cc('timeZone'), 'UTC')))
+                timezone = pytz.timezone(get_iana_tz(end_obj.get(self._cc('timeZone'), 'UTC')))
             except pytz.UnknownTimeZoneError:
                 timezone = local_tz
             end = end_obj.get(cc('dateTime'), None)
@@ -653,11 +654,11 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
                 cc('content'): self.__body},
             cc('start'): {
                 cc('dateTime'): self.__start.strftime('%Y-%m-%dT%H:%M:%S'),
-                cc('timeZone'): self.protocol.get_windows_tz(self.__start.tzinfo.zone)
+                cc('timeZone'): get_windows_tz(self.__start.tzinfo.zone or self.protocol.timezone)
             },
             cc('end'): {
                 cc('dateTime'): self.__end.strftime('%Y-%m-%dT%H:%M:%S'),
-                cc('timeZone'): self.protocol.get_windows_tz(self.__end.tzinfo.zone)
+                cc('timeZone'): get_windows_tz(self.__end.tzinfo.zone or self.protocol.timezone)
             },
             cc('attendees'): self.__attendees.to_api_data(),
             cc('location'): {cc('displayName'): self.__location},

@@ -1,6 +1,6 @@
 import os
-from setuptools import setup, find_packages
 
+from setuptools import setup, find_packages
 
 # Available classifiers: https://pypi.org/pypi?%3Aaction=list_classifiers
 CLASSIFIERS = [
