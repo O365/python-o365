@@ -5,7 +5,6 @@ from pytz import UnknownTimeZoneError
 from tzlocal import get_localzone
 
 from O365.connection import Connection, Protocol, MSGraphProtocol, MSOffice365Protocol, DEFAULT_SCOPES
-from O365.utils import ME_RESOURCE, IANA_TO_WIN, WIN_TO_IANA
 
 TEST_SCOPES = ['Contacts.Read.Shared', 'Mail.Send.Shared', 'User.Read', 'Contacts.ReadWrite.Shared', 'Mail.ReadWrite.Shared', 'Mail.Read.Shared', 'Contacts.Read', 'Sites.ReadWrite.All', 'Mail.Send', 'Mail.ReadWrite', 'offline_access', 'Mail.Read', 'Contacts.ReadWrite', 'Files.ReadWrite.All', 'Calendars.ReadWrite', 'User.ReadBasic.All']
 
@@ -23,20 +22,8 @@ class TestProtocol:
 
     def test_to_api_case(self):
         assert(self.proto.to_api_case("CaseTest") == "case_test")
-
-    def test_get_iana_tz(self):
-        assert(self.proto.get_iana_tz('Sudan Standard Time') == 'Africa/Khartoum')
-
-    def test_get_iana_tz_standard_time(self):
-        assert(self.proto.get_iana_tz('Sudan') == 'Africa/Khartoum')
-
-    def test_get_iana_tz_not_found(self):
-        with pytest.raises(UnknownTimeZoneError):
-            self.proto.get_iana_tz('No existo')
     
     def test_get_scopes_for(self):
-        
-        
         with pytest.raises(ValueError):
             self.proto.get_scopes_for(123) # should error sicne it's not a list or tuple.
             
@@ -75,18 +62,6 @@ class TestProtocol:
         assert(self.proto._prefix_scope('test_prefix_Mail.Read') == 'test_prefix_Mail.Read')
         
         assert(self.proto._prefix_scope('Mail.Read') == 'test_prefix_Mail.Read')
-
-    def test_get_windows_tz(self):
-        assert(self.proto.get_windows_tz() == IANA_TO_WIN.get(get_localzone().zone))
-        
-        self.proto.timezone = 'UTC'
-        
-        assert(self.proto.get_windows_tz() == 'UTC')
-        
-        fake = get_localzone()
-        fake.zone = 'No existo'
-        with pytest.raises(UnknownTimeZoneError):
-            self.proto.get_windows_tz(fake)
 
     def test_decendant_MSOffice365Protocol(self):
         # Basically we just test that it can create the class w/o erroring.
