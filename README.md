@@ -36,6 +36,7 @@ m.send()
 - A query helper to help you build custom OData queries (filter, order and select).
 - Modular ApiComponents can be created and build to achieve further functionality.
 
+___
 
 **Python 3.4 is the minimum required**... I was very tempted to just go for 3.6 and use f-strings. Those are fantastic!
 

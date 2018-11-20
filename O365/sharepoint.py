@@ -1,6 +1,7 @@
 import logging
 from dateutil.parser import parse
 
+from O365.address_book import Contact
 from O365.drive import Storage
 from O365.utils import ApiComponent
 
@@ -8,9 +9,89 @@ from O365.utils import ApiComponent
 log = logging.getLogger(__name__)
 
 
+class SharepointListItem(ApiComponent):
+    """ A Sharepoint ListItem within a SharepointList """
+
+    _endpoints = {}
+
+    def __init__(self, *, parent=None, con=None, **kwargs):
+        assert parent or con, 'Need a parent or a connection'
+        self.con = parent.con if parent else con
+
+        # Choose the main_resource passed in kwargs over the parent main_resource
+        main_resource = kwargs.pop('main_resource', None) or getattr(parent, 'main_resource', None) if parent else None
+
+        super().__init__(protocol=parent.protocol if parent else kwargs.get('protocol'), main_resource=main_resource)
+
+        cloud_data = kwargs.get(self._cloud_data_key, {})
+
+        self.object_id = cloud_data.get('id')
+
+
 class SharepointList(ApiComponent):
     """ A Sharepoint site List """
-    pass
+
+    _endpoints = {
+        'get_items': '/items'
+    }
+    list_item_constructor = SharepointListItem
+
+    def __init__(self, *, parent=None, con=None, **kwargs):
+        assert parent or con, 'Need a parent or a connection'
+        self.con = parent.con if parent else con
+
+        cloud_data = kwargs.get(self._cloud_data_key, {})
+
+        self.object_id = cloud_data.get('id')
+
+        # Choose the main_resource passed in kwargs over the parent main_resource
+        main_resource = kwargs.pop('main_resource', None) or getattr(parent, 'main_resource', None) if parent else None
+
+        # prefix with the current known list
+        resource_prefix = 'lists/{list_id}'.format(list_id=self.object_id)
+        main_resource = '{}{}'.format(main_resource, resource_prefix)
+
+        super().__init__(protocol=parent.protocol if parent else kwargs.get('protocol'), main_resource=main_resource)
+
+        self.name = cloud_data.get(self._cc('name'), '')
+        self.display_name = cloud_data.get(self._cc('displayName'), '')
+        if not self.name:
+            self.name = self.display_name
+        self.description = cloud_data.get(self._cc('description'), '')
+        self.web_url = cloud_data.get(self._cc('webUrl'))
+
+        created = cloud_data.get(self._cc('createdDateTime'), None)
+        modified = cloud_data.get(self._cc('lastModifiedDateTime'), None)
+        local_tz = self.protocol.timezone
+        self.created = parse(created).astimezone(local_tz) if created else None
+        self.modified = parse(modified).astimezone(local_tz) if modified else None
+
+        created_by = cloud_data.get(self._cc('createdBy'), {}).get('user', None)
+        self.created_by = Contact(con=self.con, protocol=self.protocol,
+                                  **{self._cloud_data_key: created_by}) if created_by else None
+        modified_by = cloud_data.get(self._cc('lastModifiedBy'), {}).get('user', None)
+        self.modified_by = Contact(con=self.con, protocol=self.protocol,
+                                   **{self._cloud_data_key: modified_by}) if modified_by else None
+
+        # list info
+        lst_info = cloud_data.get('list', {})
+        self.content_types_enabled = lst_info.get(self._cc('contentTypesEnabled'), False)
+        self.hidden = lst_info.get(self._cc('hidden'), False)
+        self.template = lst_info.get(self._cc('template'), False)
+
+    def get_items(self):
+        """ Returns a collection of Sharepoint Items """
+        url = self.build_url(self._endpoints.get('get_items'))
+
+        response = self.con.get(url)
+
+        if not response:
+            return []
+
+        data = response.json()
+
+        return [self.list_item_constructor(parent=self, **{self._cloud_data_key: item})
+                for item in data.get('value', [])]
 
 
 class Site(ApiComponent):
@@ -20,6 +101,7 @@ class Site(ApiComponent):
         'get_subsites': '/sites',
         'get_lists': '/lists'
     }
+    list_constructor = SharepointList
 
     def __init__(self, *, parent=None, con=None, **kwargs):
         assert parent or con, 'Need a parent or a connection'
@@ -43,7 +125,7 @@ class Site(ApiComponent):
         self.display_name = cloud_data.get(self._cc('displayName'), '')
         if not self.name:
             self.name = self.display_name
-        self.description = cloud_data.get(self._cc('description'))
+        self.description = cloud_data.get(self._cc('description'), '')
         self.web_url = cloud_data.get(self._cc('webUrl'))
 
         created = cloud_data.get(self._cc('createdDateTime'), None)
@@ -81,7 +163,6 @@ class Site(ApiComponent):
 
     def get_subsites(self):
         """ Returns a list of subsites defined for this site """
-
         url = self.build_url(self._endpoints.get('get_subsites').format(id=self.object_id))
 
         response = self.con.get(url)
@@ -92,6 +173,18 @@ class Site(ApiComponent):
 
         # Everything received from the cloud must be passed with self._cloud_data_key
         return [self.__class__(parent=self, **{self._cloud_data_key: site}) for site in data.get('value', [])]
+
+    def get_lists(self):
+        """ Returns a collection of lists within this site """
+        url = self.build_url(self._endpoints.get('get_lists'))
+
+        response = self.con.get(url)
+        if not response:
+            return []
+
+        data = response.json()
+
+        return [self.list_constructor(parent=self, **{self._cloud_data_key: lst}) for lst in data.get('value', [])]
 
 
 class Sharepoint(ApiComponent):

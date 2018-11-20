@@ -328,7 +328,7 @@ class BaseContactFolder(ApiComponent):
             else:
                 url = self.build_url(
                     self._endpoints.get('folder_contacts').format(
-                        self.folder_id))
+                        id=self.folder_id))
 
         if limit is None or limit > self.protocol.max_top_value:
             batch = self.protocol.max_top_value
