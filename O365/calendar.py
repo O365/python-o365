@@ -555,7 +555,7 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         assert parent or con, 'Need a parent or a connection'
         self.con = parent.con if parent else con
 
-        # Choose the main_resource passed in kwargs over the parent main_resource
+        # Choose the main_resource passed in kwargs over parent main_resource
         main_resource = kwargs.pop('main_resource', None) or getattr(parent, 'main_resource', None) if parent else None
         super().__init__(protocol=parent.protocol if parent else kwargs.get('protocol'), main_resource=main_resource)
 
@@ -1000,7 +1000,7 @@ class Calendar(ApiComponent, HandleRecipientsMixin):
         assert parent or con, 'Need a parent or a connection'
         self.con = parent.con if parent else con
 
-        # Choose the main_resource passed in kwargs over the parent main_resource
+        # Choose the main_resource passed in kwargs over parent main_resource
         main_resource = kwargs.pop('main_resource', None) or getattr(parent, 'main_resource', None) if parent else None
         super().__init__(protocol=parent.protocol if parent else kwargs.get('protocol'), main_resource=main_resource)
 
@@ -1098,7 +1098,7 @@ class Calendar(ApiComponent, HandleRecipientsMixin):
 
         data = response.json()
 
-        # Everything received from the cloud must be passed with self._cloud_data_key
+        # Everything received from cloud must be passed as self._cloud_data_key
         events = [self.event_constructor(parent=self, download_attachments=download_attachments,
                                          **{self._cloud_data_key: event})
                   for event in data.get('value', [])]
@@ -1160,7 +1160,7 @@ class Schedule(ApiComponent):
         assert parent or con, 'Need a parent or a connection'
         self.con = parent.con if parent else con
 
-        # Choose the main_resource passed in kwargs over the parent main_resource
+        # Choose the main_resource passed in kwargs over parent main_resource
         main_resource = kwargs.pop('main_resource', None) or getattr(parent, 'main_resource', None) if parent else None
         super().__init__(protocol=parent.protocol if parent else kwargs.get('protocol'), main_resource=main_resource)
 
@@ -1198,7 +1198,7 @@ class Schedule(ApiComponent):
 
         data = response.json()
 
-        # Everything received from the cloud must be passed with self._cloud_data_key
+        # Everything received from cloud must be passed as self._cloud_data_key
         contacts = [self.calendar_constructor(parent=self, **{self._cloud_data_key: calendar})
                     for calendar in data.get('value', [])]
 
@@ -1221,7 +1221,7 @@ class Schedule(ApiComponent):
 
         calendar = response.json()
 
-        # Everything received from the cloud must be passed with self._cloud_data_key
+        # Everything received from cloud must be passed as self._cloud_data_key
         return self.calendar_constructor(parent=self, **{self._cloud_data_key: calendar})
 
     def get_calendar(self, calendar_id=None, calendar_name=None):
@@ -1257,7 +1257,7 @@ class Schedule(ApiComponent):
             if calendar is None:
                 return None
 
-        # Everything received from the cloud must be passed with self._cloud_data_key
+        # Everything received from cloud must be passed as self._cloud_data_key
         return self.calendar_constructor(parent=self, **{self._cloud_data_key: calendar})
 
     def get_default_calendar(self):
@@ -1271,7 +1271,7 @@ class Schedule(ApiComponent):
 
         calendar = response.json()
 
-        # Everything received from the cloud must be passed with self._cloud_data_key
+        # Everything received from cloud must be passed as self._cloud_data_key
         return self.calendar_constructor(parent=self, **{self._cloud_data_key: calendar})
 
     def get_events(self, limit=25, *, query=None, order_by=None, batch=None, download_attachments=False):
@@ -1311,7 +1311,7 @@ class Schedule(ApiComponent):
 
         data = response.json()
 
-        # Everything received from the cloud must be passed with self._cloud_data_key
+        # Everything received from cloud must be passed as self._cloud_data_key
         events = [self.event_constructor(parent=self, download_attachments=download_attachments,
                                          **{self._cloud_data_key: event})
                   for event in data.get('value', [])]

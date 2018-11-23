@@ -111,7 +111,7 @@ class Site(ApiComponent):
 
         self.object_id = cloud_data.get('id')
 
-        # Choose the main_resource passed in kwargs over the parent main_resource
+        # Choose the main_resource passed in kwargs over parent main_resource
         main_resource = kwargs.pop('main_resource', None) or getattr(parent, 'main_resource', None) if parent else None
 
         # prefix with the current known site
@@ -171,7 +171,7 @@ class Site(ApiComponent):
 
         data = response.json()
 
-        # Everything received from the cloud must be passed with self._cloud_data_key
+        # Everything received from cloud must be passed as self._cloud_data_key
         return [self.__class__(parent=self, **{self._cloud_data_key: site}) for site in data.get('value', [])]
 
     def get_lists(self):
@@ -226,7 +226,7 @@ class Sharepoint(ApiComponent):
 
         data = response.json()
 
-        # Everything received from the cloud must be passed with self._cloud_data_key
+        # Everything received from cloud must be passed as self._cloud_data_key
         return [self.site_constructor(parent=self, **{self._cloud_data_key: site}) for site in data.get('value', [])]
 
     def get_root_site(self):

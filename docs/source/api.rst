@@ -8,3 +8,5 @@ O365 API
 
    api/account
    api/connection
+   api/mailbox
+   api/address_book

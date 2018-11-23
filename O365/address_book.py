@@ -47,19 +47,23 @@ class Contact(ApiComponent, AttachableMixin, HandleRecipientsMixin):
     message_constructor = Message
 
     def __init__(self, *, parent=None, con=None, **kwargs):
-        """
+        """ Create a contact API component
 
-        :param parent:
-        :param con:
-        :param kwargs:
+        :param parent: parent account for this folder
+        :type parent: Account
+        :param Connection con: connection to use if no parent specified
+        :param Protocol protocol: protocol to use if no parent specified
+         (kwargs)
+        :param str main_resource: use this resource instead of parent resource
+         (kwargs)
         """
         assert parent or con, 'Need a parent or a connection'
         self.con = parent.con if parent else con
 
-        # Choose the main_resource passed in kwargs over the parent main_resource
-        main_resource = kwargs.pop('main_resource', None) or getattr(parent,
-                                                                     'main_resource',
-                                                                     None) if parent else None
+        # Choose the main_resource passed in kwargs over parent main_resource
+        main_resource = kwargs.pop('main_resource',
+                                   None) or getattr(parent, 'main_resource',
+                                                    None) if parent else None
         super().__init__(
             protocol=parent.protocol if parent else kwargs.get('protocol'),
             main_resource=main_resource)
@@ -103,7 +107,8 @@ class Contact(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         self.categories = cloud_data.get(cc('categories'), [])
         self.folder_id = cloud_data.get(cc('parentFolderId'), None)
 
-        # when using Users endpoints (GAL) : missing keys: ['mail', 'userPrincipalName']
+        # When using Users endpoints (GAL)
+        # Missing keys: ['mail', 'userPrincipalName']
         mail = cloud_data.get(cc('mail'), None)
         user_principal_name = cloud_data.get(cc('userPrincipalName'), None)
         if mail and mail not in self.emails:
@@ -113,28 +118,41 @@ class Contact(ApiComponent, AttachableMixin, HandleRecipientsMixin):
 
     @property
     def emails(self):
+        """ List of email ids of the Contact
+
+        :rtype: Recipients
+        """
         return self.__emails
 
     @property
     def main_email(self):
-        """ Returns the first email on the emails"""
+        """ Primary(First) email id of the Contact
+
+        :rtype: str
+        """
         if not self.emails:
             return None
         return self.emails[0].address
 
     @property
     def full_name(self):
-        """ Returns name + surname """
+        """ Full name of the Contact
+
+        :rtype: str
+        """
         return '{} {}'.format(self.name, self.surname).strip()
 
     def __str__(self):
         return self.__repr__()
 
     def __repr__(self):
-        return self.display_name or self.full_name or 'Unknwon Name'
+        return self.display_name or self.full_name or 'Unknown Name'
 
     def to_api_data(self):
-        """ Returns a dictionary in cloud format """
+        """ Returns a dictionary in cloud format
+
+        :rtype: dict
+        """
 
         data = {
             'displayName': self.display_name,
@@ -156,10 +174,14 @@ class Contact(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         return data
 
     def delete(self):
-        """ Deletes this contact """
+        """ Deletes this contact
 
+        :return: Success or Failure
+        :rtype: bool
+        :raises RuntimeError: if contact is not yet saved to cloud
+        """
         if not self.object_id:
-            raise RuntimeError('Attemping to delete an usaved Contact')
+            raise RuntimeError('Attempting to delete an unsaved Contact')
 
         url = self.build_url(
             self._endpoints.get('contact').format(id=self.object_id))
@@ -169,12 +191,17 @@ class Contact(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         return bool(response)
 
     def update(self, fields):
-        """ Updates a contact
-         :param fields: a dict of fields to update (field: value).
-         """
+        """ Updates a contact info to cloud
 
+        :param list[str] fields: a list of fields to update
+        :return: Success or Failure
+        :rtype: bool
+        :raises RuntimeError: if contact is not yet saved to cloud
+        :raises ValueError: if invalid data type of fields passed
+        :raises ValueError: if any field is not valid
+        """
         if not self.object_id:
-            raise RuntimeError('Attemping to update an usaved Contact')
+            raise RuntimeError('Attempting to update an unsaved Contact')
 
         if fields is None or not isinstance(fields, (list, tuple)):
             raise ValueError('Must provide fields to update as a list or tuple')
@@ -184,7 +211,7 @@ class Contact(ApiComponent, AttachableMixin, HandleRecipientsMixin):
             mapping = self._mapping.get(field)
             if mapping is None:
                 raise ValueError(
-                    '{} is not a valid updatable field from Contact'.format(
+                    '{} is not a valid field from Contact'.format(
                         field))
             update_value = getattr(self, field)
             if isinstance(update_value, Recipients):
@@ -201,7 +228,11 @@ class Contact(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         return bool(response)
 
     def save(self):
-        """ Saves this Contact to the cloud """
+        """ Saves this contact to the cloud
+
+        :return: Saved or Not
+        :rtype: bool
+        """
         if self.object_id:
             raise RuntimeError(
                 "Can't save an existing Contact. Use Update instead. ")
@@ -231,16 +262,19 @@ class Contact(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         return True
 
     def new_message(self, recipient=None, *, recipient_type=RecipientType.TO):
-        """
-        This method returns a new draft Message instance with this contact first email as a recipient
-        :param recipient: a Recipient instance where to send this message. If None, first recipient with address.
-        :param recipient_type: a RecipientType Enum.
-        :return: a new draft Message or None if recipient has no addresses
+        """ This method returns a new draft Message instance with
+        contacts first email as a recipient
+
+        :param Recipient recipient: a Recipient instance where to send this
+         message. If None first email of this contact will be used
+        :param RecipientType recipient_type: section to add recipient into
+        :return: newly created message
+        :rtype: Message or None
         """
         if self.main_resource == GAL_MAIN_RESOURCE:
             # preventing the contact lookup to explode for big organizations..
-            raise RuntimeError(
-                'Sending a message to all users within an Organization is not allowed')
+            raise RuntimeError('Sending a message to all users within an '
+                               'Organization is not allowed')
 
         if isinstance(recipient_type, str):
             recipient_type = RecipientType(recipient_type)
@@ -273,24 +307,38 @@ class BaseContactFolder(ApiComponent):
     message_constructor = Message
 
     def __init__(self, *, parent=None, con=None, **kwargs):
+        """ Create a contact folder component
+
+        :param parent: parent folder/account for this folder
+        :type parent: BaseContactFolder or Account
+        :param Connection con: connection to use if no parent specified
+        :param Protocol protocol: protocol to use if no parent specified
+         (kwargs)
+        :param str main_resource: use this resource instead of parent resource
+         (kwargs)
+        """
         assert parent or con, 'Need a parent or a connection'
         self.con = parent.con if parent else con
 
-        # Choose the main_resource passed in kwargs over the parent main_resource
-        main_resource = kwargs.pop('main_resource', None) or getattr(parent,
-                                                                     'main_resource',
-                                                                     None) if parent else None
+        # Choose the main_resource passed in kwargs over parent main_resource
+        main_resource = (kwargs.pop('main_resource', None) or
+                         getattr(parent, 'main_resource',
+                                 None) if parent else None)
         super().__init__(
             protocol=parent.protocol if parent else kwargs.get('protocol'),
             main_resource=main_resource)
 
-        self.root = kwargs.pop('root',
-                               False)  # This folder has no parents if root = True.
+        # This folder has no parents if root = True.
+        self.root = kwargs.pop('root', False)
 
         cloud_data = kwargs.get(self._cloud_data_key, {})
 
-        self.name = cloud_data.get(self._cc('displayName'), kwargs.get('name',
-                                                                       None))  # Fallback to manual folder
+        # Fallback to manual folder if nothing available on cloud data
+        self.name = cloud_data.get(self._cc('displayName'),
+                                   kwargs.get('name',
+                                              ''))
+        # TODO: Most of above code is same as mailbox.Folder __init__
+
         self.folder_id = cloud_data.get(self._cc('id'), None)
         self.parent_id = cloud_data.get(self._cc('parentFolderId'), None)
 
@@ -301,22 +349,30 @@ class BaseContactFolder(ApiComponent):
         return 'Contact Folder: {}'.format(self.name)
 
     def get_contacts(self, limit=100, *, query=None, order_by=None, batch=None):
-        """
-        Gets a list of contacts from this address book
+        """ Gets a list of contacts from this address book
 
-        When quering the Global Address List the Users enpoint will be used.
-        Only a limited set of information will be available unless you have acces to
-         scope 'User.Read.All' wich requires App Administration Consent.
-        Also using the Users enpoint has some limitations on the quering capabilites.
+        When querying the Global Address List the Users endpoint will be used.
+        Only a limited set of information will be available unless you have
+        access to scope 'User.Read.All' which requires App Administration
+        Consent.
+
+        Also using endpoints has some limitations on the querying capabilities.
 
         To use query an order_by check the OData specification here:
-        http://docs.oasis-open.org/odata/odata/v4.0/errata03/os/complete/part2-url-conventions/odata-v4.0-errata03-os-part2-url-conventions-complete.html
+        http://docs.oasis-open.org/odata/odata/v4.0/errata03/os/complete/
+        part2-url-conventions/odata-v4.0-errata03-os-part2-url-conventions
+        -complete.html
 
-        :param limit: Number of elements to return. Over 999 uses batch.
-        :param query: a OData valid filter clause
-        :param order_by: OData valid order by clause
-        :param batch: Returns a custom iterator that retrieves items in batches allowing
-            to retrieve more items than the limit.
+        :param limit: max no. of contacts to get. Over 999 uses batch.
+        :type limit: int or None
+        :param query: applies a OData filter to the request
+        :type query: Query or str
+        :param order_by: orders the result set based on this condition
+        :type order_by: Query or str
+        :param int batch: batch size, retrieves items in
+         batches allowing to retrieve more items than the limit.
+        :return: list of contacts
+        :rtype: list[Contact] or Pagination
         """
 
         if self.main_resource == GAL_MAIN_RESOURCE:
@@ -350,7 +406,7 @@ class BaseContactFolder(ApiComponent):
 
         data = response.json()
 
-        # Everything received from the cloud must be passed with self._cloud_data_key
+        # Everything received from cloud must be passed as self._cloud_data_key
         contacts = [self.contact_constructor(parent=self,
                                              **{self._cloud_data_key: contact})
                     for contact in data.get('value', [])]
@@ -369,10 +425,14 @@ class ContactFolder(BaseContactFolder):
     """ A Contact Folder representation """
 
     def get_folder(self, folder_id=None, folder_name=None):
-        """
-        Returns a ContactFolder by it's id or name
-        :param folder_id: the folder_id to be retrieved. Can be any folder Id (child or not)
-        :param folder_name: the folder name to be retrieved. Must be a child of this folder.
+        """ Returns a Contact Folder by it's id or child folders by name
+
+        :param folder_id: the folder_id to be retrieved.
+         Can be any folder Id (child or not)
+        :param folder_name: the folder name to be retrieved.
+         Must be a child of this folder
+        :return: a single contact folder
+        :rtype: ContactFolder
         """
 
         if folder_id and folder_name:
@@ -410,19 +470,22 @@ class ContactFolder(BaseContactFolder):
             if folder is None:
                 return None
 
-        # Everything received from the cloud must be passed with self._cloud_data_key
+        # Everything received from cloud must be passed as self._cloud_data_key
         # we don't pass parent, as this folder may not be a child of self.
         return ContactFolder(con=self.con, protocol=self.protocol,
                              main_resource=self.main_resource,
                              **{self._cloud_data_key: folder})
 
     def get_folders(self, limit=None, *, query=None, order_by=None):
-        """
-        Returns a list of child folders
+        """ Returns a list of child folders
 
-        :param limit: Number of elements to return.
-        :param query: a OData valid filter clause
-        :param order_by: OData valid order by clause
+        :param int limit: max no. of folders to get. Over 999 uses batch.
+        :param query: applies a OData filter to the request
+        :type query: Query or str
+        :param order_by: orders the result set based on this condition
+        :type order_by: Query or str
+        :return: list of folders
+        :rtype: list[ContactFolder]
         """
         if self.root:
             url = self.build_url(self._endpoints.get('root_folders'))
@@ -454,9 +517,11 @@ class ContactFolder(BaseContactFolder):
                 for folder in data.get('value', [])]
 
     def create_child_folder(self, folder_name):
-        """
-        Creates a new child folder
-        :return the new Folder Object or None
+        """ Creates a new child folder
+
+        :param str folder_name: name of the new folder to create
+        :return: newly created folder
+        :rtype: ContactFolder or None
         """
 
         if not folder_name:
@@ -475,11 +540,16 @@ class ContactFolder(BaseContactFolder):
 
         folder = response.json()
 
-        # Everything received from the cloud must be passed with self._cloud_data_key
+        # Everything received from cloud must be passed as self._cloud_data_key
         return ContactFolder(parent=self, **{self._cloud_data_key: folder})
 
     def update_folder_name(self, name):
-        """ Change this folder name """
+        """ Change this folder name
+
+        :param str name: new name to change to
+        :return: Updated or Not
+        :rtype: bool
+        """
         if self.root:
             return False
         if not name:
@@ -500,9 +570,12 @@ class ContactFolder(BaseContactFolder):
         return True
 
     def move_folder(self, to_folder):
-        """
-        Change this folder name
-        :param to_folder: a folder_id str or a ContactFolder
+        """ Change this folder name
+
+        :param to_folder: folder_id/ContactFolder to move into
+        :type to_folder: str or ContactFolder
+        :return: Moved or Not
+        :rtype: bool
         """
         if self.root:
             return False
@@ -532,7 +605,11 @@ class ContactFolder(BaseContactFolder):
         return True
 
     def delete(self):
-        """ Deletes this folder """
+        """ Deletes this folder
+
+        :return: Deleted or Not
+        :rtype: bool
+        """
 
         if self.root or not self.folder_id:
             return False
@@ -549,7 +626,11 @@ class ContactFolder(BaseContactFolder):
         return True
 
     def new_contact(self):
-        """ Creates a new contact to be saved into it's parent folder """
+        """ Creates a new contact to be saved into it's parent folder
+
+        :return: newly created contact
+        :rtype: Contact
+        """
         contact = self.contact_constructor(parent=self)
         if not self.root:
             contact.folder_id = self.folder_id
@@ -557,11 +638,14 @@ class ContactFolder(BaseContactFolder):
         return contact
 
     def new_message(self, recipient_type=RecipientType.TO, *, query=None):
-        """
-        This method returns a new draft Message instance with all the contacts first email as a recipient
-        :param recipient_type: a RecipientType Enum.
-        :param query: a query to filter the contacts (passed to get_contacts)
-        :return: a draft Message or None if no contacts could be retrieved
+        """ This method returns a new draft Message instance with all the
+        contacts first email as a recipient
+
+        :param RecipientType recipient_type: section to add recipient into
+        :param query: applies a OData filter to the request
+        :type query: Query or str
+        :return: newly created message
+        :rtype: Message or None
         """
 
         if isinstance(recipient_type, str):
@@ -585,7 +669,7 @@ class AddressBook(ContactFolder):
     """ A class representing an address book """
 
     def __init__(self, *, parent=None, con=None, **kwargs):
-        # set instance to be a root instance
+        # Set instance to be a root instance
         super().__init__(parent=parent, con=con, root=True, **kwargs)
 
     def __repr__(self):
@@ -596,7 +680,7 @@ class GlobalAddressList(BaseContactFolder):
     """ A class representing the Global Address List (Users API) """
 
     def __init__(self, *, parent=None, con=None, **kwargs):
-        # set instance to be a root instance and the main_resource to be the GAL_MAIN_RESOURCE
+        # Set instance to root instance and main_resource to GAL_MAIN_RESOURCE
         super().__init__(parent=parent, con=con, root=True,
                          main_resource=GAL_MAIN_RESOURCE,
                          name='Global Address List', **kwargs)
@@ -605,8 +689,12 @@ class GlobalAddressList(BaseContactFolder):
         return 'Global Address List'
 
     def get_contact_by_email(self, email):
-        """ Returns a Contact by it's email """
+        """ Returns a Contact by it's email
 
+        :param email: email to get contact for
+        :return: Contact for specified email
+        :rtype: Contact
+        """
         if not email:
             return None
 
@@ -620,6 +708,6 @@ class GlobalAddressList(BaseContactFolder):
 
         data = response.json()
 
-        # Everything received from the cloud must be passed with self._cloud_data_key
+        # Everything received from cloud must be passed as self._cloud_data_key
         return self.contact_constructor(parent=self,
                                         **{self._cloud_data_key: data})

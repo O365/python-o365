@@ -89,7 +89,55 @@ The authenticate() method forces a authentication flow, which prints out a url
 #. Paste the resulting URL into the python console.
 #. That's it, you don't need this hassle again unless you want to add more scopes than you approved for
 
-Accessing Resources
+Accessing Services
 ^^^^^^^^^^^^^^^^^^^
-Mailbox
-"""""""
+Below are the currently supported services
+
+- Mailbox - Read, Reply or send new mails to others
+    .. code-block:: python
+
+        # Access Mailbox
+        mailbox = account.mailbox()
+
+        # Access mailbox of another resource
+        mailbox = account.mailbox(resource='someone@example.com')
+
+- Address Book - Read or add new contacts to your address book
+    .. code-block:: python
+
+        # Access personal address book
+        contacts = account.address_book()
+
+        # Access personal address book of another resource
+        contacts = account.mailbox(resource='someone@example.com')
+
+        # Access global shared server address book (Global Address List)
+        contacts = account.mailbox(address_book='gal')
+
+- Calendar Scheduler - Read or add new events to your calendar
+    .. code-block:: python
+
+        # Access scheduler
+        scheduler = account.schedule()
+
+        # Access scheduler of another resource
+        scheduler = account.schedule(resource='someone@example.com')
+
+- One Drive Storage - Manipulate and Organize your OneDrive
+    .. code-block:: python
+
+        # Access storage
+        storage = account.storage()
+
+        # Access storage of another resource
+        storage = account.storage(resource='someone@example.com')
+
+- Sharepoint Sites - Read and access items in your sharepoint sites
+    .. code-block:: python
+
+        # Access sharepoint
+        sharepoint = account.sharepoint()
+
+        # Access sharepoint of another resource
+        sharepoint = account.sharepoint(resource='someone@example.com')
+

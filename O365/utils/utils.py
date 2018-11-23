@@ -61,7 +61,7 @@ class ApiComponent:
     Exposes common access methods to the api protocol within all Api objects
     """
 
-    _cloud_data_key = '__cloud_data__'  # wrapps cloud data with this dict key
+    _cloud_data_key = '__cloud_data__'  # wraps cloud data with this dict key
     _endpoints = {}  # dict of all API service endpoints needed
 
     def __init__(self, *, protocol=None, main_resource=None, **kwargs):
@@ -73,8 +73,10 @@ class ApiComponent:
         self.protocol = protocol() if isinstance(protocol, type) else protocol
         if self.protocol is None:
             raise ValueError('Protocol not provided to Api Component')
-        self.main_resource = self._parse_resource(main_resource if main_resource is not None else protocol.default_resource)
-        self._base_url = '{}{}'.format(self.protocol.service_url, self.main_resource)
+        self.main_resource = self._parse_resource(
+            main_resource if main_resource is not None else protocol.default_resource)
+        self._base_url = '{}{}'.format(self.protocol.service_url,
+                                       self.main_resource)
         if self._base_url.endswith('/'):
             # when self.main_resource is an empty string then remove the last slash.
             self._base_url = self._base_url[:-1]
@@ -117,10 +119,33 @@ class ApiComponent:
     q = new_query  # alias for new query
 
 
+class BaseComponent(ApiComponent):
+    def __init__(self, **kwargs):
+        parent = kwargs.pop('parent', None)
+        con = kwargs.pop('con', None)
+
+        assert parent or con, 'Need a parent or a connection'
+        self.con = parent.con if parent else con
+
+        # Choose the main_resource passed in kwargs over parent main_resource
+        main_resource = (kwargs.pop('main_resource', None) or
+                         getattr(parent, 'main_resource',
+                                 None) if parent else None)
+        super().__init__(
+            protocol=parent.protocol if parent else kwargs.get('protocol'),
+            main_resource=main_resource)
+
+        # This folder has no parents if root = True.
+        self.root = kwargs.pop('root', False)
+
+        cloud_data = kwargs.get(self._cloud_data_key, {})
+
+
 class Pagination(ApiComponent):
     """ Utility class that allows batching requests to the server """
 
-    def __init__(self, *, parent=None, data=None, constructor=None, next_link=None, limit=None):
+    def __init__(self, *, parent=None, data=None, constructor=None,
+                 next_link=None, limit=None):
         """
         Returns an iterator that returns data until it's exhausted. Then will request more data
         (same amount as the original request) to the server until this data is exhausted as well.
@@ -136,7 +161,8 @@ class Pagination(ApiComponent):
         if parent is None:
             raise ValueError('Parent must be another Api Component')
 
-        super().__init__(protocol=parent.protocol, main_resource=parent.main_resource)
+        super().__init__(protocol=parent.protocol,
+                         main_resource=parent.main_resource)
 
         self.parent = parent
         self.con = parent.con
@@ -161,7 +187,8 @@ class Pagination(ApiComponent):
         if callable(self.constructor):
             return 'Pagination Iterator'
         else:
-            return "'{}' Iterator".format(self.constructor.__name__ if self.constructor else 'Unknown')
+            return "'{}' Iterator".format(
+                self.constructor.__name__ if self.constructor else 'Unknown')
 
     def __bool__(self):
         return bool(self.data) or bool(self.next_link)
@@ -190,11 +217,15 @@ class Pagination(ApiComponent):
         self.next_link = data.get(NEXT_LINK_KEYWORD, None) or None
         data = data.get('value', [])
         if self.constructor:
-            # Everything received from the cloud must be passed with self._cloud_data_key
-            if callable(self.constructor) and not isinstance(self.constructor, type):  # it's callable but its not a Class
-                self.data = [self.constructor(value)(parent=self.parent, **{self._cloud_data_key: value}) for value in data]
+            # Everything received from cloud must be passed as self._cloud_data_key
+            if callable(self.constructor) and not isinstance(self.constructor,
+                                                             type):  # it's callable but its not a Class
+                self.data = [self.constructor(value)(parent=self.parent, **{
+                    self._cloud_data_key: value}) for value in data]
             else:
-                self.data = [self.constructor(parent=self.parent, **{self._cloud_data_key: value}) for value in data]
+                self.data = [self.constructor(parent=self.parent,
+                                              **{self._cloud_data_key: value})
+                             for value in data]
         else:
             self.data = data
 
@@ -236,7 +267,9 @@ class Query:
         self._selects = set()
 
     def __str__(self):
-        return 'Filter: {}\nOrder: {}\nSelect: {}'.format(self.get_filters(), self.get_order(), self.get_selects())
+        return 'Filter: {}\nOrder: {}\nSelect: {}'.format(self.get_filters(),
+                                                          self.get_order(),
+                                                          self.get_selects())
 
     def __repr__(self):
         return self.__str__()
@@ -248,7 +281,9 @@ class Query:
         """
         if attributes:
             for attribute in attributes:
-                attribute = self.protocol.convert_case(attribute) if attribute and isinstance(attribute, str) else None
+                attribute = self.protocol.convert_case(
+                    attribute) if attribute and isinstance(attribute,
+                                                           str) else None
                 if attribute:
                     if '/' in attribute:
                         # only parent attribute can be selected
@@ -289,7 +324,9 @@ class Query:
             filters_list = self._filters
             if isinstance(filters_list[-1], Enum):
                 filters_list = filters_list[:-1]
-            return ' '.join([fs.value if isinstance(fs, Enum) else fs[1] for fs in filters_list]).strip()
+            return ' '.join(
+                [fs.value if isinstance(fs, Enum) else fs[1] for fs in
+                 filters_list]).strip()
         else:
             return None
 
@@ -308,11 +345,14 @@ class Query:
             direction = order_by_dict.pop(filter_oc, None)
             filter_order_clauses[filter_oc] = direction
 
-        filter_order_clauses.update(order_by_dict)  # append any remaining order_by clause
+        filter_order_clauses.update(
+            order_by_dict)  # append any remaining order_by clause
 
         if filter_order_clauses:
-            return ','.join(['{} {}'.format(attribute, direction if direction else '').strip()
-                             for attribute, direction in filter_order_clauses.items()])
+            return ','.join(['{} {}'.format(attribute,
+                                            direction if direction else '').strip()
+                             for attribute, direction in
+                             filter_order_clauses.items()])
         else:
             return None
 
@@ -327,7 +367,9 @@ class Query:
         if attribute:
             mapping = self._mapping.get(attribute)
             if mapping:
-                attribute = '/'.join([self.protocol.convert_case(step) for step in mapping.split('/')])
+                attribute = '/'.join(
+                    [self.protocol.convert_case(step) for step in
+                     mapping.split('/')])
             else:
                 attribute = self.protocol.convert_case(attribute)
             return attribute
@@ -367,11 +409,13 @@ class Query:
 
     def _add_filter(self, filter_str):
         if self._attribute:
-            if self._filters and not isinstance(self._filters[-1], ChainOperator):
+            if self._filters and not isinstance(self._filters[-1],
+                                                ChainOperator):
                 self._filters.append(self._chain)
             self._filters.append((self._attribute, filter_str))
         else:
-            raise ValueError('Attribute property needed. call on_attribute(attribute) or new(attribute)')
+            raise ValueError(
+                'Attribute property needed. call on_attribute(attribute) or new(attribute)')
 
     def _parse_filter_word(self, word):
         """ Converts the word parameter into the correct format """
@@ -381,17 +425,22 @@ class Query:
             if isinstance(word, dt.datetime):
                 if word.tzinfo is None:
                     # if it's a naive datetime, localize the datetime.
-                    word = self.protocol.timezone.localize(word)  # localize datetime into local tz
+                    word = self.protocol.timezone.localize(
+                        word)  # localize datetime into local tz
                 if word.tzinfo != pytz.utc:
-                    word = word.astimezone(pytz.utc)  # transform local datetime to utc
-            word = '{}'.format(word.isoformat())  # convert datetime to isoformat
+                    word = word.astimezone(
+                        pytz.utc)  # transform local datetime to utc
+            word = '{}'.format(
+                word.isoformat())  # convert datetime to isoformat
         elif isinstance(word, bool):
             word = str(word).lower()
         return word
 
     def logical_operator(self, operation, word):
         word = self._parse_filter_word(word)
-        sentence = '{} {} {} {}'.format('not' if self._negation else '', self._attribute, operation, word).strip()
+        sentence = '{} {} {} {}'.format('not' if self._negation else '',
+                                        self._attribute, operation,
+                                        word).strip()
         self._add_filter(sentence)
         return self
 
@@ -417,7 +466,9 @@ class Query:
         word = self._parse_filter_word(word)
 
         self._add_filter(
-            "{} {}({}, {})".format('not' if self._negation else '', function_name, self._attribute, word).strip())
+            "{} {}({}, {})".format('not' if self._negation else '',
+                                   function_name, self._attribute,
+                                   word).strip())
         return self
 
     def contains(self, word):
@@ -435,5 +486,6 @@ class Query:
         if attribute:
             self._order_by[attribute] = None if ascending else 'desc'
         else:
-            raise ValueError('Attribute property needed. call on_attribute(attribute) or new(attribute)')
+            raise ValueError(
+                'Attribute property needed. call on_attribute(attribute) or new(attribute)')
         return self
