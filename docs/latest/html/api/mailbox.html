@@ -28,8 +28,8 @@
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Address Book" href="address_book.html" />
-    <link rel="prev" title="Connection" href="connection.html" /> 
+    <link rel="next" title="Message" href="message.html" />
+    <link rel="prev" title="One Drive" href="drive.html" /> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
@@ -83,9 +83,15 @@
 <li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../api.html">O365 API</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="account.html">Account</a></li>
-<li class="toctree-l2"><a class="reference internal" href="connection.html">Connection</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Mailbox</a></li>
 <li class="toctree-l2"><a class="reference internal" href="address_book.html">Address Book</a></li>
+<li class="toctree-l2"><a class="reference internal" href="attachment.html">Attachment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="calendar.html">Calendar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="connection.html">Connection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="drive.html">One Drive</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Mailbox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="message.html">Message</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sharepoint.html">Sharepoint</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html">Utils</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../usage.html">Detailed Usage</a></li>
@@ -152,10 +158,10 @@
   
   <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
       
-        <a href="address_book.html" class="btn btn-neutral float-right" title="Address Book" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="message.html" class="btn btn-neutral float-right" title="Message" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="connection.html" class="btn btn-neutral" title="Connection" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="drive.html" class="btn btn-neutral" title="One Drive" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
   </div>
   
@@ -181,7 +187,7 @@ parent folder</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>parent</strong> (<a class="reference internal" href="#O365.mailbox.Folder" title="O365.mailbox.Folder"><em>Folder</em></a><em> or </em><a class="reference internal" href="account.html#O365.account.Account" title="O365.account.Account"><em>Account</em></a>) – parent folder/account for this folder</li>
+<li><strong>parent</strong> (<a class="reference internal" href="drive.html#O365.drive.Folder" title="O365.drive.Folder"><em>Folder</em></a><em> or </em><a class="reference internal" href="account.html#O365.account.Account" title="O365.account.Account"><em>Account</em></a>) – parent folder/account for this folder</li>
 <li><strong>con</strong> (<a class="reference internal" href="connection.html#O365.connection.Connection" title="O365.connection.Connection"><em>Connection</em></a>) – connection to use if no parent specified</li>
 <li><strong>protocol</strong> (<a class="reference internal" href="connection.html#O365.connection.Protocol" title="O365.connection.Protocol"><em>Protocol</em></a>) – protocol to use if no parent specified
 (kwargs)</li>
@@ -204,11 +210,11 @@ parent folder</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>to_folder</strong> (<a class="reference internal" href="#O365.mailbox.Folder" title="O365.mailbox.Folder"><em>Folder</em></a><em> or </em><em>str</em>) – the destination Folder/folder_id to copy into</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>to_folder</strong> (<a class="reference internal" href="drive.html#O365.drive.Folder" title="O365.drive.Folder"><em>Folder</em></a><em> or </em><em>str</em>) – the destination Folder/folder_id to copy into</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The new folder after copying</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#O365.mailbox.Folder" title="O365.mailbox.Folder">Folder</a> or None</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="drive.html#O365.drive.Folder" title="O365.drive.Folder">Folder</a> or None</td>
 </tr>
 </tbody>
 </table>
@@ -226,7 +232,7 @@ parent folder</p>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">newly created folder</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#O365.mailbox.Folder" title="O365.mailbox.Folder">Folder</a> or None</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="drive.html#O365.drive.Folder" title="O365.drive.Folder">Folder</a> or None</td>
 </tr>
 </tbody>
 </table>
@@ -285,7 +291,7 @@ Must be a child of this folder.</li>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">a single folder</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#O365.mailbox.Folder" title="O365.mailbox.Folder">Folder</a> or None</p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="drive.html#O365.drive.Folder" title="O365.drive.Folder">Folder</a> or None</p>
 </td>
 </tr>
 </tbody>
@@ -313,7 +319,7 @@ batches allowing to retrieve more items than the limit.</li>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">list of folders</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">list[<a class="reference internal" href="#O365.mailbox.Folder" title="O365.mailbox.Folder">Folder</a>] or <a class="reference internal" href="utils.html#O365.utils.utils.Pagination" title="O365.utils.utils.Pagination">Pagination</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">list[<a class="reference internal" href="drive.html#O365.drive.Folder" title="O365.drive.Folder">Folder</a>] or <a class="reference internal" href="utils.html#O365.utils.utils.Pagination" title="O365.utils.utils.Pagination">Pagination</a></p>
 </td>
 </tr>
 </tbody>
@@ -388,7 +394,7 @@ getting it from the cloud</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Parent Folder</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#O365.mailbox.Folder" title="O365.mailbox.Folder">Folder</a> or None</td>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="drive.html#O365.drive.Folder" title="O365.drive.Folder">Folder</a> or None</td>
 </tr>
 </tbody>
 </table>
@@ -409,7 +415,7 @@ getting it from the cloud</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>to_folder</strong> (<a class="reference internal" href="#O365.mailbox.Folder" title="O365.mailbox.Folder"><em>Folder</em></a><em> or </em><em>str</em>) – the destination Folder/folder_id to move into</li>
+<li><strong>to_folder</strong> (<a class="reference internal" href="drive.html#O365.drive.Folder" title="O365.drive.Folder"><em>Folder</em></a><em> or </em><em>str</em>) – the destination Folder/folder_id to move into</li>
 <li><strong>update_parent_if_changed</strong> (<em>bool</em>) – updates self.parent with the
 new parent Folder if changed</li>
 </ul>
@@ -418,7 +424,7 @@ new parent Folder if changed</li>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The new folder after copying</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#O365.mailbox.Folder" title="O365.mailbox.Folder">Folder</a> or None</p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="drive.html#O365.drive.Folder" title="O365.drive.Folder">Folder</a> or None</p>
 </td>
 </tr>
 </tbody>
@@ -501,7 +507,7 @@ parent folder</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>parent</strong> (<a class="reference internal" href="#O365.mailbox.Folder" title="O365.mailbox.Folder"><em>Folder</em></a><em> or </em><a class="reference internal" href="account.html#O365.account.Account" title="O365.account.Account"><em>Account</em></a>) – parent folder/account for this folder</li>
+<li><strong>parent</strong> (<a class="reference internal" href="drive.html#O365.drive.Folder" title="O365.drive.Folder"><em>Folder</em></a><em> or </em><a class="reference internal" href="account.html#O365.account.Account" title="O365.account.Account"><em>Account</em></a>) – parent folder/account for this folder</li>
 <li><strong>con</strong> (<a class="reference internal" href="connection.html#O365.connection.Connection" title="O365.connection.Connection"><em>Connection</em></a>) – connection to use if no parent specified</li>
 <li><strong>protocol</strong> (<a class="reference internal" href="connection.html#O365.connection.Protocol" title="O365.connection.Protocol"><em>Protocol</em></a>) – protocol to use if no parent specified
 (kwargs)</li>
@@ -524,7 +530,7 @@ parent folder</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#O365.mailbox.Folder" title="O365.mailbox.Folder">Folder</a></td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="drive.html#O365.drive.Folder" title="O365.drive.Folder">Folder</a></td>
 </tr>
 </tbody>
 </table>
@@ -538,7 +544,7 @@ parent folder</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#O365.mailbox.Folder" title="O365.mailbox.Folder">Folder</a></td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="drive.html#O365.drive.Folder" title="O365.drive.Folder">Folder</a></td>
 </tr>
 </tbody>
 </table>
@@ -558,7 +564,7 @@ parent folder</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#O365.mailbox.Folder" title="O365.mailbox.Folder">Folder</a></td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="drive.html#O365.drive.Folder" title="O365.drive.Folder">Folder</a></td>
 </tr>
 </tbody>
 </table>
@@ -572,7 +578,7 @@ parent folder</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#O365.mailbox.Folder" title="O365.mailbox.Folder">Folder</a></td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="drive.html#O365.drive.Folder" title="O365.drive.Folder">Folder</a></td>
 </tr>
 </tbody>
 </table>
@@ -586,7 +592,7 @@ parent folder</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#O365.mailbox.Folder" title="O365.mailbox.Folder">Folder</a></td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="drive.html#O365.drive.Folder" title="O365.drive.Folder">Folder</a></td>
 </tr>
 </tbody>
 </table>
@@ -600,7 +606,7 @@ parent folder</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#O365.mailbox.Folder" title="O365.mailbox.Folder">Folder</a></td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="drive.html#O365.drive.Folder" title="O365.drive.Folder">Folder</a></td>
 </tr>
 </tbody>
 </table>
@@ -618,10 +624,10 @@ parent folder</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="address_book.html" class="btn btn-neutral float-right" title="Address Book" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="message.html" class="btn btn-neutral float-right" title="Message" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="connection.html" class="btn btn-neutral" title="Connection" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="drive.html" class="btn btn-neutral" title="One Drive" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

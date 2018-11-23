@@ -498,11 +498,12 @@
 <div class="viewcode-block" id="BaseContactFolder.get_contacts"><a class="viewcode-back" href="../../api/address_book.html#O365.address_book.BaseContactFolder.get_contacts">[docs]</a>    <span class="k">def</span> <span class="nf">get_contacts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">order_by</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">batch</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Gets a list of contacts from this address book</span>
 
-<span class="sd">         When querying the Global Address List the Users endpoint will be used.</span>
+<span class="sd">        When querying the Global Address List the Users endpoint will be used.</span>
 <span class="sd">        Only a limited set of information will be available unless you have</span>
 <span class="sd">        access to scope &#39;User.Read.All&#39; which requires App Administration</span>
 <span class="sd">        Consent.</span>
-<span class="sd">         Also using endpoints has some limitations on the querying capabilities.</span>
+
+<span class="sd">        Also using endpoints has some limitations on the querying capabilities.</span>
 
 <span class="sd">        To use query an order_by check the OData specification here:</span>
 <span class="sd">        http://docs.oasis-open.org/odata/odata/v4.0/errata03/os/complete/</span>
@@ -530,7 +531,7 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_url</span><span class="p">(</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_endpoints</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;folder_contacts&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">folder_id</span><span class="p">))</span>
+                        <span class="nb">id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">folder_id</span><span class="p">))</span>
 
         <span class="k">if</span> <span class="n">limit</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">limit</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">protocol</span><span class="o">.</span><span class="n">max_top_value</span><span class="p">:</span>
             <span class="n">batch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">protocol</span><span class="o">.</span><span class="n">max_top_value</span>

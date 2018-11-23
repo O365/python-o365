@@ -503,7 +503,8 @@ class MailBox(Folder):
         :rtype: Folder
         """
         return self.folder_constructor(parent=self, name='Inbox',
-                                       folder_id=OutlookWellKnowFolderNames.INBOX.value)
+                                       folder_id=OutlookWellKnowFolderNames
+                                       .INBOX.value)
 
     def junk_folder(self):
         """ Shortcut to get Junk Folder instance
@@ -511,7 +512,8 @@ class MailBox(Folder):
         :rtype: Folder
         """
         return self.folder_constructor(parent=self, name='Junk',
-                                       folder_id=OutlookWellKnowFolderNames.JUNK.value)
+                                       folder_id=OutlookWellKnowFolderNames
+                                       .JUNK.value)
 
     def deleted_folder(self):
         """ Shortcut to get DeletedItems Folder instance
@@ -519,15 +521,17 @@ class MailBox(Folder):
         :rtype: Folder
         """
         return self.folder_constructor(parent=self, name='DeletedItems',
-                                       folder_id=OutlookWellKnowFolderNames.DELETED.value)
+                                       folder_id=OutlookWellKnowFolderNames
+                                       .DELETED.value)
 
     def drafts_folder(self):
         """ Shortcut to get Drafts Folder instance
 
         :rtype: Folder
         """
-        return self.folder_constructor(parent=self, name='Drafs',
-                                       folder_id=OutlookWellKnowFolderNames.DRAFTS.value)
+        return self.folder_constructor(parent=self, name='Drafts',
+                                       folder_id=OutlookWellKnowFolderNames
+                                       .DRAFTS.value)
 
     def sent_folder(self):
         """ Shortcut to get SentItems Folder instance
@@ -535,7 +539,8 @@ class MailBox(Folder):
         :rtype: Folder
         """
         return self.folder_constructor(parent=self, name='SentItems',
-                                       folder_id=OutlookWellKnowFolderNames.SENT.value)
+                                       folder_id=OutlookWellKnowFolderNames
+                                       .SENT.value)
 
     def outbox_folder(self):
         """ Shortcut to get Outbox Folder instance
@@ -543,4 +548,5 @@ class MailBox(Folder):
         :rtype: Folder
         """
         return self.folder_constructor(parent=self, name='Outbox',
-                                       folder_id=OutlookWellKnowFolderNames.OUTBOX.value)
+                                       folder_id=OutlookWellKnowFolderNames
+                                       .OUTBOX.value)
