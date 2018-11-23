@@ -28,6 +28,7 @@
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Resources" href="mailbox.html" />
     <link rel="prev" title="Resources" href="connection.html" /> 
 
   
@@ -88,12 +89,15 @@
 <li class="toctree-l3"><a class="reference internal" href="#setting-your-account-instance">Setting your Account Instance</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#connecting-to-api-account">Connecting to API Account</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#setting-proxy">Setting Proxy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#using-different-resource">Using Different Resource</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#setting-scopes">Setting Scopes</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#authenticating-your-account">Authenticating your Account</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#accessing-services">Accessing Services</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="mailbox.html">Resources</a></li>
 </ul>
 </li>
 </ul>
@@ -159,6 +163,8 @@
   
   <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
       
+        <a href="mailbox.html" class="btn btn-neutral float-right" title="Resources" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
       
         <a href="connection.html" class="btn btn-neutral" title="Resources" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
@@ -192,6 +198,14 @@
 <span class="c1"># Option 2</span>
 <span class="n">account</span> <span class="o">=</span> <span class="n">Account</span><span class="p">(</span><span class="n">credentials</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;my_client_id&#39;</span><span class="p">,</span> <span class="s1">&#39;my_client_secret&#39;</span><span class="p">))</span>
 <span class="n">account</span><span class="o">.</span><span class="n">connection</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;myserver.com&#39;</span><span class="p">,</span><span class="mi">8080</span><span class="p">,</span><span class="s1">&#39;username&#39;</span><span class="p">,</span> <span class="s1">&#39;password&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="using-different-resource">
+<h3>Using Different Resource<a class="headerlink" href="#using-different-resource" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">O365</span> <span class="kn">import</span> <span class="n">Account</span>
+
+<span class="n">account</span> <span class="o">=</span> <span class="n">Account</span><span class="p">(</span><span class="n">credentials</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;my_client_id&#39;</span><span class="p">,</span> <span class="s1">&#39;my_client_secret&#39;</span><span class="p">),</span> <span class="n">main_resource</span><span class="o">=</span><span class="s1">&#39;shared_mail@example.com&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -286,7 +300,8 @@
 
 <span class="c1"># Why change everytime, add all at a time :)</span>
 <span class="n">account</span> <span class="o">=</span> <span class="n">Account</span><span class="p">(</span><span class="n">credentials</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;my_client_id&#39;</span><span class="p">,</span> <span class="s1">&#39;my_client_secret&#39;</span><span class="p">),</span>
-                  <span class="n">scopes</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;message_all&#39;</span><span class="p">,</span> <span class="s1">&#39;message_all_shared&#39;</span><span class="p">,</span> <span class="s1">&#39;address_book_all&#39;</span><span class="p">,</span> <span class="s1">&#39;address_book_all_shared&#39;</span><span class="p">,</span>
+                  <span class="n">scopes</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;message_all&#39;</span><span class="p">,</span> <span class="s1">&#39;message_all_shared&#39;</span><span class="p">,</span> <span class="s1">&#39;address_book_all&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;address_book_all_shared&#39;</span><span class="p">,</span>
                           <span class="s1">&#39;calendar&#39;</span><span class="p">,</span> <span class="s1">&#39;users&#39;</span><span class="p">,</span> <span class="s1">&#39;onedrive&#39;</span><span class="p">,</span> <span class="s1">&#39;sharepoint_dl&#39;</span><span class="p">])</span>
 </pre></div>
 </div>
@@ -323,6 +338,75 @@
 </li>
 </ol>
 </div>
+<div class="section" id="accessing-services">
+<h2>Accessing Services<a class="headerlink" href="#accessing-services" title="Permalink to this headline">¶</a></h2>
+<p>Below are the currently supported services</p>
+<ul>
+<li><dl class="first docutils">
+<dt>Mailbox - Read, Reply or send new mails to others</dt>
+<dd><div class="first last highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Access Mailbox</span>
+<span class="n">mailbox</span> <span class="o">=</span> <span class="n">account</span><span class="o">.</span><span class="n">mailbox</span><span class="p">()</span>
+
+<span class="c1"># Access mailbox of another resource</span>
+<span class="n">mailbox</span> <span class="o">=</span> <span class="n">account</span><span class="o">.</span><span class="n">mailbox</span><span class="p">(</span><span class="n">resource</span><span class="o">=</span><span class="s1">&#39;someone@example.com&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Address Book - Read or add new contacts to your address book</dt>
+<dd><div class="first last highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Access personal address book</span>
+<span class="n">contacts</span> <span class="o">=</span> <span class="n">account</span><span class="o">.</span><span class="n">address_book</span><span class="p">()</span>
+
+<span class="c1"># Access personal address book of another resource</span>
+<span class="n">contacts</span> <span class="o">=</span> <span class="n">account</span><span class="o">.</span><span class="n">mailbox</span><span class="p">(</span><span class="n">resource</span><span class="o">=</span><span class="s1">&#39;someone@example.com&#39;</span><span class="p">)</span>
+
+<span class="c1"># Access global shared server address book (Global Address List)</span>
+<span class="n">contacts</span> <span class="o">=</span> <span class="n">account</span><span class="o">.</span><span class="n">mailbox</span><span class="p">(</span><span class="n">address_book</span><span class="o">=</span><span class="s1">&#39;gal&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Calendar Scheduler - Read or add new events to your calendar</dt>
+<dd><div class="first last highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Access scheduler</span>
+<span class="n">scheduler</span> <span class="o">=</span> <span class="n">account</span><span class="o">.</span><span class="n">schedule</span><span class="p">()</span>
+
+<span class="c1"># Access scheduler of another resource</span>
+<span class="n">scheduler</span> <span class="o">=</span> <span class="n">account</span><span class="o">.</span><span class="n">schedule</span><span class="p">(</span><span class="n">resource</span><span class="o">=</span><span class="s1">&#39;someone@example.com&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>One Drive Storage - Manipulate and Organize your OneDrive</dt>
+<dd><div class="first last highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Access storage</span>
+<span class="n">storage</span> <span class="o">=</span> <span class="n">account</span><span class="o">.</span><span class="n">storage</span><span class="p">()</span>
+
+<span class="c1"># Access storage of another resource</span>
+<span class="n">storage</span> <span class="o">=</span> <span class="n">account</span><span class="o">.</span><span class="n">storage</span><span class="p">(</span><span class="n">resource</span><span class="o">=</span><span class="s1">&#39;someone@example.com&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Sharepoint Sites - Read and access items in your sharepoint sites</dt>
+<dd><div class="first last highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Access sharepoint</span>
+<span class="n">sharepoint</span> <span class="o">=</span> <span class="n">account</span><span class="o">.</span><span class="n">sharepoint</span><span class="p">()</span>
+
+<span class="c1"># Access sharepoint of another resource</span>
+<span class="n">sharepoint</span> <span class="o">=</span> <span class="n">account</span><span class="o">.</span><span class="n">sharepoint</span><span class="p">(</span><span class="n">resource</span><span class="o">=</span><span class="s1">&#39;someone@example.com&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</li>
+</ul>
+</div>
 </div>
 
 
@@ -332,6 +416,8 @@
           <footer>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="mailbox.html" class="btn btn-neutral float-right" title="Resources" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="connection.html" class="btn btn-neutral" title="Resources" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

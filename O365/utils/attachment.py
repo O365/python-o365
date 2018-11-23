@@ -324,7 +324,7 @@ class BaseAttachments(ApiComponent):
 
         attachments = response.json().get('value', [])
 
-        # Everything received from the cloud must be passed with self._cloud_data_key
+        # Everything received from cloud must be passed as self._cloud_data_key
         self.untrack = True
         self.add({self._cloud_data_key: attachments})
         self.untrack = False

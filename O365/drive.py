@@ -99,7 +99,7 @@ class CopyOperation(ApiComponent):
         self.con = parent.con if parent else con
         self.parent = parent  # parent will be allways a DriveItem
 
-        # Choose the main_resource passed in kwargs over the parent main_resource
+        # Choose the main_resource passed in kwargs over parent main_resource
         main_resource = kwargs.pop('main_resource', None) or getattr(parent, 'main_resource', None) if parent else None
         super().__init__(protocol=parent.protocol if parent else kwargs.get('protocol'), main_resource=main_resource)
 
@@ -167,7 +167,7 @@ class DriveItemVersion(ApiComponent, DownloadableMixin):
         self._parent = parent if isinstance(parent, DriveItem) else None
 
         protocol = parent.protocol if parent else kwargs.get('protocol')
-        # Choose the main_resource passed in kwargs over the parent main_resource
+        # Choose the main_resource passed in kwargs over parent main_resource
         main_resource = kwargs.pop('main_resource', None) or getattr(parent, 'main_resource', None) if parent else None
 
         resource_prefix = '/items/{item_id}'.format(item_id=self._parent.object_id)
@@ -221,7 +221,7 @@ class DriveItemPermission(ApiComponent):
         assert parent or con, 'Need a parent or a connection'
         self.con = parent.con if parent else con
         self._parent = parent if isinstance(parent, DriveItem) else None
-        # Choose the main_resource passed in kwargs over the parent main_resource
+        # Choose the main_resource passed in kwargs over parent main_resource
         main_resource = kwargs.pop('main_resource', None) or getattr(parent, 'main_resource', None) if parent else None
         protocol = parent.protocol if parent else kwargs.get('protocol')
         super().__init__(protocol=protocol, main_resource=main_resource)
@@ -321,7 +321,7 @@ class DriveItem(ApiComponent):
         self._parent = parent if isinstance(parent, DriveItem) else None
         self.drive = parent if isinstance(parent, Drive) else (parent.drive if isinstance(parent.drive, Drive) else kwargs.get('drive', None))
 
-        # Choose the main_resource passed in kwargs over the parent main_resource
+        # Choose the main_resource passed in kwargs over parent main_resource
         main_resource = kwargs.pop('main_resource', None) or getattr(parent, 'main_resource', None) if parent else None
 
         protocol = parent.protocol if parent else kwargs.get('protocol')
@@ -591,7 +591,7 @@ class DriveItem(ApiComponent):
 
         data = response.json()
 
-        # Everything received from the cloud must be passed with self._cloud_data_key
+        # Everything received from cloud must be passed as self._cloud_data_key
         return [DriveItemVersion(parent=self, **{self._cloud_data_key: item}) for item in data.get('value', [])]
 
     def get_version(self, version_id):
@@ -607,7 +607,7 @@ class DriveItem(ApiComponent):
 
         data = response.json()
 
-        # Everything received from the cloud must be passed with self._cloud_data_key
+        # Everything received from cloud must be passed as self._cloud_data_key
         return DriveItemVersion(parent=self, **{self._cloud_data_key: data})
 
     def share_with_link(self, share_type='view', share_scope='anonymous'):
@@ -703,7 +703,7 @@ class DriveItem(ApiComponent):
 
         data = response.json()
 
-        # Everything received from the cloud must be passed with self._cloud_data_key
+        # Everything received from cloud must be passed as self._cloud_data_key
         return [DriveItemPermission(parent=self, **{self._cloud_data_key: item}) for item in data.get('value', [])]
 
 
@@ -792,7 +792,7 @@ class Folder(DriveItem):
 
         data = response.json()
 
-        # Everything received from the cloud must be passed with self._cloud_data_key
+        # Everything received from cloud must be passed as self._cloud_data_key
         items = [self._classifier(item)(parent=self, **{self._cloud_data_key: item}) for item in data.get('value', [])]
         next_link = data.get(NEXT_LINK_KEYWORD, None)
         if batch and next_link:
@@ -877,7 +877,7 @@ class Folder(DriveItem):
 
         data = response.json()
 
-        # Everything received from the cloud must be passed with self._cloud_data_key
+        # Everything received from cloud must be passed as self._cloud_data_key
         items = [self._classifier(item)(parent=self, **{self._cloud_data_key: item}) for item in data.get('value', [])]
         next_link = data.get(NEXT_LINK_KEYWORD, None)
         if batch and next_link:
@@ -987,7 +987,7 @@ class Drive(ApiComponent):
         self.con = parent.con if parent else con
         self.parent = parent if isinstance(parent, Drive) else None
 
-        # Choose the main_resource passed in kwargs over the parent main_resource
+        # Choose the main_resource passed in kwargs over parent main_resource
         main_resource = kwargs.pop('main_resource', None) or getattr(parent, 'main_resource', None) if parent else None
         super().__init__(protocol=parent.protocol if parent else kwargs.get('protocol'), main_resource=main_resource)
 
@@ -1033,7 +1033,7 @@ class Drive(ApiComponent):
 
         data = response.json()
 
-        # Everything received from the cloud must be passed with self._cloud_data_key
+        # Everything received from cloud must be passed as self._cloud_data_key
         return self._classifier(data)(parent=self, **{self._cloud_data_key: data})
 
     def _base_get_list(self, url, limit=None, *, query=None, order_by=None, batch=None):
@@ -1062,7 +1062,7 @@ class Drive(ApiComponent):
 
         data = response.json()
 
-        # Everything received from the cloud must be passed with self._cloud_data_key
+        # Everything received from cloud must be passed as self._cloud_data_key
         items = [self._classifier(item)(parent=self, **{self._cloud_data_key: item}) for item in data.get('value', [])]
         next_link = data.get(NEXT_LINK_KEYWORD, None)
         if batch and next_link:
@@ -1121,7 +1121,7 @@ class Drive(ApiComponent):
 
         data = response.json()
 
-        # Everything received from the cloud must be passed with self._cloud_data_key
+        # Everything received from cloud must be passed as self._cloud_data_key
         return self._classifier(data)(parent=self, **{self._cloud_data_key: data})
 
     def get_special_folder(self, name):
@@ -1142,7 +1142,7 @@ class Drive(ApiComponent):
 
         data = response.json()
 
-        # Everything received from the cloud must be passed with self._cloud_data_key
+        # Everything received from cloud must be passed as self._cloud_data_key
         return self._classifier(data)(parent=self, **{self._cloud_data_key: data})
 
     @staticmethod
@@ -1215,7 +1215,7 @@ class Drive(ApiComponent):
 
         data = response.json()
 
-        # Everything received from the cloud must be passed with self._cloud_data_key
+        # Everything received from cloud must be passed as self._cloud_data_key
         items = [self._classifier(item)(parent=self, **{self._cloud_data_key: item}) for item in data.get('value', [])]
         next_link = data.get(NEXT_LINK_KEYWORD, None)
         if batch and next_link:
@@ -1239,7 +1239,7 @@ class Storage(ApiComponent):
         assert parent or con, 'Need a parent or a connection'
         self.con = parent.con if parent else con
 
-        # Choose the main_resource passed in kwargs over the parent main_resource
+        # Choose the main_resource passed in kwargs over parent main_resource
         main_resource = kwargs.pop('main_resource', None) or getattr(parent, 'main_resource', None) if parent else None
         super().__init__(protocol=parent.protocol if parent else kwargs.get('protocol'), main_resource=main_resource)
 
@@ -1265,7 +1265,7 @@ class Storage(ApiComponent):
 
         drive = response.json()
 
-        # Everything received from the cloud must be passed with self._cloud_data_key
+        # Everything received from cloud must be passed as self._cloud_data_key
         return self.drive_constructor(con=self.con, protocol=self.protocol,
                                       main_resource=self.main_resource, **{self._cloud_data_key: drive})
 
@@ -1285,7 +1285,7 @@ class Storage(ApiComponent):
 
         drive = response.json()
 
-        # Everything received from the cloud must be passed with self._cloud_data_key
+        # Everything received from cloud must be passed as self._cloud_data_key
         return self.drive_constructor(con=self.con, protocol=self.protocol,
                                       main_resource=self.main_resource, **{self._cloud_data_key: drive})
 
@@ -1314,7 +1314,7 @@ class Storage(ApiComponent):
 
         data = response.json()
 
-        # Everything received from the cloud must be passed with self._cloud_data_key
+        # Everything received from cloud must be passed as self._cloud_data_key
         drives = [self.drive_constructor(parent=self, **{self._cloud_data_key: drive}) for drive in data.get('value', [])]
         next_link = data.get(NEXT_LINK_KEYWORD, None)
         if batch and next_link:

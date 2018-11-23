@@ -214,7 +214,7 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         assert parent or con, 'Need a parent or a connection'
         self.con = parent.con if parent else con
 
-        # Choose the main_resource passed in kwargs over the parent main_resource
+        # Choose the main_resource passed in kwargs over parent main_resource
         main_resource = kwargs.pop('main_resource', None) or getattr(parent, 'main_resource', None) if parent else None
         super().__init__(protocol=parent.protocol if parent else kwargs.get('protocol'), main_resource=main_resource,
                          attachment_name_property='subject', attachment_type='message_type')
@@ -479,7 +479,7 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
 
         message = response.json()
 
-        # Everything received from the cloud must be passed with self._cloud_data_key
+        # Everything received from cloud must be passed as self._cloud_data_key
         return self.__class__(parent=self, **{self._cloud_data_key: message})
 
     def forward(self):
@@ -497,7 +497,7 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
 
         message = response.json()
 
-        # Everything received from the cloud must be passed with self._cloud_data_key
+        # Everything received from cloud must be passed as self._cloud_data_key
         return self.__class__(parent=self, **{self._cloud_data_key: message})
 
     def delete(self):
@@ -586,7 +586,7 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
 
         message = response.json()
 
-        # Everything received from the cloud must be passed with self._cloud_data_key
+        # Everything received from cloud must be passed as self._cloud_data_key
         return self.__class__(parent=self, **{self._cloud_data_key: message})
 
     def save_draft(self, target_folder=OutlookWellKnowFolderNames.DRAFTS):
