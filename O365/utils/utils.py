@@ -44,9 +44,11 @@ class ChainOperator(Enum):
 
 
 class TrackerSet(set):
-    """ A Custom Set that changes the casing of it's keys """
-
     def __init__(self, *args, casing=None, **kwargs):
+        """ A Custom Set that changes the casing of it's keys
+
+        :param func casing: a function to convert into specified case
+        """
         self.cc = casing
         super().__init__(*args, **kwargs)
 
@@ -66,15 +68,18 @@ class ApiComponent:
 
     def __init__(self, *, protocol=None, main_resource=None, **kwargs):
         """ Object initialization
-        :param protocol: A protocol class or instance to be used with this connection
-        :param main_resource: main_resource to be used in these API comunications
-        :param kwargs: Extra arguments
+
+        :param Protocol protocol: A protocol class or instance to be used with
+         this connection
+        :param str main_resource: main_resource to be used in these API
+         communications
         """
         self.protocol = protocol() if isinstance(protocol, type) else protocol
         if self.protocol is None:
             raise ValueError('Protocol not provided to Api Component')
-        self.main_resource = self._parse_resource(
-            main_resource if main_resource is not None else protocol.default_resource)
+        self.main_resource = (self._parse_resource(
+            main_resource if main_resource is not None
+            else protocol.default_resource))
         self._base_url = '{}{}'.format(self.protocol.service_url,
                                        self.main_resource)
         if self._base_url.endswith('/'):
@@ -95,14 +100,21 @@ class ApiComponent:
         if resource in {ME_RESOURCE, USERS_RESOURCE}:
             return resource
         elif '@' in resource and not resource.startswith(USERS_RESOURCE):
-            # when for example accesing a shared mailbox the resource is set to the email address.
-            # we have to prefix the email with the resource 'users/' so --> 'users/email_address'
+            # when for example accessing a shared mailbox the
+            # resource is set to the email address. we have to prefix
+            # the email with the resource 'users/' so --> 'users/email_address'
             return '{}/{}'.format(USERS_RESOURCE, resource)
         else:
             return resource
 
     def build_url(self, endpoint):
-        """ Returns a url for a given endpoint using the protocol service url """
+        """ Returns a url for a given endpoint using the protocol
+        service url
+
+        :param str endpoint: endpoint to build the url for
+        :return: final url
+        :rtype: str
+        """
         return '{}{}'.format(self._base_url, endpoint)
 
     def _gk(self, keyword):
@@ -114,31 +126,15 @@ class ApiComponent:
         return self.protocol.convert_case(dict_key)
 
     def new_query(self, attribute=None):
+        """ Create a new query to filter results
+
+        :param str attribute: attribute to apply the query for
+        :return: new Query
+        :rtype: Query
+        """
         return Query(attribute=attribute, protocol=self.protocol)
 
     q = new_query  # alias for new query
-
-
-class BaseComponent(ApiComponent):
-    def __init__(self, **kwargs):
-        parent = kwargs.pop('parent', None)
-        con = kwargs.pop('con', None)
-
-        assert parent or con, 'Need a parent or a connection'
-        self.con = parent.con if parent else con
-
-        # Choose the main_resource passed in kwargs over parent main_resource
-        main_resource = (kwargs.pop('main_resource', None) or
-                         getattr(parent, 'main_resource',
-                                 None) if parent else None)
-        super().__init__(
-            protocol=parent.protocol if parent else kwargs.get('protocol'),
-            main_resource=main_resource)
-
-        # This folder has no parents if root = True.
-        self.root = kwargs.pop('root', False)
-
-        cloud_data = kwargs.get(self._cloud_data_key, {})
 
 
 class Pagination(ApiComponent):
@@ -146,17 +142,18 @@ class Pagination(ApiComponent):
 
     def __init__(self, *, parent=None, data=None, constructor=None,
                  next_link=None, limit=None):
-        """
-        Returns an iterator that returns data until it's exhausted. Then will request more data
-        (same amount as the original request) to the server until this data is exhausted as well.
+        """ Returns an iterator that returns data until it's exhausted.
+        Then will request more data (same amount as the original request)
+        to the server until this data is exhausted as well.
         Stops when no more data exists or limit is reached.
 
         :param parent: the parent class. Must implement attributes:
-            con, api_version, main_resource
+         con, api_version, main_resource
         :param data: the start data to be return
-        :param constructor: the data constructor for the next batch. It can be a function.
-        :param next_link: the link to request more data to
-        :param limit: when to stop retrieving more data
+        :param constructor: the data constructor for the next batch.
+         It can be a function.
+        :param str next_link: the link to request more data to
+        :param int limit: when to stop retrieving more data
         """
         if parent is None:
             raise ValueError('Parent must be another Api Component')
@@ -257,6 +254,11 @@ class Query:
     }
 
     def __init__(self, attribute=None, *, protocol):
+        """ Build a query to apply OData filters
+
+        :param str attribute: attribute to apply the query for
+        :param Protocol protocol: protocol to use for connecting
+        """
         self.protocol = protocol() if isinstance(protocol, type) else protocol
         self._attribute = None
         self._chain = None
@@ -275,9 +277,10 @@ class Query:
         return self.__str__()
 
     def select(self, *attributes):
-        """
-        Adds the attribute to the $select parameter
-        :param attributes: the attributes tuple to select. If empty, the on_attribute previously set is added.
+        """ Adds the attribute to the $select parameter
+
+        :param attributes: the attributes tuple to select.
+        If empty, the on_attribute previously set is added.
         """
         if attributes:
             for attribute in attributes:

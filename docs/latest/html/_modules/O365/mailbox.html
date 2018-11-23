@@ -649,7 +649,8 @@
 <span class="sd">        :rtype: Folder</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">folder_constructor</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Inbox&#39;</span><span class="p">,</span>
-                                       <span class="n">folder_id</span><span class="o">=</span><span class="n">OutlookWellKnowFolderNames</span><span class="o">.</span><span class="n">INBOX</span><span class="o">.</span><span class="n">value</span><span class="p">)</span></div>
+                                       <span class="n">folder_id</span><span class="o">=</span><span class="n">OutlookWellKnowFolderNames</span>
+                                       <span class="o">.</span><span class="n">INBOX</span><span class="o">.</span><span class="n">value</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="MailBox.junk_folder"><a class="viewcode-back" href="../../api/mailbox.html#O365.mailbox.MailBox.junk_folder">[docs]</a>    <span class="k">def</span> <span class="nf">junk_folder</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Shortcut to get Junk Folder instance</span>
@@ -657,7 +658,8 @@
 <span class="sd">        :rtype: Folder</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">folder_constructor</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Junk&#39;</span><span class="p">,</span>
-                                       <span class="n">folder_id</span><span class="o">=</span><span class="n">OutlookWellKnowFolderNames</span><span class="o">.</span><span class="n">JUNK</span><span class="o">.</span><span class="n">value</span><span class="p">)</span></div>
+                                       <span class="n">folder_id</span><span class="o">=</span><span class="n">OutlookWellKnowFolderNames</span>
+                                       <span class="o">.</span><span class="n">JUNK</span><span class="o">.</span><span class="n">value</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="MailBox.deleted_folder"><a class="viewcode-back" href="../../api/mailbox.html#O365.mailbox.MailBox.deleted_folder">[docs]</a>    <span class="k">def</span> <span class="nf">deleted_folder</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Shortcut to get DeletedItems Folder instance</span>
@@ -665,15 +667,17 @@
 <span class="sd">        :rtype: Folder</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">folder_constructor</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;DeletedItems&#39;</span><span class="p">,</span>
-                                       <span class="n">folder_id</span><span class="o">=</span><span class="n">OutlookWellKnowFolderNames</span><span class="o">.</span><span class="n">DELETED</span><span class="o">.</span><span class="n">value</span><span class="p">)</span></div>
+                                       <span class="n">folder_id</span><span class="o">=</span><span class="n">OutlookWellKnowFolderNames</span>
+                                       <span class="o">.</span><span class="n">DELETED</span><span class="o">.</span><span class="n">value</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="MailBox.drafts_folder"><a class="viewcode-back" href="../../api/mailbox.html#O365.mailbox.MailBox.drafts_folder">[docs]</a>    <span class="k">def</span> <span class="nf">drafts_folder</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Shortcut to get Drafts Folder instance</span>
 
 <span class="sd">        :rtype: Folder</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">folder_constructor</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Drafs&#39;</span><span class="p">,</span>
-                                       <span class="n">folder_id</span><span class="o">=</span><span class="n">OutlookWellKnowFolderNames</span><span class="o">.</span><span class="n">DRAFTS</span><span class="o">.</span><span class="n">value</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">folder_constructor</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Drafts&#39;</span><span class="p">,</span>
+                                       <span class="n">folder_id</span><span class="o">=</span><span class="n">OutlookWellKnowFolderNames</span>
+                                       <span class="o">.</span><span class="n">DRAFTS</span><span class="o">.</span><span class="n">value</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="MailBox.sent_folder"><a class="viewcode-back" href="../../api/mailbox.html#O365.mailbox.MailBox.sent_folder">[docs]</a>    <span class="k">def</span> <span class="nf">sent_folder</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Shortcut to get SentItems Folder instance</span>
@@ -681,7 +685,8 @@
 <span class="sd">        :rtype: Folder</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">folder_constructor</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;SentItems&#39;</span><span class="p">,</span>
-                                       <span class="n">folder_id</span><span class="o">=</span><span class="n">OutlookWellKnowFolderNames</span><span class="o">.</span><span class="n">SENT</span><span class="o">.</span><span class="n">value</span><span class="p">)</span></div>
+                                       <span class="n">folder_id</span><span class="o">=</span><span class="n">OutlookWellKnowFolderNames</span>
+                                       <span class="o">.</span><span class="n">SENT</span><span class="o">.</span><span class="n">value</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="MailBox.outbox_folder"><a class="viewcode-back" href="../../api/mailbox.html#O365.mailbox.MailBox.outbox_folder">[docs]</a>    <span class="k">def</span> <span class="nf">outbox_folder</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Shortcut to get Outbox Folder instance</span>
@@ -689,7 +694,8 @@
 <span class="sd">        :rtype: Folder</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">folder_constructor</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Outbox&#39;</span><span class="p">,</span>
-                                       <span class="n">folder_id</span><span class="o">=</span><span class="n">OutlookWellKnowFolderNames</span><span class="o">.</span><span class="n">OUTBOX</span><span class="o">.</span><span class="n">value</span><span class="p">)</span></div></div>
+                                       <span class="n">folder_id</span><span class="o">=</span><span class="n">OutlookWellKnowFolderNames</span>
+                                       <span class="o">.</span><span class="n">OUTBOX</span><span class="o">.</span><span class="n">value</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>

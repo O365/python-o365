@@ -28,8 +28,8 @@
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Detailed Usage" href="../usage.html" />
-    <link rel="prev" title="Mailbox" href="mailbox.html" /> 
+    <link rel="next" title="Attachment" href="attachment.html" />
+    <link rel="prev" title="Account" href="account.html" /> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
@@ -83,9 +83,15 @@
 <li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../api.html">O365 API</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="account.html">Account</a></li>
-<li class="toctree-l2"><a class="reference internal" href="connection.html">Connection</a></li>
-<li class="toctree-l2"><a class="reference internal" href="mailbox.html">Mailbox</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Address Book</a></li>
+<li class="toctree-l2"><a class="reference internal" href="attachment.html">Attachment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="calendar.html">Calendar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="connection.html">Connection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="drive.html">One Drive</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mailbox.html">Mailbox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="message.html">Message</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sharepoint.html">Sharepoint</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html">Utils</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../usage.html">Detailed Usage</a></li>
@@ -152,10 +158,10 @@
   
   <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
       
-        <a href="../usage.html" class="btn btn-neutral float-right" title="Detailed Usage" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="attachment.html" class="btn btn-neutral float-right" title="Attachment" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="mailbox.html" class="btn btn-neutral" title="Mailbox" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="account.html" class="btn btn-neutral" title="Account" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
   </div>
   
@@ -232,13 +238,11 @@
 <dt id="O365.address_book.BaseContactFolder.get_contacts">
 <code class="descname">get_contacts</code><span class="sig-paren">(</span><em>limit=100</em>, <em>*</em>, <em>query=None</em>, <em>order_by=None</em>, <em>batch=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/address_book.html#BaseContactFolder.get_contacts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.address_book.BaseContactFolder.get_contacts" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets a list of contacts from this address book</p>
-<blockquote>
-<div>When querying the Global Address List the Users endpoint will be used.</div></blockquote>
-<p>Only a limited set of information will be available unless you have
+<p>When querying the Global Address List the Users endpoint will be used.
+Only a limited set of information will be available unless you have
 access to scope ‘User.Read.All’ which requires App Administration
 Consent.</p>
-<blockquote>
-<div>Also using endpoints has some limitations on the querying capabilities.</div></blockquote>
+<p>Also using endpoints has some limitations on the querying capabilities.</p>
 <p>To use query an order_by check the OData specification here:
 <a class="reference external" href="http://docs.oasis-open.org/odata/odata/v4.0/errata03/os/complete/">http://docs.oasis-open.org/odata/odata/v4.0/errata03/os/complete/</a>
 part2-url-conventions/odata-v4.0-errata03-os-part2-url-conventions
@@ -277,7 +281,7 @@ batches allowing to retrieve more items than the limit.</li>
 <dl class="class">
 <dt id="O365.address_book.Contact">
 <em class="property">class </em><code class="descclassname">O365.address_book.</code><code class="descname">Contact</code><span class="sig-paren">(</span><em>*</em>, <em>parent=None</em>, <em>con=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/address_book.html#Contact"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.address_book.Contact" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.utils.utils.ApiComponent</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">O365.utils.attachment.AttachableMixin</span></code>, <a class="reference internal" href="message.html#O365.message.HandleRecipientsMixin" title="O365.message.HandleRecipientsMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.message.HandleRecipientsMixin</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.utils.utils.ApiComponent</span></code></a>, <a class="reference internal" href="attachment.html#O365.utils.attachment.AttachableMixin" title="O365.utils.attachment.AttachableMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.utils.attachment.AttachableMixin</span></code></a>, <a class="reference internal" href="message.html#O365.message.HandleRecipientsMixin" title="O365.message.HandleRecipientsMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.message.HandleRecipientsMixin</span></code></a></p>
 <p>Contact manages lists of events on associated contact on office365.</p>
 <dl class="method">
 <dt id="O365.address_book.Contact.__init__">
@@ -701,10 +705,10 @@ contacts first email as a recipient</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../usage.html" class="btn btn-neutral float-right" title="Detailed Usage" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="attachment.html" class="btn btn-neutral float-right" title="Attachment" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="mailbox.html" class="btn btn-neutral" title="Mailbox" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="account.html" class="btn btn-neutral" title="Account" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
