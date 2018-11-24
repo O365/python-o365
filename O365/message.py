@@ -1,9 +1,10 @@
-import logging
 import datetime as dt
-from dateutil.parser import parse
+import logging
+
 import pytz
 # noinspection PyPep8Naming
 from bs4 import BeautifulSoup as bs
+from dateutil.parser import parse
 
 from O365.utils import OutlookWellKnowFolderNames, ApiComponent, \
     BaseAttachments, BaseAttachment, AttachableMixin, ImportanceLevel, \

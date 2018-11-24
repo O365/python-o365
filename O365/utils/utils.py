@@ -1,8 +1,9 @@
-import logging
-from enum import Enum
 import datetime as dt
-import pytz
+import logging
 from collections import OrderedDict
+from enum import Enum
+
+import pytz
 
 from O365.utils.decorators import fluent
 

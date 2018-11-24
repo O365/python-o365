@@ -1,10 +1,11 @@
 import logging
-from dateutil.parser import parse
 from enum import Enum
 
+from dateutil.parser import parse
+
 from O365.message import HandleRecipientsMixin, Recipients, Message
-from O365.utils import Pagination, NEXT_LINK_KEYWORD, ApiComponent
 from O365.utils import AttachableMixin
+from O365.utils import Pagination, NEXT_LINK_KEYWORD, ApiComponent
 
 GAL_MAIN_RESOURCE = 'users'
 
