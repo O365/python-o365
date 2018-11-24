@@ -1,4 +1,5 @@
 import logging
+
 from dateutil.parser import parse
 
 from O365.address_book import Contact

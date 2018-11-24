@@ -1,16 +1,17 @@
+import calendar
+import datetime as dt
 import logging
 from enum import Enum
-from dateutil.parser import parse
-import datetime as dt
+
 import pytz
-import calendar
 # noinspection PyPep8Naming
 from bs4 import BeautifulSoup as bs
+from dateutil.parser import parse
 
-from O365.utils import Pagination, NEXT_LINK_KEYWORD, ApiComponent
-from O365.utils import BaseAttachments, BaseAttachment
-from O365.utils import AttachableMixin, ImportanceLevel, TrackerSet
 from O365.message import HandleRecipientsMixin
+from O365.utils import AttachableMixin, ImportanceLevel, TrackerSet
+from O365.utils import BaseAttachments, BaseAttachment
+from O365.utils import Pagination, NEXT_LINK_KEYWORD, ApiComponent
 from O365.utils.windows_tz import get_iana_tz, get_windows_tz
 
 log = logging.getLogger(__name__)

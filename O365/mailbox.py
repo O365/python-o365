@@ -1,5 +1,5 @@
-import logging
 import datetime as dt
+import logging
 
 from O365.message import Message
 from O365.utils import Pagination, NEXT_LINK_KEYWORD, \

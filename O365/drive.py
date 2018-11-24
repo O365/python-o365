@@ -1,9 +1,10 @@
 import logging
 import warnings
-from time import sleep
-from dateutil.parser import parse
-from urllib.parse import urlparse
 from pathlib import Path
+from time import sleep
+from urllib.parse import urlparse
+
+from dateutil.parser import parse
 
 from O365.address_book import Contact
 from O365.utils import ApiComponent, Pagination, NEXT_LINK_KEYWORD, \
