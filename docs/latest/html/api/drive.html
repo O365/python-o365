@@ -250,28 +250,23 @@ file in chunks with multiple requests to the server.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>to_path</strong> (<em>str</em><em> or </em><em>Path</em>) – a path to store the downloaded file</li>
 <li><strong>name</strong> (<em>str</em>) – the name you want the stored file to have.</li>
 <li><strong>chunk_size</strong> (<em>int</em>) – number of bytes to retrieve from
-each api call to the server. if auto, files bigger than</li>
+each api call to the server. if auto, files bigger than
+SIZE_THERSHOLD will be chunked (into memory, will be
+however only 1 request)</li>
+<li><strong>convert_to_pdf</strong> (<em>bool</em>) – will try to download the converted pdf
+if file extension in ALLOWED_PDF_EXTENSIONS</li>
 </ul>
 </td>
 </tr>
-</tbody>
-</table>
-<p>SIZE_THERSHOLD will be chunked (into memory, will be
-however only 1 request)
-:param bool convert_to_pdf: will try to download the converted pdf</p>
-<blockquote>
-<div>if file extension in ALLOWED_PDF_EXTENSIONS</div></blockquote>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Success / Failure</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Success / Failure</p>
+</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">bool</p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -430,7 +425,7 @@ batches allowing to retrieve more items than the limit.</li>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">a special Folder</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#O365.drive.Folder" title="O365.drive.Folder">Folder</a></td>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#O365.drive.Folder" title="O365.drive.Folder">drive.Folder</a></td>
 </tr>
 </tbody>
 </table>
@@ -505,7 +500,7 @@ batches allowing to retrieve more items than the limit.</li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>parent</strong> (<a class="reference internal" href="#O365.drive.Drive" title="O365.drive.Drive"><em>Drive</em></a><em> or </em><a class="reference internal" href="#O365.drive.Folder" title="O365.drive.Folder"><em>Folder</em></a>) – parent for this operation</li>
+<li><strong>parent</strong> (<a class="reference internal" href="#O365.drive.Drive" title="O365.drive.Drive"><em>Drive</em></a><em> or </em><a class="reference internal" href="#O365.drive.Folder" title="O365.drive.Folder"><em>drive.Folder</em></a>) – parent for this operation</li>
 <li><strong>con</strong> (<a class="reference internal" href="connection.html#O365.connection.Connection" title="O365.connection.Connection"><em>Connection</em></a>) – connection to use if no parent specified</li>
 <li><strong>protocol</strong> (<a class="reference internal" href="connection.html#O365.connection.Protocol" title="O365.connection.Protocol"><em>Protocol</em></a>) – protocol to use if no parent specified
 (kwargs)</li>
@@ -528,7 +523,7 @@ child elements.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>target</strong> (<a class="reference internal" href="#O365.drive.Folder" title="O365.drive.Folder"><em>Folder</em></a><em> or </em><a class="reference internal" href="#O365.drive.Drive" title="O365.drive.Drive"><em>Drive</em></a>) – target location to move to.
+<li><strong>target</strong> (<a class="reference internal" href="#O365.drive.Folder" title="O365.drive.Folder"><em>drive.Folder</em></a><em> or </em><a class="reference internal" href="#O365.drive.Drive" title="O365.drive.Drive"><em>Drive</em></a>) – target location to move to.
 If it’s a drive the item will be moved to the root folder.</li>
 <li><strong>name</strong> – a new name for the copy.</li>
 </ul>
@@ -567,7 +562,7 @@ If it’s a drive the item will be moved to the root folder.</li>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Parent of this item</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#O365.drive.Drive" title="O365.drive.Drive">Drive</a> or <a class="reference internal" href="#O365.drive.Folder" title="O365.drive.Folder">Folder</a></td>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#O365.drive.Drive" title="O365.drive.Drive">Drive</a> or <a class="reference internal" href="#O365.drive.Folder" title="O365.drive.Folder">drive.Folder</a></td>
 </tr>
 </tbody>
 </table>
@@ -675,7 +670,7 @@ Can’t move between different Drives.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>target</strong> (<a class="reference internal" href="#O365.drive.Folder" title="O365.drive.Folder"><em>Folder</em></a><em> or </em><a class="reference internal" href="#O365.drive.DriveItem" title="O365.drive.DriveItem"><em>DriveItem</em></a><em> or </em><em>str</em>) – a Folder, Drive item or Item Id string.
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>target</strong> (<a class="reference internal" href="#O365.drive.Folder" title="O365.drive.Folder"><em>drive.Folder</em></a><em> or </em><a class="reference internal" href="#O365.drive.DriveItem" title="O365.drive.DriveItem"><em>DriveItem</em></a><em> or </em><em>str</em>) – a Folder, Drive item or Item Id string.
 If it’s a drive the item will be moved to the root folder.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Success / Failure</td>
@@ -903,7 +898,7 @@ You can not restore the current version (last one).</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>parent</strong> (<a class="reference internal" href="#O365.drive.Drive" title="O365.drive.Drive"><em>Drive</em></a><em> or </em><a class="reference internal" href="#O365.drive.Folder" title="O365.drive.Folder"><em>Folder</em></a>) – parent for this operation</li>
+<li><strong>parent</strong> (<a class="reference internal" href="#O365.drive.Drive" title="O365.drive.Drive"><em>Drive</em></a><em> or </em><a class="reference internal" href="#O365.drive.Folder" title="O365.drive.Folder"><em>drive.Folder</em></a>) – parent for this operation</li>
 <li><strong>con</strong> (<a class="reference internal" href="connection.html#O365.connection.Connection" title="O365.connection.Connection"><em>Connection</em></a>) – connection to use if no parent specified</li>
 <li><strong>protocol</strong> (<a class="reference internal" href="connection.html#O365.connection.Protocol" title="O365.connection.Protocol"><em>Protocol</em></a>) – protocol to use if no parent specified
 (kwargs)</li>
@@ -932,7 +927,7 @@ You can not restore the current version (last one).</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>parent</strong> (<a class="reference internal" href="#O365.drive.Drive" title="O365.drive.Drive"><em>Drive</em></a><em> or </em><a class="reference internal" href="#O365.drive.Folder" title="O365.drive.Folder"><em>Folder</em></a>) – parent for this operation</li>
+<li><strong>parent</strong> (<a class="reference internal" href="#O365.drive.Drive" title="O365.drive.Drive"><em>Drive</em></a><em> or </em><a class="reference internal" href="#O365.drive.Folder" title="O365.drive.Folder"><em>drive.Folder</em></a>) – parent for this operation</li>
 <li><strong>con</strong> (<a class="reference internal" href="connection.html#O365.connection.Connection" title="O365.connection.Connection"><em>Connection</em></a>) – connection to use if no parent specified</li>
 <li><strong>protocol</strong> (<a class="reference internal" href="connection.html#O365.connection.Protocol" title="O365.connection.Protocol"><em>Protocol</em></a>) – protocol to use if no parent specified
 (kwargs)</li>
@@ -962,7 +957,7 @@ You can not restore the current version (last one).</p>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">newly created folder</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#O365.drive.Folder" title="O365.drive.Folder">Folder</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#O365.drive.Folder" title="O365.drive.Folder">drive.Folder</a></p>
 </td>
 </tr>
 </tbody>
@@ -978,7 +973,7 @@ Caution when downloading big folder structures</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>to_folder</strong> (<a class="reference internal" href="#O365.drive.Folder" title="O365.drive.Folder"><em>Folder</em></a>) – folder where to store the contents</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>to_folder</strong> (<a class="reference internal" href="#O365.drive.Folder" title="O365.drive.Folder"><em>drive.Folder</em></a>) – folder where to store the contents</td>
 </tr>
 </tbody>
 </table>
@@ -1086,7 +1081,7 @@ Chunk size for uploads. Must be a multiple of 327.680 bytes</li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>parent</strong> (<a class="reference internal" href="#O365.drive.Drive" title="O365.drive.Drive"><em>Drive</em></a><em> or </em><a class="reference internal" href="#O365.drive.Folder" title="O365.drive.Folder"><em>Folder</em></a>) – parent for this operation</li>
+<li><strong>parent</strong> (<a class="reference internal" href="#O365.drive.Drive" title="O365.drive.Drive"><em>Drive</em></a><em> or </em><a class="reference internal" href="#O365.drive.Folder" title="O365.drive.Folder"><em>drive.Folder</em></a>) – parent for this operation</li>
 <li><strong>con</strong> (<a class="reference internal" href="connection.html#O365.connection.Connection" title="O365.connection.Connection"><em>Connection</em></a>) – connection to use if no parent specified</li>
 <li><strong>protocol</strong> (<a class="reference internal" href="connection.html#O365.connection.Protocol" title="O365.connection.Protocol"><em>Protocol</em></a>) – protocol to use if no parent specified
 (kwargs)</li>
@@ -1131,7 +1126,7 @@ Chunk size for uploads. Must be a multiple of 327.680 bytes</li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>parent</strong> (<a class="reference internal" href="#O365.drive.Drive" title="O365.drive.Drive"><em>Drive</em></a><em> or </em><a class="reference internal" href="#O365.drive.Folder" title="O365.drive.Folder"><em>Folder</em></a>) – parent for this operation</li>
+<li><strong>parent</strong> (<a class="reference internal" href="#O365.drive.Drive" title="O365.drive.Drive"><em>Drive</em></a><em> or </em><a class="reference internal" href="#O365.drive.Folder" title="O365.drive.Folder"><em>drive.Folder</em></a>) – parent for this operation</li>
 <li><strong>con</strong> (<a class="reference internal" href="connection.html#O365.connection.Connection" title="O365.connection.Connection"><em>Connection</em></a>) – connection to use if no parent specified</li>
 <li><strong>protocol</strong> (<a class="reference internal" href="connection.html#O365.connection.Protocol" title="O365.connection.Protocol"><em>Protocol</em></a>) – protocol to use if no parent specified
 (kwargs)</li>

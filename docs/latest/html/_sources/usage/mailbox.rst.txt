@@ -1,2 +1,2 @@
-Resources
-=========
+Mailbox
+=======

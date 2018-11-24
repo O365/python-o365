@@ -4,23 +4,28 @@ from pathlib import Path
 
 from O365.utils.utils import ApiComponent
 
-
 log = logging.getLogger(__name__)
 
 
 class AttachableMixin:
-    """
-    Defines the functionality for an object to be attachable.
-    Any object that inherits from this class will be attachable (if the underlying api allows that)
-    """
-
     def __init__(self, attachment_name_property=None, attachment_type=None):
+        """ Defines the functionality for an object to be attachable.
+        Any object that inherits from this class will be attachable
+        (if the underlying api allows that)
+
+        """
         self.__attachment_name = None
         self.__attachment_name_property = attachment_name_property
         self.__attachment_type = self._gk(attachment_type)
 
     @property
     def attachment_name(self):
+        """ Name of the attachment
+
+        :getter: get attachment name
+        :setter: set new name for the attachment
+        :type: str
+        """
         if self.__attachment_name is not None:
             return self.__attachment_name
         if self.__attachment_name_property:
@@ -41,9 +46,17 @@ class AttachableMixin:
 
     @property
     def attachment_type(self):
+        """ Type of attachment
+
+        :rtype: str
+        """
         return self.__attachment_type
 
     def to_api_data(self):
+        """ Returns a dict to communicate with the server
+
+        :rtype: dict
+        """
         raise NotImplementedError()
 
 
@@ -53,17 +66,20 @@ class BaseAttachment(ApiComponent):
     _endpoints = {'attach': '/messages/{id}/attachments'}
 
     def __init__(self, attachment=None, *, parent=None, **kwargs):
-        """
-        Creates a new attachment class, optionally from existing cloud data.
+        """ Creates a new attachment, optionally from existing cloud data
 
-        :param attachment: attachment data (dict = cloud data, other = user data)
-        :param parent: the parent Attachments
-        :param kwargs: extra options:
-            - 'protocol' when using attachment standalone
-            - 'main_resource' when using attachment standalone and is not the default_resource of protocol
+        :param attachment: attachment data (dict = cloud data,
+         other = user data)
+        :type attachment: dict or str or Path or list[str] or AttachableMixin
+        :param BaseAttachments parent: the parent Attachments
+        :param Protocol protocol: protocol to use if no parent specified
+         (kwargs)
+        :param str main_resource: use this resource instead of parent resource
+         (kwargs)
         """
         kwargs.setdefault('protocol', getattr(parent, 'protocol', None))
-        kwargs.setdefault('main_resource', getattr(parent, 'main_resource', None))
+        kwargs.setdefault('main_resource',
+                          getattr(parent, 'main_resource', None))
 
         super().__init__(**kwargs)
         self.name = None
@@ -81,18 +97,22 @@ class BaseAttachment(ApiComponent):
                     attachment = attachment.get(self._cloud_data_key)
                     self.attachment_id = attachment.get(self._cc('id'), None)
                     self.name = attachment.get(self._cc('name'), None)
-                    self.content = attachment.get(self._cc('contentBytes'), None)
-                    self.attachment_type = 'item' if 'item' in attachment.get('@odata.type', '').lower() else 'file'
+                    self.content = attachment.get(self._cc('contentBytes'),
+                                                  None)
+                    self.attachment_type = 'item' if 'item' in attachment.get(
+                        '@odata.type', '').lower() else 'file'
                     self.on_disk = False
                 else:
                     file_path = attachment.get('path', attachment.get('name'))
                     if file_path is None:
-                        raise ValueError('Must provide a valid "path" or "name" for the attachment')
+                        raise ValueError('Must provide a valid "path" or '
+                                         '"name" for the attachment')
                     self.content = attachment.get('content')
                     self.on_disk = attachment.get('on_disk')
                     self.attachment_id = attachment.get('attachment_id')
                     self.attachment = Path(file_path) if self.on_disk else None
-                    self.name = self.attachment.name if self.on_disk else attachment.get('name')
+                    self.name = (self.attachment.name if self.on_disk
+                                 else attachment.get('name'))
             elif isinstance(attachment, str):
                 self.attachment = Path(attachment)
                 self.name = self.attachment.name
@@ -111,13 +131,20 @@ class BaseAttachment(ApiComponent):
                 self.content = attachment.to_api_data()
                 self.content['@odata.type'] = attachment.attachment_type
 
-            if self.content is None and self.attachment and self.attachment.exists():
+            if self.content is None and self.attachment and \
+                    self.attachment.exists():
                 with self.attachment.open('rb') as file:
                     self.content = base64.b64encode(file.read()).decode('utf-8')
                 self.on_disk = True
 
     def to_api_data(self):
-        data = {'@odata.type': self._gk('{}_attachment_type'.format(self.attachment_type)), self._cc('name'): self.name}
+        """ Returns a dict to communicate with the server
+
+        :rtype: dict
+        """
+        data = {'@odata.type': self._gk(
+            '{}_attachment_type'.format(self.attachment_type)),
+            self._cc('name'): self.name}
 
         if self.attachment_type == 'file':
             data[self._cc('contentBytes')] = self.content
@@ -127,9 +154,12 @@ class BaseAttachment(ApiComponent):
         return data
 
     def save(self, location=None, custom_name=None):
-        """  Save the attachment locally to disk.
-        :param location: path string to where the file is to be saved.
-        :param custom_name: a custom name to be saved as
+        """  Save the attachment locally to disk
+
+        :param str location: path string to where the file is to be saved.
+        :param str custom_name: a custom name to be saved as
+        :return: Success / Failure
+        :rtype: bool
         """
         if not self.content:
             return False
@@ -154,23 +184,31 @@ class BaseAttachment(ApiComponent):
         return True
 
     def attach(self, api_object, on_cloud=False):
-        """
-        Attach this attachment to an existing api_object
-        This BaseAttachment object must be an orphan BaseAttachment created for the
-            sole purpose of attach it to something and therefore run this method.
+        """ Attach this attachment to an existing api_object. This
+        BaseAttachment object must be an orphan BaseAttachment created for the
+        sole purpose of attach it to something and therefore run this method.
+
+        :param api_object: object to attach to
+        :param on_cloud: if the attachment is on cloud or not
+        :return: Success / Failure
+        :rtype: bool
         """
 
         if self.on_cloud:
             # item is already saved on the cloud.
             return True
 
-        # api_object must exist and if implements attachments then we can attach to it.
+        # api_object must exist and if implements attachments
+        # then we can attach to it.
         if api_object and getattr(api_object, 'attachments', None):
             if on_cloud:
                 if not api_object.object_id:
-                    raise RuntimeError('A valid object id is needed in order to attach a file')
-                # api_object builds its own url using its resource and main configuration
-                url = api_object.build_url(self._endpoints.get('attach').format(id=api_object.object_id))
+                    raise RuntimeError(
+                        'A valid object id is needed in order to attach a file')
+                # api_object builds its own url using its
+                # resource and main configuration
+                url = api_object.build_url(self._endpoints.get('attach').format(
+                    id=api_object.object_id))
 
                 response = api_object.con.post(url, data=self.to_api_data())
 
@@ -178,8 +216,10 @@ class BaseAttachment(ApiComponent):
             else:
                 if self.attachment_type == 'file':
                     api_object.attachments.add([{
-                        'attachment_id': self.attachment_id,  # TODO: copy attachment id? or set to None?
-                        'path': str(self.attachment) if self.attachment else None,
+                        'attachment_id': self.attachment_id,
+                        # TODO: copy attachment id? or set to None?
+                        'path': str(
+                            self.attachment) if self.attachment else None,
                         'name': self.name,
                         'content': self.content,
                         'on_disk': self.on_disk
@@ -204,11 +244,18 @@ class BaseAttachments(ApiComponent):
     _attachment_constructor = BaseAttachment
 
     def __init__(self, parent, attachments=None):
-        """ Attachments must be a list of path strings or dictionary elements """
-        super().__init__(protocol=parent.protocol, main_resource=parent.main_resource)
+        """ Attachments must be a list of path strings or dictionary elements
+
+        :param Account parent: parent object
+        :param attachments: list of attachments
+        :type attachments: list[str] or list[Path] or str or Path or dict
+        """
+        super().__init__(protocol=parent.protocol,
+                         main_resource=parent.main_resource)
         self._parent = parent
         self.__attachments = []
-        self.__removed_attachments = []  # holds on_cloud attachments removed from the parent object
+        # holds on_cloud attachments removed from the parent object
+        self.__removed_attachments = []
         self.untrack = True
         if attachments:
             self.add(attachments)
@@ -241,9 +288,15 @@ class BaseAttachments(ApiComponent):
         return bool(len(self.__attachments))
 
     def to_api_data(self):
-        return [attachment.to_api_data() for attachment in self.__attachments if attachment.on_cloud is False]
+        """ Returns a dict to communicate with the server
+
+        :rtype: dict
+        """
+        return [attachment.to_api_data() for attachment in self.__attachments if
+                attachment.on_cloud is False]
 
     def clear(self):
+        """ Clear the attachments """
         for attachment in self.__attachments:
             if attachment.on_cloud:
                 self.__removed_attachments.append(attachment)
@@ -252,8 +305,11 @@ class BaseAttachments(ApiComponent):
         self._track_changes()
 
     def _track_changes(self):
-        """ Update the track_changes on the parent to reflect a needed update on this field """
-        if getattr(self._parent, '_track_changes', None) is not None and self.untrack is False:
+        """ Update the track_changes on the parent to reflect
+        a needed update on this field """
+        if getattr(self._parent, '_track_changes',
+                   None) is not None and self.untrack is False:
+            # noinspection PyProtectedMember
             self._parent._track_changes.add('attachments')
 
     def _update_parent_attachments(self):
@@ -264,30 +320,46 @@ class BaseAttachments(ApiComponent):
             pass
 
     def add(self, attachments):
-        """ Attachments must be a Path or string or a list of Paths, path strings or dictionary elements """
+        """ Add more attachments
 
+        :param attachments: list of attachments
+        :type attachments: list[str] or list[Path] or str or Path or dict
+        """
         if attachments:
             if isinstance(attachments, (str, Path)):
                 attachments = [attachments]
             if isinstance(attachments, (list, tuple, set)):
                 # User provided attachments
-                attachments_temp = [self._attachment_constructor(attachment, parent=self)
-                                    for attachment in attachments]
-            elif isinstance(attachments, dict) and self._cloud_data_key in attachments:
-                # Cloud downloaded attachments. We pass on_cloud=True to track if this attachment is saved on the server
-                attachments_temp = [self._attachment_constructor({self._cloud_data_key: attachment}, parent=self, on_cloud=True)
-                                    for attachment in attachments.get(self._cloud_data_key, [])]
+                attachments_temp = [
+                    self._attachment_constructor(attachment, parent=self)
+                    for attachment in attachments]
+            elif isinstance(attachments,
+                            dict) and self._cloud_data_key in attachments:
+                # Cloud downloaded attachments. We pass on_cloud=True
+                # to track if this attachment is saved on the server
+                attachments_temp = [self._attachment_constructor(
+                    {self._cloud_data_key: attachment}, parent=self,
+                    on_cloud=True)
+                    for attachment in
+                    attachments.get(self._cloud_data_key, [])]
             else:
-                raise ValueError('Attachments must be a str or Path or a list, tuple or set of the former')
+                raise ValueError('Attachments must be a str or Path or a '
+                                 'list, tuple or set of the former')
 
             self.__attachments.extend(attachments_temp)
             self._update_parent_attachments()
             self._track_changes()
 
     def remove(self, attachments):
-        """ Remove attachments from this collection of attachments """
+        """ Remove the specified attachments
+
+        :param attachments: list of attachments
+        :type attachments: list[str] or list[Path] or str or Path or dict
+        """
         if isinstance(attachments, (list, tuple)):
-            attachments = {attachment.name if isinstance(attachment, BaseAttachment) else attachment for attachment in attachments}
+            attachments = ({attachment.name
+                            if isinstance(attachment, BaseAttachment)
+                            else attachment for attachment in attachments})
         elif isinstance(attachments, str):
             attachments = {attachments}
         elif isinstance(attachments, BaseAttachment):
@@ -301,22 +373,33 @@ class BaseAttachments(ApiComponent):
                 new_attachments.append(attachment)
             else:
                 if attachment.on_cloud:
-                    self.__removed_attachments.append(attachment)  # add to removed_attachments so later we can delete them
+                    # add to removed_attachments so later we can delete them
+                    self.__removed_attachments.append(
+                        attachment)
         self.__attachments = new_attachments
         self._update_parent_attachments()
         self._track_changes()
 
     def download_attachments(self):
-        """ Downloads this message attachments into memory. Need a call to 'attachment.save' to save them on disk. """
+        """ Downloads this message attachments into memory.
+        Need a call to 'attachment.save' to save them on disk.
 
+        :return: Success / Failure
+        :rtype: bool
+        """
         if not self._parent.has_attachments:
-            log.debug('Parent {} has no attachments, skipping out early.'.format(self._parent.__class__.__name__))
+            log.debug(
+                'Parent {} has no attachments, skipping out early.'.format(
+                    self._parent.__class__.__name__))
             return False
 
         if not self._parent.object_id:
-            raise RuntimeError('Attempted to download attachments of an unsaved {}'.format(self._parent.__class__.__name__))
+            raise RuntimeError(
+                'Attempted to download attachments of an unsaved {}'.format(
+                    self._parent.__class__.__name__))
 
-        url = self.build_url(self._endpoints.get('attachments').format(id=self._parent.object_id))
+        url = self.build_url(self._endpoints.get('attachments').format(
+            id=self._parent.object_id))
 
         response = self._parent.con.get(url)
         if not response:
@@ -329,24 +412,26 @@ class BaseAttachments(ApiComponent):
         self.add({self._cloud_data_key: attachments})
         self.untrack = False
 
-        # TODO: when it's a item attachment the attachment itself is not downloaded. We must download it...
-        # TODO: idea: retrieve the attachments ids' only with select and then download one by one.
+        # TODO: when it's a item attachment the attachment itself
+        # is not downloaded. We must download it...
+        # TODO: idea: retrieve the attachments ids' only with
+        # select and then download one by one.
         return True
 
     def _update_attachments_to_cloud(self):
+        """ Push new, unsaved attachments to the cloud and remove removed
+        attachments. This method should not be called for non draft messages.
         """
-        Push new, unsaved attachments to the cloud and remove removed attachments
-        This method should not be called for non draft messages.
-        """
+        url = self.build_url(self._endpoints.get('attachments').format(
+            id=self._parent.object_id))
 
-        url = self.build_url(self._endpoints.get('attachments').format(id=self._parent.object_id))
-
-        # ! potencially several api requests can be made by this method.
+        # ! potentially several api requests can be made by this method.
 
         for attachment in self.__attachments:
             if attachment.on_cloud is False:
                 # upload attachment:
-                response = self._parent.con.post(url, data=attachment.to_api_data())
+                response = self._parent.con.post(url,
+                                                 data=attachment.to_api_data())
                 if not response:
                     return False
 
@@ -360,7 +445,8 @@ class BaseAttachments(ApiComponent):
         for attachment in self.__removed_attachments:
             if attachment.on_cloud and attachment.attachment_id is not None:
                 # delete attachment
-                url = self.build_url(self._endpoints.get('attachment').format(id=self._parent.object_id, ida=attachment.attachment_id))
+                url = self.build_url(self._endpoints.get('attachment').format(
+                    id=self._parent.object_id, ida=attachment.attachment_id))
 
                 response = self._parent.con.delete(url)
                 if not response:
@@ -368,6 +454,7 @@ class BaseAttachments(ApiComponent):
 
         self.__removed_attachments = []  # reset the removed attachments
 
-        log.debug('Successfully updated attachments on {}'.format(self._parent.object_id))
+        log.debug('Successfully updated attachments on {}'.format(
+            self._parent.object_id))
 
         return True

@@ -182,8 +182,8 @@
 <span class="sd">        :param str name: the name you want the stored file to have.</span>
 <span class="sd">        :param int chunk_size: number of bytes to retrieve from</span>
 <span class="sd">         each api call to the server. if auto, files bigger than</span>
-<span class="sd">        SIZE_THERSHOLD will be chunked (into memory, will be</span>
-<span class="sd">        however only 1 request)</span>
+<span class="sd">         SIZE_THERSHOLD will be chunked (into memory, will be</span>
+<span class="sd">         however only 1 request)</span>
 <span class="sd">        :param bool convert_to_pdf: will try to download the converted pdf</span>
 <span class="sd">         if file extension in ALLOWED_PDF_EXTENSIONS</span>
 <span class="sd">        :return: Success / Failure</span>
@@ -570,7 +570,7 @@
         <span class="sd">&quot;&quot;&quot; Create a DriveItem</span>
 
 <span class="sd">        :param parent: parent for this operation</span>
-<span class="sd">        :type parent: Drive or Folder</span>
+<span class="sd">        :type parent: Drive or drive.Folder</span>
 <span class="sd">        :param Connection con: connection to use if no parent specified</span>
 <span class="sd">        :param Protocol protocol: protocol to use if no parent specified</span>
 <span class="sd">         (kwargs)</span>
@@ -681,7 +681,7 @@
         <span class="sd">&quot;&quot;&quot; the parent of this DriveItem</span>
 
 <span class="sd">        :return: Parent of this item</span>
-<span class="sd">        :rtype: Drive or Folder</span>
+<span class="sd">        :rtype: Drive or drive.Folder</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span><span class="o">.</span><span class="n">object_id</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent_id</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span>
@@ -782,7 +782,7 @@
 
 <span class="sd">        :param target: a Folder, Drive item or Item Id string.</span>
 <span class="sd">         If it&#39;s a drive the item will be moved to the root folder.</span>
-<span class="sd">        :type target: Folder or DriveItem or str</span>
+<span class="sd">        :type target: drive.Folder or DriveItem or str</span>
 <span class="sd">        :return: Success / Failure</span>
 <span class="sd">        :rtype: bool</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -826,7 +826,7 @@
 
 <span class="sd">        :param target: target location to move to.</span>
 <span class="sd">         If it&#39;s a drive the item will be moved to the root folder.</span>
-<span class="sd">        :type target: Folder or Drive</span>
+<span class="sd">        :type target: drive.Folder or Drive</span>
 <span class="sd">        :param name: a new name for the copy.</span>
 <span class="sd">        :rtype: CopyOperation</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1174,7 +1174,7 @@
 <span class="sd">        :param str name: the name of the new child folder</span>
 <span class="sd">        :param str description: the description of the new child folder</span>
 <span class="sd">        :return: newly created folder</span>
-<span class="sd">        :rtype: Folder</span>
+<span class="sd">        :rtype: drive.Folder</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">object_id</span><span class="p">:</span>
@@ -1200,7 +1200,7 @@
         <span class="sd">&quot;&quot;&quot; This will download each file and folder sequentially.</span>
 <span class="sd">        Caution when downloading big folder structures</span>
 
-<span class="sd">        :param Folder to_folder: folder where to store the contents</span>
+<span class="sd">        :param drive.Folder to_folder: folder where to store the contents</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">to_folder</span> <span class="o">=</span> <span class="n">to_folder</span> <span class="ow">or</span> <span class="n">Path</span><span class="p">()</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">to_folder</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
@@ -1619,7 +1619,7 @@
         <span class="sd">&quot;&quot;&quot; Returns the specified Special Folder</span>
 
 <span class="sd">        :return: a special Folder</span>
-<span class="sd">        :rtype: Folder</span>
+<span class="sd">        :rtype: drive.Folder</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">name</span> <span class="o">=</span> <span class="n">name</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">name</span><span class="p">,</span>
