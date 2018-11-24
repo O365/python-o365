@@ -1,4 +1,9 @@
-# pyo365 - Microsoft Graph and Office 365 API made easy
+# O365 - Microsoft Graph and Office 365 API made easy
+
+
+> API Documentation is available [here](https://o365.github.io/python-o365/latest/html/api.html)
+
+> Detailed usage documentation is still in progress
 
 This project aims is to make it easy to interact with Microsoft Graph and Office 365 Email, Contacts, Calendar, OneDrive, etc.
 
@@ -13,7 +18,7 @@ The result is a package that provides a lot of the Microsoft Graph and Office 36
 This is for example how you send a message:
 
 ```python
-from pyo365 import Account
+from O365 import Account
 
 credentials = ('client_id', 'client_secret')
 
@@ -68,7 +73,7 @@ What follows is kind of a wiki... but you will get more insights by looking at t
 
 
 ## Install
-pyo365 is available on pypi.org. Simply run `pip install pyo365` to install it.
+O365 is available on pypi.org. Simply run `pip install O365` to install it.
 
 Project dependencies installed by pip:
  - requests
@@ -106,7 +111,7 @@ You can implement your own protocols by inheriting from `Protocol` to communicat
 
 You can instantiate protocols like this:
 ```python
-from pyo365 import MSGraphProtocol
+from O365 import MSGraphProtocol
 
 # try the api version beta of the Microsoft Graph endpoint.
 protocol = MSGraphProtocol(api_version='beta')  # MSGraphProtocol defaults to v1.0 api version
@@ -174,7 +179,7 @@ Then the user can request access to one or more of this resources by providing s
 For example your application can have Calendar.Read, Mail.ReadWrite and Mail.Send permissions, but the application can request access only to the Mail.ReadWrite and Mail.Send permission.
 This is done by providing scopes to the connection object like so:
 ```python
-from pyo365 import Connection
+from O365 import Connection
 
 credentials = ('client_id', 'client_secret')
 
@@ -238,7 +243,7 @@ con = Connection(credentials, scopes=scopes_graph)
     If your application needs to work for more than 90 days without user interaction and without interacting with the API, then you must implement a periodic call to `Connection.refresh_token` before the 90 days have passed.
 
 
-##### Using pyo365 to authenticate
+##### Using O365 to authenticate
 
 You can manually authenticate by using a single `Connection` instance as described before or use the helper methods provided by the library.
 
@@ -248,7 +253,7 @@ You can manually authenticate by using a single `Connection` instance as describ
     
     Create an `Account` instance and authenticate using the `authenticate` method:
     ```python
-    from pyo365 import Account
+    from O365 import Account
  
     account = Account(credentials=('client_id', 'client_secret'))
     result = account.authenticate(scopes=['basic', 'message_all'])  # request a token for this scopes
@@ -261,7 +266,7 @@ You can manually authenticate by using a single `Connection` instance as describ
 2. `oauth_authentication_flow`:
      
     ```python
-    from pyo365 import oauth_authentication_flow
+    from O365 import oauth_authentication_flow
     
     result = oauth_authentication_flow('client_id', 'client_secret', ['scopes_required'])
     ```
@@ -273,7 +278,7 @@ But you can also work only with the pieces you want.
 
 For example, instead of:
 ```python
-from pyo365 import Account
+from O365 import Account
 
 account = Account(('client_id', 'client_secret'))
 message = account.new_message()
@@ -285,7 +290,7 @@ mailbox = account.mailbox()
 You can work only with the required pieces:
 
 ```python
-from pyo365 import Connection, MSGraphProtocol, Message, MailBox
+from O365 import Connection, MSGraphProtocol, Message, MailBox
 
 my_protocol = MSGraphProtocol()
 con = Connection(('client_id', 'client_secret'))
@@ -302,7 +307,7 @@ It's also easy to implement a custom Class.
 Just Inherit from `ApiComponent`, define the endpoints, and use the connection to make requests. If needed also inherit from Protocol to handle different comunications aspects with the API server.
 
 ```python
-from pyo365.utils import ApiComponent 
+from O365.utils import ApiComponent 
 
 class CustomClass(ApiComponent):
     _endpoints = {'my_url_key': '/customendpoint'}
