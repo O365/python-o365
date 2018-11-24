@@ -4,6 +4,8 @@ import datetime as dt
 import pytz
 from collections import OrderedDict
 
+from O365.utils.decorators import fluent
+
 ME_RESOURCE = 'me'
 USERS_RESOURCE = 'users'
 
@@ -80,10 +82,11 @@ class ApiComponent:
         self.main_resource = (self._parse_resource(
             main_resource if main_resource is not None
             else protocol.default_resource))
+        # noinspection PyUnresolvedReferences
         self._base_url = '{}{}'.format(self.protocol.service_url,
                                        self.main_resource)
         if self._base_url.endswith('/'):
-            # when self.main_resource is an empty string then remove the last slash.
+            # when self.main_resource is empty then remove the last slash.
             self._base_url = self._base_url[:-1]
         super().__init__()
 
@@ -214,9 +217,9 @@ class Pagination(ApiComponent):
         self.next_link = data.get(NEXT_LINK_KEYWORD, None) or None
         data = data.get('value', [])
         if self.constructor:
-            # Everything received from cloud must be passed as self._cloud_data_key
+            # Everything  from cloud must be passed as self._cloud_data_key
             if callable(self.constructor) and not isinstance(self.constructor,
-                                                             type):  # it's callable but its not a Class
+                                                             type):
                 self.data = [self.constructor(value)(parent=self.parent, **{
                     self._cloud_data_key: value}) for value in data]
             else:
@@ -276,11 +279,13 @@ class Query:
     def __repr__(self):
         return self.__str__()
 
+    @fluent
     def select(self, *attributes):
         """ Adds the attribute to the $select parameter
 
-        :param attributes: the attributes tuple to select.
-        If empty, the on_attribute previously set is added.
+        :param str attributes: the attributes tuple to select.
+         If empty, the on_attribute previously set is added.
+        :rtype: Query
         """
         if attributes:
             for attribute in attributes:
@@ -299,7 +304,10 @@ class Query:
         return self
 
     def as_params(self):
-        """ Returns the filters and orders as query parameters"""
+        """ Returns the filters and orders as query parameters
+
+        :rtype: dict
+        """
         params = {}
         if self.has_filters:
             params['$filter'] = self.get_filters()
@@ -311,18 +319,33 @@ class Query:
 
     @property
     def has_filters(self):
+        """ Whether the query has filters or not
+
+        :rtype: bool
+        """
         return bool(self._filters)
 
     @property
     def has_order(self):
+        """ Whether the query has order_by or not
+
+        :rtype: bool
+        """
         return bool(self._order_by)
 
     @property
     def has_selects(self):
+        """ Whether the query has select filters or not
+
+        :rtype: bool
+        """
         return bool(self._selects)
 
     def get_filters(self):
-        """ Returns the result filters """
+        """ Returns the result filters
+
+        :rtype: str or None
+        """
         if self._filters:
             filters_list = self._filters
             if isinstance(filters_list[-1], Enum):
@@ -334,8 +357,12 @@ class Query:
             return None
 
     def get_order(self):
-        """ Returns the result order by clauses """
-        # first get the filtered attributes in order as they must appear in the order_by first
+        """ Returns the result order by clauses
+
+        :rtype: str or None
+        """
+        # first get the filtered attributes in order as they must appear
+        # in the order_by first
         if not self.has_order:
             return None
         filter_order_clauses = OrderedDict([(filter_attr[0], None)
@@ -353,14 +380,18 @@ class Query:
 
         if filter_order_clauses:
             return ','.join(['{} {}'.format(attribute,
-                                            direction if direction else '').strip()
+                                            direction if direction else '')
+                            .strip()
                              for attribute, direction in
                              filter_order_clauses.items()])
         else:
             return None
 
     def get_selects(self):
-        """ Returns the result select clause """
+        """ Returns the result select clause
+
+        :rtype: str or None
+        """
         if self._selects:
             return ','.join(self._selects)
         else:
@@ -378,7 +409,14 @@ class Query:
             return attribute
         return None
 
+    @fluent
     def new(self, attribute, operation=ChainOperator.AND):
+        """ Combine with a new query
+
+        :param str attribute: attribute of new query
+        :param ChainOperator operation: operation to combine to new query
+        :rtype: Query
+        """
         if isinstance(operation, str):
             operation = ChainOperator(operation)
         self._chain = operation
@@ -387,26 +425,46 @@ class Query:
         return self
 
     def clear_filters(self):
+        """ Clear filters """
         self._filters = []
 
     def clear(self):
+        """ Clear everything """
         self._filters = []
         self._order_by = OrderedDict()
         self._selects = set()
-        self.new(None)
+        self._negation = False
+        self._attribute = None
+        self._chain = None
         return self
 
+    @fluent
     def negate(self):
+        """ Apply a not operator
+
+        :rtype: Query
+        """
         self._negation = not self._negation
         return self
 
+    @fluent
     def chain(self, operation=ChainOperator.AND):
+        """ Start a chain operation
+
+        :param ChainOperator operation: how to combine with a new one
+        :rtype: Query
+        """
         if isinstance(operation, str):
             operation = ChainOperator(operation)
         self._chain = operation
         return self
 
     def on_attribute(self, attribute):
+        """ Apply query on attribute, to be used along with chain()
+
+        :param str attribute: attribute name
+        :rtype: Query
+        """
         self._attribute = self._get_mapping(attribute)
         return self
 
@@ -418,7 +476,8 @@ class Query:
             self._filters.append((self._attribute, filter_str))
         else:
             raise ValueError(
-                'Attribute property needed. call on_attribute(attribute) or new(attribute)')
+                'Attribute property needed. call on_attribute(attribute) '
+                'or new(attribute)')
 
     def _parse_filter_word(self, word):
         """ Converts the word parameter into the correct format """
@@ -439,7 +498,15 @@ class Query:
             word = str(word).lower()
         return word
 
+    @fluent
     def logical_operator(self, operation, word):
+        """ Apply a logical operator
+
+        :param str operation: how to combine with a new one
+        :param word: other parameter for the operation
+         (a = b) would be like a.logical_operator('eq', 'b')
+        :rtype: Query
+        """
         word = self._parse_filter_word(word)
         sentence = '{} {} {} {}'.format('not' if self._negation else '',
                                         self._attribute, operation,
@@ -447,25 +514,68 @@ class Query:
         self._add_filter(sentence)
         return self
 
+    @fluent
     def equals(self, word):
+        """ Add a equals check
+
+        :param str word: word to compare with
+        :rtype: Query
+        """
         return self.logical_operator('eq', word)
 
+    @fluent
     def unequal(self, word):
+        """ Add a unequals check
+
+        :param str word: word to compare with
+        :rtype: Query
+        """
         return self.logical_operator('ne', word)
 
+    @fluent
     def greater(self, word):
+        """ Add a greater than check
+
+        :param str word: word to compare with
+        :rtype: Query
+        """
         return self.logical_operator('gt', word)
 
+    @fluent
     def greater_equal(self, word):
+        """ Add a greater than or equal to check
+
+        :param str word: word to compare with
+        :rtype: Query
+        """
         return self.logical_operator('ge', word)
 
+    @fluent
     def less(self, word):
+        """ Add a less than check
+
+        :param str word: word to compare with
+        :rtype: Query
+        """
         return self.logical_operator('lt', word)
 
+    @fluent
     def less_equal(self, word):
+        """ Add a less than or equal to check
+
+        :param str word: word to compare with
+        :rtype: Query
+        """
         return self.logical_operator('le', word)
 
+    @fluent
     def function(self, function_name, word):
+        """ Apply a function on given word
+
+        :param str function_name: function to apply
+        :param str word: word to apply function on
+        :rtype: Query
+        """
         word = self._parse_filter_word(word)
 
         self._add_filter(
@@ -474,21 +584,46 @@ class Query:
                                    word).strip())
         return self
 
+    @fluent
     def contains(self, word):
+        """ Adds a contains word check
+
+        :param str word: word to check
+        :rtype: Query
+        """
         return self.function('contains', word)
 
+    @fluent
     def startswith(self, word):
+        """ Adds a startswith word check
+
+        :param str word: word to check
+        :rtype: Query
+        """
         return self.function('startswith', word)
 
+    @fluent
     def endswith(self, word):
+        """ Adds a endswith word check
+
+        :param str word: word to check
+        :rtype: Query
+        """
         return self.function('endswith', word)
 
+    @fluent
     def order_by(self, attribute=None, *, ascending=True):
-        """ applies a order_by clause"""
+        """ Applies a order_by clause
+
+        :param str attribute: attribute to apply on
+        :param bool ascending: should it apply ascending order or descending
+        :rtype: Query
+        """
         attribute = self._get_mapping(attribute) or self._attribute
         if attribute:
             self._order_by[attribute] = None if ascending else 'desc'
         else:
             raise ValueError(
-                'Attribute property needed. call on_attribute(attribute) or new(attribute)')
+                'Attribute property needed. call on_attribute(attribute) '
+                'or new(attribute)')
         return self

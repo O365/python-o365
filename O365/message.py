@@ -270,7 +270,7 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         """ Makes a new message wrapper for sending and receiving messages.
 
         :param parent: parent folder/account to create the message in
-        :type parent: Folder or Account
+        :type parent: mailbox.Folder or Account
         :param Connection con: connection to use if no parent specified
         :param Protocol protocol: protocol to use if no parent specified
          (kwargs)
@@ -709,7 +709,7 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
 
         :param folder: Folder object or Folder id or Well-known name to
          move this message to
-        :type folder: str or Folder
+        :type folder: str or mailbox.Folder
         :return: Success / Failure
         :rtype: bool
         """
@@ -742,7 +742,7 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
 
         :param folder: Folder object or Folder id or Well-known name to
          copy this message to
-        :type folder: str or Folder
+        :type folder: str or mailbox.Folder
         :returns: the copied message
         :rtype: Message
         """

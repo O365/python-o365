@@ -36,8 +36,8 @@ class DownloadableMixin:
         :param str name: the name you want the stored file to have.
         :param int chunk_size: number of bytes to retrieve from
          each api call to the server. if auto, files bigger than
-        SIZE_THERSHOLD will be chunked (into memory, will be
-        however only 1 request)
+         SIZE_THERSHOLD will be chunked (into memory, will be
+         however only 1 request)
         :param bool convert_to_pdf: will try to download the converted pdf
          if file extension in ALLOWED_PDF_EXTENSIONS
         :return: Success / Failure
@@ -424,7 +424,7 @@ class DriveItem(ApiComponent):
         """ Create a DriveItem
 
         :param parent: parent for this operation
-        :type parent: Drive or Folder
+        :type parent: Drive or drive.Folder
         :param Connection con: connection to use if no parent specified
         :param Protocol protocol: protocol to use if no parent specified
          (kwargs)
@@ -535,7 +535,7 @@ class DriveItem(ApiComponent):
         """ the parent of this DriveItem
 
         :return: Parent of this item
-        :rtype: Drive or Folder
+        :rtype: Drive or drive.Folder
         """
         if self._parent and self._parent.object_id == self.parent_id:
             return self._parent
@@ -636,7 +636,7 @@ class DriveItem(ApiComponent):
 
         :param target: a Folder, Drive item or Item Id string.
          If it's a drive the item will be moved to the root folder.
-        :type target: Folder or DriveItem or str
+        :type target: drive.Folder or DriveItem or str
         :return: Success / Failure
         :rtype: bool
         """
@@ -680,7 +680,7 @@ class DriveItem(ApiComponent):
 
         :param target: target location to move to.
          If it's a drive the item will be moved to the root folder.
-        :type target: Folder or Drive
+        :type target: drive.Folder or Drive
         :param name: a new name for the copy.
         :rtype: CopyOperation
         """
@@ -1028,7 +1028,7 @@ class Folder(DriveItem):
         :param str name: the name of the new child folder
         :param str description: the description of the new child folder
         :return: newly created folder
-        :rtype: Folder
+        :rtype: drive.Folder
         """
 
         if not self.object_id:
@@ -1054,7 +1054,7 @@ class Folder(DriveItem):
         """ This will download each file and folder sequentially.
         Caution when downloading big folder structures
 
-        :param Folder to_folder: folder where to store the contents
+        :param drive.Folder to_folder: folder where to store the contents
         """
         to_folder = to_folder or Path()
         if not to_folder.exists():
@@ -1473,7 +1473,7 @@ class Drive(ApiComponent):
         """ Returns the specified Special Folder
 
         :return: a special Folder
-        :rtype: Folder
+        :rtype: drive.Folder
         """
 
         name = name if isinstance(name,

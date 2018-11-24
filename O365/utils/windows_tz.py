@@ -5,6 +5,7 @@ from datetime import tzinfo
 
 import pytz
 
+# noinspection SpellCheckingInspection
 IANA_TO_WIN = {
     'Africa/Abidjan': 'Greenwich Standard Time',
     'Africa/Accra': 'Greenwich Standard Time',
@@ -497,8 +498,10 @@ def get_iana_tz(windows_tz):
 
 
 def get_windows_tz(iana_tz):
-    """ Returns a valid windows TimeZone from a given pytz TimeZone (Iana/Olson Timezones)
-    Note: Windows Timezones are SHIT!... no ... really THEY ARE HOLY FUCKING SHIT!.
+    """ Returns a valid windows TimeZone from a given pytz TimeZone
+    (Iana/Olson Timezones)
+    Note: Windows Timezones are SHIT!... no ... really THEY ARE
+    HOLY FUCKING SHIT!.
     """
     timezone = IANA_TO_WIN.get(
         iana_tz.zone if isinstance(iana_tz, tzinfo) else iana_tz)

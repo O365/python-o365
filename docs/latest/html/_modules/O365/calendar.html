@@ -150,6 +150,7 @@
 <span class="kn">import</span> <span class="nn">datetime</span> <span class="k">as</span> <span class="nn">dt</span>
 <span class="kn">import</span> <span class="nn">pytz</span>
 <span class="kn">import</span> <span class="nn">calendar</span>
+<span class="c1"># noinspection PyPep8Naming</span>
 <span class="kn">from</span> <span class="nn">bs4</span> <span class="k">import</span> <span class="n">BeautifulSoup</span> <span class="k">as</span> <span class="n">bs</span>
 
 <span class="kn">from</span> <span class="nn">O365.utils</span> <span class="k">import</span> <span class="n">Pagination</span><span class="p">,</span> <span class="n">NEXT_LINK_KEYWORD</span><span class="p">,</span> <span class="n">ApiComponent</span>
@@ -223,6 +224,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">interval</span> <span class="o">=</span> <span class="n">interval</span></div></div>
 
 
+<span class="c1"># noinspection PyAttributeOutsideInit</span>
 <div class="viewcode-block" id="EventRecurrence"><a class="viewcode-back" href="../../api/calendar.html#O365.calendar.EventRecurrence">[docs]</a><span class="k">class</span> <span class="nc">EventRecurrence</span><span class="p">(</span><span class="n">ApiComponent</span><span class="p">):</span>
 <div class="viewcode-block" id="EventRecurrence.__init__"><a class="viewcode-back" href="../../api/calendar.html#O365.calendar.EventRecurrence.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">,</span> <span class="n">recurrence</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; A representation of an event recurrence properties</span>
@@ -251,7 +253,7 @@
         <span class="c1"># recurrence range</span>
         <span class="n">recurrence_range</span> <span class="o">=</span> <span class="n">recurrence</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cc</span><span class="p">(</span><span class="s1">&#39;range&#39;</span><span class="p">),</span> <span class="p">{})</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">__ocurrences</span> <span class="o">=</span> <span class="n">recurrence_range</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__occurrences</span> <span class="o">=</span> <span class="n">recurrence_range</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_cc</span><span class="p">(</span><span class="s1">&#39;numberOfOccurrences&#39;</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__start_date</span> <span class="o">=</span> <span class="n">recurrence_range</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cc</span><span class="p">(</span><span class="s1">&#39;startDate&#39;</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__end_date</span> <span class="o">=</span> <span class="n">recurrence_range</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cc</span><span class="p">(</span><span class="s1">&#39;endDate&#39;</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>
@@ -279,18 +281,18 @@
                     <span class="n">pattern</span> <span class="o">=</span> <span class="s1">&#39;Weekly: every </span><span class="si">{}</span><span class="s1"> week/s on </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">__interval</span><span class="p">,</span> <span class="n">days</span><span class="p">)</span>
                 <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">__month</span><span class="p">:</span>
-                    <span class="n">pattern</span> <span class="o">=</span> <span class="s1">&#39;Relative Yearly: </span><span class="si">{}</span><span class="s1"> </span><span class="si">{}</span><span class="s1"> every </span><span class="si">{}</span><span class="s1"> year/s on </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">__index</span><span class="p">,</span> <span class="n">days</span><span class="p">,</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">__interval</span><span class="p">,</span>
-                        <span class="n">MONTH_NAMES</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">__month</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
+                    <span class="n">pattern</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;Relative Yearly: </span><span class="si">{}</span><span class="s1"> </span><span class="si">{}</span><span class="s1"> every </span><span class="si">{}</span><span class="s1"> year/s on </span><span class="si">{}</span><span class="s1">&#39;</span>
+                               <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__index</span><span class="p">,</span> <span class="n">days</span><span class="p">,</span>
+                                         <span class="bp">self</span><span class="o">.</span><span class="n">__interval</span><span class="p">,</span>
+                                         <span class="n">MONTH_NAMES</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">__month</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]))</span>
             <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">__day_of_month</span><span class="p">:</span>
-                <span class="n">pattern</span> <span class="o">=</span> <span class="s1">&#39;Absolute Monthly: on day </span><span class="si">{}</span><span class="s1"> every </span><span class="si">{}</span><span class="s1"> month/s&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">__day_of_month</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__interval</span><span class="p">)</span>
+                <span class="n">pattern</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;Absolute Monthly: on day </span><span class="si">{}</span><span class="s1"> every </span><span class="si">{}</span><span class="s1"> month/s&#39;</span>
+                           <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__day_of_month</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__interval</span><span class="p">))</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__month</span><span class="p">:</span>
-                    <span class="n">pattern</span> <span class="o">=</span> <span class="s1">&#39;Absolute Yearly: on </span><span class="si">{}</span><span class="s1"> </span><span class="si">{}</span><span class="s1"> every </span><span class="si">{}</span><span class="s1"> year/s&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                        <span class="n">MONTH_NAMES</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">__month</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">__day_of_month</span><span class="p">,</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">__interval</span><span class="p">)</span>
+                    <span class="n">pattern</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;Absolute Yearly: on </span><span class="si">{}</span><span class="s1"> </span><span class="si">{}</span><span class="s1"> every </span><span class="si">{}</span><span class="s1"> year/s&#39;</span>
+                               <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">MONTH_NAMES</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">__month</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span>
+                                         <span class="bp">self</span><span class="o">.</span><span class="n">__day_of_month</span><span class="p">,</span>
+                                         <span class="bp">self</span><span class="o">.</span><span class="n">__interval</span><span class="p">))</span>
 
             <span class="n">r_range</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__start_date</span><span class="p">:</span>
@@ -298,8 +300,8 @@
                 <span class="n">ends_on</span> <span class="o">=</span> <span class="s1">&#39;with no end&#39;</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__end_date</span><span class="p">:</span>
                     <span class="n">ends_on</span> <span class="o">=</span> <span class="s1">&#39;ending on </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__end_date</span><span class="p">)</span>
-                <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">__ocurrences</span><span class="p">:</span>
-                    <span class="n">ends_on</span> <span class="o">=</span> <span class="s1">&#39;up to </span><span class="si">{}</span><span class="s1"> ocurrences&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__ocurrences</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">__occurrences</span><span class="p">:</span>
+                    <span class="n">ends_on</span> <span class="o">=</span> <span class="s1">&#39;up to </span><span class="si">{}</span><span class="s1"> occurrences&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__occurrences</span><span class="p">)</span>
                 <span class="n">r_range</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">r_range</span><span class="p">,</span> <span class="n">ends_on</span><span class="p">)</span>
             <span class="k">return</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">. </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">r_range</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -333,6 +335,12 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">days_of_week</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Days in week to repeat</span>
+
+<span class="sd">        :getter: Get the current list of days</span>
+<span class="sd">        :setter: Set the list of days to repeat</span>
+<span class="sd">        :type: set(str)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__days_of_week</span>
 
     <span class="nd">@days_of_week</span><span class="o">.</span><span class="n">setter</span>
@@ -342,6 +350,12 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">first_day_of_week</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Which day to consider start of the week</span>
+
+<span class="sd">        :getter: Get the current start of week</span>
+<span class="sd">        :setter: Set the start day of week</span>
+<span class="sd">        :type: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__first_day_of_week</span>
 
     <span class="nd">@first_day_of_week</span><span class="o">.</span><span class="n">setter</span>
@@ -351,6 +365,12 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">day_of_month</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Repeat on this day of month</span>
+
+<span class="sd">        :getter: Get the repeat day of month</span>
+<span class="sd">        :setter: Set the repeat day of month</span>
+<span class="sd">        :type: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__day_of_month</span>
 
     <span class="nd">@day_of_month</span><span class="o">.</span><span class="n">setter</span>
@@ -360,6 +380,12 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">month</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Month of the event</span>
+
+<span class="sd">        :getter: Get month</span>
+<span class="sd">        :setter: Update month</span>
+<span class="sd">        :type: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__month</span>
 
     <span class="nd">@month</span><span class="o">.</span><span class="n">setter</span>
@@ -369,6 +395,12 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">index</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Index</span>
+
+<span class="sd">        :getter: Get index</span>
+<span class="sd">        :setter: Set index</span>
+<span class="sd">        :type: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__index</span>
 
     <span class="nd">@index</span><span class="o">.</span><span class="n">setter</span>
@@ -377,16 +409,28 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_track_changes</span><span class="p">()</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">ocurrences</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__ocurrences</span>
+    <span class="k">def</span> <span class="nf">occurrences</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; No. of occurrences</span>
 
-    <span class="nd">@ocurrences</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">ocurrences</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__ocurrences</span> <span class="o">=</span> <span class="n">value</span>
+<span class="sd">        :getter: Get the no. of occurrences</span>
+<span class="sd">        :setter: Set the no. of occurrences</span>
+<span class="sd">        :type: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__occurrences</span>
+
+    <span class="nd">@occurrences</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">occurrences</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__occurrences</span> <span class="o">=</span> <span class="n">value</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_track_changes</span><span class="p">()</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">recurrence_time_zone</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Timezone to consider for repeating</span>
+
+<span class="sd">        :getter: Get the timezone</span>
+<span class="sd">        :setter: Set the timezone</span>
+<span class="sd">        :type: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__recurrence_time_zone</span>
 
     <span class="nd">@recurrence_time_zone</span><span class="o">.</span><span class="n">setter</span>
@@ -396,6 +440,12 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">start_date</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Start date of repetition</span>
+
+<span class="sd">        :getter: get the start date</span>
+<span class="sd">        :setter: set the start date</span>
+<span class="sd">        :type: date</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__start_date</span>
 
     <span class="nd">@start_date</span><span class="o">.</span><span class="n">setter</span>
@@ -409,6 +459,12 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">end_date</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; End date of repetition</span>
+
+<span class="sd">        :getter: get the end date</span>
+<span class="sd">        :setter: set the end date</span>
+<span class="sd">        :type: date</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__start_date</span>
 
     <span class="nd">@end_date</span><span class="o">.</span><span class="n">setter</span>
@@ -421,6 +477,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_track_changes</span><span class="p">()</span>
 
 <div class="viewcode-block" id="EventRecurrence.to_api_data"><a class="viewcode-back" href="../../api/calendar.html#O365.calendar.EventRecurrence.to_api_data">[docs]</a>    <span class="k">def</span> <span class="nf">to_api_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns a dict to communicate with the server</span>
+
+<span class="sd">        :rtype: dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">data</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="c1"># recurrence pattern</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__interval</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__interval</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
@@ -465,11 +525,12 @@
                 <span class="n">recurrence_range</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_cc</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">)]</span> <span class="o">=</span> <span class="s1">&#39;endDate&#39;</span>
                 <span class="n">recurrence_range</span><span class="p">[</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_cc</span><span class="p">(</span><span class="s1">&#39;endDate&#39;</span><span class="p">)]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__end_date</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span>
-            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">__ocurrences</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__ocurrences</span><span class="p">,</span>
-                                                              <span class="nb">int</span><span class="p">):</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">__occurrences</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">__occurrences</span><span class="p">,</span>
+                    <span class="nb">int</span><span class="p">):</span>
                 <span class="n">recurrence_range</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_cc</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">)]</span> <span class="o">=</span> <span class="s1">&#39;numbered&#39;</span>
                 <span class="n">recurrence_range</span><span class="p">[</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_cc</span><span class="p">(</span><span class="s1">&#39;numberOfOccurrences&#39;</span><span class="p">)]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__ocurrences</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_cc</span><span class="p">(</span><span class="s1">&#39;numberOfOccurrences&#39;</span><span class="p">)]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__occurrences</span>
 
         <span class="k">return</span> <span class="n">data</span></div>
 
@@ -485,9 +546,15 @@
         <span class="c1"># range group</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__start_date</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__end_date</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__ocurrences</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__occurrences</span> <span class="o">=</span> <span class="kc">None</span>
 
-<div class="viewcode-block" id="EventRecurrence.set_range"><a class="viewcode-back" href="../../api/calendar.html#O365.calendar.EventRecurrence.set_range">[docs]</a>    <span class="k">def</span> <span class="nf">set_range</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ocurrences</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="EventRecurrence.set_range"><a class="viewcode-back" href="../../api/calendar.html#O365.calendar.EventRecurrence.set_range">[docs]</a>    <span class="k">def</span> <span class="nf">set_range</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">occurrences</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Set the range of recurrence</span>
+
+<span class="sd">        :param date start: Start date of repetition</span>
+<span class="sd">        :param date end: End date of repetition</span>
+<span class="sd">        :param int occurrences: no of occurrences</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">start</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__start_date</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">__start_date</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">()</span>
@@ -496,23 +563,49 @@
 
         <span class="k">if</span> <span class="n">end</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">end_date</span> <span class="o">=</span> <span class="n">end</span>
-        <span class="k">elif</span> <span class="n">ocurrences</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__ocurrences</span> <span class="o">=</span> <span class="n">ocurrences</span>
+        <span class="k">elif</span> <span class="n">occurrences</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__occurrences</span> <span class="o">=</span> <span class="n">occurrences</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_track_changes</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="EventRecurrence.set_daily"><a class="viewcode-back" href="../../api/calendar.html#O365.calendar.EventRecurrence.set_daily">[docs]</a>    <span class="k">def</span> <span class="nf">set_daily</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interval</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Set to repeat every x no. of days</span>
+
+<span class="sd">        :param int interval: no. of days to repeat at</span>
+<span class="sd">        :keyword date start: Start date of repetition (kwargs)</span>
+<span class="sd">        :keyword date end: End date of repetition (kwargs)</span>
+<span class="sd">        :keyword int occurrences: no of occurrences (kwargs)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_clear_pattern</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__interval</span> <span class="o">=</span> <span class="n">interval</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_range</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="EventRecurrence.set_weekly"><a class="viewcode-back" href="../../api/calendar.html#O365.calendar.EventRecurrence.set_weekly">[docs]</a>    <span class="k">def</span> <span class="nf">set_weekly</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interval</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">days_of_week</span><span class="p">,</span> <span class="n">first_day_of_week</span><span class="p">,</span>
                    <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Set to repeat every week on specified days for every x no. of days</span>
+
+<span class="sd">        :param int interval: no. of days to repeat at</span>
+<span class="sd">        :param str first_day_of_week: starting day for a week</span>
+<span class="sd">        :param list[str] days_of_week: list of days of the week to repeat</span>
+<span class="sd">        :keyword date start: Start date of repetition (kwargs)</span>
+<span class="sd">        :keyword date end: End date of repetition (kwargs)</span>
+<span class="sd">        :keyword int occurrences: no of occurrences (kwargs)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_daily</span><span class="p">(</span><span class="n">interval</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__days_of_week</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">days_of_week</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__first_day_of_week</span> <span class="o">=</span> <span class="n">first_day_of_week</span></div>
 
 <div class="viewcode-block" id="EventRecurrence.set_monthly"><a class="viewcode-back" href="../../api/calendar.html#O365.calendar.EventRecurrence.set_monthly">[docs]</a>    <span class="k">def</span> <span class="nf">set_monthly</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interval</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">day_of_month</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">days_of_week</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                     <span class="n">index</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Set to repeat every month on specified days for every x no. of days</span>
+
+<span class="sd">        :param int interval: no. of days to repeat at</span>
+<span class="sd">        :param int day_of_month: repeat day of a month</span>
+<span class="sd">        :param list[str] days_of_week: list of days of the week to repeat</span>
+<span class="sd">        :param index: index</span>
+<span class="sd">        :keyword date start: Start date of repetition (kwargs)</span>
+<span class="sd">        :keyword date end: End date of repetition (kwargs)</span>
+<span class="sd">        :keyword int occurrences: no of occurrences (kwargs)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">day_of_month</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">days_of_week</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Must provide day_of_month or days_of_week values&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">day_of_month</span> <span class="ow">and</span> <span class="n">days_of_week</span><span class="p">:</span>
@@ -527,6 +620,17 @@
 
 <div class="viewcode-block" id="EventRecurrence.set_yearly"><a class="viewcode-back" href="../../api/calendar.html#O365.calendar.EventRecurrence.set_yearly">[docs]</a>    <span class="k">def</span> <span class="nf">set_yearly</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interval</span><span class="p">,</span> <span class="n">month</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">day_of_month</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                    <span class="n">days_of_week</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Set to repeat every month on specified days for every x no. of days</span>
+
+<span class="sd">        :param int interval: no. of days to repeat at</span>
+<span class="sd">        :param int month: month to repeat</span>
+<span class="sd">        :param int day_of_month: repeat day of a month</span>
+<span class="sd">        :param list[str] days_of_week: list of days of the week to repeat</span>
+<span class="sd">        :param index: index</span>
+<span class="sd">        :keyword date start: Start date of repetition (kwargs)</span>
+<span class="sd">        :keyword date end: End date of repetition (kwargs)</span>
+<span class="sd">        :keyword int occurrences: no of occurrences (kwargs)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_monthly</span><span class="p">(</span><span class="n">interval</span><span class="p">,</span> <span class="n">day_of_month</span><span class="o">=</span><span class="n">day_of_month</span><span class="p">,</span>
                          <span class="n">days_of_week</span><span class="o">=</span><span class="n">days_of_week</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__month</span> <span class="o">=</span> <span class="n">month</span></div></div>
@@ -536,6 +640,12 @@
     <span class="sd">&quot;&quot;&quot; An event response status (status, time) &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="ResponseStatus.__init__"><a class="viewcode-back" href="../../api/calendar.html#O365.calendar.ResponseStatus.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">response_status</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; An event response status (status, time)</span>
+
+<span class="sd">        :param parent: parent of this</span>
+<span class="sd">        :type parent: Attendees or Event</span>
+<span class="sd">        :param dict response_status: status info frm cloud</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">protocol</span><span class="o">=</span><span class="n">parent</span><span class="o">.</span><span class="n">protocol</span><span class="p">,</span>
                          <span class="n">main_resource</span><span class="o">=</span><span class="n">parent</span><span class="o">.</span><span class="n">main_resource</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">response_status</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cc</span><span class="p">(</span><span class="s1">&#39;response&#39;</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>
@@ -560,6 +670,14 @@
 
 <div class="viewcode-block" id="Attendee.__init__"><a class="viewcode-back" href="../../api/calendar.html#O365.calendar.Attendee.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">address</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">attendee_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">response_status</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">event</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Create a event attendee</span>
+
+<span class="sd">        :param str address: email address of the attendee</span>
+<span class="sd">        :param str name: name of the attendee</span>
+<span class="sd">        :param AttendeeType attendee_type: requirement of attendee</span>
+<span class="sd">        :param Response response_status: response status requirement</span>
+<span class="sd">        :param Event event: event for which to assign the attendee</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_address</span> <span class="o">=</span> <span class="n">address</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_event</span> <span class="o">=</span> <span class="n">event</span>
@@ -583,6 +701,12 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">address</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Email address</span>
+
+<span class="sd">        :getter: Get the email address of attendee</span>
+<span class="sd">        :setter: Set the email address of attendee</span>
+<span class="sd">        :type: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_address</span>
 
     <span class="nd">@address</span><span class="o">.</span><span class="n">setter</span>
@@ -593,6 +717,12 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Name</span>
+
+<span class="sd">        :getter: Get the name of attendee</span>
+<span class="sd">        :setter: Set the name of attendee</span>
+<span class="sd">        :type: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
 
     <span class="nd">@name</span><span class="o">.</span><span class="n">setter</span>
@@ -601,15 +731,26 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_track_changes</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">_track_changes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Update the track_changes on the event to reflect a needed update on this field &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot; Update the track_changes on the event to reflect a</span>
+<span class="sd">        needed update on this field &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_event</span><span class="o">.</span><span class="n">_track_changes</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s1">&#39;attendees&#39;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">response_status</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Response status of the attendee</span>
+
+<span class="sd">        :type: ResponseStatus</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__response_status</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">attendee_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Requirement of the attendee</span>
+
+<span class="sd">        :getter: Get the requirement of attendee</span>
+<span class="sd">        :setter: Set the requirement of attendee</span>
+<span class="sd">        :type: AttendeeType</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__attendee_type</span>
 
     <span class="nd">@attendee_type</span><span class="o">.</span><span class="n">setter</span>
@@ -625,6 +766,13 @@
     <span class="sd">&quot;&quot;&quot; A Collection of Attendees &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="Attendees.__init__"><a class="viewcode-back" href="../../api/calendar.html#O365.calendar.Attendees.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">,</span> <span class="n">attendees</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Create a collection of attendees</span>
+
+<span class="sd">        :param Event event: event for which to assign the attendees</span>
+<span class="sd">        :param attendees: list of attendees to add</span>
+<span class="sd">        :type attendees: str or tuple(str, str) or Attendee or list[str] or</span>
+<span class="sd">         list[tuple(str,str)] or list[Attendee]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">protocol</span><span class="o">=</span><span class="n">event</span><span class="o">.</span><span class="n">protocol</span><span class="p">,</span>
                          <span class="n">main_resource</span><span class="o">=</span><span class="n">event</span><span class="o">.</span><span class="n">main_resource</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_event</span> <span class="o">=</span> <span class="n">event</span>
@@ -653,17 +801,23 @@
         <span class="k">return</span> <span class="s1">&#39;Attendees Count: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__attendees</span><span class="p">))</span>
 
 <div class="viewcode-block" id="Attendees.clear"><a class="viewcode-back" href="../../api/calendar.html#O365.calendar.Attendees.clear">[docs]</a>    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Clear the attendees list &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__attendees</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_track_changes</span><span class="p">()</span></div>
 
     <span class="k">def</span> <span class="nf">_track_changes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Update the track_changes on the event to reflect a needed update on this field &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot; Update the track_changes on the event to reflect a needed</span>
+<span class="sd">        update on this field &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">untrack</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_event</span><span class="o">.</span><span class="n">_track_changes</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s1">&#39;attendees&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Attendees.add"><a class="viewcode-back" href="../../api/calendar.html#O365.calendar.Attendees.add">[docs]</a>    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attendees</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Add attendees to the parent event &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot; Add attendees to the parent event</span>
 
+<span class="sd">        :param attendees: list of attendees to add</span>
+<span class="sd">        :type attendees: str or tuple(str, str) or Attendee or list[str] or</span>
+<span class="sd">         list[tuple(str,str)] or list[Attendee]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">attendees</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">attendees</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">__attendees</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
@@ -689,23 +843,31 @@
                     <span class="n">address</span> <span class="o">=</span> <span class="n">email</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cc</span><span class="p">(</span><span class="s1">&#39;address&#39;</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>
                     <span class="k">if</span> <span class="n">address</span><span class="p">:</span>
                         <span class="n">name</span> <span class="o">=</span> <span class="n">email</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cc</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>
+                        <span class="c1"># default value</span>
                         <span class="n">attendee_type</span> <span class="o">=</span> <span class="n">attendee</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cc</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">),</span>
-                                                     <span class="s1">&#39;required&#39;</span><span class="p">)</span>  <span class="c1"># default value</span>
+                                                     <span class="s1">&#39;required&#39;</span><span class="p">)</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">__attendees</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
                             <span class="n">Attendee</span><span class="p">(</span><span class="n">address</span><span class="o">=</span><span class="n">address</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
                                      <span class="n">attendee_type</span><span class="o">=</span><span class="n">attendee_type</span><span class="p">,</span>
                                      <span class="n">event</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_event</span><span class="p">,</span>
-                                     <span class="n">response_status</span><span class="o">=</span><span class="n">ResponseStatus</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
-                                                                    <span class="n">response_status</span><span class="o">=</span><span class="n">attendee</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
-                                                                        <span class="bp">self</span><span class="o">.</span><span class="n">_cc</span><span class="p">(</span>
-                                                                            <span class="s1">&#39;status&#39;</span><span class="p">),</span>
-                                                                        <span class="p">{}))))</span>
+                                     <span class="n">response_status</span><span class="o">=</span>
+                                     <span class="n">ResponseStatus</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
+                                                    <span class="n">response_status</span><span class="o">=</span>
+                                                    <span class="n">attendee</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                                                        <span class="bp">self</span><span class="o">.</span><span class="n">_cc</span><span class="p">(</span><span class="s1">&#39;status&#39;</span><span class="p">),</span>
+                                                        <span class="p">{}))))</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Attendees must be an address string, an&#39;</span>
-                                 <span class="s1">&#39; Attendee instance, a (name, address) tuple or a list&#39;</span><span class="p">)</span></div>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Attendees must be an address string, an &#39;</span>
+                                 <span class="s1">&#39;Attendee instance, a (name, address) &#39;</span>
+                                 <span class="s1">&#39;tuple or a list&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Attendees.remove"><a class="viewcode-back" href="../../api/calendar.html#O365.calendar.Attendees.remove">[docs]</a>    <span class="k">def</span> <span class="nf">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attendees</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Remove the provided attendees from the event &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot; Remove the provided attendees from the event</span>
+
+<span class="sd">        :param attendees: list of attendees to add</span>
+<span class="sd">        :type attendees: str or tuple(str, str) or Attendee or list[str] or</span>
+<span class="sd">         list[tuple(str,str)] or list[Attendee]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">attendees</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
             <span class="n">attendees</span> <span class="o">=</span> <span class="p">{</span>
                 <span class="n">attendee</span><span class="o">.</span><span class="n">address</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">attendee</span><span class="p">,</span> <span class="n">Attendee</span><span class="p">)</span> <span class="k">else</span> <span class="n">attendee</span>
@@ -726,6 +888,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_track_changes</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="Attendees.to_api_data"><a class="viewcode-back" href="../../api/calendar.html#O365.calendar.Attendees.to_api_data">[docs]</a>    <span class="k">def</span> <span class="nf">to_api_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns a dict to communicate with the server</span>
+
+<span class="sd">        :rtype: dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">attendee</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__attendees</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">attendee</span><span class="o">.</span><span class="n">address</span><span class="p">:</span>
@@ -740,6 +906,7 @@
         <span class="k">return</span> <span class="n">data</span></div></div>
 
 
+<span class="c1"># noinspection PyAttributeOutsideInit</span>
 <div class="viewcode-block" id="Event"><a class="viewcode-back" href="../../api/calendar.html#O365.calendar.Event">[docs]</a><span class="k">class</span> <span class="nc">Event</span><span class="p">(</span><span class="n">ApiComponent</span><span class="p">,</span> <span class="n">AttachableMixin</span><span class="p">,</span> <span class="n">HandleRecipientsMixin</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; A Calendar event &quot;&quot;&quot;</span>
 
@@ -751,20 +918,35 @@
     <span class="p">}</span>
 
 <div class="viewcode-block" id="Event.__init__"><a class="viewcode-back" href="../../api/calendar.html#O365.calendar.Event.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">con</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Create a calendar event representation</span>
+
+<span class="sd">        :param parent: parent for this operation</span>
+<span class="sd">        :type parent: Calendar or Schedule</span>
+<span class="sd">        :param Connection con: connection to use if no parent specified</span>
+<span class="sd">        :param Protocol protocol: protocol to use if no parent specified</span>
+<span class="sd">         (kwargs)</span>
+<span class="sd">        :param str main_resource: use this resource instead of parent resource</span>
+<span class="sd">         (kwargs)</span>
+<span class="sd">        :param str calendar_id: id of the calender to add this event in</span>
+<span class="sd">         (kwargs)</span>
+<span class="sd">        :param bool download_attachments: whether or not to download attachments</span>
+<span class="sd">         (kwargs)</span>
+<span class="sd">        :param str subject: subject of the event (kwargs)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">assert</span> <span class="n">parent</span> <span class="ow">or</span> <span class="n">con</span><span class="p">,</span> <span class="s1">&#39;Need a parent or a connection&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">con</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">con</span> <span class="k">if</span> <span class="n">parent</span> <span class="k">else</span> <span class="n">con</span>
 
         <span class="c1"># Choose the main_resource passed in kwargs over parent main_resource</span>
-        <span class="n">main_resource</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;main_resource&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span>
-                                                                     <span class="s1">&#39;main_resource&#39;</span><span class="p">,</span>
-                                                                     <span class="kc">None</span><span class="p">)</span> <span class="k">if</span> <span class="n">parent</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="n">main_resource</span> <span class="o">=</span> <span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;main_resource&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span>
+                         <span class="nb">getattr</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="s1">&#39;main_resource&#39;</span><span class="p">,</span>
+                                 <span class="kc">None</span><span class="p">)</span> <span class="k">if</span> <span class="n">parent</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="n">protocol</span><span class="o">=</span><span class="n">parent</span><span class="o">.</span><span class="n">protocol</span> <span class="k">if</span> <span class="n">parent</span> <span class="k">else</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;protocol&#39;</span><span class="p">),</span>
             <span class="n">main_resource</span><span class="o">=</span><span class="n">main_resource</span><span class="p">)</span>
 
         <span class="n">cc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cc</span>  <span class="c1"># alias</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_track_changes</span> <span class="o">=</span> <span class="n">TrackerSet</span><span class="p">(</span>
-            <span class="n">casing</span><span class="o">=</span><span class="n">cc</span><span class="p">)</span>  <span class="c1"># internal to know which properties need to be updated on the server</span>
+        <span class="c1"># internal to know which properties need to be updated on the server</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_track_changes</span> <span class="o">=</span> <span class="n">TrackerSet</span><span class="p">(</span><span class="n">casing</span><span class="o">=</span><span class="n">cc</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">calendar_id</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;calendar_id&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="n">download_attachments</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;download_attachments&#39;</span><span class="p">)</span>
         <span class="n">cloud_data</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cloud_data_key</span><span class="p">,</span> <span class="p">{})</span>
@@ -863,9 +1045,10 @@
         <span class="k">return</span> <span class="s1">&#39;Subject: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">subject</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Event.to_api_data"><a class="viewcode-back" href="../../api/calendar.html#O365.calendar.Event.to_api_data">[docs]</a>    <span class="k">def</span> <span class="nf">to_api_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">restrict_keys</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Returns a dict to comunicate with the server</span>
+        <span class="sd">&quot;&quot;&quot; Returns a dict to communicate with the server</span>
 
-<span class="sd">        :param restrict_keys: a set of keys to restrict the returned data to.</span>
+<span class="sd">        :param restrict_keys: a set of keys to restrict the returned data to</span>
+<span class="sd">        :rtype: dict</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">cc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cc</span>  <span class="c1"># alias</span>
         <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
@@ -909,14 +1092,28 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">created</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Created time of the event</span>
+
+<span class="sd">        :rtype: datetime</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__created</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">modified</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Last modified time of the event</span>
+
+<span class="sd">        :rtype: datetime</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__modified</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Body of the event</span>
+
+<span class="sd">        :getter: Get body text</span>
+<span class="sd">        :setter: Set body of event</span>
+<span class="sd">        :type: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__body</span>
 
     <span class="nd">@body</span><span class="o">.</span><span class="n">setter</span>
@@ -926,6 +1123,12 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">subject</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Subject of the event</span>
+
+<span class="sd">        :getter: Get subject</span>
+<span class="sd">        :setter: Set subject of event</span>
+<span class="sd">        :type: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__subject</span>
 
     <span class="nd">@subject</span><span class="o">.</span><span class="n">setter</span>
@@ -935,6 +1138,12 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Start Time of event</span>
+
+<span class="sd">        :getter: get the start time</span>
+<span class="sd">        :setter: set the start time</span>
+<span class="sd">        :type: datetime</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__start</span>
 
     <span class="nd">@start</span><span class="o">.</span><span class="n">setter</span>
@@ -956,6 +1165,12 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">end</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; End Time of event</span>
+
+<span class="sd">        :getter: get the end time</span>
+<span class="sd">        :setter: set the end time</span>
+<span class="sd">        :type: datetime</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__end</span>
 
     <span class="nd">@end</span><span class="o">.</span><span class="n">setter</span>
@@ -975,17 +1190,28 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">importance</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Event Priority</span>
+
+<span class="sd">        :getter: get importance of event</span>
+<span class="sd">        :setter: set the importance of event</span>
+<span class="sd">        :type: ImportanceLevel</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__importance</span>
 
     <span class="nd">@importance</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">importance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__importance</span> <span class="o">=</span> <span class="n">value</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span>
-                                                <span class="n">ImportanceLevel</span><span class="p">)</span> <span class="k">else</span> <span class="n">ImportanceLevel</span><span class="p">(</span>
-            <span class="n">value</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__importance</span> <span class="o">=</span> <span class="p">(</span><span class="n">value</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">ImportanceLevel</span><span class="p">)</span>
+                             <span class="k">else</span> <span class="n">ImportanceLevel</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_track_changes</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s1">&#39;importance&#39;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">is_all_day</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Is the event for whole day</span>
+
+<span class="sd">        :getter: get the current status of is_all_day property</span>
+<span class="sd">        :setter: set if the event is all day or not</span>
+<span class="sd">        :type: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__is_all_day</span>
 
     <span class="nd">@is_all_day</span><span class="o">.</span><span class="n">setter</span>
@@ -999,7 +1225,8 @@
             <span class="n">end</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__end</span> <span class="ow">or</span> <span class="n">dt</span><span class="o">.</span><span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">()</span>
 
             <span class="k">if</span> <span class="p">(</span><span class="n">start</span> <span class="o">+</span> <span class="n">dt</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">hours</span><span class="o">=</span><span class="mi">24</span><span class="p">))</span> <span class="o">&gt;</span> <span class="n">end</span><span class="p">:</span>
-                <span class="c1"># Api requires that under is_all_day=True start and end must be at least 24 hours away</span>
+                <span class="c1"># Api requires that under is_all_day=True start and</span>
+                <span class="c1"># end must be at least 24 hours away</span>
                 <span class="n">end</span> <span class="o">=</span> <span class="n">start</span> <span class="o">+</span> <span class="n">dt</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">hours</span><span class="o">=</span><span class="mi">24</span><span class="p">)</span>
 
             <span class="c1"># set to midnight</span>
@@ -1012,6 +1239,12 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">location</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Location of event</span>
+
+<span class="sd">        :getter: get current location configured for the event</span>
+<span class="sd">        :setter: set a location for the event</span>
+<span class="sd">        :type: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__location</span>
 
     <span class="nd">@location</span><span class="o">.</span><span class="n">setter</span>
@@ -1021,6 +1254,12 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">is_reminder_on</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Status of the Reminder</span>
+
+<span class="sd">        :getter: check is reminder enabled or not</span>
+<span class="sd">        :setter: enable or disable reminder option</span>
+<span class="sd">        :type: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__is_reminder_on</span>
 
     <span class="nd">@is_reminder_on</span><span class="o">.</span><span class="n">setter</span>
@@ -1031,6 +1270,12 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">remind_before_minutes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; No. of minutes to remind before the meeting</span>
+
+<span class="sd">        :getter: get current minutes</span>
+<span class="sd">        :setter: set to remind before new x minutes</span>
+<span class="sd">        :type: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__remind_before_minutes</span>
 
     <span class="nd">@remind_before_minutes</span><span class="o">.</span><span class="n">setter</span>
@@ -1042,6 +1287,12 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">response_requested</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Is response requested or not</span>
+
+<span class="sd">        :getter: Is response requested or not</span>
+<span class="sd">        :setter: set the event to request response or not</span>
+<span class="sd">        :type: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__response_requested</span>
 
     <span class="nd">@response_requested</span><span class="o">.</span><span class="n">setter</span>
@@ -1051,14 +1302,28 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">recurrence</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Recurrence information of the event</span>
+
+<span class="sd">        :rtype: EventRecurrence</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__recurrence</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">organizer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Organizer of the meeting event</span>
+
+<span class="sd">        :rtype: Recipient</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__organizer</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">show_as</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Show as &quot;busy&quot; or any other status during the event</span>
+
+<span class="sd">        :getter: Current status during the event</span>
+<span class="sd">        :setter: update show as status</span>
+<span class="sd">        :type: EventShowAs</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__show_as</span>
 
     <span class="nd">@show_as</span><span class="o">.</span><span class="n">setter</span>
@@ -1070,29 +1335,52 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">sensitivity</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Sensitivity of the Event</span>
+
+<span class="sd">        :getter: Get the current sensitivity</span>
+<span class="sd">        :setter: Set a new sensitivity</span>
+<span class="sd">        :type: EventSensitivity</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__sensitivity</span>
 
     <span class="nd">@sensitivity</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">sensitivity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__sensitivity</span> <span class="o">=</span> <span class="n">value</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span>
-                                                 <span class="n">EventSensitivity</span><span class="p">)</span> <span class="k">else</span> <span class="n">EventSensitivity</span><span class="p">(</span>
-            <span class="n">value</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__sensitivity</span> <span class="o">=</span> <span class="p">(</span><span class="n">value</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">EventSensitivity</span><span class="p">)</span>
+                              <span class="k">else</span> <span class="n">EventSensitivity</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_track_changes</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s1">&#39;sensitivity&#39;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">response_status</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Your response</span>
+
+<span class="sd">        :rtype: ResponseStatus</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__response_status</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">attachments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; List of attachments</span>
+
+<span class="sd">        :rtype: EventAttachments</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__attachments</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">attendees</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; List of meeting attendees</span>
+
+<span class="sd">        :rtype: Attendees</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__attendees</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">categories</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Categories of the event</span>
+
+<span class="sd">        :getter: get the list of categories</span>
+<span class="sd">        :setter: set the list of categories</span>
+<span class="sd">        :type: list[str]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__categories</span>
 
     <span class="nd">@categories</span><span class="o">.</span><span class="n">setter</span>
@@ -1108,7 +1396,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_track_changes</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s1">&#39;categories&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Event.delete"><a class="viewcode-back" href="../../api/calendar.html#O365.calendar.Event.delete">[docs]</a>    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Deletes a stored event &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot; Deletes a stored event</span>
+
+<span class="sd">        :return: Success / Failure</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">object_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Attempting to delete an unsaved event&#39;</span><span class="p">)</span>
 
@@ -1122,6 +1414,9 @@
 <div class="viewcode-block" id="Event.save"><a class="viewcode-back" href="../../api/calendar.html#O365.calendar.Event.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Create a new event or update an existing one by checking what</span>
 <span class="sd">        values have changed and update them on the server</span>
+
+<span class="sd">        :return: Success / Failure</span>
+<span class="sd">        :rtype: bool</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">object_id</span><span class="p">:</span>
@@ -1167,7 +1462,14 @@
 
 <div class="viewcode-block" id="Event.accept_event"><a class="viewcode-back" href="../../api/calendar.html#O365.calendar.Event.accept_event">[docs]</a>    <span class="k">def</span> <span class="nf">accept_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">comment</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">send_response</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                      <span class="n">tentatively</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Accept the event</span>
 
+<span class="sd">        :param comment: comment to add</span>
+<span class="sd">        :param send_response: whether or not to send response back</span>
+<span class="sd">        :param tentatively: whether acceptance is tentative</span>
+<span class="sd">        :return: Success / Failure</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">object_id</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Can&#39;t accept event that doesn&#39;t exist&quot;</span><span class="p">)</span>
 
@@ -1186,7 +1488,13 @@
         <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">response</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Event.decline_event"><a class="viewcode-back" href="../../api/calendar.html#O365.calendar.Event.decline_event">[docs]</a>    <span class="k">def</span> <span class="nf">decline_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">comment</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">send_response</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Decline the event</span>
 
+<span class="sd">        :param str comment: comment to add</span>
+<span class="sd">        :param bool send_response: whether or not to send response back</span>
+<span class="sd">        :return: Success / Failure</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">object_id</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Can&#39;t accept event that doesn&#39;t exist&quot;</span><span class="p">)</span>
 
@@ -1205,19 +1513,27 @@
         <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">response</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Event.get_body_text"><a class="viewcode-back" href="../../api/calendar.html#O365.calendar.Event.get_body_text">[docs]</a>    <span class="k">def</span> <span class="nf">get_body_text</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Parse the body html and returns the body text using bs4 &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot; Parse the body html and returns the body text using bs4</span>
+
+<span class="sd">        :return: body text</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">body_type</span> <span class="o">!=</span> <span class="s1">&#39;HTML&#39;</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">body</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="n">soup</span> <span class="o">=</span> <span class="n">bs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">body</span><span class="p">,</span> <span class="s1">&#39;html.parser&#39;</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">except</span> <span class="ne">RuntimeError</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">body</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">soup</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">text</span></div>
 
 <div class="viewcode-block" id="Event.get_body_soup"><a class="viewcode-back" href="../../api/calendar.html#O365.calendar.Event.get_body_soup">[docs]</a>    <span class="k">def</span> <span class="nf">get_body_soup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Returns the beautifulsoup4 of the html body&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot; Returns the beautifulsoup4 of the html body</span>
+
+<span class="sd">        :return: Html body</span>
+<span class="sd">        :rtype: BeautifulSoup</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">body_type</span> <span class="o">!=</span> <span class="s1">&#39;HTML&#39;</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
         <span class="k">else</span><span class="p">:</span>
@@ -1225,8 +1541,6 @@
 
 
 <div class="viewcode-block" id="Calendar"><a class="viewcode-back" href="../../api/calendar.html#O365.calendar.Calendar">[docs]</a><span class="k">class</span> <span class="nc">Calendar</span><span class="p">(</span><span class="n">ApiComponent</span><span class="p">,</span> <span class="n">HandleRecipientsMixin</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; A Calendar Representation &quot;&quot;&quot;</span>
-
     <span class="n">_endpoints</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s1">&#39;calendar&#39;</span><span class="p">:</span> <span class="s1">&#39;/calendars/</span><span class="si">{id}</span><span class="s1">&#39;</span><span class="p">,</span>
         <span class="s1">&#39;get_events&#39;</span><span class="p">:</span> <span class="s1">&#39;/calendars/</span><span class="si">{id}</span><span class="s1">/events&#39;</span><span class="p">,</span>
@@ -1235,13 +1549,24 @@
     <span class="n">event_constructor</span> <span class="o">=</span> <span class="n">Event</span>
 
 <div class="viewcode-block" id="Calendar.__init__"><a class="viewcode-back" href="../../api/calendar.html#O365.calendar.Calendar.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">con</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Create a Calendar Representation</span>
+
+<span class="sd">        :param parent: parent for this operation</span>
+<span class="sd">        :type parent: Schedule</span>
+<span class="sd">        :param Connection con: connection to use if no parent specified</span>
+<span class="sd">        :param Protocol protocol: protocol to use if no parent specified</span>
+<span class="sd">         (kwargs)</span>
+<span class="sd">        :param str main_resource: use this resource instead of parent resource</span>
+<span class="sd">         (kwargs)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">assert</span> <span class="n">parent</span> <span class="ow">or</span> <span class="n">con</span><span class="p">,</span> <span class="s1">&#39;Need a parent or a connection&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">con</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">con</span> <span class="k">if</span> <span class="n">parent</span> <span class="k">else</span> <span class="n">con</span>
 
         <span class="c1"># Choose the main_resource passed in kwargs over parent main_resource</span>
-        <span class="n">main_resource</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;main_resource&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span>
-                                                                     <span class="s1">&#39;main_resource&#39;</span><span class="p">,</span>
-                                                                     <span class="kc">None</span><span class="p">)</span> <span class="k">if</span> <span class="n">parent</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="n">main_resource</span> <span class="o">=</span> <span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;main_resource&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span>
+                         <span class="nb">getattr</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span>
+                                 <span class="s1">&#39;main_resource&#39;</span><span class="p">,</span>
+                                 <span class="kc">None</span><span class="p">)</span> <span class="k">if</span> <span class="n">parent</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="n">protocol</span><span class="o">=</span><span class="n">parent</span><span class="o">.</span><span class="n">protocol</span> <span class="k">if</span> <span class="n">parent</span> <span class="k">else</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;protocol&#39;</span><span class="p">),</span>
             <span class="n">main_resource</span><span class="o">=</span><span class="n">main_resource</span><span class="p">)</span>
@@ -1270,10 +1595,18 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">owner</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Owner of the calendar</span>
+
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__owner</span>
 
 <div class="viewcode-block" id="Calendar.update"><a class="viewcode-back" href="../../api/calendar.html#O365.calendar.Calendar.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Updates this calendar. Only name and color can be changed. &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot; Updates this calendar. Only name and color can be changed.</span>
+
+<span class="sd">        :return: Success / Failure</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">calendar_id</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">False</span>
@@ -1282,8 +1615,9 @@
 
         <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_cc</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_cc</span><span class="p">(</span><span class="s1">&#39;color&#39;</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">color</span><span class="o">.</span><span class="n">value</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">color</span><span class="p">,</span>
-                                                              <span class="n">CalendarColors</span><span class="p">)</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">color</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cc</span><span class="p">(</span><span class="s1">&#39;color&#39;</span><span class="p">):</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">color</span><span class="o">.</span><span class="n">value</span>
+                                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">color</span><span class="p">,</span> <span class="n">CalendarColors</span><span class="p">)</span>
+                                <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">color</span><span class="p">)</span>
         <span class="p">}</span>
 
         <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
@@ -1291,7 +1625,11 @@
         <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">response</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Calendar.delete"><a class="viewcode-back" href="../../api/calendar.html#O365.calendar.Calendar.delete">[docs]</a>    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Deletes this calendar &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot; Deletes this calendar</span>
+
+<span class="sd">        :return: Success / Failure</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">calendar_id</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">False</span>
@@ -1309,15 +1647,18 @@
 
 <div class="viewcode-block" id="Calendar.get_events"><a class="viewcode-back" href="../../api/calendar.html#O365.calendar.Calendar.get_events">[docs]</a>    <span class="k">def</span> <span class="nf">get_events</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">25</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">order_by</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">batch</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                    <span class="n">download_attachments</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Get events from the default Calendar</span>
+        <span class="sd">&quot;&quot;&quot; Get events from the default Calendar</span>
 
-<span class="sd">        :param limit: limits the result set. Over 999 uses batch.</span>
-<span class="sd">        :param query: applies a filter to the request such as &#39;displayName:HelloFolder&#39;</span>
+<span class="sd">        :param int limit: max no. of events to get. Over 999 uses batch.</span>
+<span class="sd">        :param query: applies a OData filter to the request</span>
+<span class="sd">        :type query: Query or str</span>
 <span class="sd">        :param order_by: orders the result set based on this condition</span>
-<span class="sd">        :param batch: Returns a custom iterator that retrieves items in batches allowing</span>
-<span class="sd">            to retrieve more items than the limit. Download_attachments is ignored.</span>
+<span class="sd">        :type order_by: Query or str</span>
+<span class="sd">        :param int batch: batch size, retrieves items in</span>
+<span class="sd">         batches allowing to retrieve more items than the limit.</span>
 <span class="sd">        :param download_attachments: downloads event attachments</span>
+<span class="sd">        :return: list of events in this calendar</span>
+<span class="sd">        :rtype: list[Event] or Pagination</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_url</span><span class="p">(</span>
@@ -1349,7 +1690,8 @@
 
         <span class="c1"># Everything received from cloud must be passed as self._cloud_data_key</span>
         <span class="n">events</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">event_constructor</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
-                                         <span class="n">download_attachments</span><span class="o">=</span><span class="n">download_attachments</span><span class="p">,</span>
+                                         <span class="n">download_attachments</span><span class="o">=</span>
+                                         <span class="n">download_attachments</span><span class="p">,</span>
                                          <span class="o">**</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_cloud_data_key</span><span class="p">:</span> <span class="n">event</span><span class="p">})</span>
                   <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="p">[])]</span>
         <span class="n">next_link</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">NEXT_LINK_KEYWORD</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
@@ -1361,13 +1703,19 @@
             <span class="k">return</span> <span class="n">events</span></div>
 
 <div class="viewcode-block" id="Calendar.new_event"><a class="viewcode-back" href="../../api/calendar.html#O365.calendar.Calendar.new_event">[docs]</a>    <span class="k">def</span> <span class="nf">new_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">subject</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Returns a new (unsaved) Event object &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot; Returns a new (unsaved) Event object</span>
+
+<span class="sd">        :rtype: Event</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">event_constructor</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">subject</span><span class="o">=</span><span class="n">subject</span><span class="p">,</span>
                                       <span class="n">calendar_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">calendar_id</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Calendar.get_event"><a class="viewcode-back" href="../../api/calendar.html#O365.calendar.Calendar.get_event">[docs]</a>    <span class="k">def</span> <span class="nf">get_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Returns an Event instance by it&#39;s id</span>
+        <span class="sd">&quot;&quot;&quot; Returns an Event instance by it&#39;s id</span>
+
 <span class="sd">        :param param: an event_id or a Query instance</span>
+<span class="sd">        :return: event for the specified info</span>
+<span class="sd">        :rtype: Event</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="n">param</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -1401,8 +1749,6 @@
 
 
 <div class="viewcode-block" id="Schedule"><a class="viewcode-back" href="../../api/calendar.html#O365.calendar.Schedule">[docs]</a><span class="k">class</span> <span class="nc">Schedule</span><span class="p">(</span><span class="n">ApiComponent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; A Wrapper around calendars and events&quot;&quot;&quot;</span>
-
     <span class="n">_endpoints</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s1">&#39;root_calendars&#39;</span><span class="p">:</span> <span class="s1">&#39;/calendars&#39;</span><span class="p">,</span>
         <span class="s1">&#39;get_calendar&#39;</span><span class="p">:</span> <span class="s1">&#39;/calendars/</span><span class="si">{id}</span><span class="s1">&#39;</span><span class="p">,</span>
@@ -1414,13 +1760,23 @@
     <span class="n">event_constructor</span> <span class="o">=</span> <span class="n">Event</span>
 
 <div class="viewcode-block" id="Schedule.__init__"><a class="viewcode-back" href="../../api/calendar.html#O365.calendar.Schedule.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">con</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Create a wrapper around calendars and events</span>
+
+<span class="sd">        :param parent: parent for this operation</span>
+<span class="sd">        :type parent: Account</span>
+<span class="sd">        :param Connection con: connection to use if no parent specified</span>
+<span class="sd">        :param Protocol protocol: protocol to use if no parent specified</span>
+<span class="sd">         (kwargs)</span>
+<span class="sd">        :param str main_resource: use this resource instead of parent resource</span>
+<span class="sd">         (kwargs)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">assert</span> <span class="n">parent</span> <span class="ow">or</span> <span class="n">con</span><span class="p">,</span> <span class="s1">&#39;Need a parent or a connection&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">con</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">con</span> <span class="k">if</span> <span class="n">parent</span> <span class="k">else</span> <span class="n">con</span>
 
         <span class="c1"># Choose the main_resource passed in kwargs over parent main_resource</span>
-        <span class="n">main_resource</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;main_resource&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span>
-                                                                     <span class="s1">&#39;main_resource&#39;</span><span class="p">,</span>
-                                                                     <span class="kc">None</span><span class="p">)</span> <span class="k">if</span> <span class="n">parent</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="n">main_resource</span> <span class="o">=</span> <span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;main_resource&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span>
+                         <span class="nb">getattr</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="s1">&#39;main_resource&#39;</span><span class="p">,</span>
+                                 <span class="kc">None</span><span class="p">)</span> <span class="k">if</span> <span class="n">parent</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="n">protocol</span><span class="o">=</span><span class="n">parent</span><span class="o">.</span><span class="n">protocol</span> <span class="k">if</span> <span class="n">parent</span> <span class="k">else</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;protocol&#39;</span><span class="p">),</span>
             <span class="n">main_resource</span><span class="o">=</span><span class="n">main_resource</span><span class="p">)</span></div>
@@ -1432,17 +1788,22 @@
         <span class="k">return</span> <span class="s1">&#39;Schedule resource: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">main_resource</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Schedule.list_calendars"><a class="viewcode-back" href="../../api/calendar.html#O365.calendar.Schedule.list_calendars">[docs]</a>    <span class="k">def</span> <span class="nf">list_calendars</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">order_by</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Gets a list of calendars</span>
+        <span class="sd">&quot;&quot;&quot; Gets a list of calendars</span>
 
 <span class="sd">        To use query an order_by check the OData specification here:</span>
-<span class="sd">        http://docs.oasis-open.org/odata/odata/v4.0/errata03/os/complete/part2-url-conventions/odata-v4.0-errata03-os-part2-url-conventions-complete.html</span>
+<span class="sd">        http://docs.oasis-open.org/odata/odata/v4.0/errata03/os/complete/</span>
+<span class="sd">        part2-url-conventions/odata-v4.0-errata03-os-part2-url-conventions</span>
+<span class="sd">        -complete.html</span>
 
-<span class="sd">        :param limit: Number of elements to return.</span>
-<span class="sd">        :param query: a OData valid filter clause</span>
-<span class="sd">        :param order_by: OData valid order by clause</span>
+<span class="sd">        :param int limit: max no. of calendars to get. Over 999 uses batch.</span>
+<span class="sd">        :param query: applies a OData filter to the request</span>
+<span class="sd">        :type query: Query or str</span>
+<span class="sd">        :param order_by: orders the result set based on this condition</span>
+<span class="sd">        :type order_by: Query or str</span>
+<span class="sd">        :return: list of calendars</span>
+<span class="sd">        :rtype: list[Calendar]</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
-
         <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_url</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_endpoints</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;root_calendars&#39;</span><span class="p">))</span>
 
         <span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
@@ -1461,17 +1822,17 @@
 
         <span class="c1"># Everything received from cloud must be passed as self._cloud_data_key</span>
         <span class="n">contacts</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">calendar_constructor</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_cloud_data_key</span><span class="p">:</span> <span class="n">calendar</span><span class="p">})</span>
-                    <span class="k">for</span> <span class="n">calendar</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="p">[])]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cloud_data_key</span><span class="p">:</span> <span class="n">x</span><span class="p">})</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="p">[])]</span>
 
         <span class="k">return</span> <span class="n">contacts</span></div>
 
 <div class="viewcode-block" id="Schedule.new_calendar"><a class="viewcode-back" href="../../api/calendar.html#O365.calendar.Schedule.new_calendar">[docs]</a>    <span class="k">def</span> <span class="nf">new_calendar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">calendar_name</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Creates a new calendar</span>
-<span class="sd">        :return a new Calendar instance</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot; Creates a new calendar</span>
 
+<span class="sd">        :param str calendar_name: name of the new calendar</span>
+<span class="sd">        :return: a new Calendar instance</span>
+<span class="sd">        :rtype: Calendar</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">calendar_name</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
 
@@ -1481,17 +1842,19 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">response</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
 
-        <span class="n">calendar</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
 
         <span class="c1"># Everything received from cloud must be passed as self._cloud_data_key</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">calendar_constructor</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
-                                         <span class="o">**</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_cloud_data_key</span><span class="p">:</span> <span class="n">calendar</span><span class="p">})</span></div>
+                                         <span class="o">**</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_cloud_data_key</span><span class="p">:</span> <span class="n">data</span><span class="p">})</span></div>
 
 <div class="viewcode-block" id="Schedule.get_calendar"><a class="viewcode-back" href="../../api/calendar.html#O365.calendar.Schedule.get_calendar">[docs]</a>    <span class="k">def</span> <span class="nf">get_calendar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">calendar_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">calendar_name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Returns a calendar by it&#39;s id or name</span>
-<span class="sd">        :param calendar_id: the calendar id to be retrieved.</span>
-<span class="sd">        :param calendar_name: the calendar name to be retrieved.</span>
+        <span class="sd">&quot;&quot;&quot; Returns a calendar by it&#39;s id or name</span>
+
+<span class="sd">        :param str calendar_id: the calendar id to be retrieved.</span>
+<span class="sd">        :param str calendar_name: the calendar name to be retrieved.</span>
+<span class="sd">        :return: calendar for the given info</span>
+<span class="sd">        :rtype: Calendar</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">calendar_id</span> <span class="ow">and</span> <span class="n">calendar_name</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Provide only one of the options&#39;</span><span class="p">)</span>
@@ -1516,19 +1879,22 @@
             <span class="k">return</span> <span class="kc">None</span>
 
         <span class="k">if</span> <span class="n">calendar_id</span><span class="p">:</span>
-            <span class="n">calendar</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">calendar</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">)</span>
-            <span class="n">calendar</span> <span class="o">=</span> <span class="n">calendar</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">calendar</span> <span class="k">else</span> <span class="kc">None</span>
-            <span class="k">if</span> <span class="n">calendar</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">)</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">data</span> <span class="k">else</span> <span class="kc">None</span>
+            <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">return</span> <span class="kc">None</span>
 
         <span class="c1"># Everything received from cloud must be passed as self._cloud_data_key</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">calendar_constructor</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
-                                         <span class="o">**</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_cloud_data_key</span><span class="p">:</span> <span class="n">calendar</span><span class="p">})</span></div>
+                                         <span class="o">**</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_cloud_data_key</span><span class="p">:</span> <span class="n">data</span><span class="p">})</span></div>
 
 <div class="viewcode-block" id="Schedule.get_default_calendar"><a class="viewcode-back" href="../../api/calendar.html#O365.calendar.Schedule.get_default_calendar">[docs]</a>    <span class="k">def</span> <span class="nf">get_default_calendar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Returns the default calendar for the current user &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot; Returns the default calendar for the current user</span>
+
+<span class="sd">        :rtype: Calendar</span>
+<span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_url</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_endpoints</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;default_calendar&#39;</span><span class="p">))</span>
 
@@ -1536,25 +1902,27 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">response</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
 
-        <span class="n">calendar</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
 
         <span class="c1"># Everything received from cloud must be passed as self._cloud_data_key</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">calendar_constructor</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
-                                         <span class="o">**</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_cloud_data_key</span><span class="p">:</span> <span class="n">calendar</span><span class="p">})</span></div>
+                                         <span class="o">**</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_cloud_data_key</span><span class="p">:</span> <span class="n">data</span><span class="p">})</span></div>
 
 <div class="viewcode-block" id="Schedule.get_events"><a class="viewcode-back" href="../../api/calendar.html#O365.calendar.Schedule.get_events">[docs]</a>    <span class="k">def</span> <span class="nf">get_events</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">25</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">order_by</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">batch</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                    <span class="n">download_attachments</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Get events from the default Calendar</span>
+        <span class="sd">&quot;&quot;&quot; Get events from the default Calendar</span>
 
-<span class="sd">        :param limit: limits the result set. Over 999 uses batch.</span>
-<span class="sd">        :param query: applies a filter to the request such as &#39;displayName:HelloFolder&#39;</span>
+<span class="sd">        :param int limit: max no. of events to get. Over 999 uses batch.</span>
+<span class="sd">        :param query: applies a OData filter to the request</span>
+<span class="sd">        :type query: Query or str</span>
 <span class="sd">        :param order_by: orders the result set based on this condition</span>
-<span class="sd">        :param batch: Returns a custom iterator that retrieves items in batches allowing</span>
-<span class="sd">            to retrieve more items than the limit. Download_attachments is ignored.</span>
-<span class="sd">        :param download_attachments: downloads event attachments</span>
+<span class="sd">        :type order_by: Query or str</span>
+<span class="sd">        :param int batch: batch size, retrieves items in</span>
+<span class="sd">         batches allowing to retrieve more items than the limit.</span>
+<span class="sd">        :param bool download_attachments: downloads event attachments</span>
+<span class="sd">        :return: list of items in this folder</span>
+<span class="sd">        :rtype: list[Event] or Pagination</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
         <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_url</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_endpoints</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;events&#39;</span><span class="p">))</span>
 
         <span class="k">if</span> <span class="n">limit</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">limit</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">protocol</span><span class="o">.</span><span class="n">max_top_value</span><span class="p">:</span>
@@ -1583,7 +1951,8 @@
 
         <span class="c1"># Everything received from cloud must be passed as self._cloud_data_key</span>
         <span class="n">events</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">event_constructor</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
-                                         <span class="n">download_attachments</span><span class="o">=</span><span class="n">download_attachments</span><span class="p">,</span>
+                                         <span class="n">download_attachments</span>
+                                         <span class="o">=</span><span class="n">download_attachments</span><span class="p">,</span>
                                          <span class="o">**</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_cloud_data_key</span><span class="p">:</span> <span class="n">event</span><span class="p">})</span>
                   <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="p">[])]</span>
         <span class="n">next_link</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">NEXT_LINK_KEYWORD</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
@@ -1595,7 +1964,12 @@
             <span class="k">return</span> <span class="n">events</span></div>
 
 <div class="viewcode-block" id="Schedule.new_event"><a class="viewcode-back" href="../../api/calendar.html#O365.calendar.Schedule.new_event">[docs]</a>    <span class="k">def</span> <span class="nf">new_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">subject</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Returns a new (unsaved) Event object in the default calendar &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot; Returns a new (unsaved) Event object in the default calendar</span>
+
+<span class="sd">        :param str subject: subject text for the new event</span>
+<span class="sd">        :return: new event</span>
+<span class="sd">        :rtype: Event</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">event_constructor</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">subject</span><span class="o">=</span><span class="n">subject</span><span class="p">)</span></div></div>
 </pre></div>
 

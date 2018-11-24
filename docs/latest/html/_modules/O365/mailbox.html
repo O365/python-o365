@@ -174,7 +174,7 @@
 <span class="sd">        parent folder</span>
 
 <span class="sd">        :param parent: parent folder/account for this folder</span>
-<span class="sd">        :type parent: Folder or Account</span>
+<span class="sd">        :type parent: mailbox.Folder or Account</span>
 <span class="sd">        :param Connection con: connection to use if no parent specified</span>
 <span class="sd">        :param Protocol protocol: protocol to use if no parent specified</span>
 <span class="sd">         (kwargs)</span>
@@ -236,7 +236,7 @@
 <span class="sd">        :param int batch: batch size, retrieves items in</span>
 <span class="sd">         batches allowing to retrieve more items than the limit.</span>
 <span class="sd">        :return: list of folders</span>
-<span class="sd">        :rtype: list[Folder] or Pagination</span>
+<span class="sd">        :rtype: list[mailbox.Folder] or Pagination</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">:</span>
@@ -359,7 +359,7 @@
 
 <span class="sd">        :param str folder_name: name of the folder to add</span>
 <span class="sd">        :return: newly created folder</span>
-<span class="sd">        :rtype: Folder or None</span>
+<span class="sd">        :rtype: mailbox.Folder or None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">folder_name</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
@@ -389,7 +389,7 @@
 <span class="sd">        :param str folder_name: the folder name to be retrieved.</span>
 <span class="sd">         Must be a child of this folder.</span>
 <span class="sd">        :return: a single folder</span>
-<span class="sd">        :rtype: Folder or None</span>
+<span class="sd">        :rtype: mailbox.Folder or None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">folder_id</span> <span class="ow">and</span> <span class="n">folder_name</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Provide only one of the options&#39;</span><span class="p">)</span>
@@ -467,7 +467,7 @@
 <span class="sd">        getting it from the cloud</span>
 
 <span class="sd">        :return: Parent Folder</span>
-<span class="sd">        :rtype: Folder or None</span>
+<span class="sd">        :rtype: mailbox.Folder or None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
@@ -537,9 +537,9 @@
         <span class="sd">&quot;&quot;&quot; Copy this folder and it&#39;s contents to into another folder</span>
 
 <span class="sd">        :param to_folder: the destination Folder/folder_id to copy into</span>
-<span class="sd">        :type to_folder: Folder or str</span>
+<span class="sd">        :type to_folder: mailbox.Folder or str</span>
 <span class="sd">        :return: The new folder after copying</span>
-<span class="sd">        :rtype: Folder or None</span>
+<span class="sd">        :rtype: mailbox.Folder or None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">to_folder_id</span> <span class="o">=</span> <span class="n">to_folder</span><span class="o">.</span><span class="n">folder_id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">to_folder</span><span class="p">,</span>
                                                          <span class="n">Folder</span><span class="p">)</span> <span class="k">else</span> <span class="n">to_folder</span>
@@ -566,11 +566,11 @@
         <span class="sd">&quot;&quot;&quot; Move this folder to another folder</span>
 
 <span class="sd">        :param to_folder: the destination Folder/folder_id to move into</span>
-<span class="sd">        :type to_folder: Folder or str</span>
+<span class="sd">        :type to_folder: mailbox.Folder or str</span>
 <span class="sd">        :param bool update_parent_if_changed: updates self.parent with the</span>
 <span class="sd">         new parent Folder if changed</span>
 <span class="sd">        :return: The new folder after copying</span>
-<span class="sd">        :rtype: Folder or None</span>
+<span class="sd">        :rtype: mailbox.Folder or None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">to_folder_id</span> <span class="o">=</span> <span class="n">to_folder</span><span class="o">.</span><span class="n">folder_id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">to_folder</span><span class="p">,</span>
                                                          <span class="n">Folder</span><span class="p">)</span> <span class="k">else</span> <span class="n">to_folder</span>
@@ -646,7 +646,7 @@
 <div class="viewcode-block" id="MailBox.inbox_folder"><a class="viewcode-back" href="../../api/mailbox.html#O365.mailbox.MailBox.inbox_folder">[docs]</a>    <span class="k">def</span> <span class="nf">inbox_folder</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Shortcut to get Inbox Folder instance</span>
 
-<span class="sd">        :rtype: Folder</span>
+<span class="sd">        :rtype: mailbox.Folder</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">folder_constructor</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Inbox&#39;</span><span class="p">,</span>
                                        <span class="n">folder_id</span><span class="o">=</span><span class="n">OutlookWellKnowFolderNames</span>
@@ -655,7 +655,7 @@
 <div class="viewcode-block" id="MailBox.junk_folder"><a class="viewcode-back" href="../../api/mailbox.html#O365.mailbox.MailBox.junk_folder">[docs]</a>    <span class="k">def</span> <span class="nf">junk_folder</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Shortcut to get Junk Folder instance</span>
 
-<span class="sd">        :rtype: Folder</span>
+<span class="sd">        :rtype: mailbox.Folder</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">folder_constructor</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Junk&#39;</span><span class="p">,</span>
                                        <span class="n">folder_id</span><span class="o">=</span><span class="n">OutlookWellKnowFolderNames</span>
@@ -664,7 +664,7 @@
 <div class="viewcode-block" id="MailBox.deleted_folder"><a class="viewcode-back" href="../../api/mailbox.html#O365.mailbox.MailBox.deleted_folder">[docs]</a>    <span class="k">def</span> <span class="nf">deleted_folder</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Shortcut to get DeletedItems Folder instance</span>
 
-<span class="sd">        :rtype: Folder</span>
+<span class="sd">        :rtype: mailbox.Folder</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">folder_constructor</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;DeletedItems&#39;</span><span class="p">,</span>
                                        <span class="n">folder_id</span><span class="o">=</span><span class="n">OutlookWellKnowFolderNames</span>
@@ -673,7 +673,7 @@
 <div class="viewcode-block" id="MailBox.drafts_folder"><a class="viewcode-back" href="../../api/mailbox.html#O365.mailbox.MailBox.drafts_folder">[docs]</a>    <span class="k">def</span> <span class="nf">drafts_folder</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Shortcut to get Drafts Folder instance</span>
 
-<span class="sd">        :rtype: Folder</span>
+<span class="sd">        :rtype: mailbox.Folder</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">folder_constructor</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Drafts&#39;</span><span class="p">,</span>
                                        <span class="n">folder_id</span><span class="o">=</span><span class="n">OutlookWellKnowFolderNames</span>
@@ -682,7 +682,7 @@
 <div class="viewcode-block" id="MailBox.sent_folder"><a class="viewcode-back" href="../../api/mailbox.html#O365.mailbox.MailBox.sent_folder">[docs]</a>    <span class="k">def</span> <span class="nf">sent_folder</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Shortcut to get SentItems Folder instance</span>
 
-<span class="sd">        :rtype: Folder</span>
+<span class="sd">        :rtype: mailbox.Folder</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">folder_constructor</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;SentItems&#39;</span><span class="p">,</span>
                                        <span class="n">folder_id</span><span class="o">=</span><span class="n">OutlookWellKnowFolderNames</span>
@@ -691,7 +691,7 @@
 <div class="viewcode-block" id="MailBox.outbox_folder"><a class="viewcode-back" href="../../api/mailbox.html#O365.mailbox.MailBox.outbox_folder">[docs]</a>    <span class="k">def</span> <span class="nf">outbox_folder</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Shortcut to get Outbox Folder instance</span>
 
-<span class="sd">        :rtype: Folder</span>
+<span class="sd">        :rtype: mailbox.Folder</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">folder_constructor</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Outbox&#39;</span><span class="p">,</span>
                                        <span class="n">folder_id</span><span class="o">=</span><span class="n">OutlookWellKnowFolderNames</span>

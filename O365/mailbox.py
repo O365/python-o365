@@ -28,7 +28,7 @@ class Folder(ApiComponent):
         parent folder
 
         :param parent: parent folder/account for this folder
-        :type parent: Folder or Account
+        :type parent: mailbox.Folder or Account
         :param Connection con: connection to use if no parent specified
         :param Protocol protocol: protocol to use if no parent specified
          (kwargs)
@@ -90,7 +90,7 @@ class Folder(ApiComponent):
         :param int batch: batch size, retrieves items in
          batches allowing to retrieve more items than the limit.
         :return: list of folders
-        :rtype: list[Folder] or Pagination
+        :rtype: list[mailbox.Folder] or Pagination
         """
 
         if self.root:
@@ -213,7 +213,7 @@ class Folder(ApiComponent):
 
         :param str folder_name: name of the folder to add
         :return: newly created folder
-        :rtype: Folder or None
+        :rtype: mailbox.Folder or None
         """
         if not folder_name:
             return None
@@ -243,7 +243,7 @@ class Folder(ApiComponent):
         :param str folder_name: the folder name to be retrieved.
          Must be a child of this folder.
         :return: a single folder
-        :rtype: Folder or None
+        :rtype: mailbox.Folder or None
         """
         if folder_id and folder_name:
             raise RuntimeError('Provide only one of the options')
@@ -321,7 +321,7 @@ class Folder(ApiComponent):
         getting it from the cloud
 
         :return: Parent Folder
-        :rtype: Folder or None
+        :rtype: mailbox.Folder or None
         """
         if self.root:
             return None
@@ -391,9 +391,9 @@ class Folder(ApiComponent):
         """ Copy this folder and it's contents to into another folder
 
         :param to_folder: the destination Folder/folder_id to copy into
-        :type to_folder: Folder or str
+        :type to_folder: mailbox.Folder or str
         :return: The new folder after copying
-        :rtype: Folder or None
+        :rtype: mailbox.Folder or None
         """
         to_folder_id = to_folder.folder_id if isinstance(to_folder,
                                                          Folder) else to_folder
@@ -420,11 +420,11 @@ class Folder(ApiComponent):
         """ Move this folder to another folder
 
         :param to_folder: the destination Folder/folder_id to move into
-        :type to_folder: Folder or str
+        :type to_folder: mailbox.Folder or str
         :param bool update_parent_if_changed: updates self.parent with the
          new parent Folder if changed
         :return: The new folder after copying
-        :rtype: Folder or None
+        :rtype: mailbox.Folder or None
         """
         to_folder_id = to_folder.folder_id if isinstance(to_folder,
                                                          Folder) else to_folder
@@ -500,7 +500,7 @@ class MailBox(Folder):
     def inbox_folder(self):
         """ Shortcut to get Inbox Folder instance
 
-        :rtype: Folder
+        :rtype: mailbox.Folder
         """
         return self.folder_constructor(parent=self, name='Inbox',
                                        folder_id=OutlookWellKnowFolderNames
@@ -509,7 +509,7 @@ class MailBox(Folder):
     def junk_folder(self):
         """ Shortcut to get Junk Folder instance
 
-        :rtype: Folder
+        :rtype: mailbox.Folder
         """
         return self.folder_constructor(parent=self, name='Junk',
                                        folder_id=OutlookWellKnowFolderNames
@@ -518,7 +518,7 @@ class MailBox(Folder):
     def deleted_folder(self):
         """ Shortcut to get DeletedItems Folder instance
 
-        :rtype: Folder
+        :rtype: mailbox.Folder
         """
         return self.folder_constructor(parent=self, name='DeletedItems',
                                        folder_id=OutlookWellKnowFolderNames
@@ -527,7 +527,7 @@ class MailBox(Folder):
     def drafts_folder(self):
         """ Shortcut to get Drafts Folder instance
 
-        :rtype: Folder
+        :rtype: mailbox.Folder
         """
         return self.folder_constructor(parent=self, name='Drafts',
                                        folder_id=OutlookWellKnowFolderNames
@@ -536,7 +536,7 @@ class MailBox(Folder):
     def sent_folder(self):
         """ Shortcut to get SentItems Folder instance
 
-        :rtype: Folder
+        :rtype: mailbox.Folder
         """
         return self.folder_constructor(parent=self, name='SentItems',
                                        folder_id=OutlookWellKnowFolderNames
@@ -545,7 +545,7 @@ class MailBox(Folder):
     def outbox_folder(self):
         """ Shortcut to get Outbox Folder instance
 
-        :rtype: Folder
+        :rtype: mailbox.Folder
         """
         return self.folder_constructor(parent=self, name='Outbox',
                                        folder_id=OutlookWellKnowFolderNames

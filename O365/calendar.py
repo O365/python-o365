@@ -4,6 +4,7 @@ from dateutil.parser import parse
 import datetime as dt
 import pytz
 import calendar
+# noinspection PyPep8Naming
 from bs4 import BeautifulSoup as bs
 
 from O365.utils import Pagination, NEXT_LINK_KEYWORD, ApiComponent
@@ -77,6 +78,7 @@ class DailyEventFrequency:
         self.interval = interval
 
 
+# noinspection PyAttributeOutsideInit
 class EventRecurrence(ApiComponent):
     def __init__(self, event, recurrence=None):
         """ A representation of an event recurrence properties
@@ -105,7 +107,7 @@ class EventRecurrence(ApiComponent):
         # recurrence range
         recurrence_range = recurrence.get(self._cc('range'), {})
 
-        self.__ocurrences = recurrence_range.get(
+        self.__occurrences = recurrence_range.get(
             self._cc('numberOfOccurrences'), None)
         self.__start_date = recurrence_range.get(self._cc('startDate'), None)
         self.__end_date = recurrence_range.get(self._cc('endDate'), None)
@@ -133,18 +135,18 @@ class EventRecurrence(ApiComponent):
                     pattern = 'Weekly: every {} week/s on {}'.format(
                         self.__interval, days)
                 elif self.__month:
-                    pattern = 'Relative Yearly: {} {} every {} year/s on {}'.format(
-                        self.__index, days,
-                        self.__interval,
-                        MONTH_NAMES[self.__month - 1])
+                    pattern = ('Relative Yearly: {} {} every {} year/s on {}'
+                               ''.format(self.__index, days,
+                                         self.__interval,
+                                         MONTH_NAMES[self.__month - 1]))
             elif self.__day_of_month:
-                pattern = 'Absolute Monthly: on day {} every {} month/s'.format(
-                    self.__day_of_month, self.__interval)
+                pattern = ('Absolute Monthly: on day {} every {} month/s'
+                           ''.format(self.__day_of_month, self.__interval))
                 if self.__month:
-                    pattern = 'Absolute Yearly: on {} {} every {} year/s'.format(
-                        MONTH_NAMES[self.__month - 1],
-                        self.__day_of_month,
-                        self.__interval)
+                    pattern = ('Absolute Yearly: on {} {} every {} year/s'
+                               ''.format(MONTH_NAMES[self.__month - 1],
+                                         self.__day_of_month,
+                                         self.__interval))
 
             r_range = ''
             if self.__start_date:
@@ -152,8 +154,8 @@ class EventRecurrence(ApiComponent):
                 ends_on = 'with no end'
                 if self.__end_date:
                     ends_on = 'ending on {}'.format(self.__end_date)
-                elif self.__ocurrences:
-                    ends_on = 'up to {} ocurrences'.format(self.__ocurrences)
+                elif self.__occurrences:
+                    ends_on = 'up to {} occurrences'.format(self.__occurrences)
                 r_range = '{} {}'.format(r_range, ends_on)
             return '{}. {}'.format(pattern, r_range)
         else:
@@ -187,6 +189,12 @@ class EventRecurrence(ApiComponent):
 
     @property
     def days_of_week(self):
+        """ Days in week to repeat
+
+        :getter: Get the current list of days
+        :setter: Set the list of days to repeat
+        :type: set(str)
+        """
         return self.__days_of_week
 
     @days_of_week.setter
@@ -196,6 +204,12 @@ class EventRecurrence(ApiComponent):
 
     @property
     def first_day_of_week(self):
+        """ Which day to consider start of the week
+
+        :getter: Get the current start of week
+        :setter: Set the start day of week
+        :type: str
+        """
         return self.__first_day_of_week
 
     @first_day_of_week.setter
@@ -205,6 +219,12 @@ class EventRecurrence(ApiComponent):
 
     @property
     def day_of_month(self):
+        """ Repeat on this day of month
+
+        :getter: Get the repeat day of month
+        :setter: Set the repeat day of month
+        :type: int
+        """
         return self.__day_of_month
 
     @day_of_month.setter
@@ -214,6 +234,12 @@ class EventRecurrence(ApiComponent):
 
     @property
     def month(self):
+        """ Month of the event
+
+        :getter: Get month
+        :setter: Update month
+        :type: int
+        """
         return self.__month
 
     @month.setter
@@ -223,6 +249,12 @@ class EventRecurrence(ApiComponent):
 
     @property
     def index(self):
+        """ Index
+
+        :getter: Get index
+        :setter: Set index
+        :type: str
+        """
         return self.__index
 
     @index.setter
@@ -231,16 +263,28 @@ class EventRecurrence(ApiComponent):
         self._track_changes()
 
     @property
-    def ocurrences(self):
-        return self.__ocurrences
+    def occurrences(self):
+        """ No. of occurrences
 
-    @ocurrences.setter
-    def ocurrences(self, value):
-        self.__ocurrences = value
+        :getter: Get the no. of occurrences
+        :setter: Set the no. of occurrences
+        :type: int
+        """
+        return self.__occurrences
+
+    @occurrences.setter
+    def occurrences(self, value):
+        self.__occurrences = value
         self._track_changes()
 
     @property
     def recurrence_time_zone(self):
+        """ Timezone to consider for repeating
+
+        :getter: Get the timezone
+        :setter: Set the timezone
+        :type: str
+        """
         return self.__recurrence_time_zone
 
     @recurrence_time_zone.setter
@@ -250,6 +294,12 @@ class EventRecurrence(ApiComponent):
 
     @property
     def start_date(self):
+        """ Start date of repetition
+
+        :getter: get the start date
+        :setter: set the start date
+        :type: date
+        """
         return self.__start_date
 
     @start_date.setter
@@ -263,6 +313,12 @@ class EventRecurrence(ApiComponent):
 
     @property
     def end_date(self):
+        """ End date of repetition
+
+        :getter: get the end date
+        :setter: set the end date
+        :type: date
+        """
         return self.__start_date
 
     @end_date.setter
@@ -275,6 +331,10 @@ class EventRecurrence(ApiComponent):
         self._track_changes()
 
     def to_api_data(self):
+        """ Returns a dict to communicate with the server
+
+        :rtype: dict
+        """
         data = {}
         # recurrence pattern
         if self.__interval and isinstance(self.__interval, int):
@@ -319,11 +379,12 @@ class EventRecurrence(ApiComponent):
                 recurrence_range[self._cc('type')] = 'endDate'
                 recurrence_range[
                     self._cc('endDate')] = self.__end_date.isoformat()
-            elif self.__ocurrences is not None and isinstance(self.__ocurrences,
-                                                              int):
+            elif self.__occurrences is not None and isinstance(
+                    self.__occurrences,
+                    int):
                 recurrence_range[self._cc('type')] = 'numbered'
                 recurrence_range[
-                    self._cc('numberOfOccurrences')] = self.__ocurrences
+                    self._cc('numberOfOccurrences')] = self.__occurrences
 
         return data
 
@@ -339,9 +400,15 @@ class EventRecurrence(ApiComponent):
         # range group
         self.__start_date = None
         self.__end_date = None
-        self.__ocurrences = None
+        self.__occurrences = None
 
-    def set_range(self, start=None, end=None, ocurrences=None):
+    def set_range(self, start=None, end=None, occurrences=None):
+        """ Set the range of recurrence
+
+        :param date start: Start date of repetition
+        :param date end: End date of repetition
+        :param int occurrences: no of occurrences
+        """
         if start is None:
             if self.__start_date is None:
                 self.__start_date = dt.date.today()
@@ -350,23 +417,49 @@ class EventRecurrence(ApiComponent):
 
         if end:
             self.end_date = end
-        elif ocurrences:
-            self.__ocurrences = ocurrences
+        elif occurrences:
+            self.__occurrences = occurrences
         self._track_changes()
 
     def set_daily(self, interval, **kwargs):
+        """ Set to repeat every x no. of days
+
+        :param int interval: no. of days to repeat at
+        :keyword date start: Start date of repetition (kwargs)
+        :keyword date end: End date of repetition (kwargs)
+        :keyword int occurrences: no of occurrences (kwargs)
+        """
         self._clear_pattern()
         self.__interval = interval
         self.set_range(**kwargs)
 
     def set_weekly(self, interval, *, days_of_week, first_day_of_week,
                    **kwargs):
+        """ Set to repeat every week on specified days for every x no. of days
+
+        :param int interval: no. of days to repeat at
+        :param str first_day_of_week: starting day for a week
+        :param list[str] days_of_week: list of days of the week to repeat
+        :keyword date start: Start date of repetition (kwargs)
+        :keyword date end: End date of repetition (kwargs)
+        :keyword int occurrences: no of occurrences (kwargs)
+        """
         self.set_daily(interval, **kwargs)
         self.__days_of_week = set(days_of_week)
         self.__first_day_of_week = first_day_of_week
 
     def set_monthly(self, interval, *, day_of_month=None, days_of_week=None,
                     index=None, **kwargs):
+        """ Set to repeat every month on specified days for every x no. of days
+
+        :param int interval: no. of days to repeat at
+        :param int day_of_month: repeat day of a month
+        :param list[str] days_of_week: list of days of the week to repeat
+        :param index: index
+        :keyword date start: Start date of repetition (kwargs)
+        :keyword date end: End date of repetition (kwargs)
+        :keyword int occurrences: no of occurrences (kwargs)
+        """
         if not day_of_month and not days_of_week:
             raise ValueError('Must provide day_of_month or days_of_week values')
         if day_of_month and days_of_week:
@@ -381,6 +474,17 @@ class EventRecurrence(ApiComponent):
 
     def set_yearly(self, interval, month, *, day_of_month=None,
                    days_of_week=None, index=None, **kwargs):
+        """ Set to repeat every month on specified days for every x no. of days
+
+        :param int interval: no. of days to repeat at
+        :param int month: month to repeat
+        :param int day_of_month: repeat day of a month
+        :param list[str] days_of_week: list of days of the week to repeat
+        :param index: index
+        :keyword date start: Start date of repetition (kwargs)
+        :keyword date end: End date of repetition (kwargs)
+        :keyword int occurrences: no of occurrences (kwargs)
+        """
         self.set_monthly(interval, day_of_month=day_of_month,
                          days_of_week=days_of_week, index=index, **kwargs)
         self.__month = month
@@ -390,6 +494,12 @@ class ResponseStatus(ApiComponent):
     """ An event response status (status, time) """
 
     def __init__(self, parent, response_status):
+        """ An event response status (status, time)
+
+        :param parent: parent of this
+        :type parent: Attendees or Event
+        :param dict response_status: status info frm cloud
+        """
         super().__init__(protocol=parent.protocol,
                          main_resource=parent.main_resource)
         self.status = response_status.get(self._cc('response'), None)
@@ -414,6 +524,14 @@ class Attendee:
 
     def __init__(self, address, *, name=None, attendee_type=None,
                  response_status=None, event=None):
+        """ Create a event attendee
+
+        :param str address: email address of the attendee
+        :param str name: name of the attendee
+        :param AttendeeType attendee_type: requirement of attendee
+        :param Response response_status: response status requirement
+        :param Event event: event for which to assign the attendee
+        """
         self._address = address
         self._name = name
         self._event = event
@@ -437,6 +555,12 @@ class Attendee:
 
     @property
     def address(self):
+        """ Email address
+
+        :getter: Get the email address of attendee
+        :setter: Set the email address of attendee
+        :type: str
+        """
         return self._address
 
     @address.setter
@@ -447,6 +571,12 @@ class Attendee:
 
     @property
     def name(self):
+        """ Name
+
+        :getter: Get the name of attendee
+        :setter: Set the name of attendee
+        :type: str
+        """
         return self._name
 
     @name.setter
@@ -455,15 +585,26 @@ class Attendee:
         self._track_changes()
 
     def _track_changes(self):
-        """ Update the track_changes on the event to reflect a needed update on this field """
+        """ Update the track_changes on the event to reflect a
+        needed update on this field """
         self._event._track_changes.add('attendees')
 
     @property
     def response_status(self):
+        """ Response status of the attendee
+
+        :type: ResponseStatus
+        """
         return self.__response_status
 
     @property
     def attendee_type(self):
+        """ Requirement of the attendee
+
+        :getter: Get the requirement of attendee
+        :setter: Set the requirement of attendee
+        :type: AttendeeType
+        """
         return self.__attendee_type
 
     @attendee_type.setter
@@ -479,6 +620,13 @@ class Attendees(ApiComponent):
     """ A Collection of Attendees """
 
     def __init__(self, event, attendees=None):
+        """ Create a collection of attendees
+
+        :param Event event: event for which to assign the attendees
+        :param attendees: list of attendees to add
+        :type attendees: str or tuple(str, str) or Attendee or list[str] or
+         list[tuple(str,str)] or list[Attendee]
+        """
         super().__init__(protocol=event.protocol,
                          main_resource=event.main_resource)
         self._event = event
@@ -507,17 +655,23 @@ class Attendees(ApiComponent):
         return 'Attendees Count: {}'.format(len(self.__attendees))
 
     def clear(self):
+        """ Clear the attendees list """
         self.__attendees = []
         self._track_changes()
 
     def _track_changes(self):
-        """ Update the track_changes on the event to reflect a needed update on this field """
+        """ Update the track_changes on the event to reflect a needed
+        update on this field """
         if self.untrack is False:
             self._event._track_changes.add('attendees')
 
     def add(self, attendees):
-        """ Add attendees to the parent event """
+        """ Add attendees to the parent event
 
+        :param attendees: list of attendees to add
+        :type attendees: str or tuple(str, str) or Attendee or list[str] or
+         list[tuple(str,str)] or list[Attendee]
+        """
         if attendees:
             if isinstance(attendees, str):
                 self.__attendees.append(
@@ -543,23 +697,31 @@ class Attendees(ApiComponent):
                     address = email.get(self._cc('address'), None)
                     if address:
                         name = email.get(self._cc('name'), None)
+                        # default value
                         attendee_type = attendee.get(self._cc('type'),
-                                                     'required')  # default value
+                                                     'required')
                         self.__attendees.append(
                             Attendee(address=address, name=name,
                                      attendee_type=attendee_type,
                                      event=self._event,
-                                     response_status=ResponseStatus(parent=self,
-                                                                    response_status=attendee.get(
-                                                                        self._cc(
-                                                                            'status'),
-                                                                        {}))))
+                                     response_status=
+                                     ResponseStatus(parent=self,
+                                                    response_status=
+                                                    attendee.get(
+                                                        self._cc('status'),
+                                                        {}))))
             else:
-                raise ValueError('Attendees must be an address string, an'
-                                 ' Attendee instance, a (name, address) tuple or a list')
+                raise ValueError('Attendees must be an address string, an '
+                                 'Attendee instance, a (name, address) '
+                                 'tuple or a list')
 
     def remove(self, attendees):
-        """ Remove the provided attendees from the event """
+        """ Remove the provided attendees from the event
+
+        :param attendees: list of attendees to add
+        :type attendees: str or tuple(str, str) or Attendee or list[str] or
+         list[tuple(str,str)] or list[Attendee]
+        """
         if isinstance(attendees, (list, tuple)):
             attendees = {
                 attendee.address if isinstance(attendee, Attendee) else attendee
@@ -580,6 +742,10 @@ class Attendees(ApiComponent):
         self._track_changes()
 
     def to_api_data(self):
+        """ Returns a dict to communicate with the server
+
+        :rtype: dict
+        """
         data = []
         for attendee in self.__attendees:
             if attendee.address:
@@ -594,6 +760,7 @@ class Attendees(ApiComponent):
         return data
 
 
+# noinspection PyAttributeOutsideInit
 class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
     """ A Calendar event """
 
@@ -605,20 +772,35 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
     }
 
     def __init__(self, *, parent=None, con=None, **kwargs):
+        """ Create a calendar event representation
+
+        :param parent: parent for this operation
+        :type parent: Calendar or Schedule
+        :param Connection con: connection to use if no parent specified
+        :param Protocol protocol: protocol to use if no parent specified
+         (kwargs)
+        :param str main_resource: use this resource instead of parent resource
+         (kwargs)
+        :param str calendar_id: id of the calender to add this event in
+         (kwargs)
+        :param bool download_attachments: whether or not to download attachments
+         (kwargs)
+        :param str subject: subject of the event (kwargs)
+        """
         assert parent or con, 'Need a parent or a connection'
         self.con = parent.con if parent else con
 
         # Choose the main_resource passed in kwargs over parent main_resource
-        main_resource = kwargs.pop('main_resource', None) or getattr(parent,
-                                                                     'main_resource',
-                                                                     None) if parent else None
+        main_resource = (kwargs.pop('main_resource', None) or
+                         getattr(parent, 'main_resource',
+                                 None) if parent else None)
         super().__init__(
             protocol=parent.protocol if parent else kwargs.get('protocol'),
             main_resource=main_resource)
 
         cc = self._cc  # alias
-        self._track_changes = TrackerSet(
-            casing=cc)  # internal to know which properties need to be updated on the server
+        # internal to know which properties need to be updated on the server
+        self._track_changes = TrackerSet(casing=cc)
         self.calendar_id = kwargs.get('calendar_id', None)
         download_attachments = kwargs.get('download_attachments')
         cloud_data = kwargs.get(self._cloud_data_key, {})
@@ -717,9 +899,10 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         return 'Subject: {}'.format(self.subject)
 
     def to_api_data(self, restrict_keys=None):
-        """ Returns a dict to comunicate with the server
+        """ Returns a dict to communicate with the server
 
-        :param restrict_keys: a set of keys to restrict the returned data to.
+        :param restrict_keys: a set of keys to restrict the returned data to
+        :rtype: dict
         """
         cc = self._cc  # alias
         data = {
@@ -763,14 +946,28 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
 
     @property
     def created(self):
+        """ Created time of the event
+
+        :rtype: datetime
+        """
         return self.__created
 
     @property
     def modified(self):
+        """ Last modified time of the event
+
+        :rtype: datetime
+        """
         return self.__modified
 
     @property
     def body(self):
+        """ Body of the event
+
+        :getter: Get body text
+        :setter: Set body of event
+        :type: str
+        """
         return self.__body
 
     @body.setter
@@ -780,6 +977,12 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
 
     @property
     def subject(self):
+        """ Subject of the event
+
+        :getter: Get subject
+        :setter: Set subject of event
+        :type: str
+        """
         return self.__subject
 
     @subject.setter
@@ -789,6 +992,12 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
 
     @property
     def start(self):
+        """ Start Time of event
+
+        :getter: get the start time
+        :setter: set the start time
+        :type: datetime
+        """
         return self.__start
 
     @start.setter
@@ -810,6 +1019,12 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
 
     @property
     def end(self):
+        """ End Time of event
+
+        :getter: get the end time
+        :setter: set the end time
+        :type: datetime
+        """
         return self.__end
 
     @end.setter
@@ -829,17 +1044,28 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
 
     @property
     def importance(self):
+        """ Event Priority
+
+        :getter: get importance of event
+        :setter: set the importance of event
+        :type: ImportanceLevel
+        """
         return self.__importance
 
     @importance.setter
     def importance(self, value):
-        self.__importance = value if isinstance(value,
-                                                ImportanceLevel) else ImportanceLevel(
-            value)
+        self.__importance = (value if isinstance(value, ImportanceLevel)
+                             else ImportanceLevel(value))
         self._track_changes.add('importance')
 
     @property
     def is_all_day(self):
+        """ Is the event for whole day
+
+        :getter: get the current status of is_all_day property
+        :setter: set if the event is all day or not
+        :type: bool
+        """
         return self.__is_all_day
 
     @is_all_day.setter
@@ -853,7 +1079,8 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
             end = self.__end or dt.date.today()
 
             if (start + dt.timedelta(hours=24)) > end:
-                # Api requires that under is_all_day=True start and end must be at least 24 hours away
+                # Api requires that under is_all_day=True start and
+                # end must be at least 24 hours away
                 end = start + dt.timedelta(hours=24)
 
             # set to midnight
@@ -866,6 +1093,12 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
 
     @property
     def location(self):
+        """ Location of event
+
+        :getter: get current location configured for the event
+        :setter: set a location for the event
+        :type: str
+        """
         return self.__location
 
     @location.setter
@@ -875,6 +1108,12 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
 
     @property
     def is_reminder_on(self):
+        """ Status of the Reminder
+
+        :getter: check is reminder enabled or not
+        :setter: enable or disable reminder option
+        :type: bool
+        """
         return self.__is_reminder_on
 
     @is_reminder_on.setter
@@ -885,6 +1124,12 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
 
     @property
     def remind_before_minutes(self):
+        """ No. of minutes to remind before the meeting
+
+        :getter: get current minutes
+        :setter: set to remind before new x minutes
+        :type: int
+        """
         return self.__remind_before_minutes
 
     @remind_before_minutes.setter
@@ -896,6 +1141,12 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
 
     @property
     def response_requested(self):
+        """ Is response requested or not
+
+        :getter: Is response requested or not
+        :setter: set the event to request response or not
+        :type: bool
+        """
         return self.__response_requested
 
     @response_requested.setter
@@ -905,14 +1156,28 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
 
     @property
     def recurrence(self):
+        """ Recurrence information of the event
+
+        :rtype: EventRecurrence
+        """
         return self.__recurrence
 
     @property
     def organizer(self):
+        """ Organizer of the meeting event
+
+        :rtype: Recipient
+        """
         return self.__organizer
 
     @property
     def show_as(self):
+        """ Show as "busy" or any other status during the event
+
+        :getter: Current status during the event
+        :setter: update show as status
+        :type: EventShowAs
+        """
         return self.__show_as
 
     @show_as.setter
@@ -924,29 +1189,52 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
 
     @property
     def sensitivity(self):
+        """ Sensitivity of the Event
+
+        :getter: Get the current sensitivity
+        :setter: Set a new sensitivity
+        :type: EventSensitivity
+        """
         return self.__sensitivity
 
     @sensitivity.setter
     def sensitivity(self, value):
-        self.__sensitivity = value if isinstance(value,
-                                                 EventSensitivity) else EventSensitivity(
-            value)
+        self.__sensitivity = (value if isinstance(value, EventSensitivity)
+                              else EventSensitivity(value))
         self._track_changes.add('sensitivity')
 
     @property
     def response_status(self):
+        """ Your response
+
+        :rtype: ResponseStatus
+        """
         return self.__response_status
 
     @property
     def attachments(self):
+        """ List of attachments
+
+        :rtype: EventAttachments
+        """
         return self.__attachments
 
     @property
     def attendees(self):
+        """ List of meeting attendees
+
+        :rtype: Attendees
+        """
         return self.__attendees
 
     @property
     def categories(self):
+        """ Categories of the event
+
+        :getter: get the list of categories
+        :setter: set the list of categories
+        :type: list[str]
+        """
         return self.__categories
 
     @categories.setter
@@ -962,7 +1250,11 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         self._track_changes.add('categories')
 
     def delete(self):
-        """ Deletes a stored event """
+        """ Deletes a stored event
+
+        :return: Success / Failure
+        :rtype: bool
+        """
         if self.object_id is None:
             raise RuntimeError('Attempting to delete an unsaved event')
 
@@ -976,6 +1268,9 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
     def save(self):
         """ Create a new event or update an existing one by checking what
         values have changed and update them on the server
+
+        :return: Success / Failure
+        :rtype: bool
         """
 
         if self.object_id:
@@ -1021,7 +1316,14 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
 
     def accept_event(self, comment=None, *, send_response=True,
                      tentatively=False):
+        """ Accept the event
 
+        :param comment: comment to add
+        :param send_response: whether or not to send response back
+        :param tentatively: whether acceptance is tentative
+        :return: Success / Failure
+        :rtype: bool
+        """
         if not self.object_id:
             raise RuntimeError("Can't accept event that doesn't exist")
 
@@ -1040,7 +1342,13 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         return bool(response)
 
     def decline_event(self, comment=None, *, send_response=True):
+        """ Decline the event
 
+        :param str comment: comment to add
+        :param bool send_response: whether or not to send response back
+        :return: Success / Failure
+        :rtype: bool
+        """
         if not self.object_id:
             raise RuntimeError("Can't accept event that doesn't exist")
 
@@ -1059,19 +1367,27 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         return bool(response)
 
     def get_body_text(self):
-        """ Parse the body html and returns the body text using bs4 """
+        """ Parse the body html and returns the body text using bs4
+
+        :return: body text
+        :rtype: str
+        """
         if self.body_type != 'HTML':
             return self.body
 
         try:
             soup = bs(self.body, 'html.parser')
-        except Exception as e:
+        except RuntimeError:
             return self.body
         else:
             return soup.body.text
 
     def get_body_soup(self):
-        """ Returns the beautifulsoup4 of the html body"""
+        """ Returns the beautifulsoup4 of the html body
+
+        :return: Html body
+        :rtype: BeautifulSoup
+        """
         if self.body_type != 'HTML':
             return None
         else:
@@ -1079,8 +1395,6 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
 
 
 class Calendar(ApiComponent, HandleRecipientsMixin):
-    """ A Calendar Representation """
-
     _endpoints = {
         'calendar': '/calendars/{id}',
         'get_events': '/calendars/{id}/events',
@@ -1089,13 +1403,24 @@ class Calendar(ApiComponent, HandleRecipientsMixin):
     event_constructor = Event
 
     def __init__(self, *, parent=None, con=None, **kwargs):
+        """ Create a Calendar Representation
+
+        :param parent: parent for this operation
+        :type parent: Schedule
+        :param Connection con: connection to use if no parent specified
+        :param Protocol protocol: protocol to use if no parent specified
+         (kwargs)
+        :param str main_resource: use this resource instead of parent resource
+         (kwargs)
+        """
         assert parent or con, 'Need a parent or a connection'
         self.con = parent.con if parent else con
 
         # Choose the main_resource passed in kwargs over parent main_resource
-        main_resource = kwargs.pop('main_resource', None) or getattr(parent,
-                                                                     'main_resource',
-                                                                     None) if parent else None
+        main_resource = (kwargs.pop('main_resource', None) or
+                         getattr(parent,
+                                 'main_resource',
+                                 None) if parent else None)
         super().__init__(
             protocol=parent.protocol if parent else kwargs.get('protocol'),
             main_resource=main_resource)
@@ -1124,10 +1449,18 @@ class Calendar(ApiComponent, HandleRecipientsMixin):
 
     @property
     def owner(self):
+        """ Owner of the calendar
+
+        :rtype: str
+        """
         return self.__owner
 
     def update(self):
-        """ Updates this calendar. Only name and color can be changed. """
+        """ Updates this calendar. Only name and color can be changed.
+
+        :return: Success / Failure
+        :rtype: bool
+        """
 
         if not self.calendar_id:
             return False
@@ -1136,8 +1469,9 @@ class Calendar(ApiComponent, HandleRecipientsMixin):
 
         data = {
             self._cc('name'): self.name,
-            self._cc('color'): self.color.value if isinstance(self.color,
-                                                              CalendarColors) else self.color
+            self._cc('color'): (self.color.value
+                                if isinstance(self.color, CalendarColors)
+                                else self.color)
         }
 
         response = self.con.patch(url, data=data)
@@ -1145,7 +1479,11 @@ class Calendar(ApiComponent, HandleRecipientsMixin):
         return bool(response)
 
     def delete(self):
-        """ Deletes this calendar """
+        """ Deletes this calendar
+
+        :return: Success / Failure
+        :rtype: bool
+        """
 
         if not self.calendar_id:
             return False
@@ -1163,15 +1501,18 @@ class Calendar(ApiComponent, HandleRecipientsMixin):
 
     def get_events(self, limit=25, *, query=None, order_by=None, batch=None,
                    download_attachments=False):
-        """
-        Get events from the default Calendar
+        """ Get events from the default Calendar
 
-        :param limit: limits the result set. Over 999 uses batch.
-        :param query: applies a filter to the request such as 'displayName:HelloFolder'
+        :param int limit: max no. of events to get. Over 999 uses batch.
+        :param query: applies a OData filter to the request
+        :type query: Query or str
         :param order_by: orders the result set based on this condition
-        :param batch: Returns a custom iterator that retrieves items in batches allowing
-            to retrieve more items than the limit. Download_attachments is ignored.
+        :type order_by: Query or str
+        :param int batch: batch size, retrieves items in
+         batches allowing to retrieve more items than the limit.
         :param download_attachments: downloads event attachments
+        :return: list of events in this calendar
+        :rtype: list[Event] or Pagination
         """
 
         url = self.build_url(
@@ -1203,7 +1544,8 @@ class Calendar(ApiComponent, HandleRecipientsMixin):
 
         # Everything received from cloud must be passed as self._cloud_data_key
         events = [self.event_constructor(parent=self,
-                                         download_attachments=download_attachments,
+                                         download_attachments=
+                                         download_attachments,
                                          **{self._cloud_data_key: event})
                   for event in data.get('value', [])]
         next_link = data.get(NEXT_LINK_KEYWORD, None)
@@ -1215,13 +1557,19 @@ class Calendar(ApiComponent, HandleRecipientsMixin):
             return events
 
     def new_event(self, subject=None):
-        """ Returns a new (unsaved) Event object """
+        """ Returns a new (unsaved) Event object
+
+        :rtype: Event
+        """
         return self.event_constructor(parent=self, subject=subject,
                                       calendar_id=self.calendar_id)
 
     def get_event(self, param):
-        """Returns an Event instance by it's id
+        """ Returns an Event instance by it's id
+
         :param param: an event_id or a Query instance
+        :return: event for the specified info
+        :rtype: Event
         """
 
         if param is None:
@@ -1255,8 +1603,6 @@ class Calendar(ApiComponent, HandleRecipientsMixin):
 
 
 class Schedule(ApiComponent):
-    """ A Wrapper around calendars and events"""
-
     _endpoints = {
         'root_calendars': '/calendars',
         'get_calendar': '/calendars/{id}',
@@ -1268,13 +1614,23 @@ class Schedule(ApiComponent):
     event_constructor = Event
 
     def __init__(self, *, parent=None, con=None, **kwargs):
+        """ Create a wrapper around calendars and events
+
+        :param parent: parent for this operation
+        :type parent: Account
+        :param Connection con: connection to use if no parent specified
+        :param Protocol protocol: protocol to use if no parent specified
+         (kwargs)
+        :param str main_resource: use this resource instead of parent resource
+         (kwargs)
+        """
         assert parent or con, 'Need a parent or a connection'
         self.con = parent.con if parent else con
 
         # Choose the main_resource passed in kwargs over parent main_resource
-        main_resource = kwargs.pop('main_resource', None) or getattr(parent,
-                                                                     'main_resource',
-                                                                     None) if parent else None
+        main_resource = (kwargs.pop('main_resource', None) or
+                         getattr(parent, 'main_resource',
+                                 None) if parent else None)
         super().__init__(
             protocol=parent.protocol if parent else kwargs.get('protocol'),
             main_resource=main_resource)
@@ -1286,17 +1642,22 @@ class Schedule(ApiComponent):
         return 'Schedule resource: {}'.format(self.main_resource)
 
     def list_calendars(self, limit=None, *, query=None, order_by=None):
-        """
-        Gets a list of calendars
+        """ Gets a list of calendars
 
         To use query an order_by check the OData specification here:
-        http://docs.oasis-open.org/odata/odata/v4.0/errata03/os/complete/part2-url-conventions/odata-v4.0-errata03-os-part2-url-conventions-complete.html
+        http://docs.oasis-open.org/odata/odata/v4.0/errata03/os/complete/
+        part2-url-conventions/odata-v4.0-errata03-os-part2-url-conventions
+        -complete.html
 
-        :param limit: Number of elements to return.
-        :param query: a OData valid filter clause
-        :param order_by: OData valid order by clause
+        :param int limit: max no. of calendars to get. Over 999 uses batch.
+        :param query: applies a OData filter to the request
+        :type query: Query or str
+        :param order_by: orders the result set based on this condition
+        :type order_by: Query or str
+        :return: list of calendars
+        :rtype: list[Calendar]
+
         """
-
         url = self.build_url(self._endpoints.get('root_calendars'))
 
         params = {}
@@ -1315,17 +1676,17 @@ class Schedule(ApiComponent):
 
         # Everything received from cloud must be passed as self._cloud_data_key
         contacts = [self.calendar_constructor(parent=self, **{
-            self._cloud_data_key: calendar})
-                    for calendar in data.get('value', [])]
+            self._cloud_data_key: x}) for x in data.get('value', [])]
 
         return contacts
 
     def new_calendar(self, calendar_name):
-        """
-        Creates a new calendar
-        :return a new Calendar instance
-        """
+        """ Creates a new calendar
 
+        :param str calendar_name: name of the new calendar
+        :return: a new Calendar instance
+        :rtype: Calendar
+        """
         if not calendar_name:
             return None
 
@@ -1335,17 +1696,19 @@ class Schedule(ApiComponent):
         if not response:
             return None
 
-        calendar = response.json()
+        data = response.json()
 
         # Everything received from cloud must be passed as self._cloud_data_key
         return self.calendar_constructor(parent=self,
-                                         **{self._cloud_data_key: calendar})
+                                         **{self._cloud_data_key: data})
 
     def get_calendar(self, calendar_id=None, calendar_name=None):
-        """
-        Returns a calendar by it's id or name
-        :param calendar_id: the calendar id to be retrieved.
-        :param calendar_name: the calendar name to be retrieved.
+        """ Returns a calendar by it's id or name
+
+        :param str calendar_id: the calendar id to be retrieved.
+        :param str calendar_name: the calendar name to be retrieved.
+        :return: calendar for the given info
+        :rtype: Calendar
         """
         if calendar_id and calendar_name:
             raise RuntimeError('Provide only one of the options')
@@ -1370,19 +1733,22 @@ class Schedule(ApiComponent):
             return None
 
         if calendar_id:
-            calendar = response.json()
+            data = response.json()
         else:
-            calendar = response.json().get('value')
-            calendar = calendar[0] if calendar else None
-            if calendar is None:
+            data = response.json().get('value')
+            data = data[0] if data else None
+            if data is None:
                 return None
 
         # Everything received from cloud must be passed as self._cloud_data_key
         return self.calendar_constructor(parent=self,
-                                         **{self._cloud_data_key: calendar})
+                                         **{self._cloud_data_key: data})
 
     def get_default_calendar(self):
-        """ Returns the default calendar for the current user """
+        """ Returns the default calendar for the current user
+
+        :rtype: Calendar
+        """
 
         url = self.build_url(self._endpoints.get('default_calendar'))
 
@@ -1390,25 +1756,27 @@ class Schedule(ApiComponent):
         if not response:
             return None
 
-        calendar = response.json()
+        data = response.json()
 
         # Everything received from cloud must be passed as self._cloud_data_key
         return self.calendar_constructor(parent=self,
-                                         **{self._cloud_data_key: calendar})
+                                         **{self._cloud_data_key: data})
 
     def get_events(self, limit=25, *, query=None, order_by=None, batch=None,
                    download_attachments=False):
-        """
-        Get events from the default Calendar
+        """ Get events from the default Calendar
 
-        :param limit: limits the result set. Over 999 uses batch.
-        :param query: applies a filter to the request such as 'displayName:HelloFolder'
+        :param int limit: max no. of events to get. Over 999 uses batch.
+        :param query: applies a OData filter to the request
+        :type query: Query or str
         :param order_by: orders the result set based on this condition
-        :param batch: Returns a custom iterator that retrieves items in batches allowing
-            to retrieve more items than the limit. Download_attachments is ignored.
-        :param download_attachments: downloads event attachments
+        :type order_by: Query or str
+        :param int batch: batch size, retrieves items in
+         batches allowing to retrieve more items than the limit.
+        :param bool download_attachments: downloads event attachments
+        :return: list of items in this folder
+        :rtype: list[Event] or Pagination
         """
-
         url = self.build_url(self._endpoints.get('events'))
 
         if limit is None or limit > self.protocol.max_top_value:
@@ -1437,7 +1805,8 @@ class Schedule(ApiComponent):
 
         # Everything received from cloud must be passed as self._cloud_data_key
         events = [self.event_constructor(parent=self,
-                                         download_attachments=download_attachments,
+                                         download_attachments
+                                         =download_attachments,
                                          **{self._cloud_data_key: event})
                   for event in data.get('value', [])]
         next_link = data.get(NEXT_LINK_KEYWORD, None)
@@ -1449,5 +1818,10 @@ class Schedule(ApiComponent):
             return events
 
     def new_event(self, subject=None):
-        """ Returns a new (unsaved) Event object in the default calendar """
+        """ Returns a new (unsaved) Event object in the default calendar
+
+        :param str subject: subject text for the new event
+        :return: new event
+        :rtype: Event
+        """
         return self.event_constructor(parent=self, subject=subject)
