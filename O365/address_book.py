@@ -148,7 +148,7 @@ class Contact(ApiComponent, AttachableMixin, HandleRecipientsMixin):
             'businessPhones': self.business_phones,
             'mobilePhone': self.mobile_phone,
             'homePhones': self.home_phones,
-            'emailAddresses': self.emails.to_api_data(),
+            'emailAddresses': [self._recipient_to_cloud(recipient) for recipient in self.emails],
             'businessAddress': self.business_addresses,
             'homesAddress': self.home_addresses,
             'otherAddress': self.other_addresses,
