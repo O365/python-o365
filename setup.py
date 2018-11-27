@@ -37,7 +37,7 @@ requires = [
 
 setup(
     name='O365',
-    version='1.0.0',
+    version='1.0.1',
     # packages=['O365', 'O365.utils'],
     packages=find_packages(),
     url='https://github.com/O365/python-o365',
