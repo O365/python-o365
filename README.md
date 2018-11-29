@@ -381,6 +381,102 @@ message.sender.address = 'my_shared_account@example.com'  # changing the from ad
 message.body = 'George Best quote: I might go to Alcoholics Anonymous, but I think it would be difficult for me to remain anonymous'
 message.attachments.add('george_best_quotes.txt')
 message.save_draft()  # save the message on the cloud as a draft in the drafts folder
+```
+
+Working with saved emails is also easy:
+```python
+query = mailbox.new_query().on_attribute('subject').contains('george best')  # see Query object in Utils
+messages = mailbox.get_messages(limit=25, query=query)
+
+message = messages[0]  # get the first one
+
+message.mark_as_read()
+reply_msg = message.reply()
+
+if 'example@example.com' in reply_msg.to:  # magic methods implemented
+    reply_msg.body = 'George Best quote: I spent a lot of money on booze, birds and fast cars. The rest I just squandered.'
+else:
+    reply_msg.body = 'George Best quote: I used to go missing a lot... Miss Canada, Miss United Kingdom, Miss World.'
+
+reply_msg.send()
+```
+
+## AddressBook
+AddressBook groups the funcionality of both the Contact Folders and Contacts. Outlook Distribution Groups are not supported (By the Microsoft API's).
+
+#### Contact Folders
+Represents a Folder within your Contacts Section in Office 365.
+AddressBook class represents the parent folder (it's a folder itself).
+
+You can get any folder in your address book by requesting child folders or filtering by name.
+
+```python
+address_book = account.address_book()
+
+contacts = address_book.get_contacts(limit=None)  # get all the contacts in the Personal Contacts root folder
+
+work_contacts_folder = address_book.get_folder(folder_name='Work Contacts')  # get a folder with 'Work Contacts' name
+
+message_to_all_contats_in_folder = work_contacts_folder.new_message()  # creates a draft message with all the contacts as recipients
+
+message_to_all_contats_in_folder.subject = 'Hallo!'
+message_to_all_contats_in_folder.body = """
+George Best quote:
+
+If you'd given me the choice of going out and beating four men and smashing a goal in
+from thirty yards against Liverpool or going to bed with Miss World,
+it would have been a difficult choice. Luckily, I had both.
+"""
+message_to_all_contats_in_folder.send()
+
+# querying folders is easy:
+child_folders = address_book.get_folders(25) # get at most 25 child folders
+
+for folder in child_folders:
+    print(folder.name, folder.parent_id)
+
+# creating a contact folder:
+address_book.create_child_folder('new folder')
+```
+
+#### The Global Address List
+Office 365 API (Nor MS Graph API) has no concept such as the Outlook Global Address List.
+However you can use the [Users API](https://developer.microsoft.com/en-us/graph/docs/api-reference/v1.0/resources/users) to access all the users within your organization.
+
+Without admin consent you can only access a few properties of each user such as name and email and litte more.
+You can search by name or retrieve a contact specifying the complete email.
+
+- Basic Permision needed is Users.ReadBasic.All (limit info)
+- Full Permision is Users.Read.All but needs admin consent.
+
+To search the Global Address List (Users API):
+
+```python
+global_address_list = account.address_book(address_book='gal')
+
+# start a new query:
+q = global_address_list.new_query('display_name')
+q.startswith('George Best')
+
+print(global_address_list.get_contacts(query=q))
+```
+
+
+To retrieve a contact by it's email:
+
+```python
+contact = global_address_list.get_contact_by_email('example@example.com')
+```
+
+#### Contacts
+Everything returned from an `AddressBook` instance is a `Contact` instance.
+Contacts have all the information stored as attributes
+
+Creating a contact from an `AddressBook`:
+
+```python
+new_contact = address_book.new_contact()
+
 new_contact.name = 'George Best'
 new_contact.job_title = 'football player'
 new_contact.emails.add('george@best.com')
