@@ -246,11 +246,11 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         body = cloud_data.get(cc('body'), {})
         self.__body = body.get(cc('content'), '')
         self.body_type = body.get(cc('contentType'), 'HTML')  # default to HTML for new messages
-        self.__sender = self._recipient_from_cloud(cloud_data.get(cc('from'), None), field='from')
-        self.__to = self._recipients_from_cloud(cloud_data.get(cc('toRecipients'), []), field='toRecipients')
-        self.__cc = self._recipients_from_cloud(cloud_data.get(cc('ccRecipients'), []), field='ccRecipients')
-        self.__bcc = self._recipients_from_cloud(cloud_data.get(cc('bccRecipients'), []), field='bccRecipients')
-        self.__reply_to = self._recipients_from_cloud(cloud_data.get(cc('replyTo'), []), field='replyTo')
+        self.__sender = self._recipient_from_cloud(cloud_data.get(cc('from'), None), field=cc('from'))
+        self.__to = self._recipients_from_cloud(cloud_data.get(cc('toRecipients'), []), field=cc('toRecipients'))
+        self.__cc = self._recipients_from_cloud(cloud_data.get(cc('ccRecipients'), []), field=cc('ccRecipients'))
+        self.__bcc = self._recipients_from_cloud(cloud_data.get(cc('bccRecipients'), []), field=cc('bccRecipients'))
+        self.__reply_to = self._recipients_from_cloud(cloud_data.get(cc('replyTo'), []), field=cc('replyTo'))
         self.__categories = cloud_data.get(cc('categories'), [])
         self.__importance = ImportanceLevel((cloud_data.get(cc('importance'), 'normal') or 'normal').lower())  # lower because of office365 v1.0
         self.__is_read = cloud_data.get(cc('isRead'), None)

@@ -624,7 +624,7 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         self.__location = cloud_data.get(cc('location'), {}).get(cc('displayName'), '')
         self.locations = cloud_data.get(cc('locations'), [])  # TODO
         self.online_meeting_url = cloud_data.get(cc('onlineMeetingUrl'), None)
-        self.__organizer = self._recipient_from_cloud(cloud_data.get(cc('organizer'), None), field='organizer')
+        self.__organizer = self._recipient_from_cloud(cloud_data.get(cc('organizer'), None), field=cc('organizer'))
         self.__recurrence = EventRecurrence(event=self, recurrence=cloud_data.get(cc('recurrence'), None))
         self.__is_reminder_on = cloud_data.get(cc('isReminderOn'), True)
         self.__remind_before_minutes = cloud_data.get(cc('reminderMinutesBeforeStart'), 15)
@@ -699,7 +699,7 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
     @body.setter
     def body(self, value):
         self.__body = value
-        self._track_changes.add('body')
+        self._track_changes.add(self._cc('body'))
 
     @property
     def subject(self):
@@ -708,7 +708,7 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
     @subject.setter
     def subject(self, value):
         self.__subject = value
-        self._track_changes.add('subject')
+        self._track_changes.add(self._cc('subject'))
 
     @property
     def start(self):
@@ -729,7 +729,7 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         self.__start = value
         if not self.end:
             self.end = self.__start + dt.timedelta(minutes=30)
-        self._track_changes.add('start')
+        self._track_changes.add(self._cc('start'))
 
     @property
     def end(self):
@@ -748,7 +748,7 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         elif value.tzinfo != self.protocol.timezone:
             value = value.astimezone(self.protocol.timezone)
         self.__end = value
-        self._track_changes.add('end')
+        self._track_changes.add(self._cc('end'))
 
     @property
     def importance(self):
@@ -757,7 +757,7 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
     @importance.setter
     def importance(self, value):
         self.__importance = value if isinstance(value, ImportanceLevel) else ImportanceLevel(value)
-        self._track_changes.add('importance')
+        self._track_changes.add(self._cc('importance'))
 
     @property
     def is_all_day(self):
@@ -783,7 +783,7 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
 
             self.start = start
             self.end = end
-        self._track_changes.add('isAllDay')
+        self._track_changes.add(self._cc('isAllDay'))
 
     @property
     def location(self):
@@ -792,7 +792,7 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
     @location.setter
     def location(self, value):
         self.__location = value
-        self._track_changes.add('location')
+        self._track_changes.add(self._cc('location'))
 
     @property
     def is_reminder_on(self):
@@ -801,8 +801,8 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
     @is_reminder_on.setter
     def is_reminder_on(self, value):
         self.__is_reminder_on = value
-        self._track_changes.add('isReminderOn')
-        self._track_changes.add('reminderMinutesBeforeStart')
+        self._track_changes.add(self._cc('isReminderOn'))
+        self._track_changes.add(self._cc('reminderMinutesBeforeStart'))
 
     @property
     def remind_before_minutes(self):
@@ -812,8 +812,8 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
     def remind_before_minutes(self, value):
         self.__is_reminder_on = True
         self.__remind_before_minutes = int(value)
-        self._track_changes.add('isReminderOn')
-        self._track_changes.add('reminderMinutesBeforeStart')
+        self._track_changes.add(self._cc('isReminderOn'))
+        self._track_changes.add(self._cc('reminderMinutesBeforeStart'))
 
     @property
     def response_requested(self):
@@ -822,7 +822,7 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
     @response_requested.setter
     def response_requested(self, value):
         self.__response_requested = value
-        self._track_changes.add('responseRequested')
+        self._track_changes.add(self._cc('responseRequested'))
 
     @property
     def recurrence(self):
@@ -839,7 +839,7 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
     @show_as.setter
     def show_as(self, value):
         self.__show_as = value if isinstance(value, EventShowAs) else EventShowAs(value)
-        self._track_changes.add('showAs')
+        self._track_changes.add(self._cc('showAs'))
 
     @property
     def sensitivity(self):
@@ -848,7 +848,7 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
     @sensitivity.setter
     def sensitivity(self, value):
         self.__sensitivity = value if isinstance(value, EventSensitivity) else EventSensitivity(value)
-        self._track_changes.add('sensitivity')
+        self._track_changes.add(self._cc('sensitivity'))
 
     @property
     def response_status(self):
@@ -876,7 +876,7 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
             self.__categories = list(value)
         else:
             raise ValueError('categories must be a list')
-        self._track_changes.add('categories')
+        self._track_changes.add(self._cc('categories'))
 
     def delete(self):
         """ Deletes a stored event """

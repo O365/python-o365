@@ -389,10 +389,13 @@ class Query:
             word = str(word).lower()
         return word
 
+    @staticmethod
+    def _prepare_sentence(attribute, operation, word, negation=False):
+        return '{} {} {} {}'.format('not' if negation else '', attribute, operation, word).strip()
+
     def logical_operator(self, operation, word):
         word = self._parse_filter_word(word)
-        sentence = '{} {} {} {}'.format('not' if self._negation else '', self._attribute, operation, word).strip()
-        self._add_filter(sentence)
+        self._add_filter(self._prepare_sentence(self._attribute, operation, word, self._negation))
         return self
 
     def equals(self, word):
@@ -413,11 +416,14 @@ class Query:
     def less_equal(self, word):
         return self.logical_operator('le', word)
 
+    @staticmethod
+    def _prepare_function(function_name, attribute, word, negation=False):
+        return "{} {}({}, {})".format('not' if negation else '', function_name, attribute, word).strip()
+
     def function(self, function_name, word):
         word = self._parse_filter_word(word)
 
-        self._add_filter(
-            "{} {}({}, {})".format('not' if self._negation else '', function_name, self._attribute, word).strip())
+        self._add_filter(self._prepare_function(function_name, self._attribute, word, self._negation))
         return self
 
     def contains(self, word):
@@ -428,6 +434,85 @@ class Query:
 
     def endswith(self, word):
         return self.function('endswith', word)
+
+    def iterable(self, iterable_name, *, collection, attribute, word, func=None, operation=None):
+        """ Performs a filter with the OData 'iterable_name' keyword on the collection
+
+        For example:
+        q.iterable('any', collection='email_addresses', attribute='address', operation='eq', word='george@best.com')
+
+        will transform to a filter such as:
+
+        emailAddresses/any(a:a/address eq 'george@best.com')
+
+        :param iterable_name: the OData name of the iterable
+        :param collection: the collection to apply the any keyword on
+        :param attribute: the attribute of the collection to check
+        :param word: the word to check
+        :param func: the logical function to apply to the attribute inside the collection
+        :param operation: the logical operation to apply to the attribute inside the collection
+        """
+
+        if func is None and operation is None:
+            raise ValueError('Provide a function or an operation to apply')
+        elif func is not None and operation is not None:
+            raise ValueError('Provide either a function or an operation but not both')
+
+        current_att = self._attribute
+        self._attribute = iterable_name
+
+        word = self._parse_filter_word(word)
+        collection = self._get_mapping(collection)
+        attribute = self._get_mapping(attribute)
+
+        if func is not None:
+            sentence = self._prepare_function(func, attribute, word)
+        else:
+            sentence = self._prepare_sentence(attribute, operation, word)
+
+        self._add_filter('{}/{}(a:a/{})'.format(collection, iterable_name, sentence))
+
+        self._attribute = current_att
+
+        return self
+
+    def any(self, *, collection, attribute, word, func=None, operation=None):
+        """ Performs a filter with the OData 'any' keyword on the collection
+
+        For example:
+        q.any(collection='email_addresses', attribute='address', operation='eq', word='george@best.com')
+
+        will transform to a filter such as:
+
+        emailAddresses/any(a:a/address eq 'george@best.com')
+
+        :param collection: the collection to apply the any keyword on
+        :param attribute: the attribute of the collection to check
+        :param word: the word to check
+        :param func: the logical function to apply to the attribute inside the collection
+        :param operation: the logical operation to apply to the attribute inside the collection
+        """
+
+        return self.iterable('any', collection=collection, attribute=attribute, word=word, func=func, operation=operation)
+
+    def all(self, *, collection, attribute, word, func=None, operation=None):
+        """ Performs a filter with the OData 'all' keyword on the collection
+
+        For example:
+        q.all(collection='email_addresses', attribute='address', operation='eq', word='george@best.com')
+
+        will transform to a filter such as:
+
+        emailAddresses/all(a:a/address eq 'george@best.com')
+
+        :param collection: the collection to apply the all keyword on
+        :param attribute: the attribute of the collection to check
+        :param word: the word to check
+        :param func: the logical function to apply to the attribute inside the collection
+        :param operation: the logical operation to apply to the attribute inside the collection
+        """
+
+        return self.iterable('all', collection=collection, attribute=attribute, word=word, func=func, operation=operation)
 
     def order_by(self, attribute=None, *, ascending=True):
         """ applies a order_by clause"""
