@@ -384,7 +384,14 @@ class Query:
                     word = self.protocol.timezone.localize(word)  # localize datetime into local tz
                 if word.tzinfo != pytz.utc:
                     word = word.astimezone(pytz.utc)  # transform local datetime to utc
-            word = '{}'.format(word.isoformat())  # convert datetime to isoformat
+            if '/' in self._attribute:
+                # TODO: this is a fix for the case when the parameter filtered is a string instead a dateTimeOffset
+                #  but checking the '/' is not correct, but it will differenciate for now the case on events:
+                #  start/dateTime (date is a string here) from the case on other dates such as
+                #  receivedDateTime (date is a dateTimeOffset)
+                word = "'{}'".format(word.isoformat())  # convert datetime to isoformat.
+            else:
+                word = "{}".format(word.isoformat())  # convert datetime to isoformat
         elif isinstance(word, bool):
             word = str(word).lower()
         return word
