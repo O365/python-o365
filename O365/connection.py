@@ -559,16 +559,27 @@ class Connection:
                 raise e  # re-raise exception
             except HTTPError as e:
                 # Server response with 4XX or 5XX error status codes
+
+                # try to extract the error message:
+                try:
+                    error = response.json()
+                    error_message = error.get('error', {}).get('message', '')
+                except ValueError:
+                    error_message = ''
+
                 status_code = int(e.response.status_code / 100)
                 if status_code == 4:
                     # Client Error
                     # Logged as error. Could be a library error or Api changes
-                    log.error('Client Error: {}'.format(str(e)))
+                    log.error('Client Error: {} | Error Message: {}'.format(str(e), error_message))
                 else:
                     # Server Error
                     log.debug('Server Error: {}'.format(str(e)))
                 if self.raise_http_errors:
-                    raise e
+                    if error_message:
+                        raise HTTPError('{} | Error Message: {}'.format(e.args[0], error_message), response=response)
+                    else:
+                        raise e
                 else:
                     return e.response
             except RequestException as e:

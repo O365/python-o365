@@ -322,9 +322,7 @@ class Contact(ApiComponent, AttachableMixin):
             cc('businessPhones'): self.__business_phones,
             cc('mobilePhone'): self.__mobile_phone,
             cc('homePhones'): self.__home_phones,
-            cc('emailAddresses'): [{self._cc('name'): recipient.name, self._cc('address'): recipient.address}
-                                   if recipient.name else
-                                   {self._cc('address'): recipient.address}
+            cc('emailAddresses'): [{self._cc('name'): recipient.name or '', self._cc('address'): recipient.address}
                                    for recipient in self.emails],
             cc('businessAddress'): self.__business_address,
             cc('homesAddress'): self.__home_address,
@@ -333,6 +331,7 @@ class Contact(ApiComponent, AttachableMixin):
         }
 
         if restrict_keys:
+            restrict_keys.add(cc('givenName'))  # GivenName is required by the api all the time.
             for key in list(data.keys()):
                 if key not in restrict_keys:
                     del data[key]
@@ -371,7 +370,6 @@ class Contact(ApiComponent, AttachableMixin):
                 url = self.build_url(self._endpoints.get('contact'))
             method = self.con.post
             data = self.to_api_data(restrict_keys=self._track_changes)
-
         response = method(url, data=data)
 
         if not response:
