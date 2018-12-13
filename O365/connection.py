@@ -26,7 +26,7 @@ OAUTH_REDIRECT_URL = 'https://outlook.office365.com/owa/'
 
 RETRIES_STATUS_LIST = (
     429,  # Status code for TooManyRequests
-    500, 502, 503, 504
+    500, 502, 503, 504  # Server errors
 )
 RETRIES_BACKOFF_FACTOR = 0.5
 

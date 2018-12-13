@@ -1,4 +1,4 @@
-# pyo365 - Microsoft Graph and Office 365 API made easy
+# O365 - Microsoft Graph and Office 365 API made easy
 
 This project aims is to make it easy to interact with Microsoft Graph and Office 365 Email, Contacts, Calendar, OneDrive, etc.
 
@@ -68,7 +68,7 @@ What follows is kind of a wiki... but you will get more insights by looking at t
 
 
 ## Install
-pyo365 is available on pypi.org. Simply run `pip install O365` to install it.
+O365 is available on pypi.org. Simply run `pip install O365` to install it.
 
 Project dependencies installed by pip:
  - requests
@@ -238,7 +238,7 @@ con = Connection(credentials, scopes=scopes_graph)
     If your application needs to work for more than 90 days without user interaction and without interacting with the API, then you must implement a periodic call to `Connection.refresh_token` before the 90 days have passed.
 
 
-##### Using pyo365 to authenticate
+##### Using O365 to authenticate
 
 You can manually authenticate by using a single `Connection` instance as described before or use the helper methods provided by the library.
 
