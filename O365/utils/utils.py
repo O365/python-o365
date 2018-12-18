@@ -430,8 +430,12 @@ class Query:
         """ Clear filters """
         self._filters = []
 
+    @fluent
     def clear(self):
-        """ Clear everything """
+        """ Clear everything
+
+        :rtype: Query
+        """
         self._filters = []
         self._order_by = OrderedDict()
         self._selects = set()
@@ -461,6 +465,7 @@ class Query:
         self._chain = operation
         return self
 
+    @fluent
     def on_attribute(self, attribute):
         """ Apply query on attribute, to be used along with chain()
 
@@ -494,11 +499,27 @@ class Query:
                 if word.tzinfo != pytz.utc:
                     word = word.astimezone(
                         pytz.utc)  # transform local datetime to utc
-            word = '{}'.format(
-                word.isoformat())  # convert datetime to isoformat
+            if '/' in self._attribute:
+                # TODO: this is a fix for the case when the parameter
+                # filtered is a string instead a dateTimeOffset
+                #  but checking the '/' is not correct, but it will
+                # differentiate for now the case on events:
+                #  start/dateTime (date is a string here) from
+                # the case on other dates such as
+                #  receivedDateTime (date is a dateTimeOffset)
+                word = "'{}'".format(
+                    word.isoformat())  # convert datetime to isoformat.
+            else:
+                word = "{}".format(
+                    word.isoformat())  # convert datetime to isoformat
         elif isinstance(word, bool):
             word = str(word).lower()
         return word
+
+    @staticmethod
+    def _prepare_sentence(attribute, operation, word, negation=False):
+        return '{} {} {} {}'.format('not' if negation else '', attribute,
+                                    operation, word).strip()
 
     @fluent
     def logical_operator(self, operation, word):
@@ -510,10 +531,9 @@ class Query:
         :rtype: Query
         """
         word = self._parse_filter_word(word)
-        sentence = '{} {} {} {}'.format('not' if self._negation else '',
-                                        self._attribute, operation,
-                                        word).strip()
-        self._add_filter(sentence)
+        self._add_filter(
+            self._prepare_sentence(self._attribute, operation, word,
+                                   self._negation))
         return self
 
     @fluent
@@ -570,6 +590,11 @@ class Query:
         """
         return self.logical_operator('le', word)
 
+    @staticmethod
+    def _prepare_function(function_name, attribute, word, negation=False):
+        return "{} {}({}, {})".format('not' if negation else '', function_name,
+                                      attribute, word).strip()
+
     @fluent
     def function(self, function_name, word):
         """ Apply a function on given word
@@ -581,9 +606,8 @@ class Query:
         word = self._parse_filter_word(word)
 
         self._add_filter(
-            "{} {}({}, {})".format('not' if self._negation else '',
-                                   function_name, self._attribute,
-                                   word).strip())
+            self._prepare_function(function_name, self._attribute, word,
+                                   self._negation))
         return self
 
     @fluent
@@ -612,6 +636,105 @@ class Query:
         :rtype: Query
         """
         return self.function('endswith', word)
+
+    @fluent
+    def iterable(self, iterable_name, *, collection, attribute, word, func=None,
+                 operation=None):
+        """ Performs a filter with the OData 'iterable_name' keyword
+        on the collection
+
+        For example:
+        q.iterable('any', collection='email_addresses', attribute='address',
+        operation='eq', word='george@best.com')
+
+        will transform to a filter such as:
+        emailAddresses/any(a:a/address eq 'george@best.com')
+
+        :param str iterable_name: the OData name of the iterable
+        :param str collection: the collection to apply the any keyword on
+        :param str attribute: the attribute of the collection to check
+        :param str word: the word to check
+        :param str func: the logical function to apply to the attribute inside
+         the collection
+        :param str operation: the logical operation to apply to the attribute
+         inside the collection
+        :rtype: Query
+        """
+
+        if func is None and operation is None:
+            raise ValueError('Provide a function or an operation to apply')
+        elif func is not None and operation is not None:
+            raise ValueError(
+                'Provide either a function or an operation but not both')
+
+        current_att = self._attribute
+        self._attribute = iterable_name
+
+        word = self._parse_filter_word(word)
+        collection = self._get_mapping(collection)
+        attribute = self._get_mapping(attribute)
+
+        if func is not None:
+            sentence = self._prepare_function(func, attribute, word)
+        else:
+            sentence = self._prepare_sentence(attribute, operation, word)
+
+        self._add_filter(
+            '{}/{}(a:a/{})'.format(collection, iterable_name, sentence))
+
+        self._attribute = current_att
+
+        return self
+
+    @fluent
+    def any(self, *, collection, attribute, word, func=None, operation=None):
+        """ Performs a filter with the OData 'any' keyword on the collection
+
+        For example:
+        q.any(collection='email_addresses', attribute='address',
+        operation='eq', word='george@best.com')
+
+        will transform to a filter such as:
+
+        emailAddresses/any(a:a/address eq 'george@best.com')
+
+        :param str collection: the collection to apply the any keyword on
+        :param str attribute: the attribute of the collection to check
+        :param str word: the word to check
+        :param str func: the logical function to apply to the attribute
+         inside the collection
+        :param str operation: the logical operation to apply to the
+         attribute inside the collection
+        :rtype: Query
+        """
+
+        return self.iterable('any', collection=collection, attribute=attribute,
+                             word=word, func=func, operation=operation)
+
+    @fluent
+    def all(self, *, collection, attribute, word, func=None, operation=None):
+        """ Performs a filter with the OData 'all' keyword on the collection
+
+        For example:
+        q.any(collection='email_addresses', attribute='address',
+        operation='eq', word='george@best.com')
+
+        will transform to a filter such as:
+
+        emailAddresses/all(a:a/address eq 'george@best.com')
+
+        :param str collection: the collection to apply the any keyword on
+        :param str attribute: the attribute of the collection to check
+        :param str word: the word to check
+        :param str func: the logical function to apply to the attribute
+         inside the collection
+        :param str operation: the logical operation to apply to the
+         attribute inside the collection
+        :rtype: Query
+        """
+
+        return self.iterable('all', collection=collection, attribute=attribute,
+                             word=word, func=func, operation=operation)
 
     @fluent
     def order_by(self, attribute=None, *, ascending=True):

@@ -1,10 +1,11 @@
+import datetime as dt
 import logging
 from enum import Enum
 
 from dateutil.parser import parse
 
-from O365.message import HandleRecipientsMixin, Recipients, Message
-from O365.utils import AttachableMixin
+from O365.message import Recipients, Message
+from O365.utils import AttachableMixin, TrackerSet
 from O365.utils import Pagination, NEXT_LINK_KEYWORD, ApiComponent
 
 GAL_MAIN_RESOURCE = 'users'
@@ -18,31 +19,13 @@ class RecipientType(Enum):
     BCC = 'bcc'
 
 
-class Contact(ApiComponent, AttachableMixin, HandleRecipientsMixin):
+class Contact(ApiComponent, AttachableMixin):
     """ Contact manages lists of events on associated contact on office365. """
 
-    _mapping = {
-        'display_name': 'displayName',
-        'name': 'givenName',
-        'surname': 'surname',
-        'title': 'title',
-        'job_title': 'jobTitle',
-        'company_name': 'companyName',
-        'department': 'department',
-        'office_location': 'officeLocation',
-        'business_phones': 'businessPhones',
-        'mobile_phone': 'mobilePhone',
-        'home_phones': 'homePhones',
-        'emails': 'emailAddresses',
-        'business_addresses': 'businessAddress',
-        'home_addresses': 'homesAddress',
-        'other_addresses': 'otherAddress',
-        'categories': 'categories'
-    }
-
     _endpoints = {
+        'contact': '/contacts',
         'root_contact': '/contacts/{id}',
-        'child_contact': '/contactFolders/{id}/contacts'
+        'child_contact': '/contactFolders/{folder_id}/contacts'
     }
 
     message_constructor = Message
@@ -72,41 +55,50 @@ class Contact(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         cloud_data = kwargs.get(self._cloud_data_key, {})
         cc = self._cc  # alias to shorten the code
 
+        # internal to know which properties need to be updated on the server
+        self._track_changes = TrackerSet(casing=cc)
+
         self.object_id = cloud_data.get(cc('id'), None)
-        self.created = cloud_data.get(cc('createdDateTime'), None)
-        self.modified = cloud_data.get(cc('lastModifiedDateTime'), None)
+        self.__created = cloud_data.get(cc('createdDateTime'), None)
+        self.__modified = cloud_data.get(cc('lastModifiedDateTime'), None)
 
         local_tz = self.protocol.timezone
-        self.created = parse(self.created).astimezone(
-            local_tz) if self.created else None
-        self.modified = parse(self.modified).astimezone(
-            local_tz) if self.modified else None
+        self.__created = parse(self.created).astimezone(
+            local_tz) if self.__created else None
+        self.__modified = parse(self.modified).astimezone(
+            local_tz) if self.__modified else None
 
-        self.display_name = cloud_data.get(cc('displayName'), '')
-        self.name = cloud_data.get(cc('givenName'), '')
-        self.surname = cloud_data.get(cc('surname'), '')
+        self.__display_name = cloud_data.get(cc('displayName'), '')
+        self.__name = cloud_data.get(cc('givenName'), '')
+        self.__surname = cloud_data.get(cc('surname'), '')
 
-        self.title = cloud_data.get(cc('title'), '')
-        self.job_title = cloud_data.get(cc('jobTitle'), '')
-        self.company_name = cloud_data.get(cc('companyName'), '')
-        self.department = cloud_data.get(cc('department'), '')
-        self.office_location = cloud_data.get(cc('officeLocation'), '')
-        self.business_phones = cloud_data.get(cc('businessPhones'), []) or []
-        self.mobile_phone = cloud_data.get(cc('mobilePhone'), '')
-        self.home_phones = cloud_data.get(cc('homePhones'), []) or []
-        self.__emails = self._recipients_from_cloud(
-            cloud_data.get(cc('emailAddresses'), []))
+        self.__title = cloud_data.get(cc('title'), '')
+        self.__job_title = cloud_data.get(cc('jobTitle'), '')
+        self.__company_name = cloud_data.get(cc('companyName'), '')
+        self.__department = cloud_data.get(cc('department'), '')
+        self.__office_location = cloud_data.get(cc('officeLocation'), '')
+        self.__business_phones = cloud_data.get(cc('businessPhones'), []) or []
+        self.__mobile_phone = cloud_data.get(cc('mobilePhone'), '')
+        self.__home_phones = cloud_data.get(cc('homePhones'), []) or []
+
+        emails = cloud_data.get(cc('emailAddresses'), [])
+        self.__emails = Recipients(
+            recipients=[(rcp.get(cc('name'), ''), rcp.get(cc('address'), ''))
+                        for rcp in emails],
+            parent=self, field=cc('emailAddresses'))
         email = cloud_data.get(cc('email'))
+        self.__emails.untrack = True
         if email and email not in self.__emails:
             # a Contact from OneDrive?
             self.__emails.add(email)
-        self.business_addresses = cloud_data.get(cc('businessAddress'), {})
-        self.home_addresses = cloud_data.get(cc('homesAddress'), {})
-        self.other_addresses = cloud_data.get(cc('otherAddress'), {})
-        self.preferred_language = cloud_data.get(cc('preferredLanguage'), None)
+        self.__business_address = cloud_data.get(cc('businessAddress'), {})
+        self.__home_address = cloud_data.get(cc('homesAddress'), {})
+        self.__other_address = cloud_data.get(cc('otherAddress'), {})
+        self.__preferred_language = cloud_data.get(cc('preferredLanguage'),
+                                                   None)
 
-        self.categories = cloud_data.get(cc('categories'), [])
-        self.folder_id = cloud_data.get(cc('parentFolderId'), None)
+        self.__categories = cloud_data.get(cc('categories'), [])
+        self.__folder_id = cloud_data.get(cc('parentFolderId'), None)
 
         # When using Users endpoints (GAL)
         # Missing keys: ['mail', 'userPrincipalName']
@@ -116,6 +108,207 @@ class Contact(ApiComponent, AttachableMixin, HandleRecipientsMixin):
             self.emails.add(mail)
         if user_principal_name and user_principal_name not in self.emails:
             self.emails.add(user_principal_name)
+        self.__emails.untrack = False
+
+    @property
+    def created(self):
+        """ Created Time
+
+        :rtype: datetime
+        """
+        return self.__created
+
+    @property
+    def modified(self):
+        """ Last Modified Time
+
+        :rtype: datetime
+        """
+        return self.__modified
+
+    @property
+    def display_name(self):
+        """ Display Name
+
+        :getter: Get the display name of the contact
+        :setter: Update the display name
+        :type: str
+        """
+        return self.__display_name
+
+    @display_name.setter
+    def display_name(self, value):
+        self.__display_name = value
+        self._track_changes.add(self._cc('displayName'))
+
+    @property
+    def name(self):
+        """ First Name
+
+        :getter: Get the name of the contact
+        :setter: Update the name
+        :type: str
+        """
+        return self.__name
+
+    @name.setter
+    def name(self, value):
+        self.__name = value
+        self._track_changes.add(self._cc('givenName'))
+
+    @property
+    def surname(self):
+        """ Surname of Contact
+
+        :getter: Get the surname of the contact
+        :setter: Update the surname
+        :type: str
+        """
+        return self.__surname
+
+    @surname.setter
+    def surname(self, value):
+        self.__surname = value
+        self._track_changes.add(self._cc('surname'))
+
+    @property
+    def full_name(self):
+        """ Full Name (Name + Surname)
+
+        :rtype: str
+        """
+        return '{} {}'.format(self.name, self.surname).strip()
+
+    @property
+    def title(self):
+        """ Title (Mr., Ms., etc..)
+
+        :getter: Get the title of the contact
+        :setter: Update the title
+        :type: str
+        """
+        return self.__title
+
+    @title.setter
+    def title(self, value):
+        self.__title = value
+        self._track_changes.add(self._cc('title'))
+
+    @property
+    def job_title(self):
+        """ Job Title
+
+        :getter: Get the job title of contact
+        :setter: Update the job title
+        :type: str
+        """
+        return self.__job_title
+
+    @job_title.setter
+    def job_title(self, value):
+        self.__job_title = value
+        self._track_changes.add(self._cc('jobTitle'))
+
+    @property
+    def company_name(self):
+        """ Name of the company
+
+        :getter: Get the company name of contact
+        :setter: Update the company name
+        :type: str
+        """
+        return self.__company_name
+
+    @company_name.setter
+    def company_name(self, value):
+        self.__company_name = value
+        self._track_changes.add(self._cc('companyName'))
+
+    @property
+    def department(self):
+        """ Department
+
+        :getter: Get the department of contact
+        :setter: Update the department
+        :type: str
+        """
+        return self.__department
+
+    @department.setter
+    def department(self, value):
+        self.__department = value
+        self._track_changes.add(self._cc('department'))
+
+    @property
+    def office_location(self):
+        """ Office Location
+
+        :getter: Get the office location of contact
+        :setter: Update the office location
+        :type: str
+        """
+        return self.__office_location
+
+    @office_location.setter
+    def office_location(self, value):
+        self.__office_location = value
+        self._track_changes.add(self._cc('officeLocation'))
+
+    @property
+    def business_phones(self):
+        """ Business Contact numbers
+
+        :getter: Get the contact numbers of contact
+        :setter: Update the contact numbers
+        :type: list[str]
+        """
+        return self.__business_phones
+
+    @business_phones.setter
+    def business_phones(self, value):
+        if isinstance(value, tuple):
+            value = list(value)
+        if not isinstance(value, list):
+            value = [value]
+        self.__business_phones = value
+        self._track_changes.add(self._cc('businessPhones'))
+
+    @property
+    def mobile_phone(self):
+        """ Personal Contact numbers
+
+        :getter: Get the contact numbers of contact
+        :setter: Update the contact numbers
+        :type: list[str]
+        """
+        return self.__mobile_phone
+
+    @mobile_phone.setter
+    def mobile_phone(self, value):
+        self.__mobile_phone = value
+        self._track_changes.add(self._cc('mobilePhone'))
+
+    @property
+    def home_phones(self):
+        """ Home Contact numbers
+
+        :getter: Get the contact numbers of contact
+        :setter: Update the contact numbers
+        :type: list[str]
+        """
+        return self.__home_phones
+
+    @home_phones.setter
+    def home_phones(self, value):
+        if isinstance(value, list):
+            self.__home_phones = value
+        elif isinstance(value, str):
+            self.__home_phones = [value]
+        elif isinstance(value, tuple):
+            self.__home_phones = list(value)
+        else:
+            raise ValueError('home_phones must be a list')
+        self._track_changes.add(self._cc('homePhones'))
 
     @property
     def emails(self):
@@ -136,12 +329,100 @@ class Contact(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         return self.emails[0].address
 
     @property
-    def full_name(self):
-        """ Full name of the Contact
+    def business_address(self):
+        """ Business Address
+
+        :getter: Get the address of contact
+        :setter: Update the address
+        :type: dict
+        """
+        return self.__business_address
+
+    @business_address.setter
+    def business_address(self, value):
+        if not isinstance(value, dict):
+            raise ValueError('"business_address" must be dict')
+        self.__business_address = value
+        self._track_changes.add(self._cc('businessAddress'))
+
+    @property
+    def home_address(self):
+        """ Home Address
+
+        :getter: Get the address of contact
+        :setter: Update the address
+        :type: dict
+        """
+        return self.__home_address
+
+    @home_address.setter
+    def home_address(self, value):
+        if not isinstance(value, dict):
+            raise ValueError('"home_address" must be dict')
+        self.__home_address = value
+        self._track_changes.add(self._cc('homesAddress'))
+
+    @property
+    def other_address(self):
+        """ Other Address
+
+        :getter: Get the address of contact
+        :setter: Update the address
+        :type: dict
+        """
+        return self.__other_address
+
+    @other_address.setter
+    def other_address(self, value):
+        if not isinstance(value, dict):
+            raise ValueError('"other_address" must be dict')
+        self.__other_address = value
+        self._track_changes.add(self._cc('otherAddress'))
+
+    @property
+    def preferred_language(self):
+        """ Preferred Language
+
+        :getter: Get the language of contact
+        :setter: Update the language
+        :type: str
+        """
+        return self.__preferred_language
+
+    @preferred_language.setter
+    def preferred_language(self, value):
+        self.__preferred_language = value
+        self._track_changes.add(self._cc('preferredLanguage'))
+
+    @property
+    def categories(self):
+        """ Assigned Categories
+
+        :getter: Get the categories
+        :setter: Update the categories
+        :type: list[str]
+        """
+        return self.__categories
+
+    @categories.setter
+    def categories(self, value):
+        if isinstance(value, list):
+            self.__categories = value
+        elif isinstance(value, str):
+            self.__categories = [value]
+        elif isinstance(value, tuple):
+            self.__categories = list(value)
+        else:
+            raise ValueError('categories must be a list')
+        self._track_changes.add(self._cc('categories'))
+
+    @property
+    def folder_id(self):
+        """ ID of the folder
 
         :rtype: str
         """
-        return '{} {}'.format(self.name, self.surname).strip()
+        return self.__folder_id
 
     def __str__(self):
         return self.__repr__()
@@ -149,29 +430,40 @@ class Contact(ApiComponent, AttachableMixin, HandleRecipientsMixin):
     def __repr__(self):
         return self.display_name or self.full_name or 'Unknown Name'
 
-    def to_api_data(self):
+    def to_api_data(self, restrict_keys=None):
         """ Returns a dictionary in cloud format
 
-        :rtype: dict
+        :param restrict_keys: a set of keys to restrict the returned data to.
         """
+        cc = self._cc  # alias
 
         data = {
-            'displayName': self.display_name,
-            'givenName': self.name,
-            'surname': self.surname,
-            'title': self.title,
-            'jobTitle': self.job_title,
-            'companyName': self.company_name,
-            'department': self.department,
-            'officeLocation': self.office_location,
-            'businessPhones': self.business_phones,
-            'mobilePhone': self.mobile_phone,
-            'homePhones': self.home_phones,
-            'emailAddresses': [self._recipient_to_cloud(recipient) for recipient in self.emails],
-            'businessAddress': self.business_addresses,
-            'homesAddress': self.home_addresses,
-            'otherAddress': self.other_addresses,
-            'categories': self.categories}
+            cc('displayName'): self.__display_name,
+            cc('givenName'): self.__name,
+            cc('surname'): self.__surname,
+            cc('title'): self.__title,
+            cc('jobTitle'): self.__job_title,
+            cc('companyName'): self.__company_name,
+            cc('department'): self.__department,
+            cc('officeLocation'): self.__office_location,
+            cc('businessPhones'): self.__business_phones,
+            cc('mobilePhone'): self.__mobile_phone,
+            cc('homePhones'): self.__home_phones,
+            cc('emailAddresses'): [{self._cc('name'): recipient.name or '',
+                                    self._cc('address'): recipient.address}
+                                   for recipient in self.emails],
+            cc('businessAddress'): self.__business_address,
+            cc('homesAddress'): self.__home_address,
+            cc('otherAddress'): self.__other_address,
+            cc('categories'): self.__categories
+        }
+
+        if restrict_keys:
+            restrict_keys.add(cc(
+                'givenName'))  # GivenName is required by the api all the time.
+            for key in list(data.keys()):
+                if key not in restrict_keys:
+                    del data[key]
         return data
 
     def delete(self):
@@ -185,80 +477,59 @@ class Contact(ApiComponent, AttachableMixin, HandleRecipientsMixin):
             raise RuntimeError('Attempting to delete an unsaved Contact')
 
         url = self.build_url(
-            self._endpoints.get('contact').format(id=self.object_id))
+            self._endpoints.get('root_contact').format(id=self.object_id))
 
         response = self.con.delete(url)
 
         return bool(response)
 
-    def update(self, fields):
-        """ Updates a contact info to cloud
-
-        :param list[str] fields: a list of fields to update
-        :return: Success or Failure
-        :rtype: bool
-        :raises RuntimeError: if contact is not yet saved to cloud
-        :raises ValueError: if invalid data type of fields passed
-        :raises ValueError: if any field is not valid
-        """
-        if not self.object_id:
-            raise RuntimeError('Attempting to update an unsaved Contact')
-
-        if fields is None or not isinstance(fields, (list, tuple)):
-            raise ValueError('Must provide fields to update as a list or tuple')
-
-        data = {}
-        for field in fields:
-            mapping = self._mapping.get(field)
-            if mapping is None:
-                raise ValueError(
-                    '{} is not a valid field from Contact'.format(
-                        field))
-            update_value = getattr(self, field)
-            if isinstance(update_value, Recipients):
-                data[self._cc(mapping)] = [self._recipient_to_cloud(recipient)
-                                           for recipient in update_value]
-            else:
-                data[self._cc(mapping)] = update_value
-
-        url = self.build_url(
-            self._endpoints.get('contact'.format(id=self.object_id)))
-
-        response = self.con.patch(url, data=data)
-
-        return bool(response)
-
     def save(self):
-        """ Saves this contact to the cloud
+        """ Saves this contact to the cloud (create or update existing one
+        based on what values have changed)
 
         :return: Saved or Not
         :rtype: bool
         """
         if self.object_id:
-            raise RuntimeError(
-                "Can't save an existing Contact. Use Update instead. ")
-
-        if self.folder_id:
+            # Update Contact
+            if not self._track_changes:
+                return True  # there's nothing to update
             url = self.build_url(
-                self._endpoints.get('child_contact').format(self.folder_id))
+                self._endpoints.get('root_contact').format(id=self.object_id))
+            method = self.con.patch
+            data = self.to_api_data(restrict_keys=self._track_changes)
         else:
-            url = self.build_url(self._endpoints.get('root_contact'))
+            # Save new Contact
+            if self.__folder_id:
+                url = self.build_url(
+                    self._endpoints.get('child_contact').format(
+                        folder_id=self.__folder_id))
+            else:
+                url = self.build_url(self._endpoints.get('contact'))
+            method = self.con.post
+            data = self.to_api_data(restrict_keys=self._track_changes)
+        response = method(url, data=data)
 
-        response = self.con.post(url, data=self.to_api_data())
         if not response:
             return False
 
-        contact = response.json()
+        if not self.object_id:
+            # New Contact
+            contact = response.json()
 
-        self.object_id = contact.get(self._cc('id'), None)
-        self.created = contact.get(self._cc('createdDateTime'), None)
-        self.modified = contact.get(self._cc('lastModifiedDateTime'), None)
+            self.object_id = contact.get(self._cc('id'), None)
 
-        local_tz = self.protocol.timezone
-        self.created = parse(self.created).astimezone(
-            local_tz) if self.created else None
-        self.modified = parse(self.modified).astimezone(
-            local_tz) if self.modified else None
+            self.__created = contact.get(self._cc('createdDateTime'), None)
+            self.__modified = contact.get(self._cc('lastModifiedDateTime'),
+                                          None)
+
+            local_tz = self.protocol.timezone
+            self.__created = parse(self.created).astimezone(
+                local_tz) if self.__created else None
+            self.__modified = parse(self.modified).astimezone(
+                local_tz) if self.__modified else None
+        else:
+            self.__modified = self.protocol.timezone.localize(dt.datetime.now())
 
         return True
 
@@ -421,6 +692,22 @@ class BaseContactFolder(ApiComponent):
         else:
             return contacts
 
+    def get_contact_by_email(self, email):
+        """ Returns a Contact by it's email
+
+        :param email: email to get contact for
+        :return: Contact for specified email
+        :rtype: Contact
+        """
+        if not email:
+            return None
+
+        email = email.strip()
+        query = self.q().any(collection='email_addresses', attribute='address',
+                             word=email, operation='eq')
+        contacts = self.get_contacts(limit=1, query=query)
+        return contacts[0] if contacts else None
+
 
 class ContactFolder(BaseContactFolder):
     """ A Contact Folder representation """
@@ -492,7 +779,7 @@ class ContactFolder(BaseContactFolder):
             url = self.build_url(self._endpoints.get('root_folders'))
         else:
             url = self.build_url(
-                self._endpoints.get('child_folders').format(self.folder_id))
+                self._endpoints.get('child_folders').format(id=self.folder_id))
 
         params = {}
 
@@ -634,8 +921,7 @@ class ContactFolder(BaseContactFolder):
         """
         contact = self.contact_constructor(parent=self)
         if not self.root:
-            contact.folder_id = self.folder_id
-
+            contact.__folder_id = self.folder_id
         return contact
 
     def new_message(self, recipient_type=RecipientType.TO, *, query=None):

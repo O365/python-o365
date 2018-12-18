@@ -326,15 +326,15 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         self.body_type = body.get(cc('contentType'),
                                   'HTML')  # default to HTML for new messages
         self.__sender = self._recipient_from_cloud(
-            cloud_data.get(cc('from'), None), field='from')
+            cloud_data.get(cc('from'), None), field=cc('from'))
         self.__to = self._recipients_from_cloud(
-            cloud_data.get(cc('toRecipients'), []), field='toRecipients')
+            cloud_data.get(cc('toRecipients'), []), field=cc('toRecipients'))
         self.__cc = self._recipients_from_cloud(
-            cloud_data.get(cc('ccRecipients'), []), field='ccRecipients')
+            cloud_data.get(cc('ccRecipients'), []), field=cc('ccRecipients'))
         self.__bcc = self._recipients_from_cloud(
-            cloud_data.get(cc('bccRecipients'), []), field='bccRecipients')
+            cloud_data.get(cc('bccRecipients'), []), field=cc('bccRecipients'))
         self.__reply_to = self._recipients_from_cloud(
-            cloud_data.get(cc('replyTo'), []), field='replyTo')
+            cloud_data.get(cc('replyTo'), []), field=cc('replyTo'))
         self.__categories = cloud_data.get(cc('categories'), [])
 
         # lower() for office365 v1.0

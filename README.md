@@ -527,7 +527,8 @@ calendar = schedule.get_calendar(calendar_name='Birthdays')
 calendar.name = 'Football players birthdays'
 calendar.update()
 
-q = calendar.new_query('start').ge(dt.datetime(2018, 5, 20)).chain('and').on_attribute('end').le(dt.datetime(2018, 5, 24))
+q = calendar.new_query('start').greater_equal(dt.datetime(2018, 5, 20))
+q.chain('and').on_attribute('end').less_equal(dt.datetime(2018, 5, 24))
 
 birthdays = calendar.get_events(query=q)
 

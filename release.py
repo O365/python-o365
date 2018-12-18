@@ -8,6 +8,7 @@ import subprocess
 import sys
 import requests
 from pathlib import Path
+from math import floor
 
 import click
 
@@ -128,6 +129,42 @@ def list_releases():
     else:
         print('Package "{}" not found on Pypi.org'.format(PYPI_PACKAGE_NAME))
 
+# Mostly just for fun. I was curious to see what the shape of contributions was.
+@cli.command(name='contributors')
+def contribution_breakdown():
+    """ Displays a table of the contributors and to what extent we have them to thank."""
+    args = ['git','blame']
+    counts = {}
+    line_format = '{0:30}\t{1:>10}\t{2:>10}%'
+    files = subprocess.check_output(['git','ls-files']).decode("utf-8").split('\n')
+
+    for f in files[:-1]:
+        if 'docs/latest' in f or '_themes' in f:
+            continue #skip generated stuff
+        lines = subprocess.check_output(args + [f]).decode('utf-8')
+        blames = [getLineBlame(line) for line in lines.split('\n')]
+        for blame in blames:
+            counts[blame] = counts.get(blame,0) + 1
+
+    total = sum([counts[count] for count in counts])
+    contribs = [(user,counts[user]) for user in counts]
+    contribs.sort(key=lambda x:x[1],reverse=True)
+
+    print(line_format.format('User','Lines','Line '))
+
+    for user in contribs:
+        percent = floor(100.0*user[1]/total)
+        if percent == 0: percent = '>1'
+        print(line_format.format(user[0],user[1],percent))
+
+    print(line_format.format('Total',total,100))
+
+def getLineBlame(line):
+    line = line
+    start = line.find('(') + 1
+    end = line.find(' 2',start) #should be good for the next ~900 years
+    name = line[start:end]
+    return name.rstrip(' ').title() if name != '' else 'Unknown'
 
 if __name__ == "__main__":
     cli()
