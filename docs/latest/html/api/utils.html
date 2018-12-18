@@ -1,0 +1,1100 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Utils &mdash; O365  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="Sharepoint" href="sharepoint.html" /> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> O365
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage.html">Detailed Usage</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">O365 API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="account.html">Account</a></li>
+<li class="toctree-l2"><a class="reference internal" href="address_book.html">Address Book</a></li>
+<li class="toctree-l2"><a class="reference internal" href="attachment.html">Attachment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="calendar.html">Calendar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="connection.html">Connection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="drive.html">One Drive</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mailbox.html">Mailbox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="message.html">Message</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sharepoint.html">Sharepoint</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Utils</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">O365</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../api.html">O365 API</a> &raquo;</li>
+        
+      <li>Utils</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/utils.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
+      
+      
+        <a href="sharepoint.html" class="btn btn-neutral" title="Sharepoint" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+  </div>
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-O365.utils.utils">
+<span id="utils"></span><h1>Utils<a class="headerlink" href="#module-O365.utils.utils" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="O365.utils.utils.ApiComponent">
+<em class="property">class </em><code class="descclassname">O365.utils.utils.</code><code class="descname">ApiComponent</code><span class="sig-paren">(</span><em>*</em>, <em>protocol=None</em>, <em>main_resource=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/utils/utils.html#ApiComponent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.utils.utils.ApiComponent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Base class for all object interactions with the Cloud Service API</p>
+<p>Exposes common access methods to the api protocol within all Api objects</p>
+<dl class="method">
+<dt id="O365.utils.utils.ApiComponent.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>*</em>, <em>protocol=None</em>, <em>main_resource=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/utils/utils.html#ApiComponent.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.utils.utils.ApiComponent.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Object initialization</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>protocol</strong> (<a class="reference internal" href="connection.html#O365.connection.Protocol" title="O365.connection.Protocol"><em>Protocol</em></a>) – A protocol class or instance to be used with
+this connection</li>
+<li><strong>main_resource</strong> (<em>str</em>) – main_resource to be used in these API
+communications</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.utils.utils.ApiComponent.build_url">
+<code class="descname">build_url</code><span class="sig-paren">(</span><em>endpoint</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/utils/utils.html#ApiComponent.build_url"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.utils.utils.ApiComponent.build_url" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a url for a given endpoint using the protocol
+service url</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>endpoint</strong> (<em>str</em>) – endpoint to build the url for</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">final url</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.utils.utils.ApiComponent.new_query">
+<code class="descname">new_query</code><span class="sig-paren">(</span><em>attribute=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/utils/utils.html#ApiComponent.new_query"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.utils.utils.ApiComponent.new_query" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new query to filter results</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>attribute</strong> (<em>str</em>) – attribute to apply the query for</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">new Query</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#O365.utils.utils.Query" title="O365.utils.utils.Query">Query</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.utils.utils.ApiComponent.q">
+<code class="descname">q</code><span class="sig-paren">(</span><em>attribute=None</em><span class="sig-paren">)</span><a class="headerlink" href="#O365.utils.utils.ApiComponent.q" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new query to filter results</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>attribute</strong> (<em>str</em>) – attribute to apply the query for</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">new Query</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#O365.utils.utils.Query" title="O365.utils.utils.Query">Query</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="O365.utils.utils.ChainOperator">
+<em class="property">class </em><code class="descclassname">O365.utils.utils.</code><code class="descname">ChainOperator</code><a class="reference internal" href="../_modules/O365/utils/utils.html#ChainOperator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.utils.utils.ChainOperator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
+<p>An enumeration.</p>
+<dl class="attribute">
+<dt id="O365.utils.utils.ChainOperator.AND">
+<code class="descname">AND</code><em class="property"> = 'and'</em><a class="headerlink" href="#O365.utils.utils.ChainOperator.AND" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="O365.utils.utils.ChainOperator.OR">
+<code class="descname">OR</code><em class="property"> = 'or'</em><a class="headerlink" href="#O365.utils.utils.ChainOperator.OR" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="O365.utils.utils.ImportanceLevel">
+<em class="property">class </em><code class="descclassname">O365.utils.utils.</code><code class="descname">ImportanceLevel</code><a class="reference internal" href="../_modules/O365/utils/utils.html#ImportanceLevel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.utils.utils.ImportanceLevel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
+<p>An enumeration.</p>
+<dl class="attribute">
+<dt id="O365.utils.utils.ImportanceLevel.High">
+<code class="descname">High</code><em class="property"> = 'high'</em><a class="headerlink" href="#O365.utils.utils.ImportanceLevel.High" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="O365.utils.utils.ImportanceLevel.Low">
+<code class="descname">Low</code><em class="property"> = 'low'</em><a class="headerlink" href="#O365.utils.utils.ImportanceLevel.Low" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="O365.utils.utils.ImportanceLevel.Normal">
+<code class="descname">Normal</code><em class="property"> = 'normal'</em><a class="headerlink" href="#O365.utils.utils.ImportanceLevel.Normal" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="O365.utils.utils.OneDriveWellKnowFolderNames">
+<em class="property">class </em><code class="descclassname">O365.utils.utils.</code><code class="descname">OneDriveWellKnowFolderNames</code><a class="reference internal" href="../_modules/O365/utils/utils.html#OneDriveWellKnowFolderNames"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.utils.utils.OneDriveWellKnowFolderNames" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
+<p>An enumeration.</p>
+<dl class="attribute">
+<dt id="O365.utils.utils.OneDriveWellKnowFolderNames.APP_ROOT">
+<code class="descname">APP_ROOT</code><em class="property"> = 'approot'</em><a class="headerlink" href="#O365.utils.utils.OneDriveWellKnowFolderNames.APP_ROOT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="O365.utils.utils.OneDriveWellKnowFolderNames.ATTACHMENTS">
+<code class="descname">ATTACHMENTS</code><em class="property"> = 'attachments'</em><a class="headerlink" href="#O365.utils.utils.OneDriveWellKnowFolderNames.ATTACHMENTS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="O365.utils.utils.OneDriveWellKnowFolderNames.CAMERA_ROLL">
+<code class="descname">CAMERA_ROLL</code><em class="property"> = 'cameraroll'</em><a class="headerlink" href="#O365.utils.utils.OneDriveWellKnowFolderNames.CAMERA_ROLL" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="O365.utils.utils.OneDriveWellKnowFolderNames.DOCUMENTS">
+<code class="descname">DOCUMENTS</code><em class="property"> = 'documents'</em><a class="headerlink" href="#O365.utils.utils.OneDriveWellKnowFolderNames.DOCUMENTS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="O365.utils.utils.OneDriveWellKnowFolderNames.MUSIC">
+<code class="descname">MUSIC</code><em class="property"> = 'music'</em><a class="headerlink" href="#O365.utils.utils.OneDriveWellKnowFolderNames.MUSIC" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="O365.utils.utils.OneDriveWellKnowFolderNames.PHOTOS">
+<code class="descname">PHOTOS</code><em class="property"> = 'photos'</em><a class="headerlink" href="#O365.utils.utils.OneDriveWellKnowFolderNames.PHOTOS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="O365.utils.utils.OutlookWellKnowFolderNames">
+<em class="property">class </em><code class="descclassname">O365.utils.utils.</code><code class="descname">OutlookWellKnowFolderNames</code><a class="reference internal" href="../_modules/O365/utils/utils.html#OutlookWellKnowFolderNames"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.utils.utils.OutlookWellKnowFolderNames" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
+<p>An enumeration.</p>
+<dl class="attribute">
+<dt id="O365.utils.utils.OutlookWellKnowFolderNames.DELETED">
+<code class="descname">DELETED</code><em class="property"> = 'DeletedItems'</em><a class="headerlink" href="#O365.utils.utils.OutlookWellKnowFolderNames.DELETED" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="O365.utils.utils.OutlookWellKnowFolderNames.DRAFTS">
+<code class="descname">DRAFTS</code><em class="property"> = 'Drafts'</em><a class="headerlink" href="#O365.utils.utils.OutlookWellKnowFolderNames.DRAFTS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="O365.utils.utils.OutlookWellKnowFolderNames.INBOX">
+<code class="descname">INBOX</code><em class="property"> = 'Inbox'</em><a class="headerlink" href="#O365.utils.utils.OutlookWellKnowFolderNames.INBOX" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="O365.utils.utils.OutlookWellKnowFolderNames.JUNK">
+<code class="descname">JUNK</code><em class="property"> = 'JunkEmail'</em><a class="headerlink" href="#O365.utils.utils.OutlookWellKnowFolderNames.JUNK" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="O365.utils.utils.OutlookWellKnowFolderNames.OUTBOX">
+<code class="descname">OUTBOX</code><em class="property"> = 'Outbox'</em><a class="headerlink" href="#O365.utils.utils.OutlookWellKnowFolderNames.OUTBOX" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="O365.utils.utils.OutlookWellKnowFolderNames.SENT">
+<code class="descname">SENT</code><em class="property"> = 'SentItems'</em><a class="headerlink" href="#O365.utils.utils.OutlookWellKnowFolderNames.SENT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="O365.utils.utils.Pagination">
+<em class="property">class </em><code class="descclassname">O365.utils.utils.</code><code class="descname">Pagination</code><span class="sig-paren">(</span><em>*</em>, <em>parent=None</em>, <em>data=None</em>, <em>constructor=None</em>, <em>next_link=None</em>, <em>limit=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/utils/utils.html#Pagination"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.utils.utils.Pagination" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.utils.utils.ApiComponent</span></code></a></p>
+<p>Utility class that allows batching requests to the server</p>
+<dl class="method">
+<dt id="O365.utils.utils.Pagination.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>*</em>, <em>parent=None</em>, <em>data=None</em>, <em>constructor=None</em>, <em>next_link=None</em>, <em>limit=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/utils/utils.html#Pagination.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.utils.utils.Pagination.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an iterator that returns data until it’s exhausted.
+Then will request more data (same amount as the original request)
+to the server until this data is exhausted as well.
+Stops when no more data exists or limit is reached.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>parent</strong> – the parent class. Must implement attributes:
+con, api_version, main_resource</li>
+<li><strong>data</strong> – the start data to be return</li>
+<li><strong>constructor</strong> – the data constructor for the next batch.
+It can be a function.</li>
+<li><strong>next_link</strong> (<em>str</em>) – the link to request more data to</li>
+<li><strong>limit</strong> (<em>int</em>) – when to stop retrieving more data</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="O365.utils.utils.Query">
+<em class="property">class </em><code class="descclassname">O365.utils.utils.</code><code class="descname">Query</code><span class="sig-paren">(</span><em>attribute=None</em>, <em>*</em>, <em>protocol</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/utils/utils.html#Query"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.utils.utils.Query" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Helper to conform OData filters</p>
+<dl class="method">
+<dt id="O365.utils.utils.Query.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>attribute=None</em>, <em>*</em>, <em>protocol</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/utils/utils.html#Query.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.utils.utils.Query.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build a query to apply OData filters
+<a class="reference external" href="https://docs.microsoft.com/en-us/graph/query-parameters">https://docs.microsoft.com/en-us/graph/query-parameters</a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>attribute</strong> (<em>str</em>) – attribute to apply the query for</li>
+<li><strong>protocol</strong> (<a class="reference internal" href="connection.html#O365.connection.Protocol" title="O365.connection.Protocol"><em>Protocol</em></a>) – protocol to use for connecting</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.utils.utils.Query.all">
+<code class="descname">all</code><span class="sig-paren">(</span><em>*</em>, <em>collection</em>, <em>attribute</em>, <em>word</em>, <em>func=None</em>, <em>operation=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/utils/utils.html#Query.all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.utils.utils.Query.all" title="Permalink to this definition">¶</a></dt>
+<dd><p>Performs a filter with the OData ‘all’ keyword on the collection</p>
+<p>For example:
+q.any(collection=’email_addresses’, attribute=’address’,
+operation=’eq’, <a class="reference external" href="mailto:word='george&#37;&#52;&#48;best&#46;com">word=’george<span>&#64;</span>best<span>&#46;</span>com</a>’)</p>
+<p>will transform to a filter such as:</p>
+<p>emailAddresses/all(a:a/address eq ‘george&#64;best.com’)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>collection</strong> (<em>str</em>) – the collection to apply the any keyword on</li>
+<li><strong>attribute</strong> (<em>str</em>) – the attribute of the collection to check</li>
+<li><strong>word</strong> (<em>str</em>) – the word to check</li>
+<li><strong>func</strong> (<em>str</em>) – the logical function to apply to the attribute
+inside the collection</li>
+<li><strong>operation</strong> (<em>str</em>) – the logical operation to apply to the
+attribute inside the collection</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#O365.utils.utils.Query" title="O365.utils.utils.Query">Query</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This method is part of fluent api and can be chained</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.utils.utils.Query.any">
+<code class="descname">any</code><span class="sig-paren">(</span><em>*</em>, <em>collection</em>, <em>attribute</em>, <em>word</em>, <em>func=None</em>, <em>operation=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/utils/utils.html#Query.any"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.utils.utils.Query.any" title="Permalink to this definition">¶</a></dt>
+<dd><p>Performs a filter with the OData ‘any’ keyword on the collection</p>
+<p>For example:
+q.any(collection=’email_addresses’, attribute=’address’,
+operation=’eq’, <a class="reference external" href="mailto:word='george&#37;&#52;&#48;best&#46;com">word=’george<span>&#64;</span>best<span>&#46;</span>com</a>’)</p>
+<p>will transform to a filter such as:</p>
+<p>emailAddresses/any(a:a/address eq ‘george&#64;best.com’)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>collection</strong> (<em>str</em>) – the collection to apply the any keyword on</li>
+<li><strong>attribute</strong> (<em>str</em>) – the attribute of the collection to check</li>
+<li><strong>word</strong> (<em>str</em>) – the word to check</li>
+<li><strong>func</strong> (<em>str</em>) – the logical function to apply to the attribute
+inside the collection</li>
+<li><strong>operation</strong> (<em>str</em>) – the logical operation to apply to the
+attribute inside the collection</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#O365.utils.utils.Query" title="O365.utils.utils.Query">Query</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This method is part of fluent api and can be chained</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.utils.utils.Query.as_params">
+<code class="descname">as_params</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/utils/utils.html#Query.as_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.utils.utils.Query.as_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the filters and orders as query parameters</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">dict</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.utils.utils.Query.chain">
+<code class="descname">chain</code><span class="sig-paren">(</span><em>operation=&lt;ChainOperator.AND: 'and'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/utils/utils.html#Query.chain"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.utils.utils.Query.chain" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start a chain operation</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>operation</strong> (<a class="reference internal" href="#O365.utils.utils.ChainOperator" title="O365.utils.utils.ChainOperator"><em>ChainOperator</em></a>) – how to combine with a new one</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#O365.utils.utils.Query" title="O365.utils.utils.Query">Query</a></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This method is part of fluent api and can be chained</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.utils.utils.Query.clear">
+<code class="descname">clear</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/utils/utils.html#Query.clear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.utils.utils.Query.clear" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clear everything</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#O365.utils.utils.Query" title="O365.utils.utils.Query">Query</a></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This method is part of fluent api and can be chained</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.utils.utils.Query.clear_filters">
+<code class="descname">clear_filters</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/utils/utils.html#Query.clear_filters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.utils.utils.Query.clear_filters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clear filters</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.utils.utils.Query.contains">
+<code class="descname">contains</code><span class="sig-paren">(</span><em>word</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/utils/utils.html#Query.contains"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.utils.utils.Query.contains" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds a contains word check</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>word</strong> (<em>str</em>) – word to check</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#O365.utils.utils.Query" title="O365.utils.utils.Query">Query</a></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This method is part of fluent api and can be chained</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.utils.utils.Query.endswith">
+<code class="descname">endswith</code><span class="sig-paren">(</span><em>word</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/utils/utils.html#Query.endswith"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.utils.utils.Query.endswith" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds a endswith word check</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>word</strong> (<em>str</em>) – word to check</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#O365.utils.utils.Query" title="O365.utils.utils.Query">Query</a></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This method is part of fluent api and can be chained</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.utils.utils.Query.equals">
+<code class="descname">equals</code><span class="sig-paren">(</span><em>word</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/utils/utils.html#Query.equals"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.utils.utils.Query.equals" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a equals check</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>word</strong> (<em>str</em>) – word to compare with</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#O365.utils.utils.Query" title="O365.utils.utils.Query">Query</a></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This method is part of fluent api and can be chained</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.utils.utils.Query.function">
+<code class="descname">function</code><span class="sig-paren">(</span><em>function_name</em>, <em>word</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/utils/utils.html#Query.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.utils.utils.Query.function" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply a function on given word</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>function_name</strong> (<em>str</em>) – function to apply</li>
+<li><strong>word</strong> (<em>str</em>) – word to apply function on</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#O365.utils.utils.Query" title="O365.utils.utils.Query">Query</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This method is part of fluent api and can be chained</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.utils.utils.Query.get_filters">
+<code class="descname">get_filters</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/utils/utils.html#Query.get_filters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.utils.utils.Query.get_filters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the result filters</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">str or None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.utils.utils.Query.get_order">
+<code class="descname">get_order</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/utils/utils.html#Query.get_order"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.utils.utils.Query.get_order" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the result order by clauses</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">str or None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.utils.utils.Query.get_selects">
+<code class="descname">get_selects</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/utils/utils.html#Query.get_selects"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.utils.utils.Query.get_selects" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the result select clause</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">str or None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.utils.utils.Query.greater">
+<code class="descname">greater</code><span class="sig-paren">(</span><em>word</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/utils/utils.html#Query.greater"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.utils.utils.Query.greater" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a greater than check</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>word</strong> (<em>str</em>) – word to compare with</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#O365.utils.utils.Query" title="O365.utils.utils.Query">Query</a></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This method is part of fluent api and can be chained</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.utils.utils.Query.greater_equal">
+<code class="descname">greater_equal</code><span class="sig-paren">(</span><em>word</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/utils/utils.html#Query.greater_equal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.utils.utils.Query.greater_equal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a greater than or equal to check</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>word</strong> (<em>str</em>) – word to compare with</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#O365.utils.utils.Query" title="O365.utils.utils.Query">Query</a></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This method is part of fluent api and can be chained</p>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.utils.utils.Query.has_filters">
+<code class="descname">has_filters</code><a class="headerlink" href="#O365.utils.utils.Query.has_filters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Whether the query has filters or not</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.utils.utils.Query.has_order">
+<code class="descname">has_order</code><a class="headerlink" href="#O365.utils.utils.Query.has_order" title="Permalink to this definition">¶</a></dt>
+<dd><p>Whether the query has order_by or not</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.utils.utils.Query.has_selects">
+<code class="descname">has_selects</code><a class="headerlink" href="#O365.utils.utils.Query.has_selects" title="Permalink to this definition">¶</a></dt>
+<dd><p>Whether the query has select filters or not</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.utils.utils.Query.iterable">
+<code class="descname">iterable</code><span class="sig-paren">(</span><em>iterable_name</em>, <em>*</em>, <em>collection</em>, <em>attribute</em>, <em>word</em>, <em>func=None</em>, <em>operation=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/utils/utils.html#Query.iterable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.utils.utils.Query.iterable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Performs a filter with the OData ‘iterable_name’ keyword
+on the collection</p>
+<p>For example:
+q.iterable(‘any’, collection=’email_addresses’, attribute=’address’,
+operation=’eq’, <a class="reference external" href="mailto:word='george&#37;&#52;&#48;best&#46;com">word=’george<span>&#64;</span>best<span>&#46;</span>com</a>’)</p>
+<p>will transform to a filter such as:
+emailAddresses/any(a:a/address eq ‘george&#64;best.com’)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>iterable_name</strong> (<em>str</em>) – the OData name of the iterable</li>
+<li><strong>collection</strong> (<em>str</em>) – the collection to apply the any keyword on</li>
+<li><strong>attribute</strong> (<em>str</em>) – the attribute of the collection to check</li>
+<li><strong>word</strong> (<em>str</em>) – the word to check</li>
+<li><strong>func</strong> (<em>str</em>) – the logical function to apply to the attribute inside
+the collection</li>
+<li><strong>operation</strong> (<em>str</em>) – the logical operation to apply to the attribute
+inside the collection</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#O365.utils.utils.Query" title="O365.utils.utils.Query">Query</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This method is part of fluent api and can be chained</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.utils.utils.Query.less">
+<code class="descname">less</code><span class="sig-paren">(</span><em>word</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/utils/utils.html#Query.less"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.utils.utils.Query.less" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a less than check</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>word</strong> (<em>str</em>) – word to compare with</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#O365.utils.utils.Query" title="O365.utils.utils.Query">Query</a></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This method is part of fluent api and can be chained</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.utils.utils.Query.less_equal">
+<code class="descname">less_equal</code><span class="sig-paren">(</span><em>word</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/utils/utils.html#Query.less_equal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.utils.utils.Query.less_equal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a less than or equal to check</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>word</strong> (<em>str</em>) – word to compare with</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#O365.utils.utils.Query" title="O365.utils.utils.Query">Query</a></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This method is part of fluent api and can be chained</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.utils.utils.Query.logical_operator">
+<code class="descname">logical_operator</code><span class="sig-paren">(</span><em>operation</em>, <em>word</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/utils/utils.html#Query.logical_operator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.utils.utils.Query.logical_operator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply a logical operator</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>operation</strong> (<em>str</em>) – how to combine with a new one</li>
+<li><strong>word</strong> – other parameter for the operation
+(a = b) would be like a.logical_operator(‘eq’, ‘b’)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#O365.utils.utils.Query" title="O365.utils.utils.Query">Query</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This method is part of fluent api and can be chained</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.utils.utils.Query.negate">
+<code class="descname">negate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/utils/utils.html#Query.negate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.utils.utils.Query.negate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply a not operator</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#O365.utils.utils.Query" title="O365.utils.utils.Query">Query</a></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This method is part of fluent api and can be chained</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.utils.utils.Query.new">
+<code class="descname">new</code><span class="sig-paren">(</span><em>attribute</em>, <em>operation=&lt;ChainOperator.AND: 'and'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/utils/utils.html#Query.new"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.utils.utils.Query.new" title="Permalink to this definition">¶</a></dt>
+<dd><p>Combine with a new query</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>attribute</strong> (<em>str</em>) – attribute of new query</li>
+<li><strong>operation</strong> (<a class="reference internal" href="#O365.utils.utils.ChainOperator" title="O365.utils.utils.ChainOperator"><em>ChainOperator</em></a>) – operation to combine to new query</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#O365.utils.utils.Query" title="O365.utils.utils.Query">Query</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This method is part of fluent api and can be chained</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.utils.utils.Query.on_attribute">
+<code class="descname">on_attribute</code><span class="sig-paren">(</span><em>attribute</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/utils/utils.html#Query.on_attribute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.utils.utils.Query.on_attribute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply query on attribute, to be used along with chain()</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>attribute</strong> (<em>str</em>) – attribute name</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#O365.utils.utils.Query" title="O365.utils.utils.Query">Query</a></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This method is part of fluent api and can be chained</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.utils.utils.Query.order_by">
+<code class="descname">order_by</code><span class="sig-paren">(</span><em>attribute=None</em>, <em>*</em>, <em>ascending=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/utils/utils.html#Query.order_by"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.utils.utils.Query.order_by" title="Permalink to this definition">¶</a></dt>
+<dd><p>Applies a order_by clause</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>attribute</strong> (<em>str</em>) – attribute to apply on</li>
+<li><strong>ascending</strong> (<em>bool</em>) – should it apply ascending order or descending</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#O365.utils.utils.Query" title="O365.utils.utils.Query">Query</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This method is part of fluent api and can be chained</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.utils.utils.Query.select">
+<code class="descname">select</code><span class="sig-paren">(</span><em>*attributes</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/utils/utils.html#Query.select"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.utils.utils.Query.select" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds the attribute to the $select parameter</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>attributes</strong> (<em>str</em>) – the attributes tuple to select.
+If empty, the on_attribute previously set is added.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#O365.utils.utils.Query" title="O365.utils.utils.Query">Query</a></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This method is part of fluent api and can be chained</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.utils.utils.Query.startswith">
+<code class="descname">startswith</code><span class="sig-paren">(</span><em>word</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/utils/utils.html#Query.startswith"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.utils.utils.Query.startswith" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds a startswith word check</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>word</strong> (<em>str</em>) – word to check</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#O365.utils.utils.Query" title="O365.utils.utils.Query">Query</a></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This method is part of fluent api and can be chained</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.utils.utils.Query.unequal">
+<code class="descname">unequal</code><span class="sig-paren">(</span><em>word</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/utils/utils.html#Query.unequal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.utils.utils.Query.unequal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a unequals check</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>word</strong> (<em>str</em>) – word to compare with</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#O365.utils.utils.Query" title="O365.utils.utils.Query">Query</a></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This method is part of fluent api and can be chained</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="O365.utils.utils.TrackerSet">
+<em class="property">class </em><code class="descclassname">O365.utils.utils.</code><code class="descname">TrackerSet</code><span class="sig-paren">(</span><em>*args</em>, <em>casing=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/utils/utils.html#TrackerSet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.utils.utils.TrackerSet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">set</span></code></p>
+<dl class="method">
+<dt id="O365.utils.utils.TrackerSet.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>*args</em>, <em>casing=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/utils/utils.html#TrackerSet.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.utils.utils.TrackerSet.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>A Custom Set that changes the casing of it’s keys</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>casing</strong> (<em>func</em>) – a function to convert into specified case</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.utils.utils.TrackerSet.add">
+<code class="descname">add</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/utils/utils.html#TrackerSet.add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.utils.utils.TrackerSet.add" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add an element to a set.</p>
+<p>This has no effect if the element is already present.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="sharepoint.html" class="btn btn-neutral" title="Sharepoint" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Narcolapser
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

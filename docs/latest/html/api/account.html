@@ -28,7 +28,7 @@
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Connection" href="connection.html" />
+    <link rel="next" title="Address Book" href="address_book.html" />
     <link rel="prev" title="O365 API" href="../api.html" /> 
 
   
@@ -81,9 +81,18 @@
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage.html">Detailed Usage</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../api.html">O365 API</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Account</a></li>
+<li class="toctree-l2"><a class="reference internal" href="address_book.html">Address Book</a></li>
+<li class="toctree-l2"><a class="reference internal" href="attachment.html">Attachment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="calendar.html">Calendar</a></li>
 <li class="toctree-l2"><a class="reference internal" href="connection.html">Connection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="drive.html">One Drive</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mailbox.html">Mailbox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="message.html">Message</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sharepoint.html">Sharepoint</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html">Utils</a></li>
 </ul>
 </li>
 </ul>
@@ -149,7 +158,7 @@
   
   <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
       
-        <a href="connection.html" class="btn btn-neutral float-right" title="Connection" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="address_book.html" class="btn btn-neutral float-right" title="Address Book" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="../api.html" class="btn btn-neutral" title="O365 API" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
@@ -316,7 +325,29 @@ specified account resource</p>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">a representation of calendar events</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">Schedule</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="calendar.html#O365.calendar.Schedule" title="O365.calendar.Schedule">Schedule</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.account.Account.sharepoint">
+<code class="descname">sharepoint</code><span class="sig-paren">(</span><em>*</em>, <em>resource=''</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/account.html#Account.sharepoint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.account.Account.sharepoint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get an instance to read information from Sharepoint sites for the
+specified account resource</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>resource</strong> (<em>str</em>) – Custom resource to be used in this sharepoint
+object (Defaults to parent main_resource)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">a representation of Sharepoint Sites</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="sharepoint.html#O365.sharepoint.Sharepoint" title="O365.sharepoint.Sharepoint">Sharepoint</a></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><strong>RuntimeError</strong> – if protocol doesn’t support the feature</td>
 </tr>
 </tbody>
 </table>
@@ -325,8 +356,8 @@ specified account resource</p>
 <dl class="method">
 <dt id="O365.account.Account.storage">
 <code class="descname">storage</code><span class="sig-paren">(</span><em>*</em>, <em>resource=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/account.html#Account.storage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.account.Account.storage" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get an instance to handle file storage like OneDrive or
-Sharepoint document libraries for the specified account resource</p>
+<dd><p>Get an instance to handle file storage (OneDrive / Sharepoint)
+for the specified account resource</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -334,9 +365,9 @@ Sharepoint document libraries for the specified account resource</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>resource</strong> (<em>str</em>) – Custom resource to be used in this drive object
 (Defaults to parent main_resource)</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">a representation of File Storage</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">a representation of OneDrive File Storage</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">Storage</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="drive.html#O365.drive.Storage" title="O365.drive.Storage">Storage</a></td>
 </tr>
 <tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><strong>RuntimeError</strong> – if protocol doesn’t support the feature</td>
 </tr>
@@ -356,7 +387,7 @@ Sharepoint document libraries for the specified account resource</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="connection.html" class="btn btn-neutral float-right" title="Connection" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="address_book.html" class="btn btn-neutral float-right" title="Address Book" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="../api.html" class="btn btn-neutral" title="O365 API" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
@@ -388,21 +419,10 @@ Sharepoint document libraries for the specified account resource</p>
   
 
     
-      <script type="text/javascript">
-          var DOCUMENTATION_OPTIONS = {
-              URL_ROOT:'../',
-              VERSION:'',
-              LANGUAGE:'None',
-              COLLAPSE_INDEX:false,
-              FILE_SUFFIX:'.html',
-              HAS_SOURCE:  true,
-              SOURCELINK_SUFFIX: '.txt'
-          };
-      </script>
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
         <script type="text/javascript" src="../_static/jquery.js"></script>
         <script type="text/javascript" src="../_static/underscore.js"></script>
         <script type="text/javascript" src="../_static/doctools.js"></script>
-        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
 
   

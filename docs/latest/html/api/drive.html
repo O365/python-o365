@@ -1,0 +1,1302 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>One Drive &mdash; O365  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Mailbox" href="mailbox.html" />
+    <link rel="prev" title="Connection" href="connection.html" /> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> O365
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage.html">Detailed Usage</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">O365 API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="account.html">Account</a></li>
+<li class="toctree-l2"><a class="reference internal" href="address_book.html">Address Book</a></li>
+<li class="toctree-l2"><a class="reference internal" href="attachment.html">Attachment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="calendar.html">Calendar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="connection.html">Connection</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">One Drive</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mailbox.html">Mailbox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="message.html">Message</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sharepoint.html">Sharepoint</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html">Utils</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">O365</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../api.html">O365 API</a> &raquo;</li>
+        
+      <li>One Drive</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/drive.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
+      
+        <a href="mailbox.html" class="btn btn-neutral float-right" title="Mailbox" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="connection.html" class="btn btn-neutral" title="Connection" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+  </div>
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-O365.drive">
+<span id="one-drive"></span><h1>One Drive<a class="headerlink" href="#module-O365.drive" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="O365.drive.CopyOperation">
+<em class="property">class </em><code class="descclassname">O365.drive.</code><code class="descname">CopyOperation</code><span class="sig-paren">(</span><em>*</em>, <em>parent=None</em>, <em>con=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#CopyOperation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.CopyOperation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.utils.utils.ApiComponent</span></code></a></p>
+<p><a class="reference external" href="https://github.com/OneDrive/onedrive-api-docs/issues/762">https://github.com/OneDrive/onedrive-api-docs/issues/762</a></p>
+<dl class="method">
+<dt id="O365.drive.CopyOperation.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>*</em>, <em>parent=None</em>, <em>con=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#CopyOperation.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.CopyOperation.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>parent</strong> (<a class="reference internal" href="#O365.drive.Drive" title="O365.drive.Drive"><em>Drive</em></a>) – parent for this operation</li>
+<li><strong>con</strong> (<a class="reference internal" href="connection.html#O365.connection.Connection" title="O365.connection.Connection"><em>Connection</em></a>) – connection to use if no parent specified</li>
+<li><strong>protocol</strong> (<a class="reference internal" href="connection.html#O365.connection.Protocol" title="O365.connection.Protocol"><em>Protocol</em></a>) – protocol to use if no parent specified
+(kwargs)</li>
+<li><strong>main_resource</strong> (<em>str</em>) – use this resource instead of parent resource
+(kwargs)</li>
+<li><strong>monitor_url</strong> (<em>str</em>) – </li>
+<li><strong>item_id</strong> (<em>str</em>) – </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.drive.CopyOperation.check_status">
+<code class="descname">check_status</code><span class="sig-paren">(</span><em>delay=0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#CopyOperation.check_status"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.CopyOperation.check_status" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks the api endpoint in a loop</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>delay</strong> – number of seconds to wait between api calls.
+Note Connection ‘requests_delay’ also apply.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">tuple of status and percentage complete</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">tuple(str, float)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.drive.CopyOperation.get_item">
+<code class="descname">get_item</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#CopyOperation.get_item"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.CopyOperation.get_item" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the item copied</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Copied Item</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#O365.drive.DriveItem" title="O365.drive.DriveItem">DriveItem</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="O365.drive.DownloadableMixin">
+<em class="property">class </em><code class="descclassname">O365.drive.</code><code class="descname">DownloadableMixin</code><a class="reference internal" href="../_modules/O365/drive.html#DownloadableMixin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.DownloadableMixin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="O365.drive.DownloadableMixin.download">
+<code class="descname">download</code><span class="sig-paren">(</span><em>to_path=None</em>, <em>name=None</em>, <em>chunk_size='auto'</em>, <em>convert_to_pdf=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#DownloadableMixin.download"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.DownloadableMixin.download" title="Permalink to this definition">¶</a></dt>
+<dd><p>Downloads this file to the local drive. Can download the
+file in chunks with multiple requests to the server.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>to_path</strong> (<em>str</em><em> or </em><em>Path</em>) – a path to store the downloaded file</li>
+<li><strong>name</strong> (<em>str</em>) – the name you want the stored file to have.</li>
+<li><strong>chunk_size</strong> (<em>int</em>) – number of bytes to retrieve from
+each api call to the server. if auto, files bigger than
+SIZE_THERSHOLD will be chunked (into memory, will be
+however only 1 request)</li>
+<li><strong>convert_to_pdf</strong> (<em>bool</em>) – will try to download the converted pdf
+if file extension in ALLOWED_PDF_EXTENSIONS</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Success / Failure</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">bool</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="O365.drive.Drive">
+<em class="property">class </em><code class="descclassname">O365.drive.</code><code class="descname">Drive</code><span class="sig-paren">(</span><em>*</em>, <em>parent=None</em>, <em>con=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#Drive"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.Drive" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.utils.utils.ApiComponent</span></code></a></p>
+<p>A Drive representation.
+A Drive is a Container of Folders and Files and act as a root item</p>
+<dl class="method">
+<dt id="O365.drive.Drive.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>*</em>, <em>parent=None</em>, <em>con=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#Drive.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.Drive.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a drive representation</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>parent</strong> (<a class="reference internal" href="#O365.drive.Drive" title="O365.drive.Drive"><em>Drive</em></a><em> or </em><a class="reference internal" href="#O365.drive.Storage" title="O365.drive.Storage"><em>Storage</em></a>) – parent for this operation</li>
+<li><strong>con</strong> (<a class="reference internal" href="connection.html#O365.connection.Connection" title="O365.connection.Connection"><em>Connection</em></a>) – connection to use if no parent specified</li>
+<li><strong>protocol</strong> (<a class="reference internal" href="connection.html#O365.connection.Protocol" title="O365.connection.Protocol"><em>Protocol</em></a>) – protocol to use if no parent specified
+(kwargs)</li>
+<li><strong>main_resource</strong> (<em>str</em>) – use this resource instead of parent resource
+(kwargs)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.drive.Drive.get_item">
+<code class="descname">get_item</code><span class="sig-paren">(</span><em>item_id</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#Drive.get_item"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.Drive.get_item" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a DriveItem by it’s Id</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">one item</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#O365.drive.DriveItem" title="O365.drive.DriveItem">DriveItem</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.drive.Drive.get_items">
+<code class="descname">get_items</code><span class="sig-paren">(</span><em>limit=None</em>, <em>*</em>, <em>query=None</em>, <em>order_by=None</em>, <em>batch=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#Drive.get_items"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.Drive.get_items" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a collection of drive items from the root folder</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>limit</strong> (<em>int</em>) – max no. of items to get. Over 999 uses batch.</li>
+<li><strong>query</strong> (<a class="reference internal" href="utils.html#O365.utils.utils.Query" title="O365.utils.utils.Query"><em>Query</em></a><em> or </em><em>str</em>) – applies a OData filter to the request</li>
+<li><strong>order_by</strong> (<a class="reference internal" href="utils.html#O365.utils.utils.Query" title="O365.utils.utils.Query"><em>Query</em></a><em> or </em><em>str</em>) – orders the result set based on this condition</li>
+<li><strong>batch</strong> (<em>int</em>) – batch size, retrieves items in
+batches allowing to retrieve more items than the limit.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">list of items in this folder</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">list[<a class="reference internal" href="#O365.drive.DriveItem" title="O365.drive.DriveItem">DriveItem</a>] or <a class="reference internal" href="utils.html#O365.utils.utils.Pagination" title="O365.utils.utils.Pagination">Pagination</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.drive.Drive.get_recent">
+<code class="descname">get_recent</code><span class="sig-paren">(</span><em>limit=None</em>, <em>*</em>, <em>query=None</em>, <em>order_by=None</em>, <em>batch=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#Drive.get_recent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.Drive.get_recent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a collection of recently used DriveItems</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>limit</strong> (<em>int</em>) – max no. of items to get. Over 999 uses batch.</li>
+<li><strong>query</strong> (<a class="reference internal" href="utils.html#O365.utils.utils.Query" title="O365.utils.utils.Query"><em>Query</em></a><em> or </em><em>str</em>) – applies a OData filter to the request</li>
+<li><strong>order_by</strong> (<a class="reference internal" href="utils.html#O365.utils.utils.Query" title="O365.utils.utils.Query"><em>Query</em></a><em> or </em><em>str</em>) – orders the result set based on this condition</li>
+<li><strong>batch</strong> (<em>int</em>) – batch size, retrieves items in
+batches allowing to retrieve more items than the limit.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">list of items in this folder</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">list[<a class="reference internal" href="#O365.drive.DriveItem" title="O365.drive.DriveItem">DriveItem</a>] or <a class="reference internal" href="utils.html#O365.utils.utils.Pagination" title="O365.utils.utils.Pagination">Pagination</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.drive.Drive.get_root_folder">
+<code class="descname">get_root_folder</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#Drive.get_root_folder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.Drive.get_root_folder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the Root Folder of this drive</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Root Folder</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#O365.drive.DriveItem" title="O365.drive.DriveItem">DriveItem</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.drive.Drive.get_shared_with_me">
+<code class="descname">get_shared_with_me</code><span class="sig-paren">(</span><em>limit=None</em>, <em>*</em>, <em>query=None</em>, <em>order_by=None</em>, <em>batch=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#Drive.get_shared_with_me"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.Drive.get_shared_with_me" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a collection of DriveItems shared with me</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>limit</strong> (<em>int</em>) – max no. of items to get. Over 999 uses batch.</li>
+<li><strong>query</strong> (<a class="reference internal" href="utils.html#O365.utils.utils.Query" title="O365.utils.utils.Query"><em>Query</em></a><em> or </em><em>str</em>) – applies a OData filter to the request</li>
+<li><strong>order_by</strong> (<a class="reference internal" href="utils.html#O365.utils.utils.Query" title="O365.utils.utils.Query"><em>Query</em></a><em> or </em><em>str</em>) – orders the result set based on this condition</li>
+<li><strong>batch</strong> (<em>int</em>) – batch size, retrieves items in
+batches allowing to retrieve more items than the limit.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">list of items in this folder</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">list[<a class="reference internal" href="#O365.drive.DriveItem" title="O365.drive.DriveItem">DriveItem</a>] or <a class="reference internal" href="utils.html#O365.utils.utils.Pagination" title="O365.utils.utils.Pagination">Pagination</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.drive.Drive.get_special_folder">
+<code class="descname">get_special_folder</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#Drive.get_special_folder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.Drive.get_special_folder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the specified Special Folder</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">a special Folder</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#O365.drive.Folder" title="O365.drive.Folder">drive.Folder</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.drive.Drive.refresh">
+<code class="descname">refresh</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#Drive.refresh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.Drive.refresh" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates this drive with data from the server</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Success / Failure</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.drive.Drive.search">
+<code class="descname">search</code><span class="sig-paren">(</span><em>search_text</em>, <em>limit=None</em>, <em>*</em>, <em>query=None</em>, <em>order_by=None</em>, <em>batch=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#Drive.search"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.Drive.search" title="Permalink to this definition">¶</a></dt>
+<dd><p>Search for DriveItems under this drive.
+Your app can search more broadly to include items shared with the
+current user.</p>
+<p>To broaden the search scope, use this search instead the Folder Search.</p>
+<p>The search API uses a search service under the covers, which requires
+indexing of content.</p>
+<p>As a result, there will be some time between creation of an
+item and when it will appear in search results.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>search_text</strong> (<em>str</em>) – The query text used to search for items.
+Values may be matched across several fields including filename,
+metadata, and file content.</li>
+<li><strong>limit</strong> (<em>int</em>) – max no. of items to get. Over 999 uses batch.</li>
+<li><strong>query</strong> (<a class="reference internal" href="utils.html#O365.utils.utils.Query" title="O365.utils.utils.Query"><em>Query</em></a><em> or </em><em>str</em>) – applies a OData filter to the request</li>
+<li><strong>order_by</strong> (<a class="reference internal" href="utils.html#O365.utils.utils.Query" title="O365.utils.utils.Query"><em>Query</em></a><em> or </em><em>str</em>) – orders the result set based on this condition</li>
+<li><strong>batch</strong> (<em>int</em>) – batch size, retrieves items in
+batches allowing to retrieve more items than the limit.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">list of items in this folder</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">list[<a class="reference internal" href="#O365.drive.DriveItem" title="O365.drive.DriveItem">DriveItem</a>] or <a class="reference internal" href="utils.html#O365.utils.utils.Pagination" title="O365.utils.utils.Pagination">Pagination</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="O365.drive.DriveItem">
+<em class="property">class </em><code class="descclassname">O365.drive.</code><code class="descname">DriveItem</code><span class="sig-paren">(</span><em>*</em>, <em>parent=None</em>, <em>con=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#DriveItem"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.DriveItem" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.utils.utils.ApiComponent</span></code></a></p>
+<p>A DriveItem representation. Groups all functionality</p>
+<dl class="method">
+<dt id="O365.drive.DriveItem.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>*</em>, <em>parent=None</em>, <em>con=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#DriveItem.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.DriveItem.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a DriveItem</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>parent</strong> (<a class="reference internal" href="#O365.drive.Drive" title="O365.drive.Drive"><em>Drive</em></a><em> or </em><a class="reference internal" href="#O365.drive.Folder" title="O365.drive.Folder"><em>drive.Folder</em></a>) – parent for this operation</li>
+<li><strong>con</strong> (<a class="reference internal" href="connection.html#O365.connection.Connection" title="O365.connection.Connection"><em>Connection</em></a>) – connection to use if no parent specified</li>
+<li><strong>protocol</strong> (<a class="reference internal" href="connection.html#O365.connection.Protocol" title="O365.connection.Protocol"><em>Protocol</em></a>) – protocol to use if no parent specified
+(kwargs)</li>
+<li><strong>main_resource</strong> (<em>str</em>) – use this resource instead of parent resource
+(kwargs)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.drive.DriveItem.copy">
+<code class="descname">copy</code><span class="sig-paren">(</span><em>target=None</em>, <em>name=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#DriveItem.copy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.DriveItem.copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Asynchronously creates a copy of this DriveItem and all it’s
+child elements.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>target</strong> (<a class="reference internal" href="#O365.drive.Folder" title="O365.drive.Folder"><em>drive.Folder</em></a><em> or </em><a class="reference internal" href="#O365.drive.Drive" title="O365.drive.Drive"><em>Drive</em></a>) – target location to move to.
+If it’s a drive the item will be moved to the root folder.</li>
+<li><strong>name</strong> – a new name for the copy.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#O365.drive.CopyOperation" title="O365.drive.CopyOperation">CopyOperation</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.drive.DriveItem.delete">
+<code class="descname">delete</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#DriveItem.delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.DriveItem.delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Moves this item to the Recycle Bin</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Success / Failure</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.drive.DriveItem.get_parent">
+<code class="descname">get_parent</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#DriveItem.get_parent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.DriveItem.get_parent" title="Permalink to this definition">¶</a></dt>
+<dd><p>the parent of this DriveItem</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Parent of this item</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#O365.drive.Drive" title="O365.drive.Drive">Drive</a> or <a class="reference internal" href="#O365.drive.Folder" title="O365.drive.Folder">drive.Folder</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.drive.DriveItem.get_permissions">
+<code class="descname">get_permissions</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#DriveItem.get_permissions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.DriveItem.get_permissions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of DriveItemPermissions with the
+permissions granted for this DriveItem.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">List of Permissions</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">list[<a class="reference internal" href="#O365.drive.DriveItemPermission" title="O365.drive.DriveItemPermission">DriveItemPermission</a>]</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.drive.DriveItem.get_thumbnails">
+<code class="descname">get_thumbnails</code><span class="sig-paren">(</span><em>size=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#DriveItem.get_thumbnails"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.DriveItem.get_thumbnails" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns this Item Thumbnails. Thumbnails are not supported on
+SharePoint Server 2016.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>size</strong> – request only the specified size: ej: “small”,
+Custom 300x400 px: “c300x400”, Crop: “c300x400_Crop”</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Thumbnail Data</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">dict</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.drive.DriveItem.get_version">
+<code class="descname">get_version</code><span class="sig-paren">(</span><em>version_id</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#DriveItem.get_version"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.DriveItem.get_version" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a version for specified id</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">a version object of specified id</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#O365.drive.DriveItemVersion" title="O365.drive.DriveItemVersion">DriveItemVersion</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.drive.DriveItem.get_versions">
+<code class="descname">get_versions</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#DriveItem.get_versions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.DriveItem.get_versions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of available versions for this item</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">list of versions</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">list[<a class="reference internal" href="#O365.drive.DriveItemVersion" title="O365.drive.DriveItemVersion">DriveItemVersion</a>]</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.drive.DriveItem.is_file">
+<code class="descname">is_file</code><a class="headerlink" href="#O365.drive.DriveItem.is_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns if this DriveItem is a File</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.drive.DriveItem.is_folder">
+<code class="descname">is_folder</code><a class="headerlink" href="#O365.drive.DriveItem.is_folder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns if this DriveItem is a Folder</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.drive.DriveItem.is_image">
+<code class="descname">is_image</code><a class="headerlink" href="#O365.drive.DriveItem.is_image" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns if this DriveItem is a Image</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.drive.DriveItem.is_photo">
+<code class="descname">is_photo</code><a class="headerlink" href="#O365.drive.DriveItem.is_photo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns if this DriveItem is a Photo</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.drive.DriveItem.move">
+<code class="descname">move</code><span class="sig-paren">(</span><em>target</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#DriveItem.move"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.DriveItem.move" title="Permalink to this definition">¶</a></dt>
+<dd><p>Moves this DriveItem to another Folder.
+Can’t move between different Drives.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>target</strong> (<a class="reference internal" href="#O365.drive.Folder" title="O365.drive.Folder"><em>drive.Folder</em></a><em> or </em><a class="reference internal" href="#O365.drive.DriveItem" title="O365.drive.DriveItem"><em>DriveItem</em></a><em> or </em><em>str</em>) – a Folder, Drive item or Item Id string.
+If it’s a drive the item will be moved to the root folder.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Success / Failure</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.drive.DriveItem.share_with_invite">
+<code class="descname">share_with_invite</code><span class="sig-paren">(</span><em>recipients</em>, <em>require_sign_in=True</em>, <em>send_email=True</em>, <em>message=None</em>, <em>share_type='view'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#DriveItem.share_with_invite"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.DriveItem.share_with_invite" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sends an invitation to access or edit this DriveItem</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>recipients</strong> (<em>list</em><em>[</em><em>str</em><em>] or </em><em>list</em><em>[</em><a class="reference internal" href="address_book.html#O365.address_book.Contact" title="O365.address_book.Contact"><em>Contact</em></a><em>] or </em><em>str</em><em> or </em><a class="reference internal" href="address_book.html#O365.address_book.Contact" title="O365.address_book.Contact"><em>Contact</em></a>) – a string or Contact or a list of the former
+representing recipients of this invitation</li>
+<li><strong>require_sign_in</strong> (<em>bool</em>) – if True the recipients
+invited will need to log in to view the contents</li>
+<li><strong>send_email</strong> (<em>bool</em>) – if True an email will be send to the recipients</li>
+<li><strong>message</strong> (<em>str</em>) – the body text of the message emailed</li>
+<li><strong>share_type</strong> (<em>str</em>) – ‘view’: will allow to read the contents.
+‘edit’ will allow to modify the contents</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">link to share</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#O365.drive.DriveItemPermission" title="O365.drive.DriveItemPermission">DriveItemPermission</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.drive.DriveItem.share_with_link">
+<code class="descname">share_with_link</code><span class="sig-paren">(</span><em>share_type='view'</em>, <em>share_scope='anonymous'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#DriveItem.share_with_link"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.DriveItem.share_with_link" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates or returns a link you can share with others</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>share_type</strong> (<em>str</em>) – ‘view’ to allow only view access,
+‘edit’ to allow editions, and
+‘embed’ to allow the DriveItem to be embedded</li>
+<li><strong>share_scope</strong> (<em>str</em>) – ‘anonymous’: anyone with the link can access.
+‘organization’ Only organization members can access</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">link to share</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#O365.drive.DriveItemPermission" title="O365.drive.DriveItemPermission">DriveItemPermission</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.drive.DriveItem.update">
+<code class="descname">update</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#DriveItem.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.DriveItem.update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates this item</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>kwargs</strong> – all the properties to be updated.
+only name and description are allowed at the moment.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Success / Failure</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="O365.drive.DriveItemPermission">
+<em class="property">class </em><code class="descclassname">O365.drive.</code><code class="descname">DriveItemPermission</code><span class="sig-paren">(</span><em>*</em>, <em>parent=None</em>, <em>con=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#DriveItemPermission"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.DriveItemPermission" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.utils.utils.ApiComponent</span></code></a></p>
+<p>A Permission representation for a DriveItem</p>
+<dl class="method">
+<dt id="O365.drive.DriveItemPermission.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>*</em>, <em>parent=None</em>, <em>con=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#DriveItemPermission.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.DriveItemPermission.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Permissions for DriveItem</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>parent</strong> (<a class="reference internal" href="#O365.drive.DriveItem" title="O365.drive.DriveItem"><em>DriveItem</em></a>) – parent for this operation</li>
+<li><strong>con</strong> (<a class="reference internal" href="connection.html#O365.connection.Connection" title="O365.connection.Connection"><em>Connection</em></a>) – connection to use if no parent specified</li>
+<li><strong>protocol</strong> (<a class="reference internal" href="connection.html#O365.connection.Protocol" title="O365.connection.Protocol"><em>Protocol</em></a>) – protocol to use if no parent specified
+(kwargs)</li>
+<li><strong>main_resource</strong> (<em>str</em>) – use this resource instead of parent resource
+(kwargs)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.drive.DriveItemPermission.delete">
+<code class="descname">delete</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#DriveItemPermission.delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.DriveItemPermission.delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deletes this permission. Only permissions that are not
+inherited can be deleted.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Success / Failure</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.drive.DriveItemPermission.update_roles">
+<code class="descname">update_roles</code><span class="sig-paren">(</span><em>roles='view'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#DriveItemPermission.update_roles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.DriveItemPermission.update_roles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates the roles of this permission</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Success / Failure</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="O365.drive.DriveItemVersion">
+<em class="property">class </em><code class="descclassname">O365.drive.</code><code class="descname">DriveItemVersion</code><span class="sig-paren">(</span><em>*</em>, <em>parent=None</em>, <em>con=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#DriveItemVersion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.DriveItemVersion" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.utils.utils.ApiComponent</span></code></a>, <a class="reference internal" href="#O365.drive.DownloadableMixin" title="O365.drive.DownloadableMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.drive.DownloadableMixin</span></code></a></p>
+<p>A version of a DriveItem</p>
+<dl class="method">
+<dt id="O365.drive.DriveItemVersion.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>*</em>, <em>parent=None</em>, <em>con=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#DriveItemVersion.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.DriveItemVersion.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Version of DriveItem</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>parent</strong> (<a class="reference internal" href="#O365.drive.DriveItem" title="O365.drive.DriveItem"><em>DriveItem</em></a>) – parent for this operation</li>
+<li><strong>con</strong> (<a class="reference internal" href="connection.html#O365.connection.Connection" title="O365.connection.Connection"><em>Connection</em></a>) – connection to use if no parent specified</li>
+<li><strong>protocol</strong> (<a class="reference internal" href="connection.html#O365.connection.Protocol" title="O365.connection.Protocol"><em>Protocol</em></a>) – protocol to use if no parent specified
+(kwargs)</li>
+<li><strong>main_resource</strong> (<em>str</em>) – use this resource instead of parent resource
+(kwargs)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.drive.DriveItemVersion.download">
+<code class="descname">download</code><span class="sig-paren">(</span><em>to_path=None</em>, <em>name=None</em>, <em>chunk_size='auto'</em>, <em>convert_to_pdf=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#DriveItemVersion.download"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.DriveItemVersion.download" title="Permalink to this definition">¶</a></dt>
+<dd><p>Downloads this version.
+You can not download the current version (last one).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Success / Failure</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.drive.DriveItemVersion.restore">
+<code class="descname">restore</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#DriveItemVersion.restore"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.DriveItemVersion.restore" title="Permalink to this definition">¶</a></dt>
+<dd><p>Restores this DriveItem Version.
+You can not restore the current version (last one).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Success / Failure</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="O365.drive.File">
+<em class="property">class </em><code class="descclassname">O365.drive.</code><code class="descname">File</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#File"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.File" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#O365.drive.DriveItem" title="O365.drive.DriveItem"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.drive.DriveItem</span></code></a>, <a class="reference internal" href="#O365.drive.DownloadableMixin" title="O365.drive.DownloadableMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.drive.DownloadableMixin</span></code></a></p>
+<p>A File</p>
+<dl class="method">
+<dt id="O365.drive.File.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#File.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.File.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a DriveItem</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>parent</strong> (<a class="reference internal" href="#O365.drive.Drive" title="O365.drive.Drive"><em>Drive</em></a><em> or </em><a class="reference internal" href="#O365.drive.Folder" title="O365.drive.Folder"><em>drive.Folder</em></a>) – parent for this operation</li>
+<li><strong>con</strong> (<a class="reference internal" href="connection.html#O365.connection.Connection" title="O365.connection.Connection"><em>Connection</em></a>) – connection to use if no parent specified</li>
+<li><strong>protocol</strong> (<a class="reference internal" href="connection.html#O365.connection.Protocol" title="O365.connection.Protocol"><em>Protocol</em></a>) – protocol to use if no parent specified
+(kwargs)</li>
+<li><strong>main_resource</strong> (<em>str</em>) – use this resource instead of parent resource
+(kwargs)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="O365.drive.Folder">
+<em class="property">class </em><code class="descclassname">O365.drive.</code><code class="descname">Folder</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#Folder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.Folder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#O365.drive.DriveItem" title="O365.drive.DriveItem"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.drive.DriveItem</span></code></a></p>
+<p>A Folder inside a Drive</p>
+<dl class="method">
+<dt id="O365.drive.Folder.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#Folder.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.Folder.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a DriveItem</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>parent</strong> (<a class="reference internal" href="#O365.drive.Drive" title="O365.drive.Drive"><em>Drive</em></a><em> or </em><a class="reference internal" href="#O365.drive.Folder" title="O365.drive.Folder"><em>drive.Folder</em></a>) – parent for this operation</li>
+<li><strong>con</strong> (<a class="reference internal" href="connection.html#O365.connection.Connection" title="O365.connection.Connection"><em>Connection</em></a>) – connection to use if no parent specified</li>
+<li><strong>protocol</strong> (<a class="reference internal" href="connection.html#O365.connection.Protocol" title="O365.connection.Protocol"><em>Protocol</em></a>) – protocol to use if no parent specified
+(kwargs)</li>
+<li><strong>main_resource</strong> (<em>str</em>) – use this resource instead of parent resource
+(kwargs)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.drive.Folder.create_child_folder">
+<code class="descname">create_child_folder</code><span class="sig-paren">(</span><em>name</em>, <em>description=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#Folder.create_child_folder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.Folder.create_child_folder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a Child Folder</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>name</strong> (<em>str</em>) – the name of the new child folder</li>
+<li><strong>description</strong> (<em>str</em>) – the description of the new child folder</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">newly created folder</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#O365.drive.Folder" title="O365.drive.Folder">drive.Folder</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.drive.Folder.download_contents">
+<code class="descname">download_contents</code><span class="sig-paren">(</span><em>to_folder=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#Folder.download_contents"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.Folder.download_contents" title="Permalink to this definition">¶</a></dt>
+<dd><p>This will download each file and folder sequentially.
+Caution when downloading big folder structures</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>to_folder</strong> (<a class="reference internal" href="#O365.drive.Folder" title="O365.drive.Folder"><em>drive.Folder</em></a>) – folder where to store the contents</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.drive.Folder.get_items">
+<code class="descname">get_items</code><span class="sig-paren">(</span><em>limit=None</em>, <em>*</em>, <em>query=None</em>, <em>order_by=None</em>, <em>batch=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#Folder.get_items"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.Folder.get_items" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns all the items inside this folder</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>limit</strong> (<em>int</em>) – max no. of folders to get. Over 999 uses batch.</li>
+<li><strong>query</strong> (<a class="reference internal" href="utils.html#O365.utils.utils.Query" title="O365.utils.utils.Query"><em>Query</em></a><em> or </em><em>str</em>) – applies a OData filter to the request</li>
+<li><strong>order_by</strong> (<a class="reference internal" href="utils.html#O365.utils.utils.Query" title="O365.utils.utils.Query"><em>Query</em></a><em> or </em><em>str</em>) – orders the result set based on this condition</li>
+<li><strong>batch</strong> (<em>int</em>) – batch size, retrieves items in
+batches allowing to retrieve more items than the limit.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">list of items in this folder</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">list[<a class="reference internal" href="#O365.drive.DriveItem" title="O365.drive.DriveItem">DriveItem</a>] or <a class="reference internal" href="utils.html#O365.utils.utils.Pagination" title="O365.utils.utils.Pagination">Pagination</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.drive.Folder.search">
+<code class="descname">search</code><span class="sig-paren">(</span><em>search_text</em>, <em>limit=None</em>, <em>*</em>, <em>query=None</em>, <em>order_by=None</em>, <em>batch=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#Folder.search"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.Folder.search" title="Permalink to this definition">¶</a></dt>
+<dd><p>Search for DriveItems under this folder
+The search API uses a search service under the covers,
+which requires indexing of content.</p>
+<p>As a result, there will be some time between creation of an item
+and when it will appear in search results.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>search_text</strong> (<em>str</em>) – The query text used to search for items.
+Values may be matched across several fields including filename,
+metadata, and file content.</li>
+<li><strong>limit</strong> (<em>int</em>) – max no. of folders to get. Over 999 uses batch.</li>
+<li><strong>query</strong> (<a class="reference internal" href="utils.html#O365.utils.utils.Query" title="O365.utils.utils.Query"><em>Query</em></a><em> or </em><em>str</em>) – applies a OData filter to the request</li>
+<li><strong>order_by</strong> (<a class="reference internal" href="utils.html#O365.utils.utils.Query" title="O365.utils.utils.Query"><em>Query</em></a><em> or </em><em>str</em>) – orders the result set based on this condition</li>
+<li><strong>batch</strong> (<em>int</em>) – batch size, retrieves items in
+batches allowing to retrieve more items than the limit.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">list of items in this folder</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">list[<a class="reference internal" href="#O365.drive.DriveItem" title="O365.drive.DriveItem">DriveItem</a>] or <a class="reference internal" href="utils.html#O365.utils.utils.Pagination" title="O365.utils.utils.Pagination">Pagination</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.drive.Folder.upload_file">
+<code class="descname">upload_file</code><span class="sig-paren">(</span><em>item</em>, <em>chunk_size=5242880</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#Folder.upload_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.Folder.upload_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Uploads a file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>item</strong> (<em>str</em><em> or </em><em>Path</em>) – path to the item you want to upload</li>
+<li><strong>chunk_size</strong> – Only applies if file is bigger than 4MB.
+Chunk size for uploads. Must be a multiple of 327.680 bytes</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">uploaded file</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#O365.drive.DriveItem" title="O365.drive.DriveItem">DriveItem</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="O365.drive.Image">
+<em class="property">class </em><code class="descclassname">O365.drive.</code><code class="descname">Image</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#Image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.Image" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#O365.drive.File" title="O365.drive.File"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.drive.File</span></code></a></p>
+<p>An Image</p>
+<dl class="method">
+<dt id="O365.drive.Image.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#Image.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.Image.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a DriveItem</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>parent</strong> (<a class="reference internal" href="#O365.drive.Drive" title="O365.drive.Drive"><em>Drive</em></a><em> or </em><a class="reference internal" href="#O365.drive.Folder" title="O365.drive.Folder"><em>drive.Folder</em></a>) – parent for this operation</li>
+<li><strong>con</strong> (<a class="reference internal" href="connection.html#O365.connection.Connection" title="O365.connection.Connection"><em>Connection</em></a>) – connection to use if no parent specified</li>
+<li><strong>protocol</strong> (<a class="reference internal" href="connection.html#O365.connection.Protocol" title="O365.connection.Protocol"><em>Protocol</em></a>) – protocol to use if no parent specified
+(kwargs)</li>
+<li><strong>main_resource</strong> (<em>str</em>) – use this resource instead of parent resource
+(kwargs)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.drive.Image.dimensions">
+<code class="descname">dimensions</code><a class="headerlink" href="#O365.drive.Image.dimensions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dimension of the Image</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">width x height</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="O365.drive.Photo">
+<em class="property">class </em><code class="descclassname">O365.drive.</code><code class="descname">Photo</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#Photo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.Photo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#O365.drive.Image" title="O365.drive.Image"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.drive.Image</span></code></a></p>
+<p>Photo Object. Inherits from Image but has more attributes</p>
+<dl class="method">
+<dt id="O365.drive.Photo.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#Photo.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.Photo.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a DriveItem</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>parent</strong> (<a class="reference internal" href="#O365.drive.Drive" title="O365.drive.Drive"><em>Drive</em></a><em> or </em><a class="reference internal" href="#O365.drive.Folder" title="O365.drive.Folder"><em>drive.Folder</em></a>) – parent for this operation</li>
+<li><strong>con</strong> (<a class="reference internal" href="connection.html#O365.connection.Connection" title="O365.connection.Connection"><em>Connection</em></a>) – connection to use if no parent specified</li>
+<li><strong>protocol</strong> (<a class="reference internal" href="connection.html#O365.connection.Protocol" title="O365.connection.Protocol"><em>Protocol</em></a>) – protocol to use if no parent specified
+(kwargs)</li>
+<li><strong>main_resource</strong> (<em>str</em>) – use this resource instead of parent resource
+(kwargs)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="O365.drive.Storage">
+<em class="property">class </em><code class="descclassname">O365.drive.</code><code class="descname">Storage</code><span class="sig-paren">(</span><em>*</em>, <em>parent=None</em>, <em>con=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#Storage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.Storage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.utils.utils.ApiComponent</span></code></a></p>
+<p>Parent Class that holds drives</p>
+<dl class="method">
+<dt id="O365.drive.Storage.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>*</em>, <em>parent=None</em>, <em>con=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#Storage.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.Storage.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a storage representation</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>parent</strong> (<a class="reference internal" href="account.html#O365.account.Account" title="O365.account.Account"><em>Account</em></a>) – parent for this operation</li>
+<li><strong>con</strong> (<a class="reference internal" href="connection.html#O365.connection.Connection" title="O365.connection.Connection"><em>Connection</em></a>) – connection to use if no parent specified</li>
+<li><strong>protocol</strong> (<a class="reference internal" href="connection.html#O365.connection.Protocol" title="O365.connection.Protocol"><em>Protocol</em></a>) – protocol to use if no parent specified
+(kwargs)</li>
+<li><strong>main_resource</strong> (<em>str</em>) – use this resource instead of parent resource
+(kwargs)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.drive.Storage.drive_constructor">
+<code class="descname">drive_constructor</code><a class="headerlink" href="#O365.drive.Storage.drive_constructor" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="#O365.drive.Drive" title="O365.drive.Drive"><code class="xref py py-class docutils literal notranslate"><span class="pre">Drive</span></code></a></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.drive.Storage.get_default_drive">
+<code class="descname">get_default_drive</code><span class="sig-paren">(</span><em>request_drive=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#Storage.get_default_drive"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.Storage.get_default_drive" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a Drive instance</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>request_drive</strong> – True will make an api call to retrieve the drive
+data</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">default One Drive</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#O365.drive.Drive" title="O365.drive.Drive">Drive</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.drive.Storage.get_drive">
+<code class="descname">get_drive</code><span class="sig-paren">(</span><em>drive_id</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#Storage.get_drive"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.Storage.get_drive" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a Drive instance</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>drive_id</strong> – the drive_id to be retrieved</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Drive for the id</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#O365.drive.Drive" title="O365.drive.Drive">Drive</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.drive.Storage.get_drives">
+<code class="descname">get_drives</code><span class="sig-paren">(</span><em>limit=None</em>, <em>*</em>, <em>query=None</em>, <em>order_by=None</em>, <em>batch=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#Storage.get_drives"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.Storage.get_drives" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a collection of drives</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>limit</strong> (<em>int</em>) – max no. of items to get. Over 999 uses batch.</li>
+<li><strong>query</strong> (<a class="reference internal" href="utils.html#O365.utils.utils.Query" title="O365.utils.utils.Query"><em>Query</em></a><em> or </em><em>str</em>) – applies a OData filter to the request</li>
+<li><strong>order_by</strong> (<a class="reference internal" href="utils.html#O365.utils.utils.Query" title="O365.utils.utils.Query"><em>Query</em></a><em> or </em><em>str</em>) – orders the result set based on this condition</li>
+<li><strong>batch</strong> (<em>int</em>) – batch size, retrieves items in
+batches allowing to retrieve more items than the limit.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">list of items in this folder</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">list[<a class="reference internal" href="#O365.drive.Drive" title="O365.drive.Drive">Drive</a>] or <a class="reference internal" href="utils.html#O365.utils.utils.Pagination" title="O365.utils.utils.Pagination">Pagination</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="mailbox.html" class="btn btn-neutral float-right" title="Mailbox" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="connection.html" class="btn btn-neutral" title="Connection" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Narcolapser
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

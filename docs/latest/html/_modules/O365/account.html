@@ -79,8 +79,8 @@
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../getting_started.html">Getting Started</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../api.html">O365 API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../usage.html">Detailed Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">O365 API</a></li>
 </ul>
 
             
@@ -151,6 +151,7 @@
 <span class="kn">from</span> <span class="nn">O365.drive</span> <span class="k">import</span> <span class="n">Storage</span>
 <span class="kn">from</span> <span class="nn">O365.mailbox</span> <span class="k">import</span> <span class="n">MailBox</span>
 <span class="kn">from</span> <span class="nn">O365.message</span> <span class="k">import</span> <span class="n">Message</span>
+<span class="kn">from</span> <span class="nn">O365.sharepoint</span> <span class="k">import</span> <span class="n">Sharepoint</span>
 <span class="kn">from</span> <span class="nn">O365.utils</span> <span class="k">import</span> <span class="n">ME_RESOURCE</span>
 
 
@@ -265,12 +266,12 @@
         <span class="k">return</span> <span class="n">Schedule</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">main_resource</span><span class="o">=</span><span class="n">resource</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Account.storage"><a class="viewcode-back" href="../../api/account.html#O365.account.Account.storage">[docs]</a>    <span class="k">def</span> <span class="nf">storage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">resource</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Get an instance to handle file storage like OneDrive or</span>
-<span class="sd">        Sharepoint document libraries for the specified account resource</span>
+        <span class="sd">&quot;&quot;&quot; Get an instance to handle file storage (OneDrive / Sharepoint)</span>
+<span class="sd">        for the specified account resource</span>
 
 <span class="sd">        :param str resource: Custom resource to be used in this drive object</span>
 <span class="sd">         (Defaults to parent main_resource)</span>
-<span class="sd">        :return: a representation of File Storage</span>
+<span class="sd">        :return: a representation of OneDrive File Storage</span>
 <span class="sd">        :rtype: Storage</span>
 <span class="sd">        :raises RuntimeError: if protocol doesn&#39;t support the feature</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -279,7 +280,25 @@
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
                 <span class="s1">&#39;Drive options only works on Microsoft Graph API&#39;</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">Storage</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">main_resource</span><span class="o">=</span><span class="n">resource</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="n">Storage</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">main_resource</span><span class="o">=</span><span class="n">resource</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Account.sharepoint"><a class="viewcode-back" href="../../api/account.html#O365.account.Account.sharepoint">[docs]</a>    <span class="k">def</span> <span class="nf">sharepoint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">resource</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get an instance to read information from Sharepoint sites for the</span>
+<span class="sd">        specified account resource</span>
+
+<span class="sd">        :param str resource: Custom resource to be used in this sharepoint</span>
+<span class="sd">         object (Defaults to parent main_resource)</span>
+<span class="sd">        :return: a representation of Sharepoint Sites</span>
+<span class="sd">        :rtype: Sharepoint</span>
+<span class="sd">        :raises RuntimeError: if protocol doesn&#39;t support the feature</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">protocol</span><span class="p">,</span> <span class="n">MSGraphProtocol</span><span class="p">):</span>
+            <span class="c1"># TODO: Custom protocol accessing OneDrive/Sharepoint Api fails here</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="s1">&#39;Sharepoint api only works on Microsoft Graph API&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">Sharepoint</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">main_resource</span><span class="o">=</span><span class="n">resource</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>
@@ -312,21 +331,10 @@
   
 
     
-      <script type="text/javascript">
-          var DOCUMENTATION_OPTIONS = {
-              URL_ROOT:'../../',
-              VERSION:'',
-              LANGUAGE:'None',
-              COLLAPSE_INDEX:false,
-              FILE_SUFFIX:'.html',
-              HAS_SOURCE:  true,
-              SOURCELINK_SUFFIX: '.txt'
-          };
-      </script>
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
         <script type="text/javascript" src="../../_static/jquery.js"></script>
         <script type="text/javascript" src="../../_static/underscore.js"></script>
         <script type="text/javascript" src="../../_static/doctools.js"></script>
-        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
 
   

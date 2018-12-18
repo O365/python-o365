@@ -1,8 +1,11 @@
-import logging
-from enum import Enum
 import datetime as dt
-import pytz
+import logging
 from collections import OrderedDict
+from enum import Enum
+
+import pytz
+
+from O365.utils.decorators import fluent
 
 ME_RESOURCE = 'me'
 USERS_RESOURCE = 'users'
@@ -44,9 +47,11 @@ class ChainOperator(Enum):
 
 
 class TrackerSet(set):
-    """ A Custom Set that changes the casing of it's keys """
-
     def __init__(self, *args, casing=None, **kwargs):
+        """ A Custom Set that changes the casing of it's keys
+
+        :param func casing: a function to convert into specified case
+        """
         self.cc = casing
         super().__init__(*args, **kwargs)
 
@@ -61,22 +66,28 @@ class ApiComponent:
     Exposes common access methods to the api protocol within all Api objects
     """
 
-    _cloud_data_key = '__cloud_data__'  # wrapps cloud data with this dict key
+    _cloud_data_key = '__cloud_data__'  # wraps cloud data with this dict key
     _endpoints = {}  # dict of all API service endpoints needed
 
     def __init__(self, *, protocol=None, main_resource=None, **kwargs):
         """ Object initialization
-        :param protocol: A protocol class or instance to be used with this connection
-        :param main_resource: main_resource to be used in these API comunications
-        :param kwargs: Extra arguments
+
+        :param Protocol protocol: A protocol class or instance to be used with
+         this connection
+        :param str main_resource: main_resource to be used in these API
+         communications
         """
         self.protocol = protocol() if isinstance(protocol, type) else protocol
         if self.protocol is None:
             raise ValueError('Protocol not provided to Api Component')
-        self.main_resource = self._parse_resource(main_resource if main_resource is not None else protocol.default_resource)
-        self._base_url = '{}{}'.format(self.protocol.service_url, self.main_resource)
+        self.main_resource = (self._parse_resource(
+            main_resource if main_resource is not None
+            else protocol.default_resource))
+        # noinspection PyUnresolvedReferences
+        self._base_url = '{}{}'.format(self.protocol.service_url,
+                                       self.main_resource)
         if self._base_url.endswith('/'):
-            # when self.main_resource is an empty string then remove the last slash.
+            # when self.main_resource is empty then remove the last slash.
             self._base_url = self._base_url[:-1]
         super().__init__()
 
@@ -93,14 +104,21 @@ class ApiComponent:
         if resource in {ME_RESOURCE, USERS_RESOURCE}:
             return resource
         elif '@' in resource and not resource.startswith(USERS_RESOURCE):
-            # when for example accesing a shared mailbox the resource is set to the email address.
-            # we have to prefix the email with the resource 'users/' so --> 'users/email_address'
+            # when for example accessing a shared mailbox the
+            # resource is set to the email address. we have to prefix
+            # the email with the resource 'users/' so --> 'users/email_address'
             return '{}/{}'.format(USERS_RESOURCE, resource)
         else:
             return resource
 
     def build_url(self, endpoint):
-        """ Returns a url for a given endpoint using the protocol service url """
+        """ Returns a url for a given endpoint using the protocol
+        service url
+
+        :param str endpoint: endpoint to build the url for
+        :return: final url
+        :rtype: str
+        """
         return '{}{}'.format(self._base_url, endpoint)
 
     def _gk(self, keyword):
@@ -112,6 +130,12 @@ class ApiComponent:
         return self.protocol.convert_case(dict_key)
 
     def new_query(self, attribute=None):
+        """ Create a new query to filter results
+
+        :param str attribute: attribute to apply the query for
+        :return: new Query
+        :rtype: Query
+        """
         return Query(attribute=attribute, protocol=self.protocol)
 
     q = new_query  # alias for new query
@@ -120,23 +144,26 @@ class ApiComponent:
 class Pagination(ApiComponent):
     """ Utility class that allows batching requests to the server """
 
-    def __init__(self, *, parent=None, data=None, constructor=None, next_link=None, limit=None):
-        """
-        Returns an iterator that returns data until it's exhausted. Then will request more data
-        (same amount as the original request) to the server until this data is exhausted as well.
+    def __init__(self, *, parent=None, data=None, constructor=None,
+                 next_link=None, limit=None):
+        """ Returns an iterator that returns data until it's exhausted.
+        Then will request more data (same amount as the original request)
+        to the server until this data is exhausted as well.
         Stops when no more data exists or limit is reached.
 
         :param parent: the parent class. Must implement attributes:
-            con, api_version, main_resource
+         con, api_version, main_resource
         :param data: the start data to be return
-        :param constructor: the data constructor for the next batch. It can be a function.
-        :param next_link: the link to request more data to
-        :param limit: when to stop retrieving more data
+        :param constructor: the data constructor for the next batch.
+         It can be a function.
+        :param str next_link: the link to request more data to
+        :param int limit: when to stop retrieving more data
         """
         if parent is None:
             raise ValueError('Parent must be another Api Component')
 
-        super().__init__(protocol=parent.protocol, main_resource=parent.main_resource)
+        super().__init__(protocol=parent.protocol,
+                         main_resource=parent.main_resource)
 
         self.parent = parent
         self.con = parent.con
@@ -161,7 +188,8 @@ class Pagination(ApiComponent):
         if callable(self.constructor):
             return 'Pagination Iterator'
         else:
-            return "'{}' Iterator".format(self.constructor.__name__ if self.constructor else 'Unknown')
+            return "'{}' Iterator".format(
+                self.constructor.__name__ if self.constructor else 'Unknown')
 
     def __bool__(self):
         return bool(self.data) or bool(self.next_link)
@@ -190,11 +218,15 @@ class Pagination(ApiComponent):
         self.next_link = data.get(NEXT_LINK_KEYWORD, None) or None
         data = data.get('value', [])
         if self.constructor:
-            # Everything received from the cloud must be passed with self._cloud_data_key
-            if callable(self.constructor) and not isinstance(self.constructor, type):  # it's callable but its not a Class
-                self.data = [self.constructor(value)(parent=self.parent, **{self._cloud_data_key: value}) for value in data]
+            # Everything  from cloud must be passed as self._cloud_data_key
+            if callable(self.constructor) and not isinstance(self.constructor,
+                                                             type):
+                self.data = [self.constructor(value)(parent=self.parent, **{
+                    self._cloud_data_key: value}) for value in data]
             else:
-                self.data = [self.constructor(parent=self.parent, **{self._cloud_data_key: value}) for value in data]
+                self.data = [self.constructor(parent=self.parent,
+                                              **{self._cloud_data_key: value})
+                             for value in data]
         else:
             self.data = data
 
@@ -226,6 +258,12 @@ class Query:
     }
 
     def __init__(self, attribute=None, *, protocol):
+        """ Build a query to apply OData filters
+        https://docs.microsoft.com/en-us/graph/query-parameters
+
+        :param str attribute: attribute to apply the query for
+        :param Protocol protocol: protocol to use for connecting
+        """
         self.protocol = protocol() if isinstance(protocol, type) else protocol
         self._attribute = None
         self._chain = None
@@ -236,19 +274,26 @@ class Query:
         self._selects = set()
 
     def __str__(self):
-        return 'Filter: {}\nOrder: {}\nSelect: {}'.format(self.get_filters(), self.get_order(), self.get_selects())
+        return 'Filter: {}\nOrder: {}\nSelect: {}'.format(self.get_filters(),
+                                                          self.get_order(),
+                                                          self.get_selects())
 
     def __repr__(self):
         return self.__str__()
 
+    @fluent
     def select(self, *attributes):
-        """
-        Adds the attribute to the $select parameter
-        :param attributes: the attributes tuple to select. If empty, the on_attribute previously set is added.
+        """ Adds the attribute to the $select parameter
+
+        :param str attributes: the attributes tuple to select.
+         If empty, the on_attribute previously set is added.
+        :rtype: Query
         """
         if attributes:
             for attribute in attributes:
-                attribute = self.protocol.convert_case(attribute) if attribute and isinstance(attribute, str) else None
+                attribute = self.protocol.convert_case(
+                    attribute) if attribute and isinstance(attribute,
+                                                           str) else None
                 if attribute:
                     if '/' in attribute:
                         # only parent attribute can be selected
@@ -261,7 +306,10 @@ class Query:
         return self
 
     def as_params(self):
-        """ Returns the filters and orders as query parameters"""
+        """ Returns the filters and orders as query parameters
+
+        :rtype: dict
+        """
         params = {}
         if self.has_filters:
             params['$filter'] = self.get_filters()
@@ -273,29 +321,50 @@ class Query:
 
     @property
     def has_filters(self):
+        """ Whether the query has filters or not
+
+        :rtype: bool
+        """
         return bool(self._filters)
 
     @property
     def has_order(self):
+        """ Whether the query has order_by or not
+
+        :rtype: bool
+        """
         return bool(self._order_by)
 
     @property
     def has_selects(self):
+        """ Whether the query has select filters or not
+
+        :rtype: bool
+        """
         return bool(self._selects)
 
     def get_filters(self):
-        """ Returns the result filters """
+        """ Returns the result filters
+
+        :rtype: str or None
+        """
         if self._filters:
             filters_list = self._filters
             if isinstance(filters_list[-1], Enum):
                 filters_list = filters_list[:-1]
-            return ' '.join([fs.value if isinstance(fs, Enum) else fs[1] for fs in filters_list]).strip()
+            return ' '.join(
+                [fs.value if isinstance(fs, Enum) else fs[1] for fs in
+                 filters_list]).strip()
         else:
             return None
 
     def get_order(self):
-        """ Returns the result order by clauses """
-        # first get the filtered attributes in order as they must appear in the order_by first
+        """ Returns the result order by clauses
+
+        :rtype: str or None
+        """
+        # first get the filtered attributes in order as they must appear
+        # in the order_by first
         if not self.has_order:
             return None
         filter_order_clauses = OrderedDict([(filter_attr[0], None)
@@ -308,16 +377,23 @@ class Query:
             direction = order_by_dict.pop(filter_oc, None)
             filter_order_clauses[filter_oc] = direction
 
-        filter_order_clauses.update(order_by_dict)  # append any remaining order_by clause
+        filter_order_clauses.update(
+            order_by_dict)  # append any remaining order_by clause
 
         if filter_order_clauses:
-            return ','.join(['{} {}'.format(attribute, direction if direction else '').strip()
-                             for attribute, direction in filter_order_clauses.items()])
+            return ','.join(['{} {}'.format(attribute,
+                                            direction if direction else '')
+                            .strip()
+                             for attribute, direction in
+                             filter_order_clauses.items()])
         else:
             return None
 
     def get_selects(self):
-        """ Returns the result select clause """
+        """ Returns the result select clause
+
+        :rtype: str or None
+        """
         if self._selects:
             return ','.join(self._selects)
         else:
@@ -327,13 +403,22 @@ class Query:
         if attribute:
             mapping = self._mapping.get(attribute)
             if mapping:
-                attribute = '/'.join([self.protocol.convert_case(step) for step in mapping.split('/')])
+                attribute = '/'.join(
+                    [self.protocol.convert_case(step) for step in
+                     mapping.split('/')])
             else:
                 attribute = self.protocol.convert_case(attribute)
             return attribute
         return None
 
+    @fluent
     def new(self, attribute, operation=ChainOperator.AND):
+        """ Combine with a new query
+
+        :param str attribute: attribute of new query
+        :param ChainOperator operation: operation to combine to new query
+        :rtype: Query
+        """
         if isinstance(operation, str):
             operation = ChainOperator(operation)
         self._chain = operation
@@ -342,36 +427,64 @@ class Query:
         return self
 
     def clear_filters(self):
+        """ Clear filters """
         self._filters = []
 
+    @fluent
     def clear(self):
+        """ Clear everything
+
+        :rtype: Query
+        """
         self._filters = []
         self._order_by = OrderedDict()
         self._selects = set()
-        self.new(None)
+        self._negation = False
+        self._attribute = None
+        self._chain = None
         return self
 
+    @fluent
     def negate(self):
+        """ Apply a not operator
+
+        :rtype: Query
+        """
         self._negation = not self._negation
         return self
 
+    @fluent
     def chain(self, operation=ChainOperator.AND):
+        """ Start a chain operation
+
+        :param ChainOperator operation: how to combine with a new one
+        :rtype: Query
+        """
         if isinstance(operation, str):
             operation = ChainOperator(operation)
         self._chain = operation
         return self
 
+    @fluent
     def on_attribute(self, attribute):
+        """ Apply query on attribute, to be used along with chain()
+
+        :param str attribute: attribute name
+        :rtype: Query
+        """
         self._attribute = self._get_mapping(attribute)
         return self
 
     def _add_filter(self, filter_str):
         if self._attribute:
-            if self._filters and not isinstance(self._filters[-1], ChainOperator):
+            if self._filters and not isinstance(self._filters[-1],
+                                                ChainOperator):
                 self._filters.append(self._chain)
             self._filters.append((self._attribute, filter_str))
         else:
-            raise ValueError('Attribute property needed. call on_attribute(attribute) or new(attribute)')
+            raise ValueError(
+                'Attribute property needed. call on_attribute(attribute) '
+                'or new(attribute)')
 
     def _parse_filter_word(self, word):
         """ Converts the word parameter into the correct format """
@@ -381,89 +494,178 @@ class Query:
             if isinstance(word, dt.datetime):
                 if word.tzinfo is None:
                     # if it's a naive datetime, localize the datetime.
-                    word = self.protocol.timezone.localize(word)  # localize datetime into local tz
+                    word = self.protocol.timezone.localize(
+                        word)  # localize datetime into local tz
                 if word.tzinfo != pytz.utc:
-                    word = word.astimezone(pytz.utc)  # transform local datetime to utc
+                    word = word.astimezone(
+                        pytz.utc)  # transform local datetime to utc
             if '/' in self._attribute:
-                # TODO: this is a fix for the case when the parameter filtered is a string instead a dateTimeOffset
-                #  but checking the '/' is not correct, but it will differenciate for now the case on events:
-                #  start/dateTime (date is a string here) from the case on other dates such as
+                # TODO: this is a fix for the case when the parameter
+                # filtered is a string instead a dateTimeOffset
+                #  but checking the '/' is not correct, but it will
+                # differentiate for now the case on events:
+                #  start/dateTime (date is a string here) from
+                # the case on other dates such as
                 #  receivedDateTime (date is a dateTimeOffset)
-                word = "'{}'".format(word.isoformat())  # convert datetime to isoformat.
+                word = "'{}'".format(
+                    word.isoformat())  # convert datetime to isoformat.
             else:
-                word = "{}".format(word.isoformat())  # convert datetime to isoformat
+                word = "{}".format(
+                    word.isoformat())  # convert datetime to isoformat
         elif isinstance(word, bool):
             word = str(word).lower()
         return word
 
     @staticmethod
     def _prepare_sentence(attribute, operation, word, negation=False):
-        return '{} {} {} {}'.format('not' if negation else '', attribute, operation, word).strip()
+        return '{} {} {} {}'.format('not' if negation else '', attribute,
+                                    operation, word).strip()
 
+    @fluent
     def logical_operator(self, operation, word):
+        """ Apply a logical operator
+
+        :param str operation: how to combine with a new one
+        :param word: other parameter for the operation
+         (a = b) would be like a.logical_operator('eq', 'b')
+        :rtype: Query
+        """
         word = self._parse_filter_word(word)
-        self._add_filter(self._prepare_sentence(self._attribute, operation, word, self._negation))
+        self._add_filter(
+            self._prepare_sentence(self._attribute, operation, word,
+                                   self._negation))
         return self
 
+    @fluent
     def equals(self, word):
+        """ Add a equals check
+
+        :param str word: word to compare with
+        :rtype: Query
+        """
         return self.logical_operator('eq', word)
 
+    @fluent
     def unequal(self, word):
+        """ Add a unequals check
+
+        :param str word: word to compare with
+        :rtype: Query
+        """
         return self.logical_operator('ne', word)
 
+    @fluent
     def greater(self, word):
+        """ Add a greater than check
+
+        :param str word: word to compare with
+        :rtype: Query
+        """
         return self.logical_operator('gt', word)
 
+    @fluent
     def greater_equal(self, word):
+        """ Add a greater than or equal to check
+
+        :param str word: word to compare with
+        :rtype: Query
+        """
         return self.logical_operator('ge', word)
 
+    @fluent
     def less(self, word):
+        """ Add a less than check
+
+        :param str word: word to compare with
+        :rtype: Query
+        """
         return self.logical_operator('lt', word)
 
+    @fluent
     def less_equal(self, word):
+        """ Add a less than or equal to check
+
+        :param str word: word to compare with
+        :rtype: Query
+        """
         return self.logical_operator('le', word)
 
     @staticmethod
     def _prepare_function(function_name, attribute, word, negation=False):
-        return "{} {}({}, {})".format('not' if negation else '', function_name, attribute, word).strip()
+        return "{} {}({}, {})".format('not' if negation else '', function_name,
+                                      attribute, word).strip()
 
+    @fluent
     def function(self, function_name, word):
+        """ Apply a function on given word
+
+        :param str function_name: function to apply
+        :param str word: word to apply function on
+        :rtype: Query
+        """
         word = self._parse_filter_word(word)
 
-        self._add_filter(self._prepare_function(function_name, self._attribute, word, self._negation))
+        self._add_filter(
+            self._prepare_function(function_name, self._attribute, word,
+                                   self._negation))
         return self
 
+    @fluent
     def contains(self, word):
+        """ Adds a contains word check
+
+        :param str word: word to check
+        :rtype: Query
+        """
         return self.function('contains', word)
 
+    @fluent
     def startswith(self, word):
+        """ Adds a startswith word check
+
+        :param str word: word to check
+        :rtype: Query
+        """
         return self.function('startswith', word)
 
+    @fluent
     def endswith(self, word):
+        """ Adds a endswith word check
+
+        :param str word: word to check
+        :rtype: Query
+        """
         return self.function('endswith', word)
 
-    def iterable(self, iterable_name, *, collection, attribute, word, func=None, operation=None):
-        """ Performs a filter with the OData 'iterable_name' keyword on the collection
+    @fluent
+    def iterable(self, iterable_name, *, collection, attribute, word, func=None,
+                 operation=None):
+        """ Performs a filter with the OData 'iterable_name' keyword
+        on the collection
 
         For example:
-        q.iterable('any', collection='email_addresses', attribute='address', operation='eq', word='george@best.com')
+        q.iterable('any', collection='email_addresses', attribute='address',
+        operation='eq', word='george@best.com')
 
         will transform to a filter such as:
-
         emailAddresses/any(a:a/address eq 'george@best.com')
 
-        :param iterable_name: the OData name of the iterable
-        :param collection: the collection to apply the any keyword on
-        :param attribute: the attribute of the collection to check
-        :param word: the word to check
-        :param func: the logical function to apply to the attribute inside the collection
-        :param operation: the logical operation to apply to the attribute inside the collection
+        :param str iterable_name: the OData name of the iterable
+        :param str collection: the collection to apply the any keyword on
+        :param str attribute: the attribute of the collection to check
+        :param str word: the word to check
+        :param str func: the logical function to apply to the attribute inside
+         the collection
+        :param str operation: the logical operation to apply to the attribute
+         inside the collection
+        :rtype: Query
         """
 
         if func is None and operation is None:
             raise ValueError('Provide a function or an operation to apply')
         elif func is not None and operation is not None:
-            raise ValueError('Provide either a function or an operation but not both')
+            raise ValueError(
+                'Provide either a function or an operation but not both')
 
         current_att = self._attribute
         self._attribute = iterable_name
@@ -477,55 +679,76 @@ class Query:
         else:
             sentence = self._prepare_sentence(attribute, operation, word)
 
-        self._add_filter('{}/{}(a:a/{})'.format(collection, iterable_name, sentence))
+        self._add_filter(
+            '{}/{}(a:a/{})'.format(collection, iterable_name, sentence))
 
         self._attribute = current_att
 
         return self
 
+    @fluent
     def any(self, *, collection, attribute, word, func=None, operation=None):
         """ Performs a filter with the OData 'any' keyword on the collection
 
         For example:
-        q.any(collection='email_addresses', attribute='address', operation='eq', word='george@best.com')
+        q.any(collection='email_addresses', attribute='address',
+        operation='eq', word='george@best.com')
 
         will transform to a filter such as:
 
         emailAddresses/any(a:a/address eq 'george@best.com')
 
-        :param collection: the collection to apply the any keyword on
-        :param attribute: the attribute of the collection to check
-        :param word: the word to check
-        :param func: the logical function to apply to the attribute inside the collection
-        :param operation: the logical operation to apply to the attribute inside the collection
+        :param str collection: the collection to apply the any keyword on
+        :param str attribute: the attribute of the collection to check
+        :param str word: the word to check
+        :param str func: the logical function to apply to the attribute
+         inside the collection
+        :param str operation: the logical operation to apply to the
+         attribute inside the collection
+        :rtype: Query
         """
 
-        return self.iterable('any', collection=collection, attribute=attribute, word=word, func=func, operation=operation)
+        return self.iterable('any', collection=collection, attribute=attribute,
+                             word=word, func=func, operation=operation)
 
+    @fluent
     def all(self, *, collection, attribute, word, func=None, operation=None):
         """ Performs a filter with the OData 'all' keyword on the collection
 
         For example:
-        q.all(collection='email_addresses', attribute='address', operation='eq', word='george@best.com')
+        q.any(collection='email_addresses', attribute='address',
+        operation='eq', word='george@best.com')
 
         will transform to a filter such as:
 
         emailAddresses/all(a:a/address eq 'george@best.com')
 
-        :param collection: the collection to apply the all keyword on
-        :param attribute: the attribute of the collection to check
-        :param word: the word to check
-        :param func: the logical function to apply to the attribute inside the collection
-        :param operation: the logical operation to apply to the attribute inside the collection
+        :param str collection: the collection to apply the any keyword on
+        :param str attribute: the attribute of the collection to check
+        :param str word: the word to check
+        :param str func: the logical function to apply to the attribute
+         inside the collection
+        :param str operation: the logical operation to apply to the
+         attribute inside the collection
+        :rtype: Query
         """
 
-        return self.iterable('all', collection=collection, attribute=attribute, word=word, func=func, operation=operation)
+        return self.iterable('all', collection=collection, attribute=attribute,
+                             word=word, func=func, operation=operation)
 
+    @fluent
     def order_by(self, attribute=None, *, ascending=True):
-        """ applies a order_by clause"""
+        """ Applies a order_by clause
+
+        :param str attribute: attribute to apply on
+        :param bool ascending: should it apply ascending order or descending
+        :rtype: Query
+        """
         attribute = self._get_mapping(attribute) or self._attribute
         if attribute:
             self._order_by[attribute] = None if ascending else 'desc'
         else:
-            raise ValueError('Attribute property needed. call on_attribute(attribute) or new(attribute)')
+            raise ValueError(
+                'Attribute property needed. call on_attribute(attribute) '
+                'or new(attribute)')
         return self
