@@ -259,6 +259,7 @@ class Query:
 
     def __init__(self, attribute=None, *, protocol):
         """ Build a query to apply OData filters
+        https://docs.microsoft.com/en-us/graph/query-parameters
 
         :param str attribute: attribute to apply the query for
         :param Protocol protocol: protocol to use for connecting

@@ -13,5 +13,5 @@ from .drive import Storage, Drive, Folder, File, Image, Photo
 from .mailbox import MailBox
 from .message import Message, MessageAttachment, Recipient
 from .sharepoint import Sharepoint, Site
-from .utils import ImportanceLevel
+from .utils import ImportanceLevel, Query
 from .utils import OneDriveWellKnowFolderNames, OutlookWellKnowFolderNames

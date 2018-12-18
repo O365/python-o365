@@ -120,8 +120,8 @@ class Account(object):
         return Schedule(parent=self, main_resource=resource)
 
     def storage(self, *, resource=None):
-        """ Get an instance to handle file storage OneDrive for the
-        specified account resource
+        """ Get an instance to handle file storage (OneDrive / Sharepoint)
+        for the specified account resource
 
         :param str resource: Custom resource to be used in this drive object
          (Defaults to parent main_resource)

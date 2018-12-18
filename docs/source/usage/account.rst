@@ -89,8 +89,10 @@ The authenticate() method forces a authentication flow, which prints out a url
 #. Paste the resulting URL into the python console.
 #. That's it, you don't need this hassle again unless you want to add more scopes than you approved for
 
+.. _accessing_services:
+
 Accessing Services
-^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^
 Below are the currently supported services
 
 - Mailbox - Read, Reply or send new mails to others
@@ -123,7 +125,7 @@ Below are the currently supported services
         # Access scheduler of another resource
         scheduler = account.schedule(resource='someone@example.com')
 
-- One Drive Storage - Manipulate and Organize your OneDrive
+- One Drive or Sharepoint Storage - Manipulate and Organize your Storage Drives
     .. code-block:: python
 
         # Access storage

@@ -79,8 +79,8 @@
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../getting_started.html">Getting Started</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../api.html">O365 API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../usage.html">Detailed Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">O365 API</a></li>
 </ul>
 
             
@@ -144,19 +144,20 @@
            <div itemprop="articleBody">
             
   <h1>Source code for O365.calendar</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">from</span> <span class="nn">enum</span> <span class="k">import</span> <span class="n">Enum</span>
-<span class="kn">from</span> <span class="nn">dateutil.parser</span> <span class="k">import</span> <span class="n">parse</span>
+<span></span><span class="kn">import</span> <span class="nn">calendar</span>
 <span class="kn">import</span> <span class="nn">datetime</span> <span class="k">as</span> <span class="nn">dt</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">enum</span> <span class="k">import</span> <span class="n">Enum</span>
+
 <span class="kn">import</span> <span class="nn">pytz</span>
-<span class="kn">import</span> <span class="nn">calendar</span>
 <span class="c1"># noinspection PyPep8Naming</span>
 <span class="kn">from</span> <span class="nn">bs4</span> <span class="k">import</span> <span class="n">BeautifulSoup</span> <span class="k">as</span> <span class="n">bs</span>
+<span class="kn">from</span> <span class="nn">dateutil.parser</span> <span class="k">import</span> <span class="n">parse</span>
 
-<span class="kn">from</span> <span class="nn">O365.utils</span> <span class="k">import</span> <span class="n">Pagination</span><span class="p">,</span> <span class="n">NEXT_LINK_KEYWORD</span><span class="p">,</span> <span class="n">ApiComponent</span>
-<span class="kn">from</span> <span class="nn">O365.utils</span> <span class="k">import</span> <span class="n">BaseAttachments</span><span class="p">,</span> <span class="n">BaseAttachment</span>
-<span class="kn">from</span> <span class="nn">O365.utils</span> <span class="k">import</span> <span class="n">AttachableMixin</span><span class="p">,</span> <span class="n">ImportanceLevel</span><span class="p">,</span> <span class="n">TrackerSet</span>
 <span class="kn">from</span> <span class="nn">O365.message</span> <span class="k">import</span> <span class="n">HandleRecipientsMixin</span>
+<span class="kn">from</span> <span class="nn">O365.utils</span> <span class="k">import</span> <span class="n">AttachableMixin</span><span class="p">,</span> <span class="n">ImportanceLevel</span><span class="p">,</span> <span class="n">TrackerSet</span>
+<span class="kn">from</span> <span class="nn">O365.utils</span> <span class="k">import</span> <span class="n">BaseAttachments</span><span class="p">,</span> <span class="n">BaseAttachment</span>
+<span class="kn">from</span> <span class="nn">O365.utils</span> <span class="k">import</span> <span class="n">Pagination</span><span class="p">,</span> <span class="n">NEXT_LINK_KEYWORD</span><span class="p">,</span> <span class="n">ApiComponent</span>
 <span class="kn">from</span> <span class="nn">O365.utils.windows_tz</span> <span class="k">import</span> <span class="n">get_iana_tz</span><span class="p">,</span> <span class="n">get_windows_tz</span>
 
 <span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>

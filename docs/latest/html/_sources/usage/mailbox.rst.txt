@@ -1,2 +1,4 @@
 Mailbox
 =======
+Check :ref:`accessing_services` for knowing how to get Mailbox instance
+
