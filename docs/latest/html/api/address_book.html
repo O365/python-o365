@@ -235,6 +235,24 @@
 </dd></dl>
 
 <dl class="method">
+<dt id="O365.address_book.BaseContactFolder.get_contact_by_email">
+<code class="descname">get_contact_by_email</code><span class="sig-paren">(</span><em>email</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/address_book.html#BaseContactFolder.get_contact_by_email"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.address_book.BaseContactFolder.get_contact_by_email" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a Contact by it’s email</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>email</strong> – email to get contact for</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Contact for specified email</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#O365.address_book.Contact" title="O365.address_book.Contact">Contact</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="O365.address_book.BaseContactFolder.get_contacts">
 <code class="descname">get_contacts</code><span class="sig-paren">(</span><em>limit=100</em>, <em>*</em>, <em>query=None</em>, <em>order_by=None</em>, <em>batch=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/address_book.html#BaseContactFolder.get_contacts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.address_book.BaseContactFolder.get_contacts" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets a list of contacts from this address book</p>
@@ -281,7 +299,7 @@ batches allowing to retrieve more items than the limit.</li>
 <dl class="class">
 <dt id="O365.address_book.Contact">
 <em class="property">class </em><code class="descclassname">O365.address_book.</code><code class="descname">Contact</code><span class="sig-paren">(</span><em>*</em>, <em>parent=None</em>, <em>con=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/address_book.html#Contact"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.address_book.Contact" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.utils.utils.ApiComponent</span></code></a>, <a class="reference internal" href="attachment.html#O365.utils.attachment.AttachableMixin" title="O365.utils.attachment.AttachableMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.utils.attachment.AttachableMixin</span></code></a>, <a class="reference internal" href="message.html#O365.message.HandleRecipientsMixin" title="O365.message.HandleRecipientsMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.message.HandleRecipientsMixin</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.utils.utils.ApiComponent</span></code></a>, <a class="reference internal" href="attachment.html#O365.utils.attachment.AttachableMixin" title="O365.utils.attachment.AttachableMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.utils.attachment.AttachableMixin</span></code></a></p>
 <p>Contact manages lists of events on associated contact on office365.</p>
 <dl class="method">
 <dt id="O365.address_book.Contact.__init__">
@@ -300,6 +318,92 @@ batches allowing to retrieve more items than the limit.</li>
 (kwargs)</li>
 </ul>
 </td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.address_book.Contact.business_address">
+<code class="descname">business_address</code><a class="headerlink" href="#O365.address_book.Contact.business_address" title="Permalink to this definition">¶</a></dt>
+<dd><p>Business Address</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Getter:</th><td class="field-body">Get the address of contact</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Setter:</th><td class="field-body">Update the address</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">dict</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.address_book.Contact.business_phones">
+<code class="descname">business_phones</code><a class="headerlink" href="#O365.address_book.Contact.business_phones" title="Permalink to this definition">¶</a></dt>
+<dd><p>Business Contact numbers</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Getter:</th><td class="field-body">Get the contact numbers of contact</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Setter:</th><td class="field-body">Update the contact numbers</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">list[str]</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.address_book.Contact.categories">
+<code class="descname">categories</code><a class="headerlink" href="#O365.address_book.Contact.categories" title="Permalink to this definition">¶</a></dt>
+<dd><p>Assigned Categories</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Getter:</th><td class="field-body">Get the categories</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Setter:</th><td class="field-body">Update the categories</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">list[str]</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.address_book.Contact.company_name">
+<code class="descname">company_name</code><a class="headerlink" href="#O365.address_book.Contact.company_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Name of the company</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Getter:</th><td class="field-body">Get the company name of contact</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Setter:</th><td class="field-body">Update the company name</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.address_book.Contact.created">
+<code class="descname">created</code><a class="headerlink" href="#O365.address_book.Contact.created" title="Permalink to this definition">¶</a></dt>
+<dd><p>Created Time</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">datetime</td>
 </tr>
 </tbody>
 </table>
@@ -324,6 +428,42 @@ batches allowing to retrieve more items than the limit.</li>
 </dd></dl>
 
 <dl class="attribute">
+<dt id="O365.address_book.Contact.department">
+<code class="descname">department</code><a class="headerlink" href="#O365.address_book.Contact.department" title="Permalink to this definition">¶</a></dt>
+<dd><p>Department</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Getter:</th><td class="field-body">Get the department of contact</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Setter:</th><td class="field-body">Update the department</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.address_book.Contact.display_name">
+<code class="descname">display_name</code><a class="headerlink" href="#O365.address_book.Contact.display_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Display Name</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Getter:</th><td class="field-body">Get the display name of the contact</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Setter:</th><td class="field-body">Update the display name</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
 <dt id="O365.address_book.Contact.emails">
 <code class="descname">emails</code><a class="headerlink" href="#O365.address_book.Contact.emails" title="Permalink to this definition">¶</a></dt>
 <dd><p>List of email ids of the Contact</p>
@@ -338,14 +478,82 @@ batches allowing to retrieve more items than the limit.</li>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="O365.address_book.Contact.full_name">
-<code class="descname">full_name</code><a class="headerlink" href="#O365.address_book.Contact.full_name" title="Permalink to this definition">¶</a></dt>
-<dd><p>Full name of the Contact</p>
+<dt id="O365.address_book.Contact.folder_id">
+<code class="descname">folder_id</code><a class="headerlink" href="#O365.address_book.Contact.folder_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>ID of the folder</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.address_book.Contact.full_name">
+<code class="descname">full_name</code><a class="headerlink" href="#O365.address_book.Contact.full_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Full Name (Name + Surname)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.address_book.Contact.home_address">
+<code class="descname">home_address</code><a class="headerlink" href="#O365.address_book.Contact.home_address" title="Permalink to this definition">¶</a></dt>
+<dd><p>Home Address</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Getter:</th><td class="field-body">Get the address of contact</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Setter:</th><td class="field-body">Update the address</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">dict</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.address_book.Contact.home_phones">
+<code class="descname">home_phones</code><a class="headerlink" href="#O365.address_book.Contact.home_phones" title="Permalink to this definition">¶</a></dt>
+<dd><p>Home Contact numbers</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Getter:</th><td class="field-body">Get the contact numbers of contact</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Setter:</th><td class="field-body">Update the contact numbers</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">list[str]</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.address_book.Contact.job_title">
+<code class="descname">job_title</code><a class="headerlink" href="#O365.address_book.Contact.job_title" title="Permalink to this definition">¶</a></dt>
+<dd><p>Job Title</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Getter:</th><td class="field-body">Get the job title of contact</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Setter:</th><td class="field-body">Update the job title</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">str</td>
 </tr>
 </tbody>
 </table>
@@ -369,6 +577,56 @@ batches allowing to retrieve more items than the limit.</li>
 <dt id="O365.address_book.Contact.message_constructor">
 <code class="descname">message_constructor</code><a class="headerlink" href="#O365.address_book.Contact.message_constructor" title="Permalink to this definition">¶</a></dt>
 <dd><p>alias of <a class="reference internal" href="message.html#O365.message.Message" title="O365.message.Message"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.message.Message</span></code></a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.address_book.Contact.mobile_phone">
+<code class="descname">mobile_phone</code><a class="headerlink" href="#O365.address_book.Contact.mobile_phone" title="Permalink to this definition">¶</a></dt>
+<dd><p>Personal Contact numbers</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Getter:</th><td class="field-body">Get the contact numbers of contact</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Setter:</th><td class="field-body">Update the contact numbers</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">list[str]</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.address_book.Contact.modified">
+<code class="descname">modified</code><a class="headerlink" href="#O365.address_book.Contact.modified" title="Permalink to this definition">¶</a></dt>
+<dd><p>Last Modified Time</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">datetime</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.address_book.Contact.name">
+<code class="descname">name</code><a class="headerlink" href="#O365.address_book.Contact.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>First Name</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Getter:</th><td class="field-body">Get the name of the contact</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Setter:</th><td class="field-body">Update the name</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -397,10 +655,65 @@ message. If None first email of this contact will be used</li>
 </table>
 </dd></dl>
 
+<dl class="attribute">
+<dt id="O365.address_book.Contact.office_location">
+<code class="descname">office_location</code><a class="headerlink" href="#O365.address_book.Contact.office_location" title="Permalink to this definition">¶</a></dt>
+<dd><p>Office Location</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Getter:</th><td class="field-body">Get the office location of contact</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Setter:</th><td class="field-body">Update the office location</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.address_book.Contact.other_address">
+<code class="descname">other_address</code><a class="headerlink" href="#O365.address_book.Contact.other_address" title="Permalink to this definition">¶</a></dt>
+<dd><p>Other Address</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Getter:</th><td class="field-body">Get the address of contact</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Setter:</th><td class="field-body">Update the address</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">dict</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.address_book.Contact.preferred_language">
+<code class="descname">preferred_language</code><a class="headerlink" href="#O365.address_book.Contact.preferred_language" title="Permalink to this definition">¶</a></dt>
+<dd><p>Preferred Language</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Getter:</th><td class="field-body">Get the language of contact</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Setter:</th><td class="field-body">Update the language</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="method">
 <dt id="O365.address_book.Contact.save">
 <code class="descname">save</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/address_book.html#Contact.save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.address_book.Contact.save" title="Permalink to this definition">¶</a></dt>
-<dd><p>Saves this contact to the cloud</p>
+<dd><p>Saves this contact to the cloud (create or update existing one
+based on what values have changed)</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -413,43 +726,51 @@ message. If None first email of this contact will be used</li>
 </table>
 </dd></dl>
 
-<dl class="method">
-<dt id="O365.address_book.Contact.to_api_data">
-<code class="descname">to_api_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/address_book.html#Contact.to_api_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.address_book.Contact.to_api_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a dictionary in cloud format</p>
+<dl class="attribute">
+<dt id="O365.address_book.Contact.surname">
+<code class="descname">surname</code><a class="headerlink" href="#O365.address_book.Contact.surname" title="Permalink to this definition">¶</a></dt>
+<dd><p>Surname of Contact</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">dict</td>
+<tr class="field-odd field"><th class="field-name">Getter:</th><td class="field-body">Get the surname of the contact</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Setter:</th><td class="field-body">Update the surname</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.address_book.Contact.title">
+<code class="descname">title</code><a class="headerlink" href="#O365.address_book.Contact.title" title="Permalink to this definition">¶</a></dt>
+<dd><p>Title (Mr., Ms., etc..)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Getter:</th><td class="field-body">Get the title of the contact</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Setter:</th><td class="field-body">Update the title</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">str</td>
 </tr>
 </tbody>
 </table>
 </dd></dl>
 
 <dl class="method">
-<dt id="O365.address_book.Contact.update">
-<code class="descname">update</code><span class="sig-paren">(</span><em>fields</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/address_book.html#Contact.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.address_book.Contact.update" title="Permalink to this definition">¶</a></dt>
-<dd><p>Updates a contact info to cloud</p>
+<dt id="O365.address_book.Contact.to_api_data">
+<code class="descname">to_api_data</code><span class="sig-paren">(</span><em>restrict_keys=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/address_book.html#Contact.to_api_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.address_book.Contact.to_api_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a dictionary in cloud format</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>fields</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – a list of fields to update</p>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Success or Failure</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">bool</p>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
-<li><strong>RuntimeError</strong> – if contact is not yet saved to cloud</li>
-<li><strong>ValueError</strong> – if invalid data type of fields passed</li>
-<li><strong>ValueError</strong> – if any field is not valid</li>
-</ul>
-</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>restrict_keys</strong> – a set of keys to restrict the returned data to.</td>
 </tr>
 </tbody>
 </table>
@@ -737,21 +1058,10 @@ contacts first email as a recipient</p>
   
 
     
-      <script type="text/javascript">
-          var DOCUMENTATION_OPTIONS = {
-              URL_ROOT:'../',
-              VERSION:'',
-              LANGUAGE:'None',
-              COLLAPSE_INDEX:false,
-              FILE_SUFFIX:'.html',
-              HAS_SOURCE:  true,
-              SOURCELINK_SUFFIX: '.txt'
-          };
-      </script>
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
         <script type="text/javascript" src="../_static/jquery.js"></script>
         <script type="text/javascript" src="../_static/underscore.js"></script>
         <script type="text/javascript" src="../_static/doctools.js"></script>
-        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
 
   

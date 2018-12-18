@@ -406,7 +406,8 @@ It can be a function.</li>
 <dl class="method">
 <dt id="O365.utils.utils.Query.__init__">
 <code class="descname">__init__</code><span class="sig-paren">(</span><em>attribute=None</em>, <em>*</em>, <em>protocol</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/utils/utils.html#Query.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.utils.utils.Query.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Build a query to apply OData filters</p>
+<dd><p>Build a query to apply OData filters
+<a class="reference external" href="https://docs.microsoft.com/en-us/graph/query-parameters">https://docs.microsoft.com/en-us/graph/query-parameters</a></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -419,6 +420,76 @@ It can be a function.</li>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.utils.utils.Query.all">
+<code class="descname">all</code><span class="sig-paren">(</span><em>*</em>, <em>collection</em>, <em>attribute</em>, <em>word</em>, <em>func=None</em>, <em>operation=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/utils/utils.html#Query.all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.utils.utils.Query.all" title="Permalink to this definition">¶</a></dt>
+<dd><p>Performs a filter with the OData ‘all’ keyword on the collection</p>
+<p>For example:
+q.any(collection=’email_addresses’, attribute=’address’,
+operation=’eq’, <a class="reference external" href="mailto:word='george&#37;&#52;&#48;best&#46;com">word=’george<span>&#64;</span>best<span>&#46;</span>com</a>’)</p>
+<p>will transform to a filter such as:</p>
+<p>emailAddresses/all(a:a/address eq ‘george&#64;best.com’)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>collection</strong> (<em>str</em>) – the collection to apply the any keyword on</li>
+<li><strong>attribute</strong> (<em>str</em>) – the attribute of the collection to check</li>
+<li><strong>word</strong> (<em>str</em>) – the word to check</li>
+<li><strong>func</strong> (<em>str</em>) – the logical function to apply to the attribute
+inside the collection</li>
+<li><strong>operation</strong> (<em>str</em>) – the logical operation to apply to the
+attribute inside the collection</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#O365.utils.utils.Query" title="O365.utils.utils.Query">Query</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This method is part of fluent api and can be chained</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.utils.utils.Query.any">
+<code class="descname">any</code><span class="sig-paren">(</span><em>*</em>, <em>collection</em>, <em>attribute</em>, <em>word</em>, <em>func=None</em>, <em>operation=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/utils/utils.html#Query.any"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.utils.utils.Query.any" title="Permalink to this definition">¶</a></dt>
+<dd><p>Performs a filter with the OData ‘any’ keyword on the collection</p>
+<p>For example:
+q.any(collection=’email_addresses’, attribute=’address’,
+operation=’eq’, <a class="reference external" href="mailto:word='george&#37;&#52;&#48;best&#46;com">word=’george<span>&#64;</span>best<span>&#46;</span>com</a>’)</p>
+<p>will transform to a filter such as:</p>
+<p>emailAddresses/any(a:a/address eq ‘george&#64;best.com’)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>collection</strong> (<em>str</em>) – the collection to apply the any keyword on</li>
+<li><strong>attribute</strong> (<em>str</em>) – the attribute of the collection to check</li>
+<li><strong>word</strong> (<em>str</em>) – the word to check</li>
+<li><strong>func</strong> (<em>str</em>) – the logical function to apply to the attribute
+inside the collection</li>
+<li><strong>operation</strong> (<em>str</em>) – the logical operation to apply to the
+attribute inside the collection</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#O365.utils.utils.Query" title="O365.utils.utils.Query">Query</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This method is part of fluent api and can be chained</p>
+</div>
 </dd></dl>
 
 <dl class="method">
@@ -459,6 +530,18 @@ It can be a function.</li>
 <dt id="O365.utils.utils.Query.clear">
 <code class="descname">clear</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/utils/utils.html#Query.clear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.utils.utils.Query.clear" title="Permalink to this definition">¶</a></dt>
 <dd><p>Clear everything</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#O365.utils.utils.Query" title="O365.utils.utils.Query">Query</a></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This method is part of fluent api and can be chained</p>
+</div>
 </dd></dl>
 
 <dl class="method">
@@ -677,6 +760,43 @@ It can be a function.</li>
 </dd></dl>
 
 <dl class="method">
+<dt id="O365.utils.utils.Query.iterable">
+<code class="descname">iterable</code><span class="sig-paren">(</span><em>iterable_name</em>, <em>*</em>, <em>collection</em>, <em>attribute</em>, <em>word</em>, <em>func=None</em>, <em>operation=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/utils/utils.html#Query.iterable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.utils.utils.Query.iterable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Performs a filter with the OData ‘iterable_name’ keyword
+on the collection</p>
+<p>For example:
+q.iterable(‘any’, collection=’email_addresses’, attribute=’address’,
+operation=’eq’, <a class="reference external" href="mailto:word='george&#37;&#52;&#48;best&#46;com">word=’george<span>&#64;</span>best<span>&#46;</span>com</a>’)</p>
+<p>will transform to a filter such as:
+emailAddresses/any(a:a/address eq ‘george&#64;best.com’)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>iterable_name</strong> (<em>str</em>) – the OData name of the iterable</li>
+<li><strong>collection</strong> (<em>str</em>) – the collection to apply the any keyword on</li>
+<li><strong>attribute</strong> (<em>str</em>) – the attribute of the collection to check</li>
+<li><strong>word</strong> (<em>str</em>) – the word to check</li>
+<li><strong>func</strong> (<em>str</em>) – the logical function to apply to the attribute inside
+the collection</li>
+<li><strong>operation</strong> (<em>str</em>) – the logical operation to apply to the attribute
+inside the collection</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#O365.utils.utils.Query" title="O365.utils.utils.Query">Query</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This method is part of fluent api and can be chained</p>
+</div>
+</dd></dl>
+
+<dl class="method">
 <dt id="O365.utils.utils.Query.less">
 <code class="descname">less</code><span class="sig-paren">(</span><em>word</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/utils/utils.html#Query.less"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.utils.utils.Query.less" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add a less than check</p>
@@ -799,6 +919,10 @@ It can be a function.</li>
 </tr>
 </tbody>
 </table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This method is part of fluent api and can be chained</p>
+</div>
 </dd></dl>
 
 <dl class="method">
@@ -956,21 +1080,10 @@ If empty, the on_attribute previously set is added.</td>
   
 
     
-      <script type="text/javascript">
-          var DOCUMENTATION_OPTIONS = {
-              URL_ROOT:'../',
-              VERSION:'',
-              LANGUAGE:'None',
-              COLLAPSE_INDEX:false,
-              FILE_SUFFIX:'.html',
-              HAS_SOURCE:  true,
-              SOURCELINK_SUFFIX: '.txt'
-          };
-      </script>
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
         <script type="text/javascript" src="../_static/jquery.js"></script>
         <script type="text/javascript" src="../_static/underscore.js"></script>
         <script type="text/javascript" src="../_static/doctools.js"></script>
-        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
 
   

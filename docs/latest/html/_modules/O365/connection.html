@@ -172,7 +172,7 @@
 
 <span class="n">RETRIES_STATUS_LIST</span> <span class="o">=</span> <span class="p">(</span>
     <span class="mi">429</span><span class="p">,</span>  <span class="c1"># Status code for TooManyRequests</span>
-    <span class="mi">500</span><span class="p">,</span> <span class="mi">502</span><span class="p">,</span> <span class="mi">503</span><span class="p">,</span> <span class="mi">504</span>
+    <span class="mi">500</span><span class="p">,</span> <span class="mi">502</span><span class="p">,</span> <span class="mi">503</span><span class="p">,</span> <span class="mi">504</span>  <span class="c1"># Server errors</span>
 <span class="p">)</span>
 <span class="n">RETRIES_BACKOFF_FACTOR</span> <span class="o">=</span> <span class="mf">0.5</span>
 
@@ -705,16 +705,27 @@
                 <span class="k">raise</span> <span class="n">e</span>  <span class="c1"># re-raise exception</span>
             <span class="k">except</span> <span class="n">HTTPError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                 <span class="c1"># Server response with 4XX or 5XX error status codes</span>
+
+                <span class="c1"># try to extract the error message:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">error</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+                    <span class="n">error_message</span> <span class="o">=</span> <span class="n">error</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;error&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;message&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                    <span class="n">error_message</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
                 <span class="n">status_code</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">/</span> <span class="mi">100</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">status_code</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
                     <span class="c1"># Client Error</span>
                     <span class="c1"># Logged as error. Could be a library error or Api changes</span>
-                    <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Client Error: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)))</span>
+                    <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Client Error: </span><span class="si">{}</span><span class="s1"> | Error Message: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="n">error_message</span><span class="p">))</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="c1"># Server Error</span>
                     <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Server Error: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)))</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">raise_http_errors</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="n">e</span>
+                    <span class="k">if</span> <span class="n">error_message</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="n">HTTPError</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> | Error Message: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">error_message</span><span class="p">),</span> <span class="n">response</span><span class="o">=</span><span class="n">response</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="n">e</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">return</span> <span class="n">e</span><span class="o">.</span><span class="n">response</span>
             <span class="k">except</span> <span class="n">RequestException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
@@ -934,21 +945,10 @@
   
 
     
-      <script type="text/javascript">
-          var DOCUMENTATION_OPTIONS = {
-              URL_ROOT:'../../',
-              VERSION:'',
-              LANGUAGE:'None',
-              COLLAPSE_INDEX:false,
-              FILE_SUFFIX:'.html',
-              HAS_SOURCE:  true,
-              SOURCELINK_SUFFIX: '.txt'
-          };
-      </script>
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
         <script type="text/javascript" src="../../_static/jquery.js"></script>
         <script type="text/javascript" src="../../_static/underscore.js"></script>
         <script type="text/javascript" src="../../_static/doctools.js"></script>
-        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
 
   

@@ -472,15 +472,15 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">body_type</span> <span class="o">=</span> <span class="n">body</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cc</span><span class="p">(</span><span class="s1">&#39;contentType&#39;</span><span class="p">),</span>
                                   <span class="s1">&#39;HTML&#39;</span><span class="p">)</span>  <span class="c1"># default to HTML for new messages</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__sender</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_recipient_from_cloud</span><span class="p">(</span>
-            <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cc</span><span class="p">(</span><span class="s1">&#39;from&#39;</span><span class="p">),</span> <span class="kc">None</span><span class="p">),</span> <span class="n">field</span><span class="o">=</span><span class="s1">&#39;from&#39;</span><span class="p">)</span>
+            <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cc</span><span class="p">(</span><span class="s1">&#39;from&#39;</span><span class="p">),</span> <span class="kc">None</span><span class="p">),</span> <span class="n">field</span><span class="o">=</span><span class="n">cc</span><span class="p">(</span><span class="s1">&#39;from&#39;</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__to</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_recipients_from_cloud</span><span class="p">(</span>
-            <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cc</span><span class="p">(</span><span class="s1">&#39;toRecipients&#39;</span><span class="p">),</span> <span class="p">[]),</span> <span class="n">field</span><span class="o">=</span><span class="s1">&#39;toRecipients&#39;</span><span class="p">)</span>
+            <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cc</span><span class="p">(</span><span class="s1">&#39;toRecipients&#39;</span><span class="p">),</span> <span class="p">[]),</span> <span class="n">field</span><span class="o">=</span><span class="n">cc</span><span class="p">(</span><span class="s1">&#39;toRecipients&#39;</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__cc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_recipients_from_cloud</span><span class="p">(</span>
-            <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cc</span><span class="p">(</span><span class="s1">&#39;ccRecipients&#39;</span><span class="p">),</span> <span class="p">[]),</span> <span class="n">field</span><span class="o">=</span><span class="s1">&#39;ccRecipients&#39;</span><span class="p">)</span>
+            <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cc</span><span class="p">(</span><span class="s1">&#39;ccRecipients&#39;</span><span class="p">),</span> <span class="p">[]),</span> <span class="n">field</span><span class="o">=</span><span class="n">cc</span><span class="p">(</span><span class="s1">&#39;ccRecipients&#39;</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__bcc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_recipients_from_cloud</span><span class="p">(</span>
-            <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cc</span><span class="p">(</span><span class="s1">&#39;bccRecipients&#39;</span><span class="p">),</span> <span class="p">[]),</span> <span class="n">field</span><span class="o">=</span><span class="s1">&#39;bccRecipients&#39;</span><span class="p">)</span>
+            <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cc</span><span class="p">(</span><span class="s1">&#39;bccRecipients&#39;</span><span class="p">),</span> <span class="p">[]),</span> <span class="n">field</span><span class="o">=</span><span class="n">cc</span><span class="p">(</span><span class="s1">&#39;bccRecipients&#39;</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__reply_to</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_recipients_from_cloud</span><span class="p">(</span>
-            <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cc</span><span class="p">(</span><span class="s1">&#39;replyTo&#39;</span><span class="p">),</span> <span class="p">[]),</span> <span class="n">field</span><span class="o">=</span><span class="s1">&#39;replyTo&#39;</span><span class="p">)</span>
+            <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cc</span><span class="p">(</span><span class="s1">&#39;replyTo&#39;</span><span class="p">),</span> <span class="p">[]),</span> <span class="n">field</span><span class="o">=</span><span class="n">cc</span><span class="p">(</span><span class="s1">&#39;replyTo&#39;</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__categories</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cc</span><span class="p">(</span><span class="s1">&#39;categories&#39;</span><span class="p">),</span> <span class="p">[])</span>
 
         <span class="c1"># lower() for office365 v1.0</span>
@@ -1060,21 +1060,10 @@
   
 
     
-      <script type="text/javascript">
-          var DOCUMENTATION_OPTIONS = {
-              URL_ROOT:'../../',
-              VERSION:'',
-              LANGUAGE:'None',
-              COLLAPSE_INDEX:false,
-              FILE_SUFFIX:'.html',
-              HAS_SOURCE:  true,
-              SOURCELINK_SUFFIX: '.txt'
-          };
-      </script>
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
         <script type="text/javascript" src="../../_static/jquery.js"></script>
         <script type="text/javascript" src="../../_static/underscore.js"></script>
         <script type="text/javascript" src="../../_static/doctools.js"></script>
-        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
 
   
