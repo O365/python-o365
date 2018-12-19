@@ -100,7 +100,7 @@ class Site(ApiComponent):
     _endpoints = {
         'get_subsites': '/sites',
         'get_lists': '/lists',
-        'get_listbyname':'/lists/displayName'
+        'get_list_by_name':'/lists/{display_name}'
     }
     list_constructor = SharepointList
 
@@ -187,14 +187,14 @@ class Site(ApiComponent):
 
         return [self.list_constructor(parent=self, **{self._cloud_data_key: lst}) for lst in data.get('value', [])]
     
-    def get_list_by_name(self,displayName):
+    def get_list_by_name(self,display_name):
         """ Returns a sharepoint list based on the display name of the list 
         """
         
-        if not displayName:
+        if not display_name:
             raise ValueError('Must provide a valid list display name')
 
-        url = self.build_url(self._endpoints.get('get_listbyname').replace('displayName',displayName))
+        url = self.build_url(self._endpoints.get('get_list_by_name').format(display_name=display_name))
 
         response = self.con.get(url)
         if not response:
