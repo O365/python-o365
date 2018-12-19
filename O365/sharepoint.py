@@ -48,7 +48,7 @@ class SharepointList(ApiComponent):
         main_resource = kwargs.pop('main_resource', None) or getattr(parent, 'main_resource', None) if parent else None
 
         # prefix with the current known list
-        resource_prefix = 'lists/{list_id}'.format(list_id=self.object_id)
+        resource_prefix = '/lists/{list_id}'.format(list_id=self.object_id)
         main_resource = '{}{}'.format(main_resource, resource_prefix)
 
         super().__init__(protocol=parent.protocol if parent else kwargs.get('protocol'), main_resource=main_resource)
