@@ -1,0 +1,174 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{6400c4e0-2287-4582-a303-ae63ec466060}</ProjectGuid>
+    <ProjectHome />
+    <StartupFile>tests\test_message.py</StartupFile>
+    <SearchPath />
+    <WorkingDirectory>.</WorkingDirectory>
+    <OutputPath>.</OutputPath>
+    <ProjectTypeGuids>{888888a0-9f3d-457c-b088-3a5042f75d52}</ProjectTypeGuids>
+    <LaunchProvider>Standard Python launcher</LaunchProvider>
+    <InterpreterId>MSBuild|env|$(MSBuildProjectFullPath)</InterpreterId>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
+  <PropertyGroup>
+    <VisualStudioVersion Condition=" '$(VisualStudioVersion)' == '' ">10.0</VisualStudioVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="docs\index.html" />
+    <Content Include="docs\latest\html\api.html" />
+    <Content Include="docs\latest\html\api\account.html" />
+    <Content Include="docs\latest\html\api\address_book.html" />
+    <Content Include="docs\latest\html\api\connection.html" />
+    <Content Include="docs\latest\html\api\mailbox.html" />
+    <Content Include="docs\latest\html\api\message.html" />
+    <Content Include="docs\latest\html\genindex.html" />
+    <Content Include="docs\latest\html\getting_started.html" />
+    <Content Include="docs\latest\html\index.html" />
+    <Content Include="docs\latest\html\py-modindex.html" />
+    <Content Include="docs\latest\html\search.html" />
+    <Content Include="docs\latest\html\searchindex.js" />
+    <Content Include="docs\latest\html\usage.html" />
+    <Content Include="docs\latest\html\usage\account.html" />
+    <Content Include="docs\latest\html\usage\connection.html" />
+    <Content Include="docs\latest\html\_modules\index.html" />
+    <Content Include="docs\latest\html\_modules\O365\account.html" />
+    <Content Include="docs\latest\html\_modules\O365\address_book.html" />
+    <Content Include="docs\latest\html\_modules\O365\connection.html" />
+    <Content Include="docs\latest\html\_modules\O365\mailbox.html" />
+    <Content Include="docs\latest\html\_modules\O365\message.html" />
+    <Content Include="docs\latest\html\_sources\api.rst.txt" />
+    <Content Include="docs\latest\html\_sources\api\account.rst.txt" />
+    <Content Include="docs\latest\html\_sources\api\address_book.rst.txt" />
+    <Content Include="docs\latest\html\_sources\api\connection.rst.txt" />
+    <Content Include="docs\latest\html\_sources\api\mailbox.rst.txt" />
+    <Content Include="docs\latest\html\_sources\api\message.rst.txt" />
+    <Content Include="docs\latest\html\_sources\getting_started.rst.txt" />
+    <Content Include="docs\latest\html\_sources\index.rst.txt" />
+    <Content Include="docs\latest\html\_sources\usage.rst.txt" />
+    <Content Include="docs\latest\html\_sources\usage\account.rst.txt" />
+    <Content Include="docs\latest\html\_sources\usage\connection.rst.txt" />
+    <Content Include="docs\latest\html\_static\ajax-loader.gif" />
+    <Content Include="docs\latest\html\_static\basic.css" />
+    <Content Include="docs\latest\html\_static\comment-bright.png" />
+    <Content Include="docs\latest\html\_static\comment-close.png" />
+    <Content Include="docs\latest\html\_static\comment.png" />
+    <Content Include="docs\latest\html\_static\css\badge_only.css" />
+    <Content Include="docs\latest\html\_static\css\theme.css" />
+    <Content Include="docs\latest\html\_static\doctools.js" />
+    <Content Include="docs\latest\html\_static\documentation_options.js" />
+    <Content Include="docs\latest\html\_static\down-pressed.png" />
+    <Content Include="docs\latest\html\_static\down.png" />
+    <Content Include="docs\latest\html\_static\file.png" />
+    <Content Include="docs\latest\html\_static\fonts\fontawesome-webfont.svg" />
+    <Content Include="docs\latest\html\_static\jquery-3.2.1.js" />
+    <Content Include="docs\latest\html\_static\jquery.js" />
+    <Content Include="docs\latest\html\_static\js\modernizr.min.js" />
+    <Content Include="docs\latest\html\_static\js\theme.js" />
+    <Content Include="docs\latest\html\_static\minus.png" />
+    <Content Include="docs\latest\html\_static\plus.png" />
+    <Content Include="docs\latest\html\_static\pygments.css" />
+    <Content Include="docs\latest\html\_static\searchtools.js" />
+    <Content Include="docs\latest\html\_static\underscore-1.3.1.js" />
+    <Content Include="docs\latest\html\_static\underscore.js" />
+    <Content Include="docs\latest\html\_static\up-pressed.png" />
+    <Content Include="docs\latest\html\_static\up.png" />
+    <Content Include="docs\latest\html\_static\websupport.js" />
+    <Content Include="docs\source\_themes\sphinx_rtd_theme\breadcrumbs.html" />
+    <Content Include="docs\source\_themes\sphinx_rtd_theme\footer.html" />
+    <Content Include="docs\source\_themes\sphinx_rtd_theme\layout.html" />
+    <Content Include="docs\source\_themes\sphinx_rtd_theme\search.html" />
+    <Content Include="docs\source\_themes\sphinx_rtd_theme\searchbox.html" />
+    <Content Include="docs\source\_themes\sphinx_rtd_theme\static\css\badge_only.css" />
+    <Content Include="docs\source\_themes\sphinx_rtd_theme\static\css\theme.css" />
+    <Content Include="docs\source\_themes\sphinx_rtd_theme\static\fonts\fontawesome-webfont.svg" />
+    <Content Include="docs\source\_themes\sphinx_rtd_theme\static\js\modernizr.min.js" />
+    <Content Include="docs\source\_themes\sphinx_rtd_theme\static\js\theme.js" />
+    <Content Include="docs\source\_themes\sphinx_rtd_theme\versions.html" />
+    <Content Include="requirements-dev.txt" />
+    <Content Include="requirements.txt" />
+    <Content Include="tests\run_tests_notes.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="docs\source\conf.py" />
+    <Compile Include="docs\source\_themes\sphinx_rtd_theme\__init__.py" />
+    <Compile Include="examples\calendarCookbook.py" />
+    <Compile Include="examples\FolderOperations\search_subfolders.py" />
+    <Compile Include="O365\account.py" />
+    <Compile Include="O365\address_book.py" />
+    <Compile Include="O365\calendar.py" />
+    <Compile Include="O365\connection.py" />
+    <Compile Include="O365\drive.py" />
+    <Compile Include="O365\mailbox.py" />
+    <Compile Include="O365\message.py" />
+    <Compile Include="O365\sharepoint.py" />
+    <Compile Include="O365\test.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="O365\utils\attachment.py" />
+    <Compile Include="O365\utils\utils.py" />
+    <Compile Include="O365\utils\windows_tz.py" />
+    <Compile Include="O365\__init__.py" />
+    <Compile Include="O365\__version__.py" />
+    <Compile Include="release.py" />
+    <Compile Include="setup.py" />
+    <Compile Include="tests\config.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="tests\test_account.py" />
+    <Compile Include="tests\test_connection.py" />
+    <Compile Include="tests\test_mailbox.py" />
+    <Compile Include="tests\test_message.py" />
+    <Compile Include="tests\test_protocol.py" />
+    <Compile Include="tests\test_sharepoint.py">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="docs" />
+    <Folder Include="docs\latest\" />
+    <Folder Include="docs\latest\html" />
+    <Folder Include="docs\latest\html\api" />
+    <Folder Include="docs\latest\html\usage" />
+    <Folder Include="docs\latest\html\_modules" />
+    <Folder Include="docs\latest\html\_modules\O365" />
+    <Folder Include="docs\latest\html\_sources" />
+    <Folder Include="docs\latest\html\_sources\api" />
+    <Folder Include="docs\latest\html\_sources\usage" />
+    <Folder Include="docs\latest\html\_static" />
+    <Folder Include="docs\latest\html\_static\css" />
+    <Folder Include="docs\latest\html\_static\fonts" />
+    <Folder Include="docs\latest\html\_static\js" />
+    <Folder Include="docs\source" />
+    <Folder Include="docs\source\_themes\" />
+    <Folder Include="docs\source\_themes\sphinx_rtd_theme" />
+    <Folder Include="docs\source\_themes\sphinx_rtd_theme\static\" />
+    <Folder Include="docs\source\_themes\sphinx_rtd_theme\static\css" />
+    <Folder Include="docs\source\_themes\sphinx_rtd_theme\static\fonts" />
+    <Folder Include="docs\source\_themes\sphinx_rtd_theme\static\js" />
+    <Folder Include="examples" />
+    <Folder Include="examples\FolderOperations" />
+    <Folder Include="O365" />
+    <Folder Include="O365\utils" />
+    <Folder Include="tests" />
+  </ItemGroup>
+  <ItemGroup>
+    <InterpreterReference Include="Global|PythonCore|3.6" />
+  </ItemGroup>
+  <ItemGroup>
+    <Interpreter Include="env\">
+      <Id>env</Id>
+      <Version>3.6</Version>
+      <Description>env (Python 3.6 (64-bit))</Description>
+      <InterpreterPath>Scripts\python.exe</InterpreterPath>
+      <WindowsInterpreterPath>Scripts\pythonw.exe</WindowsInterpreterPath>
+      <PathEnvironmentVariable>PYTHONPATH</PathEnvironmentVariable>
+      <Architecture>X64</Architecture>
+    </Interpreter>
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
+</Project>
