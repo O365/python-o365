@@ -1,5 +1,10 @@
 # O365 - Microsoft Graph and Office 365 API made easy
 
+
+> API Documentation is available [here](https://o365.github.io/python-o365/latest/html/api.html)
+
+> Detailed usage documentation is still in progress
+
 This project aims is to make it easy to interact with Microsoft Graph and Office 365 Email, Contacts, Calendar, OneDrive, etc.
 
 This project is inspired on the super work done by [Toben Archer](https://github.com/Narcolapser) [Python-O365](https://github.com/Narcolapser/python-o365).

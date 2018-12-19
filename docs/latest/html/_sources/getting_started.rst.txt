@@ -35,16 +35,3 @@ You will need to register your application at `Microsoft Apps <https://apps.dev.
 
 Basic Usage
 ===========
-**Connecting to API Account**
-
-.. code-block:: python
-
-    from O365 import Account
-
-    account = Account(credentials=('my_client_id', 'my_client_secret'))
-
-**Setting Proxy**
-
-.. code-block:: python
-
-    account.connection.set

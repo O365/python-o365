@@ -1,0 +1,1768 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Calendar &mdash; O365  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Connection" href="connection.html" />
+    <link rel="prev" title="Attachment" href="attachment.html" /> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> O365
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage.html">Detailed Usage</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">O365 API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="account.html">Account</a></li>
+<li class="toctree-l2"><a class="reference internal" href="address_book.html">Address Book</a></li>
+<li class="toctree-l2"><a class="reference internal" href="attachment.html">Attachment</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Calendar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="connection.html">Connection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="drive.html">One Drive</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mailbox.html">Mailbox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="message.html">Message</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sharepoint.html">Sharepoint</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html">Utils</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">O365</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../api.html">O365 API</a> &raquo;</li>
+        
+      <li>Calendar</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/calendar.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
+      
+        <a href="connection.html" class="btn btn-neutral float-right" title="Connection" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="attachment.html" class="btn btn-neutral" title="Attachment" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+  </div>
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-O365.calendar">
+<span id="calendar"></span><h1>Calendar<a class="headerlink" href="#module-O365.calendar" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="O365.calendar.Attendee">
+<em class="property">class </em><code class="descclassname">O365.calendar.</code><code class="descname">Attendee</code><span class="sig-paren">(</span><em>address</em>, <em>*</em>, <em>name=None</em>, <em>attendee_type=None</em>, <em>response_status=None</em>, <em>event=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#Attendee"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.calendar.Attendee" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A Event attendee</p>
+<dl class="method">
+<dt id="O365.calendar.Attendee.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>address</em>, <em>*</em>, <em>name=None</em>, <em>attendee_type=None</em>, <em>response_status=None</em>, <em>event=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#Attendee.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.calendar.Attendee.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a event attendee</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>address</strong> (<em>str</em>) – email address of the attendee</li>
+<li><strong>name</strong> (<em>str</em>) – name of the attendee</li>
+<li><strong>attendee_type</strong> (<a class="reference internal" href="#O365.calendar.AttendeeType" title="O365.calendar.AttendeeType"><em>AttendeeType</em></a>) – requirement of attendee</li>
+<li><strong>response_status</strong> (<em>Response</em>) – response status requirement</li>
+<li><strong>event</strong> (<a class="reference internal" href="#O365.calendar.Event" title="O365.calendar.Event"><em>Event</em></a>) – event for which to assign the attendee</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.calendar.Attendee.address">
+<code class="descname">address</code><a class="headerlink" href="#O365.calendar.Attendee.address" title="Permalink to this definition">¶</a></dt>
+<dd><p>Email address</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Getter:</th><td class="field-body">Get the email address of attendee</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Setter:</th><td class="field-body">Set the email address of attendee</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.calendar.Attendee.attendee_type">
+<code class="descname">attendee_type</code><a class="headerlink" href="#O365.calendar.Attendee.attendee_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Requirement of the attendee</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Getter:</th><td class="field-body">Get the requirement of attendee</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Setter:</th><td class="field-body">Set the requirement of attendee</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference internal" href="#O365.calendar.AttendeeType" title="O365.calendar.AttendeeType">AttendeeType</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.calendar.Attendee.name">
+<code class="descname">name</code><a class="headerlink" href="#O365.calendar.Attendee.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Name</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Getter:</th><td class="field-body">Get the name of attendee</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Setter:</th><td class="field-body">Set the name of attendee</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.calendar.Attendee.response_status">
+<code class="descname">response_status</code><a class="headerlink" href="#O365.calendar.Attendee.response_status" title="Permalink to this definition">¶</a></dt>
+<dd><p>Response status of the attendee</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference internal" href="#O365.calendar.ResponseStatus" title="O365.calendar.ResponseStatus">ResponseStatus</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="O365.calendar.AttendeeType">
+<em class="property">class </em><code class="descclassname">O365.calendar.</code><code class="descname">AttendeeType</code><a class="reference internal" href="../_modules/O365/calendar.html#AttendeeType"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.calendar.AttendeeType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
+<p>An enumeration.</p>
+<dl class="attribute">
+<dt id="O365.calendar.AttendeeType.Optional">
+<code class="descname">Optional</code><em class="property"> = 'optional'</em><a class="headerlink" href="#O365.calendar.AttendeeType.Optional" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="O365.calendar.AttendeeType.Required">
+<code class="descname">Required</code><em class="property"> = 'required'</em><a class="headerlink" href="#O365.calendar.AttendeeType.Required" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="O365.calendar.AttendeeType.Resource">
+<code class="descname">Resource</code><em class="property"> = 'resource'</em><a class="headerlink" href="#O365.calendar.AttendeeType.Resource" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="O365.calendar.Attendees">
+<em class="property">class </em><code class="descclassname">O365.calendar.</code><code class="descname">Attendees</code><span class="sig-paren">(</span><em>event</em>, <em>attendees=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#Attendees"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.calendar.Attendees" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.utils.utils.ApiComponent</span></code></a></p>
+<p>A Collection of Attendees</p>
+<dl class="method">
+<dt id="O365.calendar.Attendees.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>event</em>, <em>attendees=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#Attendees.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.calendar.Attendees.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a collection of attendees</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>event</strong> (<a class="reference internal" href="#O365.calendar.Event" title="O365.calendar.Event"><em>Event</em></a>) – event for which to assign the attendees</li>
+<li><strong>attendees</strong> (<em>str</em><em> or </em><em>tuple</em><em>(</em><em>str</em><em>, </em><em>str</em><em>) or </em><a class="reference internal" href="#O365.calendar.Attendee" title="O365.calendar.Attendee"><em>Attendee</em></a><em> or </em><em>list</em><em>[</em><em>str</em><em>] or
+</em><em>list</em><em>[</em><em>tuple</em><em>(</em><em>str</em><em>,</em><em>str</em><em>)</em><em>] or </em><em>list</em><em>[</em><a class="reference internal" href="#O365.calendar.Attendee" title="O365.calendar.Attendee"><em>Attendee</em></a><em>]</em>) – list of attendees to add</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.calendar.Attendees.add">
+<code class="descname">add</code><span class="sig-paren">(</span><em>attendees</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#Attendees.add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.calendar.Attendees.add" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add attendees to the parent event</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>attendees</strong> (<em>str</em><em> or </em><em>tuple</em><em>(</em><em>str</em><em>, </em><em>str</em><em>) or </em><a class="reference internal" href="#O365.calendar.Attendee" title="O365.calendar.Attendee"><em>Attendee</em></a><em> or </em><em>list</em><em>[</em><em>str</em><em>] or
+</em><em>list</em><em>[</em><em>tuple</em><em>(</em><em>str</em><em>,</em><em>str</em><em>)</em><em>] or </em><em>list</em><em>[</em><a class="reference internal" href="#O365.calendar.Attendee" title="O365.calendar.Attendee"><em>Attendee</em></a><em>]</em>) – list of attendees to add</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.calendar.Attendees.clear">
+<code class="descname">clear</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#Attendees.clear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.calendar.Attendees.clear" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clear the attendees list</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.calendar.Attendees.remove">
+<code class="descname">remove</code><span class="sig-paren">(</span><em>attendees</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#Attendees.remove"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.calendar.Attendees.remove" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove the provided attendees from the event</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>attendees</strong> (<em>str</em><em> or </em><em>tuple</em><em>(</em><em>str</em><em>, </em><em>str</em><em>) or </em><a class="reference internal" href="#O365.calendar.Attendee" title="O365.calendar.Attendee"><em>Attendee</em></a><em> or </em><em>list</em><em>[</em><em>str</em><em>] or
+</em><em>list</em><em>[</em><em>tuple</em><em>(</em><em>str</em><em>,</em><em>str</em><em>)</em><em>] or </em><em>list</em><em>[</em><a class="reference internal" href="#O365.calendar.Attendee" title="O365.calendar.Attendee"><em>Attendee</em></a><em>]</em>) – list of attendees to add</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.calendar.Attendees.to_api_data">
+<code class="descname">to_api_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#Attendees.to_api_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.calendar.Attendees.to_api_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a dict to communicate with the server</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">dict</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="O365.calendar.Calendar">
+<em class="property">class </em><code class="descclassname">O365.calendar.</code><code class="descname">Calendar</code><span class="sig-paren">(</span><em>*</em>, <em>parent=None</em>, <em>con=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#Calendar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.calendar.Calendar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.utils.utils.ApiComponent</span></code></a>, <a class="reference internal" href="message.html#O365.message.HandleRecipientsMixin" title="O365.message.HandleRecipientsMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.message.HandleRecipientsMixin</span></code></a></p>
+<dl class="method">
+<dt id="O365.calendar.Calendar.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>*</em>, <em>parent=None</em>, <em>con=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#Calendar.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.calendar.Calendar.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a Calendar Representation</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>parent</strong> (<a class="reference internal" href="#O365.calendar.Schedule" title="O365.calendar.Schedule"><em>Schedule</em></a>) – parent for this operation</li>
+<li><strong>con</strong> (<a class="reference internal" href="connection.html#O365.connection.Connection" title="O365.connection.Connection"><em>Connection</em></a>) – connection to use if no parent specified</li>
+<li><strong>protocol</strong> (<a class="reference internal" href="connection.html#O365.connection.Protocol" title="O365.connection.Protocol"><em>Protocol</em></a>) – protocol to use if no parent specified
+(kwargs)</li>
+<li><strong>main_resource</strong> (<em>str</em>) – use this resource instead of parent resource
+(kwargs)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.calendar.Calendar.delete">
+<code class="descname">delete</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#Calendar.delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.calendar.Calendar.delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deletes this calendar</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Success / Failure</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.calendar.Calendar.event_constructor">
+<code class="descname">event_constructor</code><a class="headerlink" href="#O365.calendar.Calendar.event_constructor" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="#O365.calendar.Event" title="O365.calendar.Event"><code class="xref py py-class docutils literal notranslate"><span class="pre">Event</span></code></a></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.calendar.Calendar.get_event">
+<code class="descname">get_event</code><span class="sig-paren">(</span><em>param</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#Calendar.get_event"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.calendar.Calendar.get_event" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an Event instance by it’s id</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>param</strong> – an event_id or a Query instance</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">event for the specified info</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#O365.calendar.Event" title="O365.calendar.Event">Event</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.calendar.Calendar.get_events">
+<code class="descname">get_events</code><span class="sig-paren">(</span><em>limit=25</em>, <em>*</em>, <em>query=None</em>, <em>order_by=None</em>, <em>batch=None</em>, <em>download_attachments=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#Calendar.get_events"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.calendar.Calendar.get_events" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get events from the default Calendar</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>limit</strong> (<em>int</em>) – max no. of events to get. Over 999 uses batch.</li>
+<li><strong>query</strong> (<a class="reference internal" href="utils.html#O365.utils.utils.Query" title="O365.utils.utils.Query"><em>Query</em></a><em> or </em><em>str</em>) – applies a OData filter to the request</li>
+<li><strong>order_by</strong> (<a class="reference internal" href="utils.html#O365.utils.utils.Query" title="O365.utils.utils.Query"><em>Query</em></a><em> or </em><em>str</em>) – orders the result set based on this condition</li>
+<li><strong>batch</strong> (<em>int</em>) – batch size, retrieves items in
+batches allowing to retrieve more items than the limit.</li>
+<li><strong>download_attachments</strong> – downloads event attachments</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">list of events in this calendar</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">list[<a class="reference internal" href="#O365.calendar.Event" title="O365.calendar.Event">Event</a>] or <a class="reference internal" href="utils.html#O365.utils.utils.Pagination" title="O365.utils.utils.Pagination">Pagination</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.calendar.Calendar.new_event">
+<code class="descname">new_event</code><span class="sig-paren">(</span><em>subject=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#Calendar.new_event"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.calendar.Calendar.new_event" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a new (unsaved) Event object</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#O365.calendar.Event" title="O365.calendar.Event">Event</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.calendar.Calendar.owner">
+<code class="descname">owner</code><a class="headerlink" href="#O365.calendar.Calendar.owner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Owner of the calendar</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.calendar.Calendar.update">
+<code class="descname">update</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#Calendar.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.calendar.Calendar.update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates this calendar. Only name and color can be changed.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Success / Failure</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="O365.calendar.CalendarColors">
+<em class="property">class </em><code class="descclassname">O365.calendar.</code><code class="descname">CalendarColors</code><a class="reference internal" href="../_modules/O365/calendar.html#CalendarColors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.calendar.CalendarColors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
+<p>An enumeration.</p>
+<dl class="attribute">
+<dt id="O365.calendar.CalendarColors.Auto">
+<code class="descname">Auto</code><em class="property"> = -1</em><a class="headerlink" href="#O365.calendar.CalendarColors.Auto" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="O365.calendar.CalendarColors.LightBlue">
+<code class="descname">LightBlue</code><em class="property"> = 0</em><a class="headerlink" href="#O365.calendar.CalendarColors.LightBlue" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="O365.calendar.CalendarColors.LightBrown">
+<code class="descname">LightBrown</code><em class="property"> = 7</em><a class="headerlink" href="#O365.calendar.CalendarColors.LightBrown" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="O365.calendar.CalendarColors.LightGray">
+<code class="descname">LightGray</code><em class="property"> = 3</em><a class="headerlink" href="#O365.calendar.CalendarColors.LightGray" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="O365.calendar.CalendarColors.LightGreen">
+<code class="descname">LightGreen</code><em class="property"> = 1</em><a class="headerlink" href="#O365.calendar.CalendarColors.LightGreen" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="O365.calendar.CalendarColors.LightOrange">
+<code class="descname">LightOrange</code><em class="property"> = 2</em><a class="headerlink" href="#O365.calendar.CalendarColors.LightOrange" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="O365.calendar.CalendarColors.LightPink">
+<code class="descname">LightPink</code><em class="property"> = 6</em><a class="headerlink" href="#O365.calendar.CalendarColors.LightPink" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="O365.calendar.CalendarColors.LightRed">
+<code class="descname">LightRed</code><em class="property"> = 8</em><a class="headerlink" href="#O365.calendar.CalendarColors.LightRed" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="O365.calendar.CalendarColors.LightTeal">
+<code class="descname">LightTeal</code><em class="property"> = 5</em><a class="headerlink" href="#O365.calendar.CalendarColors.LightTeal" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="O365.calendar.CalendarColors.LightYellow">
+<code class="descname">LightYellow</code><em class="property"> = 4</em><a class="headerlink" href="#O365.calendar.CalendarColors.LightYellow" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="O365.calendar.CalendarColors.MaxColor">
+<code class="descname">MaxColor</code><em class="property"> = 9</em><a class="headerlink" href="#O365.calendar.CalendarColors.MaxColor" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="O365.calendar.DailyEventFrequency">
+<em class="property">class </em><code class="descclassname">O365.calendar.</code><code class="descname">DailyEventFrequency</code><span class="sig-paren">(</span><em>recurrence_type</em>, <em>interval</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#DailyEventFrequency"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.calendar.DailyEventFrequency" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="O365.calendar.DailyEventFrequency.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>recurrence_type</em>, <em>interval</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#DailyEventFrequency.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.calendar.DailyEventFrequency.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="O365.calendar.Event">
+<em class="property">class </em><code class="descclassname">O365.calendar.</code><code class="descname">Event</code><span class="sig-paren">(</span><em>*</em>, <em>parent=None</em>, <em>con=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#Event"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.calendar.Event" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.utils.utils.ApiComponent</span></code></a>, <a class="reference internal" href="attachment.html#O365.utils.attachment.AttachableMixin" title="O365.utils.attachment.AttachableMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.utils.attachment.AttachableMixin</span></code></a>, <a class="reference internal" href="message.html#O365.message.HandleRecipientsMixin" title="O365.message.HandleRecipientsMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.message.HandleRecipientsMixin</span></code></a></p>
+<p>A Calendar event</p>
+<dl class="method">
+<dt id="O365.calendar.Event.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>*</em>, <em>parent=None</em>, <em>con=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#Event.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.calendar.Event.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a calendar event representation</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>parent</strong> (<a class="reference internal" href="#O365.calendar.Calendar" title="O365.calendar.Calendar"><em>Calendar</em></a><em> or </em><a class="reference internal" href="#O365.calendar.Schedule" title="O365.calendar.Schedule"><em>Schedule</em></a>) – parent for this operation</li>
+<li><strong>con</strong> (<a class="reference internal" href="connection.html#O365.connection.Connection" title="O365.connection.Connection"><em>Connection</em></a>) – connection to use if no parent specified</li>
+<li><strong>protocol</strong> (<a class="reference internal" href="connection.html#O365.connection.Protocol" title="O365.connection.Protocol"><em>Protocol</em></a>) – protocol to use if no parent specified
+(kwargs)</li>
+<li><strong>main_resource</strong> (<em>str</em>) – use this resource instead of parent resource
+(kwargs)</li>
+<li><strong>calendar_id</strong> (<em>str</em>) – id of the calender to add this event in
+(kwargs)</li>
+<li><strong>download_attachments</strong> (<em>bool</em>) – whether or not to download attachments
+(kwargs)</li>
+<li><strong>subject</strong> (<em>str</em>) – subject of the event (kwargs)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.calendar.Event.accept_event">
+<code class="descname">accept_event</code><span class="sig-paren">(</span><em>comment=None</em>, <em>*</em>, <em>send_response=True</em>, <em>tentatively=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#Event.accept_event"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.calendar.Event.accept_event" title="Permalink to this definition">¶</a></dt>
+<dd><p>Accept the event</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>comment</strong> – comment to add</li>
+<li><strong>send_response</strong> – whether or not to send response back</li>
+<li><strong>tentatively</strong> – whether acceptance is tentative</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Success / Failure</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">bool</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.calendar.Event.attachments">
+<code class="descname">attachments</code><a class="headerlink" href="#O365.calendar.Event.attachments" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of attachments</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#O365.calendar.EventAttachments" title="O365.calendar.EventAttachments">EventAttachments</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.calendar.Event.attendees">
+<code class="descname">attendees</code><a class="headerlink" href="#O365.calendar.Event.attendees" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of meeting attendees</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#O365.calendar.Attendees" title="O365.calendar.Attendees">Attendees</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.calendar.Event.body">
+<code class="descname">body</code><a class="headerlink" href="#O365.calendar.Event.body" title="Permalink to this definition">¶</a></dt>
+<dd><p>Body of the event</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Getter:</th><td class="field-body">Get body text</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Setter:</th><td class="field-body">Set body of event</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.calendar.Event.categories">
+<code class="descname">categories</code><a class="headerlink" href="#O365.calendar.Event.categories" title="Permalink to this definition">¶</a></dt>
+<dd><p>Categories of the event</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Getter:</th><td class="field-body">get the list of categories</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Setter:</th><td class="field-body">set the list of categories</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">list[str]</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.calendar.Event.created">
+<code class="descname">created</code><a class="headerlink" href="#O365.calendar.Event.created" title="Permalink to this definition">¶</a></dt>
+<dd><p>Created time of the event</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">datetime</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.calendar.Event.decline_event">
+<code class="descname">decline_event</code><span class="sig-paren">(</span><em>comment=None</em>, <em>*</em>, <em>send_response=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#Event.decline_event"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.calendar.Event.decline_event" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decline the event</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>comment</strong> (<em>str</em>) – comment to add</li>
+<li><strong>send_response</strong> (<em>bool</em>) – whether or not to send response back</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Success / Failure</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">bool</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.calendar.Event.delete">
+<code class="descname">delete</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#Event.delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.calendar.Event.delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deletes a stored event</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Success / Failure</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.calendar.Event.end">
+<code class="descname">end</code><a class="headerlink" href="#O365.calendar.Event.end" title="Permalink to this definition">¶</a></dt>
+<dd><p>End Time of event</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Getter:</th><td class="field-body">get the end time</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Setter:</th><td class="field-body">set the end time</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">datetime</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.calendar.Event.get_body_soup">
+<code class="descname">get_body_soup</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#Event.get_body_soup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.calendar.Event.get_body_soup" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the beautifulsoup4 of the html body</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Html body</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">BeautifulSoup</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.calendar.Event.get_body_text">
+<code class="descname">get_body_text</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#Event.get_body_text"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.calendar.Event.get_body_text" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse the body html and returns the body text using bs4</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">body text</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.calendar.Event.importance">
+<code class="descname">importance</code><a class="headerlink" href="#O365.calendar.Event.importance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Event Priority</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Getter:</th><td class="field-body">get importance of event</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Setter:</th><td class="field-body">set the importance of event</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference internal" href="utils.html#O365.utils.utils.ImportanceLevel" title="O365.utils.utils.ImportanceLevel">ImportanceLevel</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.calendar.Event.is_all_day">
+<code class="descname">is_all_day</code><a class="headerlink" href="#O365.calendar.Event.is_all_day" title="Permalink to this definition">¶</a></dt>
+<dd><p>Is the event for whole day</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Getter:</th><td class="field-body">get the current status of is_all_day property</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Setter:</th><td class="field-body">set if the event is all day or not</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.calendar.Event.is_reminder_on">
+<code class="descname">is_reminder_on</code><a class="headerlink" href="#O365.calendar.Event.is_reminder_on" title="Permalink to this definition">¶</a></dt>
+<dd><p>Status of the Reminder</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Getter:</th><td class="field-body">check is reminder enabled or not</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Setter:</th><td class="field-body">enable or disable reminder option</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.calendar.Event.location">
+<code class="descname">location</code><a class="headerlink" href="#O365.calendar.Event.location" title="Permalink to this definition">¶</a></dt>
+<dd><p>Location of event</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Getter:</th><td class="field-body">get current location configured for the event</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Setter:</th><td class="field-body">set a location for the event</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.calendar.Event.modified">
+<code class="descname">modified</code><a class="headerlink" href="#O365.calendar.Event.modified" title="Permalink to this definition">¶</a></dt>
+<dd><p>Last modified time of the event</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">datetime</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.calendar.Event.organizer">
+<code class="descname">organizer</code><a class="headerlink" href="#O365.calendar.Event.organizer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Organizer of the meeting event</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="message.html#O365.message.Recipient" title="O365.message.Recipient">Recipient</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.calendar.Event.recurrence">
+<code class="descname">recurrence</code><a class="headerlink" href="#O365.calendar.Event.recurrence" title="Permalink to this definition">¶</a></dt>
+<dd><p>Recurrence information of the event</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#O365.calendar.EventRecurrence" title="O365.calendar.EventRecurrence">EventRecurrence</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.calendar.Event.remind_before_minutes">
+<code class="descname">remind_before_minutes</code><a class="headerlink" href="#O365.calendar.Event.remind_before_minutes" title="Permalink to this definition">¶</a></dt>
+<dd><p>No. of minutes to remind before the meeting</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Getter:</th><td class="field-body">get current minutes</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Setter:</th><td class="field-body">set to remind before new x minutes</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.calendar.Event.response_requested">
+<code class="descname">response_requested</code><a class="headerlink" href="#O365.calendar.Event.response_requested" title="Permalink to this definition">¶</a></dt>
+<dd><p>Is response requested or not</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Getter:</th><td class="field-body">Is response requested or not</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Setter:</th><td class="field-body">set the event to request response or not</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.calendar.Event.response_status">
+<code class="descname">response_status</code><a class="headerlink" href="#O365.calendar.Event.response_status" title="Permalink to this definition">¶</a></dt>
+<dd><p>Your response</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#O365.calendar.ResponseStatus" title="O365.calendar.ResponseStatus">ResponseStatus</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.calendar.Event.save">
+<code class="descname">save</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#Event.save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.calendar.Event.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new event or update an existing one by checking what
+values have changed and update them on the server</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Success / Failure</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.calendar.Event.sensitivity">
+<code class="descname">sensitivity</code><a class="headerlink" href="#O365.calendar.Event.sensitivity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sensitivity of the Event</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Getter:</th><td class="field-body">Get the current sensitivity</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Setter:</th><td class="field-body">Set a new sensitivity</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference internal" href="#O365.calendar.EventSensitivity" title="O365.calendar.EventSensitivity">EventSensitivity</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.calendar.Event.show_as">
+<code class="descname">show_as</code><a class="headerlink" href="#O365.calendar.Event.show_as" title="Permalink to this definition">¶</a></dt>
+<dd><p>Show as “busy” or any other status during the event</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Getter:</th><td class="field-body">Current status during the event</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Setter:</th><td class="field-body">update show as status</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference internal" href="#O365.calendar.EventShowAs" title="O365.calendar.EventShowAs">EventShowAs</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.calendar.Event.start">
+<code class="descname">start</code><a class="headerlink" href="#O365.calendar.Event.start" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start Time of event</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Getter:</th><td class="field-body">get the start time</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Setter:</th><td class="field-body">set the start time</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">datetime</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.calendar.Event.subject">
+<code class="descname">subject</code><a class="headerlink" href="#O365.calendar.Event.subject" title="Permalink to this definition">¶</a></dt>
+<dd><p>Subject of the event</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Getter:</th><td class="field-body">Get subject</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Setter:</th><td class="field-body">Set subject of event</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.calendar.Event.to_api_data">
+<code class="descname">to_api_data</code><span class="sig-paren">(</span><em>restrict_keys=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#Event.to_api_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.calendar.Event.to_api_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a dict to communicate with the server</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>restrict_keys</strong> – a set of keys to restrict the returned data to</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">dict</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="O365.calendar.EventAttachment">
+<em class="property">class </em><code class="descclassname">O365.calendar.</code><code class="descname">EventAttachment</code><span class="sig-paren">(</span><em>attachment=None</em>, <em>*</em>, <em>parent=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#EventAttachment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.calendar.EventAttachment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="attachment.html#O365.utils.attachment.BaseAttachment" title="O365.utils.attachment.BaseAttachment"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.utils.attachment.BaseAttachment</span></code></a></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="O365.calendar.EventAttachments">
+<em class="property">class </em><code class="descclassname">O365.calendar.</code><code class="descname">EventAttachments</code><span class="sig-paren">(</span><em>parent</em>, <em>attachments=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#EventAttachments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.calendar.EventAttachments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="attachment.html#O365.utils.attachment.BaseAttachments" title="O365.utils.attachment.BaseAttachments"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.utils.attachment.BaseAttachments</span></code></a></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="O365.calendar.EventRecurrence">
+<em class="property">class </em><code class="descclassname">O365.calendar.</code><code class="descname">EventRecurrence</code><span class="sig-paren">(</span><em>event</em>, <em>recurrence=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#EventRecurrence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.calendar.EventRecurrence" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.utils.utils.ApiComponent</span></code></a></p>
+<dl class="method">
+<dt id="O365.calendar.EventRecurrence.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>event</em>, <em>recurrence=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#EventRecurrence.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.calendar.EventRecurrence.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>A representation of an event recurrence properties</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>event</strong> (<a class="reference internal" href="#O365.calendar.Event" title="O365.calendar.Event"><em>Event</em></a>) – event object</li>
+<li><strong>recurrence</strong> (<em>dict</em>) – recurrence information</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.calendar.EventRecurrence.day_of_month">
+<code class="descname">day_of_month</code><a class="headerlink" href="#O365.calendar.EventRecurrence.day_of_month" title="Permalink to this definition">¶</a></dt>
+<dd><p>Repeat on this day of month</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Getter:</th><td class="field-body">Get the repeat day of month</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Setter:</th><td class="field-body">Set the repeat day of month</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.calendar.EventRecurrence.days_of_week">
+<code class="descname">days_of_week</code><a class="headerlink" href="#O365.calendar.EventRecurrence.days_of_week" title="Permalink to this definition">¶</a></dt>
+<dd><p>Days in week to repeat</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Getter:</th><td class="field-body">Get the current list of days</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Setter:</th><td class="field-body">Set the list of days to repeat</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">set(str)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.calendar.EventRecurrence.end_date">
+<code class="descname">end_date</code><a class="headerlink" href="#O365.calendar.EventRecurrence.end_date" title="Permalink to this definition">¶</a></dt>
+<dd><p>End date of repetition</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Getter:</th><td class="field-body">get the end date</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Setter:</th><td class="field-body">set the end date</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">date</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.calendar.EventRecurrence.first_day_of_week">
+<code class="descname">first_day_of_week</code><a class="headerlink" href="#O365.calendar.EventRecurrence.first_day_of_week" title="Permalink to this definition">¶</a></dt>
+<dd><p>Which day to consider start of the week</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Getter:</th><td class="field-body">Get the current start of week</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Setter:</th><td class="field-body">Set the start day of week</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.calendar.EventRecurrence.index">
+<code class="descname">index</code><a class="headerlink" href="#O365.calendar.EventRecurrence.index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Index</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Getter:</th><td class="field-body">Get index</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Setter:</th><td class="field-body">Set index</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.calendar.EventRecurrence.interval">
+<code class="descname">interval</code><a class="headerlink" href="#O365.calendar.EventRecurrence.interval" title="Permalink to this definition">¶</a></dt>
+<dd><p>Repeat interval for the event</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Getter:</th><td class="field-body">Get the current interval</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Setter:</th><td class="field-body">Update to a new interval</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.calendar.EventRecurrence.month">
+<code class="descname">month</code><a class="headerlink" href="#O365.calendar.EventRecurrence.month" title="Permalink to this definition">¶</a></dt>
+<dd><p>Month of the event</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Getter:</th><td class="field-body">Get month</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Setter:</th><td class="field-body">Update month</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.calendar.EventRecurrence.occurrences">
+<code class="descname">occurrences</code><a class="headerlink" href="#O365.calendar.EventRecurrence.occurrences" title="Permalink to this definition">¶</a></dt>
+<dd><p>No. of occurrences</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Getter:</th><td class="field-body">Get the no. of occurrences</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Setter:</th><td class="field-body">Set the no. of occurrences</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.calendar.EventRecurrence.recurrence_time_zone">
+<code class="descname">recurrence_time_zone</code><a class="headerlink" href="#O365.calendar.EventRecurrence.recurrence_time_zone" title="Permalink to this definition">¶</a></dt>
+<dd><p>Timezone to consider for repeating</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Getter:</th><td class="field-body">Get the timezone</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Setter:</th><td class="field-body">Set the timezone</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.calendar.EventRecurrence.set_daily">
+<code class="descname">set_daily</code><span class="sig-paren">(</span><em>interval</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#EventRecurrence.set_daily"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.calendar.EventRecurrence.set_daily" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set to repeat every x no. of days</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>interval</strong> (<em>int</em>) – no. of days to repeat at</li>
+<li><strong>start</strong> (<em>date</em>) – Start date of repetition (kwargs)</li>
+<li><strong>end</strong> (<em>date</em>) – End date of repetition (kwargs)</li>
+<li><strong>occurrences</strong> (<em>int</em>) – no of occurrences (kwargs)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.calendar.EventRecurrence.set_monthly">
+<code class="descname">set_monthly</code><span class="sig-paren">(</span><em>interval</em>, <em>*</em>, <em>day_of_month=None</em>, <em>days_of_week=None</em>, <em>index=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#EventRecurrence.set_monthly"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.calendar.EventRecurrence.set_monthly" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set to repeat every month on specified days for every x no. of days</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>interval</strong> (<em>int</em>) – no. of days to repeat at</li>
+<li><strong>day_of_month</strong> (<em>int</em>) – repeat day of a month</li>
+<li><strong>days_of_week</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – list of days of the week to repeat</li>
+<li><strong>index</strong> – index</li>
+<li><strong>start</strong> (<em>date</em>) – Start date of repetition (kwargs)</li>
+<li><strong>end</strong> (<em>date</em>) – End date of repetition (kwargs)</li>
+<li><strong>occurrences</strong> (<em>int</em>) – no of occurrences (kwargs)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.calendar.EventRecurrence.set_range">
+<code class="descname">set_range</code><span class="sig-paren">(</span><em>start=None</em>, <em>end=None</em>, <em>occurrences=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#EventRecurrence.set_range"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.calendar.EventRecurrence.set_range" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the range of recurrence</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>start</strong> (<em>date</em>) – Start date of repetition</li>
+<li><strong>end</strong> (<em>date</em>) – End date of repetition</li>
+<li><strong>occurrences</strong> (<em>int</em>) – no of occurrences</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.calendar.EventRecurrence.set_weekly">
+<code class="descname">set_weekly</code><span class="sig-paren">(</span><em>interval</em>, <em>*</em>, <em>days_of_week</em>, <em>first_day_of_week</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#EventRecurrence.set_weekly"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.calendar.EventRecurrence.set_weekly" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set to repeat every week on specified days for every x no. of days</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>interval</strong> (<em>int</em>) – no. of days to repeat at</li>
+<li><strong>first_day_of_week</strong> (<em>str</em>) – starting day for a week</li>
+<li><strong>days_of_week</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – list of days of the week to repeat</li>
+<li><strong>start</strong> (<em>date</em>) – Start date of repetition (kwargs)</li>
+<li><strong>end</strong> (<em>date</em>) – End date of repetition (kwargs)</li>
+<li><strong>occurrences</strong> (<em>int</em>) – no of occurrences (kwargs)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.calendar.EventRecurrence.set_yearly">
+<code class="descname">set_yearly</code><span class="sig-paren">(</span><em>interval</em>, <em>month</em>, <em>*</em>, <em>day_of_month=None</em>, <em>days_of_week=None</em>, <em>index=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#EventRecurrence.set_yearly"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.calendar.EventRecurrence.set_yearly" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set to repeat every month on specified days for every x no. of days</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>interval</strong> (<em>int</em>) – no. of days to repeat at</li>
+<li><strong>month</strong> (<em>int</em>) – month to repeat</li>
+<li><strong>day_of_month</strong> (<em>int</em>) – repeat day of a month</li>
+<li><strong>days_of_week</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – list of days of the week to repeat</li>
+<li><strong>index</strong> – index</li>
+<li><strong>start</strong> (<em>date</em>) – Start date of repetition (kwargs)</li>
+<li><strong>end</strong> (<em>date</em>) – End date of repetition (kwargs)</li>
+<li><strong>occurrences</strong> (<em>int</em>) – no of occurrences (kwargs)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.calendar.EventRecurrence.start_date">
+<code class="descname">start_date</code><a class="headerlink" href="#O365.calendar.EventRecurrence.start_date" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start date of repetition</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Getter:</th><td class="field-body">get the start date</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Setter:</th><td class="field-body">set the start date</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">date</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.calendar.EventRecurrence.to_api_data">
+<code class="descname">to_api_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#EventRecurrence.to_api_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.calendar.EventRecurrence.to_api_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a dict to communicate with the server</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">dict</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="O365.calendar.EventResponse">
+<em class="property">class </em><code class="descclassname">O365.calendar.</code><code class="descname">EventResponse</code><a class="reference internal" href="../_modules/O365/calendar.html#EventResponse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.calendar.EventResponse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
+<p>An enumeration.</p>
+<dl class="attribute">
+<dt id="O365.calendar.EventResponse.Accepted">
+<code class="descname">Accepted</code><em class="property"> = 'accepted'</em><a class="headerlink" href="#O365.calendar.EventResponse.Accepted" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="O365.calendar.EventResponse.Declined">
+<code class="descname">Declined</code><em class="property"> = 'declined'</em><a class="headerlink" href="#O365.calendar.EventResponse.Declined" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="O365.calendar.EventResponse.NotResponded">
+<code class="descname">NotResponded</code><em class="property"> = 'notResponded'</em><a class="headerlink" href="#O365.calendar.EventResponse.NotResponded" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="O365.calendar.EventResponse.Organizer">
+<code class="descname">Organizer</code><em class="property"> = 'organizer'</em><a class="headerlink" href="#O365.calendar.EventResponse.Organizer" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="O365.calendar.EventResponse.TentativelyAccepted">
+<code class="descname">TentativelyAccepted</code><em class="property"> = 'tentativelyAccepted'</em><a class="headerlink" href="#O365.calendar.EventResponse.TentativelyAccepted" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="O365.calendar.EventSensitivity">
+<em class="property">class </em><code class="descclassname">O365.calendar.</code><code class="descname">EventSensitivity</code><a class="reference internal" href="../_modules/O365/calendar.html#EventSensitivity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.calendar.EventSensitivity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
+<p>An enumeration.</p>
+<dl class="attribute">
+<dt id="O365.calendar.EventSensitivity.Confidential">
+<code class="descname">Confidential</code><em class="property"> = 'confidential'</em><a class="headerlink" href="#O365.calendar.EventSensitivity.Confidential" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="O365.calendar.EventSensitivity.Normal">
+<code class="descname">Normal</code><em class="property"> = 'normal'</em><a class="headerlink" href="#O365.calendar.EventSensitivity.Normal" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="O365.calendar.EventSensitivity.Personal">
+<code class="descname">Personal</code><em class="property"> = 'personal'</em><a class="headerlink" href="#O365.calendar.EventSensitivity.Personal" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="O365.calendar.EventSensitivity.Private">
+<code class="descname">Private</code><em class="property"> = 'private'</em><a class="headerlink" href="#O365.calendar.EventSensitivity.Private" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="O365.calendar.EventShowAs">
+<em class="property">class </em><code class="descclassname">O365.calendar.</code><code class="descname">EventShowAs</code><a class="reference internal" href="../_modules/O365/calendar.html#EventShowAs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.calendar.EventShowAs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
+<p>An enumeration.</p>
+<dl class="attribute">
+<dt id="O365.calendar.EventShowAs.Busy">
+<code class="descname">Busy</code><em class="property"> = 'busy'</em><a class="headerlink" href="#O365.calendar.EventShowAs.Busy" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="O365.calendar.EventShowAs.Free">
+<code class="descname">Free</code><em class="property"> = 'free'</em><a class="headerlink" href="#O365.calendar.EventShowAs.Free" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="O365.calendar.EventShowAs.Oof">
+<code class="descname">Oof</code><em class="property"> = 'oof'</em><a class="headerlink" href="#O365.calendar.EventShowAs.Oof" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="O365.calendar.EventShowAs.Tentative">
+<code class="descname">Tentative</code><em class="property"> = 'tentative'</em><a class="headerlink" href="#O365.calendar.EventShowAs.Tentative" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="O365.calendar.EventShowAs.Unknown">
+<code class="descname">Unknown</code><em class="property"> = 'unknown'</em><a class="headerlink" href="#O365.calendar.EventShowAs.Unknown" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="O365.calendar.EventShowAs.WorkingElsewhere">
+<code class="descname">WorkingElsewhere</code><em class="property"> = 'workingElsewhere'</em><a class="headerlink" href="#O365.calendar.EventShowAs.WorkingElsewhere" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="O365.calendar.ResponseStatus">
+<em class="property">class </em><code class="descclassname">O365.calendar.</code><code class="descname">ResponseStatus</code><span class="sig-paren">(</span><em>parent</em>, <em>response_status</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#ResponseStatus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.calendar.ResponseStatus" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.utils.utils.ApiComponent</span></code></a></p>
+<p>An event response status (status, time)</p>
+<dl class="method">
+<dt id="O365.calendar.ResponseStatus.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>parent</em>, <em>response_status</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#ResponseStatus.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.calendar.ResponseStatus.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>An event response status (status, time)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>parent</strong> (<a class="reference internal" href="#O365.calendar.Attendees" title="O365.calendar.Attendees"><em>Attendees</em></a><em> or </em><a class="reference internal" href="#O365.calendar.Event" title="O365.calendar.Event"><em>Event</em></a>) – parent of this</li>
+<li><strong>response_status</strong> (<em>dict</em>) – status info frm cloud</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="O365.calendar.Schedule">
+<em class="property">class </em><code class="descclassname">O365.calendar.</code><code class="descname">Schedule</code><span class="sig-paren">(</span><em>*</em>, <em>parent=None</em>, <em>con=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#Schedule"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.calendar.Schedule" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.utils.utils.ApiComponent</span></code></a></p>
+<dl class="method">
+<dt id="O365.calendar.Schedule.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>*</em>, <em>parent=None</em>, <em>con=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#Schedule.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.calendar.Schedule.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a wrapper around calendars and events</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>parent</strong> (<a class="reference internal" href="account.html#O365.account.Account" title="O365.account.Account"><em>Account</em></a>) – parent for this operation</li>
+<li><strong>con</strong> (<a class="reference internal" href="connection.html#O365.connection.Connection" title="O365.connection.Connection"><em>Connection</em></a>) – connection to use if no parent specified</li>
+<li><strong>protocol</strong> (<a class="reference internal" href="connection.html#O365.connection.Protocol" title="O365.connection.Protocol"><em>Protocol</em></a>) – protocol to use if no parent specified
+(kwargs)</li>
+<li><strong>main_resource</strong> (<em>str</em>) – use this resource instead of parent resource
+(kwargs)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.calendar.Schedule.calendar_constructor">
+<code class="descname">calendar_constructor</code><a class="headerlink" href="#O365.calendar.Schedule.calendar_constructor" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="#O365.calendar.Calendar" title="O365.calendar.Calendar"><code class="xref py py-class docutils literal notranslate"><span class="pre">Calendar</span></code></a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.calendar.Schedule.event_constructor">
+<code class="descname">event_constructor</code><a class="headerlink" href="#O365.calendar.Schedule.event_constructor" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="#O365.calendar.Event" title="O365.calendar.Event"><code class="xref py py-class docutils literal notranslate"><span class="pre">Event</span></code></a></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.calendar.Schedule.get_calendar">
+<code class="descname">get_calendar</code><span class="sig-paren">(</span><em>calendar_id=None</em>, <em>calendar_name=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#Schedule.get_calendar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.calendar.Schedule.get_calendar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a calendar by it’s id or name</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>calendar_id</strong> (<em>str</em>) – the calendar id to be retrieved.</li>
+<li><strong>calendar_name</strong> (<em>str</em>) – the calendar name to be retrieved.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">calendar for the given info</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#O365.calendar.Calendar" title="O365.calendar.Calendar">Calendar</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.calendar.Schedule.get_default_calendar">
+<code class="descname">get_default_calendar</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#Schedule.get_default_calendar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.calendar.Schedule.get_default_calendar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the default calendar for the current user</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#O365.calendar.Calendar" title="O365.calendar.Calendar">Calendar</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.calendar.Schedule.get_events">
+<code class="descname">get_events</code><span class="sig-paren">(</span><em>limit=25</em>, <em>*</em>, <em>query=None</em>, <em>order_by=None</em>, <em>batch=None</em>, <em>download_attachments=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#Schedule.get_events"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.calendar.Schedule.get_events" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get events from the default Calendar</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>limit</strong> (<em>int</em>) – max no. of events to get. Over 999 uses batch.</li>
+<li><strong>query</strong> (<a class="reference internal" href="utils.html#O365.utils.utils.Query" title="O365.utils.utils.Query"><em>Query</em></a><em> or </em><em>str</em>) – applies a OData filter to the request</li>
+<li><strong>order_by</strong> (<a class="reference internal" href="utils.html#O365.utils.utils.Query" title="O365.utils.utils.Query"><em>Query</em></a><em> or </em><em>str</em>) – orders the result set based on this condition</li>
+<li><strong>batch</strong> (<em>int</em>) – batch size, retrieves items in
+batches allowing to retrieve more items than the limit.</li>
+<li><strong>download_attachments</strong> (<em>bool</em>) – downloads event attachments</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">list of items in this folder</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">list[<a class="reference internal" href="#O365.calendar.Event" title="O365.calendar.Event">Event</a>] or <a class="reference internal" href="utils.html#O365.utils.utils.Pagination" title="O365.utils.utils.Pagination">Pagination</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.calendar.Schedule.list_calendars">
+<code class="descname">list_calendars</code><span class="sig-paren">(</span><em>limit=None</em>, <em>*</em>, <em>query=None</em>, <em>order_by=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#Schedule.list_calendars"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.calendar.Schedule.list_calendars" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets a list of calendars</p>
+<p>To use query an order_by check the OData specification here:
+<a class="reference external" href="http://docs.oasis-open.org/odata/odata/v4.0/errata03/os/complete/">http://docs.oasis-open.org/odata/odata/v4.0/errata03/os/complete/</a>
+part2-url-conventions/odata-v4.0-errata03-os-part2-url-conventions
+-complete.html</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>limit</strong> (<em>int</em>) – max no. of calendars to get. Over 999 uses batch.</li>
+<li><strong>query</strong> (<a class="reference internal" href="utils.html#O365.utils.utils.Query" title="O365.utils.utils.Query"><em>Query</em></a><em> or </em><em>str</em>) – applies a OData filter to the request</li>
+<li><strong>order_by</strong> (<a class="reference internal" href="utils.html#O365.utils.utils.Query" title="O365.utils.utils.Query"><em>Query</em></a><em> or </em><em>str</em>) – orders the result set based on this condition</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">list of calendars</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">list[<a class="reference internal" href="#O365.calendar.Calendar" title="O365.calendar.Calendar">Calendar</a>]</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.calendar.Schedule.new_calendar">
+<code class="descname">new_calendar</code><span class="sig-paren">(</span><em>calendar_name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#Schedule.new_calendar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.calendar.Schedule.new_calendar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a new calendar</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>calendar_name</strong> (<em>str</em>) – name of the new calendar</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">a new Calendar instance</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#O365.calendar.Calendar" title="O365.calendar.Calendar">Calendar</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.calendar.Schedule.new_event">
+<code class="descname">new_event</code><span class="sig-paren">(</span><em>subject=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#Schedule.new_event"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.calendar.Schedule.new_event" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a new (unsaved) Event object in the default calendar</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>subject</strong> (<em>str</em>) – subject text for the new event</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">new event</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#O365.calendar.Event" title="O365.calendar.Event">Event</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="connection.html" class="btn btn-neutral float-right" title="Connection" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="attachment.html" class="btn btn-neutral" title="Attachment" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Narcolapser
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
