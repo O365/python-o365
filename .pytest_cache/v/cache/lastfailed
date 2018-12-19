@@ -1,8 +1,0 @@
-{
-  "tests/test_account.py": true,
-  "tests/test_connection.py": true,
-  "tests/test_mailbox.py": true,
-  "tests/test_message.py": true,
-  "tests/test_protocol.py": true,
-  "tests/test_sharepoint.py": true
-}
