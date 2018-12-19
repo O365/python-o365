@@ -13,7 +13,7 @@ class SharepointListItem(ApiComponent):
     """ A Sharepoint ListItem within a SharepointList """
 
     _endpoints = {}
-
+    
     def __init__(self, *, parent=None, con=None, **kwargs):
         assert parent or con, 'Need a parent or a connection'
         self.con = parent.con if parent else con
@@ -25,14 +25,36 @@ class SharepointListItem(ApiComponent):
 
         cloud_data = kwargs.get(self._cloud_data_key, {})
 
-        self.object_id = cloud_data.get('id')
+        self.id = cloud_data.get('id')
+        created = cloud_data.get(self._cc('createdDateTime'), None)
+        modified = cloud_data.get(self._cc('lastModifiedDateTime'), None)
+        local_tz = self.protocol.timezone
+        self.created = parse(created).astimezone(local_tz) if created else None
+        self.modified = parse(modified).astimezone(local_tz) if modified else None
+
+        created_by = cloud_data.get(self._cc('createdBy'), {}).get('user', None)
+        self.created_by = Contact(con=self.con, protocol=self.protocol,
+                                  **{self._cloud_data_key: created_by}) if created_by else None
+        modified_by = cloud_data.get(self._cc('lastModifiedBy'), {}).get('user', None)
+        self.modified_by = Contact(con=self.con, protocol=self.protocol,
+                                   **{self._cloud_data_key: modified_by}) if modified_by else None
+
+        self.web_url = cloud_data.get(self._cc('webUrl'))
+
+        self.content_type_id = cloud_data.get(self._cc('contentType')).get('id',None)
+
+        self.fields =  cloud_data.get(self._cc('fields'), None)
+
+    def __repr__(self) :
+        return 'List Item: {}'.format(self.web_url)
 
 
 class SharepointList(ApiComponent):
     """ A Sharepoint site List """
 
     _endpoints = {
-        'get_items': '/items'
+        'get_items': '/items',
+        'get_item_by_id':'/items/{id}'
     }
     list_item_constructor = SharepointListItem
 
@@ -92,6 +114,20 @@ class SharepointList(ApiComponent):
 
         return [self.list_item_constructor(parent=self, **{self._cloud_data_key: item})
                 for item in data.get('value', [])]
+
+    def get_item_by_id(self,id):
+        """ Returns a sharepoint list item based on id"""
+
+        url = self.build_url(self._endpoints.get('get_item_by_id').format(id=id))
+
+        response = self.con.get(url)
+
+        if not response:
+            return []
+
+        data = response.json()
+
+        return self.list_item_constructor(parent=self, **{self._cloud_data_key: data})
 
 
 class Site(ApiComponent):
