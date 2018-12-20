@@ -24,7 +24,7 @@ class SharepointListColumn(ApiComponent):
 
         cloud_data = kwargs.get(self._cloud_data_key, {})
 
-        self.id = cloud_data.get('id')
+        self.object_id = cloud_data.get('id')
         self.column_group = cloud_data.get(self._cc('columnGroup'), None)
         self.description = cloud_data.get(self._cc('description'), None)
         self.display_name = cloud_data.get(self._cc('displayName'), None) 
@@ -77,7 +77,7 @@ class SharepointListItem(ApiComponent):
 
         cloud_data = kwargs.get(self._cloud_data_key, {})
 
-        self.id = cloud_data.get('id')
+        self.object_id = cloud_data.get('id')
         created = cloud_data.get(self._cc('createdDateTime'), None)
         modified = cloud_data.get(self._cc('lastModifiedDateTime'), None)
         local_tz = self.protocol.timezone
@@ -106,7 +106,7 @@ class SharepointList(ApiComponent):
 
     _endpoints = {
         'get_items': '/items',
-        'get_item_by_id':'/items/{id}',
+        'get_item_by_id':'/items/{item_id}',
         'get_list_columns':'/columns'
     }
     list_item_constructor = SharepointListItem
@@ -169,10 +169,10 @@ class SharepointList(ApiComponent):
         return [self.list_item_constructor(parent=self, **{self._cloud_data_key: item})
                 for item in data.get('value', [])]
 
-    def get_item_by_id(self,id):
+    def get_item_by_id(self,item_id):
         """ Returns a sharepoint list item based on id"""
 
-        url = self.build_url(self._endpoints.get('get_item_by_id').format(id=id))
+        url = self.build_url(self._endpoints.get('get_item_by_id').format(item_id=item_id))
 
         response = self.con.get(url)
 
