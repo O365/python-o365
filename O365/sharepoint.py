@@ -8,6 +8,58 @@ from O365.utils import ApiComponent
 
 log = logging.getLogger(__name__)
 
+class SharepointListColumn(ApiComponent):
+    """ A Sharepoint List column within a SharepointList """
+
+    _endpoints = {}
+
+    def __init__(self, *, parent=None, con=None, **kwargs):
+        assert parent or con, 'Need a parent or a connection'
+        self.con = parent.con if parent else con
+
+        # Choose the main_resource passed in kwargs over the parent main_resource
+        main_resource = kwargs.pop('main_resource', None) or getattr(parent, 'main_resource', None) if parent else None
+
+        super().__init__(protocol=parent.protocol if parent else kwargs.get('protocol'), main_resource=main_resource)
+
+        cloud_data = kwargs.get(self._cloud_data_key, {})
+
+        self.id = cloud_data.get('id')
+        self.column_group = cloud_data.get(self._cc('columnGroup'), None)
+        self.description = cloud_data.get(self._cc('description'), None)
+        self.display_name = cloud_data.get(self._cc('displayName'), None) 
+        self.enforce_unique_values = cloud_data.get(self._cc('enforceUniqueValues'), None)
+        self.hidden = cloud_data.get(self._cc('hidden'), None)
+        self.indexed = cloud_data.get(self._cc('indexed'), None) 
+        self.internal_name = cloud_data.get(self._cc('name'), None) 
+        self.read_only = cloud_data.get(self._cc('readOnly'), None) 
+        self.required = cloud_data.get(self._cc('required'), None) 
+
+        # identify the sharepoint column type and set it - Graph api doesn't return the type for managed metadata and link column
+        if(cloud_data.get(self._cc('text'), None) != None):
+            self.field_type = 'text'
+        elif(cloud_data.get(self._cc('choice'), None) != None):
+            self.field_type = 'choice'
+        elif(cloud_data.get(self._cc('number'), None) != None):
+            self.field_type = 'number'
+        elif(cloud_data.get(self._cc('currency'), None) != None):
+            self.field_type = 'currency'
+        elif(cloud_data.get(self._cc('dateTime'), None) != None):
+            self.field_type = 'dateTime'
+        elif(cloud_data.get(self._cc('lookup'), None) != None):
+            self.field_type = 'lookup'
+        elif(cloud_data.get(self._cc('boolean'), None) != None):
+            self.field_type = 'boolean'
+        elif(cloud_data.get(self._cc('calculated'), None) != None):
+            self.field_type = 'calculated'
+        elif(cloud_data.get(self._cc('personOrGroup'), None) != None):
+            self.field_type = 'personOrGroup'
+        else:
+            self.field_type = None
+
+    def __repr__(self) :
+        return 'List Column: {0}-{1}'.format(self.display_name,self.field_type)
+
 
 class SharepointListItem(ApiComponent):
     """ A Sharepoint ListItem within a SharepointList """
@@ -43,7 +95,7 @@ class SharepointListItem(ApiComponent):
 
         self.content_type_id = cloud_data.get(self._cc('contentType')).get('id',None)
 
-        self.fields =  cloud_data.get(self._cc('fields'), None)
+        self.fields =  cloud_data.get(self._cc('fields'), None)        
 
     def __repr__(self) :
         return 'List Item: {}'.format(self.web_url)
@@ -54,9 +106,11 @@ class SharepointList(ApiComponent):
 
     _endpoints = {
         'get_items': '/items',
-        'get_item_by_id':'/items/{id}'
+        'get_item_by_id':'/items/{id}',
+        'get_list_columns':'/columns'
     }
     list_item_constructor = SharepointListItem
+    list_column_constructor = SharepointListColumn
 
     def __init__(self, *, parent=None, con=None, **kwargs):
         assert parent or con, 'Need a parent or a connection'
@@ -128,6 +182,21 @@ class SharepointList(ApiComponent):
         data = response.json()
 
         return self.list_item_constructor(parent=self, **{self._cloud_data_key: data})
+
+    def get_list_columns(self):
+        """ Returns the sharepoint list columns """
+
+        url = self.build_url(self._endpoints.get('get_list_columns'))
+
+        response = self.con.get(url)
+
+        if not response:
+            return []
+
+        data = response.json()
+
+        return [self.list_column_constructor(parent=self, **{self._cloud_data_key: column})
+                for column in data.get('value',[])]
 
 
 class Site(ApiComponent):
