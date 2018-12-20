@@ -897,7 +897,10 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         return self.__repr__()
 
     def __repr__(self):
-        return 'Subject: {}'.format(self.subject)
+        if self.start.date() == self.end.date():
+            return 'Subject: {} (on: {} from: {} to: {})'.format(self.subject, self.start.date(), self.start.time(), self.end.time())
+        else:
+            return 'Subject: {} (starts: {} {} and ends: {} {})'.format(self.subject, self.start.date(), self.start.time(), self.end.date(), self.end.time())
 
     def to_api_data(self, restrict_keys=None):
         """ Returns a dict to communicate with the server
