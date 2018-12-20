@@ -1,0 +1,524 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Sharepoint &mdash; O365  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Utils" href="utils.html" />
+    <link rel="prev" title="Message" href="message.html" /> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> O365
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage.html">Detailed Usage</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">O365 API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="account.html">Account</a></li>
+<li class="toctree-l2"><a class="reference internal" href="address_book.html">Address Book</a></li>
+<li class="toctree-l2"><a class="reference internal" href="attachment.html">Attachment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="calendar.html">Calendar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="connection.html">Connection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="drive.html">One Drive</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mailbox.html">Mailbox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="message.html">Message</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Sharepoint</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html">Utils</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">O365</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../api.html">O365 API</a> &raquo;</li>
+        
+      <li>Sharepoint</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/sharepoint.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
+      
+        <a href="utils.html" class="btn btn-neutral float-right" title="Utils" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="message.html" class="btn btn-neutral" title="Message" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+  </div>
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-O365.sharepoint">
+<span id="sharepoint"></span><h1>Sharepoint<a class="headerlink" href="#module-O365.sharepoint" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="O365.sharepoint.Sharepoint">
+<em class="property">class </em><code class="descclassname">O365.sharepoint.</code><code class="descname">Sharepoint</code><span class="sig-paren">(</span><em>*</em>, <em>parent=None</em>, <em>con=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/sharepoint.html#Sharepoint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.sharepoint.Sharepoint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.utils.utils.ApiComponent</span></code></a></p>
+<p>A Sharepoint parent class to group functionality</p>
+<dl class="method">
+<dt id="O365.sharepoint.Sharepoint.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>*</em>, <em>parent=None</em>, <em>con=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/sharepoint.html#Sharepoint.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.sharepoint.Sharepoint.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>A Sharepoint site List</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>parent</strong> (<a class="reference internal" href="account.html#O365.account.Account" title="O365.account.Account"><em>Account</em></a>) – parent object</li>
+<li><strong>con</strong> (<a class="reference internal" href="connection.html#O365.connection.Connection" title="O365.connection.Connection"><em>Connection</em></a>) – connection to use if no parent specified</li>
+<li><strong>protocol</strong> (<a class="reference internal" href="connection.html#O365.connection.Protocol" title="O365.connection.Protocol"><em>Protocol</em></a>) – protocol to use if no parent specified
+(kwargs)</li>
+<li><strong>main_resource</strong> (<em>str</em>) – use this resource instead of parent resource
+(kwargs)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.sharepoint.Sharepoint.get_root_site">
+<code class="descname">get_root_site</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/sharepoint.html#Sharepoint.get_root_site"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.sharepoint.Sharepoint.get_root_site" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the root site</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#O365.sharepoint.Site" title="O365.sharepoint.Site">Site</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.sharepoint.Sharepoint.get_site">
+<code class="descname">get_site</code><span class="sig-paren">(</span><em>*args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/sharepoint.html#Sharepoint.get_site"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.sharepoint.Sharepoint.get_site" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a sharepoint site</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>args</strong> – <p>It accepts multiple ways of retrieving a site:</p>
+<p>get_site(host_name): the host_name: host_name ej.
+‘contoso.sharepoint.com’ or ‘root’</p>
+<p>get_site(site_id): the site_id: a comma separated string of
+(host_name, site_collection_id, site_id)</p>
+<p>get_site(host_name, path_to_site): host_name ej. ‘contoso.
+sharepoint.com’, path_to_site: a url path (with a leading slash)</p>
+<p>get_site(host_name, site_collection_id, site_id):
+host_name ej. ‘contoso.sharepoint.com’</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#O365.sharepoint.Site" title="O365.sharepoint.Site">Site</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.sharepoint.Sharepoint.search_site">
+<code class="descname">search_site</code><span class="sig-paren">(</span><em>keyword</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/sharepoint.html#Sharepoint.search_site"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.sharepoint.Sharepoint.search_site" title="Permalink to this definition">¶</a></dt>
+<dd><p>Search a sharepoint host for sites with the provided keyword</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>keyword</strong> – a keyword to search sites</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">list[<a class="reference internal" href="#O365.sharepoint.Site" title="O365.sharepoint.Site">Site</a>]</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.sharepoint.Sharepoint.site_constructor">
+<code class="descname">site_constructor</code><a class="headerlink" href="#O365.sharepoint.Sharepoint.site_constructor" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="#O365.sharepoint.Site" title="O365.sharepoint.Site"><code class="xref py py-class docutils literal notranslate"><span class="pre">Site</span></code></a></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="O365.sharepoint.SharepointList">
+<em class="property">class </em><code class="descclassname">O365.sharepoint.</code><code class="descname">SharepointList</code><span class="sig-paren">(</span><em>*</em>, <em>parent=None</em>, <em>con=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/sharepoint.html#SharepointList"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.sharepoint.SharepointList" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.utils.utils.ApiComponent</span></code></a></p>
+<dl class="method">
+<dt id="O365.sharepoint.SharepointList.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>*</em>, <em>parent=None</em>, <em>con=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/sharepoint.html#SharepointList.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.sharepoint.SharepointList.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>A Sharepoint site List</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>parent</strong> (<a class="reference internal" href="#O365.sharepoint.Site" title="O365.sharepoint.Site"><em>Site</em></a>) – parent object</li>
+<li><strong>con</strong> (<a class="reference internal" href="connection.html#O365.connection.Connection" title="O365.connection.Connection"><em>Connection</em></a>) – connection to use if no parent specified</li>
+<li><strong>protocol</strong> (<a class="reference internal" href="connection.html#O365.connection.Protocol" title="O365.connection.Protocol"><em>Protocol</em></a>) – protocol to use if no parent specified
+(kwargs)</li>
+<li><strong>main_resource</strong> (<em>str</em>) – use this resource instead of parent resource
+(kwargs)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.sharepoint.SharepointList.get_items">
+<code class="descname">get_items</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/sharepoint.html#SharepointList.get_items"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.sharepoint.SharepointList.get_items" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a collection of Sharepoint Items</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">list[<a class="reference internal" href="#O365.sharepoint.SharepointListItem" title="O365.sharepoint.SharepointListItem">SharepointListItem</a>]</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.sharepoint.SharepointList.list_item_constructor">
+<code class="descname">list_item_constructor</code><a class="headerlink" href="#O365.sharepoint.SharepointList.list_item_constructor" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="#O365.sharepoint.SharepointListItem" title="O365.sharepoint.SharepointListItem"><code class="xref py py-class docutils literal notranslate"><span class="pre">SharepointListItem</span></code></a></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="O365.sharepoint.SharepointListItem">
+<em class="property">class </em><code class="descclassname">O365.sharepoint.</code><code class="descname">SharepointListItem</code><span class="sig-paren">(</span><em>*</em>, <em>parent=None</em>, <em>con=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/sharepoint.html#SharepointListItem"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.sharepoint.SharepointListItem" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.utils.utils.ApiComponent</span></code></a></p>
+<dl class="method">
+<dt id="O365.sharepoint.SharepointListItem.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>*</em>, <em>parent=None</em>, <em>con=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/sharepoint.html#SharepointListItem.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.sharepoint.SharepointListItem.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>A Sharepoint ListItem within a SharepointList</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>parent</strong> (<a class="reference internal" href="#O365.sharepoint.SharepointList" title="O365.sharepoint.SharepointList"><em>SharepointList</em></a>) – parent object</li>
+<li><strong>con</strong> (<a class="reference internal" href="connection.html#O365.connection.Connection" title="O365.connection.Connection"><em>Connection</em></a>) – connection to use if no parent specified</li>
+<li><strong>protocol</strong> (<a class="reference internal" href="connection.html#O365.connection.Protocol" title="O365.connection.Protocol"><em>Protocol</em></a>) – protocol to use if no parent specified
+(kwargs)</li>
+<li><strong>main_resource</strong> (<em>str</em>) – use this resource instead of parent resource
+(kwargs)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="O365.sharepoint.Site">
+<em class="property">class </em><code class="descclassname">O365.sharepoint.</code><code class="descname">Site</code><span class="sig-paren">(</span><em>*</em>, <em>parent=None</em>, <em>con=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/sharepoint.html#Site"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.sharepoint.Site" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.utils.utils.ApiComponent</span></code></a></p>
+<p>A Sharepoint Site</p>
+<dl class="method">
+<dt id="O365.sharepoint.Site.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>*</em>, <em>parent=None</em>, <em>con=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/sharepoint.html#Site.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.sharepoint.Site.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>A Sharepoint site List</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>parent</strong> (<a class="reference internal" href="#O365.sharepoint.Sharepoint" title="O365.sharepoint.Sharepoint"><em>Sharepoint</em></a>) – parent object</li>
+<li><strong>con</strong> (<a class="reference internal" href="connection.html#O365.connection.Connection" title="O365.connection.Connection"><em>Connection</em></a>) – connection to use if no parent specified</li>
+<li><strong>protocol</strong> (<a class="reference internal" href="connection.html#O365.connection.Protocol" title="O365.connection.Protocol"><em>Protocol</em></a>) – protocol to use if no parent specified
+(kwargs)</li>
+<li><strong>main_resource</strong> (<em>str</em>) – use this resource instead of parent resource
+(kwargs)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.sharepoint.Site.get_default_document_library">
+<code class="descname">get_default_document_library</code><span class="sig-paren">(</span><em>request_drive=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/sharepoint.html#Site.get_default_document_library"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.sharepoint.Site.get_default_document_library" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the default document library of this site (Drive instance)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>request_drive</strong> – True will make an api call to retrieve
+the drive data</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="drive.html#O365.drive.Drive" title="O365.drive.Drive">Drive</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.sharepoint.Site.get_document_library">
+<code class="descname">get_document_library</code><span class="sig-paren">(</span><em>drive_id</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/sharepoint.html#Site.get_document_library"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.sharepoint.Site.get_document_library" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a Document Library (a Drive instance)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>drive_id</strong> – the drive_id to be retrieved.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="drive.html#O365.drive.Drive" title="O365.drive.Drive">Drive</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.sharepoint.Site.get_lists">
+<code class="descname">get_lists</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/sharepoint.html#Site.get_lists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.sharepoint.Site.get_lists" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a collection of lists within this site</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">list[<a class="reference internal" href="#O365.sharepoint.SharepointList" title="O365.sharepoint.SharepointList">SharepointList</a>]</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.sharepoint.Site.get_subsites">
+<code class="descname">get_subsites</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/sharepoint.html#Site.get_subsites"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.sharepoint.Site.get_subsites" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of subsites defined for this site</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">list[<a class="reference internal" href="#O365.sharepoint.Site" title="O365.sharepoint.Site">Site</a>]</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.sharepoint.Site.list_constructor">
+<code class="descname">list_constructor</code><a class="headerlink" href="#O365.sharepoint.Site.list_constructor" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="#O365.sharepoint.SharepointList" title="O365.sharepoint.SharepointList"><code class="xref py py-class docutils literal notranslate"><span class="pre">SharepointList</span></code></a></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.sharepoint.Site.list_document_libraries">
+<code class="descname">list_document_libraries</code><span class="sig-paren">(</span><em>limit=None</em>, <em>*</em>, <em>query=None</em>, <em>order_by=None</em>, <em>batch=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/sharepoint.html#Site.list_document_libraries"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.sharepoint.Site.list_document_libraries" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a collection of document libraries for this site
+(a collection of Drive instances)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>limit</strong> (<em>int</em>) – max no. of items to get. Over 999 uses batch.</li>
+<li><strong>query</strong> (<a class="reference internal" href="utils.html#O365.utils.utils.Query" title="O365.utils.utils.Query"><em>Query</em></a><em> or </em><em>str</em>) – applies a OData filter to the request</li>
+<li><strong>order_by</strong> (<a class="reference internal" href="utils.html#O365.utils.utils.Query" title="O365.utils.utils.Query"><em>Query</em></a><em> or </em><em>str</em>) – orders the result set based on this condition</li>
+<li><strong>batch</strong> (<em>int</em>) – batch size, retrieves items in
+batches allowing to retrieve more items than the limit.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">list of items in this folder</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">list[<a class="reference internal" href="drive.html#O365.drive.Drive" title="O365.drive.Drive">Drive</a>] or <a class="reference internal" href="utils.html#O365.utils.utils.Pagination" title="O365.utils.utils.Pagination">Pagination</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="utils.html" class="btn btn-neutral float-right" title="Utils" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="message.html" class="btn btn-neutral" title="Message" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Narcolapser
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

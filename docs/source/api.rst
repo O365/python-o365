@@ -7,4 +7,12 @@ O365 API
    :caption: Contents:
 
    api/account
+   api/address_book
+   api/attachment
+   api/calendar
    api/connection
+   api/drive
+   api/mailbox
+   api/message
+   api/sharepoint
+   api/utils

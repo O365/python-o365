@@ -1,14 +1,15 @@
 # O365 - Microsoft Graph and Office 365 API made easy
 
-This project aims is to make it easy to interact with Microsoft Graph and Office 365 Email, Contacts, Calendar, OneDrive, etc.
 
-This project is inspired on the super work done by [Toben Archer](https://github.com/Narcolapser) [Python-O365](https://github.com/Narcolapser/python-o365).
-The oauth part is based on the work done by [Royce Melborn](https://github.com/roycem90) which is now integrated with the original project.
+> API Documentation is available [here](https://o365.github.io/python-o365/latest/html/api.html)
 
-I just want to make this project different in almost every sense, and make it also more pythonic.
-So I ended up rewriting the whole project from scratch.
+> Detailed usage documentation is still in progress
 
-The result is a package that provides a lot of the Microsoft Graph and Office 365 API capabilities.
+This project aims is to make interact with Microsoft Graph and Office 365 easy to do in a Pythonic way. 
+Access to Email, Calendar, Contacts, OneDrive, etc. Are easy to do in a way that feel easy and straight forward to beginners and feels just right to seasoned python programmer.
+
+The project is currently developed and maintained by [Toben Archer](https://github.com/Narcolapser), [Royce Melborn](https://github.com/roycem90) and [Janscas](https://github.com/janscas), but we are always open to new pull requests.
+
 
 This is for example how you send a message:
 
@@ -38,9 +39,7 @@ m.send()
 
 ___
 
-**Python 3.4 is the minimum required**... I was very tempted to just go for 3.6 and use f-strings. Those are fantastic!
-
-This project was also a learning resource for me. This is a list of not so common python characteristics used in this project:
+This project was also a learning resource for us. This is a list of not so common python idioms used in this project:
 - New unpacking technics: `def method(argument, *, with_name=None, **other_params):`
 - Enums: `from enum import Enum`
 - Factory paradigm
@@ -48,10 +47,8 @@ This project was also a learning resource for me. This is a list of not so commo
 - Timezone conversion and timezone aware datetimes
 - Etc. (see the code!)
 
-> **This project is in early development.** Changes that can break your code may be commited. If you want to help please feel free to fork and make pull requests.
 
-
-What follows is kind of a wiki... but you will get more insights by looking at the code.
+What follows is kind of a wiki... but you will get more insights by looking at the [docs](https://o365.github.io/python-o365/latest/html/api.html) or deep into the code.
 
 ## Table of contents
 
@@ -69,6 +66,8 @@ What follows is kind of a wiki... but you will get more insights by looking at t
 
 ## Install
 O365 is available on pypi.org. Simply run `pip install O365` to install it.
+
+Requirements: >= Python 3.4
 
 Project dependencies installed by pip:
  - requests

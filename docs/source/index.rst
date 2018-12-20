@@ -6,8 +6,8 @@ Welcome to O365's documentation!
    :caption: Contents:
 
    getting_started
-   api
    usage
+   api
 
 Indices and tables
 ==================
