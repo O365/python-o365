@@ -32,7 +32,7 @@ class Task(ApiComponent):
 
         self.object_id = cloud_data.get('id')
 
-        # Choose the main_resource passed in kwargs over parent main_resource
+           # Choose the main_resource passed in kwargs over parent main_resource
         main_resource = (kwargs.pop('main_resource', None) or
                          getattr(parent,
                                  'main_resource',
@@ -43,15 +43,36 @@ class Task(ApiComponent):
         super().__init__(
             protocol=parent.protocol if parent else kwargs.get('protocol'),
             main_resource=main_resource)
-        
-        self.object_id = cloud_data.get('id')
+
+        self.plan_id = cloud_data.get('plan_id')
+        self.bucket_id = cloud_data.get('bucketId')
+        self.title = cloud_data.get(self._cc('title'), '')
+        self.order_hint = cloud_data.get(self._cc('orderHint'), '')
+        self.assignee_priority = cloud_data.get(self._cc('assigneePriority'), '')
+        self.percent_complete = cloud_data.get(self._cc('percentComplete'), '')
+        self.title = cloud_data.get(self._cc('title'), '')
+        self.has_description = cloud_data.get(self._cc('hasDescription'), '')
+        created = cloud_data.get(self._cc('createdDateTime'), None)
+        due_date = cloud_data.get(self._cc('dueDateTime'), None)
+        start_date = cloud_data.get(self._cc('startDateTime'), None)
+        completed_date = cloud_data.get(self._cc('completedDateTime'), None)
+        local_tz = self.protocol.timezone
+        self.start_date = parse(start_date).astimezone(local_tz) if start_date else None
+        self.created_date = parse(created).astimezone(local_tz) if created else None
+        self.due_date = parse(due_date).astimezone(local_tz) if due_date else None
+        self.completed_date = parse(completed_date).astimezone(local_tz) if completed_date else None
+        self.preview_type = cloud_data.get(self._cc('previewType'), None)
+        self.reference_count = cloud_data.get(self._cc('referenceCount'), None)
+        self.checklist_item_count = cloud_data.get(self._cc('checklistItemCount'), None)
+        self.active_checklist_item_count = cloud_data.get(self._cc('activeChecklistItemCount'), None)
+        self.conversation_thread_id = cloud_data.get(self._cc('conversationThreadId'), None)
 
 
     def __str__(self):
         return self.__repr__()
 
     def __repr__(self):
-        return 'Task: {}'.format(self.object_id)
+        return 'Task: {}'.format(self.title)
 
       
 
