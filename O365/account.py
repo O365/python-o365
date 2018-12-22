@@ -6,6 +6,7 @@ from O365.drive import Storage
 from O365.mailbox import MailBox
 from O365.message import Message
 from O365.sharepoint import Sharepoint
+from O365.planner import Planner
 from O365.utils import ME_RESOURCE
 
 
@@ -153,3 +154,13 @@ class Account(object):
                 'Sharepoint api only works on Microsoft Graph API')
 
         return Sharepoint(parent=self, main_resource=resource)
+
+    def planner(self, *, resource=''):
+        """ Get an instance to read information from Microsoft planner """
+        
+        if not isinstance(self.protocol , MSGraphProtocol):
+             # TODO: Custom protocol accessing OneDrive/Sharepoint Api fails here
+            raise RuntimeError(
+                'planner api only works on Microsoft Graph API')
+
+        return Planner(parent=self, main_resource=resource)
