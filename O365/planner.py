@@ -18,7 +18,7 @@ class Task(ApiComponent):
         """ A Microsoft planner task
 
         :param parent: parent object
-        :type parent: Sharepoint
+        :type parent: Planner
         :param Connection con: connection to use if no parent specified
         :param Protocol protocol: protocol to use if no parent specified
          (kwargs)
@@ -77,7 +77,10 @@ class Task(ApiComponent):
       
 
 class Planner(ApiComponent):
-    """ A microsoft planner class """
+    """ A microsoft planner class 
+        In order to use the API following permissions are required.
+        Delegated (work or school account) - Group.Read.All, Group.ReadWrite.All 
+    """
 
     _endpoints = {
         'get_my_tasks': '/me/planner/tasks',
@@ -120,6 +123,7 @@ class Planner(ApiComponent):
         url = self.build_url(self._endpoints.get('get_my_tasks'))
 
         response = self.con.get(url)
+
         if not response:
             return None
 
