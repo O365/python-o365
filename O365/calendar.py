@@ -508,8 +508,12 @@ class ResponseStatus(ApiComponent):
         if self.status:
             self.response_time = response_status.get(self._cc('time'), None)
             if self.response_time:
-                self.response_time = parse(self.response_time).astimezone(
-                    self.protocol.timezone)
+                try:
+                    self.response_time = parse(self.response_time).astimezone(
+                        self.protocol.timezone)
+                except OverflowError:
+                    log.error("Couldn't parse event response time: {}".format(self.response_time))
+                    self.response_time = None
         else:
             self.response_time = None
 
