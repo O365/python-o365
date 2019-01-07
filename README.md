@@ -498,17 +498,18 @@ import datetime as dt
 # ...
 schedule = account.schedule()
 
-new_event = schedule.new_event()  # creates a new event in the user default calendar
+calendar = schedule.get_default_calendar()
+new_event = calendar.new_event()  # creates a new unsaved event 
 new_event.subject = 'Recruit George Best!'
 new_event.location = 'England'
 
 # naive datetimes will automatically be converted to timezone aware datetime
 #  objects using the local timezone detected or the protocol provided timezone
 
-new_event.start = dt.datetime(2018, 9, 5, 19, 45) 
+new_event.start = dt.datetime(2019, 9, 5, 19, 45) 
 # so new_event.start becomes: datetime.datetime(2018, 9, 5, 19, 45, tzinfo=<DstTzInfo 'Europe/Paris' CEST+2:00:00 DST>)
 
-new_event.recurrence.set_daily(1, end=dt.datetime(2018, 9, 10))
+new_event.recurrence.set_daily(1, end=dt.datetime(2019, 9, 10))
 new_event.remind_before_minutes = 45
 
 new_event.save()
