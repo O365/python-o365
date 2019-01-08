@@ -16,7 +16,7 @@ from requests_oauthlib import OAuth2Session
 from stringcase import pascalcase, camelcase, snakecase
 from tzlocal import get_localzone
 
-from O365.utils import ME_RESOURCE
+from .utils import ME_RESOURCE
 
 log = logging.getLogger(__name__)
 

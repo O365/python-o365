@@ -1,13 +1,13 @@
-from O365.address_book import AddressBook, GlobalAddressList
-from O365.calendar import Schedule
-from O365.connection import Connection, Protocol, MSGraphProtocol
-from O365.connection import oauth_authentication_flow
-from O365.drive import Storage
-from O365.mailbox import MailBox
-from O365.message import Message
-from O365.sharepoint import Sharepoint
-from O365.planner import Planner
-from O365.utils import ME_RESOURCE
+from .address_book import AddressBook, GlobalAddressList
+from .calendar import Schedule
+from .connection import Connection, Protocol, MSGraphProtocol
+from .connection import oauth_authentication_flow
+from .drive import Storage
+from .mailbox import MailBox
+from .message import Message
+from .sharepoint import Sharepoint
+from .planner import Planner
+from .utils import ME_RESOURCE
 
 
 class Account(object):

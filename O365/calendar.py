@@ -8,11 +8,11 @@ import pytz
 from bs4 import BeautifulSoup as bs
 from dateutil.parser import parse
 
-from O365.message import HandleRecipientsMixin
-from O365.utils import AttachableMixin, ImportanceLevel, TrackerSet
-from O365.utils import BaseAttachments, BaseAttachment
-from O365.utils import Pagination, NEXT_LINK_KEYWORD, ApiComponent
-from O365.utils.windows_tz import get_iana_tz, get_windows_tz
+from .message import HandleRecipientsMixin
+from .utils import AttachableMixin, ImportanceLevel, TrackerSet
+from .utils import BaseAttachments, BaseAttachment
+from .utils import Pagination, NEXT_LINK_KEYWORD, ApiComponent
+from .utils.windows_tz import get_iana_tz, get_windows_tz
 
 log = logging.getLogger(__name__)
 

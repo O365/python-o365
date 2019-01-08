@@ -2,7 +2,7 @@ import base64
 import logging
 from pathlib import Path
 
-from O365.utils.utils import ApiComponent
+from .utils import ApiComponent
 
 log = logging.getLogger(__name__)
 

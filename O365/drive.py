@@ -6,8 +6,8 @@ from urllib.parse import urlparse
 
 from dateutil.parser import parse
 
-from O365.address_book import Contact
-from O365.utils import ApiComponent, Pagination, NEXT_LINK_KEYWORD, \
+from .address_book import Contact
+from .utils import ApiComponent, Pagination, NEXT_LINK_KEYWORD, \
     OneDriveWellKnowFolderNames
 
 log = logging.getLogger(__name__)

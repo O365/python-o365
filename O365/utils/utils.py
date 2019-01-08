@@ -5,7 +5,7 @@ from enum import Enum
 
 import pytz
 
-from O365.utils.decorators import fluent
+from .decorators import fluent
 
 ME_RESOURCE = 'me'
 USERS_RESOURCE = 'users'
