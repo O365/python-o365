@@ -4,9 +4,9 @@ from enum import Enum
 
 from dateutil.parser import parse
 
-from O365.message import Recipients, Message
-from O365.utils import AttachableMixin, TrackerSet
-from O365.utils import Pagination, NEXT_LINK_KEYWORD, ApiComponent
+from .message import Recipients, Message
+from .utils import AttachableMixin, TrackerSet
+from .utils import Pagination, NEXT_LINK_KEYWORD, ApiComponent
 
 GAL_MAIN_RESOURCE = 'users'
 

@@ -2,9 +2,9 @@ import logging
 
 from dateutil.parser import parse
 
-from O365.address_book import Contact
-from O365.drive import Storage
-from O365.utils import ApiComponent
+from .address_book import Contact
+from .drive import Storage
+from .utils import ApiComponent
 
 log = logging.getLogger(__name__)
 
