@@ -269,7 +269,7 @@ class Query:
         self._chain = None
         self.new(attribute)
         self._negation = False
-        self._filters = []
+        self._filters = []  # store all the filters
         self._order_by = OrderedDict()
         self._selects = set()
 
@@ -475,12 +475,33 @@ class Query:
         self._attribute = self._get_mapping(attribute)
         return self
 
-    def _add_filter(self, filter_str):
+    def remove_filter(self, filter_attr):
+        """ Removes a filter given the attribute name """
+        filter_attr = self._get_mapping(filter_attr)
+        new_filters = []
+        remove_chain = False
+
+        for flt in self._filters:
+            if isinstance(flt, tuple):
+                if flt[0] == filter_attr:
+                    remove_chain = True
+                else:
+                    new_filters.append(flt)
+            else:
+                # this is a ChainOperator
+                if remove_chain is False:
+                    new_filters.append(flt)
+                else:
+                    remove_chain = False
+
+        self._filters = new_filters
+
+    def _add_filter(self, *filter_data):
         if self._attribute:
             if self._filters and not isinstance(self._filters[-1],
                                                 ChainOperator):
                 self._filters.append(self._chain)
-            self._filters.append((self._attribute, filter_str))
+            self._filters.append((self._attribute, filter_data[0], filter_data[1]))
         else:
             raise ValueError(
                 'Attribute property needed. call on_attribute(attribute) '
@@ -501,11 +522,11 @@ class Query:
                         pytz.utc)  # transform local datetime to utc
             if '/' in self._attribute:
                 # TODO: this is a fix for the case when the parameter
-                # filtered is a string instead a dateTimeOffset
+                #  filtered is a string instead a dateTimeOffset
                 #  but checking the '/' is not correct, but it will
-                # differentiate for now the case on events:
+                #  differentiate for now the case on events:
                 #  start/dateTime (date is a string here) from
-                # the case on other dates such as
+                #  the case on other dates such as
                 #  receivedDateTime (date is a dateTimeOffset)
                 word = "'{}'".format(
                     word.isoformat())  # convert datetime to isoformat.
@@ -518,8 +539,9 @@ class Query:
 
     @staticmethod
     def _prepare_sentence(attribute, operation, word, negation=False):
-        return '{} {} {} {}'.format('not' if negation else '', attribute,
-                                    operation, word).strip()
+        negation = 'not' if negation else ''
+        attrs = (negation, attribute, operation, word)
+        return '{} {} {} {}'.format(negation, attribute, operation, word).strip(), attrs
 
     @fluent
     def logical_operator(self, operation, word):
@@ -532,7 +554,7 @@ class Query:
         """
         word = self._parse_filter_word(word)
         self._add_filter(
-            self._prepare_sentence(self._attribute, operation, word,
+            *self._prepare_sentence(self._attribute, operation, word,
                                    self._negation))
         return self
 
@@ -592,8 +614,9 @@ class Query:
 
     @staticmethod
     def _prepare_function(function_name, attribute, word, negation=False):
-        return "{} {}({}, {})".format('not' if negation else '', function_name,
-                                      attribute, word).strip()
+        negation = 'not' if negation else ''
+        attrs = (negation, attribute, function_name, word)
+        return "{} {}({}, {})".format(negation, function_name, attribute, word).strip(), attrs
 
     @fluent
     def function(self, function_name, word):
@@ -606,7 +629,7 @@ class Query:
         word = self._parse_filter_word(word)
 
         self._add_filter(
-            self._prepare_function(function_name, self._attribute, word,
+            *self._prepare_function(function_name, self._attribute, word,
                                    self._negation))
         return self
 
@@ -679,8 +702,10 @@ class Query:
         else:
             sentence = self._prepare_sentence(attribute, operation, word)
 
-        self._add_filter(
-            '{}/{}(a:a/{})'.format(collection, iterable_name, sentence))
+        filter_str, attrs = sentence
+
+        filter_data = '{}/{}(a:a/{})'.format(collection, iterable_name, filter_str), attrs
+        self._add_filter(*filter_data)
 
         self._attribute = current_att
 

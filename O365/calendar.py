@@ -1490,7 +1490,10 @@ class Calendar(ApiComponent, HandleRecipientsMixin):
     _endpoints = {
         'calendar': '/calendars/{id}',
         'get_events': '/calendars/{id}/events',
-        'get_event': '/calendars/{id}/events/{ide}'
+        'default_events': '/calendar/events',
+        'events_view': '/calendars/{id}/calendarView',
+        'default_events_view': '/calendar/calendarView',
+        'get_event': '/calendars/{id}/events/{ide}',
     }
     event_constructor = Event
 
@@ -1592,8 +1595,8 @@ class Calendar(ApiComponent, HandleRecipientsMixin):
         return True
 
     def get_events(self, limit=25, *, query=None, order_by=None, batch=None,
-                   download_attachments=False):
-        """ Get events from the default Calendar
+                   download_attachments=False, include_recurring=True):
+        """ Get events from the this Calendar
 
         :param int limit: max no. of events to get. Over 999 uses batch.
         :param query: applies a OData filter to the request
@@ -1603,12 +1606,24 @@ class Calendar(ApiComponent, HandleRecipientsMixin):
         :param int batch: batch size, retrieves items in
          batches allowing to retrieve more items than the limit.
         :param download_attachments: downloads event attachments
+        :param bool include_recurring: whether to include recurring events or not
         :return: list of events in this calendar
         :rtype: list[Event] or Pagination
         """
 
-        url = self.build_url(
-            self._endpoints.get('get_events').format(id=self.calendar_id))
+        if self.calendar_id is None:
+            # I'm the default calendar
+            if include_recurring:
+                url = self.build_url(self._endpoints.get('default_events_view'))
+            else:
+                url = self.build_url(self._endpoints.get('default_events'))
+        else:
+            if include_recurring:
+                url = self.build_url(
+                    self._endpoints.get('events_view').format(id=self.calendar_id))
+            else:
+                url = self.build_url(
+                    self._endpoints.get('get_events').format(id=self.calendar_id))
 
         if limit is None or limit > self.protocol.max_top_value:
             batch = self.protocol.max_top_value
@@ -1617,6 +1632,33 @@ class Calendar(ApiComponent, HandleRecipientsMixin):
             download_attachments = False
 
         params = {'$top': batch if batch else limit}
+
+        if include_recurring:
+            start = None
+            end = None
+            if query and not isinstance(query, str):
+                # extract start and end from query because
+                # those are required by a calendarView
+                for query_data in query._filters:
+                    if not isinstance(query_data, tuple):
+                        continue
+                    attribute = query_data[0]
+                    # the 2nd position contains the filter data
+                    # and the 3rd position in filter_data contains the value
+                    word = query_data[2][3]
+
+                    if attribute.startswith('start/'):
+                        start = word.replace("'", '')  # remove the quotes
+                        query.remove_filter('start')
+                    if attribute.startswith('end/'):
+                        end = word.replace("'", '')  # remove the quotes
+                        query.remove_filter('end')
+
+            if start is None or end is None:
+                raise ValueError("When 'include_recurring' is True you must provide a 'start' and 'end' datetimes inside a Query instance.")
+
+            params[self._cc('startDateTime')] = start
+            params[self._cc('endDateTime')] = end
 
         if order_by:
             params['$orderby'] = order_by
@@ -1699,7 +1741,6 @@ class Schedule(ApiComponent):
         'root_calendars': '/calendars',
         'get_calendar': '/calendars/{id}',
         'default_calendar': '/calendar',
-        'events': '/calendar/events'
     }
 
     calendar_constructor = Calendar
@@ -1855,7 +1896,7 @@ class Schedule(ApiComponent):
                                          **{self._cloud_data_key: data})
 
     def get_events(self, limit=25, *, query=None, order_by=None, batch=None,
-                   download_attachments=False):
+                   download_attachments=False, include_recurring=True):
         """ Get events from the default Calendar
 
         :param int limit: max no. of events to get. Over 999 uses batch.
@@ -1866,48 +1907,17 @@ class Schedule(ApiComponent):
         :param int batch: batch size, retrieves items in
          batches allowing to retrieve more items than the limit.
         :param bool download_attachments: downloads event attachments
+        :param bool include_recurring: whether to include recurring events or not
         :return: list of items in this folder
         :rtype: list[Event] or Pagination
         """
-        url = self.build_url(self._endpoints.get('events'))
 
-        if limit is None or limit > self.protocol.max_top_value:
-            batch = self.protocol.max_top_value
+        default_calendar = self.calendar_constructor(parent=self)
 
-        if batch:
-            download_attachments = False
-
-        params = {'$top': batch if batch else limit}
-
-        if order_by:
-            params['$orderby'] = order_by
-
-        if query:
-            if isinstance(query, str):
-                params['$filter'] = query
-            else:
-                params.update(query.as_params())
-
-        response = self.con.get(url, params=params,
-                                headers={'Prefer': 'outlook.timezone="UTC"'})
-        if not response:
-            return []
-
-        data = response.json()
-
-        # Everything received from cloud must be passed as self._cloud_data_key
-        events = [self.event_constructor(parent=self,
-                                         download_attachments
-                                         =download_attachments,
-                                         **{self._cloud_data_key: event})
-                  for event in data.get('value', [])]
-        next_link = data.get(NEXT_LINK_KEYWORD, None)
-        if batch and next_link:
-            return Pagination(parent=self, data=events,
-                              constructor=self.event_constructor,
-                              next_link=next_link, limit=limit)
-        else:
-            return events
+        return default_calendar.get_events(limit=limit, query=query,
+                                           order_by=order_by, batch=batch,
+                                           download_attachments=download_attachments,
+                                           include_recurring=include_recurring)
 
     def new_event(self, subject=None):
         """ Returns a new (unsaved) Event object in the default calendar
