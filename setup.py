@@ -2,6 +2,9 @@ import os
 
 from setuptools import setup, find_packages
 
+
+VERSION = '1.0.3'
+
 # Available classifiers: https://pypi.org/pypi?%3Aaction=list_classifiers
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',
@@ -37,7 +40,7 @@ requires = [
 
 setup(
     name='O365',
-    version='1.0.2',
+    version=VERSION,
     # packages=['O365', 'O365.utils'],
     packages=find_packages(),
     url='https://github.com/O365/python-o365',

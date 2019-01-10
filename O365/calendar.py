@@ -63,6 +63,13 @@ class CalendarColors(Enum):
     Auto = -1
 
 
+class EventType(Enum):
+    SingleInstance = 'singleInstance'  # a normal (non-recurring) event
+    Occurrence = 'occurrence'  # all the other recurring events that is not the first one (seriesMaster)
+    Exception = 'exception'  # ?
+    SeriesMaster = 'seriesMaster'  # the first recurring event of the series
+
+
 class EventAttachment(BaseAttachment):
     _endpoints = {'attach': '/events/{id}/attachments'}
 
@@ -773,7 +780,8 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         'calendar': '/calendars/{id}',
         'event': '/events/{id}',
         'event_default': '/calendar/events',
-        'event_calendar': '/calendars/{id}/events'
+        'event_calendar': '/calendars/{id}/events',
+        'occurrences': '/events/{id}/instances',
     }
 
     def __init__(self, *, parent=None, con=None, **kwargs):
@@ -895,7 +903,7 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
             cloud_data.get(cc('sensitivity'), 'normal'))
         self.series_master_id = cloud_data.get(cc('seriesMasterId'), None)
         self.__show_as = EventShowAs(cloud_data.get(cc('showAs'), 'busy'))
-        self.event_type = cloud_data.get(cc('type'), None)
+        self.__event_type = EventType(cloud_data.get(cc('type'), 'singleInstance'))
 
     def __str__(self):
         return self.__repr__()
@@ -904,7 +912,8 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         if self.start.date() == self.end.date():
             return 'Subject: {} (on: {} from: {} to: {})'.format(self.subject, self.start.date(), self.start.time(), self.end.time())
         else:
-            return 'Subject: {} (starts: {} {} and ends: {} {})'.format(self.subject, self.start.date(), self.start.time(), self.end.date(), self.end.time())
+            return 'Subject: {} (starts: {} {} and ends: {} {})'.format(self.subject, self.start.date(), self.start.time(), self.end.date(),
+                                                                        self.end.time())
 
     def to_api_data(self, restrict_keys=None):
         """ Returns a dict to communicate with the server
@@ -1256,6 +1265,81 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         else:
             raise ValueError('categories must be a list')
         self._track_changes.add(self._cc('categories'))
+
+    @property
+    def event_type(self):
+        return self.__event_type
+
+    def get_occurrences(self, start, end, *, limit=None, query=None, order_by=None, batch=None):
+        """
+        Returns all the occurrences of a seriesMaster event for a specified time range.
+        :type start: datetime
+        :param start: the start of the time range
+        :type end: datetime
+        :param end: the end of the time range
+        :param int limit: ax no. of events to get. Over 999 uses batch.
+        :type query: Query or str
+        :param query: optional. extra filters or ordes to apply to this query
+        :type order_by: str
+        :param order_by: orders the result set based on this condition
+        :param int batch: batch size, retrieves items in
+             batches allowing to retrieve more items than the limit.
+        :return: a list of events
+        :rtype: list[Event] or Pagination
+        """
+        if self.event_type != EventType.SeriesMaster:
+            # you can only get occurrences if its a seriesMaster
+            return []
+
+        url = self.build_url(
+            self._endpoints.get('occurrences').format(id=self.object_id))
+
+        if limit is None or limit > self.protocol.max_top_value:
+            batch = self.protocol.max_top_value
+
+        params = {'$top': batch if batch else limit}
+
+        if order_by:
+            params['$orderby'] = order_by
+
+        if query:
+            if isinstance(query, str):
+                params['$filter'] = query
+            else:
+                params.update(query.as_params())
+
+        if start.tzinfo is None:
+            # if it's a naive datetime, localize the datetime.
+            start = self.protocol.timezone.localize(start)  # localize datetime into local tz
+        if start.tzinfo != pytz.utc:
+            start = start.astimezone(pytz.utc)  # transform local datetime to utc
+
+        if end.tzinfo is None:
+            # if it's a naive datetime, localize the datetime.
+            end = self.protocol.timezone.localize(end)  # localize datetime into local tz
+        if end.tzinfo != pytz.utc:
+            end = end.astimezone(pytz.utc)  # transform local datetime to utc
+
+        params[self._cc('startDateTime')] = start.isoformat()
+        params[self._cc('endDateTime')] = end.isoformat()
+
+        response = self.con.get(url, params=params,
+                                headers={'Prefer': 'outlook.timezone="UTC"'})
+        if not response:
+            return []
+
+        data = response.json()
+
+        # Everything received from cloud must be passed as self._cloud_data_key
+        events = [self.__class__(parent=self, **{self._cloud_data_key: event})
+                  for event in data.get('value', [])]
+        next_link = data.get(NEXT_LINK_KEYWORD, None)
+        if batch and next_link:
+            return Pagination(parent=self, data=events,
+                              constructor=self.__class__,
+                              next_link=next_link, limit=limit)
+        else:
+            return events
 
     def delete(self):
         """ Deletes a stored event
