@@ -1,12 +1,10 @@
 import logging
 
 from dateutil.parser import parse
-
-from .address_book import Contact
-from .drive import Storage
 from .utils import ApiComponent
 
 log = logging.getLogger(__name__)
+
 
 class Task(ApiComponent):
     """ A Microsoft Planner task """
@@ -32,7 +30,7 @@ class Task(ApiComponent):
 
         self.object_id = cloud_data.get('id')
 
-           # Choose the main_resource passed in kwargs over parent main_resource
+        # Choose the main_resource passed in kwargs over parent main_resource
         main_resource = (kwargs.pop('main_resource', None) or
                          getattr(parent,
                                  'main_resource',
@@ -67,14 +65,12 @@ class Task(ApiComponent):
         self.active_checklist_item_count = cloud_data.get(self._cc('activeChecklistItemCount'), None)
         self.conversation_thread_id = cloud_data.get(self._cc('conversationThreadId'), None)
 
-
     def __str__(self):
         return self.__repr__()
 
     def __repr__(self):
         return 'Task: {}'.format(self.title)
 
-      
 
 class Planner(ApiComponent):
     """ A microsoft planner class 
@@ -132,4 +128,3 @@ class Planner(ApiComponent):
         return [
             self.task_constructor(parent=self, **{self._cloud_data_key: site})
             for site in data.get('value', [])]
-

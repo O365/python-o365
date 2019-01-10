@@ -8,6 +8,7 @@ from .utils import ApiComponent
 
 log = logging.getLogger(__name__)
 
+
 class SharepointListColumn(ApiComponent):
     """ A Sharepoint List column within a SharepointList """
 
@@ -27,43 +28,43 @@ class SharepointListColumn(ApiComponent):
         self.object_id = cloud_data.get('id')
         self.column_group = cloud_data.get(self._cc('columnGroup'), None)
         self.description = cloud_data.get(self._cc('description'), None)
-        self.display_name = cloud_data.get(self._cc('displayName'), None) 
+        self.display_name = cloud_data.get(self._cc('displayName'), None)
         self.enforce_unique_values = cloud_data.get(self._cc('enforceUniqueValues'), None)
         self.hidden = cloud_data.get(self._cc('hidden'), None)
-        self.indexed = cloud_data.get(self._cc('indexed'), None) 
-        self.internal_name = cloud_data.get(self._cc('name'), None) 
-        self.read_only = cloud_data.get(self._cc('readOnly'), None) 
-        self.required = cloud_data.get(self._cc('required'), None) 
+        self.indexed = cloud_data.get(self._cc('indexed'), None)
+        self.internal_name = cloud_data.get(self._cc('name'), None)
+        self.read_only = cloud_data.get(self._cc('readOnly'), None)
+        self.required = cloud_data.get(self._cc('required'), None)
 
         # identify the sharepoint column type and set it - Graph api doesn't return the type for managed metadata and link column
-        if(cloud_data.get(self._cc('text'), None) != None):
+        if cloud_data.get(self._cc('text'), None) is not None:
             self.field_type = 'text'
-        elif(cloud_data.get(self._cc('choice'), None) != None):
+        elif cloud_data.get(self._cc('choice'), None) is not None:
             self.field_type = 'choice'
-        elif(cloud_data.get(self._cc('number'), None) != None):
+        elif cloud_data.get(self._cc('number'), None) is not None:
             self.field_type = 'number'
-        elif(cloud_data.get(self._cc('currency'), None) != None):
+        elif cloud_data.get(self._cc('currency'), None) is not None:
             self.field_type = 'currency'
-        elif(cloud_data.get(self._cc('dateTime'), None) != None):
+        elif cloud_data.get(self._cc('dateTime'), None) is not None:
             self.field_type = 'dateTime'
-        elif(cloud_data.get(self._cc('lookup'), None) != None):
+        elif cloud_data.get(self._cc('lookup'), None) is not None:
             self.field_type = 'lookup'
-        elif(cloud_data.get(self._cc('boolean'), None) != None):
+        elif cloud_data.get(self._cc('boolean'), None) is not None:
             self.field_type = 'boolean'
-        elif(cloud_data.get(self._cc('calculated'), None) != None):
+        elif cloud_data.get(self._cc('calculated'), None) is not None:
             self.field_type = 'calculated'
-        elif(cloud_data.get(self._cc('personOrGroup'), None) != None):
+        elif cloud_data.get(self._cc('personOrGroup'), None) is not None:
             self.field_type = 'personOrGroup'
         else:
             self.field_type = None
 
-    def __repr__(self) :
-        return 'List Column: {0}-{1}'.format(self.display_name,self.field_type)
+    def __repr__(self):
+        return 'List Column: {0}-{1}'.format(self.display_name, self.field_type)
 
 
 class SharepointListItem(ApiComponent):
     _endpoints = {}
-    
+
     def __init__(self, *, parent=None, con=None, **kwargs):
         """ A Sharepoint ListItem within a SharepointList
 
@@ -105,19 +106,19 @@ class SharepointListItem(ApiComponent):
 
         self.web_url = cloud_data.get(self._cc('webUrl'))
 
-        self.content_type_id = cloud_data.get(self._cc('contentType')).get('id',None)
+        self.content_type_id = cloud_data.get(self._cc('contentType')).get('id', None)
 
-        self.fields =  cloud_data.get(self._cc('fields'), None)        
+        self.fields = cloud_data.get(self._cc('fields'), None)
 
-    def __repr__(self) :
+    def __repr__(self):
         return 'List Item: {}'.format(self.web_url)
 
 
 class SharepointList(ApiComponent):
     _endpoints = {
         'get_items': '/items',
-        'get_item_by_id':'/items/{item_id}',
-        'get_list_columns':'/columns'
+        'get_item_by_id': '/items/{item_id}',
+        'get_list_columns': '/columns'
     }
     list_item_constructor = SharepointListItem
     list_column_constructor = SharepointListColumn
@@ -203,7 +204,7 @@ class SharepointList(ApiComponent):
                                            **{self._cloud_data_key: item})
                 for item in data.get('value', [])]
 
-    def get_item_by_id(self,item_id):
+    def get_item_by_id(self, item_id):
         """ Returns a sharepoint list item based on id"""
 
         url = self.build_url(self._endpoints.get('get_item_by_id').format(item_id=item_id))
@@ -230,7 +231,7 @@ class SharepointList(ApiComponent):
         data = response.json()
 
         return [self.list_column_constructor(parent=self, **{self._cloud_data_key: column})
-                for column in data.get('value',[])]
+                for column in data.get('value', [])]
 
 
 class Site(ApiComponent):
@@ -239,7 +240,7 @@ class Site(ApiComponent):
     _endpoints = {
         'get_subsites': '/sites',
         'get_lists': '/lists',
-        'get_list_by_name':'/lists/{display_name}'
+        'get_list_by_name': '/lists/{display_name}'
     }
     list_constructor = SharepointList
 
@@ -368,13 +369,12 @@ class Site(ApiComponent):
 
         data = response.json()
 
-
         return [self.list_constructor(parent=self, **{self._cloud_data_key: lst}) for lst in data.get('value', [])]
-    
-    def get_list_by_name(self,display_name):
+
+    def get_list_by_name(self, display_name):
         """ Returns a sharepoint list based on the display name of the list 
         """
-        
+
         if not display_name:
             raise ValueError('Must provide a valid list display name')
 
@@ -385,11 +385,11 @@ class Site(ApiComponent):
             return []
 
         data = response.json()
-        
+
         return [
             self.list_constructor(parent=self, **{self._cloud_data_key: lst})
             for lst in data.get('value', [])]
-      
+
 
 class Sharepoint(ApiComponent):
     """ A Sharepoint parent class to group functionality """
