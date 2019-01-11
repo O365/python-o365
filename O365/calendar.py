@@ -1713,18 +1713,20 @@ class Calendar(ApiComponent, HandleRecipientsMixin):
                 self._endpoints.get('get_event').format(id=self.calendar_id,
                                                         ide=param))
             params = None
+            by_id = True
         else:
             url = self.build_url(
                 self._endpoints.get('get_events').format(id=self.calendar_id))
             params = {'$top': 1}
             params.update(param.as_params())
+            by_id = False
 
         response = self.con.get(url, params=params,
                                 headers={'Prefer': 'outlook.timezone="UTC"'})
         if not response:
             return None
 
-        if isinstance(param, str):
+        if by_id:
             event = response.json()
         else:
             event = response.json().get('value', [])
