@@ -420,7 +420,7 @@ class Connection:
             raise RuntimeError("Fist call 'get_authorization_url' to "
                                "generate a valid oauth object")
 
-        client_id, client_secret = self.auth
+        _, client_secret = self.auth
 
         # Allow token scope to not match requested scope.
         # (Other auth libraries allow this, but Requests-OAuthlib
@@ -432,7 +432,7 @@ class Connection:
             self.token = self.session.fetch_token(
                 token_url=self._oauth2_token_url,
                 authorization_response=authorization_url,
-                client_id=client_id,
+                include_client_id=True,
                 client_secret=client_secret)
         except Exception as e:
             log.error('Unable to fetch auth token. Error: {}'.format(str(e)))
