@@ -173,9 +173,6 @@ class Folder(ApiComponent):
         if limit is None or limit > self.protocol.max_top_value:
             batch = self.protocol.max_top_value
 
-        if batch:
-            download_attachments = False
-
         params = {'$top': batch if batch else limit}
 
         if order_by:
@@ -204,7 +201,8 @@ class Folder(ApiComponent):
         if batch and next_link:
             return Pagination(parent=self, data=messages,
                               constructor=self.message_constructor,
-                              next_link=next_link, limit=limit)
+                              next_link=next_link, limit=limit,
+                              download_attachments=download_attachments)
         else:
             return messages
 

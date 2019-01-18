@@ -145,7 +145,7 @@ class Pagination(ApiComponent):
     """ Utility class that allows batching requests to the server """
 
     def __init__(self, *, parent=None, data=None, constructor=None,
-                 next_link=None, limit=None):
+                 next_link=None, limit=None, **kwargs):
         """ Returns an iterator that returns data until it's exhausted.
         Then will request more data (same amount as the original request)
         to the server until this data is exhausted as well.
@@ -158,6 +158,8 @@ class Pagination(ApiComponent):
          It can be a function.
         :param str next_link: the link to request more data to
         :param int limit: when to stop retrieving more data
+        :param kwargs: any extra key-word arguments to pass to the
+         construtctor.
         """
         if parent is None:
             raise ValueError('Parent must be another Api Component')
@@ -180,12 +182,14 @@ class Pagination(ApiComponent):
             self.data_count = data_count
             self.total_count = data_count
         self.state = 0
+        self.extra_args = kwargs
 
     def __str__(self):
         return self.__repr__()
 
     def __repr__(self):
-        if callable(self.constructor):
+        if callable(self.constructor) and not isinstance(
+                self.constructor, type):
             return 'Pagination Iterator'
         else:
             return "'{}' Iterator".format(
@@ -222,10 +226,10 @@ class Pagination(ApiComponent):
             if callable(self.constructor) and not isinstance(self.constructor,
                                                              type):
                 self.data = [self.constructor(value)(parent=self.parent, **{
-                    self._cloud_data_key: value}) for value in data]
+                    self._cloud_data_key: value}, **self.extra_args) for value in data]
             else:
                 self.data = [self.constructor(parent=self.parent,
-                                              **{self._cloud_data_key: value})
+                                              **{self._cloud_data_key: value}, **self.extra_args)
                              for value in data]
         else:
             self.data = data
