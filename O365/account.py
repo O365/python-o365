@@ -157,9 +157,9 @@ class Account(object):
 
     def planner(self, *, resource=''):
         """ Get an instance to read information from Microsoft planner """
-        
-        if not isinstance(self.protocol , MSGraphProtocol):
-             # TODO: Custom protocol accessing OneDrive/Sharepoint Api fails here
+
+        if not isinstance(self.protocol, MSGraphProtocol):
+            # TODO: Custom protocol accessing OneDrive/Sharepoint Api fails here
             raise RuntimeError(
                 'planner api only works on Microsoft Graph API')
 

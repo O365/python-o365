@@ -152,7 +152,7 @@ class Protocol:
 
         scopes = set()
         for app_part in user_provided_scopes:
-            for scope in self._oauth_scopes.get(app_part, [app_part]):
+            for scope in self._oauth_scopes.get(app_part, [(app_part,)]):
                 scopes.add(self._prefix_scope(scope))
 
         return list(scopes)
