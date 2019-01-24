@@ -53,6 +53,7 @@ What follows is kind of a wiki... but you will get more insights by looking at t
 ## Table of contents
 
 - [Install](#install)
+- [Usage](#usage)
 - [Protocols](#protocols)
 - [Authentication](#authentication)
 - [Account Class and Modularity](#account)
@@ -61,6 +62,7 @@ What follows is kind of a wiki... but you will get more insights by looking at t
 - [Calendar](#calendar)
 - [OneDrive](#onedrive)
 - [Sharepoint](#sharepoint)
+- [Planner](#planner)
 - [Utils](#utils)
 
 
@@ -78,7 +80,136 @@ Project dependencies installed by pip:
  - tzlocal
  - pytz
  
- The first step to be able to work with this library is to register an application and retrieve the auth token. See [Authentication](#authentication).
+ 
+
+## Usage
+The first step to be able to work with this library is to register an application and retrieve the auth token. See [Authentication](#authentication).
+
+It is highly recommended to add the "offline_access" permission and request this scope when authenticating. Otherwise the library will only have access to the user resources for 1 hour. 
+
+With the access token retrieved and stored you will be able to perform api calls to the service.
+
+A common pattern to check for authentication and use the library is this one:
+
+```python
+scopes = ['my_required_scopes']
+
+account = Account(credentials)
+
+if not account.is_authenticated:  # will check if there is a token and if it has not expired
+    # ask fot a login
+    account.authenticate(scopes=scopes)
+
+# now we are autheticated
+# use the library from now on
+
+# ...
+```
+
+## Authentication
+You can only authenticate using oauth athentication as Microsoft deprecated basic oauth on November 1st 2018.
+
+- Oauth authentication: using an authentication token provided after user consent.
+
+The `Connection` Class handles the authentication.
+
+#### Oauth Authentication
+This section is explained using Microsoft Graph Protocol, almost the same applies to the Office 365 REST API.
+
+##### Authentication Flow
+1. To work with oauth you first need to register your application at [Microsoft Application Registration Portal](https://apps.dev.microsoft.com/).
+
+    1. Login at [Microsoft Application Registration Portal](https://apps.dev.microsoft.com/)
+    2. Create an app, note your app id (client_id)
+    3. Generate a new password (client_secret) under "Application Secrets" section
+    4. Under the "Platform" section, add a new Web platform and set "https://outlook.office365.com/owa/" as the redirect URL
+    5. Under "Microsoft Graph Permissions" section, add the delegated permissions you want (see scopes), as an example, to read and send emails use:
+        1. Mail.ReadWrite
+        2. Mail.Send
+        3. User.Read
+        4. It is highly recommended to add "offline_access" permission. If not you will have to re-authenticate every hour.
+
+2. Then you need to login for the first time to get the access token by consenting the application to access the resources it needs.
+    1. To authenticate (login) call `account.authenticate` and pass the scopes you want (the ones you previously added on the app registration portal).
+    
+        You can pass "protocol scopes" (like: "https://graph.microsoft.com/Calendars.ReadWrite") to the method or use "[scope helpers](https://github.com/O365/python-o365/blob/master/O365/connection.py#L33)" like ("message_all").
+        If you pass protocol scopes, then the `account` instance must be initialized with the same protocol used by the scopes. By using scope helpers you can abstract the protocol from the scopes and let this library work for you.   
+        Finally, you can mix and match "protocol scopes" with "scope helpers".
+        Go to the [procotol section]((#protocols)) to know more about them.
+        
+        For Example (following the previous permissions added):
+        ```python
+        # ...
+        account = Account(credentials)  # the default protocol will be Microsoft Graph
+        account.authenticate(scopes=['basic', 'message_all'])
+        ```
+        This method call will print a url that the user must visit to give consent to the app on the required permissions.
+        
+        The user must then visit this url and give consent to the application. When consent is given, the page will rediret to: "https://outlook.office365.com/owa/" by default.
+        
+        Then the user must copy the resulting page url and paste it back on the console.
+        The method will the return True if the login attempt was succesful.
+
+        **Take care: the access (and refresh) token must remain protected from unauthorized users.**
+
+    3. At this point you will have an access token stored that will provide valid credentials when using the api. If you change the scope requested, then the current token won't work, and you will need the user to give consent again on the application to gain access to the new scopes requested.
+
+    The access token only lasts **60 minutes**, but the app will automatically request new access tokens through the refresh tokens (if and only if you added the "offline_access" permission), but note that a refresh token only lasts for 90 days. So you must use it before or you will need to request a new access token again (no new consent needed by the user, just a login).
+    
+    If your application needs to work for more than 90 days without user interaction and without interacting with the API, then you must implement a periodic call to `Connection.refresh_token` before the 90 days have passed.
+    
+    Finally you can use other methods to authenticate that offer more flexibility. For example you can decouple the authentication steps to allow the users login within a webpage or whatever:
+    ```python
+    url = account.connection.get_authorization_url(requested_scopes=['scopes_required'])  # visit url
+    result_url = input('Paste the result url here...')  # wait for the user input
+    account.connection.request_token(result_url)  # This, if succesful, will store the token in a txt file on the user project folder.
+    ```
+    
+    or using `oauth_authentication_flow`:
+    
+    ```python
+    from O365 import oauth_authentication_flow
+    
+    result = oauth_authentication_flow('client_id', 'client_secret', ['scopes_required'])
+    ```
+
+
+##### Permissions and Scopes:
+When using oauth, you create an application and allow some resources to be accesed and used by it's users.
+Then the user can request access to one or more of this resources by providing scopes to the oauth provider.
+
+For example your application can have Calendar.Read, Mail.ReadWrite and Mail.Send permissions, but the application can request access only to the Mail.ReadWrite and Mail.Send permission.
+This is done by providing scopes to the `account.authenticate` method or to a `Connection` instance like so:
+```python
+from O365 import Connection
+
+credentials = ('client_id', 'client_secret')
+
+scopes = ['https://graph.microsoft.com/Mail.ReadWrite', 'https://graph.microsoft.com/Mail.Send']
+
+con = Connection(credentials, scopes=scopes)
+```
+
+Scope implementation depends on the protocol used. So by using protocol data you can automatically set the scopes needed:
+
+You can get the same scopes as before using protocols like this:
+
+```python
+protocol_graph = MSGraphProtocol()
+
+scopes_graph = protocol.get_scopes_for('message all')
+# scopes here are: ['https://graph.microsoft.com/Mail.ReadWrite', 'https://graph.microsoft.com/Mail.Send']
+
+protocol_office = MSOffice365Protocol()
+
+scopes_office = protocol.get_scopes_for('message all')
+# scopes here are: ['https://outlook.office.com/Mail.ReadWrite', 'https://outlook.office.com/Mail.Send']
+
+con = Connection(credentials, scopes=scopes_graph)
+```
+
+However all the protocol/scope stuff can be addressed automaticaly for you when using the `account.authenticate` method.
+
 
 ## Protocols
 Protocols handles the aspects of comunications between different APIs.
@@ -148,123 +279,14 @@ mailbox = account.mailbox('shared_mailbox@example.com')  # mailbox is using 'sha
 message = Message(parent=account, main_resource='shared_mailbox@example.com')  # message is using 'shared_mailbox@example.com' resource
 ```
 
-Usually you will work with the default 'ME' resuorce, but you can also use one of the following:
+Usually you will work with the default 'ME' resource, but you can also use one of the following:
 
 - **'me'**: the user which has given consent. the default for every protocol.
 - **'user:user@domain.com'**: a shared mailbox or a user account for which you have permissions. If you don't provide 'user:' will be infered anyways.
 - **'sharepoint:sharepoint-site-id'**: a sharepoint site id.
 - **'group:group-site-id'**: a office365 group id.  
 
-## Authentication
-You can only authenticate using oauth athentication as Microsoft deprecated basic oauth on November 1st 2018.
 
-- Oauth authentication: using an authentication token provided after user consent.
-
-The `Connection` Class handles the authentication.
-
-#### Oauth Authentication
-This section is explained using Microsoft Graph Protocol, almost the same applies to the Office 365 REST API.
-
-
-##### Permissions and Scopes:
-When using oauth you create an application and allow some resources to be accesed and used by it's users.
-Then the user can request access to one or more of this resources by providing scopes to the oauth provider.
-
-For example your application can have Calendar.Read, Mail.ReadWrite and Mail.Send permissions, but the application can request access only to the Mail.ReadWrite and Mail.Send permission.
-This is done by providing scopes to the connection object like so:
-```python
-from O365 import Connection
-
-credentials = ('client_id', 'client_secret')
-
-scopes = ['https://graph.microsoft.com/Mail.ReadWrite', 'https://graph.microsoft.com/Mail.Send']
-
-con = Connection(credentials, scopes=scopes)
-```
-
-Scope implementation depends on the protocol used. So by using protocol data you can automatically set the scopes needed:
-
-You can get the same scopes as before using protocols like this:
-
-```python
-protocol_graph = MSGraphProtocol()
-
-scopes_graph = protocol.get_scopes_for('message all')
-# scopes here are: ['https://graph.microsoft.com/Mail.ReadWrite', 'https://graph.microsoft.com/Mail.Send']
-
-protocol_office = MSOffice365Protocol()
-
-scopes_office = protocol.get_scopes_for('message all')
-# scopes here are: ['https://outlook.office.com/Mail.ReadWrite', 'https://outlook.office.com/Mail.Send']
-
-con = Connection(credentials, scopes=scopes_graph)
-```
-
-
-##### Authentication Flow
-1. To work with oauth you first need to register your application at [Microsoft Application Registration Portal](https://apps.dev.microsoft.com/).
-
-    1. Login at [Microsoft Application Registration Portal](https://apps.dev.microsoft.com/)
-    2. Create an app, note your app id (client_id)
-    3. Generate a new password (client_secret) under "Application Secrets" section
-    4. Under the "Platform" section, add a new Web platform and set "https://outlook.office365.com/owa/" as the redirect URL
-    5. Under "Microsoft Graph Permissions" section, add the delegated permissions you want (see scopes), as an example, to read and send emails use:
-        1. Mail.ReadWrite
-        2. Mail.Send
-        3. User.Read
-
-2. Then you need to login for the first time to get the access token by consenting the application to access the resources it needs.
-    1. First get the authorization url.
-        ```python
-        url = account.connection.get_authorization_url()
-        ```
-    2. The user must visit this url and give consent to the application. When consent is given, the page will rediret to: "https://outlook.office365.com/owa/".
-
-       Then the user must copy the resulting page url and give it to the connection object:
-
-        ```python
-        result_url = input('Paste the result url here...')
-
-        account.connection.request_token(result_url)  # This, if succesful, will store the token in a txt file on the user project folder.
-        ```
-
-        <span style="color:red">Take care, the access token must remain protected from unauthorized users.</span>
-
-    3. At this point you will have an access token that will provide valid credentials when using the api. If you change the scope requested, then the current token won't work, and you will need the user to give consent again on the application to gain access to the new scopes requested.
-
-    The access token only lasts 60 minutes, but the app will automatically request new tokens through the refresh tokens, but note that a refresh token only lasts for 90 days. So you must use it before or you will need to request a new access token again (no new consent needed by the user, just a login).
-    
-    If your application needs to work for more than 90 days without user interaction and without interacting with the API, then you must implement a periodic call to `Connection.refresh_token` before the 90 days have passed.
-
-
-##### Using O365 to authenticate
-
-You can manually authenticate by using a single `Connection` instance as described before or use the helper methods provided by the library.
-
-1. `account.authenticate`:
-    
-    This is the preferred way for performing authentication.
-    
-    Create an `Account` instance and authenticate using the `authenticate` method:
-    ```python
-    from O365 import Account
- 
-    account = Account(credentials=('client_id', 'client_secret'))
-    result = account.authenticate(scopes=['basic', 'message_all'])  # request a token for this scopes
- 
-    # this will ask to visit the app consent screen where the user will be asked to give consent on the requested scopes.
-    # then the user will have to provide the result url afeter consent. 
-    # if all goes as expected, result will be True and a token will be stored in the default location.
-    ```
-    
-2. `oauth_authentication_flow`:
-     
-    ```python
-    from O365 import oauth_authentication_flow
-    
-    result = oauth_authentication_flow('client_id', 'client_secret', ['scopes_required'])
-    ```
-    
 ## Account Class and Modularity <a name="account"></a>
 Usually you will only need to work with the `Account` Class. This is a wrapper around all functionality.
 
@@ -635,8 +657,12 @@ for version in versions:
 
 
 ## Sharepoint
-Work in progress
+The sharepoint api is done but there are no docs yet. Look at the sharepoint.py file to get insights.
 
+
+## Planner
+The planner api is done but there are no docs yet. Look at the sharepoint.py file to get insights.
+The planner functionality requires Administrator Permission.
 
 ## Utils
 
@@ -724,6 +750,7 @@ messages_with_selected_properties = mailbox.get_messages(query=query)
 Whenever a Request error raises, the connection object will raise an exception.
 Then the exception will be captured and logged it to the stdout with it's message, an return Falsy (None, False, [], etc...)
 
-HttpErrors 4xx (Bad Request) and 5xx (Internal Server Error) are considered exceptions and raised also by the connection (you can configure this on the connection).
+HttpErrors 4xx (Bad Request) and 5xx (Internal Server Error) are considered exceptions and raised also by the connection.
+You can tell the `Connection` to not raise http errors by passing `raise_http_errors=False` (defaults to True).
 
 #### Soli Deo Gloria
