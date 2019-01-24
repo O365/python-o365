@@ -43,19 +43,30 @@ class Account(object):
         else:
             return 'Unidentified Account'
 
+    @property
+    def is_authenticated(self):
+        """
+        Checks whether the library has the authentication and that is not expired
+        :return: True if authenticated, False otherwise
+        """
+        token = self.con.token_backend.token
+        if not token:
+            token = self.con.token_backend.get_token()
+
+        return token and not token.is_expired
+
     def authenticate(self, *, scopes, **kwargs):
         """ Performs the oauth authentication flow resulting in a stored token
         It uses the credentials passed on instantiation
 
         :param list[str] scopes: list of protocol user scopes to be converted
-         by the protocol
+         by the protocol or scope helpers
         :param kwargs: other configurations to be passed to the
          Connection instance
         :return: Success / Failure
         :rtype: bool
         """
-        kwargs.setdefault('token_file_name', self.con.token_path.name)
-
+        kwargs.setdefault('token_backend', self.con.token_backend)
         return oauth_authentication_flow(*self.con.auth, scopes=scopes,
                                          protocol=self.protocol, **kwargs)
 

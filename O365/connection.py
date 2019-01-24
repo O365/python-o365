@@ -2,6 +2,7 @@ import json
 import logging
 import os
 import time
+import warnings
 from pathlib import Path
 
 from oauthlib.oauth2 import TokenExpiredError
@@ -16,7 +17,7 @@ from requests_oauthlib import OAuth2Session
 from stringcase import pascalcase, camelcase, snakecase
 from tzlocal import get_localzone
 
-from .utils import ME_RESOURCE
+from .utils import ME_RESOURCE, BaseTokenBackend, FileSystemTokenBackend, Token
 
 log = logging.getLogger(__name__)
 
@@ -255,15 +256,13 @@ class Connection:
                             'oauth2/v2.0/authorize'
     _oauth2_token_url = 'https://login.microsoftonline.com/common/' \
                         'oauth2/v2.0/token'
-    _default_token_file = 'o365_token.txt'
-    _default_token_path = Path() / _default_token_file
     _allowed_methods = ['get', 'post', 'put', 'patch', 'delete']
 
     def __init__(self, credentials, *, scopes=None,
                  proxy_server=None, proxy_port=8080, proxy_username=None,
-                 proxy_password=None,
-                 requests_delay=200, raise_http_errors=True, request_retries=3,
-                 token_file_name=None):
+                 proxy_password=None, requests_delay=200, raise_http_errors=True,
+                 request_retries=3, token_file_name=None, token_backend=None,
+                 **kwargs):
         """ Creates an API connection object
 
         :param tuple credentials: a tuple of (client_id, client_secret)
@@ -287,6 +286,9 @@ class Connection:
          responds with 5xx error codes.
         :param str token_file_name: custom token file name to be used when
          storing the OAuth token credentials.
+        :param BaseTokenBackend token_backend: the token backend used to get
+         and store tokens
+        :param dict kwargs: any extra params passed to Connection
         :raises ValueError: if credentials is not tuple of
          (client_id, client_secret)
         """
@@ -297,16 +299,20 @@ class Connection:
         self.auth = credentials
         self.scopes = scopes
         self.store_token = True
-        self.token_path = ((Path() / token_file_name) if token_file_name
-                           else self._default_token_path)
-        self.token = None
-
+        # TODO: remove "token_file_name" in a future release
+        if token_file_name is not None:
+            warnings.warn('"token_file_name" will be removed in future versions.'
+                          ' Please use "token_backend" instead', DeprecationWarning)
+        token_backend = token_backend or FileSystemTokenBackend(token_filename=token_file_name)
+        if not isinstance(token_backend, BaseTokenBackend):
+            raise ValueError('"token_backend" must be an instance of a subclass of BaseTokenBackend')
+        self.token_backend = token_backend
         self.session = None  # requests Oauth2Session object
 
         self.proxy = {}
         self.set_proxy(proxy_server, proxy_port, proxy_username, proxy_password)
         self.requests_delay = requests_delay or 0
-        self.previous_request_at = None  # store previous request time
+        self._previous_request_at = None  # store previous request time
         self.raise_http_errors = raise_http_errors
         self.request_retries = request_retries
 
@@ -355,12 +361,10 @@ class Connection:
         :return: if file exists or not
         :rtype: bool
         """
-        if self.token_path:
-            path = Path(self.token_path)
-        else:
-            path = self._default_token_path
-
-        return path.exists()
+        # TODO: remove this method in a future release
+        warnings.warn('This method will be removed in future versions',
+                      DeprecationWarning)
+        return self.token_backend.check_token() if hasattr(self.token_backend, 'check_token') else None
 
     def get_authorization_url(self, requested_scopes=None,
                               redirect_uri=OAUTH_REDIRECT_URL):
@@ -395,8 +399,8 @@ class Connection:
             self.session.mount('http://', adapter)
             self.session.mount('https://', adapter)
 
-        # TODO: access_type='offline' has no effect ac cording to documentation
-        # TODO: This is done through scope 'offline_access'.
+        # TODO: access_type='offline' has no effect according to documentation
+        #  This is done through scope 'offline_access'.
         auth_url, state = oauth.authorization_url(
             url=self._oauth2_authorize_url, access_type='offline')
 
@@ -408,8 +412,8 @@ class Connection:
         token for future based if requested
 
         :param str authorization_url: url given by the authorization flow
-        :param bool store_token: whether or not to store the token in file
-         system, so u don't have to keep opening the auth link and
+        :param bool store_token: whether or not to store the token,
+         so u don't have to keep opening the auth link and
          authenticating every time
         :param Path token_path: full path to where the token should be saved to
         :return: Success/Failure
@@ -420,6 +424,10 @@ class Connection:
             raise RuntimeError("Fist call 'get_authorization_url' to "
                                "generate a valid oauth object")
 
+        # TODO: remove token_path in future versions
+        if token_path is not None:
+            warnings.warn('"token_path" param will be removed in future versions.'
+                          ' Use a TokenBackend instead', DeprecationWarning)
         _, client_secret = self.auth
 
         # Allow token scope to not match requested scope.
@@ -429,21 +437,17 @@ class Connection:
         os.environ['OAUTHLIB_IGNORE_SCOPE_CHANGE'] = '1'
 
         try:
-            self.token = self.session.fetch_token(
+            self.token_backend.token = Token(self.session.fetch_token(
                 token_url=self._oauth2_token_url,
                 authorization_response=authorization_url,
                 include_client_id=True,
-                client_secret=client_secret)
+                client_secret=client_secret))
         except Exception as e:
             log.error('Unable to fetch auth token. Error: {}'.format(str(e)))
             return False
 
-        if token_path:
-            self.token_path = token_path
-        self.store_token = store_token
-        if self.store_token:
-            self._save_token(self.token, self.token_path)
-
+        if store_token:
+            self.token_backend.save_token()
         return True
 
     def get_session(self, token_path=None):
@@ -454,17 +458,21 @@ class Connection:
         :return: A ready to use requests session
         :rtype: OAuth2Session
         """
-        self.token = self.token or self._load_token(
-            token_path or self.token_path)
+        # TODO: remove token_path in future versions
+        warnings.warn('"token_path" param will be removed in future versions.'
+                      ' Use a TokenBackend instead.', DeprecationWarning)
 
-        if self.token:
+        # gets a fresh token from the store
+        token = self.token_backend.get_token()
+
+        if token:
             client_id, _ = self.auth
-            self.session = OAuth2Session(client_id=client_id, token=self.token)
+            session = OAuth2Session(client_id=client_id, token=token)
         else:
             raise RuntimeError(
                 'No auth token found. Authentication Flow needed')
 
-        self.session.proxies = self.proxy
+        session.proxies = self.proxy
 
         if self.request_retries:
             retry = Retry(total=self.request_retries, read=self.request_retries,
@@ -472,31 +480,49 @@ class Connection:
                           backoff_factor=RETRIES_BACKOFF_FACTOR,
                           status_forcelist=RETRIES_STATUS_LIST)
             adapter = HTTPAdapter(max_retries=retry)
-            self.session.mount('http://', adapter)
-            self.session.mount('https://', adapter)
+            session.mount('http://', adapter)
+            session.mount('https://', adapter)
 
-        return self.session
+        return session
 
     def refresh_token(self):
-        """ Refresh the OAuth authorization token """
+        """
+        Refresh the OAuth authorization token.
+        This will be called automatically when the access token
+         expires, however, you can manually call this method to
+         request a new refresh token.
+        :return bool: Success / Failure
+        """
+        if self.session is None:
+            self.session = self.get_session()
 
-        client_id, client_secret = self.auth
-        self.token = token = (self.session
-                              .refresh_token(self._oauth2_token_url,
-                                             client_id=client_id,
-                                             client_secret=client_secret))
+        token = self.token_backend.token
+        if token and token.is_long_lived:
+            client_id, client_secret = self.auth
+            token = Token(self.session.refresh_token(
+                self._oauth2_token_url,
+                client_id=client_id,
+                client_secret=client_secret))
+        else:
+            log.error('You can not refresh an access token that has no "refreh_token" available.'
+                      'Include "offline_access" scope when authentication to get a "refresh_token"')
+            return False
+
+        self.token_backend.token = token
+
         if self.store_token:
-            self._save_token(token)
+            self.token_backend.save_token()
+        return True
 
     def _check_delay(self):
         """ Checks if a delay is needed between requests and sleeps if True """
-        if self.previous_request_at:
-            dif = round(time.time() - self.previous_request_at,
+        if self._previous_request_at:
+            dif = round(time.time() - self._previous_request_at,
                         2) * 1000  # difference in miliseconds
             if dif < self.requests_delay:
                 time.sleep(
                     (self.requests_delay - dif) / 1000)  # sleep needs seconds
-        self.previous_request_at = time.time()
+        self._previous_request_at = time.time()
 
     def _internal_request(self, request_obj, url, method, **kwargs):
         """ Internal handling of requests. Handles Exceptions.
@@ -542,8 +568,10 @@ class Connection:
                     response.status_code, response.url))
                 request_done = True
                 return response
-            except TokenExpiredError:
-                # Token has expired refresh token and try again on the next loop
+            except TokenExpiredError as e:
+                # Token has expired, try to refresh the token and try again on the next loop
+                if not self.token_backend.token.is_long_lived:
+                    raise e
                 if token_refreshed:
                     # Refresh token done but still TokenExpiredError raise
                     raise RuntimeError('Token Refresh Operation not working')
@@ -609,8 +637,8 @@ class Connection:
         :rtype: requests.Response
         """
         # oauth authentication
-        if not self.session:
-            self.get_session()
+        if self.session is None:
+            self.session = self.get_session()
 
         return self._internal_request(self.session, url, method, **kwargs)
 
@@ -677,16 +705,9 @@ class Connection:
         :return: Success/Failure
         :rtype: bool
         """
-        if not token_path:
-            token_path = self.token_path or self._default_token_path
-        else:
-            if not isinstance(token_path, Path):
-                raise ValueError('token_path must be a valid Path from pathlib')
-
-        with token_path.open('w') as token_file:
-            json.dump(token, token_file, indent=True)
-
-        return True
+        # TODO: remove this method in future versions
+        warnings.warn('This method is deprecated. Use a TokenBackend instead.', DeprecationWarning)
+        return False
 
     def _load_token(self, token_path=None):
         """ Load the specified token dictionary from specified file path
@@ -695,17 +716,9 @@ class Connection:
         :return: token data
         :rtype: dict
         """
-        if not token_path:
-            token_path = self.token_path or self._default_token_path
-        else:
-            if not isinstance(token_path, Path):
-                raise ValueError('token_path must be a valid Path from pathlib')
-
-        token = None
-        if token_path.exists():
-            with token_path.open('r') as token_file:
-                token = json.load(token_file)
-        return token
+        # TODO: remove this method in future versions
+        warnings.warn('This method is deprecated. Use a TokenBackend instead.', DeprecationWarning)
+        return False
 
     def _delete_token(self, token_path=None):
         """ Delete the specified token dictionary from specified file path
@@ -714,15 +727,8 @@ class Connection:
         :return: Success/Failure
         :rtype: bool
         """
-        if not token_path:
-            token_path = self.token_path or self._default_token_path
-        else:
-            if not isinstance(token_path, Path):
-                raise ValueError('token_path must be a valid Path from pathlib')
-
-        if token_path.exists():
-            token_path.unlink()
-            return True
+        # TODO: remove this method in future versions
+        warnings.warn('This method is deprecated. Use a TokenBackend instead.', DeprecationWarning)
         return False
 
 
@@ -734,7 +740,7 @@ def oauth_authentication_flow(client_id, client_secret, scopes=None,
     :param str client_id: the client_id
     :param str client_secret: the client_secret
     :param list[str] scopes: a list of protocol user scopes to be converted
-     by the protocol
+     by the protocol or raw scopes
     :param Protocol protocol: the protocol to be used.
      Defaults to MSGraphProtocol
     :param kwargs: other configuration to be passed to the Connection instance

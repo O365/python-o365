@@ -9,8 +9,7 @@ log = logging.getLogger(__name__)
 class Task(ApiComponent):
     """ A Microsoft Planner task """
 
-    _endpoints = {
-    }
+    _endpoints = {}
 
     def __init__(self, *, parent=None, con=None, **kwargs):
         """ A Microsoft planner task
@@ -73,9 +72,9 @@ class Task(ApiComponent):
 
 
 class Planner(ApiComponent):
-    """ A microsoft planner class 
+    """ A microsoft planner class
         In order to use the API following permissions are required.
-        Delegated (work or school account) - Group.Read.All, Group.ReadWrite.All 
+        Delegated (work or school account) - Group.Read.All, Group.ReadWrite.All
     """
 
     _endpoints = {
