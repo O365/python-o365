@@ -16,4 +16,4 @@ from .sharepoint import Sharepoint, Site
 from .planner import Planner, Task
 from .utils import ImportanceLevel, Query
 from .utils import OneDriveWellKnowFolderNames, OutlookWellKnowFolderNames
-from .utils import FileSystemTokenBackend
+from .utils import FileSystemTokenBackend, FirestoreBackend

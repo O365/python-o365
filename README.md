@@ -211,6 +211,69 @@ con = Connection(credentials, scopes=scopes_graph)
 However all the protocol/scope stuff can be addressed automaticaly for you when using the `account.authenticate` method.
 
 
+
+##### Token storage:
+When authentication you will retrieve oauth tokens. If you don't want a one time access you will have to store the token somewhere.
+O365 makes no assumptions on where to store the token and tries to abstract this from the library usage point of view.
+
+You can choose where and how to store tokens by using the properly Token Backend.
+
+**Take care: the access (and refresh) token must remain protected from unauthorized users.**
+
+To store the token you will have to provide a properly configured TokenBackend.
+Actually there are only two implemented (but you can easely implement more like a CookieBackend, etc.):
+- `FileSystemTokenBackend` (Default backend): Stores and retrieves tokens from the file system. Tokens are stored as files.
+- `FirestoreTokenBackend`: Stores and retrives tokens from a Google Firestore Datastore. Tokens are stored as documents whitin a collection.
+
+For example using the FileSystem Token Backend:
+
+```python
+from O365 import Account, FileSystemTokenBackend
+
+credentials = ('id', 'secret')
+
+# this will store the token under: "my_project_folder/my_folder/my_token.txt".
+# you can pass strings to token_path or Path instances from pathlib
+token_backend = FileSystemTokenBackend(token_path='my_folder', token_filename='my_token.txt')
+account = Account(credentials, token_backend=token_backend)
+
+# This account instance tokens will be stored on the token_backend configured before.
+# You don't have to do anything more
+# ...
+```
+
+And now using the same example using FirestoreTokenBackend:
+
+```python
+from O365 import Account, FirestoreBackend
+from google.cloud import firestore
+
+credentials = ('id', 'secret')
+
+# this will store the token on firestore under the tokens collection on the defined doc_id.
+# you can pass strings to token_path or Path instances from pathlib
+user_id = 'whatever the user id is'  # used to create the token document id
+document_id = 'token_{}'.format(user_id)  # used to uniquely store this token
+token_backend = FirestoreBackend(client=firestore.Client(), collection='tokens', doc_id=document_id)
+account = Account(credentials, token_backend=token_backend)
+
+# This account instance tokens will be stored on the token_backend configured before.
+# You don't have to do anything more
+# ...
+```
+
+To implememnt a new TokenBackend:
+ 
+ 1. Subclass `BaseTokenBackend`
+ 1. Implement the following methods:
+ 
+     - `__init__` (don't forget to call `super().__init__`)
+     - `get_token`: this should set `self.token` and return a `Token` instance or None
+     - `save_token`
+     - Optionally you can implement: `check_token` and `delete_token`
+     
+
+
 ## Protocols
 Protocols handles the aspects of comunications between different APIs.
 This project uses by default either the Office 365 APIs or Microsoft Graph APIs.
