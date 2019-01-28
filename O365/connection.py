@@ -605,7 +605,7 @@ class Connection:
                     log.debug('Server Error: {}'.format(str(e)))
                 if self.raise_http_errors:
                     if error_message:
-                        raise HTTPError('{} | Error Message: {}'.format(e.args[0], error_message), response=response)
+                        raise HTTPError('{} | Error Message: {}'.format(e.args[0], error_message), response=response) from None
                     else:
                         raise e
                 else:
