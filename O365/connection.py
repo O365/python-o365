@@ -730,6 +730,16 @@ class Connection:
         warnings.warn('This method is deprecated. Use a TokenBackend instead.', DeprecationWarning)
         return False
 
+    def __del__(self):
+        """
+        Clear the session by closing it
+        This should be called manually by the user "del account.con"
+        There is no guarantee that this method will be called by the garbage collection
+        But this is not an issue because this connections willbe automatically closed.
+        """
+        if self.session:
+            self.session.close()
+
 
 def oauth_authentication_flow(client_id, client_secret, scopes=None,
                               protocol=None, **kwargs):
