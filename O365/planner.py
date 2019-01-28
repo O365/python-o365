@@ -22,7 +22,8 @@ class Task(ApiComponent):
         :param str main_resource: use this resource instead of parent resource
          (kwargs)
         """
-        assert parent or con, 'Need a parent or a connection'
+        if parent and con:
+            raise ValueError('Need a parent or a connection but not both')
         self.con = parent.con if parent else con
 
         cloud_data = kwargs.get(self._cloud_data_key, {})
@@ -93,7 +94,8 @@ class Planner(ApiComponent):
         :param str main_resource: use this resource instead of parent resource
          (kwargs)
         """
-        assert parent or con, 'Need a parent or a connection'
+        if parent and con:
+            raise ValueError('Need a parent or a connection but not both')
         self.con = parent.con if parent else con
 
         # Choose the main_resource passed in kwargs over the host_name

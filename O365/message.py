@@ -280,7 +280,8 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         :param bool download_attachments: whether or not to
          download attachments (kwargs)
         """
-        assert parent or con, 'Need a parent or a connection'
+        if parent and con:
+            raise ValueError('Need a parent or a connection but not both')
         self.con = parent.con if parent else con
 
         # Choose the main_resource passed in kwargs over parent main_resource

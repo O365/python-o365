@@ -37,7 +37,8 @@ class Folder(ApiComponent):
         :param str name: name of the folder to get under the parent (kwargs)
         :param str folder_id: id of the folder to get under the parent (kwargs)
         """
-        assert parent or con, 'Need a parent or a connection'
+        if parent and con:
+            raise ValueError('Need a parent or a connection but not both')
         self.con = parent.con if parent else con
         self.parent = parent if isinstance(parent, Folder) else None
 

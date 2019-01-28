@@ -126,7 +126,8 @@ class CopyOperation(ApiComponent):
         :param str monitor_url:
         :param str item_id:
         """
-        assert parent or con, 'Need a parent or a connection'
+        if parent and con:
+            raise ValueError('Need a parent or a connection but not both')
         self.con = parent.con if parent else con
         self.parent = parent  # parent will be always a DriveItem
 
@@ -217,7 +218,8 @@ class DriveItemVersion(ApiComponent, DownloadableMixin):
         :param str main_resource: use this resource instead of parent resource
          (kwargs)
         """
-        assert parent or con, 'Need a parent or a connection'
+        if parent and con:
+            raise ValueError('Need a parent or a connection but not both')
         self.con = parent.con if parent else con
         self._parent = parent if isinstance(parent, DriveItem) else None
 
@@ -304,7 +306,8 @@ class DriveItemPermission(ApiComponent):
         :param str main_resource: use this resource instead of parent resource
          (kwargs)
         """
-        assert parent or con, 'Need a parent or a connection'
+        if parent and con:
+            raise ValueError('Need a parent or a connection but not both')
         self.con = parent.con if parent else con
         self._parent = parent if isinstance(parent, DriveItem) else None
         # Choose the main_resource passed in kwargs over parent main_resource
@@ -432,7 +435,8 @@ class DriveItem(ApiComponent):
         :param str main_resource: use this resource instead of parent resource
          (kwargs)
         """
-        assert parent or con, 'Need a parent or a connection'
+        if parent and con:
+            raise ValueError('Need a parent or a connection but not both')
         self.con = parent.con if parent else con
         self._parent = parent if isinstance(parent, DriveItem) else None
         self.drive = parent if isinstance(parent, Drive) else (
@@ -685,7 +689,8 @@ class DriveItem(ApiComponent):
         :param name: a new name for the copy.
         :rtype: CopyOperation
         """
-        assert target or name, 'Must provide a target or a name (or both)'
+        if target is None and name is None:
+            raise ValueError('Must provide a target or a name (or both)')
 
         if isinstance(target, Folder):
             target_id = target.object_id
@@ -1259,7 +1264,8 @@ class Drive(ApiComponent):
         :param str main_resource: use this resource instead of parent resource
          (kwargs)
         """
-        assert parent or con, 'Need a parent or a connection'
+        if parent and con:
+            raise ValueError('Need a parent or a connection but not both')
         self.con = parent.con if parent else con
         self.parent = parent if isinstance(parent, Drive) else None
 
@@ -1633,7 +1639,8 @@ class Storage(ApiComponent):
         :param str main_resource: use this resource instead of parent resource
          (kwargs)
         """
-        assert parent or con, 'Need a parent or a connection'
+        if parent and con:
+            raise ValueError('Need a parent or a connection but not both')
         self.con = parent.con if parent else con
 
         # Choose the main_resource passed in kwargs over parent main_resource

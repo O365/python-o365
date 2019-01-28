@@ -536,9 +536,8 @@ class Connection:
         """
 
         method = method.lower()
-        assert method in self._allowed_methods, \
-            'Method must be one of the allowed ones'
-
+        if method not in self._allowed_methods:
+            raise ValueError('Method must be one of the allowed ones')
         if method == 'get':
             kwargs.setdefault('allow_redirects', True)
         elif method in ['post', 'put', 'patch']:

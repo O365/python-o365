@@ -41,7 +41,8 @@ class Contact(ApiComponent, AttachableMixin):
         :param str main_resource: use this resource instead of parent resource
          (kwargs)
         """
-        assert parent or con, 'Need a parent or a connection'
+        if parent and con:
+            raise ValueError('Need a parent or a connection but not both')
         self.con = parent.con if parent else con
 
         # Choose the main_resource passed in kwargs over parent main_resource
@@ -589,7 +590,8 @@ class BaseContactFolder(ApiComponent):
         :param str main_resource: use this resource instead of parent resource
          (kwargs)
         """
-        assert parent or con, 'Need a parent or a connection'
+        if parent and con:
+            raise ValueError('Need a parent or a connection but not both')
         self.con = parent.con if parent else con
 
         # Choose the main_resource passed in kwargs over parent main_resource

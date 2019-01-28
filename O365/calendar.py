@@ -800,7 +800,8 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
          (kwargs)
         :param str subject: subject of the event (kwargs)
         """
-        assert parent or con, 'Need a parent or a connection'
+        if parent and con:
+            raise ValueError('Need a parent or a connection but not both')
         self.con = parent.con if parent else con
 
         # Choose the main_resource passed in kwargs over parent main_resource
@@ -1508,7 +1509,8 @@ class Calendar(ApiComponent, HandleRecipientsMixin):
         :param str main_resource: use this resource instead of parent resource
          (kwargs)
         """
-        assert parent or con, 'Need a parent or a connection'
+        if parent and con:
+            raise ValueError('Need a parent or a connection but not both')
         self.con = parent.con if parent else con
 
         # Choose the main_resource passed in kwargs over parent main_resource
@@ -1759,7 +1761,8 @@ class Schedule(ApiComponent):
         :param str main_resource: use this resource instead of parent resource
          (kwargs)
         """
-        assert parent or con, 'Need a parent or a connection'
+        if parent and con:
+            raise ValueError('Need a parent or a connection but not both')
         self.con = parent.con if parent else con
 
         # Choose the main_resource passed in kwargs over parent main_resource
