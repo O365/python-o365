@@ -96,8 +96,8 @@ scopes = ['my_required_scopes']
 
 account = Account(credentials)
 
-if not account.is_authenticated:  # will check if there is a token and if it has not expired
-    # ask fot a login
+if not account.is_authenticated:  # will check if there is a token and has not expired
+    # ask for a login
     account.authenticate(scopes=scopes)
 
 # now we are autheticated
@@ -107,7 +107,7 @@ if not account.is_authenticated:  # will check if there is a token and if it has
 ```
 
 ## Authentication
-You can only authenticate using oauth athentication as Microsoft deprecated basic oauth on November 1st 2018.
+You can only authenticate using oauth athentication as Microsoft deprecated basic auth on November 1st 2018.
 
 - Oauth authentication: using an authentication token provided after user consent.
 
@@ -142,10 +142,13 @@ This section is explained using Microsoft Graph Protocol, almost the same applie
         # ...
         account = Account(credentials)  # the default protocol will be Microsoft Graph
         account.authenticate(scopes=['basic', 'message_all'])
+        # 'basic' adds: 'offline_access' and 'https://graph.microsoft.com/User.Read'
+        # 'message_all' adds: 'https://graph.microsoft.com/Mail.ReadWrite' and 'https://graph.microsoft.com/Mail.Send'
+ 
         ```
         This method call will print a url that the user must visit to give consent to the app on the required permissions.
         
-        The user must then visit this url and give consent to the application. When consent is given, the page will rediret to: "https://outlook.office365.com/owa/" by default.
+        The user must then visit this url and give consent to the application. When consent is given, the page will rediret to: "https://outlook.office365.com/owa/" by default (you can change this).
         
         Then the user must copy the resulting page url and paste it back on the console.
         The method will the return True if the login attempt was succesful.
@@ -158,11 +161,11 @@ This section is explained using Microsoft Graph Protocol, almost the same applie
     
     If your application needs to work for more than 90 days without user interaction and without interacting with the API, then you must implement a periodic call to `Connection.refresh_token` before the 90 days have passed.
     
-    Finally you can use other methods to authenticate that offer more flexibility. For example you can decouple the authentication steps to allow the users login within a webpage or whatever:
+    Finally you can use other methods to authenticate that offer more flexibility (`account.authenticate` enforces the use of the command line). For example you can decouple the authentication steps to allow the users login within a webpage or whatever:
     ```python
     url = account.connection.get_authorization_url(requested_scopes=['scopes_required'])  # visit url
-    result_url = input('Paste the result url here...')  # wait for the user input
-    account.connection.request_token(result_url)  # This, if succesful, will store the token in a txt file on the user project folder.
+    result_url = input('Paste the result url here...')  # wait for the user input. Just use whatever mechanism you want to retrieve the url from the user.
+    account.connection.request_token(result_url)  # This, if succesful, will store the token in a txt file on the user project folder. You can change how and where you store the token.
     ```
     
     or using `oauth_authentication_flow`:
@@ -213,7 +216,7 @@ However all the protocol/scope stuff can be addressed automaticaly for you when 
 
 
 ##### Token storage:
-When authentication you will retrieve oauth tokens. If you don't want a one time access you will have to store the token somewhere.
+When authenticating you will retrieve oauth tokens. If you don't want a one time access you will have to store the token somewhere.
 O365 makes no assumptions on where to store the token and tries to abstract this from the library usage point of view.
 
 You can choose where and how to store tokens by using the properly Token Backend.
@@ -269,7 +272,7 @@ To implememnt a new TokenBackend:
  
      - `__init__` (don't forget to call `super().__init__`)
      - `get_token`: this should set `self.token` and return a `Token` instance or None
-     - `save_token`
+     - `save_token`: this should store the `self.token` in the desired backend.
      - Optionally you can implement: `check_token` and `delete_token`
      
 
