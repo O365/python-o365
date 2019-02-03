@@ -36,7 +36,8 @@ class SharepointListColumn(ApiComponent):
         self.read_only = cloud_data.get(self._cc('readOnly'), None)
         self.required = cloud_data.get(self._cc('required'), None)
 
-        # identify the sharepoint column type and set it - Graph api doesn't return the type for managed metadata and link column
+        # identify the sharepoint column type and set it
+        # Graph api doesn't return the type for managed metadata and link column
         if cloud_data.get(self._cc('text'), None) is not None:
             self.field_type = 'text'
         elif cloud_data.get(self._cc('choice'), None) is not None:
@@ -372,7 +373,7 @@ class Site(ApiComponent):
         return [self.list_constructor(parent=self, **{self._cloud_data_key: lst}) for lst in data.get('value', [])]
 
     def get_list_by_name(self, display_name):
-        """ Returns a sharepoint list based on the display name of the list 
+        """ Returns a sharepoint list based on the display name of the list
         """
 
         if not display_name:
