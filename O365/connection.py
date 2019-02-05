@@ -252,17 +252,13 @@ class MSOffice365Protocol(Protocol):
 class Connection:
     """ Handles all communication (requests) between the app and the server """
 
-    _oauth2_authorize_url = 'https://login.microsoftonline.com/common/' \
-                            'oauth2/v2.0/authorize'
-    _oauth2_token_url = 'https://login.microsoftonline.com/common/' \
-                        'oauth2/v2.0/token'
     _allowed_methods = ['get', 'post', 'put', 'patch', 'delete']
 
     def __init__(self, credentials, *, scopes=None,
                  proxy_server=None, proxy_port=8080, proxy_username=None,
                  proxy_password=None, requests_delay=200, raise_http_errors=True,
                  request_retries=3, token_file_name=None, token_backend=None,
-                 **kwargs):
+                 tenant_id="common", **kwargs):
         """ Creates an API connection object
 
         :param tuple credentials: a tuple of (client_id, client_secret)
@@ -288,6 +284,7 @@ class Connection:
          storing the OAuth token credentials.
         :param BaseTokenBackend token_backend: the token backend used to get
          and store tokens
+        :param str tenant_id: use this specific tenant id, defaults to common
         :param dict kwargs: any extra params passed to Connection
         :raises ValueError: if credentials is not tuple of
          (client_id, client_secret)
@@ -327,6 +324,11 @@ class Connection:
             adapter = HTTPAdapter(max_retries=retry)
             self.naive_session.mount('http://', adapter)
             self.naive_session.mount('https://', adapter)
+
+        self._oauth2_authorize_url = 'https://login.microsoftonline.com/' \
+                        '{}/oauth2/v2.0/authorize'.format(tenant_id)
+        self._oauth2_token_url = 'https://login.microsoftonline.com/' \
+                        '{}/oauth2/v2.0/token'.format(tenant_id)
 
     def set_proxy(self, proxy_server, proxy_port, proxy_username,
                   proxy_password):
