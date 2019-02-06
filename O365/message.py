@@ -861,7 +861,7 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         :return: body as text
         :rtype: str
         """
-        if self.body_type != 'HTML':
+        if self.body_type.upper() != 'HTML':
             return self.body
 
         try:
@@ -877,7 +877,7 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         :return: BeautifulSoup object of body
         :rtype: BeautifulSoup
         """
-        if self.body_type != 'HTML':
+        if self.body_type.upper() != 'HTML':
             return None
         else:
             return bs(self.body, 'html.parser')

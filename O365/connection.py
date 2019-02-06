@@ -258,7 +258,7 @@ class Connection:
                  proxy_server=None, proxy_port=8080, proxy_username=None,
                  proxy_password=None, requests_delay=200, raise_http_errors=True,
                  request_retries=3, token_file_name=None, token_backend=None,
-                 tenant_id="common", **kwargs):
+                 tenant_id='common', **kwargs):
         """ Creates an API connection object
 
         :param tuple credentials: a tuple of (client_id, client_secret)
@@ -326,9 +326,9 @@ class Connection:
             self.naive_session.mount('https://', adapter)
 
         self._oauth2_authorize_url = 'https://login.microsoftonline.com/' \
-                        '{}/oauth2/v2.0/authorize'.format(tenant_id)
+                                     '{}/oauth2/v2.0/authorize'.format(tenant_id)
         self._oauth2_token_url = 'https://login.microsoftonline.com/' \
-                        '{}/oauth2/v2.0/token'.format(tenant_id)
+                                 '{}/oauth2/v2.0/token'.format(tenant_id)
 
     def set_proxy(self, proxy_server, proxy_port, proxy_username,
                   proxy_password):
