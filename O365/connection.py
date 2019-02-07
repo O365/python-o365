@@ -369,12 +369,13 @@ class Connection:
         return self.token_backend.check_token() if hasattr(self.token_backend, 'check_token') else None
 
     def get_authorization_url(self, requested_scopes=None,
-                              redirect_uri=OAUTH_REDIRECT_URL):
+                              redirect_uri=OAUTH_REDIRECT_URL, **kwargs):
         """ Initializes the oauth authorization flow, getting the
         authorization url that the user must approve.
 
         :param list[str] requested_scopes: list of scopes to request access for
         :param str redirect_uri: redirect url configured in registered app
+        :param kwargs: allow to pass unused params in conjunction with Connection
         :return: authorization url
         :rtype: str
         """
@@ -409,7 +410,7 @@ class Connection:
         return auth_url
 
     def request_token(self, authorization_url, store_token=True,
-                      token_path=None):
+                      token_path=None, **kwargs):
         """ Authenticates for the specified url and gets the token, save the
         token for future based if requested
 
@@ -418,6 +419,7 @@ class Connection:
          so u don't have to keep opening the auth link and
          authenticating every time
         :param Path token_path: full path to where the token should be saved to
+        :param kwargs: allow to pass unused params in conjunction with Connection
         :return: Success/Failure
         :rtype: bool
         """
@@ -754,7 +756,8 @@ def oauth_authentication_flow(client_id, client_secret, scopes=None,
      by the protocol or raw scopes
     :param Protocol protocol: the protocol to be used.
      Defaults to MSGraphProtocol
-    :param kwargs: other configuration to be passed to the Connection instance
+    :param kwargs: other configuration to be passed to the Connection instance,
+     connection.get_authorization_url or connection.request_token
     :return: Success or Failure
     :rtype: bool
     """
@@ -766,14 +769,14 @@ def oauth_authentication_flow(client_id, client_secret, scopes=None,
     con = Connection(credentials, scopes=protocol.get_scopes_for(scopes),
                      **kwargs)
 
-    consent_url = con.get_authorization_url()
+    consent_url = con.get_authorization_url(**kwargs)
     print('Visit the following url to give consent:')
     print(consent_url)
 
     token_url = input('Paste the authenticated url here: ')
 
     if token_url:
-        result = con.request_token(token_url)
+        result = con.request_token(token_url, **kwargs)
         if result:
             print('Authentication Flow Completed. Oauth Access Token Stored. '
                   'You can now use the API.')
