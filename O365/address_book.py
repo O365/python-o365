@@ -762,9 +762,9 @@ class ContactFolder(BaseContactFolder):
 
         # Everything received from cloud must be passed as self._cloud_data_key
         # we don't pass parent, as this folder may not be a child of self.
-        return ContactFolder(con=self.con, protocol=self.protocol,
-                             main_resource=self.main_resource,
-                             **{self._cloud_data_key: folder})
+        return self.__class__(con=self.con, protocol=self.protocol,
+                              main_resource=self.main_resource,
+                              **{self._cloud_data_key: folder})
 
     def get_folders(self, limit=None, *, query=None, order_by=None):
         """ Returns a list of child folders
@@ -803,7 +803,7 @@ class ContactFolder(BaseContactFolder):
 
         data = response.json()
 
-        return [ContactFolder(parent=self, **{self._cloud_data_key: folder})
+        return [self.__class__(parent=self, **{self._cloud_data_key: folder})
                 for folder in data.get('value', [])]
 
     def create_child_folder(self, folder_name):
@@ -831,7 +831,7 @@ class ContactFolder(BaseContactFolder):
         folder = response.json()
 
         # Everything received from cloud must be passed as self._cloud_data_key
-        return ContactFolder(parent=self, **{self._cloud_data_key: folder})
+        return self.__class__(parent=self, **{self._cloud_data_key: folder})
 
     def update_folder_name(self, name):
         """ Change this folder name
