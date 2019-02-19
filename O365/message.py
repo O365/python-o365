@@ -300,7 +300,7 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
 
         # internal to know which properties need to be updated on the server
         self._track_changes = TrackerSet(casing=cc)
-        self.object_id = cloud_data.get(cc('id'), None)
+        self.object_id = cloud_data.get(cc('id'), kwargs.get('object_id', None))
 
         self.__created = cloud_data.get(cc('createdDateTime'), None)
         self.__modified = cloud_data.get(cc('lastModifiedDateTime'), None)
@@ -777,6 +777,40 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         # Everything received from cloud must be passed as self._cloud_data_key
         return self.__class__(parent=self, **{self._cloud_data_key: message})
 
+    def save_message(self):
+        """ Saves changes to a message.
+        If the message is a new or saved draft it will call 'save_draft' otherwise
+        this will save only properties of a message that are draft-independent such as:
+            - is_read
+            - category
+        :return: Success / Failure
+        :rtype: bool
+        """
+        if self.object_id and not self.__is_draft:
+            # we are only allowed to save some properties:
+            allowed_changes = {'isRead', 'categories'}  # allowed changes to be saved by this method
+            changes = {tc for tc in self._track_changes if tc in allowed_changes}
+
+            if not changes:
+                return True  # there's nothing to update
+
+            url = self.build_url(self._endpoints.get('get_message').format(id=self.object_id))
+
+            data = self.to_api_data(restrict_keys=changes)
+
+            response = self.con.patch(url, data=data)
+
+            if not response:
+                return False
+
+            self._clear_tracker()  # reset the tracked changes as they are all saved
+            self.__modified = self.protocol.timezone.localize(dt.datetime.now())
+
+            return True
+        else:
+            # fallback to save_draft
+            return self.save_draft()
+
     def save_draft(self, target_folder=OutlookWellKnowFolderNames.DRAFTS):
         """ Save this message as a draft on the cloud
 
@@ -819,13 +853,14 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
             method = self.con.post
             data = self.to_api_data()
 
-        self._clear_tracker()  # reset the tracked changes as they are all saved
         if not data:
             return True
 
         response = method(url, data=data)
         if not response:
             return False
+
+        self._clear_tracker()  # reset the tracked changes as they are all saved
 
         if not self.object_id:
             # new message

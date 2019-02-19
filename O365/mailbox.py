@@ -19,7 +19,7 @@ class Folder(ApiComponent):
         'folder_messages': '/mailFolders/{id}/messages',
         'copy_folder': '/mailFolders/{id}/copy',
         'move_folder': '/mailFolders/{id}/move',
-        'delete_message': '/messages/{id}',
+        'message': '/messages/{id}',
     }
     message_constructor = Message
 
@@ -131,10 +131,10 @@ class Folder(ApiComponent):
         else:
             return folders
 
-    def get_message(self, query=None, *, download_attachments=False):
+    def get_message(self, object_id=None, query=None, *, download_attachments=False):
         """ Get one message from the query result.
          A shortcut to get_messages with limit=1
-
+        :param object_id: the message id to be retrieved.
         :param query: applies a filter to the request such as
          "displayName eq 'HelloFolder'"
         :type query: Query or str
@@ -142,10 +142,26 @@ class Folder(ApiComponent):
         :return: one Message
         :rtype: Message or None
         """
-        messages = self.get_messages(limit=1, query=query,
-                                     download_attachments=download_attachments)
+        if object_id is not None and query is not None:
+            raise ValueError('Must provide object id or query but not both.')
 
-        return messages[0] if messages else None
+        if object_id is not None:
+            url = self.build_url(self._endpoints.get('message').format(id=object_id))
+            response = self.con.get(url)
+            if not response:
+                return None
+
+            message = response.json()
+
+            return self.message_constructor(parent=self,
+                                            download_attachments=download_attachments,
+                                            **{self._cloud_data_key: message})
+
+        else:
+            messages = self.get_messages(limit=1, query=query,
+                                         download_attachments=download_attachments)
+
+            return messages[0] if messages else None
 
     def get_messages(self, limit=25, *, query=None, order_by=None, batch=None,
                      download_attachments=False):
@@ -483,7 +499,7 @@ class Folder(ApiComponent):
             raise RuntimeError('Provide a valid Message or a message id')
 
         url = self.build_url(
-            self._endpoints.get('delete_message').format(id=message_id))
+            self._endpoints.get('message').format(id=message_id))
 
         response = self.con.delete(url)
 
