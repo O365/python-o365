@@ -12,7 +12,7 @@ from .message import HandleRecipientsMixin
 from .utils import AttachableMixin, ImportanceLevel, TrackerSet
 from .utils import BaseAttachments, BaseAttachment
 from .utils import Pagination, NEXT_LINK_KEYWORD, ApiComponent
-from .utils.windows_tz import get_iana_tz, get_windows_tz
+from .utils.windows_tz import get_windows_tz
 
 log = logging.getLogger(__name__)
 
@@ -841,36 +841,10 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
             local_tz) if self.__modified else None
 
         start_obj = cloud_data.get(cc('start'), {})
-        if isinstance(start_obj, dict):
-            try:
-                timezone = pytz.timezone(
-                    get_iana_tz(start_obj.get(self._cc('timeZone'), 'UTC')))
-            except pytz.UnknownTimeZoneError:
-                timezone = local_tz
-            start = start_obj.get(cc('dateTime'), None)
-            start = timezone.localize(parse(start)) if start else None
-            if start and timezone != local_tz:
-                start = start.astimezone(local_tz)
-        else:
-            # Outlook v1.0 api compatibility
-            start = local_tz.localize(parse(start_obj)) if start_obj else None
-        self.__start = start
+        self.__start = self._parse_date_time_time_zone(start_obj)
 
         end_obj = cloud_data.get(cc('end'), {})
-        if isinstance(end_obj, dict):
-            try:
-                timezone = pytz.timezone(
-                    get_iana_tz(end_obj.get(self._cc('timeZone'), 'UTC')))
-            except pytz.UnknownTimeZoneError:
-                timezone = local_tz
-            end = end_obj.get(cc('dateTime'), None)
-            end = timezone.localize(parse(end)) if end else None
-            if end and timezone != local_tz:
-                end = end.astimezone(local_tz)
-        else:
-            # Outlook v1.0 api compatibility
-            end = local_tz.localize(parse(end_obj)) if end_obj else None
-        self.__end = end
+        self.__end = self._parse_date_time_time_zone(end_obj)
 
         self.has_attachments = cloud_data.get(cc('hasAttachments'), False)
         self.__attachments = EventAttachments(parent=self, attachments=[])
@@ -928,16 +902,8 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
             cc('body'): {
                 cc('contentType'): self.body_type,
                 cc('content'): self.__body},
-            cc('start'): {
-                cc('dateTime'): self.__start.strftime('%Y-%m-%dT%H:%M:%S'),
-                cc('timeZone'): get_windows_tz(
-                    self.__start.tzinfo.zone or self.protocol.timezone)
-            },
-            cc('end'): {
-                cc('dateTime'): self.__end.strftime('%Y-%m-%dT%H:%M:%S'),
-                cc('timeZone'): get_windows_tz(
-                    self.__end.tzinfo.zone or self.protocol.timezone)
-            },
+            cc('start'): self._build_date_time_time_zone(self.__start),
+            cc('end'): self._build_date_time_time_zone(self.__end),
             cc('attendees'): self.__attendees.to_api_data(),
             cc('location'): {cc('displayName'): self.__location},
             cc('categories'): self.__categories,

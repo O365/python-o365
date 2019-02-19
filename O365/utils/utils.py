@@ -4,8 +4,11 @@ from collections import OrderedDict
 from enum import Enum
 
 import pytz
+from dateutil.parser import parse
 
+from .windows_tz import get_iana_tz, get_windows_tz
 from .decorators import fluent
+
 
 ME_RESOURCE = 'me'
 USERS_RESOURCE = 'users'
@@ -128,6 +131,48 @@ class ApiComponent:
     def _cc(self, dict_key):
         """ Alias for protocol.convert_case """
         return self.protocol.convert_case(dict_key)
+
+    def _parse_date_time_time_zone(self, date_time_time_zone):
+        """ Parses and convert to protocol timezone a dateTimeTimeZone resource
+        This resource is a dict with a date time and a windows timezone
+        This is a common structure on Microsoft apis so it's included here.
+        """
+        if date_time_time_zone is None:
+            return None
+
+        local_tz = self.protocol.timezone
+        if isinstance(date_time_time_zone, dict):
+            try:
+                timezone = pytz.timezone(
+                    get_iana_tz(date_time_time_zone.get(self._cc('timeZone'), 'UTC')))
+            except pytz.UnknownTimeZoneError:
+                timezone = local_tz
+            date_time = date_time_time_zone.get(self._cc('dateTime'), None)
+            try:
+                date_time = timezone.localize(parse(date_time)) if date_time else None
+            except OverflowError as e:
+                log.debug('Could not parse dateTimeTimeZone: {}. Error: {}'.format(date_time_time_zone, str(e)))
+                date_time = None
+
+            if date_time and timezone != local_tz:
+                date_time = date_time.astimezone(local_tz)
+        else:
+            # Outlook v1.0 api compatibility (fallback to datetime string)
+            try:
+                date_time = local_tz.localize(parse(date_time_time_zone)) if date_time_time_zone else None
+            except Exception as e:
+                log.debug('Could not parse dateTimeTimeZone: {}. Error: {}'.format(date_time_time_zone, str(e)))
+                date_time = None
+
+        return date_time
+
+    def _build_date_time_time_zone(self, date_time):
+        """ Converts a datetime to a dateTimeTimeZone resource """
+        timezone = date_time.tzinfo.zone if date_time.tzinfo is not None else None
+        return {
+            self._cc('dateTime'): date_time.strftime('%Y-%m-%dT%H:%M:%S'),
+            self._cc('timeZone'): get_windows_tz(timezone or self.protocol.timezone)
+        }
 
     def new_query(self, attribute=None):
         """ Create a new query to filter results

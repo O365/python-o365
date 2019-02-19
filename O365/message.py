@@ -1,5 +1,6 @@
 import datetime as dt
 import logging
+from enum import Enum
 
 import pytz
 # noinspection PyPep8Naming
@@ -250,6 +251,127 @@ class HandleRecipientsMixin:
         return data
 
 
+class Flag(Enum):
+    NotFlagged = 'notFlagged'
+    Complete = 'complete'
+    Flagged = 'flagged'
+
+
+class MessageFlag(ApiComponent):
+    """ A flag on a message """
+
+    def __init__(self, parent, flag_data):
+        """ An flag on a message
+        Not available on Outlook Rest Api v2 (only in beta)
+
+        :param parent: parent of this
+        :type parent: Message
+        :param dict flag_data: flag data from cloud
+        """
+        super().__init__(protocol=parent.protocol,
+                         main_resource=parent.main_resource)
+
+        self.__message = parent
+
+        self.__status = Flag(flag_data.get(self._cc('flagStatus'), 'notFlagged'))
+
+        start_obj = flag_data.get(self._cc('startDateTime'), {})
+        self.__start = self._parse_date_time_time_zone(start_obj)
+
+        due_date_obj = flag_data.get(self._cc('dueDateTime'), {})
+        self.__due_date = self._parse_date_time_time_zone(due_date_obj)
+
+        completed_date_obj = flag_data.get(self._cc('completedDateTime'), {})
+        self.__completed = self._parse_date_time_time_zone(completed_date_obj)
+
+    def __repr__(self):
+        return str(self.__status)
+
+    def __str__(self):
+        return self.__repr__()
+
+    def __bool__(self):
+        return self.is_flagged
+
+    def _track_changes(self):
+        """ Update the track_changes on the message to reflect a
+        needed update on this field """
+        self.__message._track_changes.add('flag')
+
+    @property
+    def status(self):
+        return self.__status
+
+    def set_flagged(self, *, start_date=None, due_date=None):
+        """ Sets this message as flagged
+        :param start_date: the start datetime of the followUp
+        :param due_date: the due datetime of the followUp
+        """
+        self.__status = Flag.Flagged
+        start_date = start_date or dt.datetime.now()
+        due_date = due_date or dt.datetime.now()
+        if start_date.tzinfo is None:
+            start_date = self.protocol.timezone.localize(start_date)
+        if due_date.tzinfo is None:
+            due_date = self.protocol.timezone.localize(due_date)
+        self.__start = start_date
+        self.__due_date = due_date
+        self._track_changes()
+
+    def set_completed(self, *, completition_date=None):
+        """ Sets this message flag as completed
+        :param completition_date: the datetime this followUp was completed
+        """
+        self.__status = Flag.Complete
+        completition_date = completition_date or dt.datetime.now()
+        if completition_date.tzinfo is None:
+            completition_date = self.protocol.timezone.localize(completition_date)
+        self.__completed = completition_date
+        self._track_changes()
+
+    def delete_flag(self):
+        """ Sets this message as un flagged """
+        self.__status = Flag.NotFlagged
+        self.__start = None
+        self.__due_date = None
+        self.__completed = None
+        self._track_changes()
+
+    @property
+    def start_date(self):
+        return self.__start
+
+    @property
+    def due_date(self):
+        return self.__due_date
+
+    @property
+    def completition_date(self):
+        return self.__completed
+
+    @property
+    def is_completed(self):
+        return self.__status is Flag.Complete
+
+    @property
+    def is_flagged(self):
+        return self.__status is Flag.Flagged or self.__status is Flag.Complete
+
+    def to_api_data(self):
+        """ Returns this data as a dict to be sent to the server """
+        data = {
+            self._cc('flagStatus'): self._cc(self.__status.value)
+        }
+        if self.__status is Flag.Flagged:
+            data[self._cc('startDateTime')] = self._build_date_time_time_zone(self.__start)
+            data[self._cc('dueDateTime')] = self._build_date_time_time_zone(self.__due_date)
+
+        if self.__status is Flag.Complete:
+            data[self._cc('completedDateTime')] = self._build_date_time_time_zone(self.__completed)
+
+        return data
+
+
 class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
     """ Management of the process of sending, receiving, reading, and
     editing emails. """
@@ -348,6 +470,9 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
                                                                    True))
         self.conversation_id = cloud_data.get(cc('conversationId'), None)
         self.folder_id = cloud_data.get(cc('parentFolderId'), None)
+
+        flag_data = cloud_data.get(cc('flag'), {})
+        self.__flag = MessageFlag(parent=self, flag_data=flag_data)
 
     def _clear_tracker(self):
         # reset the tracked changes. Usually after a server update
@@ -523,6 +648,11 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
                              else ImportanceLevel(value.lower()))
         self._track_changes.add('importance')
 
+    @property
+    def flag(self):
+        """ The Message Flag instance """
+        return self.__flag
+
     def to_api_data(self, restrict_keys=None):
         """ Returns a dict representation of this message prepared to be send
         to the cloud
@@ -541,7 +671,8 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
             cc('body'): {
                 cc('contentType'): self.body_type,
                 cc('content'): self.body},
-            cc('importance'): self.importance.value
+            cc('importance'): self.importance.value,
+            cc('flag'): self.flag.to_api_data(),
         }
 
         if self.to:
@@ -561,18 +692,23 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         if self.sender and self.sender.address:
             message[cc('from')] = self._recipient_to_cloud(self.sender)
 
+        if self.categories:
+            message[cc('categories')] = self.categories
+
         if self.object_id and not self.__is_draft:
             # return the whole signature of this message
 
             message[cc('id')] = self.object_id
-            message[cc('createdDateTime')] = self.created.astimezone(
-                pytz.utc).isoformat()
-            message[cc('receivedDateTime')] = self.received.astimezone(
-                pytz.utc).isoformat()
-            message[cc('sentDateTime')] = self.sent.astimezone(
-                pytz.utc).isoformat()
-            message[cc('hasAttachments')] = len(self.attachments) > 0
-            message[cc('categories')] = self.categories
+            if self.created:
+                message[cc('createdDateTime')] = self.created.astimezone(
+                    pytz.utc).isoformat()
+            if self.received:
+                message[cc('receivedDateTime')] = self.received.astimezone(
+                    pytz.utc).isoformat()
+            if self.sent:
+                message[cc('sentDateTime')] = self.sent.astimezone(
+                    pytz.utc).isoformat()
+            message[cc('hasAttachments')] = bool(self.attachments)
             message[cc('isRead')] = self.is_read
             message[cc('isDraft')] = self.__is_draft
             message[cc('conversationId')] = self.conversation_id
@@ -783,12 +919,13 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         this will save only properties of a message that are draft-independent such as:
             - is_read
             - category
+            - flag
         :return: Success / Failure
         :rtype: bool
         """
         if self.object_id and not self.__is_draft:
             # we are only allowed to save some properties:
-            allowed_changes = {'isRead', 'categories'}  # allowed changes to be saved by this method
+            allowed_changes = {'isRead', 'categories', 'flag'}  # allowed changes to be saved by this method
             changes = {tc for tc in self._track_changes if tc in allowed_changes}
 
             if not changes:
