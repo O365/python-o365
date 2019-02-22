@@ -35,6 +35,9 @@ if files:
     numberDoc = files[0]
     print("... copying to local machine")
     operation = numberDoc.download(to_path=dl_path)
+else:
+    print("File not found!")
+    exit()
 
 print("Reading sheet to dataframe")
 df = pd.read_excel(f'{dl_path}/{f_name}')
