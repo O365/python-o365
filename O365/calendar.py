@@ -50,17 +50,17 @@ class EventShowAs(Enum):
 
 
 class CalendarColors(Enum):
-    LightBlue = 0
-    LightGreen = 1
-    LightOrange = 2
-    LightGray = 3
-    LightYellow = 4
-    LightTeal = 5
-    LightPink = 6
-    LightBrown = 7
-    LightRed = 8
-    MaxColor = 9
-    Auto = -1
+    lightBlue = 0
+    lightGreen = 1
+    lightOrange = 2
+    lightGray = 3
+    lightYellow = 4
+    lightTeal = 5
+    lightPink = 6
+    lightBrown = 7
+    lightRed = 8
+    maxColor = 9
+    auto = -1
 
 
 class EventType(Enum):
