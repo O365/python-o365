@@ -14,8 +14,8 @@ import pandas as pd
 from O365 import Account
 
 # Generated on the app registration portal
-registered_app_name='caca0fa3-2e6a-4b40-a5bf-507ff141acb7'
-registered_app_secret='dmZUN670_|{qtwzwUVTU50]'
+registered_app_name='yourregisteredappname'
+registered_app_secret='yoursecret'
 
 # File to download, and location to download to
 dl_path='/path/to/download'
