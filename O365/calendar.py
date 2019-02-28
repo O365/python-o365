@@ -63,7 +63,6 @@ class CalendarColors(Enum):
     Auto = 'auto'
 
 
-
 class EventType(Enum):
     SingleInstance = 'singleInstance'  # a normal (non-recurring) event
     Occurrence = 'occurrence'  # all the other recurring events that is not the first one (seriesMaster)

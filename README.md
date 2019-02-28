@@ -135,7 +135,7 @@ This section is explained using Microsoft Graph Protocol, almost the same applie
         You can pass "protocol scopes" (like: "https://graph.microsoft.com/Calendars.ReadWrite") to the method or use "[scope helpers](https://github.com/O365/python-o365/blob/master/O365/connection.py#L33)" like ("message_all").
         If you pass protocol scopes, then the `account` instance must be initialized with the same protocol used by the scopes. By using scope helpers you can abstract the protocol from the scopes and let this library work for you.   
         Finally, you can mix and match "protocol scopes" with "scope helpers".
-        Go to the [procotol section]((#protocols)) to know more about them.
+        Go to the [procotol section](#protocols) to know more about them.
         
         For Example (following the previous permissions added):
         ```python
