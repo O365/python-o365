@@ -50,17 +50,18 @@ class EventShowAs(Enum):
 
 
 class CalendarColors(Enum):
-    LightBlue = 0
-    LightGreen = 1
-    LightOrange = 2
-    LightGray = 3
-    LightYellow = 4
-    LightTeal = 5
-    LightPink = 6
-    LightBrown = 7
-    LightRed = 8
-    MaxColor = 9
-    Auto = -1
+    LightBlue = 'lightBlue'
+    LightGreen = 'lightGreen'
+    LightOrange = 'lightOrange'
+    LightGray = 'lightGray'
+    LightYellow = 'lightYellow'
+    LightTeal = 'lightTeal'
+    LightPink = 'lightPink'
+    LightBrown = 'lightBrown'
+    LightRed = 'lightRed'
+    MaxColor = 'maxColor'
+    Auto = 'auto'
+
 
 
 class EventType(Enum):
@@ -1494,11 +1495,11 @@ class Calendar(ApiComponent, HandleRecipientsMixin):
         self.calendar_id = cloud_data.get(self._cc('id'), None)
         self.__owner = self._recipient_from_cloud(
             cloud_data.get(self._cc('owner'), {}), field='owner')
-        color = cloud_data.get(self._cc('color'), -1)
-        if isinstance(color, str):
-            color = -1 if color == 'auto' else color
-            # TODO: other string colors?
-        self.color = CalendarColors(color)
+        color = cloud_data.get(self._cc('color'), 'auto')
+        try:
+            self.color = CalendarColors(color)
+        except:
+            self.color = CalendarColors('auto')
         self.can_edit = cloud_data.get(self._cc('canEdit'), False)
         self.can_share = cloud_data.get(self._cc('canShare'), False)
         self.can_view_private_items = cloud_data.get(
