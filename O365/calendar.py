@@ -50,17 +50,17 @@ class EventShowAs(Enum):
 
 
 class CalendarColors(Enum):
-    lightBlue = 0
-    lightGreen = 1
-    lightOrange = 2
-    lightGray = 3
-    lightYellow = 4
-    lightTeal = 5
-    lightPink = 6
-    lightBrown = 7
-    lightRed = 8
-    maxColor = 9
-    auto = -1
+    LightBlue = 0
+    LightGreen = 1
+    LightOrange = 2
+    LightGray = 3
+    LightYellow = 4
+    LightTeal = 5
+    LightPink = 6
+    LightBrown = 7
+    LightRed = 8
+    MaxColor = 9
+    Auto = -1
 
 
 class EventType(Enum):
@@ -1496,8 +1496,17 @@ class Calendar(ApiComponent, HandleRecipientsMixin):
             cloud_data.get(self._cc('owner'), {}), field='owner')
         color = cloud_data.get(self._cc('color'), -1)
         if isinstance(color, str):
+            color = 0 if color == 'lightBlue' else color
+            color = 1 if color == 'lightGreen' else color
+            color = 2 if color == 'lightOrange' else color
+            color = 3 if color == 'lightGray' else color
+            color = 4 if color == 'lightYellow' else color
+            color = 5 if color == 'lightTeal' else color
+            color = 6 if color == 'lightPink' else color
+            color = 7 if color == 'lightBrown' else color
+            color = 8 if color == 'lightRed' else color
+            color = 9 if color == 'maxColor' else color
             color = -1 if color == 'auto' else color
-            # TODO: other string colors?
         self.color = CalendarColors(color)
         self.can_edit = cloud_data.get(self._cc('canEdit'), False)
         self.can_share = cloud_data.get(self._cc('canShare'), False)
