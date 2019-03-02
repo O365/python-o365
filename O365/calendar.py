@@ -1388,7 +1388,7 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
 
         url = self.build_url(
             self._endpoints.get('event').format(id=self.object_id))
-        url = url + '/tentativelyAccept' if tentatively else '/accept'
+        url = url + '/tentativelyAccept' if tentatively else url + '/accept'
 
         data = {}
         if comment and isinstance(comment, str):
