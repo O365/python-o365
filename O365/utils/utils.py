@@ -321,14 +321,36 @@ class Query:
         self._filters = []  # store all the filters
         self._order_by = OrderedDict()
         self._selects = set()
+        self._expands = set()
 
     def __str__(self):
-        return 'Filter: {}\nOrder: {}\nSelect: {}'.format(self.get_filters(),
-                                                          self.get_order(),
-                                                          self.get_selects())
+        return 'Filter: {}\nOrder: {}\nSelect: {}\nExpand: {}'.format(self.get_filters(),
+                                                                      self.get_order(),
+                                                                      self.get_selects(),
+                                                                      self.get_expands())
 
     def __repr__(self):
         return self.__str__()
+
+    @fluent
+    def expand(self, *relationships):
+        """ Adds the relationships (e.g. "microsoft.graph.eventMessage/event" or
+        "attachments") that should be expanded to the $expand parameter
+
+        :param str relationships: the relationships tuple to expand.
+        :rtype: Query
+        """
+
+        for relationship in relationships:
+            # ToDo(frennkie) this breaks..
+            #  "microsoft.graph.eventMessage/event" is being converted to "microsofrapventMessagvent"
+            # relationship = self.protocol.convert_case(
+            #     relationship) if relationship and isinstance(relationship,
+            #                                                  str) else None
+            if relationship:
+                self._expands.add(relationship)
+
+        return self
 
     @fluent
     def select(self, *attributes):
@@ -366,6 +388,8 @@ class Query:
             params['$orderby'] = self.get_order()
         if self.has_selects:
             params['$select'] = self.get_selects()
+        if self.has_expands:
+            params['$expand'] = self.get_expands()
         return params
 
     @property
@@ -383,6 +407,14 @@ class Query:
         :rtype: bool
         """
         return bool(self._order_by)
+
+    @property
+    def has_expands(self):
+        """ Whether the query has relationships that should be expanded or not
+
+        :rtype: bool
+        """
+        return bool(self._expands)
 
     @property
     def has_selects(self):
@@ -435,6 +467,16 @@ class Query:
                             .strip()
                              for attribute, direction in
                              filter_order_clauses.items()])
+        else:
+            return None
+
+    def get_expands(self):
+        """ Returns the result expand clause
+
+        :rtype: str or None
+        """
+        if self._expands:
+            return ','.join(self._expands)
         else:
             return None
 
