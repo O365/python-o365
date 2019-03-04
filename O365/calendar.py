@@ -1,13 +1,13 @@
 import calendar
 import datetime as dt
 import logging
-from enum import Enum
 
 import pytz
 # noinspection PyPep8Naming
 from bs4 import BeautifulSoup as bs
 from dateutil.parser import parse
 
+from .utils import CaseEnum
 from .utils import HandleRecipientsMixin
 from .utils import AttachableMixin, ImportanceLevel, TrackerSet
 from .utils import BaseAttachments, BaseAttachment
@@ -19,7 +19,7 @@ log = logging.getLogger(__name__)
 MONTH_NAMES = [calendar.month_name[x] for x in range(1, 13)]
 
 
-class EventResponse(Enum):
+class EventResponse(CaseEnum):
     Organizer = 'organizer'
     TentativelyAccepted = 'tentativelyAccepted'
     Accepted = 'accepted'
@@ -27,20 +27,20 @@ class EventResponse(Enum):
     NotResponded = 'notResponded'
 
 
-class AttendeeType(Enum):
+class AttendeeType(CaseEnum):
     Required = 'required'
     Optional = 'optional'
     Resource = 'resource'
 
 
-class EventSensitivity(Enum):
+class EventSensitivity(CaseEnum):
     Normal = 'normal'
     Personal = 'personal'
     Private = 'private'
     Confidential = 'confidential'
 
 
-class EventShowAs(Enum):
+class EventShowAs(CaseEnum):
     Free = 'free'
     Tentative = 'tentative'
     Busy = 'busy'
@@ -49,7 +49,7 @@ class EventShowAs(Enum):
     Unknown = 'unknown'
 
 
-class CalendarColors(Enum):
+class CalendarColor(CaseEnum):
     LightBlue = 'lightBlue'
     LightGreen = 'lightGreen'
     LightOrange = 'lightOrange'
@@ -63,7 +63,7 @@ class CalendarColors(Enum):
     Auto = 'auto'
 
 
-class EventType(Enum):
+class EventType(CaseEnum):
     SingleInstance = 'singleInstance'  # a normal (non-recurring) event
     Occurrence = 'occurrence'  # all the other recurring events that is not the first one (seriesMaster)
     Exception = 'exception'  # ?
@@ -510,8 +510,8 @@ class ResponseStatus(ApiComponent):
         """
         super().__init__(protocol=parent.protocol,
                          main_resource=parent.main_resource)
-        self.status = response_status.get(self._cc('response'), None)
-        self.status = None if self.status == 'none' else self.status
+        self.status = response_status.get(self._cc('response'), 'none')
+        self.status = None if self.status == 'none' else EventResponse.from_value(self.status)
         if self.status:
             self.response_time = response_status.get(self._cc('time'), None)
             if self.response_time:
@@ -525,7 +525,7 @@ class ResponseStatus(ApiComponent):
             self.response_time = None
 
     def __repr__(self):
-        return self.status
+        return self.status or 'None'
 
     def __str__(self):
         return self.__repr__()
@@ -624,7 +624,7 @@ class Attendee:
         if isinstance(value, AttendeeType):
             self.__attendee_type = value
         else:
-            self.__attendee_type = AttendeeType(value)
+            self.__attendee_type = AttendeeType.from_value(value)
         self._track_changes()
 
 
@@ -766,7 +766,7 @@ class Attendees(ApiComponent):
                         self._cc('address'): attendee.address,
                         self._cc('name'): attendee.name
                     },
-                    self._cc('type'): attendee.attendee_type.value
+                    self._cc('type'): self._cc(attendee.attendee_type.value)
                 }
                 data.append(att_data)
         return data
@@ -852,7 +852,7 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
             self.attachments.download_attachments()
         self.__categories = cloud_data.get(cc('categories'), [])
         self.ical_uid = cloud_data.get(cc('iCalUId'), None)
-        self.__importance = ImportanceLevel(
+        self.__importance = ImportanceLevel.from_value(
             cloud_data.get(cc('importance'), 'normal') or 'normal')
         self.__is_all_day = cloud_data.get(cc('isAllDay'), False)
         self.is_cancelled = cloud_data.get(cc('isCancelled'), False)
@@ -874,11 +874,11 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         self.__response_status = ResponseStatus(parent=self,
                                                 response_status=cloud_data.get(
                                                     cc('responseStatus'), {}))
-        self.__sensitivity = EventSensitivity(
+        self.__sensitivity = EventSensitivity.from_value(
             cloud_data.get(cc('sensitivity'), 'normal'))
         self.series_master_id = cloud_data.get(cc('seriesMasterId'), None)
-        self.__show_as = EventShowAs(cloud_data.get(cc('showAs'), 'busy'))
-        self.__event_type = EventType(cloud_data.get(cc('type'), 'singleInstance'))
+        self.__show_as = EventShowAs.from_value(cloud_data.get(cc('showAs'), 'busy'))
+        self.__event_type = EventType.from_value(cloud_data.get(cc('type'), 'singleInstance'))
 
     def __str__(self):
         return self.__repr__()
@@ -908,12 +908,12 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
             cc('location'): {cc('displayName'): self.__location},
             cc('categories'): self.__categories,
             cc('isAllDay'): self.__is_all_day,
-            cc('importance'): self.__importance.value,
+            cc('importance'): cc(self.__importance.value),
             cc('isReminderOn'): self.__is_reminder_on,
             cc('reminderMinutesBeforeStart'): self.__remind_before_minutes,
             cc('responseRequested'): self.__response_requested,
-            cc('sensitivity'): self.__sensitivity.value,
-            cc('showAs'): self.__show_as.value,
+            cc('sensitivity'): cc(self.__sensitivity.value),
+            cc('showAs'): cc(self.__show_as.value),
         }
 
         if self.__recurrence:
@@ -1039,7 +1039,7 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
     @importance.setter
     def importance(self, value):
         self.__importance = (value if isinstance(value, ImportanceLevel)
-                             else ImportanceLevel(value))
+                             else ImportanceLevel.from_value(value))
         self._track_changes.add(self._cc('importance'))
 
     @property
@@ -1166,9 +1166,8 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
 
     @show_as.setter
     def show_as(self, value):
-        self.__show_as = value if isinstance(value,
-                                             EventShowAs) else EventShowAs(
-            value)
+        self.__show_as = (value if isinstance(value, EventShowAs)
+                          else EventShowAs.from_value(value))
         self._track_changes.add(self._cc('showAs'))
 
     @property
@@ -1184,7 +1183,7 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
     @sensitivity.setter
     def sensitivity(self, value):
         self.__sensitivity = (value if isinstance(value, EventSensitivity)
-                              else EventSensitivity(value))
+                              else EventSensitivity.from_value(value))
         self._track_changes.add(self._cc('sensitivity'))
 
     @property
@@ -1496,9 +1495,9 @@ class Calendar(ApiComponent, HandleRecipientsMixin):
             cloud_data.get(self._cc('owner'), {}), field='owner')
         color = cloud_data.get(self._cc('color'), 'auto')
         try:
-            self.color = CalendarColors(color)
+            self.color = CalendarColor.from_value(color)
         except:
-            self.color = CalendarColors('auto')
+            self.color = CalendarColor.from_value('auto')
         self.can_edit = cloud_data.get(self._cc('canEdit'), False)
         self.can_share = cloud_data.get(self._cc('canShare'), False)
         self.can_view_private_items = cloud_data.get(
@@ -1532,9 +1531,9 @@ class Calendar(ApiComponent, HandleRecipientsMixin):
 
         data = {
             self._cc('name'): self.name,
-            self._cc('color'): (self.color.value
-                                if isinstance(self.color, CalendarColors)
-                                else self.color)
+            self._cc('color'): self._cc(self.color.value
+                                        if isinstance(self.color, CalendarColor)
+                                        else self.color)
         }
 
         response = self.con.patch(url, data=data)

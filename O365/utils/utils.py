@@ -5,6 +5,7 @@ from enum import Enum
 
 import pytz
 from dateutil.parser import parse
+from stringcase import snakecase
 
 from .windows_tz import get_iana_tz, get_windows_tz
 from .decorators import fluent
@@ -20,7 +21,24 @@ log = logging.getLogger(__name__)
 MAX_RECIPIENTS_PER_MESSAGE = 500  # Actual limit on Office 365
 
 
-class ImportanceLevel(Enum):
+class CaseEnum(Enum):
+    """ A Enum that converts the value to a snake_case casing """
+
+    def __new__(cls, value):
+        obj = object.__new__(cls)
+        obj._value_ = snakecase(value)  # value will be transformed to snake_case
+        return obj
+
+    @classmethod
+    def from_value(cls, value):
+        """ Gets a member by a snaked-case provided value"""
+        try:
+            return cls(snakecase(value))
+        except ValueError:
+            return None
+
+
+class ImportanceLevel(CaseEnum):
     Normal = 'normal'
     Low = 'low'
     High = 'high'

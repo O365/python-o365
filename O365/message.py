@@ -1,6 +1,5 @@
 import datetime as dt
 import logging
-from enum import Enum
 
 import pytz
 # noinspection PyPep8Naming
@@ -9,19 +8,24 @@ from dateutil.parser import parse
 
 from .utils import OutlookWellKnowFolderNames, ApiComponent, \
     BaseAttachments, BaseAttachment, AttachableMixin, ImportanceLevel, \
-    TrackerSet, Recipient, HandleRecipientsMixin
+    TrackerSet, Recipient, HandleRecipientsMixin, CaseEnum
 from .calendar import Event
 
 log = logging.getLogger(__name__)
 
 
-class MeetingMessageType(Enum):
-    NoneMessageType = 'none'
+class MeetingMessageType(CaseEnum):
     MeetingRequest = 'meetingRequest'
     MeetingCancelled = 'meetingCancelled'
     MeetingAccepted = 'meetingAccepted'
     MeetingTentativelyAccepted = 'meetingTentativelyAccepted'
     MeetingDeclined = 'meetingDeclined'
+
+
+class Flag(CaseEnum):
+    NotFlagged = 'notFlagged'
+    Complete = 'complete'
+    Flagged = 'flagged'
 
 
 class MessageAttachment(BaseAttachment):
@@ -37,12 +41,6 @@ class MessageAttachments(BaseAttachments):
         'attachment': '/messages/{id}/attachments/{ida}'
     }
     _attachment_constructor = MessageAttachment
-
-
-class Flag(Enum):
-    NotFlagged = 'notFlagged'
-    Complete = 'complete'
-    Flagged = 'flagged'
 
 
 class MessageFlag(ApiComponent):
@@ -61,7 +59,7 @@ class MessageFlag(ApiComponent):
 
         self.__message = parent
 
-        self.__status = Flag(flag_data.get(self._cc('flagStatus'), 'notFlagged'))
+        self.__status = Flag.from_value(flag_data.get(self._cc('flagStatus'), 'notFlagged'))
 
         start_obj = flag_data.get(self._cc('startDateTime'), {})
         self.__start = self._parse_date_time_time_zone(start_obj)
@@ -248,17 +246,15 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
             cloud_data.get(cc('replyTo'), []), field=cc('replyTo'))
         self.__categories = cloud_data.get(cc('categories'), [])
 
-        # lower() for office365 v1.0
-        self.__importance = ImportanceLevel((cloud_data.get(cc('importance'),
-                                                            'normal') or
-                                             'normal').lower())
+        self.__importance = ImportanceLevel.from_value(cloud_data.get(cc('importance'), 'normal') or 'normal')
         self.__is_read = cloud_data.get(cc('isRead'), None)
 
         self.__is_read_receipt_requested = cloud_data.get(cc('isReadReceiptRequested'), False)
         self.__is_delivery_receipt_requested = cloud_data.get(cc('isDeliveryReceiptRequested'), False)
 
         # if this message is an EventMessage:
-        self.__meeting_message_type = MeetingMessageType(cloud_data.get(cc('meetingMessageType'), 'none'))
+        meeting_mt = cloud_data.get(cc('meetingMessageType'), 'none')
+        self.__meeting_message_type = MeetingMessageType.from_value(meeting_mt) if meeting_mt != 'none' else None
 
         # a message is a draft by default
         self.__is_draft = cloud_data.get(cc('isDraft'), kwargs.get('is_draft',
@@ -446,7 +442,7 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
     @importance.setter
     def importance(self, value):
         self.__importance = (value if isinstance(value, ImportanceLevel)
-                             else ImportanceLevel(value.lower()))
+                             else ImportanceLevel.from_value(value))
         self._track_changes.add('importance')
 
     @property
@@ -492,7 +488,7 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         """ Returns if this message is of type EventMessage
         and therefore can return the related event.
         """
-        return self.__meeting_message_type is not MeetingMessageType.NoneMessageType
+        return self.__meeting_message_type is not None
 
     @property
     def flag(self):
@@ -517,7 +513,7 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
             cc('body'): {
                 cc('contentType'): self.body_type,
                 cc('content'): self.body},
-            cc('importance'): self.importance.value,
+            cc('importance'): cc(self.importance.value),
             cc('flag'): self.flag.to_api_data(),
             cc('isReadReceiptRequested'): self.is_read_receipt_requested,
             cc('isDeliveryReceiptRequested'): self.is_delivery_receipt_requested,
