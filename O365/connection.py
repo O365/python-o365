@@ -91,10 +91,11 @@ class Protocol:
         self.max_top_value = 500  # Max $top parameter value
 
         # define any keyword that can be different in this protocol
-        # TODO Not used anywhere, is this required/planned to use?
+        # for example, attachments Odata type differs between Outlook
+        #  rest api and graph: (graph = #microsoft.graph.fileAttachment and
+        #  outlook = #Microsoft.OutlookServices.FileAttachment')
         self.keyword_data_store = {}
 
-    # TODO Not used anywhere, is this required/planned to use?
     def get_service_keyword(self, keyword):
         """ Returns the data set to the key in the internal data-key dict
 
