@@ -62,6 +62,10 @@ class TrackerSet(set):
         value = self.cc(value)
         super().add(value)
 
+    def remove(self, value):
+        value = self.cc(value)
+        super().remove(value)
+
 
 class ApiComponent:
     """ Base class for all object interactions with the Cloud Service API

@@ -465,6 +465,10 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
                                                             'normal') or
                                              'normal').lower())
         self.__is_read = cloud_data.get(cc('isRead'), None)
+
+        self.__is_read_receipt_requested = cloud_data.get(cc('isReadReceiptRequested'), False)
+        self.__is_delivery_receipt_requested = cloud_data.get(cc('isDeliveryReceiptRequested'), False)
+
         # A message is a draft by default
         self.__is_draft = cloud_data.get(cc('isDraft'), kwargs.get('is_draft',
                                                                    True))
@@ -649,6 +653,36 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         self._track_changes.add('importance')
 
     @property
+    def is_read_receipt_requested(self):
+        """ if the read receipt is requested for this message
+
+        :getter: Current state of isReadReceiptRequested
+        :setter: Set isReadReceiptRequested for the message
+        :type: bool
+        """
+        return self.__is_read_receipt_requested
+
+    @is_read_receipt_requested.setter
+    def is_read_receipt_requested(self, value):
+        self.__is_read_receipt_requested = bool(value)
+        self._track_changes.add('isReadReceiptRequested')
+
+    @property
+    def is_delivery_receipt_requested(self):
+        """ if the delivery receipt is requested for this message
+
+        :getter: Current state of isDeliveryReceiptRequested
+        :setter: Set isDeliveryReceiptRequested for the message
+        :type: bool
+        """
+        return self.__is_delivery_receipt_requested
+
+    @is_delivery_receipt_requested.setter
+    def is_delivery_receipt_requested(self, value):
+        self.__is_delivery_receipt_requested = bool(value)
+        self._track_changes.add('isDeliveryReceiptRequested')
+
+    @property
     def flag(self):
         """ The Message Flag instance """
         return self.__flag
@@ -673,6 +707,8 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
                 cc('content'): self.body},
             cc('importance'): self.importance.value,
             cc('flag'): self.flag.to_api_data(),
+            cc('isReadReceiptRequested'): self.is_read_receipt_requested,
+            cc('isDeliveryReceiptRequested'): self.is_delivery_receipt_requested,
         }
 
         if self.to:
