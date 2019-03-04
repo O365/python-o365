@@ -11,9 +11,9 @@ from .connection import Connection, Protocol, MSGraphProtocol
 from .connection import MSOffice365Protocol, oauth_authentication_flow
 from .drive import Storage, Drive, Folder, File, Image, Photo
 from .mailbox import MailBox
-from .message import Message, MessageAttachment, Recipient
+from .message import Message, MessageAttachment
 from .sharepoint import Sharepoint, Site
 from .planner import Planner, Task
-from .utils import ImportanceLevel, Query
+from .utils import ImportanceLevel, Query, Recipient
 from .utils import OneDriveWellKnowFolderNames, OutlookWellKnowFolderNames
 from .utils import FileSystemTokenBackend, FirestoreBackend

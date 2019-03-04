@@ -8,7 +8,7 @@ import pytz
 from bs4 import BeautifulSoup as bs
 from dateutil.parser import parse
 
-from .message import HandleRecipientsMixin
+from .utils import HandleRecipientsMixin
 from .utils import AttachableMixin, ImportanceLevel, TrackerSet
 from .utils import BaseAttachments, BaseAttachment
 from .utils import Pagination, NEXT_LINK_KEYWORD, ApiComponent
