@@ -788,7 +788,7 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         """ Create a calendar event representation
 
         :param parent: parent for this operation
-        :type parent: Calendar or Schedule
+        :type parent: Calendar or Schedule or ApiComponent
         :param Connection con: connection to use if no parent specified
         :param Protocol protocol: protocol to use if no parent specified
          (kwargs)

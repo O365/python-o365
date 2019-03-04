@@ -547,11 +547,13 @@ class Query:
         self._filters = []  # store all the filters
         self._order_by = OrderedDict()
         self._selects = set()
+        self._expands = set()
 
     def __str__(self):
-        return 'Filter: {}\nOrder: {}\nSelect: {}'.format(self.get_filters(),
-                                                          self.get_order(),
-                                                          self.get_selects())
+        return 'Filter: {}\nOrder: {}\nSelect: {}\nExpand: {}'.format(self.get_filters(),
+                                                                      self.get_order(),
+                                                                      self.get_selects(),
+                                                                      self.get_expands())
 
     def __repr__(self):
         return self.__str__()
@@ -580,6 +582,24 @@ class Query:
 
         return self
 
+    @fluent
+    def expand(self, *relationships):
+        """ Adds the relationships (e.g. "event" or "attachments")
+        that should be expanded with the $expand parameter
+        Important: The ApiComponent using this should know how to handle this relationships.
+            eg: Message knows how to handle attachments, and event (if it's an EventMessage).
+        Important: When using expand on multi-value relationships a max of 20 items will be returned.
+        :param str relationships: the relationships tuple to expand.
+        :rtype: Query
+        """
+
+        for relationship in relationships:
+            if relationship == 'event':
+                relationship = '{}/event'.format(self.protocol.get_service_keyword('event_message_type'))
+            self._expands.add(relationship)
+
+        return self
+
     def as_params(self):
         """ Returns the filters and orders as query parameters
 
@@ -592,6 +612,8 @@ class Query:
             params['$orderby'] = self.get_order()
         if self.has_selects:
             params['$select'] = self.get_selects()
+        if self.has_expands:
+            params['$expand'] = self.get_expands()
         return params
 
     @property
@@ -617,6 +639,14 @@ class Query:
         :rtype: bool
         """
         return bool(self._selects)
+
+    @property
+    def has_expands(self):
+        """ Whether the query has relationships that should be expanded or not
+
+         :rtype: bool
+        """
+        return bool(self._expands)
 
     def get_filters(self):
         """ Returns the result filters
@@ -671,6 +701,16 @@ class Query:
         """
         if self._selects:
             return ','.join(self._selects)
+        else:
+            return None
+
+    def get_expands(self):
+        """ Returns the result expand clause
+
+         :rtype: str or None
+        """
+        if self._expands:
+            return ','.join(self._expands)
         else:
             return None
 
@@ -830,7 +870,7 @@ class Query:
         word = self._parse_filter_word(word)
         self._add_filter(
             *self._prepare_sentence(self._attribute, operation, word,
-                                   self._negation))
+                                    self._negation))
         return self
 
     @fluent
@@ -905,7 +945,7 @@ class Query:
 
         self._add_filter(
             *self._prepare_function(function_name, self._attribute, word,
-                                   self._negation))
+                                    self._negation))
         return self
 
     @fluent

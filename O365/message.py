@@ -10,8 +10,18 @@ from dateutil.parser import parse
 from .utils import OutlookWellKnowFolderNames, ApiComponent, \
     BaseAttachments, BaseAttachment, AttachableMixin, ImportanceLevel, \
     TrackerSet, Recipient, HandleRecipientsMixin
+from .calendar import Event
 
 log = logging.getLogger(__name__)
+
+
+class MeetingMessageType(Enum):
+    NoneMessageType = 'none'
+    MeetingRequest = 'meetingRequest'
+    MeetingCancelled = 'meetingCancelled'
+    MeetingAccepted = 'meetingAccepted'
+    MeetingTentativelyAccepted = 'meetingTentativelyAccepted'
+    MeetingDeclined = 'meetingDeclined'
 
 
 class MessageAttachment(BaseAttachment):
@@ -247,7 +257,10 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         self.__is_read_receipt_requested = cloud_data.get(cc('isReadReceiptRequested'), False)
         self.__is_delivery_receipt_requested = cloud_data.get(cc('isDeliveryReceiptRequested'), False)
 
-        # A message is a draft by default
+        # if this message is an EventMessage:
+        self.__meeting_message_type = MeetingMessageType(cloud_data.get(cc('meetingMessageType'), 'none'))
+
+        # a message is a draft by default
         self.__is_draft = cloud_data.get(cc('isDraft'), kwargs.get('is_draft',
                                                                    True))
         self.conversation_id = cloud_data.get(cc('conversationId'), None)
@@ -255,6 +268,12 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
 
         flag_data = cloud_data.get(cc('flag'), {})
         self.__flag = MessageFlag(parent=self, flag_data=flag_data)
+
+    def __str__(self):
+        return self.__repr__()
+
+    def __repr__(self):
+        return 'Subject: {}'.format(self.subject)
 
     def _clear_tracker(self):
         # reset the tracked changes. Usually after a server update
@@ -459,6 +478,21 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
     def is_delivery_receipt_requested(self, value):
         self.__is_delivery_receipt_requested = bool(value)
         self._track_changes.add('isDeliveryReceiptRequested')
+
+    @property
+    def meeting_message_type(self):
+        """ If this message is a EventMessage, returns the
+        meeting type: meetingRequest, meetingCancelled, meetingAccepted,
+            meetingTentativelyAccepted, meetingDeclined
+        """
+        return self.__meeting_message_type
+
+    @property
+    def is_event_message(self):
+        """ Returns if this message is of type EventMessage
+        and therefore can return the related event.
+        """
+        return self.__meeting_message_type is not MeetingMessageType.NoneMessageType
 
     @property
     def flag(self):
@@ -868,8 +902,23 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         else:
             return bs(self.body, 'html.parser')
 
-    def __str__(self):
-        return self.__repr__()
+    def get_event(self):
+        """ If this is a EventMessage it should return the related Event"""
 
-    def __repr__(self):
-        return 'Subject: {}'.format(self.subject)
+        if not self.is_event_message:
+            return None
+
+        # select a dummy field (eg. subject) to avoid pull unneccesary data
+        query = self.q().select('subject').expand('event')
+
+        url = self.build_url(self._endpoints.get('get_message').format(id=self.object_id))
+
+        response = self.con.get(url, params=query.as_params())
+
+        if not response:
+            return None
+
+        data = response.json()
+        event_data = data.get(self._cc('event'))
+
+        return Event(parent=self, **{self._cloud_data_key: event_data})

@@ -204,6 +204,7 @@ class MSGraphProtocol(Protocol):
                          **kwargs)
 
         self.keyword_data_store['message_type'] = 'microsoft.graph.message'
+        self.keyword_data_store['event_message_type'] = 'microsoft.graph.eventMessage'
         self.keyword_data_store[
             'file_attachment_type'] = '#microsoft.graph.fileAttachment'
         self.keyword_data_store[
@@ -241,6 +242,8 @@ class MSOffice365Protocol(Protocol):
 
         self.keyword_data_store[
             'message_type'] = 'Microsoft.OutlookServices.Message'
+        self.keyword_data_store[
+            'event_message_type'] = 'Microsoft.OutlookServices.EventMessage'
         self.keyword_data_store[
             'file_attachment_type'] = '#Microsoft.OutlookServices.' \
                                       'FileAttachment'
