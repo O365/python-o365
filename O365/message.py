@@ -254,6 +254,10 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
 
         # if this message is an EventMessage:
         meeting_mt = cloud_data.get(cc('meetingMessageType'), 'none')
+
+        # hack to avoid typo in EventMessage between Api v1.0 and beta:
+        meeting_mt = meeting_mt.replace('Tenatively', 'Tentatively')
+
         self.__meeting_message_type = MeetingMessageType.from_value(meeting_mt) if meeting_mt != 'none' else None
 
         # a message is a draft by default
