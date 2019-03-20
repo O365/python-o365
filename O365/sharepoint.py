@@ -189,7 +189,11 @@ class SharepointList(ApiComponent):
             self._cc('contentTypesEnabled'), False)
         self.hidden = lst_info.get(self._cc('hidden'), False)
         self.template = lst_info.get(self._cc('template'), False)
-
+        
+        #Crosswalk between display name of user defined columns to internal name
+        self.column_name_cw = {col.display_name: col.internal_name for 
+                               col in self.get_list_columns() if not col.read_only}
+        
     def get_items(self):
         """ Returns a collection of Sharepoint Items
 
@@ -236,8 +240,41 @@ class SharepointList(ApiComponent):
 
         return [self.list_column_constructor(parent=self, **{self._cloud_data_key: column})
                 for column in data.get('value', [])]
+    
+    def update_list_item(self, item_id, update):
+        """Updates a list item with a given update
+           
+        :param item_id: List item id to update
+        :param update: Data to update list item with {'col_name': 'Updated Data'}
+        
+        :rtype: SharepointListItem
+        """
+        
+        url = self.build_url(self._endpoints.get('get_item_by_id').format(item_id=item_id) + '/fields')
+        
+        response = self.con.patch(url, update)
+        
+        data = response.json()
+        
+        return self.get_item_by_id(item_id)
 
-
+    def create_list_item(self, new_data):
+        """Create new list item
+        
+        :param new_data: dictionary of {'col_name': col_value}
+                    
+        :rtype: SharepointListItem
+        """
+        
+        url = self.build_url(self._endpoints.get('get_items'))
+        
+        response = self.con.post(url, {'fields': new_data})
+        
+        data = response.json()
+        
+        return self.list_item_constructor(parent=self, **{self._cloud_data_key: data})
+    
+    
 class Site(ApiComponent):
     """ A Sharepoint Site """
 
