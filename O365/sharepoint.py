@@ -391,9 +391,7 @@ class Site(ApiComponent):
 
         data = response.json()
 
-        return [
-            self.list_constructor(parent=self, **{self._cloud_data_key: lst})
-            for lst in data.get('value', [])]
+        return self.list_constructor(parent=self, **{self._cloud_data_key: data})
 
 
 class Sharepoint(ApiComponent):
