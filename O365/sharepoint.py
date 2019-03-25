@@ -121,7 +121,8 @@ class SharepointList(ApiComponent):
     _endpoints = {
         'get_items': '/items',
         'get_item_by_id': '/items/{item_id}',
-        'get_list_columns': '/columns'
+        'get_list_columns': '/columns',
+        'update_list_item': '/items/{item_id}/fields'
     }
     list_item_constructor = SharepointListItem
     list_column_constructor = SharepointListColumn
@@ -250,13 +251,11 @@ class SharepointList(ApiComponent):
         :rtype: SharepointListItem
         """
         
-        url = self.build_url(self._endpoints.get('get_item_by_id').format(item_id=item_id) + '/fields')
+        url = self.build_url(self._endpoints.get('update_list_item').format(item_id=item_id))
         
         response = self.con.patch(url, update)
         
-        data = response.json()
-        
-        return self.get_item_by_id(item_id)
+        return bool(response)
 
     def create_list_item(self, new_data):
         """Create new list item
@@ -269,6 +268,8 @@ class SharepointList(ApiComponent):
         url = self.build_url(self._endpoints.get('get_items'))
         
         response = self.con.post(url, {'fields': new_data})
+        if not response:
+            return False
         
         data = response.json()
         
