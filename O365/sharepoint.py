@@ -65,7 +65,7 @@ class SharepointListColumn(ApiComponent):
 
 
 class SharepointListItem(ApiComponent):
-    _endpoints = {}
+    _endpoints = {'update_list_item': '/items/{item_id}/fields'}
 
     def __init__(self, *, parent=None, con=None, **kwargs):
         """ A Sharepoint ListItem within a SharepointList
@@ -81,6 +81,7 @@ class SharepointListItem(ApiComponent):
         if parent and con:
             raise ValueError('Need a parent or a connection but not both')
         self.con = parent.con if parent else con
+        self._parent = parent
 
         # Choose the main_resource passed in kwargs over parent main_resource
         main_resource = (kwargs.pop('main_resource', None) or
@@ -93,6 +94,7 @@ class SharepointListItem(ApiComponent):
 
         cloud_data = kwargs.get(self._cloud_data_key, {})
 
+        self._track_changes = TrackerSet(casing=self._cc)
         self.object_id = cloud_data.get('id')
         created = cloud_data.get(self._cc('createdDateTime'), None)
         modified = cloud_data.get(self._cc('lastModifiedDateTime'), None)
@@ -116,13 +118,62 @@ class SharepointListItem(ApiComponent):
     def __repr__(self):
         return 'List Item: {}'.format(self.web_url)
 
+    def _clear_tracker(self):
+        self._track_changes = TrackerSet(casing=self._cc)
+
+    def _valid_field(self, field):
+        #Verify the used field names are valid internal field names
+        valid_field_names = self.fields if self.fields \
+                                else self._parent.column_name_cw.values() \
+                                    if self._parent \
+                                else None
+        if valid_field_names:
+            return field in valid_field_names
+
+        #If no parent is given, and no internal fields are defined assume correct, API will check
+        return True
+
+    def update_fields(self, updates):
+        """
+        Update the value for a field(s) in the listitem
+
+        :param update: A dict of {'field name': newvalue}
+        """
+
+        for field in updates:
+            if self._valid_field(field):
+                self._track_changes.add(field)
+            else:
+                raise ValueError('"{}" is not a valid internal field name'.format(field))
+
+        #Update existing instance of fields, or create a fields instance if needed
+        if self.fields:
+            self.fields.update(updates)
+        else:
+            self.fields = updates
+
+    def save_updates(self):
+        """Save the updated fields to the cloud"""
+
+        if not self._track_changes:
+            return True # there's nothing to update
+
+        url = self.build_url(self._endpoints.get('update_list_item').format(item_id=self.object_id))
+        update = {field: value for field, value in self.fields.items()
+                    if self._cc(field) in self._track_changes}
+
+        response = self.con.patch(url, update)
+        if not response:
+            return False
+        self._clear_tracker()
+        return True
+
 
 class SharepointList(ApiComponent):
     _endpoints = {
         'get_items': '/items',
         'get_item_by_id': '/items/{item_id}',
-        'get_list_columns': '/columns',
-        'update_list_item': '/items/{item_id}/fields'
+        'get_list_columns': '/columns'
     }
     list_item_constructor = SharepointListItem
     list_column_constructor = SharepointListColumn
@@ -241,41 +292,38 @@ class SharepointList(ApiComponent):
 
         return [self.list_column_constructor(parent=self, **{self._cloud_data_key: column})
                 for column in data.get('value', [])]
-    
-    def update_list_item(self, item_id, update):
-        """Updates a list item with a given update
-           
-        :param item_id: List item id to update
-        :param update: Data to update list item with {'col_name': 'Updated Data'}
-        
-        :rtype: SharepointListItem
-        """
-        
-        url = self.build_url(self._endpoints.get('update_list_item').format(item_id=item_id))
-        
-        response = self.con.patch(url, update)
-        
-        return bool(response)
 
     def create_list_item(self, new_data):
         """Create new list item
-        
+
         :param new_data: dictionary of {'col_name': col_value}
-                    
+
         :rtype: SharepointListItem
         """
-        
+
         url = self.build_url(self._endpoints.get('get_items'))
-        
+
         response = self.con.post(url, {'fields': new_data})
         if not response:
             return False
-        
+
         data = response.json()
-        
+
         return self.list_item_constructor(parent=self, **{self._cloud_data_key: data})
-    
-    
+
+    def delete_list_item(self, item_id):
+        """ Delete an existing list item
+
+        :param item_id: Id of the item to be delted
+        """
+
+        url = self.build_url(self._endpoints.get('get_item_by_id').format(item_idi=item_id))
+
+        response = self.con.delete(url)
+
+        return bool(response)    
+
+
 class Site(ApiComponent):
     """ A Sharepoint Site """
 
