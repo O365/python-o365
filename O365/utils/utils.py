@@ -550,7 +550,8 @@ class Query:
         'from': 'from/emailAddress/address',
         'to': 'toRecipients/emailAddress/address',
         'start': 'start/DateTime',
-        'end': 'end/DateTime'
+        'end': 'end/DateTime',
+        'flag': 'flag/flagStatus'
     }
 
     def __init__(self, attribute=None, *, protocol):
