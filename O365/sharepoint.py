@@ -275,7 +275,8 @@ class Site(ApiComponent):
 
         # prefix with the current known site
         resource_prefix = 'sites/{site_id}'.format(site_id=self.object_id)
-        main_resource = '{}{}'.format(main_resource, resource_prefix)
+        main_resource = (resource_prefix if isinstance(parent,Site)
+                            else '{}{}'.format(main_resource, resource_prefix))
 
         super().__init__(
             protocol=parent.protocol if parent else kwargs.get('protocol'),
