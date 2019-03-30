@@ -190,7 +190,7 @@ if __name__ == '__main__':
     4. To upload a folder, run:
             python -f upload_folder -s <Your local-folder-path> -d <Your onedrive-folder-path>
 
-    (onedrive-folder-path/onedrive-folder-path must be relative path from root folder of your onedrive)
+    (onedrive-folder-path/onedrive-file-path must be relative path from root folder of your onedrive)
     '''
 
     main()
