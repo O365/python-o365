@@ -395,7 +395,12 @@ class CustomClass(ApiComponent):
     _endpoints = {'my_url_key': '/customendpoint'}
     
     def __init__(self, *, parent=None, con=None, **kwargs):
-        super().__init__(parent=parent, con=con, **kwargs)
+        # connection is only needed if you want to communicate with the api provider
+        self.con = parent.con if parent else con
+        protocol = parent.protocol
+        main_resource = parent.main_resource
+        
+        super().__init__(protocol=protocol, main_resource=main_resource)
         # ...
 
     def do_some_stuff(self):
