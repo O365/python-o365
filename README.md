@@ -117,22 +117,25 @@ The `Connection` Class handles the authentication.
 This section is explained using Microsoft Graph Protocol, almost the same applies to the Office 365 REST API.
 
 ##### Authentication Flow
-1. To work with oauth you first need to register your application at [Microsoft Application Registration Portal](https://apps.dev.microsoft.com/).
+1. To work with oauth you first need to register your application at [Azure App Registrations](https://portal.azure.com/#blade/Microsoft_AAD_RegisteredApps/ApplicationsListBlade).
 
-    1. Login at [Microsoft Application Registration Portal](https://apps.dev.microsoft.com/)
-    2. Create an app, note your app id (client_id)
-    3. Generate a new password (client_secret) under "Application Secrets" section
-    4. Under the "Platform" section, add a new Web platform and set "https://outlook.office365.com/owa/" as the redirect URL
-    5. Under "Microsoft Graph Permissions" section, add the delegated permissions you want (see scopes), as an example, to read and send emails use:
+    1. Login at [Azure Portal (App Registrations)](https://portal.azure.com/#blade/Microsoft_AAD_RegisteredApps/ApplicationsListBlade)
+    1. Create an app. Set a name.
+    1. In Supported account types choose "Accounts in any organizational directory and personal Microsoft accounts (e.g. Skype, Xbox, Outlook.com)", if you are using a personal account.
+    1. Set the redirect uri (Web) to: `https://login.microsoftonline.com/common/oauth2/nativeclient` and click register. This is the default redirect uri used by this library, but you can use any other if you want.
+    1. Write down the Application (client) ID. You will need this value.
+    1. Under "Certificates & secrets", generate a new client secret. Set the expiration preferably to never.
+    1. Write down the value of the client secret created now. It will be hidden later on.
+    1. Under Api Permissions add the delegated permissions for Microsoft Graph you want (see scopes), as an example, to read and send emails use:
         1. Mail.ReadWrite
-        2. Mail.Send
-        3. User.Read
-        4. It is highly recommended to add "offline_access" permission. If not you will have to re-authenticate every hour.
+        1. Mail.Send
+        1. User.Read
+        1. It is highly recommended to add "offline_access" permission. If not you will have to re-authenticate every hour.
 
-2. Then you need to login for the first time to get the access token by consenting the application to access the resources it needs.
+1. Then you need to login for the first time to get the access token by consenting the application to access the resources it needs.
     1. To authenticate (login) call `account.authenticate` and pass the scopes you want (the ones you previously added on the app registration portal).
     
-        You can pass "protocol scopes" (like: "https://graph.microsoft.com/Calendars.ReadWrite") to the method or use "[scope helpers](https://github.com/O365/python-o365/blob/master/O365/connection.py#L33)" like ("message_all").
+        You can pass "protocol scopes" (like: "https://graph.microsoft.com/Calendars.ReadWrite") to the method or use "[scope helpers](https://github.com/O365/python-o365/blob/master/O365/connection.py#L34)" like ("message_all").
         If you pass protocol scopes, then the `account` instance must be initialized with the same protocol used by the scopes. By using scope helpers you can abstract the protocol from the scopes and let this library work for you.   
         Finally, you can mix and match "protocol scopes" with "scope helpers".
         Go to the [procotol section](#protocols) to know more about them.
@@ -148,14 +151,14 @@ This section is explained using Microsoft Graph Protocol, almost the same applie
         ```
         This method call will print a url that the user must visit to give consent to the app on the required permissions.
         
-        The user must then visit this url and give consent to the application. When consent is given, the page will rediret to: "https://outlook.office365.com/owa/" by default (you can change this).
+        The user must then visit this url and give consent to the application. When consent is given, the page will rediret to: "https://login.microsoftonline.com/common/oauth2/nativeclient" by default (you can change this) with a url query param called 'code'.
         
         Then the user must copy the resulting page url and paste it back on the console.
-        The method will the return True if the login attempt was succesful.
+        The method will then return True if the login attempt was succesful.
 
         **Take care: the access (and refresh) token must remain protected from unauthorized users.**
 
-    3. At this point you will have an access token stored that will provide valid credentials when using the api. If you change the scope requested, then the current token won't work, and you will need the user to give consent again on the application to gain access to the new scopes requested.
+    1. At this point you will have an access token stored that will provide valid credentials when using the api. If you change the scope requested, then the current token won't work, and you will need the user to give consent again on the application to gain access to the new scopes requested.
 
     The access token only lasts **60 minutes**, but the app will automatically request new access tokens through the refresh tokens (if and only if you added the "offline_access" permission), but note that a refresh token only lasts for 90 days. So you must use it before or you will need to request a new access token again (no new consent needed by the user, just a login).
     
@@ -627,6 +630,8 @@ for event in birthdays:
     else:
         event.decline("No way I'm comming, I'll be in Spain", send_response=False)  # decline the event but don't send a reponse to the organizer
 ```
+
+There are some known issues when working with [shared calendars](https://docs.microsoft.com/en-us/graph/known-issues#calendars) in Microsoft Graph.
 
 ## OneDrive
 The `Storage` class handles all functionality around One Drive and Document Library Storage in Sharepoint.

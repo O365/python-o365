@@ -53,7 +53,7 @@ class Account(object):
         if not token:
             token = self.con.token_backend.get_token()
 
-        return token and not token.is_expired
+        return token is not None and not token.is_expired
 
     def authenticate(self, *, scopes, **kwargs):
         """ Performs the oauth authentication flow resulting in a stored token

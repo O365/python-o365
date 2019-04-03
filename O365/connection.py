@@ -23,7 +23,7 @@ log = logging.getLogger(__name__)
 
 O365_API_VERSION = 'v2.0'
 GRAPH_API_VERSION = 'v1.0'
-OAUTH_REDIRECT_URL = 'https://outlook.office365.com/owa/'
+OAUTH_REDIRECT_URL = 'https://login.microsoftonline.com/common/oauth2/nativeclient'  # version <= 1.1.3.  : 'https://outlook.office365.com/owa/'
 
 RETRIES_STATUS_LIST = (
     429,  # Status code for TooManyRequests
