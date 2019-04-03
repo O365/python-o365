@@ -785,16 +785,16 @@ for message in messages:  # 100 loops with 4 requests to the api server
 
 #### The Query helper
 
-When using the Office 365 API you can filter some fields.
+When using the Office 365 API you can filter, order, select, expand or search on some fields.
 This filtering is tedious as is using [Open Data Protocol (OData)](http://docs.oasis-open.org/odata/odata/v4.0/errata03/os/complete/part2-url-conventions/odata-v4.0-errata03-os-part2-url-conventions-complete.html).
 
 Every `ApiComponent` (such as `MailBox`) implements a new_query method that will return a `Query` instance.
-This `Query` instance can handle the filtering (and sorting and selecting) very easily.
+This `Query` instance can handle the filtering, sorting, selecting, expanding and search very easily.
 
 For example:
 
 ```python
-query = mailbox.new_query()
+query = mailbox.new_query()  # you can use the shorthand: mailbox.q()
 
 query = query.on_attribute('subject').contains('george best').chain('or').startswith('quotes')
 
@@ -819,6 +819,18 @@ You can also specify specific data to be retrieved with "select":
 query = mailbox.new_query().select('subject', 'to_recipients', 'created_date_time')
 
 messages_with_selected_properties = mailbox.get_messages(query=query)
+```
+
+You can also search content. As said in the graph docs:
+
+> You can currently search only message and person collections. A $search request returns up to 250 results. You cannot use $filter or $orderby in a search request.
+
+> If you do a search on messages and specify only a value without specific message properties, the search is carried out on the default search properties of from, subject, and body.
+
+```python
+# searching is the easy part ;)
+query = mailbox.q().search('george best is da boss')
+messages = mailbox.get_messages(query=query)
 ```
 
 #### Request Error Handling

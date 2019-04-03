@@ -10,7 +10,6 @@ from stringcase import snakecase
 from .windows_tz import get_iana_tz, get_windows_tz
 from .decorators import fluent
 
-
 ME_RESOURCE = 'me'
 USERS_RESOURCE = 'users'
 
@@ -570,12 +569,14 @@ class Query:
         self._order_by = OrderedDict()
         self._selects = set()
         self._expands = set()
+        self._search = None
 
     def __str__(self):
-        return 'Filter: {}\nOrder: {}\nSelect: {}\nExpand: {}'.format(self.get_filters(),
-                                                                      self.get_order(),
-                                                                      self.get_selects(),
-                                                                      self.get_expands())
+        return 'Filter: {}\nOrder: {}\nSelect: {}\nExpand: {}\nSearch: {}'.format(self.get_filters(),
+                                                                                  self.get_order(),
+                                                                                  self.get_selects(),
+                                                                                  self.get_expands(),
+                                                                                  self._search)
 
     def __repr__(self):
         return self.__str__()
@@ -622,8 +623,29 @@ class Query:
 
         return self
 
+    @fluent
+    def search(self, text):
+        """
+        Perform a search.
+        Not from graph docs:
+         You can currently search only message and person collections.
+         A $search request returns up to 250 results.
+         You cannot use $filter or $orderby in a search request.
+        :param str text: the text to search
+        :return: the Query instance
+        """
+        if text is None:
+            self._search = None
+        else:
+            # filters an order are not allowed
+            self.clear_filters()
+            self.clear_order()
+            self._search = '"{}"'.format(text)
+
+        return self
+
     def as_params(self):
-        """ Returns the filters and orders as query parameters
+        """ Returns the filters, orders, select, expands and search as query parameters
 
         :rtype: dict
         """
@@ -636,6 +658,10 @@ class Query:
             params['$select'] = self.get_selects()
         if self.has_expands:
             params['$expand'] = self.get_expands()
+        if self._search:
+            params['$search'] = self._search
+            params.pop('$filter', None)
+            params.pop('$orderby', None)
         return params
 
     @property
@@ -767,6 +793,10 @@ class Query:
         """ Clear filters """
         self._filters = []
 
+    def clear_order(self):
+        """ Clears any order commands """
+        self._order_by = OrderedDict()
+
     @fluent
     def clear(self):
         """ Clear everything
@@ -779,6 +809,8 @@ class Query:
         self._negation = False
         self._attribute = None
         self._chain = None
+        self._search = None
+
         return self
 
     @fluent
