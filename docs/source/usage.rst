@@ -9,3 +9,4 @@ Detailed Usage
    usage/connection
    usage/account
    usage/mailbox
+   usage/sharepoint
