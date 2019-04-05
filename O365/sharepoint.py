@@ -317,7 +317,7 @@ class SharepointList(ApiComponent):
         :param item_id: Id of the item to be delted
         """
 
-        url = self.build_url(self._endpoints.get('get_item_by_id').format(item_idi=item_id))
+        url = self.build_url(self._endpoints.get('get_item_by_id').format(item_id=item_id))
 
         response = self.con.delete(url)
 
