@@ -1,23 +1,23 @@
 Sharepoint
 ==========
-Assuming an authenticated account, create a sharepoint instance, and connect
-to a sharepoint site.
+Assuming an authenticated account, create a Sharepoint instance, and connect
+to a Sharepoint site.
 
 .. code-block:: python
 
-    #Create sharepoint instance and connect to a site
+    #Create Sharepoint instance and connect to a site
     from O365 import Account
     acct = Account(('app_id', 'app_pw'))
     sp_site = acct.sharepoint().get_site('root', 'path/tosite')
 
-Common commands on :code:`sp_site` include :code:`.display_name`,
+Common commands for :code:`sp_site` include :code:`.display_name`,
 :code:`.get_document_library()`, :code:`.get_subsites()`, :code:`.get_lists()`,
 and :code:`.get_list_by_name('list_name')`.
 
 **Accessing Subsites**
 
 If a Sharepoint site contains subsites they can be returned as a list of
-sharepoint sites by the :code:`.get_subsites()` function.
+Sharepoint sites by the :code:`.get_subsites()` function.
 
 .. code-block:: python
 
@@ -88,7 +88,7 @@ dictionary of :code:`{'Display Name': 'Internal Name'}` if needed.
 
 Sharepoint list items can be updated by passing a dictionary of
 :code:`{'column_name': 'Updated Data'}` to the :code:`.update_fields()` function of a
-sharepoint list item.  The `column_name` keys of the dictionary must again refer
+Sharepoint list item.  The `column_name` keys of the dictionary must again refer
 to the internal column name, otherwise an error will occur.
 
 .. code-block:: python
