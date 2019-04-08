@@ -1,6 +1,8 @@
 """
 A simple python library to interact with Microsoft Graph and Office 365 API
 """
+import warnings
+
 from .__version__ import __version__
 from .account import Account
 from .address_book import AddressBook, Contact, RecipientType
@@ -17,3 +19,7 @@ from .planner import Planner, Task
 from .utils import ImportanceLevel, Query, Recipient
 from .utils import OneDriveWellKnowFolderNames, OutlookWellKnowFolderNames
 from .utils import FileSystemTokenBackend, FirestoreBackend
+
+
+# allow Deprecation warnings to appear
+warnings.simplefilter('always', DeprecationWarning)

@@ -384,6 +384,13 @@ class Connection:
         :rtype: str
         """
 
+        # TODO: remove this warning in future releases
+        if redirect_uri == OAUTH_REDIRECT_URL:
+            warnings.warn('The default redirect uri was changed in version 1.1.4. to'
+                          ' "https://login.microsoftonline.com/common/oauth2/nativeclient".'
+                          ' You may have to change the registered app "redirect uri" or pass here the old "redirect_uri"',
+                          DeprecationWarning)
+
         client_id, client_secret = self.auth
 
         if requested_scopes:
