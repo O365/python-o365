@@ -16,7 +16,7 @@ and :code:`.get_list_by_name('list_name')`.
 
 **Accessing Subsites**
 
-If a sharepoint site contains subsites they can be returned as a list of
+If a Sharepoint site contains subsites they can be returned as a list of
 sharepoint sites by the :code:`.get_subsites()` function.
 
 .. code-block:: python
@@ -32,8 +32,8 @@ sharepoint sites by the :code:`.get_subsites()` function.
 Sharepoint Lists
 ^^^^^^^^^^^^^^^^
 
-Sharepoint Lists are accessible from their site using the :code:`.get_lists()` to
-return a list of share point list objects, or a particular list can be accessed
+Sharepoint Lists are accessible from their Sharepoint site using :code:`.get_lists()` which
+returns a Python list of Sharepoint list objects.  A known list can be accessed
 by providing a :code:`list_name` to :code:`.get_list_by_name('list_name')` which will return
 the requested list as a :code:`sharepointlist` object.
 
@@ -46,7 +46,7 @@ the requested list as a :code:`sharepointlist` object.
     sp_list = sp_site.get_list_by_name('list_name')
 
 
-Commmon functions on a sharepoint list include :code:`.get_list_columns()`,
+Commmon functions on a Sharepoint list include :code:`.get_list_columns()`,
 :code:`.get_items()`, :code:`.get_item_by_id()`, :code:`.create_list_item()`,
 :code:`.delete_list_item()`.
 
@@ -54,7 +54,7 @@ Commmon functions on a sharepoint list include :code:`.get_list_columns()`,
 Sharepoint List Items
 """""""""""""""""""""
 
-Accessing a listitem from a sharepoint list is done by utilizing :code:`.get_items()`,
+Accessing a list item from a Sharepoint list is done by utilizing :code:`.get_items()`,
 or :code:`.get_item_by_id(item_id)`.
 
 .. code-block:: python
@@ -68,9 +68,9 @@ or :code:`.get_item_by_id(item_id)`.
 
 **Creating & Deleting Sharepoint Items**
 
-A sharepoint list item can be created by passing the new data in a dictionary
-consisting of :code:`{'column_name': 'new_data'}`.  Not all columns in the list have to
-be accounted for in the dictionary, any column in the list not in the dictionary
+A Sharepoint list item can be created by passing the new data in a dictionary
+consisting of :code:`{'column_name': 'new_data'}`.  Not all columns in the Sharepoint list have to
+be accounted for in the dictionary, any Sharepoint List column not in the dictionary
 will be filled with a blank.  The `column_name` must be the internal column name
 of the sharepoint list.  :code:`.column_name_cw` of a sharepoint list will provide a
 dictionary of :code:`{'Display Name': 'Internal Name'}` if needed.
