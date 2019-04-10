@@ -269,6 +269,12 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         flag_data = cloud_data.get(cc('flag'), {})
         self.__flag = MessageFlag(parent=self, flag_data=flag_data)
 
+        self.internet_message_id = cloud_data.get(cc('internetMessageId'), '')
+        self.web_link = cloud_data.get(cc('webLink'), '')
+
+        # Headers only retrieved when selecting 'internetMessageHeaders'
+        self.message_headers = cloud_data.get(cc('internetMessageHeaders'), [])
+
     def __str__(self):
         return self.__repr__()
 
