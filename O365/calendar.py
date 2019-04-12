@@ -1614,10 +1614,10 @@ class Calendar(ApiComponent, HandleRecipientsMixin):
                     # and the 3rd position in filter_data contains the value
                     word = query_data[2][3]
 
-                    if attribute.startswith('start/'):
+                    if attribute.lower().startswith('start/'):
                         start = word.replace("'", '')  # remove the quotes
                         query.remove_filter('start')
-                    if attribute.startswith('end/'):
+                    if attribute.lower().startswith('end/'):
                         end = word.replace("'", '')  # remove the quotes
                         query.remove_filter('end')
 
