@@ -20,7 +20,8 @@ class SharepointListColumn(ApiComponent):
         self.con = parent.con if parent else con
 
         # Choose the main_resource passed in kwargs over the parent main_resource
-        main_resource = kwargs.pop('main_resource', None) or getattr(parent, 'main_resource', None) if parent else None
+        main_resource = kwargs.pop('main_resource', None) or (
+            getattr(parent, 'main_resource', None) if parent else None)
 
         super().__init__(protocol=parent.protocol if parent else kwargs.get('protocol'), main_resource=main_resource)
 
@@ -84,9 +85,8 @@ class SharepointListItem(ApiComponent):
         self._parent = parent
 
         # Choose the main_resource passed in kwargs over parent main_resource
-        main_resource = (kwargs.pop('main_resource', None) or
-                         getattr(parent, 'main_resource',
-                                 None) if parent else None)
+        main_resource = kwargs.pop('main_resource', None) or (
+            getattr(parent, 'main_resource', None) if parent else None)
 
         super().__init__(
             protocol=parent.protocol if parent else kwargs.get('protocol'),
@@ -122,15 +122,15 @@ class SharepointListItem(ApiComponent):
         self._track_changes = TrackerSet(casing=self._cc)
 
     def _valid_field(self, field):
-        #Verify the used field names are valid internal field names
+        # Verify the used field names are valid internal field names
         valid_field_names = self.fields if self.fields \
-                                else self._parent.column_name_cw.values() \
-                                    if self._parent \
-                                else None
+            else self._parent.column_name_cw.values() \
+            if self._parent \
+            else None
         if valid_field_names:
             return field in valid_field_names
 
-        #If no parent is given, and no internal fields are defined assume correct, API will check
+        # If no parent is given, and no internal fields are defined assume correct, API will check
         return True
 
     def update_fields(self, updates):
@@ -146,7 +146,7 @@ class SharepointListItem(ApiComponent):
             else:
                 raise ValueError('"{}" is not a valid internal field name'.format(field))
 
-        #Update existing instance of fields, or create a fields instance if needed
+        # Update existing instance of fields, or create a fields instance if needed
         if self.fields:
             self.fields.update(updates)
         else:
@@ -156,11 +156,11 @@ class SharepointListItem(ApiComponent):
         """Save the updated fields to the cloud"""
 
         if not self._track_changes:
-            return True # there's nothing to update
+            return True  # there's nothing to update
 
         url = self.build_url(self._endpoints.get('update_list_item').format(item_id=self.object_id))
         update = {field: value for field, value in self.fields.items()
-                    if self._cc(field) in self._track_changes}
+                  if self._cc(field) in self._track_changes}
 
         response = self.con.patch(url, update)
         if not response:
@@ -198,10 +198,8 @@ class SharepointList(ApiComponent):
         self.object_id = cloud_data.get('id')
 
         # Choose the main_resource passed in kwargs over parent main_resource
-        main_resource = (kwargs.pop('main_resource', None) or
-                         getattr(parent,
-                                 'main_resource',
-                                 None) if parent else None)
+        main_resource = kwargs.pop('main_resource', None) or (
+            getattr(parent, 'main_resource', None) if parent else None)
 
         # prefix with the current known list
         resource_prefix = '/lists/{list_id}'.format(list_id=self.object_id)
@@ -241,11 +239,11 @@ class SharepointList(ApiComponent):
             self._cc('contentTypesEnabled'), False)
         self.hidden = lst_info.get(self._cc('hidden'), False)
         self.template = lst_info.get(self._cc('template'), False)
-        
-        #Crosswalk between display name of user defined columns to internal name
-        self.column_name_cw = {col.display_name: col.internal_name for 
+
+        # Crosswalk between display name of user defined columns to internal name
+        self.column_name_cw = {col.display_name: col.internal_name for
                                col in self.get_list_columns() if not col.read_only}
-        
+
     def get_items(self):
         """ Returns a collection of Sharepoint Items
 
@@ -321,7 +319,7 @@ class SharepointList(ApiComponent):
 
         response = self.con.delete(url)
 
-        return bool(response)    
+        return bool(response)
 
 
 class Site(ApiComponent):
@@ -354,15 +352,13 @@ class Site(ApiComponent):
         self.object_id = cloud_data.get('id')
 
         # Choose the main_resource passed in kwargs over parent main_resource
-        main_resource = (kwargs.pop('main_resource', None) or
-                         getattr(parent,
-                                 'main_resource',
-                                 None) if parent else None)
+        main_resource = kwargs.pop('main_resource', None) or (
+            getattr(parent, 'main_resource', None) if parent else None)
 
         # prefix with the current known site
         resource_prefix = 'sites/{site_id}'.format(site_id=self.object_id)
-        main_resource = (resource_prefix if isinstance(parent,Site)
-                            else '{}{}'.format(main_resource, resource_prefix))
+        main_resource = (resource_prefix if isinstance(parent, Site)
+                         else '{}{}'.format(main_resource, resource_prefix))
 
         super().__init__(
             protocol=parent.protocol if parent else kwargs.get('protocol'),

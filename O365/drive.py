@@ -132,9 +132,9 @@ class CopyOperation(ApiComponent):
         self.parent = parent  # parent will be always a DriveItem
 
         # Choose the main_resource passed in kwargs over parent main_resource
-        main_resource = (kwargs.pop('main_resource', None) or
-                         getattr(parent, 'main_resource',
-                                 None) if parent else None)
+        main_resource = kwargs.pop('main_resource', None) or (
+            getattr(parent, 'main_resource', None) if parent else None)
+
         super().__init__(
             protocol=parent.protocol if parent else kwargs.get('protocol'),
             main_resource=main_resource)
@@ -225,10 +225,8 @@ class DriveItemVersion(ApiComponent, DownloadableMixin):
 
         protocol = parent.protocol if parent else kwargs.get('protocol')
         # Choose the main_resource passed in kwargs over parent main_resource
-        main_resource = (kwargs.pop('main_resource', None) or
-                         getattr(parent,
-                                 'main_resource',
-                                 None) if parent else None)
+        main_resource = kwargs.pop('main_resource', None) or (
+            getattr(parent, 'main_resource', None) if parent else None)
 
         resource_prefix = '/items/{item_id}'.format(
             item_id=self._parent.object_id)
@@ -311,10 +309,9 @@ class DriveItemPermission(ApiComponent):
         self.con = parent.con if parent else con
         self._parent = parent if isinstance(parent, DriveItem) else None
         # Choose the main_resource passed in kwargs over parent main_resource
-        main_resource = (kwargs.pop('main_resource', None) or
-                         getattr(parent,
-                                 'main_resource',
-                                 None) if parent else None)
+        main_resource = kwargs.pop('main_resource', None) or (
+            getattr(parent, 'main_resource', None) if parent else None)
+
         protocol = parent.protocol if parent else kwargs.get('protocol')
         super().__init__(protocol=protocol, main_resource=main_resource)
 
@@ -444,10 +441,8 @@ class DriveItem(ApiComponent):
                 'drive', None))
 
         # Choose the main_resource passed in kwargs over parent main_resource
-        main_resource = (kwargs.pop('main_resource', None) or
-                         getattr(parent,
-                                 'main_resource',
-                                 None) if parent else None)
+        main_resource = kwargs.pop('main_resource', None) or (
+            getattr(parent, 'main_resource', None) if parent else None)
 
         protocol = parent.protocol if parent else kwargs.get('protocol')
         if parent and not isinstance(parent, DriveItem):
@@ -1270,10 +1265,8 @@ class Drive(ApiComponent):
         self.parent = parent if isinstance(parent, Drive) else None
 
         # Choose the main_resource passed in kwargs over parent main_resource
-        main_resource = (kwargs.pop('main_resource', None) or
-                         getattr(parent,
-                                 'main_resource',
-                                 None) if parent else None)
+        main_resource = kwargs.pop('main_resource', None) or (
+            getattr(parent, 'main_resource', None) if parent else None)
         super().__init__(
             protocol=parent.protocol if parent else kwargs.get('protocol'),
             main_resource=main_resource)
@@ -1644,9 +1637,8 @@ class Storage(ApiComponent):
         self.con = parent.con if parent else con
 
         # Choose the main_resource passed in kwargs over parent main_resource
-        main_resource = (kwargs.pop('main_resource', None) or
-                         getattr(parent, 'main_resource',
-                                 None) if parent else None)
+        main_resource = kwargs.pop('main_resource', None) or (
+            getattr(parent, 'main_resource', None) if parent else None)
         super().__init__(
             protocol=parent.protocol if parent else kwargs.get('protocol'),
             main_resource=main_resource)
