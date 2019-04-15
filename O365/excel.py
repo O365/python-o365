@@ -164,7 +164,7 @@ class WorkSheet(ApiComponent):
             getattr(parent, 'main_resource', None) if parent else None)
 
         # append the encoded worksheet path
-        main_resource = "{}/worksheet('{}')".format(main_resource, quote(self.object_id))
+        main_resource = "{}/worksheets('{}')".format(main_resource, quote(self.object_id))
 
         super().__init__(
             protocol=parent.protocol if parent else kwargs.get('protocol'),
@@ -174,9 +174,39 @@ class WorkSheet(ApiComponent):
         self.position = cloud_data.get('position', None)
         self.visibility = cloud_data.get('visibility', None)
 
+    def __str__(self):
+        return self.__repr__()
+
+    def __repr__(self):
+        return 'Worksheet: {}'.format(self.name)
+
     def delete(self):
         """ Deletes this worksheet """
         return bool(self.session.delete(self.build_url('')))
+
+    def update(self, *, name=None, position=None, visibility=None):
+        """ Changes the name, position or visibility of this worksheet """
+
+        if name is None and position is None and visibility is None:
+            raise ValueError('Provide at least one parameter to update')
+        data = {}
+        if name:
+            data['name'] = name
+        if position:
+            data['position'] = position
+        if visibility:
+            data['visibility'] = visibility
+
+        response = self.session.patch(self.build_url(''), data=data)
+        if not response:
+            return False
+
+        data = response.json()
+        self.name = data.get('name', self.name)
+        self.position = data.get('position', self.position)
+        self.visibility = data.get('visibility', self.visibility)
+
+        return True
 
 
 class WorkBook(ApiComponent):
@@ -198,7 +228,8 @@ class WorkBook(ApiComponent):
             raise ValueError('This file is not a valid Excel xlsx file.')
 
         # append the workbook path
-        main_resource = '{}/workbook'.format(file_item.main_resource)
+        main_resource = '{}{}/workbook'.format(file_item.main_resource,
+                                               file_item._endpoints.get('item').format(id=file_item.object_id))
 
         super().__init__(protocol=file_item.protocol, main_resource=main_resource)
 
@@ -207,6 +238,14 @@ class WorkBook(ApiComponent):
 
         if use_session:
             self.session.create_session()
+
+        self.name = file_item.name
+
+    def __str__(self):
+        return self.__repr__()
+
+    def __repr__(self):
+        return 'Workbook: {}'.format(self.name)
 
     def get_worksheets(self):
         """ Returns a collection of this workbook worksheets"""

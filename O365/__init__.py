@@ -16,6 +16,7 @@ from .mailbox import MailBox
 from .message import Message, MessageAttachment
 from .sharepoint import Sharepoint, Site
 from .planner import Planner, Task
+from .excel import WorkBook
 from .utils import ImportanceLevel, Query, Recipient
 from .utils import OneDriveWellKnowFolderNames, OutlookWellKnowFolderNames
 from .utils import FileSystemTokenBackend, FirestoreBackend

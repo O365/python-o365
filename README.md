@@ -61,6 +61,7 @@ What follows is kind of a wiki... but you will get more insights by looking at t
 - [AddressBook](#addressbook)
 - [Calendar](#calendar)
 - [OneDrive](#onedrive)
+- [Excel](#excel)
 - [Sharepoint](#sharepoint)
 - [Planner](#planner)
 - [Utils](#utils)
@@ -731,6 +732,38 @@ for version in versions:
 # ... and much more ...
 ```
 
+
+## Excel
+You can interact with new excel files (.xlsx) stored in OneDrive or a Sharepoint Document Library.
+You can retrieve workbooks, worksheets, tables, and even cell data.
+You can also write to any excel online.
+
+To work with excel files, first you have to retrieve a `File` instance using the OneDrive or Sharepoint functionallity.
+
+```python
+from O365 import WorkBook
+
+# given a File instance that is a xlsx file ...
+excel_file = WorkBook(my_file_instance)  
+
+ws = excel_file.get_worksheet('my_worksheet')
+ws.update(name='new name')
+```
+
+#### Workbook Sessions
+When interacting with excel, you can use a workbook session to efficiently make changes in a persistent or nonpersistent way.
+This sessions become usefull if you perform numerous changes to the excel file.
+
+The default is to use a session in a persistent way.
+Sessions expire after some time of inactivity. When working with persistent sessions, new sessions will automatically be created when old ones expire.
+
+You can however change this when creating the `Workbook` instance:
+
+```python
+excel_file = WorkBook(my_file_instance, use_session=False, persist=False)
+```
+
+> Work in progress
 
 ## Sharepoint
 The sharepoint api is done but there are no docs yet. Look at the sharepoint.py file to get insights.
