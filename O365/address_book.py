@@ -682,9 +682,9 @@ class BaseContactFolder(ApiComponent):
         data = response.json()
 
         # Everything received from cloud must be passed as self._cloud_data_key
-        contacts = [self.contact_constructor(parent=self,
+        contacts = (self.contact_constructor(parent=self,
                                              **{self._cloud_data_key: contact})
-                    for contact in data.get('value', [])]
+                    for contact in data.get('value', []))
 
         next_link = data.get(NEXT_LINK_KEYWORD, None)
 

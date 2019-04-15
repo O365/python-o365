@@ -158,8 +158,8 @@ class Folder(ApiComponent):
                                             **{self._cloud_data_key: message})
 
         else:
-            messages = self.get_messages(limit=1, query=query,
-                                         download_attachments=download_attachments)
+            messages = list(self.get_messages(limit=1, query=query,
+                                              download_attachments=download_attachments))
 
             return messages[0] if messages else None
 
@@ -208,11 +208,11 @@ class Folder(ApiComponent):
         data = response.json()
 
         # Everything received from cloud must be passed as self._cloud_data_key
-        messages = [self.message_constructor(
+        messages = (self.message_constructor(
             parent=self,
             download_attachments=download_attachments,
             **{self._cloud_data_key: message})
-            for message in data.get('value', [])]
+            for message in data.get('value', []))
 
         next_link = data.get(NEXT_LINK_KEYWORD, None)
         if batch and next_link:

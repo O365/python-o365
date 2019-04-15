@@ -1016,9 +1016,9 @@ class Folder(DriveItem):
         data = response.json()
 
         # Everything received from cloud must be passed as self._cloud_data_key
-        items = [
+        items = (
             self._classifier(item)(parent=self, **{self._cloud_data_key: item})
-            for item in data.get('value', [])]
+            for item in data.get('value', []))
         next_link = data.get(NEXT_LINK_KEYWORD, None)
         if batch and next_link:
             return Pagination(parent=self, data=items,
@@ -1126,9 +1126,9 @@ class Folder(DriveItem):
         data = response.json()
 
         # Everything received from cloud must be passed as self._cloud_data_key
-        items = [
+        items = (
             self._classifier(item)(parent=self, **{self._cloud_data_key: item})
-            for item in data.get('value', [])]
+            for item in data.get('value', []))
         next_link = data.get(NEXT_LINK_KEYWORD, None)
         if batch and next_link:
             return Pagination(parent=self, data=items,
@@ -1361,9 +1361,9 @@ class Drive(ApiComponent):
         data = response.json()
 
         # Everything received from cloud must be passed as self._cloud_data_key
-        items = [
+        items = (
             self._classifier(item)(parent=self, **{self._cloud_data_key: item})
-            for item in data.get('value', [])]
+            for item in data.get('value', []))
         next_link = data.get(NEXT_LINK_KEYWORD, None)
         if batch and next_link:
             return Pagination(parent=self, data=items,
@@ -1603,9 +1603,9 @@ class Drive(ApiComponent):
         data = response.json()
 
         # Everything received from cloud must be passed as self._cloud_data_key
-        items = [
+        items = (
             self._classifier(item)(parent=self, **{self._cloud_data_key: item})
-            for item in data.get('value', [])]
+            for item in data.get('value', []))
         next_link = data.get(NEXT_LINK_KEYWORD, None)
         if batch and next_link:
             return Pagination(parent=self, data=items,

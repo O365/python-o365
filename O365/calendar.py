@@ -1297,8 +1297,8 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         data = response.json()
 
         # Everything received from cloud must be passed as self._cloud_data_key
-        events = [self.__class__(parent=self, **{self._cloud_data_key: event})
-                  for event in data.get('value', [])]
+        events = (self.__class__(parent=self, **{self._cloud_data_key: event})
+                  for event in data.get('value', []))
         next_link = data.get(NEXT_LINK_KEYWORD, None)
         if batch and next_link:
             return Pagination(parent=self, data=events,
@@ -1643,11 +1643,11 @@ class Calendar(ApiComponent, HandleRecipientsMixin):
         data = response.json()
 
         # Everything received from cloud must be passed as self._cloud_data_key
-        events = [self.event_constructor(parent=self,
+        events = (self.event_constructor(parent=self,
                                          download_attachments=
                                          download_attachments,
                                          **{self._cloud_data_key: event})
-                  for event in data.get('value', [])]
+                  for event in data.get('value', []))
         next_link = data.get(NEXT_LINK_KEYWORD, None)
         if batch and next_link:
             return Pagination(parent=self, data=events,

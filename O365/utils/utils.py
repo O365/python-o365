@@ -460,7 +460,7 @@ class Pagination(ApiComponent):
         self.constructor = constructor
         self.next_link = next_link
         self.limit = limit
-        self.data = data if data else []
+        self.data = data = list(data) if data else []
 
         data_count = len(data)
         if limit and limit < data_count:
