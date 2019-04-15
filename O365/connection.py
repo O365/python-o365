@@ -474,8 +474,9 @@ class Connection:
         :rtype: OAuth2Session
         """
         # TODO: remove token_path in future versions
-        warnings.warn('"token_path" param will be removed in future versions.'
-                      ' Use a TokenBackend instead.', DeprecationWarning)
+        if token_path is not None:
+            warnings.warn('"token_path" param will be removed in future versions.'
+                          ' Use a TokenBackend instead.', DeprecationWarning)
 
         # gets a fresh token from the store
         token = self.token_backend.get_token()
