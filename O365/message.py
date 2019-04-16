@@ -546,7 +546,7 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         if self.sender and self.sender.address:
             message[cc('from')] = self._recipient_to_cloud(self.sender)
 
-        if self.categories:
+        if self.categories or 'categories' in restrict_keys:
             message[cc('categories')] = self.categories
 
         if self.object_id and not self.__is_draft:
