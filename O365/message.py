@@ -779,7 +779,7 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         """
         if self.object_id and not self.__is_draft:
             # we are only allowed to save some properties:
-            allowed_changes = {'isRead', 'categories', 'flag'}  # allowed changes to be saved by this method
+            allowed_changes = {self._cc('isRead'), self._cc('categories'), self._cc('flag')}  # allowed changes to be saved by this method
             changes = {tc for tc in self._track_changes if tc in allowed_changes}
 
             if not changes:
