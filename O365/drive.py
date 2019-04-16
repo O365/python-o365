@@ -1011,7 +1011,7 @@ class Folder(DriveItem):
 
         response = self.con.get(url, params=params)
         if not response:
-            return []
+            return iter(())
 
         data = response.json()
 
@@ -1121,7 +1121,7 @@ class Folder(DriveItem):
 
         response = self.con.get(url, params=params)
         if not response:
-            return []
+            return iter(())
 
         data = response.json()
 
@@ -1356,7 +1356,7 @@ class Drive(ApiComponent):
 
         response = self.con.get(url, params=params)
         if not response:
-            return []
+            return iter(())
 
         data = response.json()
 
@@ -1598,7 +1598,7 @@ class Drive(ApiComponent):
 
         response = self.con.get(url, params=params)
         if not response:
-            return []
+            return iter(())
 
         data = response.json()
 

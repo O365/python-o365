@@ -677,7 +677,7 @@ class BaseContactFolder(ApiComponent):
 
         response = self.con.get(url, params=params)
         if not response:
-            return []
+            return iter(())
 
         data = response.json()
 

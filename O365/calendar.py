@@ -1292,7 +1292,7 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         response = self.con.get(url, params=params,
                                 headers={'Prefer': 'outlook.timezone="UTC"'})
         if not response:
-            return []
+            return iter(())
 
         data = response.json()
 
@@ -1638,7 +1638,7 @@ class Calendar(ApiComponent, HandleRecipientsMixin):
         response = self.con.get(url, params=params,
                                 headers={'Prefer': 'outlook.timezone="UTC"'})
         if not response:
-            return []
+            return iter(())
 
         data = response.json()
 
