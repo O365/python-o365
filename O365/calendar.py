@@ -1354,6 +1354,8 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         if not response:
             return False
 
+        self._track_changes.clear()  # clear the tracked changes
+
         if not self.object_id:
             # new event
             event = response.json()

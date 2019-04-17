@@ -281,10 +281,6 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
     def __repr__(self):
         return 'Subject: {}'.format(self.subject)
 
-    def _clear_tracker(self):
-        # reset the tracked changes. Usually after a server update
-        self._track_changes = TrackerSet(casing=self._cc)
-
     @property
     def is_read(self):
         """ Check if the message is read or not
@@ -794,7 +790,7 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
             if not response:
                 return False
 
-            self._clear_tracker()  # reset the tracked changes as they are all saved
+            self._track_changes.clear()  # reset the tracked changes as they are all saved
             self.__modified = self.protocol.timezone.localize(dt.datetime.now())
 
             return True
@@ -851,7 +847,7 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         if not response:
             return False
 
-        self._clear_tracker()  # reset the tracked changes as they are all saved
+        self._track_changes.clear()  # reset the tracked changes as they are all saved
 
         if not self.object_id:
             # new message
