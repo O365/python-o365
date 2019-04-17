@@ -8,9 +8,11 @@ import logging
 import datetime as dt
 from urllib.parse import quote
 
+from stringcase import snakecase
+
 from .drive import File
 from .connection import MSOffice365Protocol
-from .utils import ApiComponent
+from .utils import ApiComponent, TrackerSet
 
 
 log = logging.getLogger(__name__)
@@ -150,8 +152,27 @@ class Range(ApiComponent):
     """ An Excel Range """
 
     _endpoints = {
-        'get_cell': '/cell(row={row},column={column})',
-        'get_column': '/column(column={column})'
+        'get_cell': '/cell(row={},column={})',
+        'get_column': '/column(column={})',
+        'get_bounding_rect': '/boundingRect',
+        'columns_after': '/columnsAfter(count={})',
+        'columns_before': '/columnsBefore(count={})',
+        'entire_column': '/entireColumn',
+        'intersection': '/intersection',
+        'last_cell': '/lastCell',
+        'last_column': '/lastColumn',
+        'last_row': '/lastRow',
+        'offset_range': '/offsetRange',
+        'get_row': '/row',
+        'rows_above': '/rowsAbove(count={})',
+        'rows_below': '/rowsBelow(count={})',
+        'get_used_range': '/usedRange',
+        'clear_range': '/clear',
+        'delete_range': '/delete',
+        'insert_range': '/insert',
+        'merge_range': '/merge',
+        'unmerge_range': '/unmerge',
+        'get_resized_range': '/resizedRange(deltaRows={}, deltaColumns={})'
     }
 
     def __init__(self, parent=None, session=None, **kwargs):
@@ -179,23 +200,133 @@ class Range(ApiComponent):
             protocol=parent.protocol if parent else kwargs.get('protocol'),
             main_resource=main_resource)
 
+        self._track_changes = TrackerSet(casing=self._cc)
+
         self.address = cloud_data.get('address', '')
         self.address_local = cloud_data.get('addressLocal', '')
         self.column_count = cloud_data.get('columnCount', 0)
         self.row_count = cloud_data.get('rowCount', 0)
         self.cell_count = cloud_data.get('cellCount', 0)
-        self.column_hidden = cloud_data.get('columnHidden', False)
+        self._column_hidden = cloud_data.get('columnHidden', False)
         self.column_index = cloud_data.get('columnIndex', 0)  # zero indexed
-        self.row_hidden = cloud_data.get('rowHidden', False)
+        self._row_hidden = cloud_data.get('rowHidden', False)
         self.row_index = cloud_data.get('rowIndex', 0)  # zero indexed
-        self.formulas = cloud_data.get('formulas', '')
-        self.formulas_local = cloud_data.get('formulasLocal', '')
-        self.formulas_r1c1 = cloud_data.get('formulasR1C1', '')
+        self._formulas = cloud_data.get('formulas', '')
+        self._formulas_local = cloud_data.get('formulasLocal', '')
+        self._formulas_r1_c1 = cloud_data.get('formulasR1C1', '')
         self.hidden = cloud_data.get('hidden', False)
-        self.number_format = cloud_data.get('numberFormat', '')
+        self._number_format = cloud_data.get('numberFormat', '')
         self.text = cloud_data.get('text', '')
         self.value_types = cloud_data.get('valueTypes', '')
-        self.values = cloud_data.get('values', '')
+        self._values = cloud_data.get('values', '')
+
+    def __str__(self):
+        return self.__repr__()
+
+    def __repr__(self):
+        return 'Range address: {}'.format(self.address)
+
+    @property
+    def column_hidden(self):
+        return self._column_hidden
+
+    @column_hidden.setter
+    def column_hidden(self, value):
+        self._column_hidden = value
+        self._track_changes.add('column_hidden')
+
+    @property
+    def row_hidden(self):
+        return self._row_hidden
+
+    @row_hidden.setter
+    def row_hidden(self, value):
+        self._row_hidden = value
+        self._track_changes.add('row_hidden')
+
+    @property
+    def formulas(self):
+        return self._formulas
+
+    @formulas.setter
+    def formulas(self, value):
+        self._formulas = value
+        self._track_changes.add('formulas')
+
+    @property
+    def formulas_local(self):
+        return self._formulas_local
+
+    @formulas_local.setter
+    def formulas_local(self, value):
+        self._formulas_local = value
+        self._track_changes.add('formulas_local')
+
+    @property
+    def formulas_r1_c1(self):
+        return self._formulas_r1_c1
+
+    @formulas_r1_c1.setter
+    def formulas_r1_c1(self, value):
+        self._formulas_r1_c1 = value
+        self._track_changes.add('formulas_r1_c1')
+
+    @property
+    def number_format(self):
+        return self._number_format
+
+    @number_format.setter
+    def number_format(self, value):
+        self._number_format = value
+        self._track_changes.add('number_format')
+
+    @property
+    def values(self):
+        return self._values
+
+    @values.setter
+    def values(self, value):
+        self._values = value
+        self._track_changes.add('values')
+
+    def to_api_data(self, restrict_keys=None):
+        """ Returns a dict to communicate with the server
+
+        :param restrict_keys: a set of keys to restrict the returned data to
+        :rtype: dict
+        """
+        cc = self._cc  # alias
+        data = {
+            cc('column_hidden'): self._column_hidden,
+            cc('row_hidden'): self._row_hidden,
+            cc('formulas'): self._formulas,
+            cc('formulas_local'): self._formulas_local,
+            cc('formulas_r1_c1'): self._formulas_r1c1,
+            cc('number_format'): self._number_format,
+            cc('values'): self._values,
+        }
+
+        if restrict_keys:
+            for key in list(data.keys()):
+                if key not in restrict_keys:
+                    del data[key]
+        return data
+
+    def _get_range(self, endpoint, *args, method='GET', **kwargs):
+        """ Helper that returns another range"""
+        if args:
+            url = self.build_url(self._endpoints.get(endpoint).format(*args))
+        else:
+            url = self.build_url(self._endpoints.get(endpoint))
+        if not kwargs:
+            kwargs = None
+        if method == 'GET':
+            response = self.session.get(url, params=kwargs)
+        elif method == 'POST':
+            response = self.session.post(url, data=kwargs)
+        if not response:
+            return None
+        return self.__class__(parent=self, **{self._cloud_data_key: response.json()})
 
     def get_cell(self, row, column):
         """
@@ -204,11 +335,7 @@ class Range(ApiComponent):
         :param int column: the column number
         :return: a Range instance
         """
-        url = self.build_url(self._endpoints.get('get_cell').format(row=row, column=column))
-        response = self.session.get(url)
-        if not response:
-            return None
-        return self.__class__(parent=self, **{self._cloud_data_key: response.json()})
+        return self._get_range('get_cell', row, column)
 
     def get_column(self, index):
         """
@@ -216,11 +343,173 @@ class Range(ApiComponent):
         :param int index: the index of the column. zero indexed
         :return: a Range
         """
-        url = self.build_url(self._endpoints.get('get_column').format(column=index))
-        response = self.session.get(url)
+        return self._get_range('get_column', index)
+
+    def get_bounding_rect(self, address):
+        """
+        Gets the smallest range object that encompasses the given ranges.
+        For example, the GetBoundingRect of "B2:C5" and "D10:E15" is "B2:E16".
+        :param str address: another address to retrieve it's bounding rect
+        """
+        return self._get_range('get_bounding_rect', anotherRange=address)
+
+    def get_columns_after(self, columns=1):
+        """
+        Gets a certain number of columns to the right of the given range.
+        :param int columns: Optional. The number of columns to include in the resulting range.
+        """
+        return self._get_range('columns_after', columns, method='POST')
+
+    def get_columns_before(self, columns=1):
+        """
+        Gets a certain number of columns to the left  of the given range.
+        :param int columns: Optional. The number of columns to include in the resulting range.
+        """
+        return self._get_range('columns_before', columns, method='POST')
+
+    def get_entire_column(self):
+        """ Gets a Range that represents the entire column of the range. """
+        return self._get_range('entire_column')
+
+    def get_intersection(self, address):
+        """
+        Gets the Range that represents the rectangular intersection of the given ranges.
+        :param address: the address range you want ot intersect with.
+        :return: Range
+        """
+        self._get_range('intersection', anotherRange=address)
+
+    def get_last_cell(self):
+        """ Gets the last cell within the range. """
+        return self._get_range('last_cell')
+
+    def get_last_column(self):
+        """ Gets the last column within the range. """
+        return self._get_range('last_column')
+
+    def get_last_row(self):
+        """ Gets the last row within the range. """
+        return self._get_range('last_row')
+
+    def get_offset_range(self, row_offset, column_offset):
+        """
+        Gets an object which represents a range that's offset from the specified range.
+         The dimension of the returned range will match this range.
+         If the resulting range is forced outside the bounds of the worksheet grid,
+          an exception will be thrown.
+        :param int row_offset: The number of rows (positive, negative, or 0)
+         by which the range is to be offset.
+        :param int column_offset: he number of columns (positive, negative, or 0)
+         by which the range is to be offset.
+        :return: Range
+        """
+        return self._get_range('offset_range', rowOffset=row_offset, columnOffset=column_offset)
+
+    def get_row(self, index):
+        """
+        Gets a row contained in the range.
+        :param int index: Row number of the range to be retrieved.
+        :return: Range
+        """
+        return self._get_range('get_row', method='POST', row=index)
+
+    def get_rows_above(self, rows=1):
+        """
+        Gets a certain number of rows above a given range.
+        :param int rows: Optional. The number of rows to include in the resulting range.
+        :return: Range
+        """
+        return self._get_range('rows_above', rows, method='POST')
+
+    def get_rows_below(self, rows=1):
+        """
+        Gets a certain number of rows below a given range.
+        :param int rows: Optional. The number of rows to include in the resulting range.
+        :return: Range
+        """
+        return self._get_range('rows_below', rows, method='POST')
+
+    def get_used_range(self, only_values=True):
+        """
+        Returns the used range of the given range object.
+        :param bool only_values: Optional.
+         Considers only cells with values as used cells.
+        :return: Range
+        """
+        return self._get_range('get_used_range', valuesOnly=only_values)
+
+    def clear(self, apply_to='all'):
+        """
+        Clear range values, format, fill, border, etc.
+        :param str apply_to: Optional. Determines the type of clear action.
+         The possible values are: all, formats, contents.
+        """
+        url = self.build_url(self._endpoints.get('clear_range'))
+        return bool(self.session.post(url, data={'applyTo': apply_to.capitalize()}))
+
+    def delete(self, shift='up'):
+        """
+        Deletes the cells associated with the range.
+        :param str shift: Optional. Specifies which way to shift the cells.
+         The possible values are: up, left.
+        """
+        url = self.build_url(self._endpoints.get('delete_range'))
+        return bool(self.session.post(url, data={'shift': shift.capitalize()}))
+
+    def insert_range(self, shift):
+        """
+        Inserts a cell or a range of cells into the worksheet in place of this range,
+        and shifts the other cells to make space.
+        :param str shift: Specifies which way to shift the cells. The possible values are: down, right.
+        :return: new Range instance at the now blank space
+        """
+        return self._get_range('insert_range', method='POST', shift=shift.capitalize())
+
+    def merge(self, across=False):
+        """
+        Merge the range cells into one region in the worksheet.
+        :param bool across: Optional. Set True to merge cells in each row of the
+         specified range as separate merged cells.
+        """
+        url = self.build_url(self._endpoints.get('merge_range'))
+        return bool(self.session.post(url, data={'across': across}))
+
+    def unmerge(self):
+        """ Unmerge the range cells into separate cells."""
+        url = self.build_url(self._endpoints.get('unmerge_range'))
+        return bool(self.session.post(url))
+
+    def get_resized_range(self, rows, columns):
+        """
+        Gets a range object similar to the current range object,
+         but with its bottom-right corner expanded (or contracted)
+         by some number of rows and columns.
+        :param int rows: The number of rows by which to expand the
+         bottom-right corner, relative to the current range.
+        :param int columns: The number of columns by which to expand the
+         bottom-right corner, relative to the current range.
+        :return: Range
+        """
+        return self._get_range('get_resized_range', rows, columns, method='POST')
+
+    def update(self):
+        """ Update this range """
+
+        if not self._track_changes:
+            return True  # there's nothing to update
+
+        data = self.to_api_data(restrict_keys=self._track_changes)
+        response = self.session.patch(self.build_url(''), data=data)
         if not response:
-            return None
-        return self.__class__(parent=self, **{self._cloud_data_key: response.json()})
+            return False
+
+        data = response.json()
+
+        for field in self._track_changes:
+            setattr(self, snakecase(field), data.get(field))
+        self._track_changes.clear()
+
+        return True
 
 
 class TableRow(ApiComponent):
@@ -256,6 +545,12 @@ class TableRow(ApiComponent):
 
         self.index = cloud_data.get('index', 0)  # zero indexed
         self.values = cloud_data.get('values', '')  # json string
+
+    def __str__(self):
+        return self.__repr__()
+
+    def __repr__(self):
+        return 'Row number: {}'.format(self.index)
 
     def get_range(self):
         """ Gets the range object associated with the entire row """
