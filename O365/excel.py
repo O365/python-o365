@@ -179,7 +179,6 @@ class Range(ApiComponent):
         if parent and session:
             raise ValueError('Need a parent or a session but not both')
 
-        self.parent = parent
         self.session = parent.session if parent else session
 
         cloud_data = kwargs.get(self._cloud_data_key, {})
@@ -194,7 +193,10 @@ class Range(ApiComponent):
         if isinstance(parent, Range):
             # strip the main resource
             main_resource = main_resource.split('/range')[0]
-        main_resource = "{}/range(address='{}')".format(main_resource, quote(self.object_id))
+        if isinstance(parent, (WorkSheet, Range)):
+            main_resource = "{}/range(address='{}')".format(main_resource, quote(self.object_id))
+        else:
+            main_resource = '{}/range'.format(main_resource)
 
         super().__init__(
             protocol=parent.protocol if parent else kwargs.get('protocol'),
@@ -286,6 +288,8 @@ class Range(ApiComponent):
 
     @values.setter
     def values(self, value):
+        if not isinstance(value, list):
+            value = [[value]]  # values is always a 2 dimensional array
         self._values = value
         self._track_changes.add('values')
 
@@ -301,7 +305,7 @@ class Range(ApiComponent):
             cc('row_hidden'): self._row_hidden,
             cc('formulas'): self._formulas,
             cc('formulas_local'): self._formulas_local,
-            cc('formulas_r1_c1'): self._formulas_r1c1,
+            cc('formulas_r1_c1'): self._formulas_r1_c1,
             cc('number_format'): self._number_format,
             cc('values'): self._values,
         }
@@ -511,6 +515,95 @@ class Range(ApiComponent):
 
         return True
 
+    def get_worksheet(self):
+        """ Returns this range worksheet """
+        url = self.build_url('')
+        q = self.q().select('address').expand('worksheet')
+        response = self.session.get(url, params=q.as_params())
+        if not response:
+            return None
+        data = response.json()
+
+        ws = data.get('worksheet')
+        if ws is None:
+            return None
+        return WorkSheet(session=self.session, **{self._cloud_data_key: ws})
+
+
+class NamedRange(ApiComponent):
+    """ Represents a defined name for a range of cells or value """
+
+    _endpoints = {
+        'get_range': '/range',
+    }
+
+    range_constructor = Range
+
+    def __init__(self, parent=None, session=None, **kwargs):
+        if parent and session:
+            raise ValueError('Need a parent or a session but not both')
+
+        self.session = parent.session if parent else session
+
+        cloud_data = kwargs.get(self._cloud_data_key, {})
+
+        self.object_id = cloud_data.get('name', None)
+
+        # Choose the main_resource passed in kwargs over parent main_resource
+        main_resource = kwargs.pop('main_resource', None) or (
+            getattr(parent, 'main_resource', None) if parent else None)
+
+        main_resource = '{}/names/{}'.format(main_resource, self.object_id)
+
+        super().__init__(
+            protocol=parent.protocol if parent else kwargs.get('protocol'),
+            main_resource=main_resource)
+
+        self.name = cloud_data.get('name', None)
+        self.comment = cloud_data.get('comment', '')
+        self.scope = cloud_data.get('scope', '')
+        self.data_type = cloud_data.get('type', '')
+        self.value = cloud_data.get('value', '')
+        self.visible = cloud_data.get('visible', True)
+
+    def __str__(self):
+        return self.__repr__()
+
+    def __repr__(self):
+        return 'Named Range: {} ({})'.format(self.name, self.value)
+
+    def get_range(self):
+        """ Returns the Range instance this named range refers to """
+        url = self.build_url(self._endpoints.get('get_range'))
+        response = self.session.get(url)
+        if not response:
+            return None
+        return self.range_constructor(parent=self, **{self._cloud_data_key: response.json()})
+
+    def update(self, *, visible=None, comment=None):
+        """
+        Updates this named range
+        :param bool visible: Specifies whether the object is visible or not
+        :param str comment: Represents the comment associated with this name
+        :return: Success or Failure
+        """
+        if visible is None and comment is None:
+            raise ValueError('Provide "visible" or "comment" to update.')
+        data = {}
+        if visible is not None:
+            data['visible'] = visible
+        if comment is not None:
+            data['comment'] = comment
+        data = None if not data else data
+        response = self.session.patch(self.build_url(''), data=data)
+        if not response:
+            return False
+        data = response.json()
+
+        self.visible = data.get('visible', self.visible)
+        self.comment = data.get('comment', self.comment)
+        return True
+
 
 class TableRow(ApiComponent):
     """ An Excel Table Row """
@@ -537,7 +630,7 @@ class TableRow(ApiComponent):
             getattr(parent, 'main_resource', None) if parent else None)
 
         # append the encoded column path
-        main_resource = '{}/rows/{}'.format(main_resource, quote(self.object_id))
+        main_resource = '{}/rows/{}'.format(main_resource, self.object_id)
 
         super().__init__(
             protocol=parent.protocol if parent else kwargs.get('protocol'),
@@ -859,6 +952,7 @@ class Table(ApiComponent):
         Return the rows of this table
         :param int top: specify n rows to retrieve
         :param int skip: specify n rows to skip
+        :rtype: TableRow
         """
         url = self.build_url(self._endpoints.get('get_rows'))
 
@@ -1018,6 +1112,20 @@ class Table(ApiComponent):
         url = self.build_url(self._endpoints.get('reapply_filters'))
         return bool(self.session.post(url))
 
+    def get_worksheet(self):
+        """ Returns this table worksheet """
+        url = self.build_url('')
+        q = self.q().select('name').expand('worksheet')
+        response = self.session.get(url, params=q.as_params())
+        if not response:
+            return None
+        data = response.json()
+
+        ws = data.get('worksheet')
+        if ws is None:
+            return None
+        return WorkSheet(parent=self.parent, **{self._cloud_data_key: ws})
+
 
 class WorkSheet(ApiComponent):
     """ An Excel WorkSheet """
@@ -1029,9 +1137,14 @@ class WorkSheet(ApiComponent):
         'add_table': '/tables/add',
         'get_used_range': '/usedRange',
         'get_cell': '/cell(row={row},column={column})',
+        'add_named_range': '/names/add',
+        'add_named_range_f': '/names/addFormulaLocal',
+        'get_named_range': '/names/{name}',
     }
+
     table_constructor = Table
     range_constructor = Range
+    named_range_constructor = NamedRange
 
     def __init__(self, parent=None, session=None, **kwargs):
         if parent and session:
@@ -1170,6 +1283,37 @@ class WorkSheet(ApiComponent):
             return None
         return self.range_constructor(parent=self, **{self._cloud_data_key: response.json()})
 
+    def add_named_range(self, name, reference, comment='', is_formula=False):
+        """
+        Adds a new name to the collection of the given scope using the user's locale for the formula
+        :param str name: the name of this range
+        :param str reference: the reference for this range or formula
+        :param str comment: a comment to describe this named range
+        :param bool is_formula: True if the reference is a formula
+        :return: NamedRange instance
+        """
+        if is_formula:
+            url = self.build_url(self._endpoints.get('add_named_range_f'))
+        else:
+            url = self.build_url(self._endpoints.get('add_named_range'))
+        params = {
+            'name': name,
+            'reference': reference,
+            'comment': comment
+        }
+        response = self.session.post(url, data=params)
+        if not response:
+            return None
+        return self.named_range_constructor(parent=self, **{self._cloud_data_key: response.json()})
+
+    def get_named_range(self, name):
+        """ Retrieves a Named range by it's name """
+        url = self.build_url(self._endpoints.get('get_named_range').format(name=name))
+        response = self.session.get(url)
+        if not response:
+            return None
+        return self.named_range_constructor(parent=self, **{self._cloud_data_key: response.json()})
+
 
 class WorkBook(ApiComponent):
     _endpoints = {
@@ -1178,9 +1322,14 @@ class WorkBook(ApiComponent):
         'get_table': '/tables/{id}',
         'get_worksheet': '/worksheets/{id}',
         'function': '/functions/{name}',
+        'get_names': '/names',
+        'get_named_range': '/names/{name}',
+        'add_named_range': '/names/add',
+        'add_named_range_f': '/names/addFormulaLocal',
     }
     worksheet_constructor = WorkSheet
     table_constructor = Table
+    named_range_constructor = NamedRange
 
     def __init__(self, file_item, *, use_session=True, persist=True):
         """ Create a workbook representation
@@ -1290,3 +1439,45 @@ class WorkBook(ApiComponent):
             return data.get('value')
         else:
             raise FunctionException(error)
+
+    def get_named_ranges(self):
+        """ Returns the list of named ranges for this Workbook """
+
+        url = self.build_url(self._endpoints.get('get_names'))
+        response = self.session.get(url)
+        if not response:
+            return []
+        data = response.json()
+        return [self.named_range_constructor(parent=self, **{self._cloud_data_key: nr})
+                for nr in data.get('value', [])]
+
+    def get_named_range(self, name):
+        """ Retrieves a Named range by it's name """
+        url = self.build_url(self._endpoints.get('get_named_range').format(name=name))
+        response = self.session.get(url)
+        if not response:
+            return None
+        return self.named_range_constructor(parent=self, **{self._cloud_data_key: response.json()})
+
+    def add_named_range(self, name, reference, comment='', is_formula=False):
+        """
+        Adds a new name to the collection of the given scope using the user's locale for the formula
+        :param str name: the name of this range
+        :param str reference: the reference for this range or formula
+        :param str comment: a comment to describe this named range
+        :param bool is_formula: True if the reference is a formula
+        :return: NamedRange instance
+        """
+        if is_formula:
+            url = self.build_url(self._endpoints.get('add_named_range_f'))
+        else:
+            url = self.build_url(self._endpoints.get('add_named_range'))
+        params = {
+            'name': name,
+            'reference': reference,
+            'comment': comment
+        }
+        response = self.session.post(url, data=params)
+        if not response:
+            return None
+        return self.named_range_constructor(parent=self, **{self._cloud_data_key: response.json()})
