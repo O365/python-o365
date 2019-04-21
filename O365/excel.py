@@ -22,6 +22,12 @@ NON_PERSISTENT_SESSION_INACTIVITY_MAX_AGE = 60 * 5  # 5 minutes
 EXCEL_XLSX_MIME_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
 
 
+UnsetSentinel = object()
+
+
+# TODO Excel: WorkbookFormatProtection, WorkbookRangeBorder
+
+
 class FunctionException(Exception):
     pass
 
@@ -148,6 +154,317 @@ class WorkbookSession(ApiComponent):
         return self.con.delete(*args, **kwargs)
 
 
+class RangeFormatFont:
+    """ A font format applied to a range """
+
+    def __init__(self, parent):
+        self.parent = parent
+        self._track_changes = TrackerSet(casing=parent._cc)
+        self._loaded = False
+
+        self._bold = False
+        self._color = '#000000'  # default black
+        self._italic = False
+        self._name = 'Calibri'
+        self._size = 10
+        self._underline = 'None'
+
+    def _load_data(self):
+        """ Loads the data into this instance """
+        url = self.parent.build_url(self.parent._endpoints.get('format'))
+        response = self.parent.session.get(url)
+        if not response:
+            return False
+        data = response.json()
+
+        self._bold = data.get('bold', False)
+        self._color = data.get('color', '#000000')  # default black
+        self._italic = data.get('italic', False)
+        self._name = data.get('name', 'Calibri')  # default Calibri
+        self._size = data.get('size', 10)  # default 10
+        self._underline = data.get('underline', 'None')
+
+        self._loaded = True
+        return True
+
+    def to_api_data(self, restrict_keys=None):
+        """ Returns a dict to communicate with the server
+
+        :param restrict_keys: a set of keys to restrict the returned data to
+        :rtype: dict
+        """
+        cc = self.parent._cc  # alias
+        data = {
+            cc('bold'): self._bold,
+            cc('color'): self._color,
+            cc('italic'): self._italic,
+            cc('name'): self._name,
+            cc('size'): self._size,
+            cc('underline'): self._underline
+        }
+
+        if restrict_keys:
+            for key in list(data.keys()):
+                if key not in restrict_keys:
+                    del data[key]
+        return data
+
+    @property
+    def bold(self):
+        if not self._loaded:
+            self._load_data()
+        return self._bold
+
+    @bold.setter
+    def bold(self, value):
+        self._bold = value
+        self._track_changes.add('bold')
+
+    @property
+    def color(self):
+        if not self._color:
+            self._load_data()
+        return self._color
+
+    @color.setter
+    def color(self, value):
+        self._color = value
+        self._track_changes.add('color')
+
+    @property
+    def italic(self):
+        if not self._loaded:
+            self._load_data()
+        return self._italic
+
+    @italic.setter
+    def italic(self, value):
+        self._italic = value
+        self._track_changes.add('italic')
+
+    @property
+    def name(self):
+        if not self._loaded:
+            self._load_data()
+        return self._name
+
+    @name.setter
+    def name(self, value):
+        self._name = value
+        self._track_changes.add('name')
+
+    @property
+    def size(self):
+        if not self._loaded:
+            self._load_data()
+        return self._size
+
+    @size.setter
+    def size(self, value):
+        self._size = value
+        self._track_changes.add('size')
+
+    @property
+    def underline(self):
+        if not self._loaded:
+            self._load_data()
+        return self._underline
+
+    @underline.setter
+    def underline(self, value):
+        self._underline = value
+        self._track_changes.add('underline')
+
+
+class RangeFormat(ApiComponent):
+    """ A format applied to a range """
+
+    _endpoints = {
+        'borders': '/borders',
+        'font': '/font',
+        'fill': '/fill',
+        'clear_fill': '/fill/clear',
+        'auto_fit_columns': '/autofitColumns',
+        'auto_fit_rows': '/autofitRows',
+    }
+
+    def __init__(self, parent=None, session=None, **kwargs):
+        if parent and session:
+            raise ValueError('Need a parent or a session but not both')
+
+        self.range = parent
+        self.session = parent.session if parent else session
+
+        # Choose the main_resource passed in kwargs over parent main_resource
+        main_resource = kwargs.pop('main_resource', None) or (
+            getattr(parent, 'main_resource', None) if parent else None)
+
+        # append the format path
+        main_resource = '{}/format'.format(main_resource)
+
+        super().__init__(
+            protocol=parent.protocol if parent else kwargs.get('protocol'),
+            main_resource=main_resource)
+
+        self._track_changes = TrackerSet(casing=self._cc)
+        self._track_background_color = False
+
+        cloud_data = kwargs.get(self._cloud_data_key, {})
+
+        self._column_width = cloud_data.get('columnWidth', None)
+        self._horizontal_alignment = cloud_data.get('horizontalAlignment', 'General')
+        self._row_height = cloud_data.get('rowHeight', None)
+        self._vertical_alignment = cloud_data.get('verticalAlignment', 'Bottom')
+        self._wrap_text = cloud_data.get('wrapText', None)
+
+        self._font = RangeFormatFont(self)
+        self._background_color = UnsetSentinel
+
+    def __str__(self):
+        return self.__repr__()
+
+    def __repr__(self):
+        return 'Format for range address: {}'.format(self.range.address if self.range else 'Unkknown')
+
+    @property
+    def column_width(self):
+        return self._column_width
+
+    @column_width.setter
+    def column_width(self, value):
+        self._column_width = value
+        self._track_changes.add('column_width')
+
+    @property
+    def horizontal_alignment(self):
+        return self._horizontal_alignment
+
+    @horizontal_alignment.setter
+    def horizontal_alignment(self, value):
+        self._horizontal_alignment = value
+        self._track_changes.add('horizontal_alignment')
+
+    @property
+    def row_height(self):
+        return self._row_height
+
+    @row_height.setter
+    def row_height(self, value):
+        self._row_height = value
+        self._track_changes.add('row_height')
+
+    @property
+    def vertical_alignment(self):
+        return self._vertical_alignment
+
+    @vertical_alignment.setter
+    def vertical_alignment(self, value):
+        self._vertical_alignment = value
+        self._track_changes.add('vertical_alignment')
+
+    @property
+    def wrap_text(self):
+        return self._wrap_text
+
+    @wrap_text.setter
+    def wrap_text(self, value):
+        self._wrap_text = value
+        self._track_changes.add('wrap_text')
+
+    def to_api_data(self, restrict_keys=None):
+        """ Returns a dict to communicate with the server
+
+        :param restrict_keys: a set of keys to restrict the returned data to
+        :rtype: dict
+        """
+        cc = self._cc  # alias
+        data = {
+            cc('column_width'): self._column_width,
+            cc('horizontal_alignment'): self._horizontal_alignment,
+            cc('row_height'): self._row_height,
+            cc('vertical_alignment'): self._vertical_alignment,
+            cc('wrap_text'): self._wrap_text,
+        }
+
+        if restrict_keys:
+            for key in list(data.keys()):
+                if key not in restrict_keys:
+                    del data[key]
+        return data
+
+    def update(self):
+        """ Updates this range format """
+        if self._track_changes:
+            data = self.to_api_data(restrict_keys=self._track_changes)
+            if data:
+                response = self.session.patch(self.build_url(''), data=data)
+                if not response:
+                    return False
+                self._track_changes.clear()
+        if self._font._track_changes:
+            data = self._font.to_api_data(restrict_keys=self._font._track_changes)
+            if data:
+                response = self.session.patch(self.build_url(self._endpoints.get('font')), data=data)
+                if not response:
+                    return False
+                self._font._track_changes.clear()
+        if self._track_background_color:
+            if self._background_color is None:
+                url = self.build_url(self._endpoints.get('clear_fill'))
+                response = self.session.post(url)
+            else:
+                data = {'color': self._background_color}
+                url = self.build_url(self._endpoints.get('fill'))
+                response = self.session.patch(url, data=data)
+            if not response:
+                return False
+            self._track_background_color = False
+
+        return True
+
+    @property
+    def font(self):
+        return self._font
+
+    @property
+    def background_color(self):
+        if self._background_color is UnsetSentinel:
+            self._load_background_color()
+        return self._background_color
+
+    @background_color.setter
+    def background_color(self, value):
+        self._background_color = value
+        self._track_background_color = True
+
+    def _load_background_color(self):
+        """ Loads the data related to the fill color """
+        url = self.build_url(self._endpoints.get('fill'))
+        response = self.session.get(url)
+        if not response:
+            return None
+        data = response.json()
+        self._background_color = data.get('color', None)
+
+    def auto_fit_columns(self):
+        """ Changes the width of the columns of the current range
+         to achieve the best fit, based on the current data in the columns
+        """
+        url = self.build_url(self._endpoints.get('auto_fit_columns'))
+        return bool(self.session.post(url))
+
+    def auto_fit_rows(self):
+        """ Changes the width of the rows of the current range
+         to achieve the best fit, based on the current data in the rows
+        """
+        url = self.build_url(self._endpoints.get('auto_fit_rows'))
+        return bool(self.session.post(url))
+
+    def set_borders(self, side_style=''):
+        """ Sets the border of this range """
+        pass
+
+
 class Range(ApiComponent):
     """ An Excel Range """
 
@@ -172,8 +489,10 @@ class Range(ApiComponent):
         'insert_range': '/insert',
         'merge_range': '/merge',
         'unmerge_range': '/unmerge',
-        'get_resized_range': '/resizedRange(deltaRows={}, deltaColumns={})'
+        'get_resized_range': '/resizedRange(deltaRows={}, deltaColumns={})',
+        'get_format': '/format'
     }
+    range_format_constructor = RangeFormat
 
     def __init__(self, parent=None, session=None, **kwargs):
         if parent and session:
@@ -528,6 +847,14 @@ class Range(ApiComponent):
         if ws is None:
             return None
         return WorkSheet(session=self.session, **{self._cloud_data_key: ws})
+
+    def get_format(self):
+        """ Returns a RangeFormat instance with the format of this range """
+        url = self.build_url(self._endpoints.get('get_format'))
+        response = self.session.get(url)
+        if not response:
+            return None
+        return self.range_format_constructor(parent=self, **{self._cloud_data_key: response.json()})
 
 
 class NamedRange(ApiComponent):
