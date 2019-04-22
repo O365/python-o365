@@ -328,9 +328,9 @@ account = Account(credentials=my_credentials, main_resource='shared_mailbox@exam
 This can be done however at any point. For example at the protocol level:
 ```python
 # ...
-my_protocol = MSGraphProtocol(default_resource='shared_mailbox@example.com')
+protocol = MSGraphProtocol(default_resource='shared_mailbox@example.com')
 
-account = Account(credentials=my_credentials, protocol=my_protocol)
+account = Account(credentials=my_credentials, protocol=protocol)
 
 # now account is accesing the shared_mailbox@example.com in every api call.
 shared_mailbox_messages = account.mailbox().get_messages()
@@ -378,12 +378,12 @@ You can work only with the required pieces:
 ```python
 from O365 import Connection, MSGraphProtocol, Message, MailBox
 
-my_protocol = MSGraphProtocol()
+protocol = MSGraphProtocol()
 con = Connection(('client_id', 'client_secret'))
 
-message = Message(con=con, protocol=my_protocol)
+message = Message(con=con, protocol=protocol)
 # ...
-mailbox = MailBox(con=con, protocol=my_protocol)
+mailbox = MailBox(con=con, protocol=protocol)
 message2 = Message(parent=mailbox)  # message will inherit the connection and protocol from mailbox when using parent.
 # ...
 ```
@@ -422,6 +422,17 @@ class CustomClass(ApiComponent):
 
 ## MailBox
 Mailbox groups the funcionality of both the messages and the email folders.
+
+This are the scopes needed to work with the `MailBox` and `Message` classes.
+
+ Raw Scope                |  Included in Scope Helper                   | Description
+ :---:                    |  :---:                                     | ---
+ *Mail.Read*              |  *mailbox*                                 | To only read my mailbox
+ *Mail.Read.Shared*       |  *mailbox_shared*                          | To only read another user / shared mailboxes
+ *Mail.Send*              |  *message_send, message_all*               | To only send message
+ *Mail.Send.Shared*       |  *message_send_shared, message_all_shared* | To only send message as another user / shared mailbox
+ *Mail.ReadWrite*         |  *message_all*                             | To read and save messages in my mailbox
+ *Mail.ReadWrite.Shared*  |  *message_all_shared*                      | To read and save messages in another user / shared mailbox
 
 ```python
 mailbox = account.mailbox()
@@ -494,6 +505,16 @@ reply_msg.send()
 
 ## AddressBook
 AddressBook groups the funcionality of both the Contact Folders and Contacts. Outlook Distribution Groups are not supported (By the Microsoft API's).
+
+This are the scopes needed to work with the `AddressBook` and `Contact` classes.
+
+ Raw Scope                       |  Included in Scope Helper                        | Description
+ :---:                           |  :---:                                          | ---
+ *Contacts.Read*                 |  *address_book*                                 | To only read my personal contacts
+ *Contacts.Read.Shared*          |  *address_book_shared*                          | To only read another user / shared mailbox contacts
+ *Contacts.ReadWrite*            |  *address_book_all*                             | To read and save personal contacts
+ *Contacts.ReadWrite.Shared*     |  *address_book_all_shared*                      | To read and save contacts from another user / shared mailbox
+ *User.ReadBasic.All*            |  *users*                                        | To only read basic properties from users of my organization (User.Read.All requires administrator consent).
 
 #### Contact Folders
 Represents a Folder within your Contacts Section in Office 365.
@@ -588,6 +609,16 @@ The calendar and events functionality is group in a `Schedule` object.
 A `Schedule` instance can list and create calendars. It can also list or create events on the default user calendar.
 To use other calendars use a `Calendar` instance.  
 
+This are the scopes needed to work with the `Schedule`, `Calendar` and `Event` classes.
+
+ Raw Scope                        |  Included in Scope Helper                        | Description
+ :---:                            |  :---:                                          | ---
+ *Calendars.Read*                 |  *calendar*                                     | To only read my personal calendars
+ *Calendars.Read.Shared*          |  *calendar_shared*                              | To only read another user / shared mailbox calendars
+ *Calendars.ReadWrite*            |  *calendar_all*                                 | To read and save personal calendars
+ *Calendars.ReadWrite.Shared*     |  *calendar_shared_all*                          | To read and save calendars from another user / shared mailbox
+ 
+
 Working with the `Schedule` instance:
 ```python
 import datetime as dt
@@ -640,8 +671,17 @@ The `Storage` class handles all functionality around One Drive and Document Libr
 The `Storage` instance allows to retrieve `Drive` instances which handles all the Files and Folders from within the selected `Storage`.
 Usually you will only need to work with the default drive. But the `Storage` instances can handle multiple drives.
 
-
 A `Drive` will allow you to work with Folders and Files.
+
+This are the scopes needed to work with the `Storage`, `Drive` and `DriveItem` classes.
+
+ Raw Scope                  |  Included in Scope Helper     | Description
+ :---:                      |  :---:                       | ---
+ *Files.Read*               |                              | To only read my files
+ *Files.Read.All*           |  *onedrive*                  | To only read all the files the user has access
+ *Files.ReadWrite*          |                              | To read and save my files
+ *Files.ReadWrite.All*      |  *onedrive_all*              | To read and save all the files the user has access
+
 
 ```python
 account = Account(credentials=my_credentials)
@@ -666,7 +706,7 @@ for item in root_folder.get_items(limit=25):
         if item.is_photo:
             print(item.camera_model)  # print some metadata of this photo
         elif item.is_image:
-            print(item.dimensione)  # print the image dimensions
+            print(item.dimensions)  # print the image dimensions
         else:
             # regular file:
             print(item.mime_type)  # print the mime type
@@ -680,9 +720,9 @@ When coping a DriveItem the api can return a direct copy of the item or a pointe
 ```python
 # copy a file to the documents special folder
 
-documents_folder = drive.get_special_folder('documents')
+documents_folder = my_drive.get_special_folder('documents')
 
-files = drive.search('george best quotes', limit=1)
+files = my_drive.search('george best quotes', limit=1)
 
 if files:
     george_best_quotes = files[0]
@@ -724,7 +764,7 @@ file.download(to_path='/quotes/')
 uploaded_file = folder.upload_file(item='path_to_my_local_file')
 
 # restore versions:
-versiones = file.get_versions()
+versions = file.get_versions()
 for version in versions:
     if version.name == '2.0':
         version.restore()  # restore the version 2.0 of this file
@@ -739,6 +779,8 @@ You can retrieve workbooks, worksheets, tables, and even cell data.
 You can also write to any excel online.
 
 To work with excel files, first you have to retrieve a `File` instance using the OneDrive or Sharepoint functionallity.
+
+The scopes needed to work with the `WorkBook` and Excel related classes are the same used by OneDrive. 
 
 This is how you update a cell value:
 
@@ -802,9 +844,16 @@ values = column.values[0]  # values returns a two dimensional array.
 ## Sharepoint
 The sharepoint api is done but there are no docs yet. Look at the sharepoint.py file to get insights.
 
+This are the scopes needed to work with the `Sharepoint` and `Site` classes.
+
+ Raw Scope                  |  Included in Scope Helper    | Description
+ :---:                      |  :---:                       | ---
+ *Sites.Read.All*           |  *sharepoint*                | To only read sites, lists and items
+ *Sites.ReadWrite.All*      |  *sharepoint_dl*             | To read and save sites, lists and items
 
 ## Planner
 The planner api is done but there are no docs yet. Look at the planner.py file to get insights.
+
 The planner functionality requires Administrator Permission.
 
 ## Utils

@@ -44,10 +44,15 @@ DEFAULT_SCOPES = {
     'address_book_shared': ['Contacts.Read.Shared'],
     'address_book_all': ['Contacts.ReadWrite'],
     'address_book_all_shared': ['Contacts.ReadWrite.Shared'],
-    'calendar': ['Calendars.ReadWrite'],
+    'calendar': ['Calendars.Read'],
+    'calendar_shared': ['Calendars.Read.Shared'],
+    'calendar_all': ['Calendars.ReadWrite'],
+    'calendar_shared_all': ['Calendars.ReadWrite.Shared'],
     'users': ['User.ReadBasic.All'],
-    'onedrive': ['Files.ReadWrite.All'],
-    'sharepoint_dl': ['Sites.ReadWrite.All'],
+    'onedrive': ['Files.Read.All'],
+    'onedrive_all': ['Files.ReadWrite.All'],
+    'sharepoint': ['Sites.Read.All'],
+    'sharepoint_dl': ['Sites.ReadWrite.All']
 }
 
 
