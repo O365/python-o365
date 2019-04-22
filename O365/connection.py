@@ -562,7 +562,7 @@ class Connection:
             if kwargs.get('headers') is not None and kwargs['headers'].get(
                     'Content-type') is None:
                 kwargs['headers']['Content-type'] = 'application/json'
-            if 'data' in kwargs and kwargs['headers'].get(
+            if 'data' in kwargs and kwargs['data'] is not None and kwargs['headers'].get(
                     'Content-type') == 'application/json':
                 kwargs['data'] = json.dumps(
                     kwargs['data'])  # auto convert to json
