@@ -311,9 +311,9 @@ class RangeFormat(ApiComponent):
 
         cloud_data = kwargs.get(self._cloud_data_key, {})
 
-        self._column_width = cloud_data.get('columnWidth', None)
+        self._column_width = cloud_data.get('columnWidth', 11)
         self._horizontal_alignment = cloud_data.get('horizontalAlignment', 'General')
-        self._row_height = cloud_data.get('rowHeight', None)
+        self._row_height = cloud_data.get('rowHeight', 15)
         self._vertical_alignment = cloud_data.get('verticalAlignment', 'Bottom')
         self._wrap_text = cloud_data.get('wrapText', None)
 

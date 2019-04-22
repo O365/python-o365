@@ -1482,7 +1482,7 @@ class Drive(ApiComponent):
 
         name = name if \
             isinstance(name, OneDriveWellKnowFolderNames) \
-            else OneDriveWellKnowFolderNames(name)
+            else OneDriveWellKnowFolderNames(name.lower())
         name = name.value
 
         if self.object_id:

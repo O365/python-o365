@@ -740,14 +740,18 @@ You can also write to any excel online.
 
 To work with excel files, first you have to retrieve a `File` instance using the OneDrive or Sharepoint functionallity.
 
+This is how you update a cell value:
+
 ```python
 from O365 import WorkBook
 
 # given a File instance that is a xlsx file ...
-excel_file = WorkBook(my_file_instance)  
+excel_file = WorkBook(my_file_instance)  # my_file_instance should be an instance of File.
 
 ws = excel_file.get_worksheet('my_worksheet')
-ws.update(name='new name')
+cella1 = ws.get_range('A1')
+cella1.values = 35
+cella1.update()
 ```
 
 #### Workbook Sessions
@@ -763,7 +767,37 @@ You can however change this when creating the `Workbook` instance:
 excel_file = WorkBook(my_file_instance, use_session=False, persist=False)
 ```
 
-> Work in progress
+#### Available Objects 
+
+After creating the `WorkBook` instance you will have access to the following objects:
+
+- WorkSheet
+- Range and NamedRange
+- Table, TableColumn and TableRow
+- RangeFormat (to format ranges)
+- Charts (not available for now)
+
+Some examples:
+
+Set format for a given range
+```python
+# ...
+my_range = ws.get_range('B2:C10')
+fmt = myrange.get_format()
+fmt.font.bold = True
+fmt.update()
+```
+Autofit Columns:
+```python
+ws.get_range('B2:C10').get_format().auto_fit_columns()
+```
+
+Get values from Table:
+```python
+table = ws.get_table('my_table')
+column = table.get_column_at_index(1)
+values = column.values[0]  # values returns a two dimensional array.
+```
 
 ## Sharepoint
 The sharepoint api is done but there are no docs yet. Look at the sharepoint.py file to get insights.
