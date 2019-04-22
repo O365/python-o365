@@ -532,14 +532,14 @@ class Range(ApiComponent):
         self.column_index = cloud_data.get('columnIndex', 0)  # zero indexed
         self._row_hidden = cloud_data.get('rowHidden', False)
         self.row_index = cloud_data.get('rowIndex', 0)  # zero indexed
-        self._formulas = cloud_data.get('formulas', '')
-        self._formulas_local = cloud_data.get('formulasLocal', '')
-        self._formulas_r1_c1 = cloud_data.get('formulasR1C1', '')
+        self._formulas = cloud_data.get('formulas', [[]])
+        self._formulas_local = cloud_data.get('formulasLocal', [[]])
+        self._formulas_r1_c1 = cloud_data.get('formulasR1C1', [[]])
         self.hidden = cloud_data.get('hidden', False)
-        self._number_format = cloud_data.get('numberFormat', '')
-        self.text = cloud_data.get('text', '')
-        self.value_types = cloud_data.get('valueTypes', '')
-        self._values = cloud_data.get('values', '')
+        self._number_format = cloud_data.get('numberFormat', [[]])
+        self.text = cloud_data.get('text', [[]])
+        self.value_types = cloud_data.get('valueTypes', [[]])
+        self._values = cloud_data.get('values', [[]])
 
     def __str__(self):
         return self.__repr__()
@@ -964,7 +964,7 @@ class TableRow(ApiComponent):
             main_resource=main_resource)
 
         self.index = cloud_data.get('index', 0)  # zero indexed
-        self.values = cloud_data.get('values', '')  # json string
+        self.values = cloud_data.get('values', [[]])  # json string
 
     def __str__(self):
         return self.__repr__()
@@ -1033,7 +1033,7 @@ class TableColumn(ApiComponent):
 
         self.name = cloud_data.get('name', '')
         self.index = cloud_data.get('index', 0)  # zero indexed
-        self.values = cloud_data.get('values', '')  # json string
+        self.values = cloud_data.get('values', [[]])  # json string
 
     def __str__(self):
         return self.__repr__()
