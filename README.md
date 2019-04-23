@@ -644,6 +644,7 @@ new_event.save()
 ```
 
 Working with `Calendar` instances:
+
 ```python
 calendar = schedule.get_calendar(calendar_name='Birthdays')
 
@@ -653,7 +654,7 @@ calendar.update()
 q = calendar.new_query('start').greater_equal(dt.datetime(2018, 5, 20))
 q.chain('and').on_attribute('end').less_equal(dt.datetime(2018, 5, 24))
 
-birthdays = calendar.get_events(query=q)
+birthdays = calendar.get_events(query=q, include_recurring=True)  # include_recurring=True will include repeated events on the result set.
 
 for event in birthdays:
     if event.subject == 'George Best Birthday':
@@ -662,6 +663,9 @@ for event in birthdays:
     else:
         event.decline("No way I'm comming, I'll be in Spain", send_response=False)  # decline the event but don't send a reponse to the organizer
 ```
+
+> It's important to know that when quering events with `include_recurring=True` (which is the default), it is required that you must provide a query parameter with the start and end attributes defined. 
+> Unlike when using `include_recurring=False` those attributes will NOT filter the data based on the operations you set on the query (greater_equal, less, etc.) but just filter the events start datetime between the provided start and end datetimes. 
 
 There are some known issues when working with [shared calendars](https://docs.microsoft.com/en-us/graph/known-issues#calendars) in Microsoft Graph.
 
@@ -956,5 +960,3 @@ Then the exception will be captured and logged it to the stdout with it's messag
 
 HttpErrors 4xx (Bad Request) and 5xx (Internal Server Error) are considered exceptions and raised also by the connection.
 You can tell the `Connection` to not raise http errors by passing `raise_http_errors=False` (defaults to True).
-
-#### Soli Deo Gloria

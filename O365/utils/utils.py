@@ -826,7 +826,7 @@ class Query:
     def chain(self, operation=ChainOperator.AND):
         """ Start a chain operation
 
-        :param ChainOperator operation: how to combine with a new one
+        :param ChainOperator, str operation: how to combine with a new one
         :rtype: Query
         """
         if isinstance(operation, str):
@@ -931,7 +931,7 @@ class Query:
     def equals(self, word):
         """ Add a equals check
 
-        :param str word: word to compare with
+        :param word: word to compare with
         :rtype: Query
         """
         return self.logical_operator('eq', word)
@@ -940,7 +940,7 @@ class Query:
     def unequal(self, word):
         """ Add a unequals check
 
-        :param str word: word to compare with
+        :param word: word to compare with
         :rtype: Query
         """
         return self.logical_operator('ne', word)
@@ -949,7 +949,7 @@ class Query:
     def greater(self, word):
         """ Add a greater than check
 
-        :param str word: word to compare with
+        :param word: word to compare with
         :rtype: Query
         """
         return self.logical_operator('gt', word)
@@ -958,7 +958,7 @@ class Query:
     def greater_equal(self, word):
         """ Add a greater than or equal to check
 
-        :param str word: word to compare with
+        :param word: word to compare with
         :rtype: Query
         """
         return self.logical_operator('ge', word)
@@ -967,7 +967,7 @@ class Query:
     def less(self, word):
         """ Add a less than check
 
-        :param str word: word to compare with
+        :param word: word to compare with
         :rtype: Query
         """
         return self.logical_operator('lt', word)
@@ -976,7 +976,7 @@ class Query:
     def less_equal(self, word):
         """ Add a less than or equal to check
 
-        :param str word: word to compare with
+        :param word: word to compare with
         :rtype: Query
         """
         return self.logical_operator('le', word)

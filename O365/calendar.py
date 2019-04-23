@@ -1625,6 +1625,10 @@ class Calendar(ApiComponent, HandleRecipientsMixin):
             if start is None or end is None:
                 raise ValueError("When 'include_recurring' is True you must provide a 'start' and 'end' datetimes inside a Query instance.")
 
+            if end < start:
+                raise ValueError('When using "include_recurring=True", the date asigned to the "end" datetime'
+                                 ' should be greater or equal than the date asigned to the "start" datetime.')
+
             params[self._cc('startDateTime')] = start
             params[self._cc('endDateTime')] = end
 
