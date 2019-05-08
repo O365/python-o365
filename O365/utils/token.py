@@ -97,8 +97,15 @@ class FileSystemTokenBackend(BaseTokenBackend):
         super().__init__()
         if not isinstance(token_path, Path):
             token_path = Path(token_path) if token_path else Path()
-        token_filename = token_filename or 'o365_token.txt'
-        self.token_path = token_path / token_filename
+
+        if token_path.is_file():
+            self.token_path = token_path
+        else:
+            token_filename = token_filename or 'o365_token.txt'
+            self.token_path = token_path / token_filename
+
+    def __repr__(self):
+        return str(self.token_path)
 
     def get_token(self):
         """
@@ -169,6 +176,9 @@ class FirestoreBackend(BaseTokenBackend):
         self.doc_ref = client.collections(collection).document(doc_id)
         self.field_name = field_name
 
+    def __repr__(self):
+        return 'Collection: {}. Doc Id: {}'.format(self.collection, self.doc_id)
+    
     def get_token(self):
         """
         Retrieves the token from the store

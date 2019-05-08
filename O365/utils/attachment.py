@@ -85,6 +85,8 @@ class BaseAttachment(ApiComponent):
         self.name = None
         self.attachment_type = 'file'
         self.attachment_id = None
+        self.content_id = None
+        self.is_inline = False
         self.attachment = None
         self.content = None
         self.on_disk = False
@@ -96,6 +98,8 @@ class BaseAttachment(ApiComponent):
                     # data from the cloud
                     attachment = attachment.get(self._cloud_data_key)
                     self.attachment_id = attachment.get(self._cc('id'), None)
+                    self.content_id = attachment.get(self._cc('contentId'), None)
+                    self.is_inline = attachment.get(self._cc('IsInline'), False)
                     self.name = attachment.get(self._cc('name'), None)
                     self.content = attachment.get(self._cc('contentBytes'),
                                                   None)
@@ -146,8 +150,12 @@ class BaseAttachment(ApiComponent):
             '{}_attachment_type'.format(self.attachment_type)),
             self._cc('name'): self.name}
 
+        if self.is_inline:
+            data[self._cc('isInline')] = self.is_inline
         if self.attachment_type == 'file':
             data[self._cc('contentBytes')] = self.content
+            if self.content_id is not None:
+                data[self._cc('contentId')] = self.content_id
         else:
             data[self._cc('item')] = self.content
 

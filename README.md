@@ -503,6 +503,35 @@ else:
 reply_msg.send()
 ```
 
+##### Sending Inline Images
+You can send inline images by doing this:
+
+```python
+# ...
+msg = account.new_message()
+msg.to.add('george@best.com')
+msg.attchments.add('my_image.png')
+att = msg.attchments[0]  # get the attachment object
+
+# this is super important for this to work.
+att.is_inline = True
+att.content_id = 'image.png'
+
+# notice we insert an image tag with source to: "cid:{content_id}"
+body = """
+    <html>
+        <body>
+            <strong>There should be an image here:</strong>
+            <p>
+                <img src="cid:image.png">
+            </p>
+        </body>
+    </html>
+    """
+msg.body = body
+msg.send()
+```
+
 ## AddressBook
 AddressBook groups the funcionality of both the Contact Folders and Contacts. Outlook Distribution Groups are not supported (By the Microsoft API's).
 
