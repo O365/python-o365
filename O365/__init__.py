@@ -6,6 +6,8 @@ import warnings
 from .__version__ import __version__
 
 from .account import Account
+from .connection import Connection, Protocol, MSGraphProtocol
+from .utils import FileSystemTokenBackend
 
 
 # allow Deprecation warnings to appear
