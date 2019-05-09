@@ -1,8 +1,6 @@
 # O365 - Microsoft Graph and Office 365 API made easy
 
 
-> API Documentation is available [here](https://o365.github.io/python-o365/latest/html/api.html)
-
 > Detailed usage documentation is still in progress
 
 This project aims is to make interact with Microsoft Graph and Office 365 easy to do in a Pythonic way. 
@@ -48,7 +46,7 @@ This project was also a learning resource for us. This is a list of not so commo
 - Etc. (see the code!)
 
 
-What follows is kind of a wiki... but you will get more insights by looking at the [docs](https://o365.github.io/python-o365/latest/html/api.html) or deep into the code.
+What follows is kind of a wiki...
 
 ## Table of contents
 
