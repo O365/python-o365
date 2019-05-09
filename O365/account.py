@@ -1,12 +1,5 @@
-from .address_book import AddressBook, GlobalAddressList
-from .calendar import Schedule
 from .connection import Connection, Protocol, MSGraphProtocol
 from .connection import oauth_authentication_flow
-from .drive import Storage
-from .mailbox import MailBox
-from .message import Message
-from .sharepoint import Sharepoint
-from .planner import Planner
 from .utils import ME_RESOURCE
 
 
@@ -86,6 +79,7 @@ class Account(object):
         :return: New empty message
         :rtype: Message
         """
+        from .message import Message
         return Message(parent=self, main_resource=resource, is_draft=True)
 
     def mailbox(self, resource=None):
@@ -96,6 +90,7 @@ class Account(object):
         :return: a representation of account mailbox
         :rtype: MailBox
         """
+        from .mailbox import MailBox
         return MailBox(parent=self, main_resource=resource, name='MailBox')
 
     def address_book(self, *, resource=None, address_book='personal'):
@@ -111,9 +106,13 @@ class Account(object):
         :raises RuntimeError: if invalid address_book is specified
         """
         if address_book.lower() == 'personal':
+            from .address_book import AddressBook
+
             return AddressBook(parent=self, main_resource=resource,
                                name='Personal Address Book')
         elif address_book.lower() == 'gal':
+            from .address_book import GlobalAddressList
+
             return GlobalAddressList(parent=self)
         else:
             raise RuntimeError(
@@ -129,6 +128,7 @@ class Account(object):
         :return: a representation of calendar events
         :rtype: Schedule
         """
+        from .calendar import Schedule
         return Schedule(parent=self, main_resource=resource)
 
     def storage(self, *, resource=None):
@@ -145,7 +145,7 @@ class Account(object):
             # TODO: Custom protocol accessing OneDrive/Sharepoint Api fails here
             raise RuntimeError(
                 'Drive options only works on Microsoft Graph API')
-
+        from .drive import Storage
         return Storage(parent=self, main_resource=resource)
 
     def sharepoint(self, *, resource=''):
@@ -164,6 +164,7 @@ class Account(object):
             raise RuntimeError(
                 'Sharepoint api only works on Microsoft Graph API')
 
+        from .sharepoint import Sharepoint
         return Sharepoint(parent=self, main_resource=resource)
 
     def planner(self, *, resource=''):
@@ -174,4 +175,5 @@ class Account(object):
             raise RuntimeError(
                 'planner api only works on Microsoft Graph API')
 
+        from .planner import Planner
         return Planner(parent=self, main_resource=resource)
