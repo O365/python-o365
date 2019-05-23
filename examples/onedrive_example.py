@@ -63,7 +63,7 @@ class O365Account():
         if not os.path.exists(to_path):
             os.makedirs(to_path)
         try:
-            file = list(filter(lambda x: basename in x.name, items))[0]
+            file = list(filter(lambda x: basename == x.name, items))[0]
             print('Downloading file ' + filename)
             file.download(to_path, chunk_size=CHUNK_SIZE)
             return True
