@@ -513,6 +513,9 @@ class Range(ApiComponent):
             # strip the main resource
             main_resource = main_resource.split('/range')[0]
         if isinstance(parent, (WorkSheet, Range)):
+            if '!' in self.object_id:
+                # remove the sheet string from the address as it's not needed
+                self.object_id = self.object_id.split('!')[1]
             main_resource = "{}/range(address='{}')".format(main_resource, quote(self.object_id))
         else:
             main_resource = '{}/range'.format(main_resource)
@@ -813,7 +816,7 @@ class Range(ApiComponent):
          bottom-right corner, relative to the current range.
         :return: Range
         """
-        return self._get_range('get_resized_range', rows, columns, method='POST')
+        return self._get_range('get_resized_range', rows, columns, method='GET')
 
     def update(self):
         """ Update this range """
