@@ -104,14 +104,15 @@ def test(annotate, coverage, v, vv):
     p.wait()
 
 
-# noinspection PyShadowingBuiltins
-@cli.command(name='list')
-def list_releases():
-    """ Lists all releases published on pypi. """
+def _get_releases():
+    """ Retrieves all releases on pypi """
+    releases = None
+
     response = requests.get(PYPI_URL.format(package=PYPI_PACKAGE_NAME))
     if response:
         data = response.json()
 
+        releases = []
         releases_dict = data.get('releases', {})
 
         if releases_dict:
@@ -123,11 +124,25 @@ def list_releases():
                     published_on_date = fmt.get('upload_time')
 
                 release_formats = ' | '.join(release_formats)
-                print('{:<10}{:>15}{:>25}'.format(version, published_on_date, release_formats))
-        else:
-            print('No releases found for {}'.format(PYPI_PACKAGE_NAME))
-    else:
+                releases.append((version, published_on_date, release_formats))
+
+    return releases
+
+
+# noinspection PyShadowingBuiltins
+@cli.command(name='list')
+def list_releases():
+    """ Lists all releases published on pypi. """
+
+    releases = _get_releases()
+
+    if releases is None:
         print('Package "{}" not found on Pypi.org'.format(PYPI_PACKAGE_NAME))
+    elif not releases:
+        print('No releases found for {}'.format(PYPI_PACKAGE_NAME))
+    else:
+        for version, published_on_date, release_formats in releases:
+            print('{:<10}{:>15}{:>25}'.format(version, published_on_date, release_formats))
 
 
 # Mostly just for fun. I was curious to see what the shape of contributions was.

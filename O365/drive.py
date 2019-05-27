@@ -499,6 +499,12 @@ class DriveItem(ApiComponent):
     def __repr__(self):
         return '{}: {}'.format(self.__class__.__name__, self.name)
 
+    def __eq__(self, other):
+        obj_id = getattr(other, 'object_id', None)
+        if obj_id is not None:
+            return self.object_id == obj_id
+        return False
+
     @staticmethod
     def _classifier(item):
         """ Subclass to change factory classes """
