@@ -226,7 +226,7 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
             local_tz) if self.__sent else None
 
         self.__attachments = MessageAttachments(parent=self, attachments=[])
-        self.has_attachments = cloud_data.get(cc('hasAttachments'), 0)
+        self.has_attachments = cloud_data.get(cc('hasAttachments'), False)
         if self.has_attachments and download_attachments:
             self.attachments.download_attachments()
         self.__subject = cloud_data.get(cc('subject'), '')
