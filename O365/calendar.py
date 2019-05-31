@@ -857,8 +857,7 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         self.__is_all_day = cloud_data.get(cc('isAllDay'), False)
         self.is_cancelled = cloud_data.get(cc('isCancelled'), False)
         self.is_organizer = cloud_data.get(cc('isOrganizer'), True)
-        self.__location = cloud_data.get(cc('location'), {}).get(
-            cc('displayName'), '')
+        self.__location = cloud_data.get(cc('location'), {})
         self.locations = cloud_data.get(cc('locations'), [])  # TODO
         self.online_meeting_url = cloud_data.get(cc('onlineMeetingUrl'), None)
         self.__organizer = self._recipient_from_cloud(
@@ -897,6 +896,14 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         :rtype: dict
         """
         cc = self._cc  # alias
+        if self.__location:
+            if isinstance(self.__location, dict):
+                location = self.__location
+            else:
+                location = {cc('displayName'): self.__location}
+        else:
+            location = {cc('displayName'): ''}
+
         data = {
             cc('subject'): self.__subject,
             cc('body'): {
@@ -905,7 +912,7 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
             cc('start'): self._build_date_time_time_zone(self.__start),
             cc('end'): self._build_date_time_time_zone(self.__end),
             cc('attendees'): self.__attendees.to_api_data(),
-            cc('location'): {cc('displayName'): self.__location},
+            cc('location'): location,
             cc('categories'): self.__categories,
             cc('isAllDay'): self.__is_all_day,
             cc('importance'): cc(self.__importance.value),
