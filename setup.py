@@ -3,7 +3,7 @@ import os
 from setuptools import setup, find_packages
 
 
-VERSION = '1.1.9'
+VERSION = '1.1.10'
 
 # Available classifiers: https://pypi.org/pypi?%3Aaction=list_classifiers
 CLASSIFIERS = [
