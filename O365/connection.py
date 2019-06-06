@@ -16,6 +16,7 @@ from requests.packages.urllib3.util.retry import Retry
 from requests_oauthlib import OAuth2Session
 from stringcase import pascalcase, camelcase, snakecase
 from tzlocal import get_localzone
+from pytz import UnknownTimeZoneError, UTC
 
 from .utils import ME_RESOURCE, BaseTokenBackend, FileSystemTokenBackend, Token
 
@@ -92,7 +93,11 @@ class Protocol:
         self.default_resource = default_resource
         self.use_default_casing = True if casing_function is None else False
         self.casing_function = casing_function or camelcase
-        self.timezone = timezone or get_localzone()  # pytz timezone
+        try:
+            self.timezone = timezone or get_localzone()  # pytz timezone
+        except UnknownTimeZoneError as e:
+            log.info('Timezone not provided and the local timezone could not be found. Default to UTC.')
+            self.timezone = UTC  # pytz.timezone('UTC')
         self.max_top_value = 500  # Max $top parameter value
 
         # define any keyword that can be different in this protocol
