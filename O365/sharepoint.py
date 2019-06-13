@@ -173,6 +173,7 @@ class SharepointList(ApiComponent):
     _endpoints = {
         'get_items': '/items',
         'get_item_by_id': '/items/{item_id}',
+        'expand': '?expand=fields',
         'get_list_columns': '/columns'
     }
     list_item_constructor = SharepointListItem
@@ -244,13 +245,16 @@ class SharepointList(ApiComponent):
         self.column_name_cw = {col.display_name: col.internal_name for
                                col in self.get_list_columns() if not col.read_only}
 
-    def get_items(self):
+    def get_items(self, expand=False):
         """ Returns a collection of Sharepoint Items
+        
+        :param expand (bool): Return the list items field details, default False
 
         :rtype: list[SharepointListItem]
         """
         url = self.build_url(self._endpoints.get('get_items'))
-
+        if expand:
+            url = ''.join([url, self._endpoints.get('expand')])
         response = self.con.get(url)
 
         if not response:
@@ -262,11 +266,18 @@ class SharepointList(ApiComponent):
                                            **{self._cloud_data_key: item})
                 for item in data.get('value', [])]
 
-    def get_item_by_id(self, item_id):
-        """ Returns a sharepoint list item based on id"""
+    def get_item_by_id(self, item_id, expand=False):
+        """ Returns a sharepoint list item based on id
+                
+        :param item_id: Desired Sharepoint List item ID number
+        :param expand (bool): Return the list item field details, default False
+        
+        :rtype: SharepointListItem
+        """
 
         url = self.build_url(self._endpoints.get('get_item_by_id').format(item_id=item_id))
-
+        if expand:
+            url = ''.join([url, self._endpoints.get('expand')])
         response = self.con.get(url)
 
         if not response:
