@@ -1,0 +1,950 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>O365.utils.utils &mdash; O365  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> O365
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Detailed Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">O365 API</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">O365</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>O365.utils.utils</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for O365.utils.utils</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">datetime</span> <span class="k">as</span> <span class="nn">dt</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">OrderedDict</span>
+<span class="kn">from</span> <span class="nn">enum</span> <span class="k">import</span> <span class="n">Enum</span>
+
+<span class="kn">import</span> <span class="nn">pytz</span>
+
+<span class="kn">from</span> <span class="nn">O365.utils.decorators</span> <span class="k">import</span> <span class="n">fluent</span>
+
+<span class="n">ME_RESOURCE</span> <span class="o">=</span> <span class="s1">&#39;me&#39;</span>
+<span class="n">USERS_RESOURCE</span> <span class="o">=</span> <span class="s1">&#39;users&#39;</span>
+
+<span class="n">NEXT_LINK_KEYWORD</span> <span class="o">=</span> <span class="s1">&#39;@odata.nextLink&#39;</span>
+
+<span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="n">MAX_RECIPIENTS_PER_MESSAGE</span> <span class="o">=</span> <span class="mi">500</span>  <span class="c1"># Actual limit on Office 365</span>
+
+
+<div class="viewcode-block" id="ImportanceLevel"><a class="viewcode-back" href="../../../api/utils.html#O365.utils.utils.ImportanceLevel">[docs]</a><span class="k">class</span> <span class="nc">ImportanceLevel</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">Normal</span> <span class="o">=</span> <span class="s1">&#39;normal&#39;</span>
+    <span class="n">Low</span> <span class="o">=</span> <span class="s1">&#39;low&#39;</span>
+    <span class="n">High</span> <span class="o">=</span> <span class="s1">&#39;high&#39;</span></div>
+
+
+<div class="viewcode-block" id="OutlookWellKnowFolderNames"><a class="viewcode-back" href="../../../api/utils.html#O365.utils.utils.OutlookWellKnowFolderNames">[docs]</a><span class="k">class</span> <span class="nc">OutlookWellKnowFolderNames</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">INBOX</span> <span class="o">=</span> <span class="s1">&#39;Inbox&#39;</span>
+    <span class="n">JUNK</span> <span class="o">=</span> <span class="s1">&#39;JunkEmail&#39;</span>
+    <span class="n">DELETED</span> <span class="o">=</span> <span class="s1">&#39;DeletedItems&#39;</span>
+    <span class="n">DRAFTS</span> <span class="o">=</span> <span class="s1">&#39;Drafts&#39;</span>
+    <span class="n">SENT</span> <span class="o">=</span> <span class="s1">&#39;SentItems&#39;</span>
+    <span class="n">OUTBOX</span> <span class="o">=</span> <span class="s1">&#39;Outbox&#39;</span></div>
+
+
+<div class="viewcode-block" id="OneDriveWellKnowFolderNames"><a class="viewcode-back" href="../../../api/utils.html#O365.utils.utils.OneDriveWellKnowFolderNames">[docs]</a><span class="k">class</span> <span class="nc">OneDriveWellKnowFolderNames</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">DOCUMENTS</span> <span class="o">=</span> <span class="s1">&#39;documents&#39;</span>
+    <span class="n">PHOTOS</span> <span class="o">=</span> <span class="s1">&#39;photos&#39;</span>
+    <span class="n">CAMERA_ROLL</span> <span class="o">=</span> <span class="s1">&#39;cameraroll&#39;</span>
+    <span class="n">APP_ROOT</span> <span class="o">=</span> <span class="s1">&#39;approot&#39;</span>
+    <span class="n">MUSIC</span> <span class="o">=</span> <span class="s1">&#39;music&#39;</span>
+    <span class="n">ATTACHMENTS</span> <span class="o">=</span> <span class="s1">&#39;attachments&#39;</span></div>
+
+
+<div class="viewcode-block" id="ChainOperator"><a class="viewcode-back" href="../../../api/utils.html#O365.utils.utils.ChainOperator">[docs]</a><span class="k">class</span> <span class="nc">ChainOperator</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">AND</span> <span class="o">=</span> <span class="s1">&#39;and&#39;</span>
+    <span class="n">OR</span> <span class="o">=</span> <span class="s1">&#39;or&#39;</span></div>
+
+
+<div class="viewcode-block" id="TrackerSet"><a class="viewcode-back" href="../../../api/utils.html#O365.utils.utils.TrackerSet">[docs]</a><span class="k">class</span> <span class="nc">TrackerSet</span><span class="p">(</span><span class="nb">set</span><span class="p">):</span>
+<div class="viewcode-block" id="TrackerSet.__init__"><a class="viewcode-back" href="../../../api/utils.html#O365.utils.utils.TrackerSet.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">casing</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; A Custom Set that changes the casing of it&#39;s keys</span>
+
+<span class="sd">        :param func casing: a function to convert into specified case</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cc</span> <span class="o">=</span> <span class="n">casing</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TrackerSet.add"><a class="viewcode-back" href="../../../api/utils.html#O365.utils.utils.TrackerSet.add">[docs]</a>    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cc</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="ApiComponent"><a class="viewcode-back" href="../../../api/utils.html#O365.utils.utils.ApiComponent">[docs]</a><span class="k">class</span> <span class="nc">ApiComponent</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot; Base class for all object interactions with the Cloud Service API</span>
+
+<span class="sd">    Exposes common access methods to the api protocol within all Api objects</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_cloud_data_key</span> <span class="o">=</span> <span class="s1">&#39;__cloud_data__&#39;</span>  <span class="c1"># wraps cloud data with this dict key</span>
+    <span class="n">_endpoints</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># dict of all API service endpoints needed</span>
+
+<div class="viewcode-block" id="ApiComponent.__init__"><a class="viewcode-back" href="../../../api/utils.html#O365.utils.utils.ApiComponent.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">protocol</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">main_resource</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Object initialization</span>
+
+<span class="sd">        :param Protocol protocol: A protocol class or instance to be used with</span>
+<span class="sd">         this connection</span>
+<span class="sd">        :param str main_resource: main_resource to be used in these API</span>
+<span class="sd">         communications</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">protocol</span> <span class="o">=</span> <span class="n">protocol</span><span class="p">()</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">protocol</span><span class="p">,</span> <span class="nb">type</span><span class="p">)</span> <span class="k">else</span> <span class="n">protocol</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">protocol</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Protocol not provided to Api Component&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">main_resource</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_parse_resource</span><span class="p">(</span>
+            <span class="n">main_resource</span> <span class="k">if</span> <span class="n">main_resource</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="n">protocol</span><span class="o">.</span><span class="n">default_resource</span><span class="p">))</span>
+        <span class="c1"># noinspection PyUnresolvedReferences</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_base_url</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">protocol</span><span class="o">.</span><span class="n">service_url</span><span class="p">,</span>
+                                       <span class="bp">self</span><span class="o">.</span><span class="n">main_resource</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_base_url</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">):</span>
+            <span class="c1"># when self.main_resource is empty then remove the last slash.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_base_url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_base_url</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span></div>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;Api Component on resource: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">main_resource</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_parse_resource</span><span class="p">(</span><span class="n">resource</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Parses and completes resource information &quot;&quot;&quot;</span>
+        <span class="n">resource</span> <span class="o">=</span> <span class="n">resource</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">if</span> <span class="n">resource</span> <span class="k">else</span> <span class="n">resource</span>
+        <span class="k">if</span> <span class="n">resource</span> <span class="ow">in</span> <span class="p">{</span><span class="n">ME_RESOURCE</span><span class="p">,</span> <span class="n">USERS_RESOURCE</span><span class="p">}:</span>
+            <span class="k">return</span> <span class="n">resource</span>
+        <span class="k">elif</span> <span class="s1">&#39;@&#39;</span> <span class="ow">in</span> <span class="n">resource</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">resource</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">USERS_RESOURCE</span><span class="p">):</span>
+            <span class="c1"># when for example accessing a shared mailbox the</span>
+            <span class="c1"># resource is set to the email address. we have to prefix</span>
+            <span class="c1"># the email with the resource &#39;users/&#39; so --&gt; &#39;users/email_address&#39;</span>
+            <span class="k">return</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">USERS_RESOURCE</span><span class="p">,</span> <span class="n">resource</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">resource</span>
+
+<div class="viewcode-block" id="ApiComponent.build_url"><a class="viewcode-back" href="../../../api/utils.html#O365.utils.utils.ApiComponent.build_url">[docs]</a>    <span class="k">def</span> <span class="nf">build_url</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">endpoint</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns a url for a given endpoint using the protocol</span>
+<span class="sd">        service url</span>
+
+<span class="sd">        :param str endpoint: endpoint to build the url for</span>
+<span class="sd">        :return: final url</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s1">&#39;</span><span class="si">{}{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_base_url</span><span class="p">,</span> <span class="n">endpoint</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_gk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keyword</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Alias for protocol.get_service_keyword &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">protocol</span><span class="o">.</span><span class="n">get_service_keyword</span><span class="p">(</span><span class="n">keyword</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_cc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dict_key</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Alias for protocol.convert_case &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">protocol</span><span class="o">.</span><span class="n">convert_case</span><span class="p">(</span><span class="n">dict_key</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ApiComponent.new_query"><a class="viewcode-back" href="../../../api/utils.html#O365.utils.utils.ApiComponent.new_query">[docs]</a>    <span class="k">def</span> <span class="nf">new_query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Create a new query to filter results</span>
+
+<span class="sd">        :param str attribute: attribute to apply the query for</span>
+<span class="sd">        :return: new Query</span>
+<span class="sd">        :rtype: Query</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">Query</span><span class="p">(</span><span class="n">attribute</span><span class="o">=</span><span class="n">attribute</span><span class="p">,</span> <span class="n">protocol</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">protocol</span><span class="p">)</span></div>
+
+    <span class="n">q</span> <span class="o">=</span> <span class="n">new_query</span>  <span class="c1"># alias for new query</span></div>
+
+
+<div class="viewcode-block" id="Pagination"><a class="viewcode-back" href="../../../api/utils.html#O365.utils.utils.Pagination">[docs]</a><span class="k">class</span> <span class="nc">Pagination</span><span class="p">(</span><span class="n">ApiComponent</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Utility class that allows batching requests to the server &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Pagination.__init__"><a class="viewcode-back" href="../../../api/utils.html#O365.utils.utils.Pagination.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">constructor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">next_link</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns an iterator that returns data until it&#39;s exhausted.</span>
+<span class="sd">        Then will request more data (same amount as the original request)</span>
+<span class="sd">        to the server until this data is exhausted as well.</span>
+<span class="sd">        Stops when no more data exists or limit is reached.</span>
+
+<span class="sd">        :param parent: the parent class. Must implement attributes:</span>
+<span class="sd">         con, api_version, main_resource</span>
+<span class="sd">        :param data: the start data to be return</span>
+<span class="sd">        :param constructor: the data constructor for the next batch.</span>
+<span class="sd">         It can be a function.</span>
+<span class="sd">        :param str next_link: the link to request more data to</span>
+<span class="sd">        :param int limit: when to stop retrieving more data</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">parent</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Parent must be another Api Component&#39;</span><span class="p">)</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">protocol</span><span class="o">=</span><span class="n">parent</span><span class="o">.</span><span class="n">protocol</span><span class="p">,</span>
+                         <span class="n">main_resource</span><span class="o">=</span><span class="n">parent</span><span class="o">.</span><span class="n">main_resource</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="n">parent</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">con</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">con</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">constructor</span> <span class="o">=</span> <span class="n">constructor</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">next_link</span> <span class="o">=</span> <span class="n">next_link</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">limit</span> <span class="o">=</span> <span class="n">limit</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span> <span class="k">if</span> <span class="n">data</span> <span class="k">else</span> <span class="p">[]</span>
+
+        <span class="n">data_count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">limit</span> <span class="ow">and</span> <span class="n">limit</span> <span class="o">&lt;</span> <span class="n">data_count</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data_count</span> <span class="o">=</span> <span class="n">limit</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">total_count</span> <span class="o">=</span> <span class="n">limit</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data_count</span> <span class="o">=</span> <span class="n">data_count</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">total_count</span> <span class="o">=</span> <span class="n">data_count</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="mi">0</span></div>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">constructor</span><span class="p">):</span>
+            <span class="k">return</span> <span class="s1">&#39;Pagination Iterator&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;&#39;</span><span class="si">{}</span><span class="s2">&#39; Iterator&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">constructor</span><span class="o">.</span><span class="vm">__name__</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">constructor</span> <span class="k">else</span> <span class="s1">&#39;Unknown&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__bool__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">next_link</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="k">def</span> <span class="nf">__next__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_count</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">return</span> <span class="n">value</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">limit</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_count</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">limit</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">StopIteration</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">next_link</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">StopIteration</span><span class="p">()</span>
+
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">next_link</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">response</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">StopIteration</span><span class="p">()</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">next_link</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">NEXT_LINK_KEYWORD</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="kc">None</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="p">[])</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">constructor</span><span class="p">:</span>
+            <span class="c1"># Everything  from cloud must be passed as self._cloud_data_key</span>
+            <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">constructor</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">constructor</span><span class="p">,</span>
+                                                             <span class="nb">type</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">constructor</span><span class="p">(</span><span class="n">value</span><span class="p">)(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_cloud_data_key</span><span class="p">:</span> <span class="n">value</span><span class="p">})</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">data</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">constructor</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="p">,</span>
+                                              <span class="o">**</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_cloud_data_key</span><span class="p">:</span> <span class="n">value</span><span class="p">})</span>
+                             <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">data</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span>
+
+        <span class="n">items_count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">limit</span><span class="p">:</span>
+            <span class="n">dif</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">limit</span> <span class="o">-</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">total_count</span> <span class="o">+</span> <span class="n">items_count</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">dif</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[:</span><span class="n">dif</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">next_link</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># stop batching</span>
+                <span class="n">items_count</span> <span class="o">=</span> <span class="n">items_count</span> <span class="o">+</span> <span class="n">dif</span>
+        <span class="k">if</span> <span class="n">items_count</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data_count</span> <span class="o">=</span> <span class="n">items_count</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">total_count</span> <span class="o">+=</span> <span class="n">items_count</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">return</span> <span class="n">value</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">StopIteration</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="Query"><a class="viewcode-back" href="../../../api/utils.html#O365.utils.utils.Query">[docs]</a><span class="k">class</span> <span class="nc">Query</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot; Helper to conform OData filters &quot;&quot;&quot;</span>
+    <span class="n">_mapping</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;from&#39;</span><span class="p">:</span> <span class="s1">&#39;from/emailAddress/address&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;to&#39;</span><span class="p">:</span> <span class="s1">&#39;toRecipients/emailAddress/address&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;start&#39;</span><span class="p">:</span> <span class="s1">&#39;start/DateTime&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;end&#39;</span><span class="p">:</span> <span class="s1">&#39;end/DateTime&#39;</span>
+    <span class="p">}</span>
+
+<div class="viewcode-block" id="Query.__init__"><a class="viewcode-back" href="../../../api/utils.html#O365.utils.utils.Query.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">protocol</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Build a query to apply OData filters</span>
+<span class="sd">        https://docs.microsoft.com/en-us/graph/query-parameters</span>
+
+<span class="sd">        :param str attribute: attribute to apply the query for</span>
+<span class="sd">        :param Protocol protocol: protocol to use for connecting</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">protocol</span> <span class="o">=</span> <span class="n">protocol</span><span class="p">()</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">protocol</span><span class="p">,</span> <span class="nb">type</span><span class="p">)</span> <span class="k">else</span> <span class="n">protocol</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_attribute</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_chain</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">attribute</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_negation</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_filters</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_order_by</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_selects</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span></div>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;Filter: </span><span class="si">{}</span><span class="se">\n</span><span class="s1">Order: </span><span class="si">{}</span><span class="se">\n</span><span class="s1">Select: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_filters</span><span class="p">(),</span>
+                                                          <span class="bp">self</span><span class="o">.</span><span class="n">get_order</span><span class="p">(),</span>
+                                                          <span class="bp">self</span><span class="o">.</span><span class="n">get_selects</span><span class="p">())</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__str__</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Query.select"><a class="viewcode-back" href="../../../api/utils.html#O365.utils.utils.Query.select">[docs]</a>    <span class="nd">@fluent</span>
+    <span class="k">def</span> <span class="nf">select</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">attributes</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Adds the attribute to the $select parameter</span>
+
+<span class="sd">        :param str attributes: the attributes tuple to select.</span>
+<span class="sd">         If empty, the on_attribute previously set is added.</span>
+<span class="sd">        :rtype: Query</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">attributes</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">attribute</span> <span class="ow">in</span> <span class="n">attributes</span><span class="p">:</span>
+                <span class="n">attribute</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">protocol</span><span class="o">.</span><span class="n">convert_case</span><span class="p">(</span>
+                    <span class="n">attribute</span><span class="p">)</span> <span class="k">if</span> <span class="n">attribute</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">attribute</span><span class="p">,</span>
+                                                           <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span>
+                <span class="k">if</span> <span class="n">attribute</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="s1">&#39;/&#39;</span> <span class="ow">in</span> <span class="n">attribute</span><span class="p">:</span>
+                        <span class="c1"># only parent attribute can be selected</span>
+                        <span class="n">attribute</span> <span class="o">=</span> <span class="n">attribute</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_selects</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">attribute</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_attribute</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_selects</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_attribute</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="Query.as_params"><a class="viewcode-back" href="../../../api/utils.html#O365.utils.utils.Query.as_params">[docs]</a>    <span class="k">def</span> <span class="nf">as_params</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns the filters and orders as query parameters</span>
+
+<span class="sd">        :rtype: dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_filters</span><span class="p">:</span>
+            <span class="n">params</span><span class="p">[</span><span class="s1">&#39;$filter&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_filters</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_order</span><span class="p">:</span>
+            <span class="n">params</span><span class="p">[</span><span class="s1">&#39;$orderby&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_order</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_selects</span><span class="p">:</span>
+            <span class="n">params</span><span class="p">[</span><span class="s1">&#39;$select&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_selects</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">params</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">has_filters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Whether the query has filters or not</span>
+
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_filters</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">has_order</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Whether the query has order_by or not</span>
+
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_order_by</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">has_selects</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Whether the query has select filters or not</span>
+
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_selects</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Query.get_filters"><a class="viewcode-back" href="../../../api/utils.html#O365.utils.utils.Query.get_filters">[docs]</a>    <span class="k">def</span> <span class="nf">get_filters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns the result filters</span>
+
+<span class="sd">        :rtype: str or None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filters</span><span class="p">:</span>
+            <span class="n">filters_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filters</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filters_list</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">Enum</span><span class="p">):</span>
+                <span class="n">filters_list</span> <span class="o">=</span> <span class="n">filters_list</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">return</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                <span class="p">[</span><span class="n">fs</span><span class="o">.</span><span class="n">value</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fs</span><span class="p">,</span> <span class="n">Enum</span><span class="p">)</span> <span class="k">else</span> <span class="n">fs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">fs</span> <span class="ow">in</span>
+                 <span class="n">filters_list</span><span class="p">])</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="Query.get_order"><a class="viewcode-back" href="../../../api/utils.html#O365.utils.utils.Query.get_order">[docs]</a>    <span class="k">def</span> <span class="nf">get_order</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns the result order by clauses</span>
+
+<span class="sd">        :rtype: str or None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># first get the filtered attributes in order as they must appear</span>
+        <span class="c1"># in the order_by first</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_order</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="n">filter_order_clauses</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">([(</span><span class="n">filter_attr</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="kc">None</span><span class="p">)</span>
+                                            <span class="k">for</span> <span class="n">filter_attr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filters</span>
+                                            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filter_attr</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)])</span>
+
+        <span class="c1"># any order_by attribute that appears in the filters is ignored</span>
+        <span class="n">order_by_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_order_by</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">filter_oc</span> <span class="ow">in</span> <span class="n">filter_order_clauses</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">direction</span> <span class="o">=</span> <span class="n">order_by_dict</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">filter_oc</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="n">filter_order_clauses</span><span class="p">[</span><span class="n">filter_oc</span><span class="p">]</span> <span class="o">=</span> <span class="n">direction</span>
+
+        <span class="n">filter_order_clauses</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+            <span class="n">order_by_dict</span><span class="p">)</span>  <span class="c1"># append any remaining order_by clause</span>
+
+        <span class="k">if</span> <span class="n">filter_order_clauses</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">attribute</span><span class="p">,</span>
+                                            <span class="n">direction</span> <span class="k">if</span> <span class="n">direction</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+                            <span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                             <span class="k">for</span> <span class="n">attribute</span><span class="p">,</span> <span class="n">direction</span> <span class="ow">in</span>
+                             <span class="n">filter_order_clauses</span><span class="o">.</span><span class="n">items</span><span class="p">()])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="Query.get_selects"><a class="viewcode-back" href="../../../api/utils.html#O365.utils.utils.Query.get_selects">[docs]</a>    <span class="k">def</span> <span class="nf">get_selects</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns the result select clause</span>
+
+<span class="sd">        :rtype: str or None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_selects</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_selects</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span></div>
+
+    <span class="k">def</span> <span class="nf">_get_mapping</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">attribute</span><span class="p">:</span>
+            <span class="n">mapping</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mapping</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">attribute</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">mapping</span><span class="p">:</span>
+                <span class="n">attribute</span> <span class="o">=</span> <span class="s1">&#39;/&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                    <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">protocol</span><span class="o">.</span><span class="n">convert_case</span><span class="p">(</span><span class="n">step</span><span class="p">)</span> <span class="k">for</span> <span class="n">step</span> <span class="ow">in</span>
+                     <span class="n">mapping</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">attribute</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">protocol</span><span class="o">.</span><span class="n">convert_case</span><span class="p">(</span><span class="n">attribute</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">attribute</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="Query.new"><a class="viewcode-back" href="../../../api/utils.html#O365.utils.utils.Query.new">[docs]</a>    <span class="nd">@fluent</span>
+    <span class="k">def</span> <span class="nf">new</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute</span><span class="p">,</span> <span class="n">operation</span><span class="o">=</span><span class="n">ChainOperator</span><span class="o">.</span><span class="n">AND</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Combine with a new query</span>
+
+<span class="sd">        :param str attribute: attribute of new query</span>
+<span class="sd">        :param ChainOperator operation: operation to combine to new query</span>
+<span class="sd">        :rtype: Query</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">operation</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">operation</span> <span class="o">=</span> <span class="n">ChainOperator</span><span class="p">(</span><span class="n">operation</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_chain</span> <span class="o">=</span> <span class="n">operation</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_attribute</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_mapping</span><span class="p">(</span><span class="n">attribute</span><span class="p">)</span> <span class="k">if</span> <span class="n">attribute</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_negation</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="Query.clear_filters"><a class="viewcode-back" href="../../../api/utils.html#O365.utils.utils.Query.clear_filters">[docs]</a>    <span class="k">def</span> <span class="nf">clear_filters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Clear filters &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_filters</span> <span class="o">=</span> <span class="p">[]</span></div>
+
+<div class="viewcode-block" id="Query.clear"><a class="viewcode-back" href="../../../api/utils.html#O365.utils.utils.Query.clear">[docs]</a>    <span class="nd">@fluent</span>
+    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Clear everything</span>
+
+<span class="sd">        :rtype: Query</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_filters</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_order_by</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_selects</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_negation</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_attribute</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_chain</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="Query.negate"><a class="viewcode-back" href="../../../api/utils.html#O365.utils.utils.Query.negate">[docs]</a>    <span class="nd">@fluent</span>
+    <span class="k">def</span> <span class="nf">negate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Apply a not operator</span>
+
+<span class="sd">        :rtype: Query</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_negation</span> <span class="o">=</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_negation</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="Query.chain"><a class="viewcode-back" href="../../../api/utils.html#O365.utils.utils.Query.chain">[docs]</a>    <span class="nd">@fluent</span>
+    <span class="k">def</span> <span class="nf">chain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operation</span><span class="o">=</span><span class="n">ChainOperator</span><span class="o">.</span><span class="n">AND</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Start a chain operation</span>
+
+<span class="sd">        :param ChainOperator operation: how to combine with a new one</span>
+<span class="sd">        :rtype: Query</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">operation</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">operation</span> <span class="o">=</span> <span class="n">ChainOperator</span><span class="p">(</span><span class="n">operation</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_chain</span> <span class="o">=</span> <span class="n">operation</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="Query.on_attribute"><a class="viewcode-back" href="../../../api/utils.html#O365.utils.utils.Query.on_attribute">[docs]</a>    <span class="nd">@fluent</span>
+    <span class="k">def</span> <span class="nf">on_attribute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Apply query on attribute, to be used along with chain()</span>
+
+<span class="sd">        :param str attribute: attribute name</span>
+<span class="sd">        :rtype: Query</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_attribute</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_mapping</span><span class="p">(</span><span class="n">attribute</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+    <span class="k">def</span> <span class="nf">_add_filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filter_str</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_attribute</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filters</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_filters</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+                                                <span class="n">ChainOperator</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_filters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_chain</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_filters</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_attribute</span><span class="p">,</span> <span class="n">filter_str</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s1">&#39;Attribute property needed. call on_attribute(attribute) &#39;</span>
+                <span class="s1">&#39;or new(attribute)&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_parse_filter_word</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">word</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Converts the word parameter into the correct format &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">word</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">word</span> <span class="o">=</span> <span class="s2">&quot;&#39;</span><span class="si">{}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">word</span><span class="p">,</span> <span class="n">dt</span><span class="o">.</span><span class="n">date</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">word</span><span class="p">,</span> <span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">word</span><span class="o">.</span><span class="n">tzinfo</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="c1"># if it&#39;s a naive datetime, localize the datetime.</span>
+                    <span class="n">word</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">protocol</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">localize</span><span class="p">(</span>
+                        <span class="n">word</span><span class="p">)</span>  <span class="c1"># localize datetime into local tz</span>
+                <span class="k">if</span> <span class="n">word</span><span class="o">.</span><span class="n">tzinfo</span> <span class="o">!=</span> <span class="n">pytz</span><span class="o">.</span><span class="n">utc</span><span class="p">:</span>
+                    <span class="n">word</span> <span class="o">=</span> <span class="n">word</span><span class="o">.</span><span class="n">astimezone</span><span class="p">(</span>
+                        <span class="n">pytz</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>  <span class="c1"># transform local datetime to utc</span>
+            <span class="k">if</span> <span class="s1">&#39;/&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_attribute</span><span class="p">:</span>
+                <span class="c1"># TODO: this is a fix for the case when the parameter</span>
+                <span class="c1"># filtered is a string instead a dateTimeOffset</span>
+                <span class="c1">#  but checking the &#39;/&#39; is not correct, but it will</span>
+                <span class="c1"># differentiate for now the case on events:</span>
+                <span class="c1">#  start/dateTime (date is a string here) from</span>
+                <span class="c1"># the case on other dates such as</span>
+                <span class="c1">#  receivedDateTime (date is a dateTimeOffset)</span>
+                <span class="n">word</span> <span class="o">=</span> <span class="s2">&quot;&#39;</span><span class="si">{}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">word</span><span class="o">.</span><span class="n">isoformat</span><span class="p">())</span>  <span class="c1"># convert datetime to isoformat.</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">word</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">word</span><span class="o">.</span><span class="n">isoformat</span><span class="p">())</span>  <span class="c1"># convert datetime to isoformat</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">word</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+            <span class="n">word</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">word</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">word</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_prepare_sentence</span><span class="p">(</span><span class="n">attribute</span><span class="p">,</span> <span class="n">operation</span><span class="p">,</span> <span class="n">word</span><span class="p">,</span> <span class="n">negation</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> </span><span class="si">{}</span><span class="s1"> </span><span class="si">{}</span><span class="s1"> </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;not&#39;</span> <span class="k">if</span> <span class="n">negation</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">attribute</span><span class="p">,</span>
+                                    <span class="n">operation</span><span class="p">,</span> <span class="n">word</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Query.logical_operator"><a class="viewcode-back" href="../../../api/utils.html#O365.utils.utils.Query.logical_operator">[docs]</a>    <span class="nd">@fluent</span>
+    <span class="k">def</span> <span class="nf">logical_operator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operation</span><span class="p">,</span> <span class="n">word</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Apply a logical operator</span>
+
+<span class="sd">        :param str operation: how to combine with a new one</span>
+<span class="sd">        :param word: other parameter for the operation</span>
+<span class="sd">         (a = b) would be like a.logical_operator(&#39;eq&#39;, &#39;b&#39;)</span>
+<span class="sd">        :rtype: Query</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">word</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_filter_word</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_add_filter</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_prepare_sentence</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_attribute</span><span class="p">,</span> <span class="n">operation</span><span class="p">,</span> <span class="n">word</span><span class="p">,</span>
+                                   <span class="bp">self</span><span class="o">.</span><span class="n">_negation</span><span class="p">))</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="Query.equals"><a class="viewcode-back" href="../../../api/utils.html#O365.utils.utils.Query.equals">[docs]</a>    <span class="nd">@fluent</span>
+    <span class="k">def</span> <span class="nf">equals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">word</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Add a equals check</span>
+
+<span class="sd">        :param str word: word to compare with</span>
+<span class="sd">        :rtype: Query</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">logical_operator</span><span class="p">(</span><span class="s1">&#39;eq&#39;</span><span class="p">,</span> <span class="n">word</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Query.unequal"><a class="viewcode-back" href="../../../api/utils.html#O365.utils.utils.Query.unequal">[docs]</a>    <span class="nd">@fluent</span>
+    <span class="k">def</span> <span class="nf">unequal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">word</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Add a unequals check</span>
+
+<span class="sd">        :param str word: word to compare with</span>
+<span class="sd">        :rtype: Query</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">logical_operator</span><span class="p">(</span><span class="s1">&#39;ne&#39;</span><span class="p">,</span> <span class="n">word</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Query.greater"><a class="viewcode-back" href="../../../api/utils.html#O365.utils.utils.Query.greater">[docs]</a>    <span class="nd">@fluent</span>
+    <span class="k">def</span> <span class="nf">greater</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">word</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Add a greater than check</span>
+
+<span class="sd">        :param str word: word to compare with</span>
+<span class="sd">        :rtype: Query</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">logical_operator</span><span class="p">(</span><span class="s1">&#39;gt&#39;</span><span class="p">,</span> <span class="n">word</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Query.greater_equal"><a class="viewcode-back" href="../../../api/utils.html#O365.utils.utils.Query.greater_equal">[docs]</a>    <span class="nd">@fluent</span>
+    <span class="k">def</span> <span class="nf">greater_equal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">word</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Add a greater than or equal to check</span>
+
+<span class="sd">        :param str word: word to compare with</span>
+<span class="sd">        :rtype: Query</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">logical_operator</span><span class="p">(</span><span class="s1">&#39;ge&#39;</span><span class="p">,</span> <span class="n">word</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Query.less"><a class="viewcode-back" href="../../../api/utils.html#O365.utils.utils.Query.less">[docs]</a>    <span class="nd">@fluent</span>
+    <span class="k">def</span> <span class="nf">less</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">word</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Add a less than check</span>
+
+<span class="sd">        :param str word: word to compare with</span>
+<span class="sd">        :rtype: Query</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">logical_operator</span><span class="p">(</span><span class="s1">&#39;lt&#39;</span><span class="p">,</span> <span class="n">word</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Query.less_equal"><a class="viewcode-back" href="../../../api/utils.html#O365.utils.utils.Query.less_equal">[docs]</a>    <span class="nd">@fluent</span>
+    <span class="k">def</span> <span class="nf">less_equal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">word</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Add a less than or equal to check</span>
+
+<span class="sd">        :param str word: word to compare with</span>
+<span class="sd">        :rtype: Query</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">logical_operator</span><span class="p">(</span><span class="s1">&#39;le&#39;</span><span class="p">,</span> <span class="n">word</span><span class="p">)</span></div>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_prepare_function</span><span class="p">(</span><span class="n">function_name</span><span class="p">,</span> <span class="n">attribute</span><span class="p">,</span> <span class="n">word</span><span class="p">,</span> <span class="n">negation</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2">(</span><span class="si">{}</span><span class="s2">, </span><span class="si">{}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;not&#39;</span> <span class="k">if</span> <span class="n">negation</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">function_name</span><span class="p">,</span>
+                                      <span class="n">attribute</span><span class="p">,</span> <span class="n">word</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Query.function"><a class="viewcode-back" href="../../../api/utils.html#O365.utils.utils.Query.function">[docs]</a>    <span class="nd">@fluent</span>
+    <span class="k">def</span> <span class="nf">function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">function_name</span><span class="p">,</span> <span class="n">word</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Apply a function on given word</span>
+
+<span class="sd">        :param str function_name: function to apply</span>
+<span class="sd">        :param str word: word to apply function on</span>
+<span class="sd">        :rtype: Query</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">word</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_filter_word</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_add_filter</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_prepare_function</span><span class="p">(</span><span class="n">function_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_attribute</span><span class="p">,</span> <span class="n">word</span><span class="p">,</span>
+                                   <span class="bp">self</span><span class="o">.</span><span class="n">_negation</span><span class="p">))</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="Query.contains"><a class="viewcode-back" href="../../../api/utils.html#O365.utils.utils.Query.contains">[docs]</a>    <span class="nd">@fluent</span>
+    <span class="k">def</span> <span class="nf">contains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">word</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Adds a contains word check</span>
+
+<span class="sd">        :param str word: word to check</span>
+<span class="sd">        :rtype: Query</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">function</span><span class="p">(</span><span class="s1">&#39;contains&#39;</span><span class="p">,</span> <span class="n">word</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Query.startswith"><a class="viewcode-back" href="../../../api/utils.html#O365.utils.utils.Query.startswith">[docs]</a>    <span class="nd">@fluent</span>
+    <span class="k">def</span> <span class="nf">startswith</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">word</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Adds a startswith word check</span>
+
+<span class="sd">        :param str word: word to check</span>
+<span class="sd">        :rtype: Query</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">function</span><span class="p">(</span><span class="s1">&#39;startswith&#39;</span><span class="p">,</span> <span class="n">word</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Query.endswith"><a class="viewcode-back" href="../../../api/utils.html#O365.utils.utils.Query.endswith">[docs]</a>    <span class="nd">@fluent</span>
+    <span class="k">def</span> <span class="nf">endswith</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">word</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Adds a endswith word check</span>
+
+<span class="sd">        :param str word: word to check</span>
+<span class="sd">        :rtype: Query</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">function</span><span class="p">(</span><span class="s1">&#39;endswith&#39;</span><span class="p">,</span> <span class="n">word</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Query.iterable"><a class="viewcode-back" href="../../../api/utils.html#O365.utils.utils.Query.iterable">[docs]</a>    <span class="nd">@fluent</span>
+    <span class="k">def</span> <span class="nf">iterable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iterable_name</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">collection</span><span class="p">,</span> <span class="n">attribute</span><span class="p">,</span> <span class="n">word</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">operation</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Performs a filter with the OData &#39;iterable_name&#39; keyword</span>
+<span class="sd">        on the collection</span>
+
+<span class="sd">        For example:</span>
+<span class="sd">        q.iterable(&#39;any&#39;, collection=&#39;email_addresses&#39;, attribute=&#39;address&#39;,</span>
+<span class="sd">        operation=&#39;eq&#39;, word=&#39;george@best.com&#39;)</span>
+
+<span class="sd">        will transform to a filter such as:</span>
+<span class="sd">        emailAddresses/any(a:a/address eq &#39;george@best.com&#39;)</span>
+
+<span class="sd">        :param str iterable_name: the OData name of the iterable</span>
+<span class="sd">        :param str collection: the collection to apply the any keyword on</span>
+<span class="sd">        :param str attribute: the attribute of the collection to check</span>
+<span class="sd">        :param str word: the word to check</span>
+<span class="sd">        :param str func: the logical function to apply to the attribute inside</span>
+<span class="sd">         the collection</span>
+<span class="sd">        :param str operation: the logical operation to apply to the attribute</span>
+<span class="sd">         inside the collection</span>
+<span class="sd">        :rtype: Query</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">func</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">operation</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Provide a function or an operation to apply&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">func</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">operation</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s1">&#39;Provide either a function or an operation but not both&#39;</span><span class="p">)</span>
+
+        <span class="n">current_att</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_attribute</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_attribute</span> <span class="o">=</span> <span class="n">iterable_name</span>
+
+        <span class="n">word</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_filter_word</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
+        <span class="n">collection</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_mapping</span><span class="p">(</span><span class="n">collection</span><span class="p">)</span>
+        <span class="n">attribute</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_mapping</span><span class="p">(</span><span class="n">attribute</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">func</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">sentence</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prepare_function</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">attribute</span><span class="p">,</span> <span class="n">word</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">sentence</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prepare_sentence</span><span class="p">(</span><span class="n">attribute</span><span class="p">,</span> <span class="n">operation</span><span class="p">,</span> <span class="n">word</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_add_filter</span><span class="p">(</span>
+            <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">(a:a/</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="n">iterable_name</span><span class="p">,</span> <span class="n">sentence</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_attribute</span> <span class="o">=</span> <span class="n">current_att</span>
+
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="Query.any"><a class="viewcode-back" href="../../../api/utils.html#O365.utils.utils.Query.any">[docs]</a>    <span class="nd">@fluent</span>
+    <span class="k">def</span> <span class="nf">any</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">collection</span><span class="p">,</span> <span class="n">attribute</span><span class="p">,</span> <span class="n">word</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">operation</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Performs a filter with the OData &#39;any&#39; keyword on the collection</span>
+
+<span class="sd">        For example:</span>
+<span class="sd">        q.any(collection=&#39;email_addresses&#39;, attribute=&#39;address&#39;,</span>
+<span class="sd">        operation=&#39;eq&#39;, word=&#39;george@best.com&#39;)</span>
+
+<span class="sd">        will transform to a filter such as:</span>
+
+<span class="sd">        emailAddresses/any(a:a/address eq &#39;george@best.com&#39;)</span>
+
+<span class="sd">        :param str collection: the collection to apply the any keyword on</span>
+<span class="sd">        :param str attribute: the attribute of the collection to check</span>
+<span class="sd">        :param str word: the word to check</span>
+<span class="sd">        :param str func: the logical function to apply to the attribute</span>
+<span class="sd">         inside the collection</span>
+<span class="sd">        :param str operation: the logical operation to apply to the</span>
+<span class="sd">         attribute inside the collection</span>
+<span class="sd">        :rtype: Query</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterable</span><span class="p">(</span><span class="s1">&#39;any&#39;</span><span class="p">,</span> <span class="n">collection</span><span class="o">=</span><span class="n">collection</span><span class="p">,</span> <span class="n">attribute</span><span class="o">=</span><span class="n">attribute</span><span class="p">,</span>
+                             <span class="n">word</span><span class="o">=</span><span class="n">word</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="n">func</span><span class="p">,</span> <span class="n">operation</span><span class="o">=</span><span class="n">operation</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Query.all"><a class="viewcode-back" href="../../../api/utils.html#O365.utils.utils.Query.all">[docs]</a>    <span class="nd">@fluent</span>
+    <span class="k">def</span> <span class="nf">all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">collection</span><span class="p">,</span> <span class="n">attribute</span><span class="p">,</span> <span class="n">word</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">operation</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Performs a filter with the OData &#39;all&#39; keyword on the collection</span>
+
+<span class="sd">        For example:</span>
+<span class="sd">        q.any(collection=&#39;email_addresses&#39;, attribute=&#39;address&#39;,</span>
+<span class="sd">        operation=&#39;eq&#39;, word=&#39;george@best.com&#39;)</span>
+
+<span class="sd">        will transform to a filter such as:</span>
+
+<span class="sd">        emailAddresses/all(a:a/address eq &#39;george@best.com&#39;)</span>
+
+<span class="sd">        :param str collection: the collection to apply the any keyword on</span>
+<span class="sd">        :param str attribute: the attribute of the collection to check</span>
+<span class="sd">        :param str word: the word to check</span>
+<span class="sd">        :param str func: the logical function to apply to the attribute</span>
+<span class="sd">         inside the collection</span>
+<span class="sd">        :param str operation: the logical operation to apply to the</span>
+<span class="sd">         attribute inside the collection</span>
+<span class="sd">        :rtype: Query</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterable</span><span class="p">(</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">collection</span><span class="o">=</span><span class="n">collection</span><span class="p">,</span> <span class="n">attribute</span><span class="o">=</span><span class="n">attribute</span><span class="p">,</span>
+                             <span class="n">word</span><span class="o">=</span><span class="n">word</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="n">func</span><span class="p">,</span> <span class="n">operation</span><span class="o">=</span><span class="n">operation</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Query.order_by"><a class="viewcode-back" href="../../../api/utils.html#O365.utils.utils.Query.order_by">[docs]</a>    <span class="nd">@fluent</span>
+    <span class="k">def</span> <span class="nf">order_by</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Applies a order_by clause</span>
+
+<span class="sd">        :param str attribute: attribute to apply on</span>
+<span class="sd">        :param bool ascending: should it apply ascending order or descending</span>
+<span class="sd">        :rtype: Query</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">attribute</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_mapping</span><span class="p">(</span><span class="n">attribute</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_attribute</span>
+        <span class="k">if</span> <span class="n">attribute</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_order_by</span><span class="p">[</span><span class="n">attribute</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">ascending</span> <span class="k">else</span> <span class="s1">&#39;desc&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s1">&#39;Attribute property needed. call on_attribute(attribute) &#39;</span>
+                <span class="s1">&#39;or new(attribute)&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Narcolapser
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

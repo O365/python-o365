@@ -1,0 +1,351 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>O365.account &mdash; O365  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> O365
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage.html">Detailed Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">O365 API</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">O365</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>O365.account</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for O365.account</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">O365.address_book</span> <span class="k">import</span> <span class="n">AddressBook</span><span class="p">,</span> <span class="n">GlobalAddressList</span>
+<span class="kn">from</span> <span class="nn">O365.calendar</span> <span class="k">import</span> <span class="n">Schedule</span>
+<span class="kn">from</span> <span class="nn">O365.connection</span> <span class="k">import</span> <span class="n">Connection</span><span class="p">,</span> <span class="n">Protocol</span><span class="p">,</span> <span class="n">MSGraphProtocol</span>
+<span class="kn">from</span> <span class="nn">O365.connection</span> <span class="k">import</span> <span class="n">oauth_authentication_flow</span>
+<span class="kn">from</span> <span class="nn">O365.drive</span> <span class="k">import</span> <span class="n">Storage</span>
+<span class="kn">from</span> <span class="nn">O365.mailbox</span> <span class="k">import</span> <span class="n">MailBox</span>
+<span class="kn">from</span> <span class="nn">O365.message</span> <span class="k">import</span> <span class="n">Message</span>
+<span class="kn">from</span> <span class="nn">O365.sharepoint</span> <span class="k">import</span> <span class="n">Sharepoint</span>
+<span class="kn">from</span> <span class="nn">O365.utils</span> <span class="k">import</span> <span class="n">ME_RESOURCE</span>
+
+
+<div class="viewcode-block" id="Account"><a class="viewcode-back" href="../../api/account.html#O365.account.Account">[docs]</a><span class="k">class</span> <span class="nc">Account</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Account.__init__"><a class="viewcode-back" href="../../api/account.html#O365.account.Account.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">credentials</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">protocol</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">main_resource</span><span class="o">=</span><span class="n">ME_RESOURCE</span><span class="p">,</span>
+                 <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Creates an object which is used to access resources related to the</span>
+<span class="sd">        specified credentials</span>
+
+<span class="sd">        :param tuple credentials: a tuple containing the client_id</span>
+<span class="sd">         and client_secret</span>
+<span class="sd">        :param Protocol protocol: the protocol to be used in this account</span>
+<span class="sd">        :param str main_resource: the resource to be used by this account</span>
+<span class="sd">         (&#39;me&#39; or &#39;users&#39;)</span>
+<span class="sd">        :param kwargs: any extra args to be passed to the Connection instance</span>
+<span class="sd">        :raises ValueError: if an invalid protocol is passed</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">protocol</span> <span class="o">=</span> <span class="n">protocol</span> <span class="ow">or</span> <span class="n">MSGraphProtocol</span>  <span class="c1"># Defaults to Graph protocol</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">protocol</span> <span class="o">=</span> <span class="n">protocol</span><span class="p">(</span><span class="n">default_resource</span><span class="o">=</span><span class="n">main_resource</span><span class="p">,</span>
+                                 <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">protocol</span><span class="p">,</span>
+                                                         <span class="nb">type</span><span class="p">)</span> <span class="k">else</span> <span class="n">protocol</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">protocol</span><span class="p">,</span> <span class="n">Protocol</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;protocol&#39; must be a subclass of Protocol&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">con</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">(</span><span class="n">credentials</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">main_resource</span> <span class="o">=</span> <span class="n">main_resource</span></div>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">auth</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;Account Client Id: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">auth</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;Unidentified Account&#39;</span>
+
+<div class="viewcode-block" id="Account.authenticate"><a class="viewcode-back" href="../../api/account.html#O365.account.Account.authenticate">[docs]</a>    <span class="k">def</span> <span class="nf">authenticate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">scopes</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Performs the oauth authentication flow resulting in a stored token</span>
+<span class="sd">        It uses the credentials passed on instantiation</span>
+
+<span class="sd">        :param list[str] scopes: list of protocol user scopes to be converted</span>
+<span class="sd">         by the protocol</span>
+<span class="sd">        :param kwargs: other configurations to be passed to the</span>
+<span class="sd">         Connection instance</span>
+<span class="sd">        :return: Success / Failure</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;token_file_name&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">token_path</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">oauth_authentication_flow</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">auth</span><span class="p">,</span> <span class="n">scopes</span><span class="o">=</span><span class="n">scopes</span><span class="p">,</span>
+                                         <span class="n">protocol</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">protocol</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">connection</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Alias for self.con</span>
+
+<span class="sd">        :rtype: Connection</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">con</span>
+
+<div class="viewcode-block" id="Account.new_message"><a class="viewcode-back" href="../../api/account.html#O365.account.Account.new_message">[docs]</a>    <span class="k">def</span> <span class="nf">new_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Creates a new message to be sent or stored</span>
+
+<span class="sd">        :param str resource: Custom resource to be used in this message</span>
+<span class="sd">         (Defaults to parent main_resource)</span>
+<span class="sd">        :return: New empty message</span>
+<span class="sd">        :rtype: Message</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">Message</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">main_resource</span><span class="o">=</span><span class="n">resource</span><span class="p">,</span> <span class="n">is_draft</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Account.mailbox"><a class="viewcode-back" href="../../api/account.html#O365.account.Account.mailbox">[docs]</a>    <span class="k">def</span> <span class="nf">mailbox</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get an instance to the mailbox for the specified account resource</span>
+
+<span class="sd">        :param str resource: Custom resource to be used in this mailbox</span>
+<span class="sd">         (Defaults to parent main_resource)</span>
+<span class="sd">        :return: a representation of account mailbox</span>
+<span class="sd">        :rtype: MailBox</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">MailBox</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">main_resource</span><span class="o">=</span><span class="n">resource</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;MailBox&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Account.address_book"><a class="viewcode-back" href="../../api/account.html#O365.account.Account.address_book">[docs]</a>    <span class="k">def</span> <span class="nf">address_book</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">resource</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">address_book</span><span class="o">=</span><span class="s1">&#39;personal&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get an instance to the specified address book for the</span>
+<span class="sd">        specified account resource</span>
+
+<span class="sd">        :param str resource: Custom resource to be used in this address book</span>
+<span class="sd">         (Defaults to parent main_resource)</span>
+<span class="sd">        :param str address_book: Choose from &#39;Personal&#39; or</span>
+<span class="sd">         &#39;GAL&#39; (Global Address List)</span>
+<span class="sd">        :return: a representation of the specified address book</span>
+<span class="sd">        :rtype: AddressBook or GlobalAddressList</span>
+<span class="sd">        :raises RuntimeError: if invalid address_book is specified</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">address_book</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;personal&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">AddressBook</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">main_resource</span><span class="o">=</span><span class="n">resource</span><span class="p">,</span>
+                               <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Personal Address Book&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">address_book</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;gal&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">GlobalAddressList</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="s1">&#39;address_book must be either &quot;personal&quot; &#39;</span>
+                <span class="s1">&#39;(resource address book) or &quot;gal&quot; (Global Address List)&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Account.schedule"><a class="viewcode-back" href="../../api/account.html#O365.account.Account.schedule">[docs]</a>    <span class="k">def</span> <span class="nf">schedule</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">resource</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get an instance to work with calendar events for the</span>
+<span class="sd">        specified account resource</span>
+
+<span class="sd">        :param str resource: Custom resource to be used in this schedule object</span>
+<span class="sd">         (Defaults to parent main_resource)</span>
+<span class="sd">        :return: a representation of calendar events</span>
+<span class="sd">        :rtype: Schedule</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">Schedule</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">main_resource</span><span class="o">=</span><span class="n">resource</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Account.storage"><a class="viewcode-back" href="../../api/account.html#O365.account.Account.storage">[docs]</a>    <span class="k">def</span> <span class="nf">storage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">resource</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get an instance to handle file storage (OneDrive / Sharepoint)</span>
+<span class="sd">        for the specified account resource</span>
+
+<span class="sd">        :param str resource: Custom resource to be used in this drive object</span>
+<span class="sd">         (Defaults to parent main_resource)</span>
+<span class="sd">        :return: a representation of OneDrive File Storage</span>
+<span class="sd">        :rtype: Storage</span>
+<span class="sd">        :raises RuntimeError: if protocol doesn&#39;t support the feature</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">protocol</span><span class="p">,</span> <span class="n">MSGraphProtocol</span><span class="p">):</span>
+            <span class="c1"># TODO: Custom protocol accessing OneDrive/Sharepoint Api fails here</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="s1">&#39;Drive options only works on Microsoft Graph API&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">Storage</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">main_resource</span><span class="o">=</span><span class="n">resource</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Account.sharepoint"><a class="viewcode-back" href="../../api/account.html#O365.account.Account.sharepoint">[docs]</a>    <span class="k">def</span> <span class="nf">sharepoint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">resource</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get an instance to read information from Sharepoint sites for the</span>
+<span class="sd">        specified account resource</span>
+
+<span class="sd">        :param str resource: Custom resource to be used in this sharepoint</span>
+<span class="sd">         object (Defaults to parent main_resource)</span>
+<span class="sd">        :return: a representation of Sharepoint Sites</span>
+<span class="sd">        :rtype: Sharepoint</span>
+<span class="sd">        :raises RuntimeError: if protocol doesn&#39;t support the feature</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">protocol</span><span class="p">,</span> <span class="n">MSGraphProtocol</span><span class="p">):</span>
+            <span class="c1"># TODO: Custom protocol accessing OneDrive/Sharepoint Api fails here</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="s1">&#39;Sharepoint api only works on Microsoft Graph API&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">Sharepoint</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">main_resource</span><span class="o">=</span><span class="n">resource</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Narcolapser
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

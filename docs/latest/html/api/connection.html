@@ -1,0 +1,773 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Connection &mdash; O365  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="One Drive" href="drive.html" />
+    <link rel="prev" title="Calendar" href="calendar.html" /> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> O365
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage.html">Detailed Usage</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">O365 API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="account.html">Account</a></li>
+<li class="toctree-l2"><a class="reference internal" href="address_book.html">Address Book</a></li>
+<li class="toctree-l2"><a class="reference internal" href="attachment.html">Attachment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="calendar.html">Calendar</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Connection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="drive.html">One Drive</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mailbox.html">Mailbox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="message.html">Message</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sharepoint.html">Sharepoint</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html">Utils</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">O365</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../api.html">O365 API</a> &raquo;</li>
+        
+      <li>Connection</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/connection.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
+      
+        <a href="drive.html" class="btn btn-neutral float-right" title="One Drive" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="calendar.html" class="btn btn-neutral" title="Calendar" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+  </div>
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-O365.connection">
+<span id="connection"></span><h1>Connection<a class="headerlink" href="#module-O365.connection" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="O365.connection.Connection">
+<em class="property">class </em><code class="descclassname">O365.connection.</code><code class="descname">Connection</code><span class="sig-paren">(</span><em>credentials</em>, <em>*</em>, <em>scopes=None</em>, <em>proxy_server=None</em>, <em>proxy_port=8080</em>, <em>proxy_username=None</em>, <em>proxy_password=None</em>, <em>requests_delay=200</em>, <em>raise_http_errors=True</em>, <em>request_retries=3</em>, <em>token_file_name=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/connection.html#Connection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.connection.Connection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Handles all communication (requests) between the app and the server</p>
+<dl class="method">
+<dt id="O365.connection.Connection.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>credentials</em>, <em>*</em>, <em>scopes=None</em>, <em>proxy_server=None</em>, <em>proxy_port=8080</em>, <em>proxy_username=None</em>, <em>proxy_password=None</em>, <em>requests_delay=200</em>, <em>raise_http_errors=True</em>, <em>request_retries=3</em>, <em>token_file_name=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/connection.html#Connection.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.connection.Connection.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates an API connection object</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>credentials</strong> (<em>tuple</em>) – <p>a tuple of (client_id, client_secret)</p>
+<p>Generate client_id and client_secret in <a class="reference external" href="https://apps.dev.microsoft.com">https://apps.dev.microsoft.com</a></p>
+</li>
+<li><strong>scopes</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – list of scopes to request access to</li>
+<li><strong>proxy_server</strong> (<em>str</em>) – the proxy server</li>
+<li><strong>proxy_port</strong> (<em>int</em>) – the proxy port, defaults to 8080</li>
+<li><strong>proxy_username</strong> (<em>str</em>) – the proxy username</li>
+<li><strong>proxy_password</strong> (<em>str</em>) – the proxy password</li>
+<li><strong>requests_delay</strong> (<em>int</em>) – <p>number of milliseconds to wait between api
+calls.</p>
+<p>The Api will respond with 429 Too many requests if more than
+17 requests are made per second. Defaults to 200 milliseconds
+just in case more than 1 connection is making requests
+across multiple processes.</p>
+</li>
+<li><strong>raise_http_errors</strong> (<em>bool</em>) – If True Http 4xx and 5xx status codes
+will raise as exceptions</li>
+<li><strong>request_retries</strong> (<em>int</em>) – number of retries done when the server
+responds with 5xx error codes.</li>
+<li><strong>token_file_name</strong> (<em>str</em>) – custom token file name to be used when
+storing the OAuth token credentials.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><strong>ValueError</strong> – if credentials is not tuple of
+(client_id, client_secret)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.connection.Connection.check_token_file">
+<code class="descname">check_token_file</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/connection.html#Connection.check_token_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.connection.Connection.check_token_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if the token file exists at the given position</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">if file exists or not</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.connection.Connection.delete">
+<code class="descname">delete</code><span class="sig-paren">(</span><em>url</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/connection.html#Connection.delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.connection.Connection.delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shorthand for self.request(url, ‘delete’)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>url</strong> (<em>str</em>) – url to send delete oauth request to</li>
+<li><strong>kwargs</strong> – extra params to send to request api</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Response of the request</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">requests.Response</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.connection.Connection.get">
+<code class="descname">get</code><span class="sig-paren">(</span><em>url</em>, <em>params=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/connection.html#Connection.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.connection.Connection.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shorthand for self.oauth_request(url, ‘get’)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>url</strong> (<em>str</em>) – url to send get oauth request to</li>
+<li><strong>params</strong> (<em>dict</em>) – request parameter to get the service data</li>
+<li><strong>kwargs</strong> – extra params to send to request api</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Response of the request</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">requests.Response</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.connection.Connection.get_authorization_url">
+<code class="descname">get_authorization_url</code><span class="sig-paren">(</span><em>requested_scopes=None</em>, <em>redirect_uri='https://outlook.office365.com/owa/'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/connection.html#Connection.get_authorization_url"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.connection.Connection.get_authorization_url" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initializes the oauth authorization flow, getting the
+authorization url that the user must approve.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>requested_scopes</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – list of scopes to request access for</li>
+<li><strong>redirect_uri</strong> (<em>str</em>) – redirect url configured in registered app</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">authorization url</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">str</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.connection.Connection.get_session">
+<code class="descname">get_session</code><span class="sig-paren">(</span><em>token_path=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/connection.html#Connection.get_session"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.connection.Connection.get_session" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a requests Session object</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>token_path</strong> (<em>Path</em>) – (Only oauth) full path to where the token
+should be load from</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A ready to use requests session</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">OAuth2Session</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.connection.Connection.naive_request">
+<code class="descname">naive_request</code><span class="sig-paren">(</span><em>url</em>, <em>method</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/connection.html#Connection.naive_request"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.connection.Connection.naive_request" title="Permalink to this definition">¶</a></dt>
+<dd><p>Makes a request to url using an without oauth authorization
+session, but through a normal session</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>url</strong> (<em>str</em>) – url to send request to</li>
+<li><strong>method</strong> (<em>str</em>) – type of request (get/put/post/patch/delete)</li>
+<li><strong>kwargs</strong> – extra params to send to the request api</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Response of the request</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">requests.Response</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.connection.Connection.oauth_request">
+<code class="descname">oauth_request</code><span class="sig-paren">(</span><em>url</em>, <em>method</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/connection.html#Connection.oauth_request"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.connection.Connection.oauth_request" title="Permalink to this definition">¶</a></dt>
+<dd><p>Makes a request to url using an oauth session</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>url</strong> (<em>str</em>) – url to send request to</li>
+<li><strong>method</strong> (<em>str</em>) – type of request (get/put/post/patch/delete)</li>
+<li><strong>kwargs</strong> – extra params to send to the request api</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Response of the request</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">requests.Response</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.connection.Connection.patch">
+<code class="descname">patch</code><span class="sig-paren">(</span><em>url</em>, <em>data=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/connection.html#Connection.patch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.connection.Connection.patch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shorthand for self.oauth_request(url, ‘patch’)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>url</strong> (<em>str</em>) – url to send patch oauth request to</li>
+<li><strong>data</strong> (<em>dict</em>) – patch data to update the service</li>
+<li><strong>kwargs</strong> – extra params to send to request api</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Response of the request</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">requests.Response</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.connection.Connection.post">
+<code class="descname">post</code><span class="sig-paren">(</span><em>url</em>, <em>data=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/connection.html#Connection.post"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.connection.Connection.post" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shorthand for self.oauth_request(url, ‘post’)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>url</strong> (<em>str</em>) – url to send post oauth request to</li>
+<li><strong>data</strong> (<em>dict</em>) – post data to update the service</li>
+<li><strong>kwargs</strong> – extra params to send to request api</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Response of the request</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">requests.Response</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.connection.Connection.put">
+<code class="descname">put</code><span class="sig-paren">(</span><em>url</em>, <em>data=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/connection.html#Connection.put"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.connection.Connection.put" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shorthand for self.oauth_request(url, ‘put’)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>url</strong> (<em>str</em>) – url to send put oauth request to</li>
+<li><strong>data</strong> (<em>dict</em>) – put data to update the service</li>
+<li><strong>kwargs</strong> – extra params to send to request api</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Response of the request</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">requests.Response</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.connection.Connection.refresh_token">
+<code class="descname">refresh_token</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/connection.html#Connection.refresh_token"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.connection.Connection.refresh_token" title="Permalink to this definition">¶</a></dt>
+<dd><p>Refresh the OAuth authorization token</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.connection.Connection.request_token">
+<code class="descname">request_token</code><span class="sig-paren">(</span><em>authorization_url</em>, <em>store_token=True</em>, <em>token_path=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/connection.html#Connection.request_token"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.connection.Connection.request_token" title="Permalink to this definition">¶</a></dt>
+<dd><p>Authenticates for the specified url and gets the token, save the
+token for future based if requested</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>authorization_url</strong> (<em>str</em>) – url given by the authorization flow</li>
+<li><strong>store_token</strong> (<em>bool</em>) – whether or not to store the token in file
+system, so u don’t have to keep opening the auth link and
+authenticating every time</li>
+<li><strong>token_path</strong> (<em>Path</em>) – full path to where the token should be saved to</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Success/Failure</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">bool</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.connection.Connection.set_proxy">
+<code class="descname">set_proxy</code><span class="sig-paren">(</span><em>proxy_server</em>, <em>proxy_port</em>, <em>proxy_username</em>, <em>proxy_password</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/connection.html#Connection.set_proxy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.connection.Connection.set_proxy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets a proxy on the Session</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>proxy_server</strong> (<em>str</em>) – the proxy server</li>
+<li><strong>proxy_port</strong> (<em>int</em>) – the proxy port, defaults to 8080</li>
+<li><strong>proxy_username</strong> (<em>str</em>) – the proxy username</li>
+<li><strong>proxy_password</strong> (<em>str</em>) – the proxy password</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="O365.connection.MSGraphProtocol">
+<em class="property">class </em><code class="descclassname">O365.connection.</code><code class="descname">MSGraphProtocol</code><span class="sig-paren">(</span><em>api_version='v1.0'</em>, <em>default_resource='me'</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/connection.html#MSGraphProtocol"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.connection.MSGraphProtocol" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#O365.connection.Protocol" title="O365.connection.Protocol"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.connection.Protocol</span></code></a></p>
+<p>A Microsoft Graph Protocol Implementation
+<a class="reference external" href="https://docs.microsoft.com/en-us/outlook/rest/compare-graph-outlook">https://docs.microsoft.com/en-us/outlook/rest/compare-graph-outlook</a></p>
+<dl class="method">
+<dt id="O365.connection.MSGraphProtocol.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>api_version='v1.0'</em>, <em>default_resource='me'</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/connection.html#MSGraphProtocol.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.connection.MSGraphProtocol.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new Microsoft Graph protocol object</p>
+<p>_protocol_url = ‘<a class="reference external" href="https://graph.microsoft.com/">https://graph.microsoft.com/</a>’</p>
+<p>_oauth_scope_prefix = ‘<a class="reference external" href="https://graph.microsoft.com/">https://graph.microsoft.com/</a>’</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>api_version</strong> (<em>str</em>) – api version to use</li>
+<li><strong>default_resource</strong> (<em>str</em>) – the default resource to use when there is
+nothing explicitly specified during the requests</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="O365.connection.MSOffice365Protocol">
+<em class="property">class </em><code class="descclassname">O365.connection.</code><code class="descname">MSOffice365Protocol</code><span class="sig-paren">(</span><em>api_version='v2.0'</em>, <em>default_resource='me'</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/connection.html#MSOffice365Protocol"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.connection.MSOffice365Protocol" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#O365.connection.Protocol" title="O365.connection.Protocol"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.connection.Protocol</span></code></a></p>
+<p>A Microsoft Office 365 Protocol Implementation
+<a class="reference external" href="https://docs.microsoft.com/en-us/outlook/rest/compare-graph-outlook">https://docs.microsoft.com/en-us/outlook/rest/compare-graph-outlook</a></p>
+<dl class="method">
+<dt id="O365.connection.MSOffice365Protocol.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>api_version='v2.0'</em>, <em>default_resource='me'</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/connection.html#MSOffice365Protocol.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.connection.MSOffice365Protocol.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new Office 365 protocol object</p>
+<p>_protocol_url = ‘<a class="reference external" href="https://outlook.office.com/api/">https://outlook.office.com/api/</a>’</p>
+<p>_oauth_scope_prefix = ‘<a class="reference external" href="https://outlook.office.com/">https://outlook.office.com/</a>’</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>api_version</strong> (<em>str</em>) – api version to use</li>
+<li><strong>default_resource</strong> (<em>str</em>) – the default resource to use when there is
+nothing explicitly specified during the requests</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="O365.connection.Protocol">
+<em class="property">class </em><code class="descclassname">O365.connection.</code><code class="descname">Protocol</code><span class="sig-paren">(</span><em>*</em>, <em>protocol_url=None</em>, <em>api_version=None</em>, <em>default_resource='me'</em>, <em>casing_function=None</em>, <em>protocol_scope_prefix=None</em>, <em>timezone=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/connection.html#Protocol"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.connection.Protocol" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Base class for all protocols</p>
+<dl class="method">
+<dt id="O365.connection.Protocol.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>*</em>, <em>protocol_url=None</em>, <em>api_version=None</em>, <em>default_resource='me'</em>, <em>casing_function=None</em>, <em>protocol_scope_prefix=None</em>, <em>timezone=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/connection.html#Protocol.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.connection.Protocol.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new protocol object</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>protocol_url</strong> (<em>str</em>) – the base url used to communicate with the
+server</li>
+<li><strong>api_version</strong> (<em>str</em>) – the api version</li>
+<li><strong>default_resource</strong> (<em>str</em>) – the default resource to use when there is
+nothing explicitly specified during the requests</li>
+<li><strong>casing_function</strong> (<em>function</em>) – the casing transform function to be
+used on api keywords (camelcase / pascalcase)</li>
+<li><strong>protocol_scope_prefix</strong> (<em>str</em>) – prefix url for scopes</li>
+<li><strong>timezone</strong> (<em>pytz.UTC</em>) – preferred timezone, defaults to the
+system timezone</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><strong>ValueError</strong> – if protocol_url or api_version are not supplied</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.connection.Protocol.convert_case">
+<code class="descname">convert_case</code><span class="sig-paren">(</span><em>key</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/connection.html#Protocol.convert_case"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.connection.Protocol.convert_case" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a key converted with this protocol casing method</p>
+<p>Converts case to send/read from the cloud</p>
+<p>When using Microsoft Graph API, the keywords of the API use
+lowerCamelCase Casing</p>
+<p>When using Office 365 API, the keywords of the API use PascalCase Casing</p>
+<p>Default case in this API is lowerCamelCase</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>key</strong> (<em>str</em>) – a dictionary key to convert</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">key after case conversion</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.connection.Protocol.get_scopes_for">
+<code class="descname">get_scopes_for</code><span class="sig-paren">(</span><em>user_provided_scopes</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/connection.html#Protocol.get_scopes_for"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.connection.Protocol.get_scopes_for" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of scopes needed for each of the
+scope_helpers provided, by adding the prefix to them if required</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>user_provided_scopes</strong> (<em>list</em><em> or </em><em>tuple</em><em> or </em><em>str</em>) – a list of scopes or scope helpers</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">scopes with url prefix added</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">list</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><strong>ValueError</strong> – if unexpected datatype of scopes are passed</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.connection.Protocol.get_service_keyword">
+<code class="descname">get_service_keyword</code><span class="sig-paren">(</span><em>keyword</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/connection.html#Protocol.get_service_keyword"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.connection.Protocol.get_service_keyword" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the data set to the key in the internal data-key dict</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>keyword</strong> (<em>str</em>) – key to get value for</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">value of the keyword</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="O365.connection.Protocol.to_api_case">
+<em class="property">static </em><code class="descname">to_api_case</code><span class="sig-paren">(</span><em>key</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/connection.html#Protocol.to_api_case"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.connection.Protocol.to_api_case" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts key to snake_case</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>key</strong> (<em>str</em>) – key to convert into snake_case</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">key after case conversion</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="O365.connection.oauth_authentication_flow">
+<code class="descclassname">O365.connection.</code><code class="descname">oauth_authentication_flow</code><span class="sig-paren">(</span><em>client_id</em>, <em>client_secret</em>, <em>scopes=None</em>, <em>protocol=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/connection.html#oauth_authentication_flow"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.connection.oauth_authentication_flow" title="Permalink to this definition">¶</a></dt>
+<dd><p>A helper method to perform the OAuth2 authentication flow.
+Authenticate and get the oauth token</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>client_id</strong> (<em>str</em>) – the client_id</li>
+<li><strong>client_secret</strong> (<em>str</em>) – the client_secret</li>
+<li><strong>scopes</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – a list of protocol user scopes to be converted
+by the protocol</li>
+<li><strong>protocol</strong> (<a class="reference internal" href="#O365.connection.Protocol" title="O365.connection.Protocol"><em>Protocol</em></a>) – the protocol to be used.
+Defaults to MSGraphProtocol</li>
+<li><strong>kwargs</strong> – other configuration to be passed to the Connection instance</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Success or Failure</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">bool</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="drive.html" class="btn btn-neutral float-right" title="One Drive" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="calendar.html" class="btn btn-neutral" title="Calendar" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Narcolapser
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

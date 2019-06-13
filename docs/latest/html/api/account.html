@@ -1,0 +1,439 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Account &mdash; O365  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Address Book" href="address_book.html" />
+    <link rel="prev" title="O365 API" href="../api.html" /> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> O365
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage.html">Detailed Usage</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">O365 API</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Account</a></li>
+<li class="toctree-l2"><a class="reference internal" href="address_book.html">Address Book</a></li>
+<li class="toctree-l2"><a class="reference internal" href="attachment.html">Attachment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="calendar.html">Calendar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="connection.html">Connection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="drive.html">One Drive</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mailbox.html">Mailbox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="message.html">Message</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sharepoint.html">Sharepoint</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html">Utils</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">O365</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../api.html">O365 API</a> &raquo;</li>
+        
+      <li>Account</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/account.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
+      
+        <a href="address_book.html" class="btn btn-neutral float-right" title="Address Book" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../api.html" class="btn btn-neutral" title="O365 API" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+  </div>
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-O365.account">
+<span id="account"></span><h1>Account<a class="headerlink" href="#module-O365.account" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="O365.account.Account">
+<em class="property">class </em><code class="descclassname">O365.account.</code><code class="descname">Account</code><span class="sig-paren">(</span><em>credentials</em>, <em>*</em>, <em>protocol=None</em>, <em>main_resource='me'</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/account.html#Account"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.account.Account" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="O365.account.Account.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>credentials</em>, <em>*</em>, <em>protocol=None</em>, <em>main_resource='me'</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/account.html#Account.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.account.Account.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates an object which is used to access resources related to the
+specified credentials</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>credentials</strong> (<em>tuple</em>) – a tuple containing the client_id
+and client_secret</li>
+<li><strong>protocol</strong> (<a class="reference internal" href="connection.html#O365.connection.Protocol" title="O365.connection.Protocol"><em>Protocol</em></a>) – the protocol to be used in this account</li>
+<li><strong>main_resource</strong> (<em>str</em>) – the resource to be used by this account
+(‘me’ or ‘users’)</li>
+<li><strong>kwargs</strong> – any extra args to be passed to the Connection instance</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><strong>ValueError</strong> – if an invalid protocol is passed</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.account.Account.address_book">
+<code class="descname">address_book</code><span class="sig-paren">(</span><em>*</em>, <em>resource=None</em>, <em>address_book='personal'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/account.html#Account.address_book"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.account.Account.address_book" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get an instance to the specified address book for the
+specified account resource</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>resource</strong> (<em>str</em>) – Custom resource to be used in this address book
+(Defaults to parent main_resource)</li>
+<li><strong>address_book</strong> (<em>str</em>) – Choose from ‘Personal’ or
+‘GAL’ (Global Address List)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">a representation of the specified address book</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference internal" href="address_book.html#O365.address_book.AddressBook" title="O365.address_book.AddressBook">AddressBook</a> or <a class="reference internal" href="address_book.html#O365.address_book.GlobalAddressList" title="O365.address_book.GlobalAddressList">GlobalAddressList</a></p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><strong>RuntimeError</strong> – if invalid address_book is specified</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.account.Account.authenticate">
+<code class="descname">authenticate</code><span class="sig-paren">(</span><em>*</em>, <em>scopes</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/account.html#Account.authenticate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.account.Account.authenticate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Performs the oauth authentication flow resulting in a stored token
+It uses the credentials passed on instantiation</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>scopes</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – list of protocol user scopes to be converted
+by the protocol</li>
+<li><strong>kwargs</strong> – other configurations to be passed to the
+Connection instance</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Success / Failure</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">bool</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.account.Account.connection">
+<code class="descname">connection</code><a class="headerlink" href="#O365.account.Account.connection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for self.con</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="connection.html#O365.connection.Connection" title="O365.connection.Connection">Connection</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.account.Account.mailbox">
+<code class="descname">mailbox</code><span class="sig-paren">(</span><em>resource=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/account.html#Account.mailbox"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.account.Account.mailbox" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get an instance to the mailbox for the specified account resource</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>resource</strong> (<em>str</em>) – Custom resource to be used in this mailbox
+(Defaults to parent main_resource)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">a representation of account mailbox</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="mailbox.html#O365.mailbox.MailBox" title="O365.mailbox.MailBox">MailBox</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.account.Account.new_message">
+<code class="descname">new_message</code><span class="sig-paren">(</span><em>resource=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/account.html#Account.new_message"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.account.Account.new_message" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a new message to be sent or stored</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>resource</strong> (<em>str</em>) – Custom resource to be used in this message
+(Defaults to parent main_resource)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">New empty message</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="message.html#O365.message.Message" title="O365.message.Message">Message</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.account.Account.schedule">
+<code class="descname">schedule</code><span class="sig-paren">(</span><em>*</em>, <em>resource=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/account.html#Account.schedule"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.account.Account.schedule" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get an instance to work with calendar events for the
+specified account resource</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>resource</strong> (<em>str</em>) – Custom resource to be used in this schedule object
+(Defaults to parent main_resource)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">a representation of calendar events</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="calendar.html#O365.calendar.Schedule" title="O365.calendar.Schedule">Schedule</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.account.Account.sharepoint">
+<code class="descname">sharepoint</code><span class="sig-paren">(</span><em>*</em>, <em>resource=''</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/account.html#Account.sharepoint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.account.Account.sharepoint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get an instance to read information from Sharepoint sites for the
+specified account resource</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>resource</strong> (<em>str</em>) – Custom resource to be used in this sharepoint
+object (Defaults to parent main_resource)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">a representation of Sharepoint Sites</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="sharepoint.html#O365.sharepoint.Sharepoint" title="O365.sharepoint.Sharepoint">Sharepoint</a></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><strong>RuntimeError</strong> – if protocol doesn’t support the feature</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.account.Account.storage">
+<code class="descname">storage</code><span class="sig-paren">(</span><em>*</em>, <em>resource=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/account.html#Account.storage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.account.Account.storage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get an instance to handle file storage (OneDrive / Sharepoint)
+for the specified account resource</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>resource</strong> (<em>str</em>) – Custom resource to be used in this drive object
+(Defaults to parent main_resource)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">a representation of OneDrive File Storage</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="drive.html#O365.drive.Storage" title="O365.drive.Storage">Storage</a></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><strong>RuntimeError</strong> – if protocol doesn’t support the feature</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="address_book.html" class="btn btn-neutral float-right" title="Address Book" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../api.html" class="btn btn-neutral" title="O365 API" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Narcolapser
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

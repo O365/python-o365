@@ -1,0 +1,797 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Message &mdash; O365  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Sharepoint" href="sharepoint.html" />
+    <link rel="prev" title="Mailbox" href="mailbox.html" /> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> O365
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage.html">Detailed Usage</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">O365 API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="account.html">Account</a></li>
+<li class="toctree-l2"><a class="reference internal" href="address_book.html">Address Book</a></li>
+<li class="toctree-l2"><a class="reference internal" href="attachment.html">Attachment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="calendar.html">Calendar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="connection.html">Connection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="drive.html">One Drive</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mailbox.html">Mailbox</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Message</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sharepoint.html">Sharepoint</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html">Utils</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">O365</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../api.html">O365 API</a> &raquo;</li>
+        
+      <li>Message</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/message.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
+      
+        <a href="sharepoint.html" class="btn btn-neutral float-right" title="Sharepoint" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="mailbox.html" class="btn btn-neutral" title="Mailbox" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+  </div>
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-O365.message">
+<span id="message"></span><h1>Message<a class="headerlink" href="#module-O365.message" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="O365.message.HandleRecipientsMixin">
+<em class="property">class </em><code class="descclassname">O365.message.</code><code class="descname">HandleRecipientsMixin</code><a class="reference internal" href="../_modules/O365/message.html#HandleRecipientsMixin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.HandleRecipientsMixin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="O365.message.Message">
+<em class="property">class </em><code class="descclassname">O365.message.</code><code class="descname">Message</code><span class="sig-paren">(</span><em>*</em>, <em>parent=None</em>, <em>con=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Message"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.Message" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.utils.utils.ApiComponent</span></code></a>, <a class="reference internal" href="attachment.html#O365.utils.attachment.AttachableMixin" title="O365.utils.attachment.AttachableMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.utils.attachment.AttachableMixin</span></code></a>, <a class="reference internal" href="#O365.message.HandleRecipientsMixin" title="O365.message.HandleRecipientsMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.message.HandleRecipientsMixin</span></code></a></p>
+<p>Management of the process of sending, receiving, reading, and
+editing emails.</p>
+<dl class="method">
+<dt id="O365.message.Message.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>*</em>, <em>parent=None</em>, <em>con=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Message.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.Message.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Makes a new message wrapper for sending and receiving messages.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>parent</strong> (<a class="reference internal" href="mailbox.html#O365.mailbox.Folder" title="O365.mailbox.Folder"><em>mailbox.Folder</em></a><em> or </em><a class="reference internal" href="account.html#O365.account.Account" title="O365.account.Account"><em>Account</em></a>) – parent folder/account to create the message in</li>
+<li><strong>con</strong> (<a class="reference internal" href="connection.html#O365.connection.Connection" title="O365.connection.Connection"><em>Connection</em></a>) – connection to use if no parent specified</li>
+<li><strong>protocol</strong> (<a class="reference internal" href="connection.html#O365.connection.Protocol" title="O365.connection.Protocol"><em>Protocol</em></a>) – protocol to use if no parent specified
+(kwargs)</li>
+<li><strong>main_resource</strong> (<em>str</em>) – use this resource instead of parent resource
+(kwargs)</li>
+<li><strong>download_attachments</strong> (<em>bool</em>) – whether or not to
+download attachments (kwargs)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.message.Message.attachments">
+<code class="descname">attachments</code><a class="headerlink" href="#O365.message.Message.attachments" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of attachments</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.message.Message.bcc">
+<code class="descname">bcc</code><a class="headerlink" href="#O365.message.Message.bcc" title="Permalink to this definition">¶</a></dt>
+<dd><p>‘BCC’ list of recipients</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.message.Message.body">
+<code class="descname">body</code><a class="headerlink" href="#O365.message.Message.body" title="Permalink to this definition">¶</a></dt>
+<dd><p>Body of the email message</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Getter:</th><td class="field-body">Get body text of current message</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Setter:</th><td class="field-body">set html body of the message</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.message.Message.categories">
+<code class="descname">categories</code><a class="headerlink" href="#O365.message.Message.categories" title="Permalink to this definition">¶</a></dt>
+<dd><p>Categories of this message</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Getter:</th><td class="field-body">Current list of categories</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Setter:</th><td class="field-body">Set new categories for the message</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">list[str] or str</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.message.Message.cc">
+<code class="descname">cc</code><a class="headerlink" href="#O365.message.Message.cc" title="Permalink to this definition">¶</a></dt>
+<dd><p>‘CC’ list of recipients</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.message.Message.copy">
+<code class="descname">copy</code><span class="sig-paren">(</span><em>folder</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Message.copy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.Message.copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Copy the message to a given folder</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>folder</strong> (<em>str</em><em> or </em><a class="reference internal" href="mailbox.html#O365.mailbox.Folder" title="O365.mailbox.Folder"><em>mailbox.Folder</em></a>) – Folder object or Folder id or Well-known name to
+copy this message to</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the copied message</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#O365.message.Message" title="O365.message.Message">Message</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.message.Message.created">
+<code class="descname">created</code><a class="headerlink" href="#O365.message.Message.created" title="Permalink to this definition">¶</a></dt>
+<dd><p>Created time of the message</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.message.Message.delete">
+<code class="descname">delete</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Message.delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.Message.delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deletes a stored message</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Success / Failure</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.message.Message.forward">
+<code class="descname">forward</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Message.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.Message.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a new message that is a forward this message</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">new message</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#O365.message.Message" title="O365.message.Message">Message</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.message.Message.get_body_soup">
+<code class="descname">get_body_soup</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Message.get_body_soup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.Message.get_body_soup" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the beautifulsoup4 of the html body</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">BeautifulSoup object of body</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">BeautifulSoup</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.message.Message.get_body_text">
+<code class="descname">get_body_text</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Message.get_body_text"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.Message.get_body_text" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse the body html and returns the body text using bs4</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">body as text</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.message.Message.importance">
+<code class="descname">importance</code><a class="headerlink" href="#O365.message.Message.importance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Importance of the message</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Getter:</th><td class="field-body">Get the current priority of the message</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Setter:</th><td class="field-body">Set a different importance level</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">str or <a class="reference internal" href="utils.html#O365.utils.utils.ImportanceLevel" title="O365.utils.utils.ImportanceLevel">ImportanceLevel</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.message.Message.is_draft">
+<code class="descname">is_draft</code><a class="headerlink" href="#O365.message.Message.is_draft" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if the message is marked as draft</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.message.Message.is_read">
+<code class="descname">is_read</code><a class="headerlink" href="#O365.message.Message.is_read" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if the message is read or not</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Getter:</th><td class="field-body">Get the status of message read</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Setter:</th><td class="field-body">Mark the message as read</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.message.Message.mark_as_read">
+<code class="descname">mark_as_read</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Message.mark_as_read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.Message.mark_as_read" title="Permalink to this definition">¶</a></dt>
+<dd><p>Marks this message as read in the cloud</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Success / Failure</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.message.Message.modified">
+<code class="descname">modified</code><a class="headerlink" href="#O365.message.Message.modified" title="Permalink to this definition">¶</a></dt>
+<dd><p>Message last modified time</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.message.Message.move">
+<code class="descname">move</code><span class="sig-paren">(</span><em>folder</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Message.move"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.Message.move" title="Permalink to this definition">¶</a></dt>
+<dd><p>Move the message to a given folder</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>folder</strong> (<em>str</em><em> or </em><a class="reference internal" href="mailbox.html#O365.mailbox.Folder" title="O365.mailbox.Folder"><em>mailbox.Folder</em></a>) – Folder object or Folder id or Well-known name to
+move this message to</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Success / Failure</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.message.Message.received">
+<code class="descname">received</code><a class="headerlink" href="#O365.message.Message.received" title="Permalink to this definition">¶</a></dt>
+<dd><p>Message received time</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.message.Message.reply">
+<code class="descname">reply</code><span class="sig-paren">(</span><em>to_all=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Message.reply"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.Message.reply" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a new message that is a reply to this message</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>to_all</strong> (<em>bool</em>) – whether or not to replies to all the recipients
+instead to just the sender</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">new message</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#O365.message.Message" title="O365.message.Message">Message</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.message.Message.reply_to">
+<code class="descname">reply_to</code><a class="headerlink" href="#O365.message.Message.reply_to" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reply to address</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.message.Message.save_draft">
+<code class="descname">save_draft</code><span class="sig-paren">(</span><em>target_folder=&lt;OutlookWellKnowFolderNames.DRAFTS: 'Drafts'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Message.save_draft"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.Message.save_draft" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save this message as a draft on the cloud</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>target_folder</strong> – name of the drafts folder</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Success / Failure</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.message.Message.send">
+<code class="descname">send</code><span class="sig-paren">(</span><em>save_to_sent_folder=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Message.send"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.Message.send" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sends this message</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>save_to_sent_folder</strong> (<em>bool</em>) – whether or not to save it to
+sent folder</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Success / Failure</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.message.Message.sender">
+<code class="descname">sender</code><a class="headerlink" href="#O365.message.Message.sender" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sender of the message</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Getter:</th><td class="field-body">Get the current sender</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Setter:</th><td class="field-body">Update the from address with new value</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">str or <a class="reference internal" href="#O365.message.Recipient" title="O365.message.Recipient">Recipient</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.message.Message.sent">
+<code class="descname">sent</code><a class="headerlink" href="#O365.message.Message.sent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Message sent time</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.message.Message.subject">
+<code class="descname">subject</code><a class="headerlink" href="#O365.message.Message.subject" title="Permalink to this definition">¶</a></dt>
+<dd><p>Subject of the email message</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Getter:</th><td class="field-body">Get the current subject</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Setter:</th><td class="field-body">Assign a new subject</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.message.Message.to">
+<code class="descname">to</code><a class="headerlink" href="#O365.message.Message.to" title="Permalink to this definition">¶</a></dt>
+<dd><p>‘TO’ list of recipients</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.message.Message.to_api_data">
+<code class="descname">to_api_data</code><span class="sig-paren">(</span><em>restrict_keys=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Message.to_api_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.Message.to_api_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a dict representation of this message prepared to be send
+to the cloud</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>restrict_keys</strong> (<em>dict</em><em> or </em><em>set</em>) – a set of keys to restrict the returned
+data to</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">converted to cloud based keys</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">dict</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="O365.message.MessageAttachment">
+<em class="property">class </em><code class="descclassname">O365.message.</code><code class="descname">MessageAttachment</code><span class="sig-paren">(</span><em>attachment=None</em>, <em>*</em>, <em>parent=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#MessageAttachment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.MessageAttachment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="attachment.html#O365.utils.attachment.BaseAttachment" title="O365.utils.attachment.BaseAttachment"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.utils.attachment.BaseAttachment</span></code></a></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="O365.message.MessageAttachments">
+<em class="property">class </em><code class="descclassname">O365.message.</code><code class="descname">MessageAttachments</code><span class="sig-paren">(</span><em>parent</em>, <em>attachments=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#MessageAttachments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.MessageAttachments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="attachment.html#O365.utils.attachment.BaseAttachments" title="O365.utils.attachment.BaseAttachments"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.utils.attachment.BaseAttachments</span></code></a></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="O365.message.Recipient">
+<em class="property">class </em><code class="descclassname">O365.message.</code><code class="descname">Recipient</code><span class="sig-paren">(</span><em>address=None</em>, <em>name=None</em>, <em>parent=None</em>, <em>field=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Recipient"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.Recipient" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A single Recipient</p>
+<dl class="method">
+<dt id="O365.message.Recipient.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>address=None</em>, <em>name=None</em>, <em>parent=None</em>, <em>field=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Recipient.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.Recipient.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a recipient with provided information</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>address</strong> (<em>str</em>) – email address of the recipient</li>
+<li><strong>name</strong> (<em>str</em>) – name of the recipient</li>
+<li><strong>parent</strong> (<a class="reference internal" href="#O365.message.HandleRecipientsMixin" title="O365.message.HandleRecipientsMixin"><em>HandleRecipientsMixin</em></a>) – parent recipients handler</li>
+<li><strong>field</strong> (<em>str</em>) – name of the field to update back</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.message.Recipient.address">
+<code class="descname">address</code><a class="headerlink" href="#O365.message.Recipient.address" title="Permalink to this definition">¶</a></dt>
+<dd><p>Email address of the recipient</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Getter:</th><td class="field-body">Get the email address</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Setter:</th><td class="field-body">Set and update the email address</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="O365.message.Recipient.name">
+<code class="descname">name</code><a class="headerlink" href="#O365.message.Recipient.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Name of the recipient</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Getter:</th><td class="field-body">Get the name</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Setter:</th><td class="field-body">Set and update the name</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="O365.message.Recipients">
+<em class="property">class </em><code class="descclassname">O365.message.</code><code class="descname">Recipients</code><span class="sig-paren">(</span><em>recipients=None</em>, <em>parent=None</em>, <em>field=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Recipients"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.Recipients" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A Sequence of Recipients</p>
+<dl class="method">
+<dt id="O365.message.Recipients.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>recipients=None</em>, <em>parent=None</em>, <em>field=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Recipients.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.Recipients.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Recipients must be a list of either address strings or
+tuples (name, address) or dictionary elements</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>recipients</strong> (<em>list</em><em>[</em><em>str</em><em>] or </em><em>list</em><em>[</em><em>tuple</em><em>] or </em><em>list</em><em>[</em><em>dict</em><em>]
+or </em><em>list</em><em>[</em><a class="reference internal" href="#O365.message.Recipient" title="O365.message.Recipient"><em>Recipient</em></a><em>]</em>) – list of either address strings or
+tuples (name, address) or dictionary elements</li>
+<li><strong>parent</strong> (<a class="reference internal" href="#O365.message.HandleRecipientsMixin" title="O365.message.HandleRecipientsMixin"><em>HandleRecipientsMixin</em></a>) – parent recipients handler</li>
+<li><strong>field</strong> (<em>str</em>) – name of the field to update back</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.message.Recipients.add">
+<code class="descname">add</code><span class="sig-paren">(</span><em>recipients</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Recipients.add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.Recipients.add" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add the supplied recipients to the exiting list</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>recipients</strong> (<em>list</em><em>[</em><em>str</em><em>] or </em><em>list</em><em>[</em><em>tuple</em><em>] or </em><em>list</em><em>[</em><em>dict</em><em>]</em>) – list of either address strings or
+tuples (name, address) or dictionary elements</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.message.Recipients.clear">
+<code class="descname">clear</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Recipients.clear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.Recipients.clear" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clear the list of recipients</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.message.Recipients.get_first_recipient_with_address">
+<code class="descname">get_first_recipient_with_address</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Recipients.get_first_recipient_with_address"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.Recipients.get_first_recipient_with_address" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the first recipient found with a non blank address</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">First Recipient</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#O365.message.Recipient" title="O365.message.Recipient">Recipient</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="O365.message.Recipients.remove">
+<code class="descname">remove</code><span class="sig-paren">(</span><em>address</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Recipients.remove"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.Recipients.remove" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove an address or multiple addresses</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>address</strong> (<em>str</em><em> or </em><em>list</em><em>[</em><em>str</em><em>]</em>) – list of addresses to remove</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="sharepoint.html" class="btn btn-neutral float-right" title="Sharepoint" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="mailbox.html" class="btn btn-neutral" title="Mailbox" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Narcolapser
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

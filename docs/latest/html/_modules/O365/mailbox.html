@@ -1,0 +1,748 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>O365.mailbox &mdash; O365  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> O365
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage.html">Detailed Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">O365 API</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">O365</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>O365.mailbox</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for O365.mailbox</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">datetime</span> <span class="k">as</span> <span class="nn">dt</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+
+<span class="kn">from</span> <span class="nn">O365.message</span> <span class="k">import</span> <span class="n">Message</span>
+<span class="kn">from</span> <span class="nn">O365.utils</span> <span class="k">import</span> <span class="n">Pagination</span><span class="p">,</span> <span class="n">NEXT_LINK_KEYWORD</span><span class="p">,</span> \
+    <span class="n">OutlookWellKnowFolderNames</span><span class="p">,</span> <span class="n">ApiComponent</span>
+
+<span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="Folder"><a class="viewcode-back" href="../../api/mailbox.html#O365.mailbox.Folder">[docs]</a><span class="k">class</span> <span class="nc">Folder</span><span class="p">(</span><span class="n">ApiComponent</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; A Mail Folder representation &quot;&quot;&quot;</span>
+
+    <span class="n">_endpoints</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;root_folders&#39;</span><span class="p">:</span> <span class="s1">&#39;/mailFolders&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;child_folders&#39;</span><span class="p">:</span> <span class="s1">&#39;/mailFolders/</span><span class="si">{id}</span><span class="s1">/childFolders&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;get_folder&#39;</span><span class="p">:</span> <span class="s1">&#39;/mailFolders/</span><span class="si">{id}</span><span class="s1">&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;root_messages&#39;</span><span class="p">:</span> <span class="s1">&#39;/messages&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;folder_messages&#39;</span><span class="p">:</span> <span class="s1">&#39;/mailFolders/</span><span class="si">{id}</span><span class="s1">/messages&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;copy_folder&#39;</span><span class="p">:</span> <span class="s1">&#39;/mailFolders/</span><span class="si">{id}</span><span class="s1">/copy&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;move_folder&#39;</span><span class="p">:</span> <span class="s1">&#39;/mailFolders/</span><span class="si">{id}</span><span class="s1">/move&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;delete_message&#39;</span><span class="p">:</span> <span class="s1">&#39;/messages/</span><span class="si">{id}</span><span class="s1">&#39;</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="n">message_constructor</span> <span class="o">=</span> <span class="n">Message</span>
+
+<div class="viewcode-block" id="Folder.__init__"><a class="viewcode-back" href="../../api/mailbox.html#O365.mailbox.Folder.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">con</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Create an instance to represent the specified folder un given</span>
+<span class="sd">        parent folder</span>
+
+<span class="sd">        :param parent: parent folder/account for this folder</span>
+<span class="sd">        :type parent: mailbox.Folder or Account</span>
+<span class="sd">        :param Connection con: connection to use if no parent specified</span>
+<span class="sd">        :param Protocol protocol: protocol to use if no parent specified</span>
+<span class="sd">         (kwargs)</span>
+<span class="sd">        :param str main_resource: use this resource instead of parent resource</span>
+<span class="sd">         (kwargs)</span>
+<span class="sd">        :param str name: name of the folder to get under the parent (kwargs)</span>
+<span class="sd">        :param str folder_id: id of the folder to get under the parent (kwargs)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="n">parent</span> <span class="ow">or</span> <span class="n">con</span><span class="p">,</span> <span class="s1">&#39;Need a parent or a connection&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">con</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">con</span> <span class="k">if</span> <span class="n">parent</span> <span class="k">else</span> <span class="n">con</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="n">parent</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">Folder</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span>
+
+        <span class="c1"># This folder has no parents if root = True.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;root&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+
+        <span class="c1"># Choose the main_resource passed in kwargs over parent main_resource</span>
+        <span class="n">main_resource</span> <span class="o">=</span> <span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;main_resource&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span>
+                         <span class="nb">getattr</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="s1">&#39;main_resource&#39;</span><span class="p">,</span>
+                                 <span class="kc">None</span><span class="p">)</span> <span class="k">if</span> <span class="n">parent</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">protocol</span><span class="o">=</span><span class="n">parent</span><span class="o">.</span><span class="n">protocol</span> <span class="k">if</span> <span class="n">parent</span> <span class="k">else</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;protocol&#39;</span><span class="p">),</span>
+            <span class="n">main_resource</span><span class="o">=</span><span class="n">main_resource</span><span class="p">)</span>
+
+        <span class="n">cloud_data</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cloud_data_key</span><span class="p">,</span> <span class="p">{})</span>
+
+        <span class="c1"># Fallback to manual folder if nothing available on cloud data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cc</span><span class="p">(</span><span class="s1">&#39;displayName&#39;</span><span class="p">),</span>
+                                   <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span>
+                                              <span class="s1">&#39;&#39;</span><span class="p">))</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="c1"># Fallback to manual folder if nothing available on cloud data</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">folder_id</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cc</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">),</span>
+                                            <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;folder_id&#39;</span><span class="p">,</span>
+                                                       <span class="kc">None</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">parent_id</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cc</span><span class="p">(</span><span class="s1">&#39;parentFolderId&#39;</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">child_folders_count</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_cc</span><span class="p">(</span><span class="s1">&#39;childFolderCount&#39;</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">unread_items_count</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_cc</span><span class="p">(</span><span class="s1">&#39;unreadItemCount&#39;</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">total_items_count</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cc</span><span class="p">(</span><span class="s1">&#39;totalItemCount&#39;</span><span class="p">),</span>
+                                                    <span class="mi">0</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">updated_at</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span></div>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> from resource: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">main_resource</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Folder.get_folders"><a class="viewcode-back" href="../../api/mailbox.html#O365.mailbox.Folder.get_folders">[docs]</a>    <span class="k">def</span> <span class="nf">get_folders</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">order_by</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">batch</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns a list of child folders matching the query</span>
+
+<span class="sd">        :param int limit: max no. of folders to get. Over 999 uses batch.</span>
+<span class="sd">        :param query: applies a filter to the request such as</span>
+<span class="sd">         &quot;displayName eq &#39;HelloFolder&#39;&quot;</span>
+<span class="sd">        :type query: Query or str</span>
+<span class="sd">        :param order_by: orders the result set based on this condition</span>
+<span class="sd">        :type order_by: Query or str</span>
+<span class="sd">        :param int batch: batch size, retrieves items in</span>
+<span class="sd">         batches allowing to retrieve more items than the limit.</span>
+<span class="sd">        :return: list of folders</span>
+<span class="sd">        :rtype: list[mailbox.Folder] or Pagination</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">:</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_url</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_endpoints</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;root_folders&#39;</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_url</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_endpoints</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;child_folders&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">folder_id</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">limit</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">limit</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">protocol</span><span class="o">.</span><span class="n">max_top_value</span><span class="p">:</span>
+            <span class="n">batch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">protocol</span><span class="o">.</span><span class="n">max_top_value</span>
+
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;$top&#39;</span><span class="p">:</span> <span class="n">batch</span> <span class="k">if</span> <span class="n">batch</span> <span class="k">else</span> <span class="n">limit</span><span class="p">}</span>
+
+        <span class="k">if</span> <span class="n">order_by</span><span class="p">:</span>
+            <span class="n">params</span><span class="p">[</span><span class="s1">&#39;$orderby&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">order_by</span>
+
+        <span class="k">if</span> <span class="n">query</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="n">params</span><span class="p">[</span><span class="s1">&#39;$filter&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">query</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">query</span><span class="o">.</span><span class="n">as_params</span><span class="p">())</span>
+
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">response</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+
+        <span class="c1"># Everything received from cloud must be passed as self._cloud_data_key</span>
+        <span class="n">self_class</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;folder_constructor&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+        <span class="n">folders</span> <span class="o">=</span> <span class="p">[</span><span class="n">self_class</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_cloud_data_key</span><span class="p">:</span> <span class="n">folder</span><span class="p">})</span> <span class="k">for</span>
+                   <span class="n">folder</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="p">[])]</span>
+        <span class="n">next_link</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">NEXT_LINK_KEYWORD</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">batch</span> <span class="ow">and</span> <span class="n">next_link</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Pagination</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">folders</span><span class="p">,</span> <span class="n">constructor</span><span class="o">=</span><span class="n">self_class</span><span class="p">,</span>
+                              <span class="n">next_link</span><span class="o">=</span><span class="n">next_link</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="n">limit</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">folders</span></div>
+
+<div class="viewcode-block" id="Folder.get_message"><a class="viewcode-back" href="../../api/mailbox.html#O365.mailbox.Folder.get_message">[docs]</a>    <span class="k">def</span> <span class="nf">get_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">download_attachments</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get one message from the query result.</span>
+<span class="sd">         A shortcut to get_messages with limit=1</span>
+
+<span class="sd">        :param query: applies a filter to the request such as</span>
+<span class="sd">         &quot;displayName eq &#39;HelloFolder&#39;&quot;</span>
+<span class="sd">        :type query: Query or str</span>
+<span class="sd">        :param bool download_attachments: whether or not to download attachments</span>
+<span class="sd">        :return: one Message</span>
+<span class="sd">        :rtype: Message or None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">messages</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_messages</span><span class="p">(</span><span class="n">limit</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="n">query</span><span class="p">,</span>
+                                     <span class="n">download_attachments</span><span class="o">=</span><span class="n">download_attachments</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">messages</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">messages</span> <span class="k">else</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="Folder.get_messages"><a class="viewcode-back" href="../../api/mailbox.html#O365.mailbox.Folder.get_messages">[docs]</a>    <span class="k">def</span> <span class="nf">get_messages</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">25</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">order_by</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">batch</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                     <span class="n">download_attachments</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Downloads messages from this folder</span>
+
+<span class="sd">        :param int limit: limits the result set. Over 999 uses batch.</span>
+<span class="sd">        :param query: applies a filter to the request such as</span>
+<span class="sd">         &quot;displayName eq &#39;HelloFolder&#39;&quot;</span>
+<span class="sd">        :type query: Query or str</span>
+<span class="sd">        :param order_by: orders the result set based on this condition</span>
+<span class="sd">        :type order_by: Query or str</span>
+<span class="sd">        :param int batch: batch size, retrieves items in</span>
+<span class="sd">         batches allowing to retrieve more items than the limit.</span>
+<span class="sd">        :param bool download_attachments: whether or not to download attachments</span>
+<span class="sd">        :return: list of messages</span>
+<span class="sd">        :rtype: list[Message] or Pagination</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">:</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_url</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_endpoints</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;root_messages&#39;</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_url</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_endpoints</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;folder_messages&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="nb">id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">folder_id</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">limit</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">limit</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">protocol</span><span class="o">.</span><span class="n">max_top_value</span><span class="p">:</span>
+            <span class="n">batch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">protocol</span><span class="o">.</span><span class="n">max_top_value</span>
+
+        <span class="k">if</span> <span class="n">batch</span><span class="p">:</span>
+            <span class="n">download_attachments</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;$top&#39;</span><span class="p">:</span> <span class="n">batch</span> <span class="k">if</span> <span class="n">batch</span> <span class="k">else</span> <span class="n">limit</span><span class="p">}</span>
+
+        <span class="k">if</span> <span class="n">order_by</span><span class="p">:</span>
+            <span class="n">params</span><span class="p">[</span><span class="s1">&#39;$orderby&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">order_by</span>
+
+        <span class="k">if</span> <span class="n">query</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="n">params</span><span class="p">[</span><span class="s1">&#39;$filter&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">query</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">query</span><span class="o">.</span><span class="n">as_params</span><span class="p">())</span>
+
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">response</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+
+        <span class="c1"># Everything received from cloud must be passed as self._cloud_data_key</span>
+        <span class="n">messages</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">message_constructor</span><span class="p">(</span>
+            <span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
+            <span class="n">download_attachments</span><span class="o">=</span><span class="n">download_attachments</span><span class="p">,</span>
+            <span class="o">**</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_cloud_data_key</span><span class="p">:</span> <span class="n">message</span><span class="p">})</span>
+            <span class="k">for</span> <span class="n">message</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="p">[])]</span>
+
+        <span class="n">next_link</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">NEXT_LINK_KEYWORD</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">batch</span> <span class="ow">and</span> <span class="n">next_link</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Pagination</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">messages</span><span class="p">,</span>
+                              <span class="n">constructor</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">message_constructor</span><span class="p">,</span>
+                              <span class="n">next_link</span><span class="o">=</span><span class="n">next_link</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="n">limit</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">messages</span></div>
+
+<div class="viewcode-block" id="Folder.create_child_folder"><a class="viewcode-back" href="../../api/mailbox.html#O365.mailbox.Folder.create_child_folder">[docs]</a>    <span class="k">def</span> <span class="nf">create_child_folder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">folder_name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Creates a new child folder under this folder</span>
+
+<span class="sd">        :param str folder_name: name of the folder to add</span>
+<span class="sd">        :return: newly created folder</span>
+<span class="sd">        :rtype: mailbox.Folder or None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">folder_name</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">:</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_url</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_endpoints</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;root_folders&#39;</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_url</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_endpoints</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;child_folders&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">folder_id</span><span class="p">))</span>
+
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span>
+                                 <span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_cc</span><span class="p">(</span><span class="s1">&#39;displayName&#39;</span><span class="p">):</span> <span class="n">folder_name</span><span class="p">})</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">response</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="n">folder</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+
+        <span class="n">self_class</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;folder_constructor&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+        <span class="c1"># Everything received from cloud must be passed as self._cloud_data_key</span>
+        <span class="k">return</span> <span class="n">self_class</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_cloud_data_key</span><span class="p">:</span> <span class="n">folder</span><span class="p">})</span></div>
+
+<div class="viewcode-block" id="Folder.get_folder"><a class="viewcode-back" href="../../api/mailbox.html#O365.mailbox.Folder.get_folder">[docs]</a>    <span class="k">def</span> <span class="nf">get_folder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">folder_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">folder_name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get a folder by it&#39;s id or name</span>
+
+<span class="sd">        :param str folder_id: the folder_id to be retrieved.</span>
+<span class="sd">         Can be any folder Id (child or not)</span>
+<span class="sd">        :param str folder_name: the folder name to be retrieved.</span>
+<span class="sd">         Must be a child of this folder.</span>
+<span class="sd">        :return: a single folder</span>
+<span class="sd">        :rtype: mailbox.Folder or None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">folder_id</span> <span class="ow">and</span> <span class="n">folder_name</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Provide only one of the options&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">folder_id</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">folder_name</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Provide one of the options&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">folder_id</span><span class="p">:</span>
+            <span class="c1"># get folder by it&#39;s id, independent of the parent of this folder_id</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_url</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_endpoints</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;get_folder&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">folder_id</span><span class="p">))</span>
+            <span class="n">params</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># get folder by name. Only looks up in child folders.</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">:</span>
+                <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_url</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_endpoints</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;root_folders&#39;</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_url</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_endpoints</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;child_folders&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="nb">id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">folder_id</span><span class="p">))</span>
+            <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;$filter&#39;</span><span class="p">:</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> eq &#39;</span><span class="si">{}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cc</span><span class="p">(</span><span class="s1">&#39;displayName&#39;</span><span class="p">),</span>
+                                                     <span class="n">folder_name</span><span class="p">),</span> <span class="s1">&#39;$top&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}</span>
+
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">response</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="n">folder_id</span><span class="p">:</span>
+            <span class="n">folder</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">folder</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">)</span>
+            <span class="n">folder</span> <span class="o">=</span> <span class="n">folder</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">folder</span> <span class="k">else</span> <span class="kc">None</span>
+            <span class="k">if</span> <span class="n">folder</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="n">self_class</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;folder_constructor&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+        <span class="c1"># Everything received from cloud must be passed as self._cloud_data_key</span>
+        <span class="c1"># We don&#39;t pass parent, as this folder may not be a child of self.</span>
+        <span class="k">return</span> <span class="n">self_class</span><span class="p">(</span><span class="n">con</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="p">,</span> <span class="n">protocol</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">protocol</span><span class="p">,</span>
+                          <span class="n">main_resource</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">main_resource</span><span class="p">,</span>
+                          <span class="o">**</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_cloud_data_key</span><span class="p">:</span> <span class="n">folder</span><span class="p">})</span></div>
+
+<div class="viewcode-block" id="Folder.refresh_folder"><a class="viewcode-back" href="../../api/mailbox.html#O365.mailbox.Folder.refresh_folder">[docs]</a>    <span class="k">def</span> <span class="nf">refresh_folder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">update_parent_if_changed</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Re-download folder data</span>
+<span class="sd">        Inbox Folder will be unable to download its own data (no folder_id)</span>
+
+<span class="sd">        :param bool update_parent_if_changed: updates self.parent with new</span>
+<span class="sd">         parent Folder if changed</span>
+<span class="sd">        :return: Refreshed or Not</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">folder_id</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;folder_id&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span> <span class="ow">or</span> <span class="n">folder_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="n">folder</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_folder</span><span class="p">(</span><span class="n">folder_id</span><span class="o">=</span><span class="n">folder_id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">folder</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">folder</span><span class="o">.</span><span class="n">name</span>
+        <span class="k">if</span> <span class="n">folder</span><span class="o">.</span><span class="n">parent_id</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent_id</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">folder</span><span class="o">.</span><span class="n">parent_id</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent_id</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">parent_id</span> <span class="o">=</span> <span class="n">folder</span><span class="o">.</span><span class="n">parent_id</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_parent_folder</span><span class="p">()</span>
+                               <span class="k">if</span> <span class="n">update_parent_if_changed</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">child_folders_count</span> <span class="o">=</span> <span class="n">folder</span><span class="o">.</span><span class="n">child_folders_count</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">unread_items_count</span> <span class="o">=</span> <span class="n">folder</span><span class="o">.</span><span class="n">unread_items_count</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">total_items_count</span> <span class="o">=</span> <span class="n">folder</span><span class="o">.</span><span class="n">total_items_count</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">updated_at</span> <span class="o">=</span> <span class="n">folder</span><span class="o">.</span><span class="n">updated_at</span>
+
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="Folder.get_parent_folder"><a class="viewcode-back" href="../../api/mailbox.html#O365.mailbox.Folder.get_parent_folder">[docs]</a>    <span class="k">def</span> <span class="nf">get_parent_folder</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get the parent folder from attribute self.parent or</span>
+<span class="sd">        getting it from the cloud</span>
+
+<span class="sd">        :return: Parent Folder</span>
+<span class="sd">        :rtype: mailbox.Folder or None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent_id</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_folder</span><span class="p">(</span><span class="n">folder_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parent_id</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span></div>
+
+<div class="viewcode-block" id="Folder.update_folder_name"><a class="viewcode-back" href="../../api/mailbox.html#O365.mailbox.Folder.update_folder_name">[docs]</a>    <span class="k">def</span> <span class="nf">update_folder_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">update_folder_data</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Change this folder name</span>
+
+<span class="sd">        :param str name: new name to change to</span>
+<span class="sd">        :param bool update_folder_data: whether or not to re-fetch the data</span>
+<span class="sd">        :return: Updated or Not</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">name</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_url</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_endpoints</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;get_folder&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">folder_id</span><span class="p">))</span>
+
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_cc</span><span class="p">(</span><span class="s1">&#39;displayName&#39;</span><span class="p">):</span> <span class="n">name</span><span class="p">})</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">response</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">update_folder_data</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+
+        <span class="n">folder</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">folder</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cc</span><span class="p">(</span><span class="s1">&#39;displayName&#39;</span><span class="p">),</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parent_id</span> <span class="o">=</span> <span class="n">folder</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cc</span><span class="p">(</span><span class="s1">&#39;parentFolderId&#39;</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">child_folders_count</span> <span class="o">=</span> <span class="n">folder</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cc</span><span class="p">(</span><span class="s1">&#39;childFolderCount&#39;</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">unread_items_count</span> <span class="o">=</span> <span class="n">folder</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cc</span><span class="p">(</span><span class="s1">&#39;unreadItemCount&#39;</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">total_items_count</span> <span class="o">=</span> <span class="n">folder</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cc</span><span class="p">(</span><span class="s1">&#39;totalItemCount&#39;</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">updated_at</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="Folder.delete"><a class="viewcode-back" href="../../api/mailbox.html#O365.mailbox.Folder.delete">[docs]</a>    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Deletes this folder</span>
+
+<span class="sd">        :return: Deleted or Not</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">folder_id</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_url</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_endpoints</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;get_folder&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">folder_id</span><span class="p">))</span>
+
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">response</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">folder_id</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="Folder.copy_folder"><a class="viewcode-back" href="../../api/mailbox.html#O365.mailbox.Folder.copy_folder">[docs]</a>    <span class="k">def</span> <span class="nf">copy_folder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">to_folder</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Copy this folder and it&#39;s contents to into another folder</span>
+
+<span class="sd">        :param to_folder: the destination Folder/folder_id to copy into</span>
+<span class="sd">        :type to_folder: mailbox.Folder or str</span>
+<span class="sd">        :return: The new folder after copying</span>
+<span class="sd">        :rtype: mailbox.Folder or None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">to_folder_id</span> <span class="o">=</span> <span class="n">to_folder</span><span class="o">.</span><span class="n">folder_id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">to_folder</span><span class="p">,</span>
+                                                         <span class="n">Folder</span><span class="p">)</span> <span class="k">else</span> <span class="n">to_folder</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">folder_id</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">to_folder_id</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_url</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_endpoints</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;copy_folder&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">folder_id</span><span class="p">))</span>
+
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span>
+                                 <span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_cc</span><span class="p">(</span><span class="s1">&#39;destinationId&#39;</span><span class="p">):</span> <span class="n">to_folder_id</span><span class="p">})</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">response</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="n">folder</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+
+        <span class="n">self_class</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;folder_constructor&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+        <span class="c1"># Everything received from cloud must be passed as self._cloud_data_key</span>
+        <span class="k">return</span> <span class="n">self_class</span><span class="p">(</span><span class="n">con</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="p">,</span> <span class="n">main_resource</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">main_resource</span><span class="p">,</span>
+                          <span class="o">**</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_cloud_data_key</span><span class="p">:</span> <span class="n">folder</span><span class="p">})</span></div>
+
+<div class="viewcode-block" id="Folder.move_folder"><a class="viewcode-back" href="../../api/mailbox.html#O365.mailbox.Folder.move_folder">[docs]</a>    <span class="k">def</span> <span class="nf">move_folder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">to_folder</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">update_parent_if_changed</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Move this folder to another folder</span>
+
+<span class="sd">        :param to_folder: the destination Folder/folder_id to move into</span>
+<span class="sd">        :type to_folder: mailbox.Folder or str</span>
+<span class="sd">        :param bool update_parent_if_changed: updates self.parent with the</span>
+<span class="sd">         new parent Folder if changed</span>
+<span class="sd">        :return: The new folder after copying</span>
+<span class="sd">        :rtype: mailbox.Folder or None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">to_folder_id</span> <span class="o">=</span> <span class="n">to_folder</span><span class="o">.</span><span class="n">folder_id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">to_folder</span><span class="p">,</span>
+                                                         <span class="n">Folder</span><span class="p">)</span> <span class="k">else</span> <span class="n">to_folder</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">folder_id</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">to_folder_id</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_url</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_endpoints</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;move_folder&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">folder_id</span><span class="p">))</span>
+
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span>
+                                 <span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_cc</span><span class="p">(</span><span class="s1">&#39;destinationId&#39;</span><span class="p">):</span> <span class="n">to_folder_id</span><span class="p">})</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">response</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="n">folder</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+
+        <span class="n">parent_id</span> <span class="o">=</span> <span class="n">folder</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cc</span><span class="p">(</span><span class="s1">&#39;parentFolderId&#39;</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">parent_id</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent_id</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">parent_id</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent_id</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">parent_id</span> <span class="o">=</span> <span class="n">parent_id</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_parent_folder</span><span class="p">()</span>
+                               <span class="k">if</span> <span class="n">update_parent_if_changed</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="Folder.new_message"><a class="viewcode-back" href="../../api/mailbox.html#O365.mailbox.Folder.new_message">[docs]</a>    <span class="k">def</span> <span class="nf">new_message</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Creates a new draft message under this folder</span>
+
+<span class="sd">        :return: new Message</span>
+<span class="sd">        :rtype: Message</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">draft_message</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">message_constructor</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">is_draft</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">:</span>
+            <span class="n">draft_message</span><span class="o">.</span><span class="n">folder_id</span> <span class="o">=</span> <span class="n">OutlookWellKnowFolderNames</span><span class="o">.</span><span class="n">DRAFTS</span><span class="o">.</span><span class="n">value</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">draft_message</span><span class="o">.</span><span class="n">folder_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">folder_id</span>
+
+        <span class="k">return</span> <span class="n">draft_message</span></div>
+
+<div class="viewcode-block" id="Folder.delete_message"><a class="viewcode-back" href="../../api/mailbox.html#O365.mailbox.Folder.delete_message">[docs]</a>    <span class="k">def</span> <span class="nf">delete_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Deletes a stored message</span>
+
+<span class="sd">        :param message: message/message_id to delete</span>
+<span class="sd">        :type message: Message or str</span>
+<span class="sd">        :return: Success / Failure</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">message_id</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">object_id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">message</span><span class="p">,</span>
+                                                     <span class="n">Message</span><span class="p">)</span> <span class="k">else</span> <span class="n">message</span>
+
+        <span class="k">if</span> <span class="n">message_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Provide a valid Message or a message id&#39;</span><span class="p">)</span>
+
+        <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_url</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_endpoints</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;delete_message&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">message_id</span><span class="p">))</span>
+
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">response</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="MailBox"><a class="viewcode-back" href="../../api/mailbox.html#O365.mailbox.MailBox">[docs]</a><span class="k">class</span> <span class="nc">MailBox</span><span class="p">(</span><span class="n">Folder</span><span class="p">):</span>
+    <span class="n">folder_constructor</span> <span class="o">=</span> <span class="n">Folder</span>
+
+<div class="viewcode-block" id="MailBox.__init__"><a class="viewcode-back" href="../../api/mailbox.html#O365.mailbox.MailBox.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">con</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="n">parent</span><span class="p">,</span> <span class="n">con</span><span class="o">=</span><span class="n">con</span><span class="p">,</span> <span class="n">root</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MailBox.inbox_folder"><a class="viewcode-back" href="../../api/mailbox.html#O365.mailbox.MailBox.inbox_folder">[docs]</a>    <span class="k">def</span> <span class="nf">inbox_folder</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Shortcut to get Inbox Folder instance</span>
+
+<span class="sd">        :rtype: mailbox.Folder</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">folder_constructor</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Inbox&#39;</span><span class="p">,</span>
+                                       <span class="n">folder_id</span><span class="o">=</span><span class="n">OutlookWellKnowFolderNames</span>
+                                       <span class="o">.</span><span class="n">INBOX</span><span class="o">.</span><span class="n">value</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MailBox.junk_folder"><a class="viewcode-back" href="../../api/mailbox.html#O365.mailbox.MailBox.junk_folder">[docs]</a>    <span class="k">def</span> <span class="nf">junk_folder</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Shortcut to get Junk Folder instance</span>
+
+<span class="sd">        :rtype: mailbox.Folder</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">folder_constructor</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Junk&#39;</span><span class="p">,</span>
+                                       <span class="n">folder_id</span><span class="o">=</span><span class="n">OutlookWellKnowFolderNames</span>
+                                       <span class="o">.</span><span class="n">JUNK</span><span class="o">.</span><span class="n">value</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MailBox.deleted_folder"><a class="viewcode-back" href="../../api/mailbox.html#O365.mailbox.MailBox.deleted_folder">[docs]</a>    <span class="k">def</span> <span class="nf">deleted_folder</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Shortcut to get DeletedItems Folder instance</span>
+
+<span class="sd">        :rtype: mailbox.Folder</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">folder_constructor</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;DeletedItems&#39;</span><span class="p">,</span>
+                                       <span class="n">folder_id</span><span class="o">=</span><span class="n">OutlookWellKnowFolderNames</span>
+                                       <span class="o">.</span><span class="n">DELETED</span><span class="o">.</span><span class="n">value</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MailBox.drafts_folder"><a class="viewcode-back" href="../../api/mailbox.html#O365.mailbox.MailBox.drafts_folder">[docs]</a>    <span class="k">def</span> <span class="nf">drafts_folder</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Shortcut to get Drafts Folder instance</span>
+
+<span class="sd">        :rtype: mailbox.Folder</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">folder_constructor</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Drafts&#39;</span><span class="p">,</span>
+                                       <span class="n">folder_id</span><span class="o">=</span><span class="n">OutlookWellKnowFolderNames</span>
+                                       <span class="o">.</span><span class="n">DRAFTS</span><span class="o">.</span><span class="n">value</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MailBox.sent_folder"><a class="viewcode-back" href="../../api/mailbox.html#O365.mailbox.MailBox.sent_folder">[docs]</a>    <span class="k">def</span> <span class="nf">sent_folder</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Shortcut to get SentItems Folder instance</span>
+
+<span class="sd">        :rtype: mailbox.Folder</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">folder_constructor</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;SentItems&#39;</span><span class="p">,</span>
+                                       <span class="n">folder_id</span><span class="o">=</span><span class="n">OutlookWellKnowFolderNames</span>
+                                       <span class="o">.</span><span class="n">SENT</span><span class="o">.</span><span class="n">value</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MailBox.outbox_folder"><a class="viewcode-back" href="../../api/mailbox.html#O365.mailbox.MailBox.outbox_folder">[docs]</a>    <span class="k">def</span> <span class="nf">outbox_folder</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Shortcut to get Outbox Folder instance</span>
+
+<span class="sd">        :rtype: mailbox.Folder</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">folder_constructor</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Outbox&#39;</span><span class="p">,</span>
+                                       <span class="n">folder_id</span><span class="o">=</span><span class="n">OutlookWellKnowFolderNames</span>
+                                       <span class="o">.</span><span class="n">OUTBOX</span><span class="o">.</span><span class="n">value</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Narcolapser
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,11 @@
+beautifulsoup4>=4.0.0
+python-dateutil>=2.7
+pytz>=2018.5
+requests>=2.0.0
+requests-oauthlib>=1.2.0
+stringcase>=1.2.0
+tzlocal>=1.5.0
+Click>=7.0
+pytest>=3.9.0
+twine>=1.12.0
+wheel>=0.32.0

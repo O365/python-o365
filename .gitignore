@@ -49,6 +49,7 @@ coverage.xml
 
 # Sphinx documentation
 docs/_build/
+doctrees/
 
 # PyBuilder
 target/
@@ -57,3 +58,12 @@ target/
 *.pw
 *bookings.json
 */pid
+
+.idea/
+
+trail.py
+sample_run.py
+
+
+
+o365_token\.txt
