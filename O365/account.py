@@ -1,12 +1,10 @@
 from .connection import Connection, Protocol, MSGraphProtocol
 from .connection import oauth_authentication_flow
-from .utils import ME_RESOURCE
 
 
 class Account(object):
 
-    def __init__(self, credentials, *, protocol=None, main_resource=ME_RESOURCE,
-                 **kwargs):
+    def __init__(self, credentials, *, protocol=None, main_resource=None, **kwargs):
         """ Creates an object which is used to access resources related to the
         specified credentials
 
@@ -14,7 +12,7 @@ class Account(object):
          and client_secret
         :param Protocol protocol: the protocol to be used in this account
         :param str main_resource: the resource to be used by this account
-         ('me' or 'users')
+         ('me' or 'users', etc.)
         :param kwargs: any extra args to be passed to the Connection instance
         :raises ValueError: if an invalid protocol is passed
         """
@@ -28,7 +26,7 @@ class Account(object):
             raise ValueError("'protocol' must be a subclass of Protocol")
 
         self.con = Connection(credentials, **kwargs)
-        self.main_resource = main_resource
+        self.main_resource = main_resource or self.protocol.default_resource
 
     def __repr__(self):
         if self.con.auth:
