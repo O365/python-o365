@@ -1,10 +1,12 @@
 """Async connection class."""
+import json
 import logging
 import os
-import json
+
+from aiohttp.client import _RequestContextManager
 
 from O365.aio.connection_base import ConnectionBase
-from O365.aio.oauth2_session import OAuth2Session
+from O365.aio.oauth2_session import OAuth2Session as aio_OAuth2Session
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -13,7 +15,7 @@ class aio_Connection(ConnectionBase):  # pylint: disable=invalid-name
     """Async version."""
 
     async def request_token(
-            self, authorization_url, store_token=True, token_path=None):
+            self, *, authorization_url, store_token=True, token_path=None):
         """ Authenticates for the specified url and gets the token, save the
         token for future based if requested
 
@@ -57,9 +59,9 @@ class aio_Connection(ConnectionBase):  # pylint: disable=invalid-name
 
     def _session_init(self, *args, **kwargs):
         """Init session specific per transport provider request/aiohttp"""
-        self.session = OAuth2Session(*args, **kwargs)
+        self.session = aio_OAuth2Session(*args, **kwargs)
 
-    async def oauth_request(self, url, method, custom_session=None, **kwargs):
+    async def request(self, method, url, custom_session=None, **kwargs):
         """ Makes a request to url using an oauth session
 
         :param str url: url to send request to
@@ -71,11 +73,10 @@ class aio_Connection(ConnectionBase):  # pylint: disable=invalid-name
         """
         session = custom_session or self.session or self.get_session()
 
-        method = method.lower()
         assert method in self._allowed_methods, \
             'Method must be one of the allowed ones'
 
-        if method == 'get':
+        if method == 'GET':
             kwargs.setdefault('allow_redirects', True)
         elif method in ['post', 'put', 'patch']:
             kwargs.setdefault('headers', {})
@@ -89,25 +90,10 @@ class aio_Connection(ConnectionBase):  # pylint: disable=invalid-name
 
         return response
 
-    async def get(self, url, params=None, **kwargs):
-        """ Shorthand for self.oauth_request(url, 'get')
+    def get(self, url, **kwargs):
+        """get."""
+        return _RequestContextManager(self.request('get', url, **kwargs))
 
-        :param str url: url to send get oauth request to
-        :param dict params: request parameter to get the service data
-        :param kwargs: extra params to send to request api
-        :return: Response of the request
-        :rtype: requests.Response
-        """
-        return (await self.oauth_request(
-            url, 'get', params=params, **kwargs))
-
-    async def post(self, url, data=None, **kwargs):
-        """ Shorthand for self.oauth_request(url, 'post')
-
-        :param str url: url to send post oauth request to
-        :param dict data: post data to update the service
-        :param kwargs: extra params to send to request api
-        :return: Response of the request
-        :rtype: requests.Response
-        """
-        return self.oauth_request(url, 'post', data=data, **kwargs)
+    def post(self, url, **kwargs):
+        """post."""
+        return _RequestContextManager(self.request('post', url, **kwargs))

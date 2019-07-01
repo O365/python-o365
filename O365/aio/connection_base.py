@@ -4,6 +4,7 @@ import logging
 import os
 import time
 from pathlib import Path
+from functools import partialmethod
 
 from oauthlib.oauth2 import TokenExpiredError
 from requests import Session
@@ -14,7 +15,7 @@ from requests.exceptions import (HTTPError, ProxyError, RequestException,
 # Dynamic loading of module Retry by requests.packages
 # noinspection PyUnresolvedReferences
 from requests.packages.urllib3.util.retry import Retry
-from requests_oauthlib import OAuth2Session
+from requests_oauthlib import OAuth2Session as requests_OAuth2Session
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -100,7 +101,6 @@ class ConnectionBase:
         self.token_path = ((Path() / token_file_name) if token_file_name
                            else self._default_token_path)
         self.token = kwargs.get('token')
-        self.state = kwargs.get('state')
 
         self.session = None  # requests Oauth2Session object
 
@@ -151,8 +151,8 @@ class ConnectionBase:
 
         return path.exists()
 
-    def get_authorization_url(self, requested_scopes=None,
-                              redirect_uri=OAUTH_REDIRECT_URL):
+    def get_authorization_url(self, redirect_uri, requested_scopes=None,
+                              state=None):
         """ Initializes the oauth authorization flow, getting the
         authorization url that the user must approve.
 
@@ -162,7 +162,7 @@ class ConnectionBase:
         :rtype: str
         """
 
-        client_id, _client_secret = self.auth
+        client_id, _ = self.auth
 
         if requested_scopes:
             scopes = requested_scopes
@@ -175,17 +175,19 @@ class ConnectionBase:
             client_id=client_id,
             redirect_uri=redirect_uri,
             scope=scopes,
-            token=self.token,
-            state=self.state
+            state=state,
         )
+
+        if state:
+            return None
 
         # TODO: access_type='offline' has no effect according to documentation
         # TODO: This is done through scope 'offline_access'.
+
         auth_url, state = self.session.authorization_url(
             url=self._oauth2_authorize_url, access_type='offline')
-        self.state = state
 
-        return auth_url
+        return auth_url, state
 
     def get_session(self, token_path=None):
         """ Create a requests Session object
@@ -366,9 +368,9 @@ class Connection(ConnectionBase):
         :rtype: requests.Response
         """
         return self.oauth_request(
-            url, method, custom_session=self.naive_session, **kwargs)
+            method, url, custom_session=self.naive_session, **kwargs)
 
-    def oauth_request(self, url, method, custom_session=None, **kwargs):
+    def oauth_request(self, method, url, custom_session=None, **kwargs):
         """ Makes a request to url using an oauth session
 
         :param str url: url to send request to
@@ -380,7 +382,6 @@ class Connection(ConnectionBase):
         """
         session = custom_session or self.session or self.get_session()
 
-        method = method.lower()
         assert method in self._allowed_methods, \
             'Method must be one of the allowed ones'
 
@@ -456,64 +457,16 @@ class Connection(ConnectionBase):
                 _LOGGER.debug("Request Exception: %s", err)
                 raise err
 
-    def get(self, url, params=None, **kwargs):
-        """ Shorthand for self.oauth_request(url, 'get')
-
-        :param str url: url to send get oauth request to
-        :param dict params: request parameter to get the service data
-        :param kwargs: extra params to send to request api
-        :return: Response of the request
-        :rtype: requests.Response
-        """
-        return self.oauth_request(url, 'get', params=params, **kwargs)
-
-    def post(self, url, data=None, **kwargs):
-        """ Shorthand for self.oauth_request(url, 'post')
-
-        :param str url: url to send post oauth request to
-        :param dict data: post data to update the service
-        :param kwargs: extra params to send to request api
-        :return: Response of the request
-        :rtype: requests.Response
-        """
-        return self.oauth_request(url, 'post', data=data, **kwargs)
-
-    def put(self, url, data=None, **kwargs):
-        """ Shorthand for self.oauth_request(url, 'put')
-
-        :param str url: url to send put oauth request to
-        :param dict data: put data to update the service
-        :param kwargs: extra params to send to request api
-        :return: Response of the request
-        :rtype: requests.Response
-        """
-        return self.oauth_request(url, 'put', data=data, **kwargs)
-
-    def patch(self, url, data=None, **kwargs):
-        """ Shorthand for self.oauth_request(url, 'patch')
-
-        :param str url: url to send patch oauth request to
-        :param dict data: patch data to update the service
-        :param kwargs: extra params to send to request api
-        :return: Response of the request
-        :rtype: requests.Response
-        """
-        return self.oauth_request(url, 'patch', data=data, **kwargs)
-
-    def delete(self, url, **kwargs):
-        """ Shorthand for self.request(url, 'delete')
-
-        :param str url: url to send delete oauth request to
-        :param kwargs: extra params to send to request api
-        :return: Response of the request
-        :rtype: requests.Response
-        """
-        return self.oauth_request(url, 'delete', **kwargs)
+    get = partialmethod(oauth_request, 'GET')
+    post = partialmethod(oauth_request, 'POST')
+    put = partialmethod(oauth_request, 'POST')
+    patch = partialmethod(oauth_request, 'POST')
+    delete = partialmethod(oauth_request, 'POST')
 
     def _session_init(self, *args, **kwargs):
         """Init session specific per transport provider request/aiohttp"""
 
-        self.session = OAuth2Session(*args, **kwargs)
+        self.session = requests_OAuth2Session(*args, **kwargs)
         self.session.proxies = self.proxy
 
         if self.request_retries:
