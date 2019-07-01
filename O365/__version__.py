@@ -1,7 +1,2 @@
-from pkg_resources import get_distribution, DistributionNotFound
+__version__ = '1.1.9'
 
-try:
-    __version__ = get_distribution(__name__.split('.')[0]).version
-except DistributionNotFound:
-    # Package is not installed.
-    __version__ = None
