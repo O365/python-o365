@@ -570,6 +570,8 @@ class Query:
         self._selects = set()
         self._expands = set()
         self._search = None
+        self._open_group_flag = []  # stores if the next attribute must be grouped
+        self._close_group_flag = []  # stores if the last attribute must be closing a group
 
     def __str__(self):
         return 'Filter: {}\nOrder: {}\nSelect: {}\nExpand: {}\nSearch: {}'.format(self.get_filters(),
@@ -705,9 +707,16 @@ class Query:
             filters_list = self._filters
             if isinstance(filters_list[-1], Enum):
                 filters_list = filters_list[:-1]
-            return ' '.join(
-                [fs.value if isinstance(fs, Enum) else fs[1] for fs in
-                 filters_list]).strip()
+            filters = ' '.join(
+                [fs.value if isinstance(fs, Enum) else fs[1] for fs in filters_list]
+            ).strip()
+
+            # closing opened groups automatically
+            open_groups = len([x for x in self._open_group_flag if x is False])
+            for i in range(open_groups - len(self._close_group_flag)):
+                filters += ')'
+
+            return filters
         else:
             return None
 
@@ -722,7 +731,7 @@ class Query:
             return None
         filter_order_clauses = OrderedDict([(filter_attr[0], None)
                                             for filter_attr in self._filters
-                                            if isinstance(filter_attr, tuple)])
+                                            if isinstance(filter_attr, list)])
 
         # any order_by attribute that appears in the filters is ignored
         order_by_dict = self._order_by.copy()
@@ -810,6 +819,8 @@ class Query:
         self._attribute = None
         self._chain = None
         self._search = None
+        self._open_group_flag = []
+        self._close_group_flag = []
 
         return self
 
@@ -851,7 +862,7 @@ class Query:
         remove_chain = False
 
         for flt in self._filters:
-            if isinstance(flt, tuple):
+            if isinstance(flt, list):
                 if flt[0] == filter_attr:
                     remove_chain = True
                 else:
@@ -870,7 +881,13 @@ class Query:
             if self._filters and not isinstance(self._filters[-1],
                                                 ChainOperator):
                 self._filters.append(self._chain)
-            self._filters.append((self._attribute, filter_data[0], filter_data[1]))
+            sentence, attrs = filter_data
+            for i, group in enumerate(self._open_group_flag):
+                if group is True:
+                    # Open a group
+                    sentence = '(' + sentence
+                    self._open_group_flag[i] = False  # set to done
+            self._filters.append([self._attribute, sentence, attrs])
         else:
             raise ValueError(
                 'Attribute property needed. call on_attribute(attribute) '
@@ -1145,4 +1162,25 @@ class Query:
             raise ValueError(
                 'Attribute property needed. call on_attribute(attribute) '
                 'or new(attribute)')
+        return self
+
+    def open_group(self):
+        """ Applies a precedence grouping in the next filters """
+        self._open_group_flag.append(True)
+        return self
+
+    def close_group(self):
+        """ Closes a grouping for previous filters """
+        if self._filters:
+            if len(self._open_group_flag) < (len(self._close_group_flag) + 1):
+                raise RuntimeError('Not enough open groups to close.')
+            if isinstance(self._filters[-1], ChainOperator):
+                flt_sentence = self._filters[-2]
+            else:
+                flt_sentence = self._filters[-1]
+
+            flt_sentence[1] = flt_sentence[1] + ')'  # closing the group
+            self._close_group_flag.append(False)  # flag a close group was added
+        else:
+            raise RuntimeError("No filters present. Can't close a group")
         return self
