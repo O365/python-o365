@@ -351,7 +351,7 @@ class OAuth2Session(aiohttp.ClientSession):
             headers=headers,
             auth=auth,
             verify_ssl=verify_ssl,
-            proxy_headers=proxies,
+            # proxy=proxies,
             **request_kwargs
         ) as resp:
             log.debug("Request to fetch token completed with status %s.", resp.status)
@@ -436,7 +436,7 @@ class OAuth2Session(aiohttp.ClientSession):
             headers=headers,
             verify_ssl=verify_ssl,
             withhold_token=True,
-            # proxies=proxies,
+            # proxy=proxies,
         ) as resp:
             log.debug("Request to refresh token completed with status %s.", resp.status)
             text = await resp.text

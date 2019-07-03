@@ -59,7 +59,7 @@ class aio_Connection(ConnectionBase):  # pylint: disable=invalid-name
 
     def _session_init(self, *args, **kwargs):
         """Init session specific per transport provider request/aiohttp"""
-        self.session = aio_OAuth2Session(*args, **kwargs)
+        self.session = aio_OAuth2Session(*args, trust_env=True, **kwargs)
 
     async def request(self, method, url, custom_session=None, **kwargs):
         """ Makes a request to url using an oauth session
