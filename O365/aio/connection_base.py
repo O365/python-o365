@@ -16,6 +16,7 @@ from requests.exceptions import (HTTPError, ProxyError, RequestException,
 # noinspection PyUnresolvedReferences
 from requests.packages.urllib3.util.retry import Retry
 from requests_oauthlib import OAuth2Session as requests_OAuth2Session
+from yarl import URL
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -48,6 +49,13 @@ DEFAULT_SCOPES = {
     'sharepoint_dl': ['Sites.ReadWrite.All'],
 }
 
+HTTP_GET = 'get'
+HTTP_POST = 'post'
+HTTP_PUT = 'put'
+HTTP_PATCH = 'patch'
+HTTP_DELETE = 'delete'
+HTTP_ALLOWED = [HTTP_GET, HTTP_POST, HTTP_PUT, HTTP_PATCH, HTTP_DELETE]
+
 
 class ConnectionBase:
     """ Handles all communication (requests) between the app and the server """
@@ -58,13 +66,12 @@ class ConnectionBase:
                         'oauth2/v2.0/token'
     _default_token_file = 'o365_token.txt'
     _default_token_path = Path() / _default_token_file
-    _allowed_methods = ['get', 'post', 'put', 'patch', 'delete']
 
     def __init__(self, credentials, *, scopes=None,
                  proxy_server=None, proxy_port=8080, proxy_username=None,
                  proxy_password=None,
                  requests_delay=200, raise_http_errors=True, request_retries=3,
-                 token_file_name=None, **kwargs):
+                 token_file_name=None, token_updater=None, **kwargs):
         """ Creates an API connection object
 
         :param tuple credentials: a tuple of (client_id, client_secret)
@@ -98,6 +105,7 @@ class ConnectionBase:
         self.auth = credentials
         self.scopes = scopes
         self.store_token = True
+        self.token_updater = token_updater
         self.token_path = ((Path() / token_file_name) if token_file_name
                            else self._default_token_path)
         self.token = kwargs.get('token')
@@ -120,36 +128,19 @@ class ConnectionBase:
         :param str proxy_username: the proxy username
         :param str proxy_password: the proxy password
         """
-        if proxy_server and proxy_port:
-            if proxy_username and proxy_password:
-                self.proxy = {
-                    "http": "http://{}:{}@{}:{}".format(proxy_username,
-                                                        proxy_password,
-                                                        proxy_server,
-                                                        proxy_port),
-                    "https": "https://{}:{}@{}:{}".format(proxy_username,
-                                                          proxy_password,
-                                                          proxy_server,
-                                                          proxy_port),
-                }
-            else:
-                self.proxy = {
-                    "http": "http://{}:{}".format(proxy_server, proxy_port),
-                    "https": "https://{}:{}".format(proxy_server, proxy_port),
-                }
-
-    def check_token_file(self):
-        """ Checks if the token file exists at the given position
-
-        :return: if file exists or not
-        :rtype: bool
-        """
-        if self.token_path:
-            path = Path(self.token_path)
-        else:
-            path = self._default_token_path
-
-        return path.exists()
+        if not proxy_server:
+            self.proxy = {}
+            return
+        args = {
+            'host': proxy_server,
+            'port': proxy_port,
+            'user': proxy_username,
+            'password': proxy_password
+        }
+        self.proxy = {
+            'http': URL.build(**dict(args, scheme='http')),
+            'https': URL.build(**dict(args, scheme='https')),
+        }
 
     def get_authorization_url(self, redirect_uri, requested_scopes=None,
                               state=None):
@@ -181,28 +172,26 @@ class ConnectionBase:
         if state:
             return None
 
-        # TODO: access_type='offline' has no effect according to documentation
-        # TODO: This is done through scope 'offline_access'.
-
+        # access_type='offline' has no effect according to documentation
+        # This is done through scope 'offline_access',
+        # included in DEFAULT_SCOPES['basic']
         auth_url, state = self.session.authorization_url(
             url=self._oauth2_authorize_url, access_type='offline')
 
         return auth_url, state
 
-    def get_session(self, token_path=None):
-        """ Create a requests Session object
+    def get_session(self):
+        """Create a requests Session object
 
-        :param Path token_path: (Only oauth) full path to where the token
-         should be load from
-        :return: A ready to use requests session
+        :return: A ready to use session
         :rtype: OAuth2Session
         """
-        self.token = self.token or self._load_token(
-            token_path or self.token_path)
-
         if self.token:
             client_id, _ = self.auth
-            self._session_init(client_id=client_id, token=self.token)
+            self._session_init(
+                client_id=client_id,
+                token=self.token,
+            )
         else:
             raise RuntimeError(
                 'No auth token found. Authentication Flow needed')
@@ -222,63 +211,6 @@ class ConnectionBase:
                 time.sleep(
                     (self.requests_delay - dif) / 1000)  # sleep needs seconds
         self.previous_request_at = time.time()
-
-    def _save_token(self, token, token_path=None):
-        """ Save the specified token dictionary to a specified file path
-
-        :param dict token: token dictionary returned by the oauth token request,
-         to be saved
-        :param Path token_path: Path to the file with token information saved
-        :return: Success/Failure
-        :rtype: bool
-        """
-        if not token_path:
-            token_path = self.token_path or self._default_token_path
-        else:
-            if not isinstance(token_path, Path):
-                raise ValueError('token_path must be a valid Path from pathlib')
-
-        with token_path.open('w') as token_file:
-            json.dump(token, token_file, indent=True)
-
-        return True
-
-    def _load_token(self, token_path=None):
-        """ Load the specified token dictionary from specified file path
-
-        :param Path token_path: Path to the file with token information saved
-        :return: token data
-        :rtype: dict
-        """
-        if not token_path:
-            token_path = self.token_path or self._default_token_path
-        else:
-            if not isinstance(token_path, Path):
-                raise ValueError('token_path must be a valid Path from pathlib')
-
-        token = None
-        if token_path.exists():
-            with token_path.open('r') as token_file:
-                token = json.load(token_file)
-        return token
-
-    def _delete_token(self, token_path=None):
-        """ Delete the specified token dictionary from specified file path
-
-        :param Path token_path: Path to the file with token information saved
-        :return: Success/Failure
-        :rtype: bool
-        """
-        if not token_path:
-            token_path = self.token_path or self._default_token_path
-        else:
-            if not isinstance(token_path, Path):
-                raise ValueError('token_path must be a valid Path from pathlib')
-
-        if token_path.exists():
-            token_path.unlink()
-            return True
-        return False
 
 
 class Connection(ConnectionBase):
@@ -300,6 +232,19 @@ class Connection(ConnectionBase):
             adapter = HTTPAdapter(max_retries=retry)
             self.naive_session.mount('http://', adapter)
             self.naive_session.mount('https://', adapter)
+
+    def check_token_file(self):
+        """ Checks if the token file exists at the given position
+
+        :return: if file exists or not
+        :rtype: bool
+        """
+        if self.token_path:
+            path = Path(self.token_path)
+        else:
+            path = self._default_token_path
+
+        return path.exists()
 
     def request_token(self, authorization_url, store_token=True,
                       token_path=None):
@@ -382,12 +327,12 @@ class Connection(ConnectionBase):
         """
         session = custom_session or self.session or self.get_session()
 
-        assert method in self._allowed_methods, \
+        assert method in HTTP_ALLOWED, \
             'Method must be one of the allowed ones'
 
-        if method == 'get':
+        if method == HTTP_GET:
             kwargs.setdefault('allow_redirects', True)
-        elif method in ['post', 'put', 'patch']:
+        elif method in [HTTP_POST, HTTP_PUT, HTTP_PATCH]:
             kwargs.setdefault('headers', {})
             kwargs['headers'].setdefault('Content-type', 'application/json')
             if 'data' in kwargs and \
@@ -457,11 +402,11 @@ class Connection(ConnectionBase):
                 _LOGGER.debug("Request Exception: %s", err)
                 raise err
 
-    get = partialmethod(oauth_request, 'GET')
-    post = partialmethod(oauth_request, 'POST')
-    put = partialmethod(oauth_request, 'POST')
-    patch = partialmethod(oauth_request, 'POST')
-    delete = partialmethod(oauth_request, 'POST')
+    get = partialmethod(oauth_request, HTTP_GET)
+    post = partialmethod(oauth_request, HTTP_POST)
+    put = partialmethod(oauth_request, HTTP_POST)
+    patch = partialmethod(oauth_request, HTTP_PATCH)
+    delete = partialmethod(oauth_request, HTTP_DELETE)
 
     def _session_init(self, *args, **kwargs):
         """Init session specific per transport provider request/aiohttp"""
@@ -478,3 +423,60 @@ class Connection(ConnectionBase):
             adapter = HTTPAdapter(max_retries=retry)
             self.session.mount('http://', adapter)
             self.session.mount('https://', adapter)
+
+    def _save_token(self, token, token_path=None):
+        """ Save the specified token dictionary to a specified file path
+
+        :param dict token: token dictionary returned by the oauth token request,
+         to be saved
+        :param Path token_path: Path to the file with token information saved
+        :return: Success/Failure
+        :rtype: bool
+        """
+        if not token_path:
+            token_path = self.token_path or self._default_token_path
+        else:
+            if not isinstance(token_path, Path):
+                raise ValueError('token_path must be a valid Path from pathlib')
+
+        with token_path.open('w') as token_file:
+            json.dump(token, token_file, indent=True)
+
+        return True
+
+    def _load_token(self, token_path=None):
+        """ Load the specified token dictionary from specified file path
+
+        :param Path token_path: Path to the file with token information saved
+        :return: token data
+        :rtype: dict
+        """
+        if not token_path:
+            token_path = self.token_path or self._default_token_path
+        else:
+            if not isinstance(token_path, Path):
+                raise ValueError('token_path must be a valid Path from pathlib')
+
+        token = None
+        if token_path.exists():
+            with token_path.open('r') as token_file:
+                token = json.load(token_file)
+        return token
+
+    def _delete_token(self, token_path=None):
+        """ Delete the specified token dictionary from specified file path
+
+        :param Path token_path: Path to the file with token information saved
+        :return: Success/Failure
+        :rtype: bool
+        """
+        if not token_path:
+            token_path = self.token_path or self._default_token_path
+        else:
+            if not isinstance(token_path, Path):
+                raise ValueError('token_path must be a valid Path from pathlib')
+
+        if token_path.exists():
+            token_path.unlink()
+            return True
+        return False

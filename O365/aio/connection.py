@@ -5,7 +5,9 @@ import os
 
 from aiohttp.client import _RequestContextManager
 
-from O365.aio.connection_base import ConnectionBase
+from O365.aio.connection_base import (
+    ConnectionBase, HTTP_ALLOWED, HTTP_GET, HTTP_POST, HTTP_PUT, HTTP_PATCH,
+    DEFAULT_SCOPES)
 from O365.aio.oauth2_session import OAuth2Session as aio_OAuth2Session
 
 _LOGGER = logging.getLogger(__name__)
@@ -14,21 +16,14 @@ _LOGGER = logging.getLogger(__name__)
 class aio_Connection(ConnectionBase):  # pylint: disable=invalid-name
     """Async version."""
 
-    async def request_token(
-            self, *, authorization_url, store_token=True, token_path=None):
+    async def request_token(self, *, authorization_url):
         """ Authenticates for the specified url and gets the token, save the
         token for future based if requested
 
         :param str authorization_url: url given by the authorization flow
-        :param bool store_token: whether or not to store the token in file
-         system, so u don't have to keep opening the auth link and
-         authenticating every time
-        :param Path token_path: full path to where the token should be saved to
         :return: Success/Failure
         :rtype: bool
         """
-        assert not store_token, "Store token not implemented yet"
-
         if self.session is None:
             raise RuntimeError("Fist call 'get_authorization_url' to "
                                "generate a valid oauth object")
@@ -37,7 +32,7 @@ class aio_Connection(ConnectionBase):  # pylint: disable=invalid-name
 
         # Allow token scope to not match requested scope.
         # (Other auth libraries allow this, but Requests-OAuthlib
-        # raises exception on scope mismatch by default.)
+        #  raises exception on scope mismatch by default.)
         os.environ['OAUTHLIB_RELAX_TOKEN_SCOPE'] = '1'
         os.environ['OAUTHLIB_IGNORE_SCOPE_CHANGE'] = '1'
 
@@ -46,23 +41,40 @@ class aio_Connection(ConnectionBase):  # pylint: disable=invalid-name
                 token_url=self._oauth2_token_url,
                 authorization_response=authorization_url,
                 client_id=client_id,
-                client_secret=client_secret)
+                client_secret=client_secret,
+                include_client_id=True,
+            )
         except Exception as err:  # pylint: disable=broad-except
-            _LOGGER.error("Unable to fetch auth token. Error: %s", err)
-            return False
+            raise RuntimeError(f"Unable to fetch auth token. Error: {err}")
 
-        if token_path:
-            self.token_path = token_path
-        self.store_token = store_token
-
-        return True
+        # Store the new token, this can implement any async file operations
+        if self.token_updater:
+            await self.token_updater(self.token)
 
     def _session_init(self, *args, **kwargs):
-        """Init session specific per transport provider request/aiohttp"""
-        self.session = aio_OAuth2Session(*args, trust_env=True, **kwargs)
+        """Init oauth2_session for aiohttp.
+
+        Token update is handled by OAuth2Session."""
+
+        async def _update_token(token):
+            if self.token_updater:
+                await self.token_updater(token)
+
+        self.session = aio_OAuth2Session(
+            *args,
+            auto_refresh_url=self._oauth2_token_url,
+            auto_refresh_kwargs={
+                # client_id and client_secret expected in refresh request body
+                'client_id': self.auth[0],
+                'client_secret': self.auth[1],
+            },
+            token_updater=_update_token,
+            trust_env=True,  # Use http_proxy environment
+            **kwargs
+        )
 
     async def request(self, method, url, custom_session=None, **kwargs):
-        """ Makes a request to url using an oauth session
+        """Make a request to url using an oauth session
 
         :param str url: url to send request to
         :param str method: type of request (get/put/post/patch/delete)
@@ -73,12 +85,12 @@ class aio_Connection(ConnectionBase):  # pylint: disable=invalid-name
         """
         session = custom_session or self.session or self.get_session()
 
-        assert method in self._allowed_methods, \
+        assert method in HTTP_ALLOWED, \
             'Method must be one of the allowed ones'
 
-        if method == 'GET':
+        if method == HTTP_GET:
             kwargs.setdefault('allow_redirects', True)
-        elif method in ['post', 'put', 'patch']:
+        elif method in [HTTP_POST, HTTP_PUT, HTTP_PATCH]:
             kwargs.setdefault('headers', {})
             kwargs['headers'].setdefault('Content-type', 'application/json')
             if 'data' in kwargs and \
@@ -91,9 +103,9 @@ class aio_Connection(ConnectionBase):  # pylint: disable=invalid-name
         return response
 
     def get(self, url, **kwargs):
-        """get."""
-        return _RequestContextManager(self.request('get', url, **kwargs))
+        """GET Request."""
+        return _RequestContextManager(self.request(HTTP_GET, url, **kwargs))
 
     def post(self, url, **kwargs):
-        """post."""
-        return _RequestContextManager(self.request('post', url, **kwargs))
+        """POST request."""
+        return _RequestContextManager(self.request(HTTP_POST, url, **kwargs))

@@ -90,6 +90,9 @@ class OAuth2Session(aiohttp.ClientSession):
         self.auto_refresh_kwargs = auto_refresh_kwargs or {}
         self.token_updater = token_updater
 
+        if self.token_updater:
+            assert self.auto_refresh_url, "Auto refresh URL required if token updater"
+
         # Allow customizations for non compliant providers through various
         # hooks to adjust requests and responses.
         self.compliance_hook = {
@@ -198,6 +201,7 @@ class OAuth2Session(aiohttp.ClientSession):
         verify_ssl=True,
         proxies=None,
         include_client_id=None,
+        client_id=None,
         client_secret=None,
         **kwargs
     ):
@@ -351,7 +355,7 @@ class OAuth2Session(aiohttp.ClientSession):
             headers=headers,
             auth=auth,
             verify_ssl=verify_ssl,
-            # proxy=proxies,
+            proxy=proxies,
             **request_kwargs
         ) as resp:
             log.debug("Request to fetch token completed with status %s.", resp.status)
@@ -416,6 +420,7 @@ class OAuth2Session(aiohttp.ClientSession):
         log.debug(
            "Adding auto refresh key word arguments %s.", self.auto_refresh_kwargs
         )
+
         kwargs.update(self.auto_refresh_kwargs)
         body = self._client.prepare_refresh_body(
             body=body, refresh_token=refresh_token, scope=self.scope, **kwargs
@@ -428,7 +433,7 @@ class OAuth2Session(aiohttp.ClientSession):
                 "Content-Type": ("application/x-www-form-urlencoded;charset=UTF-8"),
             }
 
-        with await self.post(
+        async with self.post(
             token_url,
             data=dict(urldecode(body)),
             auth=auth,
@@ -439,7 +444,7 @@ class OAuth2Session(aiohttp.ClientSession):
             # proxy=proxies,
         ) as resp:
             log.debug("Request to refresh token completed with status %s.", resp.status)
-            text = await resp.text
+            text = await resp.text()
             log.debug("Response headers were %s and content %s.", resp.headers, text)
             (resp,) = self._invoke_hooks("refresh_token_response", resp)
 
@@ -449,7 +454,7 @@ class OAuth2Session(aiohttp.ClientSession):
             self.token["refresh_token"] = refresh_token
         return self.token
 
-    def _request(
+    async def _request(
         self,
         method,
         url,
@@ -467,7 +472,6 @@ class OAuth2Session(aiohttp.ClientSession):
         if self.token and not withhold_token:
 
             url, headers, data = self._invoke_hooks("protected_request", url, headers, data)
-
             log.debug("Adding token %s to request.", self.token)
             try:
                 url, headers, data = self._client.add_token(
@@ -489,14 +493,14 @@ class OAuth2Session(aiohttp.ClientSession):
                             client_id,
                         )
                         auth = aiohttp.BasicAuth(login=client_id, password=client_secret)
-                    token = self.refresh_token(
+                    token = await self.refresh_token(
                         self.auto_refresh_url, auth=auth, **kwargs
                     )
                     if self.token_updater:
                         log.debug(
                             "Updating token to %s using %s.", token, self.token_updater
                         )
-                        self.token_updater(token)
+                        await self.token_updater(token)
                         url, headers, data = self._client.add_token(
                             url, http_method=method, body=data, headers=headers
                         )
@@ -508,7 +512,7 @@ class OAuth2Session(aiohttp.ClientSession):
         log.debug("Requesting url %s using method %s.", url, method)
         log.debug("Supplying headers %s and data %s", headers, data)
         log.debug("Passing through key word arguments %s.", kwargs)
-        return super()._request(
+        return await super()._request(
             method, url, headers=headers, data=data, **kwargs
         )
 
