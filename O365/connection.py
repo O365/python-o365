@@ -382,7 +382,7 @@ class Connection:
                       DeprecationWarning)
         return self.token_backend.check_token() if hasattr(self.token_backend, 'check_token') else None
 
-    def _build_oauth2_session(self, client_id, redirect_uri, scopes, state=None):
+    def _build_oauth2_session(self, client_id, token=None, redirect_uri=None, scopes=None, state=None):
         """ Build an OAuth2Session with the expected characteristics.
         This method allows to rebuild sessions that had previously been
         initialized elsewhere, which enables typical webapp flows (where
@@ -397,6 +397,7 @@ class Connection:
                 (typically from a call to get_authorization_url)
         """
         session = OAuth2Session(client_id=client_id,
+                                token=token,
                                 redirect_uri=redirect_uri,
                                 scope=scopes, state=state)
         session.proxies = self.proxy
@@ -438,7 +439,7 @@ class Connection:
         else:
             raise ValueError('Must provide at least one scope')
 
-        self.session = oauth = self._build_oauth2_session(client_id, redirect_uri, scopes)
+        self.session = oauth = self._build_oauth2_session(client_id, redirect_uri=redirect_uri, scopes=scopes)
 
         # TODO: access_type='offline' has no effect according to documentation
         #  This is done through scope 'offline_access'.
@@ -486,7 +487,10 @@ class Connection:
         :param list[str] scopes: optinoal scopes to request
         """
         client_id, client_pwd = self.auth
-        self.session = self._build_oauth2_session(client_id, redirect_uri, scopes, state)
+        self.session = self._build_oauth2_session(client_id,
+                                                  redirect_uri=redirect_uri,
+                                                  scopes=scopes,
+                                                  state=state)
 
     def request_token(self, authorization_url, store_token=True,
                       token_path=None, state=None, redirect_uri=None, scopes=None, **kwargs):
@@ -560,7 +564,7 @@ class Connection:
                 'No auth token found. Authentication Flow needed')
 
         client_id, _ = self.auth
-        session = self._build_oauth2_session(client_id, token)
+        session = self._build_oauth2_session(client_id, token=token)
         return session
 
     def refresh_token(self):
