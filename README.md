@@ -180,7 +180,7 @@ This section is explained using Microsoft Graph Protocol, almost the same applie
 
 
 ##### Permissions and Scopes:
-When using oauth, you create an application and allow some resources to be accesed and used by it's users.
+When using oauth, you create an application and allow some resources to be accessed and used by its users.
 Then the user can request access to one or more of this resources by providing scopes to the oauth provider.
 
 For example your application can have Calendar.Read, Mail.ReadWrite and Mail.Send permissions, but the application can request access only to the Mail.ReadWrite and Mail.Send permission.
@@ -213,7 +213,7 @@ scopes_office = protocol.get_scopes_for('message all')
 con = Connection(credentials, scopes=scopes_graph)
 ```
 
-However all the protocol/scope stuff can be addressed automaticaly for you when using the `account.authenticate` method.
+However all the protocol/scope stuff can be addressed automatically for you when using the `account.authenticate` method.
 
 
 
@@ -228,7 +228,7 @@ You can choose where and how to store tokens by using the properly Token Backend
 To store the token you will have to provide a properly configured TokenBackend.
 Actually there are only two implemented (but you can easely implement more like a CookieBackend, etc.):
 - `FileSystemTokenBackend` (Default backend): Stores and retrieves tokens from the file system. Tokens are stored as files.
-- `FirestoreTokenBackend`: Stores and retrives tokens from a Google Firestore Datastore. Tokens are stored as documents whitin a collection.
+- `FirestoreTokenBackend`: Stores and retrives tokens from a Google Firestore Datastore. Tokens are stored as documents within a collection.
 
 For example using the FileSystem Token Backend:
 
@@ -280,7 +280,7 @@ To implememnt a new TokenBackend:
 
 
 ## Protocols
-Protocols handles the aspects of comunications between different APIs.
+Protocols handles the aspects of communications between different APIs.
 This project uses by default either the Office 365 APIs or Microsoft Graph APIs.
 But, you can use many other Microsoft APIs as long as you implement the protocol needed.
 
@@ -314,7 +314,7 @@ protocol = MSGraphProtocol(api_version='beta')  # MSGraphProtocol defaults to v1
 Each API endpoint requires a resource. This usually defines the owner of the data.
 Every protocol defaults to resource 'ME'. 'ME' is the user which has given consent, but you can change this behaviour by providing a different default resource to the protocol constructor.
 
-For example when accesing a shared mailbox:
+For example when accessing a shared mailbox:
 
 
 ```python
@@ -421,7 +421,7 @@ class CustomClass(ApiComponent):
 ## MailBox
 Mailbox groups the funcionality of both the messages and the email folders.
 
-This are the scopes needed to work with the `MailBox` and `Message` classes.
+These are the scopes needed to work with the `MailBox` and `Message` classes.
 
  Raw Scope                |  Included in Scope Helper                   | Description
  :---:                    |  :---:                                     | ---
@@ -533,7 +533,7 @@ msg.send()
 ## AddressBook
 AddressBook groups the funcionality of both the Contact Folders and Contacts. Outlook Distribution Groups are not supported (By the Microsoft API's).
 
-This are the scopes needed to work with the `AddressBook` and `Contact` classes.
+These are the scopes needed to work with the `AddressBook` and `Contact` classes.
 
  Raw Scope                       |  Included in Scope Helper                        | Description
  :---:                           |  :---:                                          | ---
@@ -601,7 +601,7 @@ print(global_address_list.get_contacts(query=q))
 ```
 
 
-To retrieve a contact by it's email:
+To retrieve a contact by their email:
 
 ```python
 contact = global_address_list.get_contact_by_email('example@example.com')
@@ -636,7 +636,7 @@ The calendar and events functionality is group in a `Schedule` object.
 A `Schedule` instance can list and create calendars. It can also list or create events on the default user calendar.
 To use other calendars use a `Calendar` instance.  
 
-This are the scopes needed to work with the `Schedule`, `Calendar` and `Event` classes.
+These are the scopes needed to work with the `Schedule`, `Calendar` and `Event` classes.
 
  Raw Scope                        |  Included in Scope Helper                        | Description
  :---:                            |  :---:                                          | ---
@@ -691,7 +691,7 @@ for event in birthdays:
         event.decline("No way I'm comming, I'll be in Spain", send_response=False)  # decline the event but don't send a reponse to the organizer
 ```
 
-> It's important to know that when quering events with `include_recurring=True` (which is the default), it is required that you must provide a query parameter with the start and end attributes defined. 
+> It's important to know that when querying events with `include_recurring=True` (which is the default), it is required that you must provide a query parameter with the start and end attributes defined. 
 > Unlike when using `include_recurring=False` those attributes will NOT filter the data based on the operations you set on the query (greater_equal, less, etc.) but just filter the events start datetime between the provided start and end datetimes. 
 
 There are some known issues when working with [shared calendars](https://docs.microsoft.com/en-us/graph/known-issues#calendars) in Microsoft Graph.
@@ -704,7 +704,7 @@ Usually you will only need to work with the default drive. But the `Storage` ins
 
 A `Drive` will allow you to work with Folders and Files.
 
-This are the scopes needed to work with the `Storage`, `Drive` and `DriveItem` classes.
+These are the scopes needed to work with the `Storage`, `Drive` and `DriveItem` classes.
 
  Raw Scope                  |  Included in Scope Helper     | Description
  :---:                      |  :---:                       | ---
@@ -746,7 +746,7 @@ for item in root_folder.get_items(limit=25):
 Both Files and Folders are DriveItems. Both Image and Photo are Files, but Photo is also an Image. All have some different methods and properties. 
 Take care when using 'is_xxxx'.
 
-When coping a DriveItem the api can return a direct copy of the item or a pointer to a resource that will inform on the progress of the copy operation.
+When copying a DriveItem the api can return a direct copy of the item or a pointer to a resource that will inform on the progress of the copy operation.
 
 ```python
 # copy a file to the documents special folder
