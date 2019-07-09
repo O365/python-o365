@@ -725,7 +725,10 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         if not response:
             return False
 
+        message = response.json()
+
         self.folder_id = folder_id
+        self.object_id = message.get('id')
 
         return True
 
