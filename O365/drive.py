@@ -2,7 +2,7 @@ import logging
 import warnings
 from pathlib import Path
 from time import sleep
-from urllib.parse import urlparse
+from urllib.parse import urlparse, quote
 
 from dateutil.parser import parse
 
@@ -1169,7 +1169,7 @@ class Folder(DriveItem):
             # Simple Upload
             url = self.build_url(
                 self._endpoints.get('simple_upload').format(id=self.object_id,
-                                                            filename=item.name))
+                                                            filename=quote(item.name)))
             # headers = {'Content-type': 'text/plain'}
             headers = {'Content-type': 'application/octet-stream'}
             # headers = None
@@ -1188,7 +1188,7 @@ class Folder(DriveItem):
             # Resumable Upload
             url = self.build_url(
                 self._endpoints.get('create_upload_session').format(
-                    id=self.object_id, filename=item.name))
+                    id=self.object_id, filename=quote(item.name)))
 
             response = self.con.post(url)
             if not response:
