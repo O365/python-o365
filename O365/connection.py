@@ -66,7 +66,7 @@ class Protocol:
     _oauth_scopes = {}  # Dictionary of {scopes_name: [scope1, scope2]}
 
     def __init__(self, *, protocol_url=None, api_version=None,
-                 default_resource=ME_RESOURCE,
+                 default_resource=None,
                  casing_function=None, protocol_scope_prefix=None,
                  timezone=None, **kwargs):
         """ Create a new protocol object
@@ -90,7 +90,7 @@ class Protocol:
         self.protocol_scope_prefix = protocol_scope_prefix or ''
         self.api_version = api_version
         self.service_url = '{}{}/'.format(protocol_url, api_version)
-        self.default_resource = default_resource
+        self.default_resource = default_resource or ME_RESOURCE
         self.use_default_casing = True if casing_function is None else False
         self.casing_function = casing_function or camelcase
         try:
@@ -194,7 +194,7 @@ class MSGraphProtocol(Protocol):
     _oauth_scope_prefix = 'https://graph.microsoft.com/'
     _oauth_scopes = DEFAULT_SCOPES
 
-    def __init__(self, api_version='v1.0', default_resource=ME_RESOURCE,
+    def __init__(self, api_version='v1.0', default_resource=None,
                  **kwargs):
         """ Create a new Microsoft Graph protocol object
 
@@ -231,7 +231,7 @@ class MSOffice365Protocol(Protocol):
     _oauth_scope_prefix = 'https://outlook.office.com/'
     _oauth_scopes = DEFAULT_SCOPES
 
-    def __init__(self, api_version='v2.0', default_resource=ME_RESOURCE,
+    def __init__(self, api_version='v2.0', default_resource=None,
                  **kwargs):
         """ Create a new Office 365 protocol object
 
