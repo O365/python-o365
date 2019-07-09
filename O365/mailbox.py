@@ -565,3 +565,12 @@ class MailBox(Folder):
         return self.folder_constructor(parent=self, name='Outbox',
                                        folder_id=OutlookWellKnowFolderNames
                                        .OUTBOX.value)
+
+    def archive_folder(self):
+        """ Shortcut to get Archive Folder instance
+
+        :rtype: mailbox.Folder
+        """
+        return self.folder_constructor(parent=self, name='Archive',
+                                       folder_id=OutlookWellKnowFolderNames
+                                       .ARCHIVE.value)
