@@ -50,6 +50,7 @@ class OutlookWellKnowFolderNames(Enum):
     DRAFTS = 'Drafts'
     SENT = 'SentItems'
     OUTBOX = 'Outbox'
+    ARCHIVE = 'Archive'
 
 
 class OneDriveWellKnowFolderNames(Enum):
