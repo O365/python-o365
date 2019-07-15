@@ -372,7 +372,7 @@ class Connection:
             raise ValueError('Must provide at least one scope')
 
         self.session = oauth = self.get_session(redirect_uri=redirect_uri,
-                                                scopes=requested_scopes)
+                                                scopes=scopes)
 
         # TODO: access_type='offline' has no effect according to documentation
         #  This is done through scope 'offline_access'.
@@ -381,7 +381,7 @@ class Connection:
 
         return auth_url, state
 
-    def request_token(self, authorization_url,
+    def request_token(self, authorization_url, *,
                       state=None,
                       redirect_uri=OAUTH_REDIRECT_URL,
                       store_token=True,
@@ -400,12 +400,9 @@ class Connection:
         :rtype: bool
         """
 
-        if state:
+        if self.session is None:
             self.session = self.get_session(state=state,
                                             redirect_uri=redirect_uri)
-        if self.session is None:
-            raise RuntimeError("First call 'get_authorization_url' to "
-                               "generate a valid oauth object and state")
 
         _, client_secret = self.auth
 
@@ -429,35 +426,30 @@ class Connection:
             self.token_backend.save_token()
         return True
 
-    def get_session(self, state=None,
+    def get_session(self, *, state=None,
                     redirect_uri=OAUTH_REDIRECT_URL,
                     load_token=False,
                     scopes=None):
         """ Create a requests Session object
 
-        :param str state: session-state identifier to rebuild OAuth session
+        :param str state: session-state identifier to rebuild OAuth session (CSRF protection)
         :param str redirect_uri: callback URL specified in previous requests
         :param list(str) scopes: list of scopes we require access to
-        :param bool load_token: ensure token is present
-        :param Path token_path: (Only oauth) full path to where the token
-         should be load from
+        :param bool load_token: load and ensure token is present
         :return: A ready to use requests session, or a rebuilt in-flow session
         :rtype: OAuth2Session
         """
 
-        # gets a fresh token from the store
-        token = self.token_backend.get_token()
-
-        if load_token and not token:
-            raise RuntimeError(
-                'No auth token found. Authentication Flow needed')
-
         client_id, _ = self.auth
         requested_scopes = scopes or self.scopes
-        if token:
-            session = OAuth2Session(client_id=client_id,
-                                    token=token,
-                                    scope=requested_scopes)
+
+        if load_token:
+            # gets a fresh token from the store
+            token = self.token_backend.get_token()
+            if token is None:
+                raise RuntimeError('No auth token found. Authentication Flow needed')
+
+            session = OAuth2Session(client_id=client_id, token=token)
         else:
             session = OAuth2Session(client_id=client_id,
                                     state=state,
@@ -513,7 +505,7 @@ class Connection:
                 client_secret=client_secret))
         else:
             log.error('You can not refresh an access token that has no "refreh_token" available.'
-                      'Include "offline_access" scope when authentication to get a "refresh_token"')
+                      'Include "offline_access" scope when authenticating to get a "refresh_token"')
             return False
 
         self.token_backend.token = token
@@ -740,14 +732,15 @@ def oauth_authentication_flow(client_id, client_secret, scopes=None,
     con = Connection(credentials, scopes=protocol.get_scopes_for(scopes),
                      **kwargs)
 
-    consent_url, state = con.get_authorization_url(**kwargs)
+    consent_url, _ = con.get_authorization_url(**kwargs)
+
     print('Visit the following url to give consent:')
     print(consent_url)
 
-    token_url = input('Paste the authenticated url here: ')
+    token_url = input('Paste the authenticated url here:\n')
 
     if token_url:
-        result = con.request_token(token_url, state=state, **kwargs)
+        result = con.request_token(token_url, **kwargs)  # no need to pass state as the session is the same
         if result:
             print('Authentication Flow Completed. Oauth Access Token Stored. '
                   'You can now use the API.')
