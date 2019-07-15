@@ -1,6 +1,7 @@
 import base64
 import logging
 from pathlib import Path
+from io import BytesIO
 
 from .utils import ApiComponent
 
@@ -128,9 +129,15 @@ class BaseAttachment(ApiComponent):
                 self.attachment = attachment
                 self.name = self.attachment.name
             elif isinstance(attachment, (tuple, list)):
-                file_path, custom_name = attachment
-                self.attachment = Path(file_path)
+                # files with custom names or Inmemory objects
+                file_obj, custom_name = attachment
+                if isinstance(file_obj, BytesIO):
+                    # in memory objects
+                    self.content = base64.b64encode(file_obj.getvalue()).decode('utf-8')
+                else:
+                    self.attachment = Path(file_obj)
                 self.name = custom_name
+
             elif isinstance(attachment, AttachableMixin):
                 # Object that can be attached (Message for example)
                 self.attachment_type = 'item'
@@ -193,6 +200,8 @@ class BaseAttachment(ApiComponent):
                 file.write(base64.b64decode(self.content))
             self.attachment = path
             self.on_disk = True
+            self.size = self.attachment.stat().st_size
+
             log.debug('file saved locally.')
         except Exception as e:
             log.error('file failed to be saved: %s', str(e))
