@@ -928,7 +928,8 @@ class Query:
     def _prepare_sentence(attribute, operation, word, negation=False):
         negation = 'not' if negation else ''
         attrs = (negation, attribute, operation, word)
-        return '{} {} {} {}'.format(negation, attribute, operation, word).strip(), attrs
+        sentence = '{} {} {} {}'.format(negation, attribute, operation, word).strip()
+        return sentence, attrs
 
     @fluent
     def logical_operator(self, operation, word):
@@ -1048,7 +1049,7 @@ class Query:
         return self.function('endswith', word)
 
     @fluent
-    def iterable(self, iterable_name, *, collection, attribute, word, func=None,
+    def iterable(self, iterable_name, *, collection, word, attribute=None, func=None,
                  operation=None):
         """ Performs a filter with the OData 'iterable_name' keyword
         on the collection
@@ -1062,8 +1063,8 @@ class Query:
 
         :param str iterable_name: the OData name of the iterable
         :param str collection: the collection to apply the any keyword on
-        :param str attribute: the attribute of the collection to check
         :param str word: the word to check
+        :param str attribute: the attribute of the collection to check
         :param str func: the logical function to apply to the attribute inside
          the collection
         :param str operation: the logical operation to apply to the attribute
@@ -1084,6 +1085,11 @@ class Query:
         collection = self._get_mapping(collection)
         attribute = self._get_mapping(attribute)
 
+        if attribute is None:
+            attribute = 'a'  # it's the same iterated object
+        else:
+            attribute = 'a/{}'.format(attribute)
+
         if func is not None:
             sentence = self._prepare_function(func, attribute, word)
         else:
@@ -1091,7 +1097,7 @@ class Query:
 
         filter_str, attrs = sentence
 
-        filter_data = '{}/{}(a:a/{})'.format(collection, iterable_name, filter_str), attrs
+        filter_data = '{}/{}(a:{})'.format(collection, iterable_name, filter_str), attrs
         self._add_filter(*filter_data)
 
         self._attribute = current_att
@@ -1099,7 +1105,7 @@ class Query:
         return self
 
     @fluent
-    def any(self, *, collection, attribute, word, func=None, operation=None):
+    def any(self, *, collection, word, attribute=None, func=None, operation=None):
         """ Performs a filter with the OData 'any' keyword on the collection
 
         For example:
@@ -1111,8 +1117,8 @@ class Query:
         emailAddresses/any(a:a/address eq 'george@best.com')
 
         :param str collection: the collection to apply the any keyword on
-        :param str attribute: the attribute of the collection to check
         :param str word: the word to check
+        :param str attribute: the attribute of the collection to check
         :param str func: the logical function to apply to the attribute
          inside the collection
         :param str operation: the logical operation to apply to the
@@ -1120,11 +1126,11 @@ class Query:
         :rtype: Query
         """
 
-        return self.iterable('any', collection=collection, attribute=attribute,
-                             word=word, func=func, operation=operation)
+        return self.iterable('any', collection=collection, word=word,
+                             attribute=attribute, func=func, operation=operation)
 
     @fluent
-    def all(self, *, collection, attribute, word, func=None, operation=None):
+    def all(self, *, collection, word, attribute=None, func=None, operation=None):
         """ Performs a filter with the OData 'all' keyword on the collection
 
         For example:
@@ -1136,8 +1142,8 @@ class Query:
         emailAddresses/all(a:a/address eq 'george@best.com')
 
         :param str collection: the collection to apply the any keyword on
-        :param str attribute: the attribute of the collection to check
         :param str word: the word to check
+        :param str attribute: the attribute of the collection to check
         :param str func: the logical function to apply to the attribute
          inside the collection
         :param str operation: the logical operation to apply to the
@@ -1145,8 +1151,8 @@ class Query:
         :rtype: Query
         """
 
-        return self.iterable('all', collection=collection, attribute=attribute,
-                             word=word, func=func, operation=operation)
+        return self.iterable('all', collection=collection, word=word,
+                             attribute=attribute, func=func, operation=operation)
 
     @fluent
     def order_by(self, attribute=None, *, ascending=True):
