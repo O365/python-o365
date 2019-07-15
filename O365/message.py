@@ -696,6 +696,28 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
 
         return True
 
+    def mark_as_unread(self):
+        """ Marks this message as unread in the cloud
+
+        :return: Success / Failure
+        :rtype: bool
+        """
+        if self.object_id is None or self.__is_draft:
+            raise RuntimeError('Attempting to mark as unread an unsaved Message')
+
+        data = {self._cc('isRead'): False}
+
+        url = self.build_url(
+            self._endpoints.get('get_message').format(id=self.object_id))
+
+        response = self.con.patch(url, data=data)
+        if not response:
+            return False
+
+        self.__is_read = False
+
+        return True
+
     def move(self, folder):
         """ Move the message to a given folder
 
