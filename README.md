@@ -165,9 +165,9 @@ This section is explained using Microsoft Graph Protocol, almost the same applie
     
     Finally you can use other methods to authenticate that offer more flexibility (`account.authenticate` enforces the use of the command line). For example you can decouple the authentication steps to allow the users login within a webpage or whatever:
     ```python
-    url = account.connection.get_authorization_url(requested_scopes=['scopes_required'])  # visit url
+    url, state = account.connection.get_authorization_url(requested_scopes=['scopes_required'])  # visit url
     result_url = input('Paste the result url here...')  # wait for the user input. Just use whatever mechanism you want to retrieve the url from the user.
-    account.connection.request_token(result_url)  # This, if succesful, will store the token in a txt file on the user project folder. You can change how and where you store the token.
+    account.connection.request_token(result_url, state=state)  # This, if succesful, will store the token in a txt file on the user project folder. You can change how and where you store the token.
     ```
     
     or using `oauth_authentication_flow`:
