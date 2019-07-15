@@ -45,7 +45,7 @@ class DownloadableMixin:
         :rtype: bool
         """
         # TODO: Add download with more than one request (chunk_requests) with
-        # header 'Range'. For example: 'Range': 'bytes=0-1024'
+        #  header 'Range'. For example: 'Range': 'bytes=0-1024'
 
         if to_path is None:
             to_path = Path()

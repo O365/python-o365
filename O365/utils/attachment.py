@@ -438,9 +438,9 @@ class BaseAttachments(ApiComponent):
         self.untrack = False
 
         # TODO: when it's a item attachment the attachment itself
-        # is not downloaded. We must download it...
+        #  is not downloaded. We must download it...
         # TODO: idea: retrieve the attachments ids' only with
-        # select and then download one by one.
+        #  select and then download one by one.
         return True
 
     def _update_attachments_to_cloud(self):
