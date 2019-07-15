@@ -7,6 +7,7 @@ from .mailbox import MailBox
 from .message import Message
 from .sharepoint import Sharepoint
 from .planner import Planner
+from .usersettings import UserSettings
 from .utils import ME_RESOURCE
 
 
@@ -175,3 +176,8 @@ class Account(object):
                 'planner api only works on Microsoft Graph API')
 
         return Planner(parent=self, main_resource=resource)
+
+
+    def settings(self, *, resource=None):
+        return UserSettings(parent=self, main_resource=resource)
+

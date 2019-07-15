@@ -17,9 +17,11 @@ from .message import Message, MessageAttachment
 from .sharepoint import Sharepoint, Site
 from .planner import Planner, Task
 from .excel import WorkBook
+from .usersettings import UserSettings
 from .utils import ImportanceLevel, Query, Recipient
 from .utils import OneDriveWellKnowFolderNames, OutlookWellKnowFolderNames
 from .utils import FileSystemTokenBackend, FirestoreBackend
+from .utils.catcolor import MasterCategoryColorDefinition, MasterCategoryColorPreset
 
 
 # allow Deprecation warnings to appear
