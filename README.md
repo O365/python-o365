@@ -33,7 +33,7 @@ m.send()
 - Change between different resource with ease: access shared mailboxes, other users resources, sharepoint resources, etc.
 - Pagination support through a custom iterator that handles future requests automatically. Request Infinite items!
 - A query helper to help you build custom OData queries (filter, order and select).
-- Modular ApiComponents can be created and build to achieve further functionality.
+- Modular ApiComponents can be created and built to achieve further functionality.
 
 ___
 
@@ -97,6 +97,7 @@ account = Account(credentials)
 
 if not account.is_authenticated:  # will check if there is a token and has not expired
     # ask for a login
+    # console based authentication See Authentication for other flows
     account.authenticate(scopes=scopes)
 
 # now we are autheticated
@@ -115,7 +116,7 @@ The `Connection` Class handles the authentication.
 #### Oauth Authentication
 This section is explained using Microsoft Graph Protocol, almost the same applies to the Office 365 REST API.
 
-##### Authentication Flow
+##### Authentication Steps
 1. To work with oauth you first need to register your application at [Azure App Registrations](https://portal.azure.com/#blade/Microsoft_AAD_RegisteredApps/ApplicationsListBlade).
 
     1. Login at [Azure Portal (App Registrations)](https://portal.azure.com/#blade/Microsoft_AAD_RegisteredApps/ApplicationsListBlade)
@@ -132,7 +133,7 @@ This section is explained using Microsoft Graph Protocol, almost the same applie
         1. It is highly recommended to add "offline_access" permission. If not you will have to re-authenticate every hour.
 
 1. Then you need to login for the first time to get the access token by consenting the application to access the resources it needs.
-    1. To authenticate (login) call `account.authenticate` and pass the scopes you want (the ones you previously added on the app registration portal).
+    1. To authenticate (login) you can follow different flows (See below). For this example we will be using console based authentication. Call `account.authenticate` and pass the scopes you want (the ones you previously added on the app registration portal).
     
         You can pass "protocol scopes" (like: "https://graph.microsoft.com/Calendars.ReadWrite") to the method or use "[scope helpers](https://github.com/O365/python-o365/blob/master/O365/connection.py#L34)" like ("message_all").
         If you pass protocol scopes, then the `account` instance must be initialized with the same protocol used by the scopes. By using scope helpers you can abstract the protocol from the scopes and let this library work for you.   
@@ -163,20 +164,71 @@ This section is explained using Microsoft Graph Protocol, almost the same applie
     
     If your application needs to work for more than 90 days without user interaction and without interacting with the API, then you must implement a periodic call to `Connection.refresh_token` before the 90 days have passed.
     
-    Finally you can use other methods to authenticate that offer more flexibility (`account.authenticate` enforces the use of the command line). For example you can decouple the authentication steps to allow the users login within a webpage or whatever:
+##### Different Authentication Flows
+
+To acomplish the authentication you can basically use different approaches:
+
+1. Console based Authentication:
+
+    You can authenticate using a console. The best way to achieve this is by using the `authenticate` method of the `Account` class.
+    
     ```python
-    url, state = account.connection.get_authorization_url(requested_scopes=['scopes_required'])  # visit url
-    result_url = input('Paste the result url here...')  # wait for the user input. Just use whatever mechanism you want to retrieve the url from the user.
-    account.connection.request_token(result_url, state=state)  # This, if succesful, will store the token in a txt file on the user project folder. You can change how and where you store the token.
+    account = Account(credentials)
+    account.authenticate(scopes=['basic', 'message_all'])
     ```
     
-    or using `oauth_authentication_flow`:
+    The `authenticate` method will print into the console a url that you will have to visit to achieve authentication.
+    Then after visiting the link and authenticate you will have to paste back the resulting url into the console.
+    The method will return `True` and print a message if it was succesful.
+   
+1. Web app based Authentication:
+
+    You can authenticate your users in a web environment by following this steps:
     
-    ```python
-    from O365 import oauth_authentication_flow
+    1. First ensure you are using an appropiate TokenBackend to store the auth tokens (See Token storage below).
+    1. From a handler redirect the user to the Microsoft login url. Provide a callback. Store the state.
+    1. From the callback handler complete the authentication with the state and other data.
     
-    result = oauth_authentication_flow('client_id', 'client_secret', ['scopes_required'])
-    ```
+    The following example is done using Flask.
+    ```python    
+    @route('/stepone')
+    def auth_step_one()
+    
+        callback = 'my absolute url to auth_step_two_callback'
+        account = Account(credentials)
+        url, state = account.con.get_authorization_url(requested_scopes=my_scopes
+                                                       redirect_uri=callback)
+        
+        # the state must be saved somewhere as it will be needed later
+        my_db.store_state(state) # example...
+        
+        return redirect(url)
+    
+    @route('/steptwo')
+    def auth_step_two_callback():
+        account = Account(credentials)
+        
+        # retreive the state saved in auth_step_one
+        my_saved_state = my_db.get_state()  # example...
+        
+        # rebuild the redirect_uri used in auth_step_one
+        callback = 'my absolute url to auth_step_two_callback'
+        
+        result = account.con.request_token(request.url, 
+                                           state=my_saved_state,
+                                           redirect_uri=callback)
+        # if result is True, then authentication was succesful 
+        #  and the auth token is stored in the token backend
+        if result:
+            return render_template('auth_complete.html')
+        # else ....
+    ``` 
+
+1. Other Authentication Flows:
+
+    Finally you can configure any other flow by using `connection.get_authorization_url` and `connection.request_token` as you want.
+
+
 
 
 ##### Permissions and Scopes:
