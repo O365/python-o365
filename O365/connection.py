@@ -327,17 +327,7 @@ class Connection:
         self.raise_http_errors = raise_http_errors
         self.request_retries = request_retries
 
-        self.naive_session = Session()  # requests Session object
-        self.naive_session.proxies = self.proxy
-
-        if self.request_retries:
-            retry = Retry(total=self.request_retries, read=self.request_retries,
-                          connect=self.request_retries,
-                          backoff_factor=RETRIES_BACKOFF_FACTOR,
-                          status_forcelist=RETRIES_STATUS_LIST)
-            adapter = HTTPAdapter(max_retries=retry)
-            self.naive_session.mount('http://', adapter)
-            self.naive_session.mount('https://', adapter)
+        self.naive_session = None  # lazy loaded: holds a requests Session object
 
         self._oauth2_authorize_url = 'https://login.microsoftonline.com/' \
                                      '{}/oauth2/v2.0/authorize'.format(tenant_id)
@@ -511,6 +501,22 @@ class Connection:
 
         return session
 
+    def get_naive_session(self):
+        """ Creates and returns a naive session """
+        naive_session = Session()  # requests Session object
+        naive_session.proxies = self.proxy
+
+        if self.request_retries:
+            retry = Retry(total=self.request_retries, read=self.request_retries,
+                          connect=self.request_retries,
+                          backoff_factor=RETRIES_BACKOFF_FACTOR,
+                          status_forcelist=RETRIES_STATUS_LIST)
+            adapter = HTTPAdapter(max_retries=retry)
+            naive_session.mount('http://', adapter)
+            naive_session.mount('https://', adapter)
+
+        return naive_session
+
     def refresh_token(self):
         """
         Refresh the OAuth authorization token.
@@ -649,6 +655,9 @@ class Connection:
         :return: Response of the request
         :rtype: requests.Response
         """
+        if self.naive_session is None:
+            # lazy creation of a naive session
+            self.naive_session = self.get_naive_session()
         return self._internal_request(self.naive_session, url, method, **kwargs)
 
     def oauth_request(self, url, method, **kwargs):
