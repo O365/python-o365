@@ -180,6 +180,8 @@ To acomplish the authentication you can basically use different approaches:
     The `authenticate` method will print into the console a url that you will have to visit to achieve authentication.
     Then after visiting the link and authenticate you will have to paste back the resulting url into the console.
     The method will return `True` and print a message if it was succesful.
+    
+    **Tip:** When using MacOs the console is limited to 1024 characters. If your url has multiple scopes it can exceed this limit. To solve this. Just `import readline` a the top of your script.
    
 1. Web app based Authentication:
 
