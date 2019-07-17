@@ -285,7 +285,6 @@ class Connection:
         :param str proxy_password: the proxy password
         :param int requests_delay: number of milliseconds to wait between api
          calls.
-
          The Api will respond with 429 Too many requests if more than
          17 requests are made per second. Defaults to 200 milliseconds
          just in case more than 1 connection is making requests

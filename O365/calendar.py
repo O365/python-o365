@@ -1615,7 +1615,7 @@ class Calendar(ApiComponent, HandleRecipientsMixin):
                 # extract start and end from query because
                 # those are required by a calendarView
                 for query_data in query._filters:
-                    if not isinstance(query_data, tuple):
+                    if not isinstance(query_data, list):
                         continue
                     attribute = query_data[0]
                     # the 2nd position contains the filter data

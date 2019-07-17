@@ -32,7 +32,7 @@ m.send()
 - Automatic handling between local datetimes and server datetimes. Work with your local datetime and let this library do the rest.
 - Change between different resource with ease: access shared mailboxes, other users resources, sharepoint resources, etc.
 - Pagination support through a custom iterator that handles future requests automatically. Request Infinite items!
-- A query helper to help you build custom OData queries (filter, order and select).
+- A query helper to help you build custom OData queries (filter, order, select and search).
 - Modular ApiComponents can be created and built to achieve further functionality.
 
 ___
