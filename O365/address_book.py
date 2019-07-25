@@ -708,7 +708,7 @@ class BaseContactFolder(ApiComponent):
         email = email.strip()
         query = self.q().any(collection='email_addresses', attribute='address',
                              word=email, operation='eq')
-        contacts = self.get_contacts(limit=1, query=query)
+        contacts = list(self.get_contacts(limit=1, query=query))
         return contacts[0] if contacts else None
 
 

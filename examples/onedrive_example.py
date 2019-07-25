@@ -2,10 +2,11 @@ import os
 import argparse
 from O365 import Account
 
-client_id = '' #Your client_id
-client_secret = '' #Your client_secret, create an (id, secret) at https://apps.dev.microsoft.com
-scopes=['basic', 'https://graph.microsoft.com/Files.ReadWrite.All']
-CHUNK_SIZE = 1024*1024*5
+client_id = ''  # Your client_id
+client_secret = ''  # Your client_secret, create an (id, secret) at https://apps.dev.microsoft.com
+scopes = ['basic', 'https://graph.microsoft.com/Files.ReadWrite.All']
+CHUNK_SIZE = 1024 * 1024 * 5
+
 
 class O365Account():
     def __init__(self, client_id=client_id,
@@ -43,18 +44,18 @@ class O365Account():
                 subfolder_drive = list(filter(lambda x: subfolder in x.name, items))[0]
                 items = subfolder_drive.get_items()
             except:
-                raise('Path {} not exist.'.format(folder_path))
+                raise ('Path {} not exist.'.format(folder_path))
         return subfolder_drive
 
-
     ''' Upload a file named $filename to onedrive folder named $destination. '''
+
     def upload_file(self, filename, destination=None):
         folder = self.get_child_folder(self.root_folder, destination)
         print('Uploading file ' + filename)
         folder.upload_file(item=filename)
 
-
     ''' Download a file named $filename to local folder named $to_path. '''
+
     def download_file(self, filename, to_path=None):
         dirname = os.path.dirname(filename)
         basename = os.path.basename(filename)
@@ -71,7 +72,6 @@ class O365Account():
             print('File {} not exist.'.format(filename))
             return False
 
-
     def _get_child_folder(self, folder, child_folder_name):
         items = folder.get_items()
         child_folder_names = [item.name for item in items if item.is_folder]
@@ -80,19 +80,19 @@ class O365Account():
         else:
             return folder.create_child_folder(child_folder_name)
 
-
     ''' Get child folder, folder tree from root folder. If child folder not exist, make it. '''
+
     def get_child_folder(self, folder, child_folder_name):
         child_folder_names = child_folder_name.split('/')
         for _child_folder_name in child_folder_names:
             folder = self._get_child_folder(folder, _child_folder_name)
         return folder
 
-
     '''
     Upload entire folder named $folder_name from local to onedrive folder named $destination.
     Keep cloud folder structure as that of local folder.
     '''
+
     def upload_folder(self, folder_name, destination=None):
         print()
         print('Uploading folder ' + folder_name)
@@ -109,11 +109,11 @@ class O365Account():
                 child_destination = self.get_child_folder(folder, file)
                 self.upload_folder(path, os.path.join(destination, file))
 
-
     '''
     Download entire folder named $folder_name from cloud to local folder named $to_folder.
     Keep local folder structure as that of cloud folder.
     '''
+
     def download_folder(self, folder_name, to_folder='.', file_type=None):
         to_folder = os.path.join(to_folder, folder_name)
         self._download_folder(folder_name, to_folder, file_type)
@@ -156,6 +156,7 @@ def parse_arguments():
     parser.add_argument("-t", "--file-type", default="")
     return parser.parse_args()
 
+
 def main():
     account = O365Account()
     args = parse_arguments()
@@ -173,6 +174,7 @@ def main():
         account.upload_folder(source, destination)
     else:
         print('Invalid function name')
+
 
 if __name__ == '__main__':
     '''
