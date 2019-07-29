@@ -126,6 +126,8 @@ def _get_releases():
                 release_formats = ' | '.join(release_formats)
                 releases.append((version, published_on_date, release_formats))
 
+    releases.sort(key=lambda x: x[1])
+
     return releases
 
 
