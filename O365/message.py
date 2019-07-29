@@ -231,6 +231,7 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
             self.attachments.download_attachments()
         self.__subject = cloud_data.get(cc('subject'), '')
         body = cloud_data.get(cc('body'), {})
+        self.__body_preview = cloud_data.get(cc('bodyPreview'), '')
         self.__body = body.get(cc('content'), '')
         self.body_type = body.get(cc('contentType'),
                                   'HTML')  # default to HTML for new messages
@@ -318,6 +319,11 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
     def subject(self, value):
         self.__subject = value
         self._track_changes.add('subject')
+
+    @property
+    def body_preview(self):
+        """ Returns the body preview """
+        return self.__body_preview
 
     @property
     def body(self):

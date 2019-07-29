@@ -584,6 +584,20 @@ msg.body = body
 msg.send()
 ```
 
+##### Retrieving Message Headers
+You can retrieve message headers by doing this:
+
+```python
+# ...
+mb = account.mailbox()
+msg = mb.get_message(query=mb.q().select('internet_message_headers'))
+print(msg.message_headers)  # returns a list of dicts.
+```
+
+Note that only message headers and other properties added to the select statement will be present.
+
+
+
 ## AddressBook
 AddressBook groups the funcionality of both the Contact Folders and Contacts. Outlook Distribution Groups are not supported (By the Microsoft API's).
 
