@@ -6,7 +6,7 @@ import warnings
 from .__version__ import __version__
 
 from .account import Account
-from .connection import Connection, Protocol, MSGraphProtocol
+from .connection import Connection, Protocol, MSGraphProtocol, MSOffice365Protocol
 from .utils import FileSystemTokenBackend
 
 

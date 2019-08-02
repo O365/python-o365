@@ -304,7 +304,8 @@ account = Account(credentials, token_backend=token_backend)
 And now using the same example using FirestoreTokenBackend:
 
 ```python
-from O365 import Account, FirestoreBackend
+from O365 import Account
+from O365.utils import FirestoreBackend
 from google.cloud import firestore
 
 credentials = ('id', 'secret')
@@ -358,7 +359,7 @@ You can implement your own protocols by inheriting from `Protocol` to communicat
 
 You can instantiate protocols like this:
 ```python
-from O365 import MSGraphProtocol
+from O365 import MSGraphProtocol  # same as from O365.connection import MSGraphProtocol
 
 # try the api version beta of the Microsoft Graph endpoint.
 protocol = MSGraphProtocol(api_version='beta')  # MSGraphProtocol defaults to v1.0 api version
@@ -428,7 +429,9 @@ mailbox = account.mailbox()
 You can work only with the required pieces:
 
 ```python
-from O365 import Connection, MSGraphProtocol, Message, MailBox
+from O365 import Connection, MSGraphProtocol
+from O365.message import Message
+from O365.mailbox import MailBox
 
 protocol = MSGraphProtocol()
 con = Connection(('client_id', 'client_secret'))
@@ -884,7 +887,7 @@ The scopes needed to work with the `WorkBook` and Excel related classes are the 
 This is how you update a cell value:
 
 ```python
-from O365 import WorkBook
+from O365.excel import WorkBook
 
 # given a File instance that is a xlsx file ...
 excel_file = WorkBook(my_file_instance)  # my_file_instance should be an instance of File.
@@ -968,7 +971,7 @@ The pagination object will request "next links" as soon as they are needed.
 For example:
 
 ```python
-maibox = account.mailbox()
+mailbox = account.mailbox()
 
 messages = mailbox.get_messages(limit=1500)  # the Office 365 and MS Graph API have a 999 items limit returned per api call.
 
