@@ -490,6 +490,12 @@ class Pagination(ApiComponent):
     def __iter__(self):
         return self
 
+    def __len__(self):
+        self._len = 0
+        for i in self:
+            self._len += 1
+        return self._len
+
     def __next__(self):
         if self.state < self.data_count:
             value = self.data[self.state]
@@ -653,18 +659,20 @@ class Query:
         :rtype: dict
         """
         params = {}
+        if self.has_expands:
+            params['$expand'] = self.get_expands()
         if self.has_filters:
             params['$filter'] = self.get_filters()
         if self.has_order:
             params['$orderby'] = self.get_order()
         if self.has_selects:
             params['$select'] = self.get_selects()
-        if self.has_expands:
-            params['$expand'] = self.get_expands()
+
         if self._search:
             params['$search'] = self._search
             params.pop('$filter', None)
             params.pop('$orderby', None)
+
         return params
 
     @property
