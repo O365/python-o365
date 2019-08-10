@@ -109,9 +109,9 @@ class SharepointListItem(ApiComponent):
         self.modified_by = Contact(con=self.con, protocol=self.protocol,
                                    **{self._cloud_data_key: modified_by}) if modified_by else None
 
-        self.web_url = cloud_data.get(self._cc('webUrl'))
+        self.web_url = cloud_data.get(self._cc('webUrl'), None)
 
-        self.content_type_id = cloud_data.get(self._cc('contentType')).get('id', None)
+        self.content_type_id = cloud_data.get(self._cc('contentType'), {}).get('id', None)
 
         self.fields = cloud_data.get(self._cc('fields'), None)
 
