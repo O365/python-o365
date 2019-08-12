@@ -505,6 +505,22 @@ class Site(ApiComponent):
 
         return self.list_constructor(parent=self, **{self._cloud_data_key: data})
 
+    def create_list(self, list_data):
+        """
+        Creates a SharePoint list.
+        :param list_data: Dict representation of list.
+        :type list_data: Dict
+        :rtype: list[SharepointList]
+        """
+        url = self.build_url(self._endpoints.get('get_lists'))
+        response = self.con.post(url, data=list_data)
+
+        if not response:
+            return []
+
+        data = response.json()
+        return self.list_constructor(parent=self, **{self._cloud_data_key: data})
+
 
 class Sharepoint(ApiComponent):
     """ A Sharepoint parent class to group functionality """
