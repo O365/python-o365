@@ -66,7 +66,8 @@ class SharepointListColumn(ApiComponent):
 
 
 class SharepointListItem(ApiComponent):
-    _endpoints = {'update_list_item': '/items/{item_id}/fields'}
+    _endpoints = {'update_list_item': '/items/{item_id}/fields',
+                  'delete_list_item': '/items/{item_id}'}
 
     def __init__(self, *, parent=None, con=None, **kwargs):
         """ A Sharepoint ListItem within a SharepointList
@@ -166,6 +167,13 @@ class SharepointListItem(ApiComponent):
         if not response:
             return False
         self._clear_tracker()
+        return True
+
+    def delete(self):
+        url = self.build_url(self._endpoints.get('delete_list_item').format(item_id=self.object_id))
+        response = self.con.delete(url)
+        if not response:
+            return False
         return True
 
 
