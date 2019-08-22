@@ -490,12 +490,6 @@ class Pagination(ApiComponent):
     def __iter__(self):
         return self
 
-    def __len__(self):
-        self._len = 0
-        for i in self:
-            self._len += 1
-        return self._len
-
     def __next__(self):
         if self.state < self.data_count:
             value = self.data[self.state]
