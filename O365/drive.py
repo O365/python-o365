@@ -1248,6 +1248,8 @@ class Drive(ApiComponent):
         'list_items': '/drives/{id}/root/children',
         'get_item_default': '/drive/items/{item_id}',
         'get_item': '/drives/{id}/items/{item_id}',
+        'get_item_by_path_default': '/drive/root:{item_path}',
+        'get_item_by_path': '/drives/{id}/root:{item_path}',
         'recent_default': '/drive/recent',
         'recent': '/drives/{id}/recent',
         'shared_with_me_default': '/drive/sharedWithMe',
@@ -1478,6 +1480,31 @@ class Drive(ApiComponent):
         # Everything received from cloud must be passed as self._cloud_data_key
         return self._classifier(data)(parent=self,
                                       **{self._cloud_data_key: data})
+
+    def get_item_by_path(self, item_path):
+        """ Returns a DriveItem by it's path: /path/to/file
+        :return: one item
+        :rtype: DriveItem
+        """
+        if self.object_id:
+            # reference the current drive_id
+            url = self.build_url(
+                self._endpoints.get('get_item_by_path').format(id=self.object_id,
+                                                       item_path=item_path))
+        else:
+            # we don't know the drive_id so go to the default drive
+            url = self.build_url(
+                self._endpoints.get('get_item_by_path_default').format(item_path=item_path))
+
+        response = self.con.get(url)
+        if not response:
+            return None
+
+        data = response.json()
+
+        # Everything received from cloud must be passed as self._cloud_data_key
+        return self._classifier(data)(parent=self,
+                                        **{self._cloud_data_key: data})
 
     def get_special_folder(self, name):
         """ Returns the specified Special Folder
