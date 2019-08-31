@@ -235,7 +235,7 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
                                   'HTML')  # default to HTML for new messages
         if self.has_attachments is False and self.body_type.upper() == 'HTML':
             # test for inline attachments (Azure responds with hasAttachments=False when there are only inline attachments):
-            if any(img['src'].startswith('cid:') for img in self.get_body_soup().find_all('img')):
+            if any( img.get('src','').startswith('cid:') for img in self.get_body_soup().find_all('img')):
                 self.has_attachments = True
 
         if self.has_attachments and download_attachments:
