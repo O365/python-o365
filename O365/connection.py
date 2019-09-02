@@ -5,7 +5,7 @@ import time
 import warnings
 from pathlib import Path
 
-from oauthlib.oauth2 import TokenExpiredError
+from oauthlib.oauth2 import TokenExpiredError, WebApplicationClient, BackendApplicationClient
 from requests import Session
 from requests.adapters import HTTPAdapter
 from requests.exceptions import HTTPError, RequestException, ProxyError
@@ -425,21 +425,54 @@ class Connection:
             self.token_backend.save_token()
         return True
 
+    def request_token_client_credentials_flow(self, requested_scopes=None, store_token=True):
+        """ Gets the authentication token using the client credentials flow """
+
+        scopes = requested_scopes or self.scopes
+
+        if self.session is None:
+            self.session = self.get_session(client_type='backend', scopes=scopes)
+
+        _, client_secret = self.auth
+
+        try:
+            self.token_backend.token = Token(self.session.fetch_token(
+                token_url=self._oauth2_token_url,
+                include_client_id=True,
+                client_secret=client_secret))
+        except Exception as e:
+            log.error('Unable to fetch auth token. Error: {}'.format(str(e)))
+            return False
+
+        if store_token:
+            self.token_backend.save_token()
+        return True
+
     def get_session(self, *, state=None,
                     redirect_uri=OAUTH_REDIRECT_URL,
                     load_token=False,
-                    scopes=None):
+                    scopes=None,
+                    client_type='web'):
         """ Create a requests Session object
 
         :param str state: session-state identifier to rebuild OAuth session (CSRF protection)
         :param str redirect_uri: callback URL specified in previous requests
         :param list(str) scopes: list of scopes we require access to
         :param bool load_token: load and ensure token is present
+        :param str client_type: the type of oauth2 client to use. Options are: ['web', 'backend']
         :return: A ready to use requests session, or a rebuilt in-flow session
         :rtype: OAuth2Session
         """
 
         client_id, _ = self.auth
+
+        if client_type == 'web':
+            oauth_client = WebApplicationClient(client_id=client_id)
+        elif client_type == 'backend':
+            oauth_client = BackendApplicationClient(client_id=client_id)
+        else:
+            raise ValueError('"client_type" must be web or backend')
+
         requested_scopes = scopes or self.scopes
 
         if load_token:
@@ -448,9 +481,13 @@ class Connection:
             if token is None:
                 raise RuntimeError('No auth token found. Authentication Flow needed')
 
-            session = OAuth2Session(client_id=client_id, token=token)
+            oauth_client.token = token
+            session = OAuth2Session(client_id=client_id,
+                                    client=oauth_client,
+                                    token=token)
         else:
             session = OAuth2Session(client_id=client_id,
+                                    client=oauth_client,
                                     state=state,
                                     redirect_uri=redirect_uri,
                                     scope=requested_scopes)
