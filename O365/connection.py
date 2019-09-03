@@ -272,7 +272,8 @@ class Connection:
                  proxy_server=None, proxy_port=8080, proxy_username=None,
                  proxy_password=None, requests_delay=200, raise_http_errors=True,
                  request_retries=3, token_backend=None,
-                 tenant_id='common', **kwargs):
+                 tenant_id='common',
+                 auth_flow_type='web', **kwargs):
         """ Creates an API connection object
 
         :param tuple credentials: a tuple of (client_id, client_secret)
@@ -296,6 +297,9 @@ class Connection:
         :param BaseTokenBackend token_backend: the token backend used to get
          and store tokens
         :param str tenant_id: use this specific tenant id, defaults to common
+        :param str auth_flow_type: the auth method flow style used: Options:
+            - 'web': 2 step web style grant flow using an authentication url
+            - 'backend': also called client credentials grant flow using only the cliend id and secret
         :param dict kwargs: any extra params passed to Connection
         :raises ValueError: if credentials is not tuple of
          (client_id, client_secret)
@@ -304,6 +308,7 @@ class Connection:
                 not credentials[0] and not credentials[1]):
             raise ValueError('Provide valid auth credentials')
 
+        self._auth_flow_type = auth_flow_type  # 'web' or 'backend'
         self.auth = credentials
         self.scopes = scopes
         self.store_token = True
@@ -326,6 +331,10 @@ class Connection:
                                      '{}/oauth2/v2.0/authorize'.format(tenant_id)
         self._oauth2_token_url = 'https://login.microsoftonline.com/' \
                                  '{}/oauth2/v2.0/token'.format(tenant_id)
+
+    @property
+    def auth_flow_type(self):
+        return self._auth_flow_type
 
     def set_proxy(self, proxy_server, proxy_port, proxy_username,
                   proxy_password):
@@ -383,14 +392,17 @@ class Connection:
     def request_token(self, authorization_url, *,
                       state=None,
                       redirect_uri=OAUTH_REDIRECT_URL,
+                      requested_scopes=None,
                       store_token=True,
                       **kwargs):
         """ Authenticates for the specified url and gets the token, save the
         token for future based if requested
 
-        :param str authorization_url: url given by the authorization flow
+        :param str or None authorization_url: url given by the authorization flow
         :param str state: session-state identifier for web-flows
         :param str redirect_uri: callback url for web-flows
+        :param lst requested_scopes: a list of scopes to be requested.
+         Only used when auth_flow_type is 'backend'
         :param bool store_token: whether or not to store the token,
          so you don't have to keep opening the auth link and
          authenticating every time
@@ -398,10 +410,6 @@ class Connection:
         :return: Success/Failure
         :rtype: bool
         """
-
-        if self.session is None:
-            self.session = self.get_session(state=state,
-                                            redirect_uri=redirect_uri)
 
         _, client_secret = self.auth
 
@@ -411,35 +419,29 @@ class Connection:
         os.environ['OAUTHLIB_RELAX_TOKEN_SCOPE'] = '1'
         os.environ['OAUTHLIB_IGNORE_SCOPE_CHANGE'] = '1'
 
-        try:
-            self.token_backend.token = Token(self.session.fetch_token(
-                token_url=self._oauth2_token_url,
-                authorization_response=authorization_url,
-                include_client_id=True,
-                client_secret=client_secret))
-        except Exception as e:
-            log.error('Unable to fetch auth token. Error: {}'.format(str(e)))
-            return False
-
-        if store_token:
-            self.token_backend.save_token()
-        return True
-
-    def request_token_client_credentials_flow(self, requested_scopes=None, store_token=True):
-        """ Gets the authentication token using the client credentials flow """
-
-        scopes = requested_scopes or self.scopes
-
         if self.session is None:
-            self.session = self.get_session(client_type='backend', scopes=scopes)
-
-        _, client_secret = self.auth
+            if self.auth_flow_type == 'web':
+                self.session = self.get_session(state=state,
+                                                redirect_uri=redirect_uri)
+            elif self.auth_flow_type == 'backend':
+                scopes = requested_scopes or self.scopes
+                self.session = self.get_session(scopes=scopes)
+            else:
+                raise ValueError('"auth_flow_type" must be either web or backend')
 
         try:
-            self.token_backend.token = Token(self.session.fetch_token(
-                token_url=self._oauth2_token_url,
-                include_client_id=True,
-                client_secret=client_secret))
+            if self.auth_flow_type == 'web':
+                self.token_backend.token = Token(self.session.fetch_token(
+                    token_url=self._oauth2_token_url,
+                    authorization_response=authorization_url,
+                    include_client_id=True,
+                    client_secret=client_secret))
+            elif self.auth_flow_type == 'backend':
+                self.token_backend.token = Token(self.session.fetch_token(
+                    token_url=self._oauth2_token_url,
+                    include_client_id=True,
+                    client_secret=client_secret,
+                    scope=scopes))
         except Exception as e:
             log.error('Unable to fetch auth token. Error: {}'.format(str(e)))
             return False
@@ -451,27 +453,25 @@ class Connection:
     def get_session(self, *, state=None,
                     redirect_uri=OAUTH_REDIRECT_URL,
                     load_token=False,
-                    scopes=None,
-                    client_type='web'):
+                    scopes=None):
         """ Create a requests Session object
 
         :param str state: session-state identifier to rebuild OAuth session (CSRF protection)
         :param str redirect_uri: callback URL specified in previous requests
         :param list(str) scopes: list of scopes we require access to
         :param bool load_token: load and ensure token is present
-        :param str client_type: the type of oauth2 client to use. Options are: ['web', 'backend']
         :return: A ready to use requests session, or a rebuilt in-flow session
         :rtype: OAuth2Session
         """
 
         client_id, _ = self.auth
 
-        if client_type == 'web':
+        if self.auth_flow_type == 'web':
             oauth_client = WebApplicationClient(client_id=client_id)
-        elif client_type == 'backend':
+        elif self.auth_flow_type == 'backend':
             oauth_client = BackendApplicationClient(client_id=client_id)
         else:
-            raise ValueError('"client_type" must be web or backend')
+            raise ValueError('"auth_flow_type" must be either web or backend')
 
         requested_scopes = scopes or self.scopes
 

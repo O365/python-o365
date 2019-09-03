@@ -46,15 +46,12 @@ class Account(object):
 
         return token is not None and not token.is_expired
 
-    def authenticate(self, *, scopes, auth_flow_type='web', **kwargs):
+    def authenticate(self, *, scopes, **kwargs):
         """ Performs the oauth authentication flow using the console resulting in a stored token.
         It uses the credentials passed on instantiation
 
         :param list[str] scopes: list of protocol user scopes to be converted
          by the protocol or scope helpers
-        :param str auth_flow_type: the auth method flow style used: Options:
-            - 'web': 2 step web style grant flow using an authentication url
-            - 'backend': also called client credentials grant flow using only the cliend id and secret
         :param kwargs: other configurations to be passed to the
          Connection instance
         :return: Success / Failure
@@ -62,13 +59,13 @@ class Account(object):
         """
         kwargs.setdefault('token_backend', self.con.token_backend)
 
-        if auth_flow_type == 'web':
+        if self.con.auth_flow_type == 'web':
             return oauth_authentication_flow(*self.con.auth, scopes=scopes,
                                              protocol=self.protocol, **kwargs)
-        elif auth_flow_type == 'backend':
-            return self.con.request_token_client_credentials_flow(requested_scopes=scopes)
+        elif self.con.auth_flow_type == 'backend':
+            return self.con.request_token(None, requested_scopes=scopes)
         else:
-            raise ValueError('"auth_flow_type must be either web or backend')
+            raise ValueError('Connection "auth_flow_type" must be either web or backend')
 
     @property
     def connection(self):
