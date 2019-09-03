@@ -46,11 +46,11 @@ class Account(object):
 
         return token is not None and not token.is_expired
 
-    def authenticate(self, *, scopes, **kwargs):
+    def authenticate(self, *, scopes=None, **kwargs):
         """ Performs the oauth authentication flow using the console resulting in a stored token.
         It uses the credentials passed on instantiation
 
-        :param list[str] scopes: list of protocol user scopes to be converted
+        :param list[str] or None scopes: list of protocol user scopes to be converted
          by the protocol or scope helpers
         :param kwargs: other configurations to be passed to the
          Connection instance
@@ -60,6 +60,7 @@ class Account(object):
         kwargs.setdefault('token_backend', self.con.token_backend)
 
         if self.con.auth_flow_type == 'web':
+            scopes = scopes or self.con.scopes
             return oauth_authentication_flow(*self.con.auth, scopes=scopes,
                                              protocol=self.protocol, **kwargs)
         elif self.con.auth_flow_type == 'backend':
