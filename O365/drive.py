@@ -73,6 +73,7 @@ class DownloadableMixin:
                     stream = True
                 else:
                     stream = False
+                chunk_size = None
             elif isinstance(chunk_size, int):
                 stream = True
             else:
