@@ -165,11 +165,11 @@ class Protocol:
         scopes = set()
         for app_part in user_provided_scopes:
             for scope in self._oauth_scopes.get(app_part, [(app_part,)]):
-                scopes.add(self._prefix_scope(scope))
+                scopes.add(self.prefix_scope(scope))
 
         return list(scopes)
 
-    def _prefix_scope(self, scope):
+    def prefix_scope(self, scope):
         """ Inserts the protocol scope prefix if required"""
         if self.protocol_scope_prefix:
             if isinstance(scope, tuple):
@@ -533,18 +533,29 @@ class Connection:
             self.session = self.get_session(load_token=True)
 
         token = self.token_backend.token
-        if token and token.is_long_lived:
-            client_id, client_secret = self.auth
-            token = Token(self.session.refresh_token(
-                self._oauth2_token_url,
-                client_id=client_id,
-                client_secret=client_secret))
+        if not token:
+            raise RuntimeError('Token not found.')
+
+        if token.is_long_lived or self.auth_flow_type == 'backend':
+
+            if self.auth_flow_type == 'web':
+                client_id, client_secret = self.auth
+                self.token_backend.token = Token(
+                    self.session.refresh_token(
+                        self._oauth2_token_url,
+                        client_id=client_id,
+                        client_secret=client_secret)
+                )
+
+            elif self.auth_flow_type == 'backend':
+                if self.request_token(None, store_token=False) is False:
+                    log.error('Refresh for Client Credentials Grant Flow failed.')
+                    return False
+
         else:
             log.error('You can not refresh an access token that has no "refreh_token" available.'
                       'Include "offline_access" scope when authenticating to get a "refresh_token"')
             return False
-
-        self.token_backend.token = token
 
         if self.store_token:
             self.token_backend.save_token()
@@ -556,8 +567,9 @@ class Connection:
             dif = round(time.time() - self._previous_request_at,
                         2) * 1000  # difference in miliseconds
             if dif < self.requests_delay:
-                time.sleep(
-                    (self.requests_delay - dif) / 1000)  # sleep needs seconds
+                sleep_for = (self.requests_delay - dif)
+                log.info('Sleeping for {} miliseconds'.format(sleep_for))
+                time.sleep(sleep_for / 1000)  # sleep needs seconds
         self._previous_request_at = time.time()
 
     def _internal_request(self, request_obj, url, method, **kwargs):
@@ -604,7 +616,7 @@ class Connection:
                 return response
             except TokenExpiredError as e:
                 # Token has expired, try to refresh the token and try again on the next loop
-                if not self.token_backend.token.is_long_lived:
+                if self.token_backend.token.is_long_lived is False and self.auth_flow_type == 'web':
                     raise e
                 if token_refreshed:
                     # Refresh token done but still TokenExpiredError raise

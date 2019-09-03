@@ -25,6 +25,14 @@ class Account(object):
         if not isinstance(self.protocol, Protocol):
             raise ValueError("'protocol' must be a subclass of Protocol")
 
+        # for client credential grant flow solely:
+        if kwargs.get('auth_flow_type', 'web') == 'backend':
+            # append the default scope if it's not provided
+            scopes = kwargs.get('scopes', [])
+            if not scopes:
+                scopes.append(self.protocol.prefix_scope('.default'))
+                kwargs['scopes'] = scopes
+
         self.con = Connection(credentials, **kwargs)
         self.main_resource = main_resource or self.protocol.default_resource
 

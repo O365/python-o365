@@ -51,17 +51,17 @@ class TestProtocol:
         assert(self.proto.get_scopes_for('mailbox') == ['Mail.Read'])
 
     def test_prefix_scope(self):
-        assert(self.proto._prefix_scope('Mail.Read') == 'Mail.Read')
+        assert(self.proto.prefix_scope('Mail.Read') == 'Mail.Read')
         
-        assert(self.proto._prefix_scope(('Mail.Read',)) == 'Mail.Read')
+        assert(self.proto.prefix_scope(('Mail.Read',)) == 'Mail.Read')
         
         self.proto.protocol_scope_prefix = 'test_prefix_'
         
-        assert(self.proto._prefix_scope(('Mail.Read',)) == 'Mail.Read')
+        assert(self.proto.prefix_scope(('Mail.Read',)) == 'Mail.Read')
         
-        assert(self.proto._prefix_scope('test_prefix_Mail.Read') == 'test_prefix_Mail.Read')
+        assert(self.proto.prefix_scope('test_prefix_Mail.Read') == 'test_prefix_Mail.Read')
         
-        assert(self.proto._prefix_scope('Mail.Read') == 'test_prefix_Mail.Read')
+        assert(self.proto.prefix_scope('Mail.Read') == 'test_prefix_Mail.Read')
 
     def test_decendant_MSOffice365Protocol(self):
         # Basically we just test that it can create the class w/o erroring.
