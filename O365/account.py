@@ -32,6 +32,9 @@ class Account(object):
             if not scopes:
                 scopes.append(self.protocol.prefix_scope('.default'))
                 kwargs['scopes'] = scopes
+            # set main_resource to blank
+            self.protocol.default_resource = ''
+            main_resource = ''
 
         self.con = Connection(credentials, **kwargs)
         self.main_resource = main_resource or self.protocol.default_resource
