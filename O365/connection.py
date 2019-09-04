@@ -482,9 +482,12 @@ class Connection:
                 raise RuntimeError('No auth token found. Authentication Flow needed')
 
             oauth_client.token = token
+            if self.auth_flow_type == 'web':
+                requested_scopes = None  # the scopes are already in the token (Not if type is backend)
             session = OAuth2Session(client_id=client_id,
                                     client=oauth_client,
-                                    token=token)
+                                    token=token,
+                                    scope=requested_scopes)
         else:
             session = OAuth2Session(client_id=client_id,
                                     client=oauth_client,
@@ -607,8 +610,7 @@ class Connection:
                 log.info('Requesting ({}) URL: {}'.format(method.upper(), url))
                 log.info('Request parameters: {}'.format(kwargs))
                 # auto_retry will occur inside this function call if enabled
-                response = request_obj.request(method, url,
-                                               **kwargs)
+                response = request_obj.request(method, url, **kwargs)
                 response.raise_for_status()  # raise 4XX and 5XX error codes.
                 log.info('Received response ({}) from URL {}'.format(
                     response.status_code, response.url))
@@ -622,7 +624,8 @@ class Connection:
                     # Refresh token done but still TokenExpiredError raise
                     raise RuntimeError('Token Refresh Operation not working')
                 log.info('Oauth Token is expired, fetching a new token')
-                self.refresh_token()
+                if self.refresh_token() is False:
+                    raise RuntimeError('Token Refresh Operation not working')
                 log.info('New oauth token fetched')
                 token_refreshed = True
             except (ConnectionError, ProxyError, SSLError, Timeout) as e:

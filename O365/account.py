@@ -68,10 +68,11 @@ class Account(object):
         :return: Success / Failure
         :rtype: bool
         """
-        kwargs.setdefault('token_backend', self.con.token_backend)
 
         if self.con.auth_flow_type == 'web':
             scopes = scopes or self.con.scopes
+            # TODO: set connection defaults.
+            kwargs.setdefault('token_backend', self.con.token_backend)
             return oauth_authentication_flow(*self.con.auth, scopes=scopes,
                                              protocol=self.protocol, **kwargs)
         elif self.con.auth_flow_type == 'backend':
