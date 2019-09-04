@@ -419,12 +419,13 @@ class Connection:
         os.environ['OAUTHLIB_RELAX_TOKEN_SCOPE'] = '1'
         os.environ['OAUTHLIB_IGNORE_SCOPE_CHANGE'] = '1'
 
+        scopes = requested_scopes or self.scopes
+
         if self.session is None:
             if self.auth_flow_type == 'web':
                 self.session = self.get_session(state=state,
                                                 redirect_uri=redirect_uri)
             elif self.auth_flow_type == 'backend':
-                scopes = requested_scopes or self.scopes
                 self.session = self.get_session(scopes=scopes)
             else:
                 raise ValueError('"auth_flow_type" must be either web or backend')
