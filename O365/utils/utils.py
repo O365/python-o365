@@ -657,10 +657,12 @@ class Query:
             params['$filter'] = self.get_filters()
         if self.has_order:
             params['$orderby'] = self.get_order()
-        if self.has_selects:
-            params['$select'] = self.get_selects()
-        if self.has_expands:
+        if self.has_expands and not self.has_selects:
             params['$expand'] = self.get_expands()
+        if self.has_selects and not self.has_expands:
+            params['$select'] = self.get_selects()
+        if self.has_expands and self.has_selects:
+            params['$expand'] = '{}($select={})'.format(self.get_expands(), self.get_selects())
         if self._search:
             params['$search'] = self._search
             params.pop('$filter', None)

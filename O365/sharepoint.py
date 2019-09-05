@@ -2,7 +2,7 @@ import logging
 
 from dateutil.parser import parse
 
-from .utils import ApiComponent, TrackerSet
+from .utils import ApiComponent, TrackerSet, NEXT_LINK_KEYWORD, Pagination
 from .address_book import Contact
 from .drive import Storage
 
@@ -66,7 +66,8 @@ class SharepointListColumn(ApiComponent):
 
 
 class SharepointListItem(ApiComponent):
-    _endpoints = {'update_list_item': '/items/{item_id}/fields'}
+    _endpoints = {'update_list_item': '/items/{item_id}/fields',
+                  'delete_list_item': '/items/{item_id}'}
 
     def __init__(self, *, parent=None, con=None, **kwargs):
         """ A Sharepoint ListItem within a SharepointList
@@ -109,9 +110,9 @@ class SharepointListItem(ApiComponent):
         self.modified_by = Contact(con=self.con, protocol=self.protocol,
                                    **{self._cloud_data_key: modified_by}) if modified_by else None
 
-        self.web_url = cloud_data.get(self._cc('webUrl'))
+        self.web_url = cloud_data.get(self._cc('webUrl'), None)
 
-        self.content_type_id = cloud_data.get(self._cc('contentType')).get('id', None)
+        self.content_type_id = cloud_data.get(self._cc('contentType'), {}).get('id', None)
 
         self.fields = cloud_data.get(self._cc('fields'), None)
 
@@ -167,6 +168,11 @@ class SharepointListItem(ApiComponent):
             return False
         self._clear_tracker()
         return True
+
+    def delete(self):
+        url = self.build_url(self._endpoints.get('delete_list_item').format(item_id=self.object_id))
+        response = self.con.delete(url)
+        return bool(response)
 
 
 class SharepointList(ApiComponent):
@@ -244,23 +250,51 @@ class SharepointList(ApiComponent):
         self.column_name_cw = {col.display_name: col.internal_name for
                                col in self.get_list_columns() if not col.read_only}
 
-    def get_items(self):
+    def get_items(self, limit=None, *, query=None, order_by=None, batch=None):
         """ Returns a collection of Sharepoint Items
-
-        :rtype: list[SharepointListItem]
+        :param int limit: max no. of items to get. Over 999 uses batch.
+        :param query: applies a filter to the request.
+        :type query: Query or str
+        :param order_by: orders the result set based on this condition
+        :type order_by: Query or str
+        :param int batch: batch size, retrieves items in
+         batches allowing to retrieve more items than the limit.
+        :return: list of Sharepoint Items
+        :rtype: list[SharepointListItem] or Pagination
         """
+
         url = self.build_url(self._endpoints.get('get_items'))
 
-        response = self.con.get(url)
+        if limit is None or limit > self.protocol.max_top_value:
+            batch = self.protocol.max_top_value
+
+        params = {'$top': batch if batch else limit}
+
+        if order_by:
+            params['$orderby'] = order_by
+
+        if query:
+            if isinstance(query, str):
+                params['$filter'] = query
+            else:
+                params.update(query.as_params())
+
+        response = self.con.get(url, params=params)
 
         if not response:
             return []
 
         data = response.json()
+        next_link = data.get(NEXT_LINK_KEYWORD, None)
 
-        return [self.list_item_constructor(parent=self,
-                                           **{self._cloud_data_key: item})
-                for item in data.get('value', [])]
+        items = [self.list_item_constructor(parent=self, **{self._cloud_data_key: item})
+                 for item in data.get('value', [])]
+
+        if batch and next_link:
+            return Pagination(parent=self, data=items, constructor=self.list_item_constructor,
+                              next_link=next_link, limit=limit)
+        else:
+            return items
 
     def get_item_by_id(self, item_id):
         """ Returns a sharepoint list item based on id"""
@@ -475,6 +509,22 @@ class Site(ApiComponent):
 
         data = response.json()
 
+        return self.list_constructor(parent=self, **{self._cloud_data_key: data})
+
+    def create_list(self, list_data):
+        """
+        Creates a SharePoint list.
+        :param list_data: Dict representation of list.
+        :type list_data: Dict
+        :rtype: list[SharepointList]
+        """
+        url = self.build_url(self._endpoints.get('get_lists'))
+        response = self.con.post(url, data=list_data)
+
+        if not response:
+            return None
+
+        data = response.json()
         return self.list_constructor(parent=self, **{self._cloud_data_key: data})
 
 
