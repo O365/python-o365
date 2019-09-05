@@ -172,9 +172,7 @@ class SharepointListItem(ApiComponent):
     def delete(self):
         url = self.build_url(self._endpoints.get('delete_list_item').format(item_id=self.object_id))
         response = self.con.delete(url)
-        if not response:
-            return False
-        return True
+        return bool(response)
 
 
 class SharepointList(ApiComponent):
@@ -524,7 +522,7 @@ class Site(ApiComponent):
         response = self.con.post(url, data=list_data)
 
         if not response:
-            return []
+            return None
 
         data = response.json()
         return self.list_constructor(parent=self, **{self._cloud_data_key: data})
