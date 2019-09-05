@@ -25,6 +25,17 @@ class Account(object):
         if not isinstance(self.protocol, Protocol):
             raise ValueError("'protocol' must be a subclass of Protocol")
 
+        # for client credential grant flow solely:
+        if kwargs.get('auth_flow_type', 'web') == 'backend':
+            # append the default scope if it's not provided
+            scopes = kwargs.get('scopes', [])
+            if not scopes:
+                scopes.append(self.protocol.prefix_scope('.default'))
+                kwargs['scopes'] = scopes
+            # set main_resource to blank
+            self.protocol.default_resource = ''
+            main_resource = ''
+
         self.con = Connection(credentials, **kwargs)
         self.main_resource = main_resource or self.protocol.default_resource
 
@@ -46,20 +57,28 @@ class Account(object):
 
         return token is not None and not token.is_expired
 
-    def authenticate(self, *, scopes, **kwargs):
-        """ Performs the oauth authentication flow resulting in a stored token
+    def authenticate(self, *, scopes=None, **kwargs):
+        """ Performs the oauth authentication flow using the console resulting in a stored token.
         It uses the credentials passed on instantiation
 
-        :param list[str] scopes: list of protocol user scopes to be converted
+        :param list[str] or None scopes: list of protocol user scopes to be converted
          by the protocol or scope helpers
         :param kwargs: other configurations to be passed to the
          Connection instance
         :return: Success / Failure
         :rtype: bool
         """
-        kwargs.setdefault('token_backend', self.con.token_backend)
-        return oauth_authentication_flow(*self.con.auth, scopes=scopes,
-                                         protocol=self.protocol, **kwargs)
+
+        if self.con.auth_flow_type == 'web':
+            scopes = scopes or self.con.scopes
+            # TODO: set connection defaults.
+            kwargs.setdefault('token_backend', self.con.token_backend)
+            return oauth_authentication_flow(*self.con.auth, scopes=scopes,
+                                             protocol=self.protocol, **kwargs)
+        elif self.con.auth_flow_type == 'backend':
+            return self.con.request_token(None, requested_scopes=scopes)
+        else:
+            raise ValueError('Connection "auth_flow_type" must be either web or backend')
 
     @property
     def connection(self):

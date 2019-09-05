@@ -73,6 +73,7 @@ class DownloadableMixin:
                     stream = True
                 else:
                     stream = False
+                chunk_size = None
             elif isinstance(chunk_size, int):
                 stream = True
             else:
@@ -1248,6 +1249,8 @@ class Drive(ApiComponent):
         'list_items': '/drives/{id}/root/children',
         'get_item_default': '/drive/items/{item_id}',
         'get_item': '/drives/{id}/items/{item_id}',
+        'get_item_by_path_default': '/drive/root:{item_path}',
+        'get_item_by_path': '/drives/{id}/root:{item_path}',
         'recent_default': '/drive/recent',
         'recent': '/drives/{id}/recent',
         'shared_with_me_default': '/drive/sharedWithMe',
@@ -1468,6 +1471,31 @@ class Drive(ApiComponent):
             # we don't know the drive_id so go to the default drive
             url = self.build_url(
                 self._endpoints.get('get_item_default').format(item_id=item_id))
+
+        response = self.con.get(url)
+        if not response:
+            return None
+
+        data = response.json()
+
+        # Everything received from cloud must be passed as self._cloud_data_key
+        return self._classifier(data)(parent=self,
+                                      **{self._cloud_data_key: data})
+
+    def get_item_by_path(self, item_path):
+        """ Returns a DriveItem by it's path: /path/to/file
+        :return: one item
+        :rtype: DriveItem
+        """
+        if self.object_id:
+            # reference the current drive_id
+            url = self.build_url(
+                self._endpoints.get('get_item_by_path').format(id=self.object_id,
+                                                               item_path=item_path))
+        else:
+            # we don't know the drive_id so go to the default drive
+            url = self.build_url(
+                self._endpoints.get('get_item_by_path_default').format(item_path=item_path))
 
         response = self.con.get(url)
         if not response:
@@ -1708,17 +1736,50 @@ class Storage(ApiComponent):
                                       main_resource=self.main_resource,
                                       **{self._cloud_data_key: drive})
 
-    def get_drives(self):
-        """ Returns a collection of drives"""
+    def get_drives(self, limit=None, *, query=None, order_by=None,
+                   batch=None):
+        """ Returns a collection of drives
+
+        :param int limit: max no. of items to get. Over 999 uses batch.
+        :param query: applies a OData filter to the request
+        :type query: Query or str
+        :param order_by: orders the result set based on this condition
+        :type order_by: Query or str
+        :param int batch: batch size, retrieves items in
+         batches allowing to retrieve more items than the limit.
+        :return: list of drives in this Storage
+        :rtype: list[Drive] or Pagination
+        """
 
         url = self.build_url(self._endpoints.get('list_drives'))
 
-        response = self.con.get(url)
+        if limit is None or limit > self.protocol.max_top_value:
+            batch = self.protocol.max_top_value
+
+        params = {'$top': batch if batch else limit}
+
+        if order_by:
+            params['$orderby'] = order_by
+
+        if query:
+            if isinstance(query, str):
+                params['$filter'] = query
+            else:
+                params.update(query.as_params())
+
+        response = self.con.get(url, params=params)
         if not response:
             return []
 
         data = response.json()
 
         # Everything received from cloud must be passed as self._cloud_data_key
-        return [self.drive_constructor(parent=self, **{self._cloud_data_key: drive})
-                for drive in data.get('value', [])]
+
+        drives = [self.drive_constructor(parent=self, **{self._cloud_data_key: drive}) for
+                  drive in data.get('value', [])]
+        next_link = data.get(NEXT_LINK_KEYWORD, None)
+        if batch and next_link:
+            return Pagination(parent=self, data=drives, constructor=self.drive_constructor,
+                              next_link=next_link, limit=limit)
+        else:
+            return drives

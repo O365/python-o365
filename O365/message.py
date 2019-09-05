@@ -149,8 +149,8 @@ class MessageFlag(ApiComponent):
             self._cc('flagStatus'): self._cc(self.__status.value)
         }
         if self.__status is Flag.Flagged:
-            data[self._cc('startDateTime')] = self._build_date_time_time_zone(self.__start)
-            data[self._cc('dueDateTime')] = self._build_date_time_time_zone(self.__due_date)
+            data[self._cc('startDateTime')] = self._build_date_time_time_zone(self.__start) if self.__start is not None else None
+            data[self._cc('dueDateTime')] = self._build_date_time_time_zone(self.__due_date) if self.__due_date is not None else None
 
         if self.__status is Flag.Complete:
             data[self._cc('completedDateTime')] = self._build_date_time_time_zone(self.__completed)
@@ -235,7 +235,7 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
                                   'HTML')  # default to HTML for new messages
         if self.has_attachments is False and self.body_type.upper() == 'HTML':
             # test for inline attachments (Azure responds with hasAttachments=False when there are only inline attachments):
-            if any(img.get('src', '').startswith('cid:') for img in self.get_body_soup().find_all('img')):
+            if any( img.get('src','').startswith('cid:') for img in self.get_body_soup().find_all('img')):
                 self.has_attachments = True
 
         if self.has_attachments and download_attachments:
