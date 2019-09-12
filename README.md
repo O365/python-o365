@@ -762,11 +762,22 @@ for event in birthdays:
         event.decline("No way I'm comming, I'll be in Spain", send_response=False)  # decline the event but don't send a reponse to the organizer
 ```
 
-> It's important to know that when querying events with `include_recurring=True` (which is the default), it is required that you must provide a query parameter with the start and end attributes defined. 
-> Unlike when using `include_recurring=False` those attributes will NOT filter the data based on the operations you set on the query (greater_equal, less, etc.) but just filter the events start datetime between the provided start and end datetimes. 
+#### Notes regarding Calendars and Events:
 
-There are some known issues when working with [shared calendars](https://docs.microsoft.com/en-us/graph/known-issues#calendars) in Microsoft Graph.
+1. Include_recurring=True:
+    > It's important to know that when querying events with `include_recurring=True` (which is the default), it is required that you must provide a query parameter with the start and end attributes defined. 
+    > Unlike when using `include_recurring=False` those attributes will NOT filter the data based on the operations you set on the query (greater_equal, less, etc.) but just filter the events start datetime between the provided start and end datetimes. 
 
+1. Shared Calendars:
+
+    There are some known issues when working with [shared calendars](https://docs.microsoft.com/en-us/graph/known-issues#calendars) in Microsoft Graph.
+
+1. Event attachments:
+
+    For some unknow reason, microsoft does not allow to upload an attachment at the event creation time (as opposed with message attachments).
+    See [this](https://stackoverflow.com/questions/46438302/office365-rest-api-creating-a-calendar-event-with-attachments?rq=1).
+    So, to upload attachments to Events, first save the event, then attach the message and save again.
+    
 ## OneDrive
 The `Storage` class handles all functionality around One Drive and Document Library Storage in Sharepoint.
 
