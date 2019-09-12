@@ -142,8 +142,8 @@ class Folder(ApiComponent):
         :return: one Message
         :rtype: Message or None
         """
-        if object_id is not None and query is not None:
-            raise ValueError('Must provide object id or query but not both.')
+        if object_id is None and query is None:
+            raise ValueError('Must provide object id or query.')
 
         if object_id is not None:
             url = self.build_url(self._endpoints.get('message').format(id=object_id))
