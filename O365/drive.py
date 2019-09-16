@@ -870,7 +870,7 @@ class DriveItem(ApiComponent):
         }
         if share_type in {'view', 'read'}:
             data['roles'] = ['read']
-        elif share_type == {'edit', 'write'}:
+        elif share_type in {'edit', 'write'}:
             data['roles'] = ['write']
         else:
             raise ValueError(
