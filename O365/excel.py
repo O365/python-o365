@@ -1131,7 +1131,7 @@ class Table(ApiComponent):
         'add_column': '/columns/add',
         'get_rows': '/rows',
         'get_row': '/rows/{id}',
-        'delete_row': '/rows/{id}/delete',
+        'delete_row': '/rows/$/itemAt(index={id})',
         'get_row_index': '/rows/itemAt',
         'add_rows': '/rows/add',
         'delete': '/delete',
@@ -1333,7 +1333,7 @@ class Table(ApiComponent):
         :return bool: Success or Failure
         """
         url = self.build_url(self._endpoints.get('delete_row').format(id=index))
-        return bool(self.session.post(url))
+        return bool(self.session.delete(url))
 
     def add_rows(self, values=None, index=None):
         """
