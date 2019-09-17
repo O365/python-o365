@@ -273,7 +273,7 @@ class Connection:
                  proxy_password=None, requests_delay=200, raise_http_errors=True,
                  request_retries=3, token_backend=None,
                  tenant_id='common',
-                 auth_flow_type='web', **kwargs):
+                 auth_flow_type='authorization', **kwargs):
         """ Creates an API connection object
 
         :param tuple credentials: a tuple of (client_id, client_secret)
@@ -298,8 +298,8 @@ class Connection:
          and store tokens
         :param str tenant_id: use this specific tenant id, defaults to common
         :param str auth_flow_type: the auth method flow style used: Options:
-            - 'web': 2 step web style grant flow using an authentication url
-            - 'backend': also called client credentials grant flow using only the cliend id and secret
+            - 'authorization': 2 step web style grant flow using an authentication url
+            - 'credentials': also called client credentials grant flow using only the cliend id and secret
         :param dict kwargs: any extra params passed to Connection
         :raises ValueError: if credentials is not tuple of
          (client_id, client_secret)
@@ -308,7 +308,7 @@ class Connection:
                 not credentials[0] and not credentials[1]):
             raise ValueError('Provide valid auth credentials')
 
-        self._auth_flow_type = auth_flow_type  # 'web' or 'backend'
+        self._auth_flow_type = auth_flow_type  # 'authorization' or 'credentials'
         self.auth = credentials
         self.scopes = scopes
         self.store_token = True
@@ -402,7 +402,7 @@ class Connection:
         :param str state: session-state identifier for web-flows
         :param str redirect_uri: callback url for web-flows
         :param lst requested_scopes: a list of scopes to be requested.
-         Only used when auth_flow_type is 'backend'
+         Only used when auth_flow_type is 'credentials'
         :param bool store_token: whether or not to store the token,
          so you don't have to keep opening the auth link and
          authenticating every time
@@ -422,22 +422,22 @@ class Connection:
         scopes = requested_scopes or self.scopes
 
         if self.session is None:
-            if self.auth_flow_type == 'web':
+            if self.auth_flow_type == 'authorization':
                 self.session = self.get_session(state=state,
                                                 redirect_uri=redirect_uri)
-            elif self.auth_flow_type == 'backend':
+            elif self.auth_flow_type == 'credentials':
                 self.session = self.get_session(scopes=scopes)
             else:
-                raise ValueError('"auth_flow_type" must be either web or backend')
+                raise ValueError('"auth_flow_type" must be either "authorization" or "credentials"')
 
         try:
-            if self.auth_flow_type == 'web':
+            if self.auth_flow_type == 'authorization':
                 self.token_backend.token = Token(self.session.fetch_token(
                     token_url=self._oauth2_token_url,
                     authorization_response=authorization_url,
                     include_client_id=True,
                     client_secret=client_secret))
-            elif self.auth_flow_type == 'backend':
+            elif self.auth_flow_type == 'credentials':
                 self.token_backend.token = Token(self.session.fetch_token(
                     token_url=self._oauth2_token_url,
                     include_client_id=True,
@@ -467,12 +467,12 @@ class Connection:
 
         client_id, _ = self.auth
 
-        if self.auth_flow_type == 'web':
+        if self.auth_flow_type == 'authorization':
             oauth_client = WebApplicationClient(client_id=client_id)
-        elif self.auth_flow_type == 'backend':
+        elif self.auth_flow_type == 'credentials':
             oauth_client = BackendApplicationClient(client_id=client_id)
         else:
-            raise ValueError('"auth_flow_type" must be either web or backend')
+            raise ValueError('"auth_flow_type" must be either "authorization" or "credentials"')
 
         requested_scopes = scopes or self.scopes
 
@@ -483,7 +483,7 @@ class Connection:
                 raise RuntimeError('No auth token found. Authentication Flow needed')
 
             oauth_client.token = token
-            if self.auth_flow_type == 'web':
+            if self.auth_flow_type == 'authorization':
                 requested_scopes = None  # the scopes are already in the token (Not if type is backend)
             session = OAuth2Session(client_id=client_id,
                                     client=oauth_client,
@@ -540,9 +540,9 @@ class Connection:
         if not token:
             raise RuntimeError('Token not found.')
 
-        if token.is_long_lived or self.auth_flow_type == 'backend':
+        if token.is_long_lived or self.auth_flow_type == 'credentials':
 
-            if self.auth_flow_type == 'web':
+            if self.auth_flow_type == 'authorization':
                 client_id, client_secret = self.auth
                 self.token_backend.token = Token(
                     self.session.refresh_token(
@@ -551,7 +551,7 @@ class Connection:
                         client_secret=client_secret)
                 )
 
-            elif self.auth_flow_type == 'backend':
+            elif self.auth_flow_type == 'credentials':
                 if self.request_token(None, store_token=False) is False:
                     log.error('Refresh for Client Credentials Grant Flow failed.')
                     return False
@@ -619,7 +619,7 @@ class Connection:
                 return response
             except TokenExpiredError as e:
                 # Token has expired, try to refresh the token and try again on the next loop
-                if self.token_backend.token.is_long_lived is False and self.auth_flow_type == 'web':
+                if self.token_backend.token.is_long_lived is False and self.auth_flow_type == 'authorization':
                     raise e
                 if token_refreshed:
                     # Refresh token done but still TokenExpiredError raise

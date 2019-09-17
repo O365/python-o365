@@ -1,5 +1,6 @@
 from .connection import Connection, Protocol, MSGraphProtocol
 from .connection import oauth_authentication_flow
+from .utils import ME_RESOURCE
 
 
 class Account(object):
@@ -25,16 +26,27 @@ class Account(object):
         if not isinstance(self.protocol, Protocol):
             raise ValueError("'protocol' must be a subclass of Protocol")
 
-        # for client credential grant flow solely:
-        if kwargs.get('auth_flow_type', 'web') == 'backend':
+        auth_flow_type = kwargs.get('auth_flow_type', 'authorization')
+        scopes = kwargs.get('scopes', None)  # retrieve scopes
+
+        if auth_flow_type == 'authorization':
+            # convert the provided scopes to protocol scopes:
+            if scopes is not None:
+                kwargs['scopes'] = self.protocol.get_scopes_for(scopes)
+        elif auth_flow_type == 'credentials':
+            # for client credential grant flow solely:
             # append the default scope if it's not provided
-            scopes = kwargs.get('scopes', [])
             if not scopes:
                 scopes.append(self.protocol.prefix_scope('.default'))
                 kwargs['scopes'] = scopes
-            # set main_resource to blank
-            self.protocol.default_resource = ''
-            main_resource = ''
+
+            # set main_resource to blank when it's the 'ME' resource
+            if self.protocol.default_resource == ME_RESOURCE:
+                self.protocol.default_resource = ''
+            if main_resource == ME_RESOURCE:
+                main_resource = ''
+        else:
+            raise ValueError('"auth_flow_type" must be either "authorization" or "credentials"')
 
         self.con = Connection(credentials, **kwargs)
         self.main_resource = main_resource or self.protocol.default_resource
@@ -64,21 +76,43 @@ class Account(object):
         :param list[str] or None scopes: list of protocol user scopes to be converted
          by the protocol or scope helpers
         :param kwargs: other configurations to be passed to the
-         Connection instance
+         Connection.get_authorization_url and Connection.request_token methods
         :return: Success / Failure
         :rtype: bool
         """
 
-        if self.con.auth_flow_type == 'web':
-            scopes = scopes or self.con.scopes
-            # TODO: set connection defaults.
-            kwargs.setdefault('token_backend', self.con.token_backend)
-            return oauth_authentication_flow(*self.con.auth, scopes=scopes,
-                                             protocol=self.protocol, **kwargs)
-        elif self.con.auth_flow_type == 'backend':
+        if self.con.auth_flow_type == 'authorization':
+            if scopes is not None:
+                if self.con.scopes is not None:
+                    raise RuntimeError('The scopes must be set either at the Account instantiation or on the account.authenticate method.')
+                self.con.scopes = self.protocol.get_scopes_for(scopes)
+            else:
+                if self.con.scopes is None:
+                    raise ValueError('The scopes are not set. Define the scopes requested.')
+
+            consent_url, _ = self.con.get_authorization_url(**kwargs)
+
+            print('Visit the following url to give consent:')
+            print(consent_url)
+
+            token_url = input('Paste the authenticated url here:\n')
+
+            if token_url:
+                result = self.con.request_token(token_url, **kwargs)  # no need to pass state as the session is the same
+                if result:
+                    print('Authentication Flow Completed. Oauth Access Token Stored. You can now use the API.')
+                else:
+                    print('Something go wrong. Please try again.')
+
+                return bool(result)
+            else:
+                print('Authentication Flow aborted.')
+                return False
+
+        elif self.con.auth_flow_type == 'credentials':
             return self.con.request_token(None, requested_scopes=scopes)
         else:
-            raise ValueError('Connection "auth_flow_type" must be either web or backend')
+            raise ValueError('Connection "auth_flow_type" must be either "authorization" or "credentials"')
 
     @property
     def connection(self):

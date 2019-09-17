@@ -6,7 +6,14 @@
 This project aims is to make interact with Microsoft Graph and Office 365 easy to do in a Pythonic way. 
 Access to Email, Calendar, Contacts, OneDrive, etc. Are easy to do in a way that feel easy and straight forward to beginners and feels just right to seasoned python programmer.
 
-The project is currently developed and maintained by [Toben Archer](https://github.com/Narcolapser), [Royce Melborn](https://github.com/roycem90) and [Janscas](https://github.com/janscas), but we are always open to new pull requests.
+The project is currently developed and maintained by [Janscas](https://github.com/janscas). 
+
+Core developers: 
+- [Toben Archer](https://github.com/Narcolapser)
+- [Royce Melborn](https://github.com/roycem90)
+- [Janscas](https://github.com/janscas)
+
+We are always open to new pull requests!
 
 
 This is for example how you send a message:
@@ -80,18 +87,17 @@ Project dependencies installed by pip:
  - pytz
  
  
-
 ## Usage
 The first step to be able to work with this library is to register an application and retrieve the auth token. See [Authentication](#authentication).
 
-It is highly recommended to add the "offline_access" permission and request this scope when authenticating. Otherwise the library will only have access to the user resources for 1 hour. 
+It is highly recommended to add the "offline_access" permission and request this scope when authenticating. Otherwise the library will only have access to the user resources for 1 hour. See [Permissions and Scopes](#permissions-and-scopes).
 
 With the access token retrieved and stored you will be able to perform api calls to the service.
 
 A common pattern to check for authentication and use the library is this one:
 
 ```python
-scopes = ['my_required_scopes']
+scopes = ['my_required_scopes']  # you can use scope helpers here (see Permissions and Scopes section)
 
 account = Account(credentials)
 
@@ -109,66 +115,131 @@ if not account.is_authenticated:  # will check if there is a token and has not e
 ## Authentication
 You can only authenticate using oauth athentication as Microsoft deprecated basic auth on November 1st 2018.
 
-- Oauth authentication: using an authentication token provided after user consent.
+There are currently two authentication methods:
+
+- [Authenticate on behalf of a user](https://docs.microsoft.com/en-us/graph/auth-v2-user?context=graph%2Fapi%2F1.0&view=graph-rest-1.0): Any user will give consent to the app to access it's resources. 
+This oauth flow is called **authorization code grant flow**. This is the default authentication method used by this library.
+- [Authenticate with your own identity](https://docs.microsoft.com/en-us/graph/auth-v2-service?context=graph%2Fapi%2F1.0&view=graph-rest-1.0): This will use your own identity. This oauth flow is called **client credentials grant flow**.
+
+When to use one or the other and requirements:
+
+  Topic                             | On behalf of a user                                   | With your own identity
+ :---:                              | :---:                                                 | :---:
+ **Register the App**               | Required                                              | Required
+ **Requires Admin Consent**         | Only on certain advanced permissions                  | Yes, for everything
+ **App Permission Type**            | Delegated Permissions (on behalf of the user)         | Application Permissions
+ **Auth requirements**              | Client Id, Client Secret, Authorization Code          | Client Id, Client Secret
+ **Authentication**                 | 2 step authentication with user consent               | 1 step authentication
+ **Auth Scopes**                    | Required                                              | None
+ **Token Expiration**               | 60 Minutes without refresh token or 90 days*          | 60 Minutes*
+ **Resources**                      | access the user resources, and any shared resources   | Only the user resources
+ 
+
+**O365 will automatically refresh the token for you on either authentication method. The refresh token lasts 90 days but it's refreshed on each connection so as long as you connect within 90 days you can have unlimited access.*
 
 The `Connection` Class handles the authentication.
+
 
 #### Oauth Authentication
 This section is explained using Microsoft Graph Protocol, almost the same applies to the Office 365 REST API.
 
 ##### Authentication Steps
-1. To work with oauth you first need to register your application at [Azure App Registrations](https://portal.azure.com/#blade/Microsoft_AAD_RegisteredApps/ApplicationsListBlade).
+1. To allow authentication you first need to register your application at [Azure App Registrations](https://portal.azure.com/#blade/Microsoft_AAD_RegisteredApps/ApplicationsListBlade).
 
     1. Login at [Azure Portal (App Registrations)](https://portal.azure.com/#blade/Microsoft_AAD_RegisteredApps/ApplicationsListBlade)
     1. Create an app. Set a name.
     1. In Supported account types choose "Accounts in any organizational directory and personal Microsoft accounts (e.g. Skype, Xbox, Outlook.com)", if you are using a personal account.
     1. Set the redirect uri (Web) to: `https://login.microsoftonline.com/common/oauth2/nativeclient` and click register. This is the default redirect uri used by this library, but you can use any other if you want.
     1. Write down the Application (client) ID. You will need this value.
-    1. Under "Certificates & secrets", generate a new client secret. Set the expiration preferably to never.
-    1. Write down the value of the client secret created now. It will be hidden later on.
-    1. Under Api Permissions add the delegated permissions for Microsoft Graph you want (see scopes), as an example, to read and send emails use:
+    1. Under "Certificates & secrets", generate a new client secret. Set the expiration preferably to never. Write down the value of the client secret created now. It will be hidden later on.
+    1. Under Api Permissions:
+        - When authenticating "on behalf of a user":
+            1. add the **delegated permissions** for Microsoft Graph you want (see scopes).
+            1. It is highly recommended to add "offline_access" permission. If not the user you will have to re-authenticate every hour.
+        - When authenticating "with your own identity":
+            1. add the **application permissions** for Microsoft Graph you want.
+        
+        As an example, to read and send emails use:
         1. Mail.ReadWrite
         1. Mail.Send
         1. User.Read
-        1. It is highly recommended to add "offline_access" permission. If not you will have to re-authenticate every hour.
-
-1. Then you need to login for the first time to get the access token by consenting the application to access the resources it needs.
-    1. To authenticate (login) you can follow different flows (See below). For this example we will be using console based authentication. Call `account.authenticate` and pass the scopes you want (the ones you previously added on the app registration portal).
     
-        You can pass "protocol scopes" (like: "https://graph.microsoft.com/Calendars.ReadWrite") to the method or use "[scope helpers](https://github.com/O365/python-o365/blob/master/O365/connection.py#L34)" like ("message_all").
-        If you pass protocol scopes, then the `account` instance must be initialized with the same protocol used by the scopes. By using scope helpers you can abstract the protocol from the scopes and let this library work for you.   
-        Finally, you can mix and match "protocol scopes" with "scope helpers".
-        Go to the [procotol section](#protocols) to know more about them.
-        
-        For Example (following the previous permissions added):
-        ```python
-        # ...
-        account = Account(credentials)  # the default protocol will be Microsoft Graph
-        account.authenticate(scopes=['basic', 'message_all'])
-        # 'basic' adds: 'offline_access' and 'https://graph.microsoft.com/User.Read'
-        # 'message_all' adds: 'https://graph.microsoft.com/Mail.ReadWrite' and 'https://graph.microsoft.com/Mail.Send'
- 
-        ```
-        This method call will print a url that the user must visit to give consent to the app on the required permissions.
-        
-        The user must then visit this url and give consent to the application. When consent is given, the page will rediret to: "https://login.microsoftonline.com/common/oauth2/nativeclient" by default (you can change this) with a url query param called 'code'.
-        
-        Then the user must copy the resulting page url and paste it back on the console.
-        The method will then return True if the login attempt was succesful.
-
-        **Take care: the access (and refresh) token must remain protected from unauthorized users.**
-
-    1. At this point you will have an access token stored that will provide valid credentials when using the api. If you change the scope requested, then the current token won't work, and you will need the user to give consent again on the application to gain access to the new scopes requested.
-
-    The access token only lasts **60 minutes**, but the app will automatically request new access tokens through the refresh tokens (if and only if you added the "offline_access" permission), but note that a refresh token only lasts for 90 days. So you must use it before or you will need to request a new access token again (no new consent needed by the user, just a login).
+1. Then you need to login for the first time to get the access token that will grant access to the user resources.
     
+    To authenticate (login) you can use [different authentication interfaces](#different-authentication-interfaces). On the following examples we will be using the Console Based Interface but you can use any one.
+    
+    - When authenticating on behalf of a user:
+    
+        1. Instantiate an `Account` object with the credentials (client id and client secret).
+        1. Call `account.authenticate` and pass the scopes you want (the ones you previously added on the app registration portal).
+        
+            > Note: when using the "on behalf of a user" authentication, you can pass the scopes to either the `Account` init or to the authenticate method. Either way is correct. 
+    
+            You can pass "protocol scopes" (like: "https://graph.microsoft.com/Calendars.ReadWrite") to the method or use "[scope helpers](https://github.com/O365/python-o365/blob/master/O365/connection.py#L34)" like ("message_all").
+            If you pass protocol scopes, then the `account` instance must be initialized with the same protocol used by the scopes. By using scope helpers you can abstract the protocol from the scopes and let this library work for you.   
+            Finally, you can mix and match "protocol scopes" with "scope helpers".
+            Go to the [procotol section](#protocols) to know more about them.
+        
+            For Example (following the previous permissions added):
+            
+            ```python
+            from O365 import Account
+            credentials = ('my_client_id', 'my_client_secret')
+           
+            # the default protocol will be Microsoft Graph
+            # the default authentication method will be "on behalf of a user"
+           
+            account = Account(credentials)
+            if account.authenticate(scopes=['basic', 'message_all']):
+               print('Authenticated!')
+           
+            # 'basic' adds: 'offline_access' and 'https://graph.microsoft.com/User.Read'
+            # 'message_all' adds: 'https://graph.microsoft.com/Mail.ReadWrite' and 'https://graph.microsoft.com/Mail.Send'
+            ```
+            When using the "on behalf of the user" authentication method, this method call will print a url that the user must visit to give consent to the app on the required permissions.
+        
+            The user must then visit this url and give consent to the application. When consent is given, the page will rediret to: "https://login.microsoftonline.com/common/oauth2/nativeclient" by default (you can change this) with a url query param called 'code'.
+        
+            Then the user must copy the resulting page url and paste it back on the console.
+            The method will then return True if the login attempt was succesful.
+    
+    - When authenticating with your own identity:
+    
+        1. Instantiate an `Account` object with the credentials (client id and client secret) and specifying the parameter `auth_flow_type` to *"credentials"*. You don't need to specify any scopes.
+        1. Call `account.authenticate`. This call will request a token for you and store it in the backend. No user interaction is needed. The method will store the token in the backend and return True if the authentication succeeded.
+            
+            For Example:
+            ```python
+            from O365 import Account
+           
+            credentials = ('my_client_id', 'my_client_secret')
+           
+            # the default protocol will be Microsoft Graph
+           
+            account = Account(credentials, auth_flow_type='credentials')
+            if account.authenticate():
+               print('Authenticated!')
+            ```
+   
+1. At this point you will have an access token stored that will provide valid credentials when using the api. 
+
+    The access token only lasts **60 minutes**, but the app try will automatically request new access tokens.
+    
+    When using the "on behalf of a user" authentication method this is accomplished through the refresh tokens (if and only if you added the "offline_access" permission), but note that a refresh token only lasts for 90 days. So you must use it before or you will need to request a new access token again (no new consent needed by the user, just a login).
     If your application needs to work for more than 90 days without user interaction and without interacting with the API, then you must implement a periodic call to `Connection.refresh_token` before the 90 days have passed.
     
-##### Different Authentication Flows
+    **Take care: the access (and refresh) token must remain protected from unauthorized users.**
+    
+    Under the "on behalf of a user" authentication method, if you change the scope requested, then the current token won't work, and you will need the user to give consent again on the application to gain access to the new scopes requested.
 
-To acomplish the authentication you can basically use different approaches:
+    
+##### Different Authentication Interfaces
 
-1. Console based Authentication:
+To acomplish the authentication you can basically use different approaches.
+The following apply to the "on behalf of a user" authentication method as this is 2-step authentication flow.
+For the "with your own identity" authentication method, you can just use `account.authenticate` as it's not going to require a console input.
+
+1. Console based authentication interface:
 
     You can authenticate using a console. The best way to achieve this is by using the `authenticate` method of the `Account` class.
     
@@ -183,7 +254,7 @@ To acomplish the authentication you can basically use different approaches:
     
     **Tip:** When using MacOs the console is limited to 1024 characters. If your url has multiple scopes it can exceed this limit. To solve this. Just `import readline` a the top of your script.
    
-1. Web app based Authentication:
+1. Web app based authentication interface:
 
     You can authenticate your users in a web environment by following this steps:
     
@@ -226,32 +297,76 @@ To acomplish the authentication you can basically use different approaches:
         # else ....
     ``` 
 
-1. Other Authentication Flows:
+1. Other authentication interfaces:
 
     Finally you can configure any other flow by using `connection.get_authorization_url` and `connection.request_token` as you want.
-
-
-
+    
 
 ##### Permissions and Scopes:
+
+###### Permissions
+
 When using oauth, you create an application and allow some resources to be accessed and used by its users.
-Then the user can request access to one or more of this resources by providing scopes to the oauth provider.
+These resources are managed with permissions. These can either be delegated (on behalf of a user) or aplication permissions.
+The former are used when the authentication method is "on behalf of a user". Some of these require administrator consent. 
+The latter when using the "with your own identity" authentication method. All of these require administrator consent.
+
+###### Scopes
+
+The scopes only matter when using the "on behalf of a user" authentication method.
+
+> Note: You only need the scopes when login as those are kept stored within the token on the token backend.
+
+The user of this library can then request access to one or more of this resources by providing scopes to the oauth provider.
+
+> Note: If you latter on change the scopes requested, the current token will be invaled and you will have to re-authenticate. The user that logins will be asked for consent.
 
 For example your application can have Calendar.Read, Mail.ReadWrite and Mail.Send permissions, but the application can request access only to the Mail.ReadWrite and Mail.Send permission.
-This is done by providing scopes to the `account.authenticate` method or to a `Connection` instance like so:
+This is done by providing scopes to the `Account` instance or `account.authenticate` method like so:
+
 ```python
-from O365 import Connection
+from O365 import Account
 
 credentials = ('client_id', 'client_secret')
 
 scopes = ['https://graph.microsoft.com/Mail.ReadWrite', 'https://graph.microsoft.com/Mail.Send']
 
-con = Connection(credentials, scopes=scopes)
+account = Account(credentials, scopes=scopes)
+account.authenticate()
+
+# The latter is exactly the same as passing scopes to the authenticate method like so:
+# account = Account(credentials)
+# account.authenticate(scopes=scopes)
 ```
 
-Scope implementation depends on the protocol used. So by using protocol data you can automatically set the scopes needed:
+Scope implementation depends on the protocol used. So by using protocol data you can automatically set the scopes needed.
+This is implemented by using 'scope helpers'. Those are little helpers that group scope functionallity and abstract the procotol used.
 
-You can get the same scopes as before using protocols like this:
+Scope Helper                       | Scopes included
+:---                               | :---  
+basic                              | 'offline_access' and 'User.Read'     
+mailbox                            | 'Mail.Read'
+mailbox_shared                     | 'Mail.Read.Shared'
+message_send                       | 'Mail.Send'
+message_send_shared                | 'Mail.Send.Shared'
+message_all                        | 'Mail.ReadWrite' and 'Mail.Send'
+message_all_shared                 | 'Mail.ReadWrite.Shared' and 'Mail.Send.Shared'
+address_book                       | 'Contacts.Read'
+address_book_shared                | 'Contacts.Read.Shared'
+address_book_all                   | 'Contacts.ReadWrite'
+address_book_all_shared            | 'Contacts.ReadWrite.Shared'
+calendar                           | 'Calendars.Read'
+calendar_shared                    | 'Calendars.Read.Shared'
+calendar_all                       | 'Calendars.ReadWrite'
+calendar_shared_all                | 'Calendars.ReadWrite.Shared'
+users                              | 'User.ReadBasic.All'
+onedrive                           | 'Files.Read.All'
+onedrive_all                       | 'Files.ReadWrite.All'
+sharepoint                         | 'Sites.Read.All'
+sharepoint_dl                      | 'Sites.ReadWrite.All'
+
+
+You can get the same scopes as before using protocols and scope helpers like this:
 
 ```python
 protocol_graph = MSGraphProtocol()
@@ -259,15 +374,20 @@ protocol_graph = MSGraphProtocol()
 scopes_graph = protocol.get_scopes_for('message all')
 # scopes here are: ['https://graph.microsoft.com/Mail.ReadWrite', 'https://graph.microsoft.com/Mail.Send']
 
+account = Account(credentials, scopes=scopes_graph)
+```
+
+```python
 protocol_office = MSOffice365Protocol()
 
 scopes_office = protocol.get_scopes_for('message all')
 # scopes here are: ['https://outlook.office.com/Mail.ReadWrite', 'https://outlook.office.com/Mail.Send']
 
-con = Connection(credentials, scopes=scopes_graph)
+account = Account(credentials, scopes=scopes_office)
 ```
 
-However all the protocol/scope stuff can be addressed automatically for you when using the `account.authenticate` method.
+> Note: When passing scopes at the `Account` initialization or on the `account.authenticate` method, the scope helpers are autommatically converted to the protocol flavor.
+>Those are the only places where you can use scope helpers. Any other object using scopes (such as the `Connection` object) expects scopes that are already set for the protocol. 
 
 
 
@@ -336,7 +456,7 @@ To implememnt a new TokenBackend:
 
 ## Protocols
 Protocols handles the aspects of communications between different APIs.
-This project uses by default either the Office 365 APIs or Microsoft Graph APIs.
+This project uses either the Microsoft Graph APIs (by default) or the Office 365 APIs.
 But, you can use many other Microsoft APIs as long as you implement the protocol needed.
 
 You can use one or the other:
@@ -357,17 +477,22 @@ The default protocol used by the `Account` Class is `MSGraphProtocol`.
 
 You can implement your own protocols by inheriting from `Protocol` to communicate with other Microsoft APIs.
 
-You can instantiate protocols like this:
+You can instantiate and use protocols like this:
 ```python
-from O365 import MSGraphProtocol  # same as from O365.connection import MSGraphProtocol
+from O365 import Account, MSGraphProtocol  # same as from O365.connection import MSGraphProtocol
+
+# ...
 
 # try the api version beta of the Microsoft Graph endpoint.
 protocol = MSGraphProtocol(api_version='beta')  # MSGraphProtocol defaults to v1.0 api version
+account = Account(credentials, protocol=protocol)
 ```
 
 ##### Resources:
 Each API endpoint requires a resource. This usually defines the owner of the data.
 Every protocol defaults to resource 'ME'. 'ME' is the user which has given consent, but you can change this behaviour by providing a different default resource to the protocol constructor.
+
+> Note: When using the "with your own identity" authentication method the resource 'ME' is overwritten to be blank as the authentication method already states that you are login with your own identity.
 
 For example when accessing a shared mailbox:
 
@@ -389,7 +514,6 @@ account = Account(credentials=my_credentials, protocol=protocol)
 shared_mailbox_messages = account.mailbox().get_messages()
 ```
  
-
 Instead of defining the resource used at the account or protocol level, you can provide it per use case as follows:
 ```python
 # ...
@@ -404,7 +528,7 @@ message = Message(parent=account, main_resource='shared_mailbox@example.com')  #
 
 Usually you will work with the default 'ME' resource, but you can also use one of the following:
 
-- **'me'**: the user which has given consent. the default for every protocol.
+- **'me'**: the user which has given consent. the default for every protocol. Overwritten when using "with your own identity" authentication method.
 - **'user:user@domain.com'**: a shared mailbox or a user account for which you have permissions. If you don't provide 'user:' will be infered anyways.
 - **'sharepoint:sharepoint-site-id'**: a sharepoint site id.
 - **'group:group-site-id'**: a office365 group id.  
@@ -434,7 +558,8 @@ from O365.message import Message
 from O365.mailbox import MailBox
 
 protocol = MSGraphProtocol()
-con = Connection(('client_id', 'client_secret'))
+scopes = ['...']
+con = Connection(('client_id', 'client_secret'), scopes=scopes)
 
 message = Message(con=con, protocol=protocol)
 # ...
@@ -456,7 +581,7 @@ class CustomClass(ApiComponent):
     def __init__(self, *, parent=None, con=None, **kwargs):
         # connection is only needed if you want to communicate with the api provider
         self.con = parent.con if parent else con
-        protocol = parent.protocol
+        protocol = parent.protocol if parent else kwargs.get('protocol')
         main_resource = parent.main_resource
         
         super().__init__(protocol=protocol, main_resource=main_resource)
@@ -473,6 +598,15 @@ class CustomClass(ApiComponent):
         response = self.con.get(url, params=my_params)  # note the use of the connection here.
 
         # handle response and return to the user...
+
+# the use it as follows:
+from O365 import Connection, MSGraphProtocol
+
+protocol = MSGraphProtocol()  # or maybe a user defined protocol
+con = Connection(('client_id', 'client_secret'), scopes=protocol.get_scopes_for(['...']))
+custom_class = CustomClass(con=con, protocol=protocol)
+
+custom_class.do_some_stuff()
 ```
 
 ## MailBox
