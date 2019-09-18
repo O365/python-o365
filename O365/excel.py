@@ -1134,7 +1134,7 @@ class Table(ApiComponent):
         'delete_row': '/rows/$/itemAt(index={id})',
         'get_row_index': '/rows/itemAt',
         'add_rows': '/rows/add',
-        'delete': '/delete',
+        'delete': '/',
         'data_body_range': '/dataBodyRange',
         'header_row_range': '/headerRowRange',
         'total_row_range': '/totalRowRange',
@@ -1400,7 +1400,7 @@ class Table(ApiComponent):
     def delete(self):
         """ Deletes this table """
         url = self.build_url(self._endpoints.get('delete'))
-        return bool(self.session.post(url))
+        return bool(self.session.delete(url))
 
     def _get_range(self, endpoint_name):
         """ Returns a Range based on the endpoint name """
