@@ -112,6 +112,24 @@ class Contact(ApiComponent, AttachableMixin):
             self.emails.add(user_principal_name)
         self.__emails.untrack = False
 
+        business_address = {
+            "city": cloud_data.get(cc('city'), None),
+            "countryOrRegion": cloud_data.get(cc('country'), None),
+            "postalCode": cloud_data.get(cc('postalCode'), None),
+            "state": cloud_data.get(cc('state'), None),
+            "street": cloud_data.get(cc('streetAddress'), None)
+        }
+        if business_address:
+            self.__business_address = business_address
+
+        employeeId = cloud_data.get(cc('employeeId'), None)
+        if employeeId:
+            self.__employee_id = employeeId
+
+        account_enabled = cloud_data.get(cc('accountEnabled'), None)
+        if account_enabled:
+            self.__account_enabled = account_enabled
+
     @property
     def created(self):
         """ Created Time
@@ -426,6 +444,36 @@ class Contact(ApiComponent, AttachableMixin):
         """
         return self.__folder_id
 
+    @property
+    def employee_id(self):
+        """ Display Name
+
+        :getter: Get the employee ID of the user
+        :setter: Update the employee ID
+        :type: str
+        """
+        return self.__employee_id
+
+    @employee_id.setter
+    def employee_id(self, value):
+        self.__employee_id = value
+        self._track_changes.add(self._cc('employeeId'))
+
+    @property
+    def account_enabled(self):
+        """ Display Name
+
+        :getter: Get the enabled state of the user account
+        :setter: Update the enabled state
+        :type: str
+        """
+        return self.__account_enabled
+
+    @account_enabled.setter
+    def account_enabled(self, value):
+        self.__account_enabled = value
+        self._track_changes.add(self._cc('accountEnabled'))
+
     def __str__(self):
         return self.__repr__()
 
@@ -457,7 +505,9 @@ class Contact(ApiComponent, AttachableMixin):
             cc('businessAddress'): self.__business_address,
             cc('homesAddress'): self.__home_address,
             cc('otherAddress'): self.__other_address,
-            cc('categories'): self.__categories
+            cc('categories'): self.__categories,
+            cc('employeeId'): self.__employee_id,
+            cc('accountEnabled'): self.__account_enabled
         }
 
         if restrict_keys:
