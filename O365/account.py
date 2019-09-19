@@ -36,8 +36,10 @@ class Account(object):
         elif auth_flow_type == 'credentials':
             # for client credential grant flow solely:
             # append the default scope if it's not provided
-            if not scopes:
-                kwargs['scopes'] = self.protocol.prefix_scope('.default')
+            if scopes:
+                kwargs['scopes'] = self.protocol.get_scopes_for(scopes)
+                if '.default' not in scopes:
+                    kwargs['scopes'].append(self.protocol.prefix_scope('.default'))
 
             # set main_resource to blank when it's the 'ME' resource
             if self.protocol.default_resource == ME_RESOURCE:
@@ -109,6 +111,16 @@ class Account(object):
                 return False
 
         elif self.con.auth_flow_type == 'credentials':
+            if scopes is not None:
+                if self.con.scopes is not None:
+                    raise RuntimeError('The scopes must be set either at the Account instantiation or on the account.authenticate method.')
+                else:
+                    self.con.scopes = self.protocol.get_scopes_for(scopes)
+                    if '.default' not in scopes:
+                        self.con.scopes.append(self.protocol.prefix_scope('.default'))
+            else:
+                if self.con.scopes is None:
+                    raise ValueError('The scopes are not set. Define the scopes requested.')
             return self.con.request_token(None)
         else:
             raise ValueError('Connection "auth_flow_type" must be either "authorization" or "credentials"')
