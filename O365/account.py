@@ -37,8 +37,7 @@ class Account(object):
             # for client credential grant flow solely:
             # append the default scope if it's not provided
             if not scopes:
-                scopes.append(self.protocol.prefix_scope('.default'))
-                kwargs['scopes'] = scopes
+                kwargs['scopes'] = [self.protocol.prefix_scope('.default')]
 
             # set main_resource to blank when it's the 'ME' resource
             if self.protocol.default_resource == ME_RESOURCE:
