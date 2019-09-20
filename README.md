@@ -747,7 +747,7 @@ Messages and attached messages can be saved as *.eml.
 
     ```python
         msg_attachment = msg.attachments[0]  # the first attachment is attachment.attachment_type == 'item' and I know it's a message.
-        mg.attachments.save_as_eml(msg_attachment, to_path=Path('my_saved_email.eml')) 
+        msg.attachments.save_as_eml(msg_attachment, to_path=Path('my_saved_email.eml')) 
     ```
 
 ## AddressBook

@@ -54,7 +54,7 @@ class MessageAttachments(BaseAttachments):
             raise ValueError('Must provide a saved "item" attachment of type MessageAttachment')
 
         if to_path is None:
-            to_path = Path()
+            to_path = Path('message_eml.eml')
         else:
             if not isinstance(to_path, Path):
                 to_path = Path(to_path)
@@ -1022,7 +1022,7 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         """
 
         if to_path is None:
-            to_path = Path()
+            to_path = Path('message_eml.eml')
         else:
             if not isinstance(to_path, Path):
                 to_path = Path(to_path)
