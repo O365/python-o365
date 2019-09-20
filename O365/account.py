@@ -139,7 +139,7 @@ class Account(object):
         :param str resource: Custom resource to be used in this mailbox
          (Defaults to parent main_resource)
         :return: a representation of account mailbox
-        :rtype: MailBox
+        :rtype: O365.mailbox.MailBox
         """
         from .mailbox import MailBox
         return MailBox(parent=self, main_resource=resource, name='MailBox')

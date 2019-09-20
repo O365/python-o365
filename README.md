@@ -733,7 +733,22 @@ print(msg.message_headers)  # returns a list of dicts.
 
 Note that only message headers and other properties added to the select statement will be present.
 
+##### Saving as EML
+Messages and attached messages can be saved as *.eml.
 
+ - Save message as "eml":
+    ```python
+        msg.save_as_eml(to_path=Path('my_saved_email.eml'))
+    ```
+- Save attached message as "eml":
+    
+    Carefull: there's no way to identify that an attachment is in fact a message. You can only check if the attachment.attachment_type == 'item'.
+    if is of type "item" then it can be a message (or an event, etc...). You will have to determine this yourself.
+
+    ```python
+        msg_attachment = msg.attachments[0]  # the first attachment is attachment.attachment_type == 'item' and I know it's a message.
+        mg.attachments.save_as_eml(msg_attachment, to_path=Path('my_saved_email.eml')) 
+    ```
 
 ## AddressBook
 AddressBook groups the funcionality of both the Contact Folders and Contacts. Outlook Distribution Groups are not supported (By the Microsoft API's).

@@ -5,6 +5,7 @@ import pytz
 # noinspection PyPep8Naming
 from bs4 import BeautifulSoup as bs
 from dateutil.parser import parse
+from pathlib import Path
 
 from .utils import OutlookWellKnowFolderNames, ApiComponent, \
     BaseAttachments, BaseAttachment, AttachableMixin, ImportanceLevel, \
@@ -31,16 +32,54 @@ class Flag(CaseEnum):
 class MessageAttachment(BaseAttachment):
     _endpoints = {
         'attach': '/messages/{id}/attachments',
-        'attachment': '/messages/{id}/attachments/{ida}'
+        'attachment': '/messages/{id}/attachments/{ida}',
     }
 
 
 class MessageAttachments(BaseAttachments):
     _endpoints = {
         'attachments': '/messages/{id}/attachments',
-        'attachment': '/messages/{id}/attachments/{ida}'
+        'attachment': '/messages/{id}/attachments/{ida}',
+        'get_mime': '/messages/{id}/attachments/{ida}/$value',
     }
     _attachment_constructor = MessageAttachment
+
+    def save_as_eml(self, attachment, to_path=None):
+        """ Saves this message as and EML to the file system
+        :param MessageAttachment attachment: the MessageAttachment to store as eml.
+        :param Path or str to_path: the path where to store this file
+        """
+        if not attachment or not isinstance(attachment, MessageAttachment) \
+                or attachment.attachment_id is None or attachment.attachment_type != 'item':
+            raise ValueError('Must provide a saved "item" attachment of type MessageAttachment')
+
+        if to_path is None:
+            to_path = Path()
+        else:
+            if not isinstance(to_path, Path):
+                to_path = Path(to_path)
+
+        if not to_path.suffix:
+            to_path = to_path.with_suffix('.eml')
+
+        msg_id = self._parent.object_id
+        if msg_id is None:
+            raise RuntimeError('Attempting to get the mime contents of an unsaved message')
+
+        url = self.build_url(self._endpoints.get('get_mime').format(id=msg_id, ida=attachment.attachment_id))
+
+        response = self._parent.con.get(url)
+
+        if not response:
+            return False
+
+        mime_content = response.content
+
+        if mime_content:
+            with to_path.open('wb') as file_obj:
+                file_obj.write(mime_content)
+            return True
+        return False
 
 
 class MessageFlag(ApiComponent):
@@ -172,7 +211,8 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         'copy_message': '/messages/{id}/copy',
         'create_reply': '/messages/{id}/createReply',
         'create_reply_all': '/messages/{id}/createReplyAll',
-        'forward_message': '/messages/{id}/createForward'
+        'forward_message': '/messages/{id}/createForward',
+        'get_mime': '/messages/{id}/$value',
     }
 
     def __init__(self, *, parent=None, con=None, **kwargs):
@@ -961,3 +1001,39 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         event_data = data.get(self._cc('event'))
 
         return Event(parent=self, **{self._cloud_data_key: event_data})
+
+    def get_mime_content(self):
+        """ Returns the MIME contents of this message """
+        if self.object_id is None:
+            raise RuntimeError('Attempting to get the mime contents of an unsaved message')
+
+        url = self.build_url(self._endpoints.get('get_mime').format(id=self.object_id))
+
+        response = self.con.get(url)
+
+        if not response:
+            return None
+
+        return response.content
+
+    def save_as_eml(self, to_path=None):
+        """ Saves this message as and EML to the file system
+        :param Path or str to_path: the path where to store this file
+        """
+
+        if to_path is None:
+            to_path = Path()
+        else:
+            if not isinstance(to_path, Path):
+                to_path = Path(to_path)
+
+        if not to_path.suffix:
+            to_path = to_path.with_suffix('.eml')
+
+        mime_content = self.get_mime_content()
+
+        if mime_content:
+            with to_path.open('wb') as file_obj:
+                file_obj.write(mime_content)
+            return True
+        return False
