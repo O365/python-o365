@@ -119,7 +119,9 @@ There are currently two authentication methods:
 
 - [Authenticate on behalf of a user](https://docs.microsoft.com/en-us/graph/auth-v2-user?context=graph%2Fapi%2F1.0&view=graph-rest-1.0): Any user will give consent to the app to access it's resources. 
 This oauth flow is called **authorization code grant flow**. This is the default authentication method used by this library.
-- [Authenticate with your own identity](https://docs.microsoft.com/en-us/graph/auth-v2-service?context=graph%2Fapi%2F1.0&view=graph-rest-1.0): This will use your own identity. This oauth flow is called **client credentials grant flow**.
+- [Authenticate with your own identity](https://docs.microsoft.com/en-us/graph/auth-v2-service?context=graph%2Fapi%2F1.0&view=graph-rest-1.0): This will use your own identity. This oauth flow is called **client credentials grant flow**. 
+
+    > 'Authenticate with your own identity' is not an allowed method for **Microsoft Personal accounts**. 
 
 When to use one or the other and requirements:
 
@@ -132,8 +134,8 @@ When to use one or the other and requirements:
  **Authentication**                 | 2 step authentication with user consent               | 1 step authentication
  **Auth Scopes**                    | Required                                              | None
  **Token Expiration**               | 60 Minutes without refresh token or 90 days*          | 60 Minutes*
- **Resources**                      | access the user resources, and any shared resources   | Only the user resources
- 
+ **Resources**                      | access the user resources, and any shared resources   | all Azure AD users
+ **Microsoft Account Type**         | Any                                                   | Not Allowed for Personal Accounts
 
 **O365 will automatically refresh the token for you on either authentication method. The refresh token lasts 90 days but it's refreshed on each connection so as long as you connect within 90 days you can have unlimited access.*
 
@@ -158,6 +160,7 @@ This section is explained using Microsoft Graph Protocol, almost the same applie
             1. It is highly recommended to add "offline_access" permission. If not the user you will have to re-authenticate every hour.
         - When authenticating "with your own identity":
             1. add the **application permissions** for Microsoft Graph you want.
+            1. Click on the Grant Admin Consent button (if you have admin permissions) or wait until the admin has given consent to your application.
         
         As an example, to read and send emails use:
         1. Mail.ReadWrite
