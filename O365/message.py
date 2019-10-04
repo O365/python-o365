@@ -268,11 +268,15 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         self.__attachments = MessageAttachments(parent=self, attachments=[])
         self.has_attachments = cloud_data.get(cc('hasAttachments'), False)
         self.__subject = cloud_data.get(cc('subject'), '')
-        body = cloud_data.get(cc('body'), {})
         self.__body_preview = cloud_data.get(cc('bodyPreview'), '')
+        body = cloud_data.get(cc('body'), {})
         self.__body = body.get(cc('content'), '')
-        self.body_type = body.get(cc('contentType'),
-                                  'HTML')  # default to HTML for new messages
+        self.body_type = body.get(cc('contentType'), 'HTML')  # default to HTML for new messages
+
+        unique_body = cloud_data.get(cc('uniqueBody'), {})
+        self.__unique_body = unique_body.get(cc('content'), '')
+        self.unique_body_type = unique_body.get(cc('contentType'), 'HTML')  # default to HTML for new messages
+
         if self.has_attachments is False and self.body_type.upper() == 'HTML':
             # test for inline attachments (Azure responds with hasAttachments=False when there are only inline attachments):
             if any(img.get('src', '').startswith('cid:') for img in self.get_body_soup().find_all('img')):
@@ -393,6 +397,14 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         else:
             self.__body = value
         self._track_changes.add('body')
+
+    @property
+    def unique_body(self):
+        """ The unique body of this message
+            Requires a select to retrieve it.
+        :rtype: str
+        """
+        return self.__unique_body
 
     @property
     def created(self):
