@@ -1,5 +1,4 @@
 from .connection import Connection, Protocol, MSGraphProtocol
-from .connection import oauth_authentication_flow
 from .utils import ME_RESOURCE
 
 

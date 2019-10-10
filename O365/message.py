@@ -390,10 +390,12 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         if self.__body:
             if not value:
                 self.__body = ''
-            else:
+            elif self.body_type == 'html':
                 soup = bs(self.__body, 'html.parser')
                 soup.body.insert(0, bs(value, 'html.parser'))
                 self.__body = str(soup)
+            else:
+                self.__body = ''.join((value, '\n', self.__body))
         else:
             self.__body = value
         self._track_changes.add('body')
