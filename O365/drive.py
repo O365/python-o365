@@ -1198,6 +1198,10 @@ class Folder(DriveItem):
             data = response.json()
 
             upload_url = data.get(self._cc('uploadUrl'), None)
+            log.info('Resumable upload on url: {}'.format(upload_url))
+            expiration_date = data.get(self._cc('expirationDateTime'), None)
+            if expiration_date:
+                log.info('Expiration Date for this upload url is: {}'.format(expiration_date))
             if upload_url is None:
                 log.error('Create upload session response without '
                           'upload_url for file {}'.format(item.name))
