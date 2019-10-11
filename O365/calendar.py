@@ -1722,6 +1722,7 @@ class Schedule(ApiComponent):
         'root_calendars': '/calendars',
         'get_calendar': '/calendars/{id}',
         'default_calendar': '/calendar',
+        'get_availability': '/calendar/getSchedule',
     }
 
     calendar_constructor = Calendar
@@ -1909,3 +1910,43 @@ class Schedule(ApiComponent):
         :rtype: Event
         """
         return self.event_constructor(parent=self, subject=subject)
+
+    def get_availability(self, schedules, start, end, interval=60):
+        """
+        Returns the free/busy availability for a set of users in a given time frame
+        :param list schedules: a list of strings (email addresses)
+        :param datetime start: the start time frame to look for available space
+        :param datetime end: the end time frame to look for available space
+        :param int interval: the number of minutes to look for space
+        """
+        url = self.build_url(self._endpoints.get('get_availability'))
+
+        data = {
+            'startTime': self._build_date_time_time_zone(start),
+            'endTime': self._build_date_time_time_zone(end),
+            'availabilityViewInterval': interval,
+            'schedules': schedules
+        }
+
+        response = self.con.post(url, data=data)
+        if not response:
+            return []
+
+        data = response.json().get('value', [])
+
+        # transform dates and availabilityView
+        availability_view_codes = {
+            '0': 'free',
+            '1': 'tentative',
+            '2': 'busy',
+            '3': 'out of office',
+            '4': 'working elsewhere',
+        }
+        for schedule in data:
+            a_view = schedule.get('availabilityView', '')
+            schedule['availabilityView'] = [availability_view_codes.get(code, 'unkknown') for code in a_view]
+            for item in schedule.get('scheduleItems', []):
+                item['start'] = self._parse_date_time_time_zone(item.get('start'))
+                item['end'] = self._parse_date_time_time_zone(item.get('end'))
+
+        return data
