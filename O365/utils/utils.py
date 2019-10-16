@@ -732,27 +732,9 @@ class Query:
         # in the order_by first
         if not self.has_order:
             return None
-        filter_order_clauses = OrderedDict([(filter_attr[0], None)
-                                            for filter_attr in self._filters
-                                            if isinstance(filter_attr, list)])
 
-        # any order_by attribute that appears in the filters is ignored
-        order_by_dict = self._order_by.copy()
-        for filter_oc in filter_order_clauses.keys():
-            direction = order_by_dict.pop(filter_oc, None)
-            filter_order_clauses[filter_oc] = direction
-
-        filter_order_clauses.update(
-            order_by_dict)  # append any remaining order_by clause
-
-        if filter_order_clauses:
-            return ','.join(['{} {}'.format(attribute,
-                                            direction if direction else '')
-                            .strip()
-                             for attribute, direction in
-                             filter_order_clauses.items()])
-        else:
-            return None
+        return ','.join(['{} {}'.format(attribute, direction or '').strip()
+                         for attribute, direction in self._order_by.items()])
 
     def get_selects(self):
         """ Returns the result select clause
