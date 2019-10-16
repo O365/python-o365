@@ -148,7 +148,7 @@ class Folder(ApiComponent):
         if object_id is not None:
             url = self.build_url(self._endpoints.get('message').format(id=object_id))
             params = None
-            if query and query.has_selects or query.has_expands:
+            if query and (query.has_selects or query.has_expands):
                 params = query.as_params()
             response = self.con.get(url, params=params)
             if not response:
