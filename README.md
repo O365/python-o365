@@ -117,25 +117,29 @@ You can only authenticate using oauth athentication as Microsoft deprecated basi
 
 There are currently two authentication methods:
 
-- [Authenticate on behalf of a user](https://docs.microsoft.com/en-us/graph/auth-v2-user?context=graph%2Fapi%2F1.0&view=graph-rest-1.0): Any user will give consent to the app to access it's resources. 
+- [Authenticate on behalf of a user](https://docs.microsoft.com/en-us/graph/auth-v2-user?context=graph%2Fapi%2F1.0&view=graph-rest-1.0): 
+Any user will give consent to the app to access it's resources. 
 This oauth flow is called **authorization code grant flow**. This is the default authentication method used by this library.
-- [Authenticate with your own identity](https://docs.microsoft.com/en-us/graph/auth-v2-service?context=graph%2Fapi%2F1.0&view=graph-rest-1.0): This will use your own identity. This oauth flow is called **client credentials grant flow**. 
+- [Authenticate with your own identity](https://docs.microsoft.com/en-us/graph/auth-v2-service?context=graph%2Fapi%2F1.0&view=graph-rest-1.0): 
+This will use your own identity (the app identity). This oauth flow is called **client credentials grant flow**. 
 
     > 'Authenticate with your own identity' is not an allowed method for **Microsoft Personal accounts**. 
 
 When to use one or the other and requirements:
 
-  Topic                             | On behalf of a user                                   | With your own identity
- :---:                              | :---:                                                 | :---:
- **Register the App**               | Required                                              | Required
- **Requires Admin Consent**         | Only on certain advanced permissions                  | Yes, for everything
- **App Permission Type**            | Delegated Permissions (on behalf of the user)         | Application Permissions
- **Auth requirements**              | Client Id, Client Secret, Authorization Code          | Client Id, Client Secret
- **Authentication**                 | 2 step authentication with user consent               | 1 step authentication
- **Auth Scopes**                    | Required                                              | None
- **Token Expiration**               | 60 Minutes without refresh token or 90 days*          | 60 Minutes*
- **Resources**                      | access the user resources, and any shared resources   | all Azure AD users
- **Microsoft Account Type**         | Any                                                   | Not Allowed for Personal Accounts
+  Topic                             | On behalf of a user *(auth_flow_type=='authorization')*  | With your own identity *(auth_flow_type=='credentials')*
+ :---:                              | :---:                                                    | :---:
+ **Register the App**               | Required                                                 | Required
+ **Requires Admin Consent**         | Only on certain advanced permissions                     | Yes, for everything
+ **App Permission Type**            | Delegated Permissions (on behalf of the user)            | Application Permissions
+ **Auth requirements**              | Client Id, Client Secret, Authorization Code             | Client Id, Client Secret
+ **Authentication**                 | 2 step authentication with user consent                  | 1 step authentication
+ **Auth Scopes**                    | Required                                                 | None
+ **Token Expiration**               | 60 Minutes without refresh token or 90 days*             | 60 Minutes*
+ **Login Expiration**               | Unlimited if there is a refresh token and as long as a refresh is done within the 90 days          | Unlimited
+ **Resources**                      | Access the user resources, and any shared resources      | All Azure AD users the app has access to
+ **Microsoft Account Type**         | Any                                                      | Not Allowed for Personal Accounts
+ **Tenant ID Required**             | Defaults to "common"                                     | Required (can't be "common")
 
 **O365 will automatically refresh the token for you on either authentication method. The refresh token lasts 90 days but it's refreshed on each connection so as long as you connect within 90 days you can have unlimited access.*
 
@@ -208,7 +212,7 @@ This section is explained using Microsoft Graph Protocol, almost the same applie
     
     - When authenticating with your own identity:
     
-        1. Instantiate an `Account` object with the credentials (client id and client secret) and specifying the parameter `auth_flow_type` to *"credentials"*. You don't need to specify any scopes.
+        1. Instantiate an `Account` object with the credentials (client id and client secret), specifying the parameter `auth_flow_type` to *"credentials"*. You also need to provide a 'tenant_id'. You don't need to specify any scopes.
         1. Call `account.authenticate`. This call will request a token for you and store it in the backend. No user interaction is needed. The method will store the token in the backend and return True if the authentication succeeded.
             
             For Example:
@@ -219,7 +223,7 @@ This section is explained using Microsoft Graph Protocol, almost the same applie
            
             # the default protocol will be Microsoft Graph
            
-            account = Account(credentials, auth_flow_type='credentials')
+            account = Account(credentials, auth_flow_type='credentials', tenant_id='my-tenant-id')
             if account.authenticate():
                print('Authenticated!')
             ```
@@ -531,7 +535,7 @@ message = Message(parent=account, main_resource='shared_mailbox@example.com')  #
 
 Usually you will work with the default 'ME' resource, but you can also use one of the following:
 
-- **'me'**: the user which has given consent. the default for every protocol. Overwritten when using "with your own identity" authentication method.
+- **'me'**: the user which has given consent. the default for every protocol. Overwritten when using "with your own identity" authentication method (Only available on the authorization auth_flow_type). 
 - **'user:user@domain.com'**: a shared mailbox or a user account for which you have permissions. If you don't provide 'user:' will be infered anyways.
 - **'sharepoint:sharepoint-site-id'**: a sharepoint site id.
 - **'group:group-site-id'**: a office365 group id.  

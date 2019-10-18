@@ -309,6 +309,9 @@ class Connection:
             raise ValueError('Provide valid auth credentials')
 
         self._auth_flow_type = auth_flow_type  # 'authorization' or 'credentials'
+        if auth_flow_type == 'credentials' and tenant_id == 'common':
+            raise ValueError('When using the "credentials" auth_flow the "tenant_id" must be set')
+        self.tenant_id = tenant_id
         self.auth = credentials
         self.scopes = scopes
         self.store_token = True
