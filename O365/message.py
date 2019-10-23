@@ -1,5 +1,6 @@
 import datetime as dt
 import logging
+from enum import Enum
 
 import pytz
 # noinspection PyPep8Naming
@@ -13,6 +14,12 @@ from .utils import OutlookWellKnowFolderNames, ApiComponent, \
 from .calendar import Event
 
 log = logging.getLogger(__name__)
+
+
+class RecipientType(Enum):
+    TO = 'to'
+    CC = 'cc'
+    BCC = 'bcc'
 
 
 class MeetingMessageType(CaseEnum):

@@ -1,23 +1,15 @@
 import datetime as dt
 import logging
-from enum import Enum
 
 from dateutil.parser import parse
 
 from .utils import Recipients
 from .utils import AttachableMixin, TrackerSet
 from .utils import Pagination, NEXT_LINK_KEYWORD, ApiComponent
-from .message import Message
+from .message import Message, RecipientType
 
-GAL_MAIN_RESOURCE = 'users'
 
 log = logging.getLogger(__name__)
-
-
-class RecipientType(Enum):
-    TO = 'to'
-    CC = 'cc'
-    BCC = 'bcc'
 
 
 class Contact(ApiComponent, AttachableMixin):
@@ -65,9 +57,9 @@ class Contact(ApiComponent, AttachableMixin):
         self.__modified = cloud_data.get(cc('lastModifiedDateTime'), None)
 
         local_tz = self.protocol.timezone
-        self.__created = parse(self.created).astimezone(
+        self.__created = parse(self.__created).astimezone(
             local_tz) if self.__created else None
-        self.__modified = parse(self.modified).astimezone(
+        self.__modified = parse(self.__modified).astimezone(
             local_tz) if self.__modified else None
 
         self.__display_name = cloud_data.get(cc('displayName'), '')
@@ -545,10 +537,6 @@ class Contact(ApiComponent, AttachableMixin):
         :return: newly created message
         :rtype: Message or None
         """
-        if self.main_resource == GAL_MAIN_RESOURCE:
-            # preventing the contact lookup to explode for big organizations..
-            raise RuntimeError('Sending a message to all users within an '
-                               'Organization is not allowed')
 
         if isinstance(recipient_type, str):
             recipient_type = RecipientType(recipient_type)
@@ -569,7 +557,6 @@ class BaseContactFolder(ApiComponent):
     """ Base Contact Folder Grouping Functionality """
 
     _endpoints = {
-        'gal': '',
         'root_contacts': '/contacts',
         'folder_contacts': '/contactFolders/{id}/contacts',
         'get_folder': '/contactFolders/{id}',
@@ -626,13 +613,6 @@ class BaseContactFolder(ApiComponent):
     def get_contacts(self, limit=100, *, query=None, order_by=None, batch=None):
         """ Gets a list of contacts from this address book
 
-        When querying the Global Address List the Users endpoint will be used.
-        Only a limited set of information will be available unless you have
-        access to scope 'User.Read.All' which requires App Administration
-        Consent.
-
-        Also using endpoints has some limitations on the querying capabilities.
-
         To use query an order_by check the OData specification here:
         http://docs.oasis-open.org/odata/odata/v4.0/errata03/os/complete/
         part2-url-conventions/odata-v4.0-errata03-os-part2-url-conventions
@@ -650,16 +630,12 @@ class BaseContactFolder(ApiComponent):
         :rtype: list[Contact] or Pagination
         """
 
-        if self.main_resource == GAL_MAIN_RESOURCE:
-            # using Users endpoint to access the Global Address List
-            url = self.build_url(self._endpoints.get('gal'))
+        if self.root:
+            url = self.build_url(self._endpoints.get('root_contacts'))
         else:
-            if self.root:
-                url = self.build_url(self._endpoints.get('root_contacts'))
-            else:
-                url = self.build_url(
-                    self._endpoints.get('folder_contacts').format(
-                        id=self.folder_id))
+            url = self.build_url(
+                self._endpoints.get('folder_contacts').format(
+                    id=self.folder_id))
 
         if limit is None or limit > self.protocol.max_top_value:
             batch = self.protocol.max_top_value
@@ -705,9 +681,8 @@ class BaseContactFolder(ApiComponent):
         if not email:
             return None
 
-        email = email.strip()
         query = self.q().any(collection='email_addresses', attribute='address',
-                             word=email, operation='eq')
+                             word=email.strip(), operation='eq')
         contacts = list(self.get_contacts(limit=1, query=query))
         return contacts[0] if contacts else None
 
@@ -964,40 +939,3 @@ class AddressBook(ContactFolder):
 
     def __repr__(self):
         return 'Address Book resource: {}'.format(self.main_resource)
-
-
-class GlobalAddressList(BaseContactFolder):
-    """ A class representing the Global Address List (Users API) """
-
-    def __init__(self, *, parent=None, con=None, **kwargs):
-        # Set instance to root instance and main_resource to GAL_MAIN_RESOURCE
-        super().__init__(parent=parent, con=con, root=True,
-                         main_resource=GAL_MAIN_RESOURCE,
-                         name='Global Address List', **kwargs)
-
-    def __repr__(self):
-        return 'Global Address List'
-
-    def get_contact_by_email(self, email):
-        """ Returns a Contact by it's email
-
-        :param email: email to get contact for
-        :return: Contact for specified email
-        :rtype: Contact
-        """
-        if not email:
-            return None
-
-        email = email.strip()
-
-        url = self.build_url('{}/{}'.format(self._endpoints.get('gal'), email))
-
-        response = self.con.get(url)
-        if not response:
-            return []
-
-        data = response.json()
-
-        # Everything received from cloud must be passed as self._cloud_data_key
-        return self.contact_constructor(parent=self,
-                                        **{self._cloud_data_key: data})

@@ -2,7 +2,7 @@ from .connection import Connection, Protocol, MSGraphProtocol
 from .utils import ME_RESOURCE
 
 
-class Account(object):
+class Account:
 
     def __init__(self, credentials, *, protocol=None, main_resource=None, **kwargs):
         """ Creates an object which is used to access resources related to the
@@ -112,6 +112,10 @@ class Account(object):
         else:
             raise ValueError('Connection "auth_flow_type" must be either "authorization" or "credentials"')
 
+    def get_current_user(self):
+        directory = self.directory(resource=ME_RESOURCE)
+        return directory.get_current_user()
+
     @property
     def connection(self):
         """ Alias for self.con
@@ -148,8 +152,7 @@ class Account(object):
 
         :param str resource: Custom resource to be used in this address book
          (Defaults to parent main_resource)
-        :param str address_book: Choose from 'Personal' or
-         'GAL' (Global Address List)
+        :param str address_book: Choose from 'Personal' or 'Directory'
         :return: a representation of the specified address book
         :rtype: AddressBook or GlobalAddressList
         :raises RuntimeError: if invalid address_book is specified
@@ -159,14 +162,21 @@ class Account(object):
 
             return AddressBook(parent=self, main_resource=resource,
                                name='Personal Address Book')
-        elif address_book.lower() == 'gal':
-            from .address_book import GlobalAddressList
+        elif address_book.lower() in ('gal', 'directory'):
+            # for backwards compatibility only
+            from .directory import Directory
 
-            return GlobalAddressList(parent=self)
+            return Directory(parent=self)
         else:
             raise RuntimeError(
-                'address_book must be either "personal" '
-                '(resource address book) or "gal" (Global Address List)')
+                'address_book must be either "Personal" '
+                '(resource address book) or "Directory" (Active Directory)')
+
+    def directory(self, resource=None):
+        """ Returns the active directory instance"""
+        from .directory import Directory, USERS_RESOURCE
+
+        return Directory(parent=self, main_resource=resource or USERS_RESOURCE)
 
     def schedule(self, *, resource=None):
         """ Get an instance to work with calendar events for the

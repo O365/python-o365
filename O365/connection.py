@@ -2,8 +2,6 @@ import json
 import logging
 import os
 import time
-import warnings
-from pathlib import Path
 
 from oauthlib.oauth2 import TokenExpiredError, WebApplicationClient, BackendApplicationClient
 from requests import Session
