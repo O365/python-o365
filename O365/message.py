@@ -266,6 +266,7 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
             local_tz) if self.__sent else None
 
         self.__attachments = MessageAttachments(parent=self, attachments=[])
+        self.__attachments.add({self._cloud_data_key: cloud_data.get(cc('attachments'), [])})
         self.has_attachments = cloud_data.get(cc('hasAttachments'), False)
         self.__subject = cloud_data.get(cc('subject'), '')
         self.__body_preview = cloud_data.get(cc('bodyPreview'), '')
