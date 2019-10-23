@@ -478,7 +478,7 @@ Reasons to use `MSGraphProtocol`:
 - It can access more resources over Office 365 (for example OneDrive)
 
 Reasons to use `MSOffice365Protocol`:
-- It can send emails with attachments up to 150 MB. MSGraph only allows 4MB on each request.
+- It can send emails with attachments up to 150 MB. MSGraph only allows 4MB on each request (UPDATE: Starting 22 October'19 you can [upload files up to 150MB with MSGraphProtocol **beta** version](https://developer.microsoft.com/en-us/office/blogs/attaching-large-files-to-outlook-messages-in-microsoft-graph-preview/))
 
 The default protocol used by the `Account` Class is `MSGraphProtocol`.
 
