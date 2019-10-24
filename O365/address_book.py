@@ -2,6 +2,7 @@ import datetime as dt
 import logging
 
 from dateutil.parser import parse
+from requests.exceptions import HTTPError
 
 from .utils import Recipients
 from .utils import AttachableMixin, TrackerSet
@@ -18,7 +19,9 @@ class Contact(ApiComponent, AttachableMixin):
     _endpoints = {
         'contact': '/contacts',
         'root_contact': '/contacts/{id}',
-        'child_contact': '/contactFolders/{folder_id}/contacts'
+        'child_contact': '/contactFolders/{folder_id}/contacts',
+        'photo': '/contacts/{id}/photo/$value',
+        'photo_size': '/contacts/{id}/photos/{size}/$value',
     }
 
     message_constructor = Message
@@ -551,6 +554,37 @@ class Contact(ApiComponent, AttachableMixin):
         target_recipients.add(recipient)
 
         return new_message
+
+    def get_profile_photo(self, size=None):
+        """ Returns this contact profile photo
+        :param str size: 48x48, 64x64, 96x96, 120x120, 240x240,
+         360x360, 432x432, 504x504, and 648x648
+        """
+        if size is None:
+            url = self.build_url(self._endpoints.get('photo').format(id=self.object_id))
+        else:
+            url = self.build_url(self._endpoints.get('photo_size').format(id=self.object_id, size=size))
+
+        try:
+            response = self.con.get(url)
+        except HTTPError as e:
+            log.debug('Error while retrieving the contact profile photo. Error: {}'.format(e))
+            return None
+
+        if not response:
+            return None
+
+        return response.content
+
+    def update_profile_photo(self, photo):
+        """ Updates this contact profile photo
+        :param bytes photo: the photo data in bytes
+        """
+
+        url = self.build_url(self._endpoints.get('photo').format(id=self.object_id))
+        response = self.con.patch(url, data=photo, headers={'Content-type': 'image/jpeg'})
+
+        return bool(response)
 
 
 class BaseContactFolder(ApiComponent):

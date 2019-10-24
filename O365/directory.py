@@ -1,12 +1,20 @@
+import logging
 from dateutil.parser import parse
-
+from requests.exceptions import HTTPError
 from .message import Message, RecipientType
 from .utils import ApiComponent, NEXT_LINK_KEYWORD, Pagination, ME_RESOURCE
 
 USERS_RESOURCE = 'users'
 
+log = logging.getLogger(__name__)
+
 
 class User(ApiComponent):
+
+    _endpoints = {
+        'photo': '/photo/$value',
+        'photo_size': '/photos/{size}/$value'
+    }
 
     message_constructor = Message
 
@@ -30,21 +38,25 @@ class User(ApiComponent):
         main_resource = kwargs.pop('main_resource', None) or (
             getattr(parent, 'main_resource', None) if parent else None)
 
+        cloud_data = kwargs.get(self._cloud_data_key, {})
+
+        self.object_id = cloud_data.get('id')
+
+        if main_resource == USERS_RESOURCE:
+            main_resource += '/{}'.format(self.object_id)
+
         super().__init__(
             protocol=parent.protocol if parent else kwargs.get('protocol'),
             main_resource=main_resource)
 
-        cloud_data = kwargs.get(self._cloud_data_key, {})
-
-        cc = self._cc
         local_tz = self.protocol.timezone
+        cc = self._cc
 
-        self.object_id = cloud_data.get(cc('id'))
+        self.user_principal_name = cloud_data.get(cc('userPrincipalName'))
         self.display_name = cloud_data.get(cc('displayName'))
         self.given_name = cloud_data.get(cc('givenName'), '')
         self.surname = cloud_data.get(cc('surname'), '')
         self.mail = cloud_data.get(cc('mail'))  # read only
-        self.user_principal_name = cloud_data.get(cc('userPrincipalName'))
         self.business_phones = cloud_data.get(cc('businessPhones'), [])
         self.job_title = cloud_data.get(cc('jobTitle'))
         self.mobile_phone = cloud_data.get(cc('mobilePhone'))
@@ -141,6 +153,37 @@ class User(ApiComponent):
         target_recipients.add(recipient)
 
         return new_message
+
+    def get_profile_photo(self, size=None):
+        """ Returns the user profile photo
+        :param str size: 48x48, 64x64, 96x96, 120x120, 240x240,
+         360x360, 432x432, 504x504, and 648x648
+        """
+        if size is None:
+            url = self.build_url(self._endpoints.get('photo'))
+        else:
+            url = self.build_url(self._endpoints.get('photo_size').format(size=size))
+
+        try:
+            response = self.con.get(url)
+        except HTTPError as e:
+            log.debug('Error while retrieving the user profile photo. Error: {}'.format(e))
+            return None
+
+        if not response:
+            return None
+
+        return response.content
+
+    def update_profile_photo(self, photo):
+        """ Updates this user profile photo
+        :param bytes photo: the photo data in bytes
+        """
+
+        url = self.build_url(self._endpoints.get('photo'))
+        response = self.con.patch(url, data=photo, headers={'Content-type': 'image/jpeg'})
+
+        return bool(response)
 
 
 class Directory(ApiComponent):
@@ -258,7 +301,7 @@ class Directory(ApiComponent):
         :return: User for specified email
         :rtype: User
         """
-        url = self.build_url(self._endpoints.get('get_user').format(user))
+        url = self.build_url(self._endpoints.get('get_user').format(email=user))
         return self._get_user(url)
 
     def get_current_user(self):
