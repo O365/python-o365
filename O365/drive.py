@@ -84,19 +84,20 @@ class DownloadableMixin:
             if convert_to_pdf and Path(name).suffix in ALLOWED_PDF_EXTENSIONS:
                 params['format'] = 'pdf'
 
-            with self.con.get(url, stream=stream, params=params) as response:
-                if not response:
-                    log.debug('Downloading driveitem Request failed: {}'.format(
-                        response.reason))
-                    return False
-                with to_path.open(mode='wb') as output:
-                    if stream:
-                        for chunk in response.iter_content(
-                                chunk_size=chunk_size):
-                            if chunk:
-                                output.write(chunk)
-                    else:
-                        output.write(response.content)
+            response = self.con.get(url, stream=stream, params=params)
+            if not response:
+                log.debug('Downloading driveitem Request failed: {}'.format(
+                    response.reason))
+                return False
+            with to_path.open(mode='wb') as output:
+                if stream:
+                    for chunk in response.iter_content(
+                            chunk_size=chunk_size):
+                        if chunk:
+                            output.write(chunk)
+                else:
+                    output.write(response.content)
+            response.close()
         except Exception as e:
             log.error(
                 'Error downloading driveitem {}. Error: {}'.format(self.name,
