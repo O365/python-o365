@@ -12,6 +12,8 @@ from .decorators import fluent
 
 ME_RESOURCE = 'me'
 USERS_RESOURCE = 'users'
+GROUPS_RESOURCE = 'groups'
+SITES_RESOURCE = 'sites'
 
 NEXT_LINK_KEYWORD = '@odata.nextLink'
 
@@ -348,13 +350,26 @@ class ApiComponent:
     def _parse_resource(resource):
         """ Parses and completes resource information """
         resource = resource.strip() if resource else resource
-        if resource in {ME_RESOURCE, USERS_RESOURCE}:
+        if resource in {ME_RESOURCE, USERS_RESOURCE, GROUPS_RESOURCE, SITES_RESOURCE}:
             return resource
+        elif resource.startswith('user:'):
+            # user resource shorthand
+            resource = resource.replace('user:', '', 1)
+            return '{}/{}'.format(USERS_RESOURCE, resource)
         elif '@' in resource and not resource.startswith(USERS_RESOURCE):
+            # user resource backup
             # when for example accessing a shared mailbox the
             # resource is set to the email address. we have to prefix
             # the email with the resource 'users/' so --> 'users/email_address'
             return '{}/{}'.format(USERS_RESOURCE, resource)
+        elif resource.startswith('group:'):
+            # group resource shorthand
+            resource = resource.replace('group:', '', 1)
+            return '{}/{}'.format(GROUPS_RESOURCE, resource)
+        elif resource.startswith('site:'):
+            # sharepoint site resource shorthand
+            resource = resource.replace('site:', '', 1)
+            return '{}/{}'.format(SITES_RESOURCE, resource)
         else:
             return resource
 
