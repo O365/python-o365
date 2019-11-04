@@ -260,8 +260,9 @@ class MSOffice365Protocol(Protocol):
                                       'ItemAttachment'
         self.max_top_value = 999  # Max $top parameter value
 
+
 class MSBusinessCentral365Protocol(Protocol):
-    
+
     """ A Microsoft Business Central Protocol Implementation
     https://docs.microsoft.com/en-us/dynamics-nav/api-reference/v1.0/endpoints-apis-for-dynamics
     """
@@ -289,8 +290,8 @@ class MSBusinessCentral365Protocol(Protocol):
         else:
             _version = "1.0"
             _environment = ''
-                
-        self._protocol_url = ("{}v{}{}/api/").format(self._protocol_url,_version,_environment)
+
+        self._protocol_url = "{}v{}{}/api/".format(self._protocol_url, _version, _environment)
 
         super().__init__(protocol_url=self._protocol_url,
                          api_version=api_version,
@@ -306,7 +307,8 @@ class MSBusinessCentral365Protocol(Protocol):
         self.keyword_data_store[
             'item_attachment_type'] = '#microsoft.graph.itemAttachment'
         self.max_top_value = 999  # Max $top parameter value
-        
+
+
 class Connection:
     """ Handles all communication (requests) between the app and the server """
 
