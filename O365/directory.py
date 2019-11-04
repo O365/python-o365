@@ -189,7 +189,7 @@ class User(ApiComponent):
 class Directory(ApiComponent):
 
     _endpoints = {
-        'get_user': '/{email}'
+        'get_user': '/{}'
     }
     user_constructor = User
 
