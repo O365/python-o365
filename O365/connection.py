@@ -263,7 +263,7 @@ class MSOffice365Protocol(Protocol):
 class MSBusinessCentral365Protocol(Protocol):
     
     """ A Microsoft Business Central Protocol Implementation
-    https://docs.microsoft.com/en-us/outlook/rest/compare-graph-outlook
+    https://docs.microsoft.com/en-us/dynamics-nav/api-reference/v1.0/endpoints-apis-for-dynamics
     """
 
     _protocol_url = 'https://api.businesscentral.dynamics.com/'
