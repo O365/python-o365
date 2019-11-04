@@ -4,6 +4,8 @@ from .utils import ME_RESOURCE
 
 class Account:
 
+    connection_constructor = Connection
+
     def __init__(self, credentials, *, protocol=None, main_resource=None, **kwargs):
         """ Creates an object which is used to access resources related to the
         specified credentials
@@ -46,7 +48,7 @@ class Account:
         else:
             raise ValueError('"auth_flow_type" must be either "authorization" or "credentials"')
 
-        self.con = Connection(credentials, **kwargs)
+        self.con = self.connection_constructor(credentials, **kwargs)
         self.main_resource = main_resource or self.protocol.default_resource
 
     def __repr__(self):
@@ -120,7 +122,7 @@ class Account:
     def connection(self):
         """ Alias for self.con
 
-        :rtype: Connection
+        :rtype: type(self.connection_constructor)
         """
         return self.con
 
