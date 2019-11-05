@@ -340,6 +340,9 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
     def __repr__(self):
         return 'Subject: {}'.format(self.subject)
 
+    def __eq__(self, other):
+        return self.object_id == other.object_id
+
     @property
     def is_read(self):
         """ Check if the message is read or not

@@ -69,6 +69,9 @@ class Task(ApiComponent):
     def __repr__(self):
         return 'Task: {}'.format(self.title)
 
+    def __eq__(self, other):
+        return self.object_id == other.object_id
+
 
 class Planner(ApiComponent):
     """ A microsoft planner class

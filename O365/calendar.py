@@ -889,6 +889,9 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
             return 'Subject: {} (starts: {} {} and ends: {} {})'.format(self.subject, self.start.date(), self.start.time(), self.end.date(),
                                                                         self.end.time())
 
+    def __eq__(self, other):
+        return self.object_id == other.object_id
+
     def to_api_data(self, restrict_keys=None):
         """ Returns a dict to communicate with the server
 
@@ -1516,6 +1519,9 @@ class Calendar(ApiComponent, HandleRecipientsMixin):
 
     def __repr__(self):
         return 'Calendar: {} from {}'.format(self.name, self.owner)
+
+    def __eq__(self, other):
+        return self.calendar_id == other.calendar_id
 
     @property
     def owner(self):

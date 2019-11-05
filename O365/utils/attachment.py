@@ -156,6 +156,9 @@ class BaseAttachment(ApiComponent):
         """ Returns the size of this attachment """
         return self.size
 
+    def __eq__(self, other):
+        return self.attachment_id == other.attachment_id
+
     def to_api_data(self):
         """ Returns a dict to communicate with the server
 

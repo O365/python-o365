@@ -1320,6 +1320,9 @@ class Drive(ApiComponent):
         return 'Drive: {}'.format(
             self.name or self.object_id or 'Default Drive')
 
+    def __eq__(self, other):
+        return self.object_id == other.object_id
+
     def get_root_folder(self):
         """ Returns the Root Folder of this drive
 
