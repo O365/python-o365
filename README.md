@@ -10,7 +10,7 @@ The project is currently developed and maintained by [Janscas](https://github.co
 
 Core developers: 
 - [Toben Archer](https://github.com/Narcolapser)
-- [Royce Melborn](https://github.com/roycem90)
+- [Royce Melborn](https://github.com/GeethanadhP)
 - [Janscas](https://github.com/janscas)
 
 We are always open to new pull requests!
@@ -50,7 +50,7 @@ This project was also a learning resource for us. This is a list of not so commo
 - Factory paradigm
 - Package organization
 - Timezone conversion and timezone aware datetimes
-- Etc. (see the code!)
+- Etc. ([see the code!](https://github.com/O365/python-o365/tree/master/O365))
 
 
 What follows is kind of a wiki...
