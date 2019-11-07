@@ -449,13 +449,13 @@ account = Account(credentials, token_backend=token_backend)
 # ...
 ```
 
-To implememnt a new TokenBackend:
+To implement a new TokenBackend:
  
  1. Subclass `BaseTokenBackend`
  1. Implement the following methods:
  
      - `__init__` (don't forget to call `super().__init__`)
-     - `get_token`: this should set `self.token` and return a `Token` instance or None
+     - `load_token`: this should load the token from the desired backend and return a `Token` instance or None
      - `save_token`: this should store the `self.token` in the desired backend.
      - Optionally you can implement: `check_token` and `delete_token`
      

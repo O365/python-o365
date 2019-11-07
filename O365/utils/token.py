@@ -67,9 +67,14 @@ class BaseTokenBackend(ABC):
         self._token = value
 
     @abstractmethod
-    def get_token(self):
+    def load_token(self):
         """ Abstract method that will retrieve the oauth token """
         raise NotImplementedError
+
+    def get_token(self):
+        """ Loads the token, stores it in the token property and returns it"""
+        self.token = self.load_token()  # store the token in the 'token' property
+        return self.token
 
     @abstractmethod
     def save_token(self):
@@ -83,6 +88,44 @@ class BaseTokenBackend(ABC):
     def check_token(self):
         """ Optional Abstract method to check for the token existence """
         raise NotImplementedError
+
+    def should_refresh_token(self):
+        """
+        This method is intended to be implemented for environments
+         where multiple Connection instances are running on paralel.
+
+        This method should check if it's time to refresh the token or not.
+        The chosen backend can store a flag somewhere to answer this question.
+        This can avoid race conditions between different instances trying to
+         refresh the token at once, when only one should make the refresh.
+
+        > This is an example of how to achieve this:
+        > 1) Along with the token store a Flag
+        > 2) The first to see the Flag as True must transacionally update it
+        >     to False. This method then returns True and therefore the
+        >     connection will refresh the token.
+        > 3) The save_token method should be rewrited to also update the flag
+        >     back to True always.
+        > 4) Meanwhile between steps 2 and 3, any other token backend checking
+        >     for this method should get the flag with a False value.
+        >     This method should then wait and check again the flag.
+        >     This can be implemented as a call with an incremental backoff
+        >     factor to avoid too many calls to the database.
+        >     At a given point in time, the flag will return True.
+        >     Then this method should load the token and finally return False
+        >     signaling there is no need to refresh the token.
+
+        If this returns True, then the Connection will refresh the token.
+        If this returns False, then the Connection will NOT refresh the token.
+
+        By default this always returns True
+
+        There is an example of this in the examples folder.
+
+        :rtype: bool
+        :return: True if the Connection can refresh the token false otherwise.
+        """
+        return True
 
 
 class FileSystemTokenBackend(BaseTokenBackend):
@@ -107,7 +150,7 @@ class FileSystemTokenBackend(BaseTokenBackend):
     def __repr__(self):
         return str(self.token_path)
 
-    def get_token(self):
+    def load_token(self):
         """
         Retrieves the token from the File System
         :return dict or None: The token if exists, None otherwise
@@ -116,7 +159,6 @@ class FileSystemTokenBackend(BaseTokenBackend):
         if self.token_path.exists():
             with self.token_path.open('r') as token_file:
                 token = self.token_constructor(self.serializer.load(token_file))
-        self.token = token
         return token
 
     def save_token(self):
@@ -179,7 +221,7 @@ class FirestoreBackend(BaseTokenBackend):
     def __repr__(self):
         return 'Collection: {}. Doc Id: {}'.format(self.collection, self.doc_id)
     
-    def get_token(self):
+    def load_token(self):
         """
         Retrieves the token from the store
         :return dict or None: The token if exists, None otherwise
@@ -196,7 +238,6 @@ class FirestoreBackend(BaseTokenBackend):
             token_str = doc.get(self.field_name)
             if token_str:
                 token = self.token_constructor(self.serializer.loads(token_str))
-        self.token = token
         return token
 
     def save_token(self):

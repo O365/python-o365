@@ -632,11 +632,19 @@ class Connection:
                 if token_refreshed:
                     # Refresh token done but still TokenExpiredError raise
                     raise RuntimeError('Token Refresh Operation not working')
-                log.info('Oauth Token is expired, fetching a new token')
-                if self.refresh_token() is False:
-                    raise RuntimeError('Token Refresh Operation not working')
-                log.info('New oauth token fetched')
-                token_refreshed = True
+                if self.token_backend.should_refresh_token():
+                    # The backend has checked that we can refresh the token
+                    log.info('Oauth Token is expired, fetching a new token')
+                    if self.refresh_token() is False:
+                        raise RuntimeError('Token Refresh Operation not working')
+                    log.info('New oauth token fetched')
+                    token_refreshed = True
+                else:
+                    # the token was refreshed by another token and updated into
+                    # this instance, so: go back to the loop and try the request
+                    # again.
+                    pass
+
             except (ConnectionError, ProxyError, SSLError, Timeout) as e:
                 # We couldn't connect to the target url, raise error
                 log.debug('Connection Error calling: {}.{}'
