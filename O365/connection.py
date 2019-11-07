@@ -51,7 +51,8 @@ DEFAULT_SCOPES = {
     'onedrive': ['Files.Read.All'],
     'onedrive_all': ['Files.ReadWrite.All'],
     'sharepoint': ['Sites.Read.All'],
-    'sharepoint_dl': ['Sites.ReadWrite.All']
+    'sharepoint_dl': ['Sites.ReadWrite.All'],
+    'settings_all': ['MailboxSettings.ReadWrite'],
 }
 
 
