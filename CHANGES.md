@@ -188,5 +188,5 @@ Almost every release features a lot of bugfixes but those are not listed here.
 ## Version 1.0 (2018-11-06)
 
 Library updated from the previous implementation.
-Merged from [pyo365](https://github.com/janscas/pyo365) 
-Commit [59f8067b](https://github.com/O365/python-o365/commit/59f8067be40cd5c47f3d352fe7bde812525157cb)
+Merged from [pyo365](https://github.com/janscas/pyo365).
+[Merge pull request #135 from O365/rewrite](https://github.com/O365/python-o365/commit/a3d2b038a91c3954fb8f02502e5abd429be85d3c)
