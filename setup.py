@@ -29,7 +29,7 @@ def read(fname):
 
 
 requires = [
-    'requests>=2.0.0',
+    'requests>=2.18.0',
     'requests_oauthlib>=1.2.0',
     'python-dateutil>=2.7',
     'pytz>=2018.5',

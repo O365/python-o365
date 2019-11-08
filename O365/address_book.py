@@ -107,6 +107,15 @@ class Contact(ApiComponent, AttachableMixin):
             self.emails.add(user_principal_name)
         self.__emails.untrack = False
 
+    def __str__(self):
+        return self.__repr__()
+
+    def __repr__(self):
+        return self.display_name or self.full_name or 'Unknown Name'
+
+    def __eq__(self, other):
+        return self.object_id == other.object_id
+
     @property
     def created(self):
         """ Created Time
@@ -421,12 +430,6 @@ class Contact(ApiComponent, AttachableMixin):
         """
         return self.__folder_id
 
-    def __str__(self):
-        return self.__repr__()
-
-    def __repr__(self):
-        return self.display_name or self.full_name or 'Unknown Name'
-
     def to_api_data(self, restrict_keys=None):
         """ Returns a dictionary in cloud format
 
@@ -643,6 +646,9 @@ class BaseContactFolder(ApiComponent):
 
     def __repr__(self):
         return 'Contact Folder: {}'.format(self.name)
+
+    def __eq__(self, other):
+        return self.folder_id == other.folder_id
 
     def get_contacts(self, limit=100, *, query=None, order_by=None, batch=None):
         """ Gets a list of contacts from this address book

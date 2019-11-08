@@ -262,6 +262,54 @@ class MSOffice365Protocol(Protocol):
         self.max_top_value = 999  # Max $top parameter value
 
 
+class MSBusinessCentral365Protocol(Protocol):
+
+    """ A Microsoft Business Central Protocol Implementation
+    https://docs.microsoft.com/en-us/dynamics-nav/api-reference/v1.0/endpoints-apis-for-dynamics
+    """
+
+    _protocol_url = 'https://api.businesscentral.dynamics.com/'
+    _oauth_scope_prefix = 'https://api.businesscentral.dynamics.com/'
+    _oauth_scopes = DEFAULT_SCOPES
+    _protocol_scope_prefix = 'https://api.businesscentral.dynamics.com/'
+
+    def __init__(self, api_version='v1.0', default_resource=None,environment=None,
+                 **kwargs):
+        """ Create a new Microsoft Graph protocol object
+
+        _protocol_url = 'https://api.businesscentral.dynamics.com/'
+
+        _oauth_scope_prefix = 'https://api.businesscentral.dynamics.com/'
+
+        :param str api_version: api version to use
+        :param str default_resource: the default resource to use when there is
+         nothing explicitly specified during the requests
+        """
+        if environment:
+            _version = "2.0"
+            _environment = "/"+environment
+        else:
+            _version = "1.0"
+            _environment = ''
+
+        self._protocol_url = "{}v{}{}/api/".format(self._protocol_url, _version, _environment)
+
+        super().__init__(protocol_url=self._protocol_url,
+                         api_version=api_version,
+                         default_resource=default_resource,
+                         casing_function=camelcase,
+                         protocol_scope_prefix=self._protocol_scope_prefix,
+                         **kwargs)
+
+        self.keyword_data_store['message_type'] = 'microsoft.graph.message'
+        self.keyword_data_store['event_message_type'] = 'microsoft.graph.eventMessage'
+        self.keyword_data_store[
+            'file_attachment_type'] = '#microsoft.graph.fileAttachment'
+        self.keyword_data_store[
+            'item_attachment_type'] = '#microsoft.graph.itemAttachment'
+        self.max_top_value = 999  # Max $top parameter value
+
+
 class Connection:
     """ Handles all communication (requests) between the app and the server """
 

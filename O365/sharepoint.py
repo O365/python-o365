@@ -64,6 +64,9 @@ class SharepointListColumn(ApiComponent):
     def __repr__(self):
         return 'List Column: {0}-{1}'.format(self.display_name, self.field_type)
 
+    def __eq__(self, other):
+        return self.object_id == other.object_id
+
 
 class SharepointListItem(ApiComponent):
     _endpoints = {'update_list_item': '/items/{item_id}/fields',
@@ -118,6 +121,9 @@ class SharepointListItem(ApiComponent):
 
     def __repr__(self):
         return 'List Item: {}'.format(self.web_url)
+
+    def __eq__(self, other):
+        return self.object_id == other.object_id
 
     def _clear_tracker(self):
         self._track_changes = TrackerSet(casing=self._cc)
@@ -249,6 +255,9 @@ class SharepointList(ApiComponent):
         # Crosswalk between display name of user defined columns to internal name
         self.column_name_cw = {col.display_name: col.internal_name for
                                col in self.get_list_columns() if not col.read_only}
+
+    def __eq__(self, other):
+        return self.object_id == other.object_id
 
     def get_items(self, limit=None, *, query=None, order_by=None, batch=None):
         """ Returns a collection of Sharepoint Items
@@ -424,6 +433,9 @@ class Site(ApiComponent):
 
     def __repr__(self):
         return 'Site: {}'.format(self.name)
+
+    def __eq__(self, other):
+        return self.object_id == other.object_id
 
     def get_default_document_library(self, request_drive=False):
         """ Returns the default document library of this site (Drive instance)

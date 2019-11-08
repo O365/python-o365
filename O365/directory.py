@@ -122,6 +122,9 @@ class User(ApiComponent):
     def __repr__(self):
         return self.display_name or self.full_name or self.user_principal_name or 'Unknown Name'
 
+    def __eq__(self, other):
+        return self.object_id == other.object_id
+
     @property
     def full_name(self):
         """ Full Name (Name + Surname)

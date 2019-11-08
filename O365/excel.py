@@ -550,6 +550,9 @@ class Range(ApiComponent):
     def __repr__(self):
         return 'Range address: {}'.format(self.address)
 
+    def __eq__(self, other):
+        return self.object_id == other.object_id
+
     @property
     def column_hidden(self):
         return self._column_hidden
@@ -902,6 +905,9 @@ class NamedRange(ApiComponent):
     def __repr__(self):
         return 'Named Range: {} ({})'.format(self.name, self.value)
 
+    def __eq__(self, other):
+        return self.object_id == other.object_id
+
     def get_range(self):
         """ Returns the Range instance this named range refers to """
         url = self.build_url(self._endpoints.get('get_range'))
@@ -975,6 +981,9 @@ class TableRow(ApiComponent):
     def __repr__(self):
         return 'Row number: {}'.format(self.index)
 
+    def __eq__(self, other):
+        return self.object_id == other.object_id
+
     def get_range(self):
         """ Gets the range object associated with the entire row """
         url = self.build_url(self._endpoints.get('get_range'))
@@ -1043,6 +1052,9 @@ class TableColumn(ApiComponent):
 
     def __repr__(self):
         return 'Table Column: {}'.format(self.name)
+
+    def __eq__(self, other):
+        return self.object_id == other.object_id
 
     def delete(self):
         """ Deletes this table Column """
@@ -1185,6 +1197,9 @@ class Table(ApiComponent):
 
     def __repr__(self):
         return 'Table: {}'.format(self.name)
+
+    def __eq__(self, other):
+        return self.object_id == other.object_id
 
     def get_columns(self, *, top=None, skip=None):
         """
@@ -1508,6 +1523,9 @@ class WorkSheet(ApiComponent):
     def __repr__(self):
         return 'Worksheet: {}'.format(self.name)
 
+    def __eq__(self, other):
+        return self.object_id == other.object_id
+
     def delete(self):
         """ Deletes this worksheet """
         return bool(self.session.delete(self.build_url('')))
@@ -1687,12 +1705,16 @@ class WorkBook(ApiComponent):
             self.session.create_session()
 
         self.name = file_item.name
+        self.object_id = 'Workbook:{}'.format(file_item.object_id)  # Mangle the object id
 
     def __str__(self):
         return self.__repr__()
 
     def __repr__(self):
         return 'Workbook: {}'.format(self.name)
+
+    def __eq__(self, other):
+        return self.object_id == other.object_id
 
     def get_tables(self):
         """ Returns a collection of this workbook tables"""

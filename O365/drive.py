@@ -1144,10 +1144,12 @@ class Folder(DriveItem):
         else:
             return items
 
-    def upload_file(self, item, chunk_size=DEFAULT_UPLOAD_CHUNK_SIZE):
+    def upload_file(self, item, item_name=None, chunk_size=DEFAULT_UPLOAD_CHUNK_SIZE):
         """ Uploads a file
 
         :param item: path to the item you want to upload
+        :type item: str or Path
+        :param item: name of the item on the server. None to use original name
         :type item: str or Path
         :param chunk_size: Only applies if file is bigger than 4MB.
          Chunk size for uploads. Must be a multiple of 327.680 bytes
@@ -1170,7 +1172,7 @@ class Folder(DriveItem):
             # Simple Upload
             url = self.build_url(
                 self._endpoints.get('simple_upload').format(id=self.object_id,
-                                                            filename=quote(item.name)))
+                                                            filename=quote(item.name if item_name is None else item_name)))
             # headers = {'Content-type': 'text/plain'}
             headers = {'Content-type': 'application/octet-stream'}
             # headers = None
@@ -1319,6 +1321,9 @@ class Drive(ApiComponent):
     def __repr__(self):
         return 'Drive: {}'.format(
             self.name or self.object_id or 'Default Drive')
+
+    def __eq__(self, other):
+        return self.object_id == other.object_id
 
     def get_root_folder(self):
         """ Returns the Root Folder of this drive

@@ -72,12 +72,17 @@ class Folder(ApiComponent):
             self.total_items_count = cloud_data.get(self._cc('totalItemCount'),
                                                     0)
             self.updated_at = dt.datetime.now()
+        else:
+            self.folder_id = 'root'
 
     def __str__(self):
         return self.__repr__()
 
     def __repr__(self):
         return '{} from resource: {}'.format(self.name, self.main_resource)
+
+    def __eq__(self, other):
+        return self.folder_id == other.folder_id
 
     def get_folders(self, limit=None, *, query=None, order_by=None, batch=None):
         """ Returns a list of child folders matching the query
