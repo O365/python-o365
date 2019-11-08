@@ -5,7 +5,7 @@ from .utils import ApiComponent
 
 class CategoryColor(Enum):
     def _generate_next_value_(name, start, count, last_values):
-        return 'Preset{}'.format(count)
+        return 'preset{}'.format(count)
     RED = auto()  # 0
     ORANGE = auto()  # 1
     BROWN = auto()  # 2
@@ -51,7 +51,7 @@ class CategoryColor(Enum):
 class Category(ApiComponent):
 
     _endpoints = {
-        'update': 'outlook/masterCategories/{id}'
+        'update': '/outlook/masterCategories/{id}'
     }
 
     def __init__(self, *, parent=None, con=None, **kwargs):
@@ -122,8 +122,8 @@ class Category(ApiComponent):
 class Categories(ApiComponent):
 
     _endpoints = {
-        'list': 'outlook/masterCategories',
-        'get': 'outlook/masterCategories/{id}',
+        'list': '/outlook/masterCategories',
+        'get': '/outlook/masterCategories/{id}',
     }
 
     category_constructor = Category

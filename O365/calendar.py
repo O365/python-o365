@@ -13,6 +13,7 @@ from .utils import AttachableMixin, ImportanceLevel, TrackerSet
 from .utils import BaseAttachments, BaseAttachment
 from .utils import Pagination, NEXT_LINK_KEYWORD, ApiComponent
 from .utils.windows_tz import get_windows_tz
+from .category import Category
 
 log = logging.getLogger(__name__)
 
@@ -1233,11 +1234,16 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
     @categories.setter
     def categories(self, value):
         if isinstance(value, list):
-            self.__categories = value
+            self.__categories = []
+            for val in value:
+                if isinstance(val, Category):
+                    self.__categories.append(val.name)
+                else:
+                    self.__categories.append(val)
         elif isinstance(value, str):
             self.__categories = [value]
-        elif isinstance(value, tuple):
-            self.__categories = list(value)
+        elif isinstance(value, Category):
+            self.__categories = [value.name]
         else:
             raise ValueError('categories must be a list')
         self._track_changes.add(self._cc('categories'))

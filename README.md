@@ -69,6 +69,7 @@ What follows is kind of a wiki...
 - [Excel](#excel)
 - [Sharepoint](#sharepoint)
 - [Planner](#planner)
+- [Outlook Categories](#outlook-categories)
 - [Utils](#utils)
 
 
@@ -1115,7 +1116,7 @@ values = column.values[0]  # values returns a two dimensional array.
 ## Sharepoint
 The sharepoint api is done but there are no docs yet. Look at the sharepoint.py file to get insights.
 
-This are the scopes needed to work with the `Sharepoint` and `Site` classes.
+These are the scopes needed to work with the `Sharepoint` and `Site` classes.
 
  Raw Scope                  |  Included in Scope Helper    | Description
  :---:                      |  :---:                       | ---
@@ -1126,6 +1127,33 @@ This are the scopes needed to work with the `Sharepoint` and `Site` classes.
 The planner api is done but there are no docs yet. Look at the planner.py file to get insights.
 
 The planner functionality requires Administrator Permission.
+
+## Outlook Categories
+You can retrive, update, create and delete outlook categories.
+These categories can be used to categorize Messages, Events and Contacts.
+
+These are the scopes needed to work with the `Sharepoint` and `Site` classes.
+
+ Raw Scope                      |  Included in Scope Helper     | Description
+ :---:                          |  :---:                        | ---
+ *MailboxSettings.Read*         |  *-*                          | To only read outlook settingss
+ *MailboxSettings.ReadWrite*    |  *settings_all*               | To read and write outlook settings
+ 
+Example:
+
+```python
+from O365.category import CategoryColor
+
+oc = account.outlook_categories()
+categories = oc.get_categories()
+for category in categories:
+    print(category.name, category.color)
+
+my_category = oc.create_category('Important Category', color=CategoryColor.RED)
+my_category.update_color(CategoryColor.DARKGREEN)
+
+my_category.delete()  # oops!
+```
 
 ## Utils
 

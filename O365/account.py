@@ -238,3 +238,9 @@ class Account:
 
         from .planner import Planner
         return Planner(parent=self, main_resource=resource)
+
+    def outlook_categories(self, *, resource=''):
+        """ Returns a Categories object to handle the available Outlook Categories """
+        from .category import Categories
+
+        return Categories(parent=self, main_resource=resource)

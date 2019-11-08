@@ -12,6 +12,7 @@ from .utils import OutlookWellKnowFolderNames, ApiComponent, \
     BaseAttachments, BaseAttachment, AttachableMixin, ImportanceLevel, \
     TrackerSet, Recipient, HandleRecipientsMixin, CaseEnum
 from .calendar import Event
+from .category import Category
 
 log = logging.getLogger(__name__)
 
@@ -503,13 +504,27 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
     @categories.setter
     def categories(self, value):
         if isinstance(value, list):
-            self.__categories = value
+            self.__categories = []
+            for val in value:
+                if isinstance(val, Category):
+                    self.__categories.append(val.name)
+                else:
+                    self.__categories.append(val)
         elif isinstance(value, str):
             self.__categories = [value]
-        elif isinstance(value, tuple):
-            self.__categories = list(value)
+        elif isinstance(value, Category):
+            self.__categories = [value.name]
         else:
             raise ValueError('categories must be a list')
+        self._track_changes.add('categories')
+
+    def add_category(self, category):
+        """ Adds a category to this message current categories list """
+
+        if isinstance(category, Category):
+            self.__categories.append(category.name)
+        else:
+            self.__categories.append(category)
         self._track_changes.add('categories')
 
     @property
