@@ -1144,7 +1144,8 @@ class Folder(DriveItem):
         else:
             return items
 
-    def upload_file(self, item, item_name=None, chunk_size=DEFAULT_UPLOAD_CHUNK_SIZE):
+    def upload_file(self, item, item_name=None, chunk_size=DEFAULT_UPLOAD_CHUNK_SIZE,
+                    upload_in_chunks=False):
         """ Uploads a file
 
         :param item: path to the item you want to upload
@@ -1153,6 +1154,7 @@ class Folder(DriveItem):
         :type item: str or Path
         :param chunk_size: Only applies if file is bigger than 4MB.
          Chunk size for uploads. Must be a multiple of 327.680 bytes
+        :param upload_in_chunks: force the method to upload the file in chunks
         :return: uploaded file
         :rtype: DriveItem
         """
@@ -1168,7 +1170,7 @@ class Folder(DriveItem):
 
         file_size = item.stat().st_size
 
-        if file_size <= UPLOAD_SIZE_LIMIT_SIMPLE:
+        if not upload_in_chunks and file_size <= UPLOAD_SIZE_LIMIT_SIMPLE:
             # Simple Upload
             url = self.build_url(
                 self._endpoints.get('simple_upload').format(id=self.object_id,
