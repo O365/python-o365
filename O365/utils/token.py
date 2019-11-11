@@ -160,8 +160,8 @@ class FileSystemTokenBackend(BaseTokenBackend):
     def __init__(self, token_path=None, token_filename=None):
         """
         Init Backend
-        :param token_path str or Path: the path where to store the token
-        :param token_filename str: the name of the token file
+        :param str or Path token_path: the path where to store the token
+        :param str token_filename: the name of the token file
         """
         super().__init__()
         if not isinstance(token_path, Path):
@@ -228,8 +228,9 @@ class FileSystemTokenBackend(BaseTokenBackend):
         """
         return self.token_path.exists()
 
-    def should_refresh_token(self):
+    def should_refresh_token(self, con=None):
         return not self.fs_wait
+
 
 class FirestoreBackend(BaseTokenBackend):
     """ A Google Firestore database backend to store tokens """
@@ -237,10 +238,10 @@ class FirestoreBackend(BaseTokenBackend):
     def __init__(self, client, collection, doc_id, field_name='token'):
         """
         Init Backend
-        :param client firestore.Client: the firestore Client instance
-        :param collection str: the firestore collection where to store tokens (can be a field_path)
-        :param doc_id str: # the key of the token document. Must be unique per-case.
-        :param field_name: the name of the field that stores the token in the document
+        :param firestore.Client client: the firestore Client instance
+        :param str collection: the firestore collection where to store tokens (can be a field_path)
+        :param str doc_id: # the key of the token document. Must be unique per-case.
+        :param str field_name: the name of the field that stores the token in the document
         """
         super().__init__()
         self.client = client
