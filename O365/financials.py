@@ -181,7 +181,7 @@ class FinancialsApiComponent(ApiComponent):
 
         response = method(url, data=data)
 
-        if not response.status_code == 201:
+        if not response.status_code.ok:
             return False
 
         object_created = response.json()
