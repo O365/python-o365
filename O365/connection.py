@@ -15,8 +15,6 @@ from requests_oauthlib import OAuth2Session
 from stringcase import pascalcase, camelcase, snakecase
 from tzlocal import get_localzone
 from pytz import UnknownTimeZoneError, UTC
-from portalocker import Lock
-from portalocker.exceptions import LockException
 
 from .utils import ME_RESOURCE, BaseTokenBackend, FileSystemTokenBackend, Token
 
@@ -534,7 +532,7 @@ class Connection:
 
         if load_token:
             # gets a fresh token from the store
-            token = self.token_backend.load_token()
+            token = self.token_backend.get_token()
             if token is None:
                 raise RuntimeError('No auth token found. Authentication Flow needed')
 
@@ -597,7 +595,7 @@ class Connection:
             raise RuntimeError('Token not found.')
 
         if token.is_long_lived or self.auth_flow_type == 'credentials':
-
+            log.info('Refreshing token')
             if self.auth_flow_type == 'authorization':
                 client_id, client_secret = self.auth
                 self.token_backend.token = Token(
@@ -611,7 +609,7 @@ class Connection:
                 if self.request_token(None, store_token=False) is False:
                     log.error('Refresh for Client Credentials Grant Flow failed.')
                     return False
-
+            log.info('New oauth token fetched by refresh method')
         else:
             log.error('You can not refresh an access token that has no "refreh_token" available.'
                       'Include "offline_access" scope when authenticating to get a "refresh_token"')
@@ -631,61 +629,6 @@ class Connection:
                 log.info('Sleeping for {} miliseconds'.format(sleep_for))
                 time.sleep(sleep_for / 1000)  # sleep needs seconds
         self._previous_request_at = time.time()
-
-    def _fs_token_lock(self):
-        """
-        This method ensures atomic file access in the event of concurrently 
-        running Connection class instances racing for the same token file.
-
-        If the _internal_request method has determined that the token_backend
-        is a FileSystemTokenBackend and the token is expired, put locks on the
-        token file we save our refreshed token to, in order to ensure atomic
-        operations.
-        
-        This is done by wrapping  the 'refresh_token' method in with block of
-        portalocker's Lock class. This basically opens the file and places a 
-        platform independent filesystem lock on it.
-
-        If when trying to open the file, we are blocked because the file is
-        locked, that means something else is using it. We'll change the
-        token_backend's state to waiting, sleep for 2 seconds, reload a token
-        into memory from the file (since another process is using it, we can
-        assume it's being updated). 
-        
-        If this newly loaded token is not expired, the other instance loaded
-        a new token, and we can happily move on. If the same token was loaded
-        into memory again and is still expired, try accessing the file again
-        for 4 more times. If we don't suceed, return false.
-        """
-        for _ in range(5, 0, -1):
-            if self.token_backend.token.is_access_expired:
-                try:
-                    with Lock(self.token_backend.token_path, 'r+',
-                              fail_when_locked=True, timeout=0):
-                        log.debug('Locked oauth token file')
-                        if self.refresh_token() is False:
-                            raise RuntimeError('Token Refresh Operation not '
-                                                'working')
-                        log.info('New oauth token fetched')
-                    self.token_backend.fs_wait = False
-                    log.debug('Unlocked oauth token file')
-                    return True
-                except LockException:
-                    self.token_backend.fs_wait = True
-                    log.warning('Oauth file locked. Sleeping for 2 seconds...'
-                                f'retrying {_ - 1} more times.')
-                    time.sleep(2)
-                    log.debug('Waking up and rechecking token file for update'
-                              ' from other instance...')
-                    self.token_backend.token = self.token_backend.load_token()
-            else:
-                # don't change token state back from wait if we found the token
-                # was refreshed by another instance. this will be our signal
-                # to the calling method that we need to use a new session
-                self.session = self.get_session(load_token=True)
-                log.info('Token was refreshed by another instance...')
-                return True
-        return False
 
     def _internal_request(self, request_obj, url, method, **kwargs):
         """ Internal handling of requests. Handles Exceptions.
@@ -717,6 +660,7 @@ class Connection:
 
         request_done = False
         token_refreshed = False
+
         while not request_done:
             self._check_delay()  # sleeps if needed
             try:
@@ -731,33 +675,26 @@ class Connection:
                 return response
             except TokenExpiredError as e:
                 # Token has expired, try to refresh the token and try again on the next loop
+                log.info('Oauth Token is expired')
                 if self.token_backend.token.is_long_lived is False and self.auth_flow_type == 'authorization':
                     raise e
                 if token_refreshed:
                     # Refresh token done but still TokenExpiredError raise
                     raise RuntimeError('Token Refresh Operation not working')
-                if self.token_backend.should_refresh_token():
+                should_rt = self.token_backend.should_refresh_token(self)
+                if should_rt is True:
                     # The backend has checked that we can refresh the token
-                    log.info('Oauth Token is expired, fetching a new token')
-                    # if token is on filesystem, ensure atomic operations in the event of concurrent token access
-                    if isinstance(self.token_backend, FileSystemTokenBackend):
-                        token_refreshed = self._fs_token_lock()
-                        # if token was updated by another instance, we need to reload the session object
-                        # that was passed to this method with the new token. we test for this by checking
-                        # if there is still a wait state on the token_backend and token_refreshed is True
-                        if self.token_backend.fs_wait and token_refreshed:
-                            request_obj = self.session
-                            self.token_backend.fs_wait = False
-                    else:
-                        if self.refresh_token() is False:
-                            raise RuntimeError('Token Refresh Operation not working')
-                        log.info('New oauth token fetched')
-                        token_refreshed = True    
+                    if self.refresh_token() is False:
+                        raise RuntimeError('Token Refresh Operation not working')
+                    token_refreshed = True
+                elif should_rt is False:
+                    # the token was refreshed by another instance and updated into
+                    # this instance, so: update the session token and
+                    # go back to the loop and try the request again.
+                    request_obj.token = self.token_backend.token
                 else:
-                    # the token was refreshed by another token and updated into
-                    # this instance, so: go back to the loop and try the request
-                    # again.
-                    pass
+                    # the refresh was performed by the tokend backend.
+                    token_refreshed = True
 
             except (ConnectionError, ProxyError, SSLError, Timeout) as e:
                 # We couldn't connect to the target url, raise error
@@ -822,7 +759,7 @@ class Connection:
         # oauth authentication
         if self.session is None:
             self.session = self.get_session(load_token=True)
-        
+
         return self._internal_request(self.session, url, method, **kwargs)
 
     def get(self, url, params=None, **kwargs):
