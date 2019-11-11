@@ -7,7 +7,7 @@ from abc import ABC, abstractmethod
 log = logging.getLogger(__name__)
 
 
-EXPIRES_ON_THRESHOLD = 2 * 60  # 2 minutes
+EXPIRES_ON_THRESHOLD = 1 * 60  # 1 minute
 
 
 class Token(dict):
@@ -35,14 +35,32 @@ class Token(dict):
         Returns the expiration datetime
         :return datetime: The datetime this token expires
         """
-        expires_at = self.get('expires_at')
-        if expires_at is None:
-            # consider it is expired
-            return dt.datetime.now() - dt.timedelta(seconds=10)
-        expires_on = dt.datetime.fromtimestamp(expires_at) - dt.timedelta(seconds=EXPIRES_ON_THRESHOLD)
+        access_expires_at = self.access_expiration_datetime
+        expires_on = access_expires_at - dt.timedelta(seconds=EXPIRES_ON_THRESHOLD)
         if self.is_long_lived:
             expires_on = expires_on + dt.timedelta(days=90)
         return expires_on
+
+    @property
+    def access_expiration_datetime(self):
+        """
+        Returns the token's access expiration datetime
+        :return datetime: The datetime the token's access expires
+        """
+        expires_at = self.get('expires_at')
+        if expires_at:
+            return dt.datetime.fromtimestamp(expires_at)
+        else:
+            # consider the token expired, add 10 second buffer to current dt
+            return dt.datetime.now() - dt.timedelta(seconds=10)
+    
+    @property
+    def is_access_expired(self):
+        """
+        Returns whether or not the token's access is expired.
+        :return bool: True if the token's access is expired, False otherwise
+        """
+        return dt.datetime.now() > self.access_expiration_datetime
 
 
 class BaseTokenBackend(ABC):
@@ -154,6 +172,9 @@ class FileSystemTokenBackend(BaseTokenBackend):
         else:
             token_filename = token_filename or 'o365_token.txt'
             self.token_path = token_path / token_filename
+        
+        # is this backend waiting on the filesystem
+        self.fs_wait = False
 
     def __repr__(self):
         return str(self.token_path)
@@ -207,6 +228,8 @@ class FileSystemTokenBackend(BaseTokenBackend):
         """
         return self.token_path.exists()
 
+    def should_refresh_token(self):
+        return not self.fs_wait
 
 class FirestoreBackend(BaseTokenBackend):
     """ A Google Firestore database backend to store tokens """
