@@ -1,6 +1,5 @@
 import json
 import logging
-import inspect
 import os
 import time
 
@@ -731,7 +730,6 @@ class Connection:
                 request_done = True
                 return response
             except TokenExpiredError as e:
-                log.info(inspect.stack())
                 # Token has expired, try to refresh the token and try again on the next loop
                 if self.token_backend.token.is_long_lived is False and self.auth_flow_type == 'authorization':
                     raise e
