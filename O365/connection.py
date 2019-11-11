@@ -595,7 +595,7 @@ class Connection:
             raise RuntimeError('Token not found.')
 
         if token.is_long_lived or self.auth_flow_type == 'credentials':
-
+            log.info('Refreshing token')
             if self.auth_flow_type == 'authorization':
                 client_id, client_secret = self.auth
                 self.token_backend.token = Token(
@@ -609,7 +609,7 @@ class Connection:
                 if self.request_token(None, store_token=False) is False:
                     log.error('Refresh for Client Credentials Grant Flow failed.')
                     return False
-
+            log.info('New oauth token fetched by refresh method')
         else:
             log.error('You can not refresh an access token that has no "refreh_token" available.'
                       'Include "offline_access" scope when authenticating to get a "refresh_token"')
@@ -675,23 +675,26 @@ class Connection:
                 return response
             except TokenExpiredError as e:
                 # Token has expired, try to refresh the token and try again on the next loop
+                log.info('Oauth Token is expired')
                 if self.token_backend.token.is_long_lived is False and self.auth_flow_type == 'authorization':
                     raise e
                 if token_refreshed:
                     # Refresh token done but still TokenExpiredError raise
                     raise RuntimeError('Token Refresh Operation not working')
-                if self.token_backend.should_refresh_token():
+                should_rt = self.token_backend.should_refresh_token(self)
+                if should_rt is True:
                     # The backend has checked that we can refresh the token
-                    log.info('Oauth Token is expired, fetching a new token')
                     if self.refresh_token() is False:
                         raise RuntimeError('Token Refresh Operation not working')
-                    log.info('New oauth token fetched')
                     token_refreshed = True
+                elif should_rt is False:
+                    # the token was refreshed by another instance and updated into
+                    # this instance, so: update the session token and
+                    # go back to the loop and try the request again.
+                    request_obj.token = self.token_backend.token
                 else:
-                    # the token was refreshed by another token and updated into
-                    # this instance, so: go back to the loop and try the request
-                    # again.
-                    pass
+                    # the refresh was performed by the tokend backend.
+                    token_refreshed = True
 
             except (ConnectionError, ProxyError, SSLError, Timeout) as e:
                 # We couldn't connect to the target url, raise error
