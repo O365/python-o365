@@ -1,5 +1,6 @@
 import json
 import logging
+import inspect
 import os
 import time
 
@@ -534,7 +535,7 @@ class Connection:
 
         if load_token:
             # gets a fresh token from the store
-            token = self.token_backend.get_token()
+            token = self.token_backend.load_token()
             if token is None:
                 raise RuntimeError('No auth token found. Authentication Flow needed')
 
@@ -676,10 +677,13 @@ class Connection:
                                 f'retrying {_ - 1} more times.')
                     time.sleep(2)
                     log.debug('Waking up and rechecking token file for update'
-                              'from other instance...')
-                    self.token_backend.load_token()
+                              ' from other instance...')
+                    self.token_backend.token = self.token_backend.load_token()
             else:
-                self.token_backend.fs_wait = False
+                # don't change token state back from wait if we found the token
+                # was refreshed by another instance. this will be our signal
+                # to the calling method that we need to use a new session
+                self.session = self.get_session(load_token=True)
                 log.info('Token was refreshed by another instance...')
                 return True
         return False
@@ -727,6 +731,7 @@ class Connection:
                 request_done = True
                 return response
             except TokenExpiredError as e:
+                log.info(inspect.stack())
                 # Token has expired, try to refresh the token and try again on the next loop
                 if self.token_backend.token.is_long_lived is False and self.auth_flow_type == 'authorization':
                     raise e
@@ -739,6 +744,12 @@ class Connection:
                     # if token is on filesystem, ensure atomic operations in the event of concurrent token access
                     if isinstance(self.token_backend, FileSystemTokenBackend):
                         token_refreshed = self._fs_token_lock()
+                        # if token was updated by another instance, we need to reload the session object
+                        # that was passed to this method with the new token. we test for this by checking
+                        # if there is still a wait state on the token_backend and token_refreshed is True
+                        if self.token_backend.fs_wait and token_refreshed:
+                            request_obj = self.session
+                            self.token_backend.fs_wait = False
                     else:
                         if self.refresh_token() is False:
                             raise RuntimeError('Token Refresh Operation not working')
@@ -813,7 +824,7 @@ class Connection:
         # oauth authentication
         if self.session is None:
             self.session = self.get_session(load_token=True)
-
+        
         return self._internal_request(self.session, url, method, **kwargs)
 
     def get(self, url, params=None, **kwargs):
