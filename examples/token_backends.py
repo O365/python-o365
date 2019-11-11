@@ -10,7 +10,7 @@ log = logging.getLogger(__name__)
 # This is an implementation of the 'should_refresh_token' method
 
 
-class MyFirestoreBackend(FirestoreBackend):
+class LockableFirestoreBackend(FirestoreBackend):
     """
     A firestore backend that can answer to
     'should_refresh_token'. Synchronous.
@@ -48,7 +48,7 @@ class MyFirestoreBackend(FirestoreBackend):
                     return token
         return None
 
-    def should_refresh_token(self):
+    def should_refresh_token(self, con=None):
         # 1) check if the token is already a new one:
         new_token = self.load_token()
         if new_token and new_token.get('access_token') != self.token.get('access_token'):

@@ -1007,10 +1007,10 @@ class Folder(DriveItem):
             params['$orderby'] = order_by
 
         if query:
-            if query.has_filters:
-                warnings.warn('Filters are not allowed by the '
-                              'Api Provider in this method')
-                query.clear_filters()
+            # if query.has_filters:
+            #     warnings.warn('Filters are not allowed by the '
+            #                   'Api Provider in this method')
+            #     query.clear_filters()
             if isinstance(query, str):
                 params['$filter'] = query
             else:
@@ -1033,6 +1033,27 @@ class Folder(DriveItem):
                               next_link=next_link, limit=limit)
         else:
             return items
+
+    def get_child_folders(self, limit=None, *, query=None, order_by=None, batch=None):
+        """ Returns all the folders inside this folder
+
+        :param int limit: max no. of folders to get. Over 999 uses batch.
+        :param query: applies a OData filter to the request
+        :type query: Query or str
+        :param order_by: orders the result set based on this condition
+        :type order_by: Query or str
+        :param int batch: batch size, retrieves items in
+         batches allowing to retrieve more items than the limit.
+        :return: list of items in this folder
+        :rtype: list[DriveItem] or Pagination
+        """
+
+        if query:
+            query = query.on_attribute('folder').unequal(None)
+        else:
+            query = self.q('folder').unequal(None)
+
+        return self.get_items(limit=limit, query=query, order_by=order_by, batch=batch)
 
     def create_child_folder(self, name, description=None):
         """ Creates a Child Folder
@@ -1144,7 +1165,8 @@ class Folder(DriveItem):
         else:
             return items
 
-    def upload_file(self, item, item_name=None, chunk_size=DEFAULT_UPLOAD_CHUNK_SIZE):
+    def upload_file(self, item, item_name=None, chunk_size=DEFAULT_UPLOAD_CHUNK_SIZE,
+                    upload_in_chunks=False):
         """ Uploads a file
 
         :param item: path to the item you want to upload
@@ -1153,6 +1175,7 @@ class Folder(DriveItem):
         :type item: str or Path
         :param chunk_size: Only applies if file is bigger than 4MB.
          Chunk size for uploads. Must be a multiple of 327.680 bytes
+        :param upload_in_chunks: force the method to upload the file in chunks
         :return: uploaded file
         :rtype: DriveItem
         """
@@ -1168,7 +1191,7 @@ class Folder(DriveItem):
 
         file_size = item.stat().st_size
 
-        if file_size <= UPLOAD_SIZE_LIMIT_SIMPLE:
+        if not upload_in_chunks and file_size <= UPLOAD_SIZE_LIMIT_SIMPLE:
             # Simple Upload
             url = self.build_url(
                 self._endpoints.get('simple_upload').format(id=self.object_id,
@@ -1362,11 +1385,11 @@ class Drive(ApiComponent):
             params['$orderby'] = order_by
 
         if query:
-            if query.has_filters:
-                warnings.warn(
-                    'Filters are not allowed by the Api Provider '
-                    'in this method')
-                query.clear_filters()
+            # if query.has_filters:
+            #     warnings.warn(
+            #         'Filters are not allowed by the Api Provider '
+            #         'in this method')
+            #     query.clear_filters()
             if isinstance(query, str):
                 params['$filter'] = query
             else:
@@ -1414,6 +1437,27 @@ class Drive(ApiComponent):
 
         return self._base_get_list(url, limit=limit, query=query,
                                    order_by=order_by, batch=batch)
+
+    def get_child_folders(self, limit=None, *, query=None, order_by=None, batch=None):
+        """ Returns all the folders inside this folder
+
+        :param int limit: max no. of folders to get. Over 999 uses batch.
+        :param query: applies a OData filter to the request
+        :type query: Query or str
+        :param order_by: orders the result set based on this condition
+        :type order_by: Query or str
+        :param int batch: batch size, retrieves items in
+         batches allowing to retrieve more items than the limit.
+        :return: list of items in this folder
+        :rtype: list[DriveItem] or Pagination
+        """
+
+        if query:
+            query = query.on_attribute('folder').unequal(None)
+        else:
+            query = self.q('folder').unequal(None)
+
+        return self.get_items(limit=limit, query=query, order_by=order_by, batch=batch)
 
     def get_recent(self, limit=None, *, query=None, order_by=None, batch=None):
         """ Returns a collection of recently used DriveItems

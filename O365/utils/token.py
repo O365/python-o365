@@ -89,7 +89,7 @@ class BaseTokenBackend(ABC):
         """ Optional Abstract method to check for the token existence """
         raise NotImplementedError
 
-    def should_refresh_token(self):
+    def should_refresh_token(self, con=None):
         """
         This method is intended to be implemented for environments
          where multiple Connection instances are running on paralel.
@@ -117,13 +117,21 @@ class BaseTokenBackend(ABC):
 
         If this returns True, then the Connection will refresh the token.
         If this returns False, then the Connection will NOT refresh the token.
+        If this returns None, then this method already executed the refresh and therefore
+         the Connection does not have to.
 
         By default this always returns True
 
         There is an example of this in the examples folder.
 
-        :rtype: bool
-        :return: True if the Connection can refresh the token false otherwise.
+        :param Connection con: the connection that calls this method. This
+         is passed because maybe the locking mechanism needs to refresh the
+         token within the lock applied in this method.
+        :rtype: bool or None
+        :return: True if the Connection can refresh the token
+                 False if the Connection should not refresh the token
+                 None if the token was refreshed and therefore the
+                  Connection should do nothing.
         """
         return True
 

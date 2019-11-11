@@ -921,6 +921,8 @@ class Query:
                     word.isoformat())  # convert datetime to isoformat
         elif isinstance(word, bool):
             word = str(word).lower()
+        elif word is None:
+            word = 'null'
         return word
 
     @staticmethod
