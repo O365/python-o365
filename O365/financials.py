@@ -34,7 +34,7 @@ class FinancialsApiComponent(ApiComponent):
         if kwargs.pop('main_resource', None):
             main_resource = kwargs.pop('main_resource', None)
         elif parent:
-            if type(parent.protocol) == MSBusinessCentral365Protocol:
+            if isinstance(parent.protocol,MSBusinessCentral365Protocol):
                 main_resource = ('/companies/{id}').format(id=getattr(parent, 'id', None))
             else:
                 main_resource = ('financials/companies/{id}').format(id=getattr(parent, 'id', None))
@@ -55,7 +55,7 @@ class FinancialsApiComponent(ApiComponent):
         :return: final url
         :rtype: str
         """
-        if type(self.protocol) == MSBusinessCentral365Protocol:
+        if isinstance(self.protocol,MSBusinessCentral365Protocol):
             endpoint = replacenth(endpoint, "/", ")/", 2)
             endpoint = replacenth(endpoint, "/", "(", 1)
 
@@ -3984,7 +3984,7 @@ class Financials(ApiComponent):
         self.con = parent.con if parent else con
 
         # Choose the main_resource passed in kwargs over parent main_resource
-        if type(parent.protocol) == MSBusinessCentral365Protocol:
+        if isinstance(parent.protocol,MSBusinessCentral365Protocol):
             main_resource = ''
         else:
             main_resource = 'financials'
@@ -4026,7 +4026,7 @@ class Financials(ApiComponent):
 
         if company_id:
             # get calendar by it's id
-            if type(self.protocol) == MSBusinessCentral365Protocol:
+            if isinstance(self.protocol,MSBusinessCentral365Protocol):
                 url = self.build_url(self._endpoints.get('get_company_bc').format(id=company_id))
             else:
                 url = self.build_url(self._endpoints.get('get_company').format(id=company_id))
