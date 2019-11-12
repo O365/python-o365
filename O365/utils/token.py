@@ -172,9 +172,6 @@ class FileSystemTokenBackend(BaseTokenBackend):
         else:
             token_filename = token_filename or 'o365_token.txt'
             self.token_path = token_path / token_filename
-        
-        # is this backend waiting on the filesystem
-        self.fs_wait = False
 
     def __repr__(self):
         return str(self.token_path)
@@ -227,9 +224,6 @@ class FileSystemTokenBackend(BaseTokenBackend):
         :return bool: True if exists, False otherwise
         """
         return self.token_path.exists()
-
-    def should_refresh_token(self):
-        return not self.fs_wait
 
 class FirestoreBackend(BaseTokenBackend):
     """ A Google Firestore database backend to store tokens """
