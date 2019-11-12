@@ -120,14 +120,14 @@ class LockableFileSystemTokenBackend(FileSystemTokenBackend):
         the token and its file, or if another Connection instance has already 
         updated it and we should just load that updated token from the file.
 
-        It will always return False, OR raise an error if a locked token file
+        It will always return False, None, OR raise an error if a token file
         couldn't be accessed after X tries. That is because this method 
         completely handles token refreshing via the passed Connection object 
         argument. If it determines that the token should be refreshed, it locks
         the token file, calls the Connection's 'refresh_token' method (which 
         loads the fresh token from the server into memory and the file), then 
         unlocks the file. Since refreshing has been taken care of, the calling 
-        method does not need to refresh and we return False.
+        method does not need to refresh and we return None.
         
         If we are blocked because the file is locked, that means another 
         instance is using it. We'll change the backend's state to waiting,
@@ -136,7 +136,7 @@ class LockableFileSystemTokenBackend(FileSystemTokenBackend):
         loop again.
         
         If this newly loaded token is not expired, the other instance loaded
-        a new token to file, and we can happily move on. Again, return False 
+        a new token to file, and we can happily move on and return False.
         (since we don't need to refresh the token anymore). If the same token 
         was loaded into memory again and is still expired, that means it wasn't
         updated by the other instance yet. Try accessing the file again for X 
