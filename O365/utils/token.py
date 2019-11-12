@@ -225,13 +225,7 @@ class FileSystemTokenBackend(BaseTokenBackend):
         """
         return self.token_path.exists()
 
-<<<<<<< HEAD
-=======
-    def should_refresh_token(self, con=None):
-        return not self.fs_wait
 
-
->>>>>>> 1e0da3b1019df592718115a0f08af219e7a8f061
 class FirestoreBackend(BaseTokenBackend):
     """ A Google Firestore database backend to store tokens """
 
