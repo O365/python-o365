@@ -168,7 +168,7 @@ class Account:
             # for backwards compatibility only
             from .directory import Directory
 
-            return Directory(parent=self)
+            return Directory(parent=self, main_resource=resource)
         else:
             raise RuntimeError(
                 'address_book must be either "Personal" '

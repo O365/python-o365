@@ -99,6 +99,7 @@ class LockableFirestoreBackend(FirestoreBackend):
 
         return True
 
+
 class LockableFileSystemTokenBackend(FileSystemTokenBackend):
     """
     GH #350
@@ -108,12 +109,13 @@ class LockableFileSystemTokenBackend(FileSystemTokenBackend):
     method in the Portalocker package's Lock class, which itself is a wrapper
     around Python's fcntl and win32con.
     """
+
     def __init__(self, *args, **kwargs):
         self.max_tries = kwargs.pop('max_tries')
         self.fs_wait = False
         super().__init__(*args, **kwargs)
 
-    def should_refresh_token(self, con):
+    def should_refresh_token(self, con=None):
         """
         Method for refreshing the token when there are concurrently running 
         O365 instances. Determines if we need to call the MS server and refresh
@@ -148,11 +150,11 @@ class LockableFileSystemTokenBackend(FileSystemTokenBackend):
             if self.token.is_access_expired:
                 try:
                     with Lock(self.token_path, 'r+',
-                                fail_when_locked=True, timeout=0):
+                              fail_when_locked=True, timeout=0):
                         log.debug('Locked oauth token file')
                         if con.refresh_token() is False:
                             raise RuntimeError('Token Refresh Operation not '
-                                                'working')
+                                               'working')
                         log.info('New oauth token fetched')
                     log.debug('Unlocked oauth token file')
                     return None
@@ -162,7 +164,7 @@ class LockableFileSystemTokenBackend(FileSystemTokenBackend):
                                 f'retrying {_ - 1} more times.')
                     time.sleep(2)
                     log.debug('Waking up and rechecking token file for update'
-                                ' from other instance...')
+                              ' from other instance...')
                     self.token = self.load_token()
             else:
                 log.info('Token was refreshed by another instance...')

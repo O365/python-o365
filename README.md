@@ -821,20 +821,23 @@ You can search by name or retrieve a contact specifying the complete email.
 To search the Global Address List (Users API):
 
 ```python
-global_address_list = account.address_book(address_book='gal')
+global_address_list = account.directory()
+
+# for backwards compatibilty only this also works and returns a Directory object:
+# global_address_list = account.address_book(address_book='gal')
 
 # start a new query:
 q = global_address_list.new_query('display_name')
 q.startswith('George Best')
 
-print(global_address_list.get_contacts(query=q))
+print(global_address_list.get_users(query=q))
 ```
 
 
 To retrieve a contact by their email:
 
 ```python
-contact = global_address_list.get_contact_by_email('example@example.com')
+contact = global_address_list.get_user('example@example.com')
 ```
 
 #### Contacts
