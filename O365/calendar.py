@@ -515,6 +515,11 @@ class ResponseStatus(ApiComponent):
         self.status = None if self.status == 'none' else EventResponse.from_value(self.status)
         if self.status:
             self.response_time = response_status.get(self._cc('time'), None)
+            if self.response_time == '0001-01-01T00:00:00Z':
+                # consider there's no response time
+                # this way we don't try to convert this Iso 8601 datetime to the
+                #  local timezone which generated parse errors
+                self.response_time = None
             if self.response_time:
                 try:
                     self.response_time = parse(self.response_time).astimezone(
