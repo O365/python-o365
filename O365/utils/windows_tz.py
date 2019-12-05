@@ -602,7 +602,8 @@ IANA_TO_WIN = {
     "Zulu": "UTC"
 }
 
-WIN_TO_IANA = {v: k for k, v in IANA_TO_WIN.items()}
+# when converting to Iana, only consider for win UTC the value Iana UTC
+WIN_TO_IANA = {v: k for k, v in IANA_TO_WIN.items() if v != 'UTC' or (v == 'UTC' and k == 'UTC')}
 
 
 def get_iana_tz(windows_tz):
