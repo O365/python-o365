@@ -830,7 +830,8 @@ global_address_list = account.directory()
 q = global_address_list.new_query('display_name')
 q.startswith('George Best')
 
-print(global_address_list.get_users(query=q))
+for user in global_address_list.get_users(query=q):
+    print(user)
 ```
 
 

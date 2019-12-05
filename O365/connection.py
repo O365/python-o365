@@ -14,7 +14,7 @@ from requests.packages.urllib3.util.retry import Retry
 from requests_oauthlib import OAuth2Session
 from stringcase import pascalcase, camelcase, snakecase
 from tzlocal import get_localzone
-from pytz import UnknownTimeZoneError, UTC
+from pytz import UnknownTimeZoneError, UTC, timezone as get_timezone
 
 from .utils import ME_RESOURCE, BaseTokenBackend, FileSystemTokenBackend, Token
 
@@ -78,7 +78,7 @@ class Protocol:
         :param function casing_function: the casing transform function to be
          used on api keywords (camelcase / pascalcase)
         :param str protocol_scope_prefix: prefix url for scopes
-        :param pytz.UTC timezone: preferred timezone, defaults to the
+        :param pytz.UTC or str timezone: preferred timezone, defaults to the
          system timezone
         :raises ValueError: if protocol_url or api_version are not supplied
         """
@@ -92,6 +92,8 @@ class Protocol:
         self.default_resource = default_resource or ME_RESOURCE
         self.use_default_casing = True if casing_function is None else False
         self.casing_function = casing_function or camelcase
+        if timezone and isinstance(timezone, str):
+            timezone = get_timezone(timezone)
         try:
             self.timezone = timezone or get_localzone()  # pytz timezone
         except UnknownTimeZoneError as e:
