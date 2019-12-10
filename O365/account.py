@@ -69,7 +69,7 @@ class Account:
 
         return token is not None and not token.is_expired
 
-    def authenticate(self, *, scopes=None, **kwargs):
+    def authenticate(self, *, scopes=None, native=False, **kwargs):
         """ Performs the oauth authentication flow using the console resulting in a stored token.
         It uses the credentials passed on instantiation
 
@@ -77,6 +77,8 @@ class Account:
          by the protocol or scope helpers
         :param kwargs: other configurations to be passed to the
          Connection.get_authorization_url and Connection.request_token methods
+        :param bool native: specify whether this application is a webapp or a
+         native/mobile app. The latter cannot have client_secret in token request
         :return: Success / Failure
         :rtype: bool
         """
@@ -98,7 +100,7 @@ class Account:
             token_url = input('Paste the authenticated url here:\n')
 
             if token_url:
-                result = self.con.request_token(token_url, **kwargs)  # no need to pass state as the session is the same
+                result = self.con.request_token(token_url, native=native, **kwargs)  # no need to pass state as the session is the same
                 if result:
                     print('Authentication Flow Completed. Oauth Access Token Stored. You can now use the API.')
                 else:
