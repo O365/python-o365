@@ -403,12 +403,23 @@ account = Account(credentials, scopes=scopes_office)
 When authenticating you will retrieve oauth tokens. If you don't want a one time access you will have to store the token somewhere.
 O365 makes no assumptions on where to store the token and tries to abstract this from the library usage point of view.
 
-You can choose where and how to store tokens by using the properly Token Backend.
+You can choose where and how to store tokens by using the proper Token Backend.
 
 **Take care: the access (and refresh) token must remain protected from unauthorized users.**
 
+The library will call (at different stages) the token backend methods to load and save the token.
+
+Methods that load tokens:
+- `account.is_authenticated` property will try to load the token if is not already loaded.
+- `connection.get_session`: this method is called when there isn't a request session set. By default it will not try to load the token. Set `load_token=True` to load it.
+
+Methods that stores tokens:
+- `connection.request_token`: by default will store the token, but you can set `store_token=False` to avoid it.
+- `connection.refresh_token`: by default will store the token. To avoid it change `connection.store_token` to False. This however it's a global setting (that only affects the `refresh_token` method). If you only want the next refresh operation to not store the token you will have to set it back to True afterwards. 
+
 To store the token you will have to provide a properly configured TokenBackend.
-Actually there are only two implemented (but you can easely implement more like a CookieBackend, etc.):
+
+Actually there are only two implemented (but you can easely implement more like a CookieBackend, RedisBackend, etc.):
 - `FileSystemTokenBackend` (Default backend): Stores and retrieves tokens from the file system. Tokens are stored as files.
 - `FirestoreTokenBackend`: Stores and retrives tokens from a Google Firestore Datastore. Tokens are stored as documents within a collection.
 
@@ -458,8 +469,20 @@ To implement a new TokenBackend:
      - `__init__` (don't forget to call `super().__init__`)
      - `load_token`: this should load the token from the desired backend and return a `Token` instance or None
      - `save_token`: this should store the `self.token` in the desired backend.
-     - Optionally you can implement: `check_token` and `delete_token`
+     - Optionally you can implement: `check_token`, `delete_token` and `should_refresh_token`
      
+The `should_refresh_token` method is intended to be implemented for environments where multiple Connection instances are running on paralel.
+This method should check if it's time to refresh the token or not.
+The chosen backend can store a flag somewhere to answer this question.
+This can avoid race conditions between different instances trying to refresh the token at once, when only one should make the refresh.
+The method should return three posible values:
+- **True**: then the Connection will refresh the token.
+- **False**: then the Connection will NOT refresh the token.
+- **None**: then this method already executed the refresh and therefore the Connection does not have to.
+
+By default this always returns True as it's asuming there is are no parallel connections running at once.
+
+There are two examples of this method in the examples folder [here](https://github.com/O365/python-o365/blob/master/examples/token_backends.py).
 
 
 ## Protocols
