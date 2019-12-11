@@ -64,6 +64,7 @@ What follows is kind of a wiki...
 - [Account Class and Modularity](#account)
 - [MailBox](#mailbox)
 - [AddressBook](#addressbook)
+- [Directory and Users](#directory-and-users)
 - [Calendar](#calendar)
 - [OneDrive](#onedrive)
 - [Excel](#excel)
@@ -884,6 +885,21 @@ message = new_contact.new_message()  #  Bonus: send a message to this contact
 # ...
 
 new_contact.delete()  # Bonus: deteled from the cloud
+```
+
+
+## Directory and Users
+The Directory object can retrieve users.
+
+A User instance contains by default the [basic properties of the user](https://docs.microsoft.com/en-us/graph/api/user-list?view=graph-rest-1.0&tabs=http#optional-query-parameters).
+If you want to include more, you will have to select the desired properties manually. 
+
+Check [The Global Address List](#the-global-address-list) for further information.
+
+```python
+directory = account.directory()
+for user in directory.get_users():
+    print(user)
 ```
 
 
