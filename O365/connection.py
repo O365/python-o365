@@ -450,7 +450,6 @@ class Connection:
                       redirect_uri=OAUTH_REDIRECT_URL,
                       requested_scopes=None,
                       store_token=True,
-                      native=False,
                       **kwargs):
         """ Authenticates for the specified url and gets the token, save the
         token for future based if requested
@@ -463,8 +462,6 @@ class Connection:
         :param bool store_token: whether or not to store the token,
          so you don't have to keep opening the auth link and
          authenticating every time
-        :param bool native: specify whether this application is a webapp or a
-         native/mobile app. The latter cannot have client_secret in token request
         :param kwargs: allow to pass unused params in conjunction with Connection
         :return: Success/Failure
         :rtype: bool
@@ -488,19 +485,20 @@ class Connection:
                 self.session = self.get_session(scopes=scopes)
             else:
                 raise ValueError('"auth_flow_type" must be either "authorization" or "credentials"')
-        
-        token_args = {'token_url': self._oauth2_token_url,
-                      'authorization_response': authorization_url,
-                      'include_client_id': True}
-
-        if not native:
-            token_args['client_secret'] = client_secret
 
         try:
-            if self.auth_flow_type == 'credentials':
-                token_args['scope'] = scopes
-
-            self.token_backend.token = Token(self.session.fetch_token(**token_args))
+            if self.auth_flow_type == 'authorization':
+                self.token_backend.token = Token(self.session.fetch_token(
+                    token_url=self._oauth2_token_url,
+                    authorization_response=authorization_url,
+                    include_client_id=True,
+                    client_secret=client_secret))
+            elif self.auth_flow_type == 'credentials':
+                self.token_backend.token = Token(self.session.fetch_token(
+                    token_url=self._oauth2_token_url,
+                    include_client_id=True,
+                    client_secret=client_secret,
+                    scope=scopes))
         except Exception as e:
             log.error('Unable to fetch auth token. Error: {}'.format(str(e)))
             return False
