@@ -3,7 +3,7 @@
 Almost every release features a lot of bugfixes but those are not listed here.
 
 
-## Version 2.0.6 (unreleased)
+## Version 2.0.6 (2019-12-13)
 
 ### Features:
 - NEW: Outlook Categories. Modified Message, Event and Contact to accept Category instances
