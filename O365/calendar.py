@@ -328,7 +328,7 @@ class EventRecurrence(ApiComponent):
         :setter: set the end date
         :type: date
         """
-        return self.__start_date
+        return self.__end_date
 
     @end_date.setter
     def end_date(self, value):
