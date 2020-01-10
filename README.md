@@ -1007,7 +1007,7 @@ storage = account.storage()  # here we get the storage instance that handles all
 drives = storage.get_drives()
 
 # get the default drive
-my_drive = storage.get_default_drive()  # or get_drive('drive-id')
+my_drive = drives.get_default_drive()  # or get_drive('drive-id')
 
 # get some folders:
 root_folder = my_drive.get_root_folder()
