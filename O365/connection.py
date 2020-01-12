@@ -323,7 +323,7 @@ class Connection:
                  request_retries=3, token_backend=None,
                  tenant_id='common',
                  auth_flow_type='authorization',
-                 timeout=None, **kwargs):
+                 timeout=None, json_encoder=None, **kwargs):
         """ Creates an API connection object
 
         :param tuple credentials: a tuple of (client_id, client_secret)
@@ -352,6 +352,7 @@ class Connection:
             - 'credentials': also called client credentials grant flow using only the cliend id and secret
         :param float or tuple timeout: How long to wait for the server to send
             data before giving up, as a float, or a tuple (connect timeout, read timeout)
+        :param JSONEncoder json_encoder: The JSONEnocder to use during the JSON serialization on the request.
         :param dict kwargs: any extra params passed to Connection
         :raises ValueError: if credentials is not tuple of
          (client_id, client_secret)
@@ -380,6 +381,7 @@ class Connection:
         self.raise_http_errors = raise_http_errors
         self.request_retries = request_retries
         self.timeout = timeout
+        self.json_encoder = json_encoder
 
         self.naive_session = None  # lazy loaded: holds a requests Session object
 
@@ -655,7 +657,7 @@ class Connection:
                 kwargs['headers']['Content-type'] = 'application/json'
             if 'data' in kwargs and kwargs['data'] is not None and kwargs['headers'].get(
                     'Content-type') == 'application/json':
-                kwargs['data'] = json.dumps(kwargs['data'])  # convert to json
+                kwargs['data'] = json.dumps(kwargs['data'], cls=self.json_encoder)  # convert to json
 
         if self.timeout is not None:
             kwargs['timeout'] = self.timeout
