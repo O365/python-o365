@@ -3,7 +3,6 @@
 Note: Support for workbooks stored in OneDrive Consumer platform is still not available.
 At this time, only the files stored in business platform is supported by Excel REST APIs.
 """
-import json
 import logging
 import datetime as dt
 from urllib.parse import quote
@@ -1663,6 +1662,76 @@ class WorkSheet(ApiComponent):
         return self.named_range_constructor(parent=self, **{self._cloud_data_key: response.json()})
 
 
+class WorkbookApplication(ApiComponent):
+    _endpoints = {
+        'get_details': '/application',
+        'post_calculation': '/application/calculate'
+    }
+
+    def __init__(self, workbook_or_id, *, con=None, **kwargs):
+        """
+        Create A WorkbookApplication representation
+
+        :param workbook_or_id: Either a workbook object, or the id of the workbook you want to interact with
+        :param parent: parent for this operation
+        :param Connection con: connection to use if no parent specified
+        """
+
+        if isinstance(workbook_or_id, WorkBook) and con:
+            raise ValueError('Need a workbook or a connection but not both')
+
+        if isinstance(workbook_or_id, WorkBook):
+            self.con = workbook_or_id.session.con
+            self.workbook_id = workbook_or_id.object_id.split(":").pop()
+            main_resource = getattr(workbook_or_id, 'main_resource', None)
+
+        elif isinstance(workbook_or_id, str):
+            self.con = con
+            self.workbook_id = workbook_or_id
+            main_resource = kwargs.pop('main_resource', None)
+
+        else:
+            raise ValueError("workbook_or_id was not an accepted type: Workbook or string")
+
+        # Choose the main_resource passed in kwargs over parent main_resource
+
+        super().__init__(
+            protocol=workbook_or_id.protocol if isinstance(workbook_or_id, WorkBook) else kwargs.get('protocol'),
+            main_resource=main_resource)
+
+    def __str__(self):
+        return self.__repr__()
+
+    def __repr__(self):
+        return 'WorkbookApplication for Workbook: {}'.format(self.workbook_id or 'Not set')
+
+    def __bool__(self):
+        return self.workbook_id is not None
+
+    def get_details(self):
+        """ Gets workbookApplication """
+        url = self.build_url(self._endpoints.get('get_details')).format(id=quote(self.workbook_id))
+        response = self.con.get(url)
+
+        if not response:
+            return None
+        return response.json()
+
+    def run_calculations(self, calculation_type):
+        if calculation_type not in ["Recalculate", "Full", "FullRebuild"]:
+            raise ValueError("calculation type must be one of: Recalculate, Full, FullRebuild")
+
+        url = self.build_url(self._endpoints.get('post_calculation').format(id=quote(self.workbook_id)))
+        data = {"calculationType": calculation_type}
+        headers = {"Content-type": "application/json"}
+
+        response = self.con.post(url, headers=headers, data=data)
+        if not response:
+            return False
+
+        return response.ok
+
+
 class WorkBook(ApiComponent):
     _endpoints = {
         'get_worksheets': '/worksheets',
@@ -1675,6 +1744,8 @@ class WorkBook(ApiComponent):
         'add_named_range': '/names/add',
         'add_named_range_f': '/names/addFormulaLocal',
     }
+
+    application_constructor = WorkbookApplication
     worksheet_constructor = WorkSheet
     table_constructor = Table
     named_range_constructor = NamedRange
@@ -1741,6 +1812,9 @@ class WorkBook(ApiComponent):
         if not response:
             return None
         return self.table_constructor(parent=self, **{self._cloud_data_key: response.json()})
+
+    def get_workbookapplication(self):
+        return self.application_constructor(self)
 
     def get_worksheets(self):
         """ Returns a collection of this workbook worksheets"""
@@ -1834,71 +1908,3 @@ class WorkBook(ApiComponent):
             return None
         return self.named_range_constructor(parent=self, **{self._cloud_data_key: response.json()})
 
-
-class WorkbookApplication(ApiComponent):
-    _endpoints = {
-        'get_workbookapplication': '/{id}/workbook/application',
-        'post_calculation': '/{id}/workbook/application/calculate'
-    }
-
-    def __init__(self, workbook_or_id, *, parent=None, con=None, **kwargs):
-        """
-        Create A WorkbookApplication representation
-
-        :param workbook_or_id: Either a workbook object, or the id of the workbook you want to interact with
-        :param parent: parent for this operation
-        :param Connection con: connection to use if no parent specified
-        """
-
-        if parent and con:
-            raise ValueError('Need a parent or a connection but not both')
-
-        self.con = parent.con if parent else con
-
-        # Assign the workbook id
-        if isinstance(workbook_or_id, WorkBook):
-            self.workbook_id.object_id.split(":").last()
-
-        else:
-            # Should probably do some more thorough testing
-            self.workbook_id = workbook_or_id
-
-        # Choose the main_resource passed in kwargs over parent main_resource
-        main_resource = kwargs.pop('main_resource', None) or (
-            getattr(parent, 'main_resource', None) if parent else None)
-
-        super().__init__(
-            protocol=parent.protocol if parent else kwargs.get('protocol'),
-            main_resource=main_resource)
-
-    def __str__(self):
-        return self.__repr__()
-
-    def __repr__(self):
-        return 'WorkbookApplication for Workbook: {}'.format(self.workbook_id or 'Not set')
-
-    def __bool__(self):
-        return self.workbook_id is not None
-
-    def get_workbookapplication(self):
-        """ Gets workbookApplication """
-        url = self.build_url(self._endpoints.get('get_workbookapplication').format(id=quote(self.workbook_id)))
-        headers = {
-
-        }
-        response = self.con.get(url, headers)
-        if not response:
-            return None
-        return response.json()
-
-    def run_calculations(self, calculation_type):
-        if calculation_type not in ["Recalculate", "Full", "FullRebuild"]:
-            raise ValueError("calculation type must be one of: Recalculate, Full, FullRebuild")
-
-        url = self.build_url(self._endpoints.get('get_workbookapplication').format(id=quote(self.workbook_id)))
-        body = json.dumps({"calculationType": calculation_type})
-
-        response = self.con.post(url, body)
-        if not response:
-            return False
-        return response.status_code == 200
