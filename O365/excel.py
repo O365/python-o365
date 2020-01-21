@@ -1676,7 +1676,7 @@ class WorkbookApplication(ApiComponent):
         """
 
         if not isinstance(workbook, WorkBook):
-            raise ValueError("workbook_or_id was not an accepted type: Workbook or string")
+            raise ValueError("workbook was not an accepted type: Workbook")
 
         self.parent = workbook  # Not really needed currently, but saving in case we need it for future functionality
         self.con = workbook.session.con
@@ -1894,4 +1894,3 @@ class WorkBook(ApiComponent):
         if not response:
             return None
         return self.named_range_constructor(parent=self, **{self._cloud_data_key: response.json()})
-
