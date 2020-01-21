@@ -241,7 +241,7 @@ class FirestoreBackend(BaseTokenBackend):
         self.client = client
         self.collection = collection
         self.doc_id = doc_id
-        self.doc_ref = client.collections(collection).document(doc_id)
+        self.doc_ref = client.collection(collection).document(doc_id)
         self.field_name = field_name
 
     def __repr__(self):
