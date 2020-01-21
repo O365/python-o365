@@ -1668,35 +1668,22 @@ class WorkbookApplication(ApiComponent):
         'post_calculation': '/application/calculate'
     }
 
-    def __init__(self, workbook_or_id, *, con=None, **kwargs):
+    def __init__(self, workbook):
         """
         Create A WorkbookApplication representation
 
-        :param workbook_or_id: Either a workbook object, or the id of the workbook you want to interact with
-        :param parent: parent for this operation
-        :param Connection con: connection to use if no parent specified
+        :param workbook: A workbook object, of the workboook that you want to interact with
         """
 
-        if isinstance(workbook_or_id, WorkBook) and con:
-            raise ValueError('Need a workbook or a connection but not both')
-
-        if isinstance(workbook_or_id, WorkBook):
-            self.con = workbook_or_id.session.con
-            self.workbook_id = workbook_or_id.object_id.split(":").pop()
-            main_resource = getattr(workbook_or_id, 'main_resource', None)
-
-        elif isinstance(workbook_or_id, str):
-            self.con = con
-            self.workbook_id = workbook_or_id
-            main_resource = kwargs.pop('main_resource', None)
-
-        else:
+        if not isinstance(workbook, WorkBook):
             raise ValueError("workbook_or_id was not an accepted type: Workbook or string")
 
-        # Choose the main_resource passed in kwargs over parent main_resource
+        self.parent = workbook  # Not really needed currently, but saving in case we need it for future functionality
+        self.con = workbook.session.con
+        main_resource = getattr(workbook, 'main_resource', None)
 
         super().__init__(
-            protocol=workbook_or_id.protocol if isinstance(workbook_or_id, WorkBook) else kwargs.get('protocol'),
+            protocol=workbook.protocol,
             main_resource=main_resource)
 
     def __str__(self):
@@ -1706,11 +1693,11 @@ class WorkbookApplication(ApiComponent):
         return 'WorkbookApplication for Workbook: {}'.format(self.workbook_id or 'Not set')
 
     def __bool__(self):
-        return self.workbook_id is not None
+        return bool(self.parent)
 
     def get_details(self):
         """ Gets workbookApplication """
-        url = self.build_url(self._endpoints.get('get_details')).format(id=quote(self.workbook_id))
+        url = self.build_url(self._endpoints.get('get_details'))
         response = self.con.get(url)
 
         if not response:
@@ -1721,7 +1708,7 @@ class WorkbookApplication(ApiComponent):
         if calculation_type not in ["Recalculate", "Full", "FullRebuild"]:
             raise ValueError("calculation type must be one of: Recalculate, Full, FullRebuild")
 
-        url = self.build_url(self._endpoints.get('post_calculation').format(id=quote(self.workbook_id)))
+        url = self.build_url(self._endpoints.get('post_calculation'))
         data = {"calculationType": calculation_type}
         headers = {"Content-type": "application/json"}
 
