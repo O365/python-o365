@@ -855,6 +855,16 @@ class Query:
         self._attribute = self._get_mapping(attribute)
         return self
 
+    @fluent
+    def on_list_field(self, field):
+        """ Apply query on a list field, to be used along with chain()
+
+        :param str field: field name (note: name is case sensitive)
+        :rtype: Query
+        """
+        self._attribute = 'fields/' + field
+        return self
+
     def remove_filter(self, filter_attr):
         """ Removes a filter given the attribute name """
         filter_attr = self._get_mapping(filter_attr)
