@@ -3,7 +3,6 @@
 Note: Support for workbooks stored in OneDrive Consumer platform is still not available.
 At this time, only the files stored in business platform is supported by Excel REST APIs.
 """
-
 import logging
 import datetime as dt
 from urllib.parse import quote
@@ -1663,6 +1662,63 @@ class WorkSheet(ApiComponent):
         return self.named_range_constructor(parent=self, **{self._cloud_data_key: response.json()})
 
 
+class WorkbookApplication(ApiComponent):
+    _endpoints = {
+        'get_details': '/application',
+        'post_calculation': '/application/calculate'
+    }
+
+    def __init__(self, workbook):
+        """
+        Create A WorkbookApplication representation
+
+        :param workbook: A workbook object, of the workboook that you want to interact with
+        """
+
+        if not isinstance(workbook, WorkBook):
+            raise ValueError("workbook was not an accepted type: Workbook")
+
+        self.parent = workbook  # Not really needed currently, but saving in case we need it for future functionality
+        self.con = workbook.session.con
+        main_resource = getattr(workbook, 'main_resource', None)
+
+        super().__init__(
+            protocol=workbook.protocol,
+            main_resource=main_resource)
+
+    def __str__(self):
+        return self.__repr__()
+
+    def __repr__(self):
+        return 'WorkbookApplication for Workbook: {}'.format(self.workbook_id or 'Not set')
+
+    def __bool__(self):
+        return bool(self.parent)
+
+    def get_details(self):
+        """ Gets workbookApplication """
+        url = self.build_url(self._endpoints.get('get_details'))
+        response = self.con.get(url)
+
+        if not response:
+            return None
+        return response.json()
+
+    def run_calculations(self, calculation_type):
+        if calculation_type not in ["Recalculate", "Full", "FullRebuild"]:
+            raise ValueError("calculation type must be one of: Recalculate, Full, FullRebuild")
+
+        url = self.build_url(self._endpoints.get('post_calculation'))
+        data = {"calculationType": calculation_type}
+        headers = {"Content-type": "application/json"}
+
+        response = self.con.post(url, headers=headers, data=data)
+        if not response:
+            return False
+
+        return response.ok
+
+
 class WorkBook(ApiComponent):
     _endpoints = {
         'get_worksheets': '/worksheets',
@@ -1675,6 +1731,8 @@ class WorkBook(ApiComponent):
         'add_named_range': '/names/add',
         'add_named_range_f': '/names/addFormulaLocal',
     }
+
+    application_constructor = WorkbookApplication
     worksheet_constructor = WorkSheet
     table_constructor = Table
     named_range_constructor = NamedRange
@@ -1741,6 +1799,9 @@ class WorkBook(ApiComponent):
         if not response:
             return None
         return self.table_constructor(parent=self, **{self._cloud_data_key: response.json()})
+
+    def get_workbookapplication(self):
+        return self.application_constructor(self)
 
     def get_worksheets(self):
         """ Returns a collection of this workbook worksheets"""
