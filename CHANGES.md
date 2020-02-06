@@ -3,6 +3,13 @@
 Almost every release features a lot of bugfixes but those are not listed here.
 
 
+## Version 2.0.7 (2019-02-06)
+
+### Features:
+- Connection: now allows to pass a custom Json Encoder ("json_encoder" param).
+- Added WorkBookApplication on excel.py that can run manual calculations on workbooks.
+
+
 ## Version 2.0.6 (2019-12-13)
 
 ### Features:
