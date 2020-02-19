@@ -389,6 +389,7 @@ class Connection:
                                      '{}/oauth2/v2.0/authorize'.format(tenant_id)
         self._oauth2_token_url = 'https://login.microsoftonline.com/' \
                                  '{}/oauth2/v2.0/token'.format(tenant_id)
+        self.oauth_redirect_url = 'https://login.microsoftonline.com/common/oauth2/nativeclient'
 
     @property
     def auth_flow_type(self):
@@ -422,7 +423,7 @@ class Connection:
                 }
 
     def get_authorization_url(self, requested_scopes=None,
-                              redirect_uri=OAUTH_REDIRECT_URL, **kwargs):
+                              redirect_uri=None, **kwargs):
         """ Initializes the oauth authorization flow, getting the
         authorization url that the user must approve.
 
@@ -432,6 +433,8 @@ class Connection:
         :return: authorization url
         :rtype: str
         """
+
+        redirect_uri = redirect_uri or self.oauth_redirect_url
 
         scopes = requested_scopes or self.scopes
         if not scopes:
@@ -449,7 +452,7 @@ class Connection:
 
     def request_token(self, authorization_url, *,
                       state=None,
-                      redirect_uri=OAUTH_REDIRECT_URL,
+                      redirect_uri=None,
                       requested_scopes=None,
                       store_token=True,
                       **kwargs):
@@ -469,6 +472,7 @@ class Connection:
         :rtype: bool
         """
 
+        redirect_uri = redirect_uri or self.oauth_redirect_url
         _, client_secret = self.auth
 
         # Allow token scope to not match requested scope.
@@ -510,7 +514,7 @@ class Connection:
         return True
 
     def get_session(self, *, state=None,
-                    redirect_uri=OAUTH_REDIRECT_URL,
+                    redirect_uri=None,
                     load_token=False,
                     scopes=None):
         """ Create a requests Session object
@@ -523,6 +527,7 @@ class Connection:
         :rtype: OAuth2Session
         """
 
+        redirect_uri = redirect_uri or self.oauth_redirect_url
         client_id, _ = self.auth
 
         if self.auth_flow_type == 'authorization':
