@@ -40,9 +40,10 @@ class Team(ApiComponent):
             protocol=parent.protocol if parent else kwargs.get('protocol'),
             main_resource=main_resource)
 
-        self.displayName = cloud_data.get('displayName')
-        self.description = cloud_data.get('description')
-        self.isArchived = cloud_data.get('isArchived')
+        self.display_name = cloud_data.get(self._cc('displayName'), '')
+        self.description = cloud_data.get(self._cc('description'), '')
+        self.is_archived = cloud_data.get(self._cc('isArchived'), '')
+        self.web_url = cloud_data.get(self._cc('webUrl'), '')
 
     def __str__(self):
         return self.__repr__()
@@ -88,7 +89,7 @@ class Channel(ApiComponent):
             protocol=parent.protocol if parent else kwargs.get('protocol'),
             main_resource=main_resource)
 
-        self.displayName = cloud_data.get('displayName')
+        self.display_name = cloud_data.get(self._cc('displayName'), '')
         self.description = cloud_data.get('description')
         self.email = cloud_data.get('email')
 
@@ -136,13 +137,13 @@ class App(ApiComponent):
             protocol=parent.protocol if parent else kwargs.get('protocol'),
             main_resource=main_resource)
 
-        self.appDefinition = cloud_data.get('teamsAppDefinition')
+        self.app_definition = cloud_data.get(self._cc('teamsAppDefinition'), '')
 
     def __str__(self):
         return self.__repr__()
 
     def __repr__(self):
-        return 'App: {}'.format(self.appDefinition['displayName'])
+        return 'App: {}'.format(self.app_definition['displayName'])
 
     def __eq__(self, other):
         return self.object_id == other.object_id
@@ -240,7 +241,7 @@ class Teams(ApiComponent):
             for site in data.get('value', [])]
 
     def create_channel(self, team_id=None, display_name=None, description=None):
-        """ Creates a channels within a specified team
+        """ Creates a channel within a specified team
 
         :param team_id: the team_id where the channel is created.
 
@@ -273,12 +274,10 @@ class Teams(ApiComponent):
 
         data = response.json()
 
-        return [
-            self.channel_constructor(parent=self, **{self._cloud_data_key: site})
-            for site in data.get('value', [])]
+        return self.channel_constructor(parent=self, **{self._cloud_data_key: data})
 
     def get_channel_info(self, team_id=None, channel_id=None):
-        """ Returns the channel info for a given channel_id
+        """ Returns the channel info for a given channel
 
         :param team_id: the team_id of the channel to get the info of.
         :param channel_id: the channel_id of the channel to get the info of.
@@ -301,26 +300,22 @@ class Teams(ApiComponent):
 
         data = response.json()
 
-        return [
-            self.channel_constructor(
-                parent=self, **{self._cloud_data_key: site})
-            for site in data.get('value', [])]
+        return self.channel_constructor(parent=self, **{self._cloud_data_key: data})
 
     def get_apps_in_team(self, team_id=None):
         """ Returns a list of apps of a specified team
 
         :param team_id: the team_id of the team to get the apps of.
 
-        :rtype: channels
+        :rtype: apps
         """
-
-        if not team_id:
-            raise RuntimeError('Provide the team_id')
 
         if team_id:
             # get channels by the team id
             url = self.build_url(
                 self._endpoints.get('get_apps_in_team').format(team_id=team_id))
+        else:
+            raise RuntimeError('Provide the team_id')
 
         response = self.con.get(url)
 
