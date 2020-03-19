@@ -238,6 +238,16 @@ class Account:
 
         from .planner import Planner
         return Planner(parent=self, main_resource=resource)
+    
+    def teams(self, *, resource=''):
+        """ Get an instance to read information from Microsoft Teams """
+
+        if not isinstance(self.protocol, MSGraphProtocol):
+            raise RuntimeError(
+                'teams api only works on Microsoft Graph API')
+
+        from .teams import Teams
+        return Teams(parent=self, main_resource=resource)
 
     def outlook_categories(self, *, resource=''):
         """ Returns a Categories object to handle the available Outlook Categories """
