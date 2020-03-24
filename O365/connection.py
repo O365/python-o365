@@ -53,6 +53,8 @@ DEFAULT_SCOPES = {
     'sharepoint': ['Sites.Read.All'],
     'sharepoint_dl': ['Sites.ReadWrite.All'],
     'settings_all': ['MailboxSettings.ReadWrite'],
+    'tasks': ['Tasks.Read'],
+    'tasks_all': ['Tasks.ReadWrite'],
 }
 
 

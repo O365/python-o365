@@ -1,4 +1,4 @@
-from .connection import Connection, Protocol, MSGraphProtocol
+from .connection import Connection, Protocol, MSGraphProtocol, MSOffice365Protocol
 from .utils import ME_RESOURCE
 
 
@@ -243,6 +243,17 @@ class Account:
         from .planner import Planner
         return Planner(parent=self, main_resource=resource)
 
+    def tasks(self, *, resource=''):
+        """ Get an instance to read information from Microsoft ToDo """
+
+        if not isinstance(self.protocol, MSOffice365Protocol):
+            raise RuntimeError(
+                'todo api only works on Microsoft Office 365 API')
+
+        from .tasks import ToDo
+        return ToDo(parent=self, main_resource=resource)
+
+    
     def teams(self, *, resource=''):
         """ Get an instance to read information from Microsoft Teams """
 
