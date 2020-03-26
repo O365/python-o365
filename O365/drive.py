@@ -369,7 +369,7 @@ class DriveItemPermission(ApiComponent):
 
         if roles in {'view', 'read'}:
             data = {'roles': ['read']}
-        elif roles == {'edit', 'write'}:
+        elif roles in {'edit', 'write'}:
             data = {'roles': ['write']}
         else:
             raise ValueError('"{}" is not a valid share_type'.format(roles))
