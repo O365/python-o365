@@ -1789,50 +1789,20 @@ class Storage(ApiComponent):
                                       main_resource=self.main_resource,
                                       **{self._cloud_data_key: drive})
 
-    def get_drives(self, limit=None, *, query=None, order_by=None,
-                   batch=None):
-        """ Returns a collection of drives
-
-        :param int limit: max no. of items to get. Over 999 uses batch.
-        :param query: applies a OData filter to the request
-        :type query: Query or str
-        :param order_by: orders the result set based on this condition
-        :type order_by: Query or str
-        :param int batch: batch size, retrieves items in
-         batches allowing to retrieve more items than the limit.
-        :return: list of drives in this Storage
-        :rtype: list[Drive] or Pagination
-        """
+    def get_drives(self):
+        """ Returns a collection of drives"""
 
         url = self.build_url(self._endpoints.get('list_drives'))
 
-        if limit is None or limit > self.protocol.max_top_value:
-            batch = self.protocol.max_top_value
+        response = self.con.get(url)
 
-        params = {'$top': batch if batch else limit}
-
-        if order_by:
-            params['$orderby'] = order_by
-
-        if query:
-            if isinstance(query, str):
-                params['$filter'] = query
-            else:
-                params.update(query.as_params())
-
-        response = self.con.get(url, params=params)
         if not response:
             return []
 
         data = response.json()
 
         # Everything received from cloud must be passed as self._cloud_data_key
-
         drives = [self.drive_constructor(parent=self, **{self._cloud_data_key: drive}) for
                   drive in data.get('value', [])]
-        next_link = data.get(NEXT_LINK_KEYWORD, None)
-        if batch and next_link:
-            return Pagination(parent=self, data=drives, constructor=self.drive_constructor,
-                              next_link=next_link, limit=limit)
-        else:
-            return drives
+
+        return drives
