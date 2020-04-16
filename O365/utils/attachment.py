@@ -166,6 +166,9 @@ class BaseAttachment(ApiComponent):
                 self.content = base64.b64encode(response.content)
                 self.name = f"{self.name}.eml"
 
+            self.name = self.name.replace('/', '-').replace(
+                '\\', '').replace(':', '')
+
     def __len__(self):
         """ Returns the size of this attachment """
         return self.size
@@ -210,7 +213,7 @@ class BaseAttachment(ApiComponent):
             return False
 
         name = custom_name or self.name
-        name = name.replace('/', '-').replace('\\', '').replace(':', '')
+        # name = name.replace('/', '-').replace('\\', '').replace(':', '')
         try:
             path = location / name
             with path.open('wb') as file:
