@@ -1,3 +1,4 @@
+import json
 import base64
 import logging
 from pathlib import Path
@@ -64,9 +65,12 @@ class AttachableMixin:
 class BaseAttachment(ApiComponent):
     """ BaseAttachment class is the base object for dealing with attachments """
 
-    _endpoints = {'attach': '/messages/{id}/attachments'}
+    _endpoints = {
+        'attach': '/messages/{id}/attachments',
+        'attach_item': '/messages/{id}/attachments/{ida}/$value'
+    }
 
-    def __init__(self, attachment=None, *, parent=None, **kwargs):
+    def __init__(self, attachment=None, *, parent=None, ancestor=None, **kwargs):
         """ Creates a new attachment, optionally from existing cloud data
 
         :param attachment: attachment data (dict = cloud data,
@@ -93,6 +97,7 @@ class BaseAttachment(ApiComponent):
         self.on_disk = False
         self.on_cloud = kwargs.get('on_cloud', False)
         self.size = None
+        self._ancestor = ancestor
 
         if attachment:
             if isinstance(attachment, dict):
@@ -152,6 +157,15 @@ class BaseAttachment(ApiComponent):
                 self.on_disk = True
                 self.size = self.attachment.stat().st_size
 
+            if self.attachment_type == 'item':
+                url = self.build_url(
+                    BaseAttachment._endpoints.get('attach_item').format(
+                        id=self._ancestor.object_id, ida=self.attachment_id)
+                )
+                response = self._ancestor.con.get(url)
+                self.content = base64.b64encode(response.content)
+                self.name = f"{self.name}.eml"
+
     def __len__(self):
         """ Returns the size of this attachment """
         return self.size
@@ -196,7 +210,7 @@ class BaseAttachment(ApiComponent):
             return False
 
         name = custom_name or self.name
-        name = name.replace('/', '-').replace('\\', '')
+        name = name.replace('/', '-').replace('\\', '').replace(':', '')
         try:
             path = location / name
             with path.open('wb') as file:
@@ -359,17 +373,22 @@ class BaseAttachments(ApiComponent):
             if isinstance(attachments, (list, tuple, set)):
                 # User provided attachments
                 attachments_temp = [
-                    self._attachment_constructor(attachment, parent=self)
-                    for attachment in attachments]
+                    self._attachment_constructor(
+                        attachment, parent=self, ancestor=self._parent
+                    )
+                    for attachment in attachments
+                ]
             elif isinstance(attachments,
                             dict) and self._cloud_data_key in attachments:
                 # Cloud downloaded attachments. We pass on_cloud=True
                 # to track if this attachment is saved on the server
-                attachments_temp = [self._attachment_constructor(
-                    {self._cloud_data_key: attachment}, parent=self,
-                    on_cloud=True)
-                    for attachment in
-                    attachments.get(self._cloud_data_key, [])]
+                attachments_temp = [
+                    self._attachment_constructor(
+                        {self._cloud_data_key: attachment}, parent=self,
+                        ancestor=self._parent, on_cloud=True
+                    )
+                    for attachment in attachments.get(self._cloud_data_key, [])
+                ]
             else:
                 raise ValueError('Attachments must be a str or Path or a '
                                  'list, tuple or set of the former')
