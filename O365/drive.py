@@ -437,9 +437,6 @@ class DriveItem(ApiComponent):
             raise ValueError('Need a parent or a connection but not both')
         self.con = parent.con if parent else con
         self._parent = parent if isinstance(parent, DriveItem) else None
-        self.drive = parent if isinstance(parent, Drive) else (
-            parent.drive if isinstance(parent.drive, Drive) else kwargs.get(
-                'drive', None))
 
         # Choose the main_resource passed in kwargs over parent main_resource
         main_resource = kwargs.pop('main_resource', None) or (
@@ -462,6 +459,25 @@ class DriveItem(ApiComponent):
         cloud_data = kwargs.get(self._cloud_data_key, {})
 
         self.object_id = cloud_data.get(self._cc('id'))
+
+        parent_reference = cloud_data.get(self._cc('parentReference'), {})
+        self.parent_id = parent_reference.get('id', None)
+        self.drive_id = parent_reference.get(self._cc('driveId'), None)
+
+        remote_item = cloud_data.get(self._cc('remoteItem'), None)
+        if remote_item is not None:
+            self.drive = None  # drive is unknown?
+            self.remote_item = self._classifier(remote_item)(parent=self, **{
+                self._cloud_data_key: remote_item})
+            self.parent_id = self.remote_item.parent_id
+            self.drive_id = self.remote_item.drive_id
+            self.set_base_url('drives/{}'.format(self.drive_id))  # changes main_resource and _base_url
+        else:
+            self.drive = parent if isinstance(parent, Drive) else (
+                parent.drive if isinstance(parent.drive, Drive) else kwargs.get(
+                    'drive', None))
+            self.remote_item = None
+
         self.name = cloud_data.get(self._cc('name'), '')
         self.web_url = cloud_data.get(self._cc('webUrl'))
         created_by = cloud_data.get(self._cc('createdBy'), {}).get('user', None)
@@ -482,14 +498,6 @@ class DriveItem(ApiComponent):
         self.description = cloud_data.get(self._cc('description'), '')
         self.size = cloud_data.get(self._cc('size'), 0)
         self.shared = cloud_data.get(self._cc('shared'), {}).get('scope', None)
-
-        parent_reference = cloud_data.get(self._cc('parentReference'), {})
-        self.parent_id = parent_reference.get('id', None)
-        self.drive_id = parent_reference.get(self._cc('driveId'), None)
-
-        remote_item = cloud_data.get(self._cc('remoteItem'), None)
-        self.remote_item = self._classifier(remote_item)(parent=self, **{
-            self._cloud_data_key: remote_item}) if remote_item else None
 
         # Thumbnails
         self.thumbnails = cloud_data.get(self._cc('thumbnails'), [])
@@ -552,6 +560,24 @@ class DriveItem(ApiComponent):
             else:
                 # return the drive
                 return self.drive
+
+    def get_drive(self):
+        """
+        Returns this item drive
+        :return: Drive of this item
+        :rtype: Drive or None
+        """
+        if not self.drive_id:
+            return None
+
+        url = self.build_url('')
+        response = self.con.get(url)
+        if not response:
+            return None
+
+        drive = response.json()
+
+        return Drive(parent=self, main_resource='', **{self._cloud_data_key: drive})
 
     def get_thumbnails(self, size=None):
         """ Returns this Item Thumbnails. Thumbnails are not supported on
@@ -1089,11 +1115,17 @@ class Folder(DriveItem):
 
         :param drive.Folder to_folder: folder where to store the contents
         """
-        to_folder = to_folder or Path()
+        if to_folder is None:
+            try:
+                to_folder = Path() / self.name
+            except Exception as e:
+                log.error('Could not create folder with name: {}. Error: {}'.format(self.name, e))
+                to_folder = Path()  # fallback to the same folder
+
         if not to_folder.exists():
             to_folder.mkdir()
 
-        for item in self.get_items(query=self.new_query().select('id', 'size')):
+        for item in self.get_items(query=self.new_query().select('id', 'size', 'folder', 'name')):
             if item.is_folder and item.child_count > 0:
                 item.download_contents(to_folder=to_folder / item.name)
             else:
@@ -1307,8 +1339,9 @@ class Drive(ApiComponent):
         self.parent = parent if isinstance(parent, Drive) else None
 
         # Choose the main_resource passed in kwargs over parent main_resource
-        main_resource = kwargs.pop('main_resource', None) or (
-            getattr(parent, 'main_resource', None) if parent else None)
+        main_resource = kwargs.pop('main_resource', None)
+        if main_resource is None:
+            main_resource = getattr(parent, 'main_resource', None) if parent else None
         super().__init__(
             protocol=parent.protocol if parent else kwargs.get('protocol'),
             main_resource=main_resource)
@@ -1342,8 +1375,12 @@ class Drive(ApiComponent):
         return self.__repr__()
 
     def __repr__(self):
-        return 'Drive: {}'.format(
-            self.name or self.object_id or 'Default Drive')
+        owner = str(self.owner) if self.owner else ''
+        name = self.name or self.object_id or 'Default Drive'
+        if owner:
+            return 'Drive: {} (Owned by: {})'.format(name, owner)
+        else:
+            return 'Drive: {}'.format(name)
 
     def __eq__(self, other):
         return self.object_id == other.object_id

@@ -3,7 +3,14 @@
 Almost every release features a lot of bugfixes but those are not listed here.
 
 
-## Version 2.0.7 (2019-02-06)
+## Version 2.0.8 (2020-04-15)
+
+### Features:
+- NEW: MS Teams available
+- Drive: new method "get_drive" in DriveItems
+
+
+## Version 2.0.7 (2020-02-06)
 
 ### Features:
 - Connection: now allows to pass a custom Json Encoder ("json_encoder" param).

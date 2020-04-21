@@ -148,6 +148,7 @@ class App(ApiComponent):
     def __eq__(self, other):
         return self.object_id == other.object_id
 
+
 class Teams(ApiComponent):
     """ A microsoft teams class
         In order to use the API following permissions are required.
@@ -161,7 +162,7 @@ class Teams(ApiComponent):
         'get_channel_info': '/teams/{team_id}/channels/{channel_id}',
         'get_apps_in_team': '/teams/{team_id}/installedApps?$expand=teamsAppDefinition',
     }
-    
+
     team_constructor = Team
     channel_constructor = Channel
     app_constructor = App
@@ -230,12 +231,12 @@ class Teams(ApiComponent):
                 self._endpoints.get('get_channels').format(team_id=team_id))
 
         response = self.con.get(url)
-        
+
         if not response:
             return None
 
         data = response.json()
-        
+
         return [
             self.channel_constructor(parent=self, **{self._cloud_data_key: site})
             for site in data.get('value', [])]
@@ -265,7 +266,6 @@ class Teams(ApiComponent):
             data = {
                 'displayName': display_name,
             }
-
 
         response = self.con.post(url, data=data)
 
