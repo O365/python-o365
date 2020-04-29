@@ -2,6 +2,11 @@
 
 Almost every release features a lot of bugfixes but those are not listed here.
 
+## Version 2.0.9 (2020-04-21)
+
+### Features:
+- Bug fixing release
+
 
 ## Version 2.0.8 (2020-04-15)
 
