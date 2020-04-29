@@ -285,10 +285,17 @@ class Directory(ApiComponent):
         else:
             return users
 
-    def _get_user(self, url):
+    def _get_user(self, url, query=None):
         """Helper method so DRY"""
 
-        response = self.con.get(url)
+        params = {}
+        if query:
+            if isinstance(query, str):
+                params['$filter'] = query
+            else:
+                params.update(query.as_params())
+
+        response = self.con.get(url, params=params)
         if not response:
             return None
 
@@ -297,7 +304,7 @@ class Directory(ApiComponent):
         # Everything received from cloud must be passed as self._cloud_data_key
         return self.user_constructor(parent=self, **{self._cloud_data_key: data})
 
-    def get_user(self, user):
+    def get_user(self, user, query=None):
         """ Returns a User by it's id or user principal name
 
         :param str user: the user id or user principal name
@@ -305,13 +312,13 @@ class Directory(ApiComponent):
         :rtype: User
         """
         url = self.build_url(self._endpoints.get('get_user').format(email=user))
-        return self._get_user(url)
+        return self._get_user(url, query=query)
 
-    def get_current_user(self):
+    def get_current_user(self, query=None):
         """ Returns the current logged in user"""
 
         if self.main_resource != ME_RESOURCE:
             raise ValueError("Can't get the current user. The main resource must be set to '{}'".format(ME_RESOURCE))
 
         url = self.build_url('')  # target main_resource
-        return self._get_user(url)
+        return self._get_user(url, query=query)
