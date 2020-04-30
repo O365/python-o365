@@ -865,7 +865,15 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         self.is_organizer = cloud_data.get(cc('isOrganizer'), True)
         self.__location = cloud_data.get(cc('location'), {})
         self.locations = cloud_data.get(cc('locations'), [])  # TODO
+
         self.online_meeting_url = cloud_data.get(cc('onlineMeetingUrl'), None)
+        self.is_online_meeting = cloud_data.get(cc('isOnlineMeeting'), False)
+        self.online_meeting_provider = cloud_data.get(cc('onlineMeetingProvider'), '')
+        self.online_meeting = cloud_data.get(cc('onlineMeeting'), None)
+        if not self.online_meeting_url and self.is_online_meeting:
+            self.online_meeting_url = self.online_meeting.get(cc('joinUrl'), None) \
+                if self.online_meeting else None
+
         self.__organizer = self._recipient_from_cloud(
             cloud_data.get(cc('organizer'), None), field=cc('organizer'))
         self.__recurrence = EventRecurrence(event=self,
