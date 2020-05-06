@@ -49,7 +49,7 @@ class Team(ApiComponent):
         return self.__repr__()
 
     def __repr__(self):
-        return 'Team: {}'.format(self.displayName)
+        return 'Team: {}'.format(self.display_name)
 
     def __eq__(self, other):
         return self.object_id == other.object_id
@@ -97,7 +97,7 @@ class Channel(ApiComponent):
         return self.__repr__()
 
     def __repr__(self):
-        return 'Channel: {}'.format(self.displayName)
+        return 'Channel: {}'.format(self.display_name)
 
     def __eq__(self, other):
         return self.object_id == other.object_id
