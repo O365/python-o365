@@ -1,3 +1,8 @@
+[![Downloads](https://pepy.tech/badge/O365)](https://pepy.tech/project/O365)
+[![PyPI](https://img.shields.io/pypi/v/O365.svg)](https://pypi.python.org/pypi/O365)
+[![PyPI pyversions](https://img.shields.io/pypi/pyversions/O365.svg)](https://pypi.python.org/pypi/O365/)
+[![Build Status](https://travis-ci.org/O365/python-o365.svg?branch=master)](https://travis-ci.org/O365/python-o365)
+
 # O365 - Microsoft Graph and Office 365 API made easy
 
 
