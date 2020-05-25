@@ -349,6 +349,8 @@ class Connection:
         :param str tenant_id: use this specific tenant id, defaults to common
         :param str auth_flow_type: the auth method flow style used: Options:
             - 'authorization': 2 step web style grant flow using an authentication url
+            - 'public': 2 step web style grant flow using an authentication url for public apps where
+            client secret cannot be secured
             - 'credentials': also called client credentials grant flow using only the cliend id and secret
         :param float or tuple timeout: How long to wait for the server to send
             data before giving up, as a float, or a tuple (connect timeout, read timeout)
@@ -357,13 +359,19 @@ class Connection:
         :raises ValueError: if credentials is not tuple of
          (client_id, client_secret)
         """
-        if not isinstance(credentials, tuple) or len(credentials) != 2 or (
-                not credentials[0] and not credentials[1]):
-            raise ValueError('Provide valid auth credentials')
+        if auth_flow_type=='public': #allow client id only for public flow
+                if not isinstance(credentials, tuple) or len(credentials) != 1 or (
+                    not credentials[0]):
+                    raise ValueError('Provide client id only for public flow credentials')
+        else:
+                if not isinstance(credentials, tuple) or len(credentials) != 2 or (
+                    not credentials[0] and not credentials[1]):
+                    raise ValueError('Provide valid auth credentials')
 
-        self._auth_flow_type = auth_flow_type  # 'authorization' or 'credentials'
+        self._auth_flow_type = auth_flow_type  # 'authorization' or 'credentials' or 'public'
         if auth_flow_type == 'credentials' and tenant_id == 'common':
             raise ValueError('When using the "credentials" auth_flow the "tenant_id" must be set')
+        
         self.tenant_id = tenant_id
         self.auth = credentials
         self.scopes = scopes
@@ -473,7 +481,9 @@ class Connection:
         """
 
         redirect_uri = redirect_uri or self.oauth_redirect_url
-        _, client_secret = self.auth
+
+        if self.auth_flow_type != 'public':
+            _, client_secret = self.auth
 
         # Allow token scope to not match requested scope.
         # (Other auth libraries allow this, but Requests-OAuthlib
@@ -487,10 +497,13 @@ class Connection:
             if self.auth_flow_type == 'authorization':
                 self.session = self.get_session(state=state,
                                                 redirect_uri=redirect_uri)
+            elif self.auth_flow_type == 'public':
+                self.session = self.get_session(state=state,
+                                                redirect_uri=redirect_uri)
             elif self.auth_flow_type == 'credentials':
                 self.session = self.get_session(scopes=scopes)
             else:
-                raise ValueError('"auth_flow_type" must be either "authorization" or "credentials"')
+                raise ValueError('"auth_flow_type" must be "authorization", "public" or "credentials"')
 
         try:
             if self.auth_flow_type == 'authorization':
@@ -499,6 +512,12 @@ class Connection:
                     authorization_response=authorization_url,
                     include_client_id=True,
                     client_secret=client_secret))
+            elif self.auth_flow_type == 'public':
+                self.token_backend.token = Token(self.session.fetch_token(
+                    token_url=self._oauth2_token_url,
+                    authorization_response=authorization_url,
+                    include_client_id=True))
+                print(self.token_backend.token)
             elif self.auth_flow_type == 'credentials':
                 self.token_backend.token = Token(self.session.fetch_token(
                     token_url=self._oauth2_token_url,
@@ -528,14 +547,17 @@ class Connection:
         """
 
         redirect_uri = redirect_uri or self.oauth_redirect_url
-        client_id, _ = self.auth
+        
+        client_id = self.auth[0]
 
         if self.auth_flow_type == 'authorization':
+            oauth_client = WebApplicationClient(client_id=client_id)
+        elif self.auth_flow_type == 'public':
             oauth_client = WebApplicationClient(client_id=client_id)
         elif self.auth_flow_type == 'credentials':
             oauth_client = BackendApplicationClient(client_id=client_id)
         else:
-            raise ValueError('"auth_flow_type" must be either "authorization" or "credentials"')
+            raise ValueError('"auth_flow_type" must be "authorization", "credentials" or "public"')
 
         requested_scopes = scopes or self.scopes
 
@@ -546,7 +568,7 @@ class Connection:
                 raise RuntimeError('No auth token found. Authentication Flow needed')
 
             oauth_client.token = token
-            if self.auth_flow_type == 'authorization':
+            if (self.auth_flow_type == 'authorization') or (self.auth_flow_type == 'public'):
                 requested_scopes = None  # the scopes are already in the token (Not if type is backend)
             session = OAuth2Session(client_id=client_id,
                                     client=oauth_client,
@@ -613,7 +635,13 @@ class Connection:
                         client_id=client_id,
                         client_secret=client_secret)
                 )
-
+            elif self.auth_flow_type == 'public':
+                client_id = self.auth
+                self.token_backend.token = Token(
+                    self.session.refresh_token(
+                        self._oauth2_token_url,
+                        client_id=client_id)
+                )
             elif self.auth_flow_type == 'credentials':
                 if self.request_token(None, store_token=False) is False:
                     log.error('Refresh for Client Credentials Grant Flow failed.')
