@@ -322,3 +322,37 @@ class Directory(ApiComponent):
 
         url = self.build_url('')  # target main_resource
         return self._get_user(url, query=query)
+
+    def disable_user(self, user):
+        """ Disables user by it's id or user principal name
+
+        :param str user: the user id or user principal name
+        """
+        url = self.build_url(self._endpoints.get('get_user').format(email=user))
+        data = {'accountEnabled': False}
+        response = self.con.patch(url, data=data, headers={'Content-Type': 'application/json'})
+
+        return bool(response)
+
+    def enable_user(self, user):
+        """ Enables user by it's id or user principal name
+
+        :param str user: the user id or user principal name
+        """
+        url = self.build_url(self._endpoints.get('get_user').format(email=user))
+        data = {'accountEnabled': True}
+        response = self.con.patch(url, data=data, headers={'Content-Type': 'application/json'})
+
+        return bool(response)
+
+    def force_change_password(self, user):
+        """ Forces user to change his password on the next logon
+
+        :param str user: the user id or user principal name
+        """
+
+        url = self.build_url(self._endpoints.get('get_user').format(email=user))
+        data = {'passwordProfile': {'forceChangePasswordNextSignIn': True}}
+        response = self.con.patch(url, data=data, headers={'Content-Type': 'application/json'})
+
+        return bool(response)
