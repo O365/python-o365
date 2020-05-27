@@ -30,7 +30,7 @@ class Account:
         auth_flow_type = kwargs.get('auth_flow_type', 'authorization')
         scopes = kwargs.get('scopes', None)  # retrieve scopes
 
-        if (auth_flow_type == 'authorization') or (auth_flow_type=='public'):
+        if auth_flow_type in ('authorization', 'public'):
             # convert the provided scopes to protocol scopes:
             if scopes is not None:
                 kwargs['scopes'] = self.protocol.get_scopes_for(scopes)
@@ -81,7 +81,7 @@ class Account:
         :rtype: bool
         """
 
-        if (self.con.auth_flow_type == 'authorization') or (self.con.auth_flow_type == 'public'):
+        if self.con.auth_flow_type in ('authorization', 'public'):
             if scopes is not None:
                 if self.con.scopes is not None:
                     raise RuntimeError('The scopes must be set either at the Account instantiation or on the account.authenticate method.')
@@ -115,8 +115,12 @@ class Account:
             raise ValueError('Connection "auth_flow_type" must be "authorization", "public" or "credentials"')
 
     def get_current_user(self):
-        directory = self.directory(resource=ME_RESOURCE)
-        return directory.get_current_user()
+        """ Returns the current user """
+        if self.con.auth_flow_type in ('authorization', 'public'):
+            directory = self.directory(resource=ME_RESOURCE)
+            return directory.get_current_user()
+        else:
+            return None
 
     @property
     def connection(self):
@@ -238,7 +242,7 @@ class Account:
 
         from .planner import Planner
         return Planner(parent=self, main_resource=resource)
-    
+
     def teams(self, *, resource=''):
         """ Get an instance to read information from Microsoft Teams """
 

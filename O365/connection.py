@@ -359,19 +359,17 @@ class Connection:
         :raises ValueError: if credentials is not tuple of
          (client_id, client_secret)
         """
-        if auth_flow_type=='public': #allow client id only for public flow
-                if not isinstance(credentials, tuple) or len(credentials) != 1 or (
-                    not credentials[0]):
-                    raise ValueError('Provide client id only for public flow credentials')
+        if auth_flow_type == 'public':  # allow client id only for public flow
+            if not isinstance(credentials, tuple) or len(credentials) != 1 or (not credentials[0]):
+                raise ValueError('Provide client id only for public flow credentials')
         else:
-                if not isinstance(credentials, tuple) or len(credentials) != 2 or (
-                    not credentials[0] and not credentials[1]):
-                    raise ValueError('Provide valid auth credentials')
+            if not isinstance(credentials, tuple) or len(credentials) != 2 or (not credentials[0] and not credentials[1]):
+                raise ValueError('Provide valid auth credentials')
 
         self._auth_flow_type = auth_flow_type  # 'authorization' or 'credentials' or 'public'
         if auth_flow_type == 'credentials' and tenant_id == 'common':
             raise ValueError('When using the "credentials" auth_flow the "tenant_id" must be set')
-        
+
         self.tenant_id = tenant_id
         self.auth = credentials
         self.scopes = scopes
@@ -482,9 +480,6 @@ class Connection:
 
         redirect_uri = redirect_uri or self.oauth_redirect_url
 
-        if self.auth_flow_type != 'public':
-            _, client_secret = self.auth
-
         # Allow token scope to not match requested scope.
         # (Other auth libraries allow this, but Requests-OAuthlib
         # raises exception on scope mismatch by default.)
@@ -494,10 +489,7 @@ class Connection:
         scopes = requested_scopes or self.scopes
 
         if self.session is None:
-            if self.auth_flow_type == 'authorization':
-                self.session = self.get_session(state=state,
-                                                redirect_uri=redirect_uri)
-            elif self.auth_flow_type == 'public':
+            if self.auth_flow_type in ('authorization', 'public'):
                 self.session = self.get_session(state=state,
                                                 redirect_uri=redirect_uri)
             elif self.auth_flow_type == 'credentials':
@@ -511,18 +503,17 @@ class Connection:
                     token_url=self._oauth2_token_url,
                     authorization_response=authorization_url,
                     include_client_id=True,
-                    client_secret=client_secret))
+                    client_secret=self.auth[1]))
             elif self.auth_flow_type == 'public':
                 self.token_backend.token = Token(self.session.fetch_token(
                     token_url=self._oauth2_token_url,
                     authorization_response=authorization_url,
                     include_client_id=True))
-                print(self.token_backend.token)
             elif self.auth_flow_type == 'credentials':
                 self.token_backend.token = Token(self.session.fetch_token(
                     token_url=self._oauth2_token_url,
                     include_client_id=True,
-                    client_secret=client_secret,
+                    client_secret=self.auth[1],
                     scope=scopes))
         except Exception as e:
             log.error('Unable to fetch auth token. Error: {}'.format(str(e)))
@@ -547,12 +538,10 @@ class Connection:
         """
 
         redirect_uri = redirect_uri or self.oauth_redirect_url
-        
+
         client_id = self.auth[0]
 
-        if self.auth_flow_type == 'authorization':
-            oauth_client = WebApplicationClient(client_id=client_id)
-        elif self.auth_flow_type == 'public':
+        if self.auth_flow_type in ('authorization', 'public'):
             oauth_client = WebApplicationClient(client_id=client_id)
         elif self.auth_flow_type == 'credentials':
             oauth_client = BackendApplicationClient(client_id=client_id)
@@ -568,7 +557,7 @@ class Connection:
                 raise RuntimeError('No auth token found. Authentication Flow needed')
 
             oauth_client.token = token
-            if (self.auth_flow_type == 'authorization') or (self.auth_flow_type == 'public'):
+            if self.auth_flow_type in ('authorization', 'public'):
                 requested_scopes = None  # the scopes are already in the token (Not if type is backend)
             session = OAuth2Session(client_id=client_id,
                                     client=oauth_client,
@@ -636,7 +625,7 @@ class Connection:
                         client_secret=client_secret)
                 )
             elif self.auth_flow_type == 'public':
-                client_id = self.auth
+                client_id = self.auth[0]
                 self.token_backend.token = Token(
                     self.session.refresh_token(
                         self._oauth2_token_url,
