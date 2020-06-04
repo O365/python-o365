@@ -2,6 +2,16 @@
 
 Almost every release features a lot of bugfixes but those are not listed here.
 
+
+## Version 2.0.10 (2020-06-04)
+
+### Features:
+- Account: added public client auth flow
+- Directory: added query params to retrieve users
+- Calendar: now adapted to teams online meetings
+- Contact: added personal notes 
+
+
 ## Version 2.0.9 (2020-04-21)
 
 ### Features:
