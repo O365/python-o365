@@ -550,6 +550,7 @@ class Attendee:
         :param Response response_status: response status requirement
         :param Event event: event for which to assign the attendee
         """
+        self._untrack = True
         self._address = address
         self._name = name
         self._event = event
@@ -560,6 +561,7 @@ class Attendee:
         self.__attendee_type = AttendeeType.Required
         if attendee_type:
             self.attendee_type = attendee_type
+        self._untrack = False
 
     def __repr__(self):
         if self.name:
@@ -605,7 +607,8 @@ class Attendee:
     def _track_changes(self):
         """ Update the track_changes on the event to reflect a
         needed update on this field """
-        self._event._track_changes.add('attendees')
+        if self._untrack is False:
+            self._event._track_changes.add('attendees')
 
     @property
     def response_status(self):
