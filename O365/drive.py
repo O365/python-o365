@@ -81,8 +81,11 @@ class DownloadableMixin:
                                  "or any integer number representing bytes")
 
             params = {}
-            if convert_to_pdf and Path(name).suffix in ALLOWED_PDF_EXTENSIONS:
-                params['format'] = 'pdf'
+            if convert_to_pdf:
+                if Path(self.name).suffix in ALLOWED_PDF_EXTENSIONS:
+                    params['format'] = 'pdf'
+                else:
+                    raise ValueError("File is not included in 'ALLOWED_PDF_EXTENSIONS'")
 
             with self.con.get(url, stream=stream, params=params) as response:
                 if not response:
