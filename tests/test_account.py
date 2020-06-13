@@ -1,5 +1,5 @@
 from O365 import Account
-from O365 import Message
+from O365.message import Message
 
 
 class TestAccount:
