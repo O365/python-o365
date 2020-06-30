@@ -474,6 +474,7 @@ class DriveItem(ApiComponent):
         parent_reference = cloud_data.get(self._cc('parentReference'), {})
         self.parent_id = parent_reference.get('id', None)
         self.drive_id = parent_reference.get(self._cc('driveId'), None)
+        self.parent_path = parent_reference.get(self._cc("path"), None)
 
         remote_item = cloud_data.get(self._cc('remoteItem'), None)
         if remote_item is not None:
