@@ -28,7 +28,7 @@ ALLOWED_PDF_EXTENSIONS = {'.csv', '.doc', '.docx', '.odp', '.ods', '.odt',
 class DownloadableMixin:
 
     def download(self, to_path=None, name=None, chunk_size='auto',
-                 convert_to_pdf=False):
+                 convert_to_pdf=False, output=None):
         """ Downloads this file to the local drive. Can download the
         file in chunks with multiple requests to the server.
 
@@ -41,26 +41,29 @@ class DownloadableMixin:
          however only 1 request)
         :param bool convert_to_pdf: will try to download the converted pdf
          if file extension in ALLOWED_PDF_EXTENSIONS
+        :param RawIOBase output: (optional) an opened io object to write to.
+         if set, the to_path and name will be ignored
         :return: Success / Failure
         :rtype: bool
         """
         # TODO: Add download with more than one request (chunk_requests) with
         #  header 'Range'. For example: 'Range': 'bytes=0-1024'
 
-        if to_path is None:
-            to_path = Path()
-        else:
-            if not isinstance(to_path, Path):
-                to_path = Path(to_path)
+        if not output:
+            if to_path is None:
+                to_path = Path()
+            else:
+                if not isinstance(to_path, Path):
+                    to_path = Path(to_path)
 
-        if not to_path.exists():
-            raise FileNotFoundError('{} does not exist'.format(to_path))
+            if not to_path.exists():
+                raise FileNotFoundError('{} does not exist'.format(to_path))
 
-        if name and not Path(name).suffix and self.name:
-            name = name + Path(self.name).suffix
+            if name and not Path(name).suffix and self.name:
+                name = name + Path(self.name).suffix
 
-        name = name or self.name
-        to_path = to_path / name
+            name = name or self.name
+            to_path = to_path / name
 
         url = self.build_url(
             self._endpoints.get('download').format(id=self.object_id))
@@ -81,25 +84,30 @@ class DownloadableMixin:
                                  "or any integer number representing bytes")
 
             params = {}
-            if convert_to_pdf:
-                if Path(self.name).suffix in ALLOWED_PDF_EXTENSIONS:
-                    params['format'] = 'pdf'
-                else:
-                    raise ValueError("File is not included in 'ALLOWED_PDF_EXTENSIONS'")
+            if convert_to_pdf and Path(name).suffix in ALLOWED_PDF_EXTENSIONS:
+                params['format'] = 'pdf'
 
             with self.con.get(url, stream=stream, params=params) as response:
                 if not response:
                     log.debug('Downloading driveitem Request failed: {}'.format(
                         response.reason))
                     return False
+
+            def write_output(out):
+                if stream:
+                    for chunk in response.iter_content(
+                            chunk_size=chunk_size):
+                        if chunk:
+                            out.write(chunk)
+                else:
+                    out.write(response.content)
+
+            if output:
+                write_output(output)
+            else:
                 with to_path.open(mode='wb') as output:
-                    if stream:
-                        for chunk in response.iter_content(
-                                chunk_size=chunk_size):
-                            if chunk:
-                                output.write(chunk)
-                    else:
-                        output.write(response.content)
+                    write_output(output)
+
         except Exception as e:
             log.error(
                 'Error downloading driveitem {}. Error: {}'.format(self.name,
@@ -1201,7 +1209,7 @@ class Folder(DriveItem):
             return items
 
     def upload_file(self, item, item_name=None, chunk_size=DEFAULT_UPLOAD_CHUNK_SIZE,
-                    upload_in_chunks=False):
+                    upload_in_chunks=False, stream=None, stream_size=None):
         """ Uploads a file
 
         :param item: path to the item you want to upload
@@ -1211,20 +1219,24 @@ class Folder(DriveItem):
         :param chunk_size: Only applies if file is bigger than 4MB.
          Chunk size for uploads. Must be a multiple of 327.680 bytes
         :param upload_in_chunks: force the method to upload the file in chunks
+        :param io.BufferedIOBase stream: (optional) an opened io object to read into.
+         if set, the to_path and name will be ignored
+        :param int stream_size: size of stream, required if using stream
         :return: uploaded file
         :rtype: DriveItem
         """
 
-        if item is None:
-            raise ValueError('Item must be a valid path to file')
-        item = Path(item) if not isinstance(item, Path) else item
+        if not stream:
+            if item is None:
+                raise ValueError('Item must be a valid path to file')
+            item = Path(item) if not isinstance(item, Path) else item
 
-        if not item.exists():
-            raise ValueError('Item must exist')
-        if not item.is_file():
-            raise ValueError('Item must be a file')
+            if not item.exists():
+                raise ValueError('Item must exist')
+            if not item.is_file():
+                raise ValueError('Item must be a file')
 
-        file_size = item.stat().st_size
+        file_size = (stream_size if stream_size is not None else item.stat().st_size)
 
         if not upload_in_chunks and file_size <= UPLOAD_SIZE_LIMIT_SIMPLE:
             # Simple Upload
@@ -1234,8 +1246,11 @@ class Folder(DriveItem):
             # headers = {'Content-type': 'text/plain'}
             headers = {'Content-type': 'application/octet-stream'}
             # headers = None
-            with item.open(mode='rb') as file:
-                data = file.read()
+            if stream:
+                data = stream.read()
+            else:
+                with item.open(mode='rb') as file:
+                    data = file.read()
 
             response = self.con.put(url, headers=headers, data=data)
             if not response:
@@ -1249,7 +1264,7 @@ class Folder(DriveItem):
             # Resumable Upload
             url = self.build_url(
                 self._endpoints.get('create_upload_session').format(
-                    id=self.object_id, filename=quote(item.name)))
+                    id=self.object_id, filename=quote(item.name if item_name is None else item_name)))
 
             response = self.con.post(url)
             if not response:
@@ -1267,8 +1282,8 @@ class Folder(DriveItem):
                           'upload_url for file {}'.format(item.name))
                 return None
 
-            current_bytes = 0
-            with item.open(mode='rb') as file:
+            def write_stream(file):
+                current_bytes = 0
                 while True:
                     data = file.read(chunk_size)
                     if not data:
@@ -1298,6 +1313,11 @@ class Folder(DriveItem):
                         data = response.json()
                         return self._classifier(data)(parent=self, **{
                             self._cloud_data_key: data})
+            if stream:
+                return write_stream(stream)
+            else:
+                with item.open(mode='rb') as file:
+                    return write_stream(file)
 
 
 class Drive(ApiComponent):
