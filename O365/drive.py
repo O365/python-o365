@@ -1264,7 +1264,7 @@ class Folder(DriveItem):
             # Resumable Upload
             url = self.build_url(
                 self._endpoints.get('create_upload_session').format(
-                    id=self.object_id, filename=quote(item.name)))
+                    id=self.object_id, filename=quote(item.name if item_name is None else item_name)))
 
             response = self.con.post(url)
             if not response:
