@@ -1019,7 +1019,7 @@ class Folder(DriveItem):
             'name', None)
 
     def get_items(self, limit=None, *, query=None, order_by=None, batch=None):
-        """ Returns all the items inside this folder
+        """ Returns generator all the items inside this folder
 
         :param int limit: max no. of folders to get. Over 999 uses batch.
         :param query: applies a OData filter to the request
@@ -1028,8 +1028,8 @@ class Folder(DriveItem):
         :type order_by: Query or str
         :param int batch: batch size, retrieves items in
          batches allowing to retrieve more items than the limit.
-        :return: list of items in this folder
-        :rtype: list[DriveItem] or Pagination
+        :return: items in this folder
+        :rtype: generator of DriveItem or Pagination
         """
 
         url = self.build_url(
@@ -1081,8 +1081,8 @@ class Folder(DriveItem):
         :type order_by: Query or str
         :param int batch: batch size, retrieves items in
          batches allowing to retrieve more items than the limit.
-        :return: list of items in this folder
-        :rtype: list[DriveItem] or Pagination
+        :return: folder items in this folder
+        :rtype: generator of DriveItem or Pagination
         """
 
         if query:
@@ -1161,8 +1161,8 @@ class Folder(DriveItem):
         :type order_by: Query or str
         :param int batch: batch size, retrieves items in
          batches allowing to retrieve more items than the limit.
-        :return: list of items in this folder
-        :rtype: list[DriveItem] or Pagination
+        :return: items in this folder matching search
+        :rtype: generator of DriveItem or Pagination
         """
         if not isinstance(search_text, str) or not search_text:
             raise ValueError('Provide a valid search_text')
@@ -1483,8 +1483,8 @@ class Drive(ApiComponent):
         :type order_by: Query or str
         :param int batch: batch size, retrieves items in
          batches allowing to retrieve more items than the limit.
-        :return: list of items in this folder
-        :rtype: list[DriveItem] or Pagination
+        :return: items in this folder
+        :rtype: generator of DriveItem or Pagination
         """
 
         if self.object_id:
@@ -1508,8 +1508,8 @@ class Drive(ApiComponent):
         :type order_by: Query or str
         :param int batch: batch size, retrieves items in
          batches allowing to retrieve more items than the limit.
-        :return: list of items in this folder
-        :rtype: list[DriveItem] or Pagination
+        :return: folder items in this folder
+        :rtype: generator of DriveItem or Pagination
         """
 
         if query:
@@ -1529,8 +1529,8 @@ class Drive(ApiComponent):
         :type order_by: Query or str
         :param int batch: batch size, retrieves items in
          batches allowing to retrieve more items than the limit.
-        :return: list of items in this folder
-        :rtype: list[DriveItem] or Pagination
+        :return: items in this folder
+        :rtype: generator of DriveItem or Pagination
         """
         if self.object_id:
             # reference the current drive_id
@@ -1554,8 +1554,8 @@ class Drive(ApiComponent):
         :type order_by: Query or str
         :param int batch: batch size, retrieves items in
          batches allowing to retrieve more items than the limit.
-        :return: list of items in this folder
-        :rtype: list[DriveItem] or Pagination
+        :return: items in this folder
+        :rtype: generator of DriveItem or Pagination
         """
 
         if self.object_id:
@@ -1710,8 +1710,8 @@ class Drive(ApiComponent):
         :type order_by: Query or str
         :param int batch: batch size, retrieves items in
          batches allowing to retrieve more items than the limit.
-        :return: list of items in this folder
-        :rtype: list[DriveItem] or Pagination
+        :return: items in this folder matching search
+        :rtype: generator of DriveItem or Pagination
         """
         if not isinstance(search_text, str) or not search_text:
             raise ValueError('Provide a valid search_text')
