@@ -93,20 +93,20 @@ class DownloadableMixin:
                         response.reason))
                     return False
 
-            def write_output(out):
-                if stream:
-                    for chunk in response.iter_content(
-                            chunk_size=chunk_size):
-                        if chunk:
-                            out.write(chunk)
-                else:
-                    out.write(response.content)
+                def write_output(out):
+                    if stream:
+                        for chunk in response.iter_content(
+                                chunk_size=chunk_size):
+                            if chunk:
+                                out.write(chunk)
+                    else:
+                        out.write(response.content)
 
-            if output:
-                write_output(output)
-            else:
-                with to_path.open(mode='wb') as output:
+                if output:
                     write_output(output)
+                else:
+                    with to_path.open(mode='wb') as output:
+                        write_output(output)
 
         except Exception as e:
             log.error(
