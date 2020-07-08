@@ -1712,6 +1712,9 @@ class WorkbookApplication(ApiComponent):
         data = {"calculationType": calculation_type}
         headers = {"Content-type": "application/json"}
 
+        if(self.parent.session.session_id):
+            headers['workbook-session-id'] = self.parent.session.session_id
+
         response = self.con.post(url, headers=headers, data=data)
         if not response:
             return False
