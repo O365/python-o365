@@ -323,7 +323,8 @@ class Connection:
                  request_retries=3, token_backend=None,
                  tenant_id='common',
                  auth_flow_type='authorization',
-                 timeout=None, json_encoder=None, **kwargs):
+                 timeout=None, json_encoder=None,
+                 verify_ssl=True, **kwargs):
         """ Creates an API connection object
 
         :param tuple credentials: a tuple of (client_id, client_secret)
@@ -355,6 +356,7 @@ class Connection:
         :param float or tuple timeout: How long to wait for the server to send
             data before giving up, as a float, or a tuple (connect timeout, read timeout)
         :param JSONEncoder json_encoder: The JSONEnocder to use during the JSON serialization on the request.
+        :param bool verify_ssl: set the verify flag on the requests library
         :param dict kwargs: any extra params passed to Connection
         :raises ValueError: if credentials is not tuple of
          (client_id, client_secret)
@@ -388,6 +390,7 @@ class Connection:
         self.request_retries = request_retries
         self.timeout = timeout
         self.json_encoder = json_encoder
+        self.verify_ssl = verify_ssl
 
         self.naive_session = None  # lazy loaded: holds a requests Session object
 
@@ -570,6 +573,7 @@ class Connection:
                                     redirect_uri=redirect_uri,
                                     scope=requested_scopes)
 
+        session.verify = self.verify_ssl
         session.proxies = self.proxy
 
         if self.request_retries:
@@ -587,6 +591,7 @@ class Connection:
         """ Creates and returns a naive session """
         naive_session = Session()  # requests Session object
         naive_session.proxies = self.proxy
+        naive_session.verify = self.verify_ssl
 
         if self.request_retries:
             retry = Retry(total=self.request_retries, read=self.request_retries,
