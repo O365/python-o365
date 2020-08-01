@@ -70,6 +70,11 @@ class EventType(CaseEnum):
     Exception = 'exception'  # ?
     SeriesMaster = 'seriesMaster'  # the first recurring event of the series
 
+class OnlineMeetingProviderType(CaseEnum):
+    Unknown = 'unknown'
+    TeamsForBusiness = 'teamsForBusiness'
+    SkypeForBusiness = 'skypeForBusiness'
+    SkypeForConsumer = 'skypeForConsumer'
 
 class EventAttachment(BaseAttachment):
     _endpoints = {'attach': '/events/{id}/attachments'}
@@ -874,8 +879,9 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         self.locations = cloud_data.get(cc('locations'), [])  # TODO
 
         self.online_meeting_url = cloud_data.get(cc('onlineMeetingUrl'), None)
-        self.is_online_meeting = cloud_data.get(cc('isOnlineMeeting'), False)
-        self.online_meeting_provider = cloud_data.get(cc('onlineMeetingProvider'), '')
+        self.__is_online_meeting = cloud_data.get(cc('isOnlineMeeting'), False)
+        self.__online_meeting_provider = OnlineMeetingProviderType.from_value(
+            cloud_data.get(cc('onlineMeetingProvider'), 'teamsForBusiness'))
         self.online_meeting = cloud_data.get(cc('onlineMeeting'), None)
         if not self.online_meeting_url and self.is_online_meeting:
             self.online_meeting_url = self.online_meeting.get(cc('joinUrl'), None) \
@@ -945,6 +951,8 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
             cc('responseRequested'): self.__response_requested,
             cc('sensitivity'): cc(self.__sensitivity.value),
             cc('showAs'): cc(self.__show_as.value),
+            cc('isOnlineMeeting'): cc(self.__is_online_meeting),
+            cc('onlineMeetingProvider'): cc(self.__online_meeting_provider.value),
         }
 
         if self.__recurrence:
@@ -1271,6 +1279,37 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
     @property
     def event_type(self):
         return self.__event_type
+
+    @property
+    def is_online_meeting(self):
+        """ Status of the online_meeting
+
+        :getter: check is online_meeting enabled or not
+        :setter: enable or disable online_meeting option
+        :type: bool
+        """
+        return self.__is_online_meeting
+
+    @is_online_meeting.setter
+    def is_online_meeting(self, value):
+        self.__is_online_meeting = value
+        self._track_changes.add(self._cc('isOnlineMeeting'))
+
+    @property
+    def online_meeting_provider(self):
+        """ online_meeting_provider of event
+
+        :getter: get current online_meeting_provider configured for the event
+        :setter: set a online_meeting_provider for the event
+        :type: OnlineMeetingProviderType
+        """
+        return self.__online_meeting_provider
+
+    @online_meeting_provider.setter
+    def online_meeting_provider(self, value):
+        self.__online_meeting_provider = (value if isinstance(value, OnlineMeetingProviderType)
+                             else OnlineMeetingProviderType.from_value(value))
+        self._track_changes.add(self._cc('onlineMeetingProvider'))
 
     def get_occurrences(self, start, end, *, limit=None, query=None, order_by=None, batch=None):
         """
