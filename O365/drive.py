@@ -1210,19 +1210,24 @@ class Folder(DriveItem):
             return items
 
     def upload_file(self, item, item_name=None, chunk_size=DEFAULT_UPLOAD_CHUNK_SIZE,
-                    upload_in_chunks=False, stream=None, stream_size=None):
+                    upload_in_chunks=False, stream=None, stream_size=None,
+                    conflict_handling=None):
         """ Uploads a file
 
         :param item: path to the item you want to upload
         :type item: str or Path
-        :param item: name of the item on the server. None to use original name
-        :type item: str or Path
-        :param chunk_size: Only applies if file is bigger than 4MB.
+        :param item_name: name of the item on the server. None to use original name
+        :type item_name: str or Path
+        :param chunk_size: Only applies if file is bigger than 4MB or upload_in_chunks is True.
          Chunk size for uploads. Must be a multiple of 327.680 bytes
         :param upload_in_chunks: force the method to upload the file in chunks
         :param io.BufferedIOBase stream: (optional) an opened io object to read into.
          if set, the to_path and name will be ignored
         :param int stream_size: size of stream, required if using stream
+        :param conflict_handling: How to handle conflicts.
+         NOTE: works for chunk upload only (>4MB or upload_in_chunks is True)
+         None to use default (overwrite). Options: fail | replace | rename
+        :type conflict_handling: str
         :return: uploaded file
         :rtype: DriveItem
         """
@@ -1267,7 +1272,12 @@ class Folder(DriveItem):
                 self._endpoints.get('create_upload_session').format(
                     id=self.object_id, filename=quote(item.name if item_name is None else item_name)))
 
-            response = self.con.post(url)
+            # If not None, add conflict handling to request
+            file_data = {}
+            if conflict_handling:
+                file_data["item"] = {"@microsoft.graph.conflictBehavior": conflict_handling }
+
+            response = self.con.post(url, data=file_data)
             if not response:
                 return None
 
