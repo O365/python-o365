@@ -1230,7 +1230,7 @@ class Table(ApiComponent):
         :param id_or_name: the id or name of the column
         :return: WorkBookTableColumn
         """
-        url = self.build_url(self._endpoints.get('get_column').format(quote(id_or_name)))
+        url = self.build_url(self._endpoints.get('get_column').format(id=quote(id_or_name)))
         response = self.session.get(url)
 
         if not response:
