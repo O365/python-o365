@@ -2,6 +2,14 @@
 
 Almost every release features a lot of bugfixes but those are not listed here.
 
+## Version 2.0.11 (2020-08-25)
+
+### Features:
+- Drive: added streamable upload and download
+- Drive: added conflict handling flag on uploads (only simple uploads < 4MB)
+- Connection: added `verify_ssl` flag
+- Calendar: added online meeting methods to change providers (teams, etc.)
+
 
 ## Version 2.0.10 (2020-06-04)
 
