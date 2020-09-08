@@ -1444,13 +1444,13 @@ class Drive(ApiComponent):
                                       **{self._cloud_data_key: data})
 
     def _base_get_list(self, url, limit=None, *, query=None, order_by=None,
-                       batch=None):
+                       batch=None, params = {}):
         """ Returns a collection of drive items """
 
         if limit is None or limit > self.protocol.max_top_value:
             batch = self.protocol.max_top_value
 
-        params = {'$top': batch if batch else limit}
+        params ['$top'] = batch if batch else limit
 
         if order_by:
             params['$orderby'] = order_by
@@ -1554,7 +1554,7 @@ class Drive(ApiComponent):
         return self._base_get_list(url, limit=limit, query=query,
                                    order_by=order_by, batch=batch)
 
-    def get_shared_with_me(self, limit=None, *, query=None, order_by=None,
+    def get_shared_with_me(self, limit=None, allow_external=False, *, query=None, order_by=None,
                            batch=None):
         """ Returns a collection of DriveItems shared with me
 
@@ -1565,6 +1565,8 @@ class Drive(ApiComponent):
         :type order_by: Query or str
         :param int batch: batch size, retrieves items in
          batches allowing to retrieve more items than the limit.
+        :param allow_external: includes items shared from external tenants
+        :type allow_external: bool
         :return: items in this folder
         :rtype: generator of DriveItem or Pagination
         """
@@ -1577,8 +1579,11 @@ class Drive(ApiComponent):
             # we don't know the drive_id so go to the default
             url = self.build_url(self._endpoints.get('shared_with_me_default'))
 
+        # whether to include driveitems external to tenant
+        params = {"$allowexternal" : allow_external}
+
         return self._base_get_list(url, limit=limit, query=query,
-                                   order_by=order_by, batch=batch)
+                                   order_by=order_by, batch=batch, params=params)
 
     def get_item(self, item_id):
         """ Returns a DriveItem by it's Id
