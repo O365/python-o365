@@ -1580,7 +1580,7 @@ class Drive(ApiComponent):
             url = self.build_url(self._endpoints.get('shared_with_me_default'))
 
         # whether to include driveitems external to tenant
-        params = {"$allowexternal" : allow_external}
+        params = {"allowexternal" : allow_external}
 
         return self._base_get_list(url, limit=limit, query=query,
                                    order_by=order_by, batch=batch, params=params)
