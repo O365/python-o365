@@ -376,7 +376,7 @@ class Connection:
         self.auth = credentials
         self.scopes = scopes
         self.store_token = True
-        token_backend = token_backend or FileSystemTokenBackend()
+        token_backend = token_backend or FileSystemTokenBackend(**kwargs)
         if not isinstance(token_backend, BaseTokenBackend):
             raise ValueError('"token_backend" must be an instance of a subclass of BaseTokenBackend')
         self.token_backend = token_backend
