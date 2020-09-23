@@ -225,16 +225,21 @@ class Task(ApiComponent):
 
     @completed.setter
     def completed(self, value):
-        if not isinstance(value, dt.date):
-            raise ValueError("'end' must be a valid datetime object")
-        if not isinstance(value, dt.datetime):
-            # force datetime
-            value = dt.datetime(value.year, value.month, value.day)
-        if value.tzinfo is None:
-            # localize datetime
-            value = self.protocol.timezone.localize(value)
-        elif value.tzinfo != self.protocol.timezone:
-            value = value.astimezone(self.protocol.timezone)
+        if value is None:
+            self.mark_uncompleted()
+        else:
+            if not isinstance(value, dt.date):
+                raise ValueError("'completed' must be a valid datetime object")
+            if not isinstance(value, dt.datetime):
+                # force datetime
+                value = dt.datetime(value.year, value.month, value.day)
+            if value.tzinfo is None:
+                # localize datetime
+                value = self.protocol.timezone.localize(value)
+            elif value.tzinfo != self.protocol.timezone:
+                value = value.astimezone(self.protocol.timezone)
+            self.mark_completed()
+        
         self.__completed = value
         self._track_changes.add(self._cc('completedDateTime'))
 
