@@ -396,7 +396,10 @@ class Folder(ApiComponent):
         return self.__repr__()
 
     def __repr__(self):
-        return 'Folder: {}'.format(self.name)
+        suffix = ''
+        if self._is_default:
+            suffix = ' (default)'
+        return 'Folder: {}'.format(self.name) + suffix
 
     def __eq__(self, other):
         return self.folder_id == other.folder_id
