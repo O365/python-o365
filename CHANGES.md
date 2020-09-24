@@ -2,6 +2,11 @@
 
 Almost every release features a lot of bugfixes but those are not listed here.
 
+## Version 2.0.12 (2020-09-24)
+
+### Features:
+- Connection: added kwargs to FileSystemTokenBackend to allow changes to credential location
+
 ## Version 2.0.11 (2020-08-25)
 
 ### Features:
