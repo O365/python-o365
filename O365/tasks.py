@@ -1,18 +1,15 @@
 import datetime as dt
 import logging
 
-import pytz
 # noinspection PyPep8Naming
 from bs4 import BeautifulSoup as bs
 from dateutil.parser import parse
 
-from .utils import CaseEnum
 from .utils import TrackerSet
 from .utils import ApiComponent
-from .utils.windows_tz import get_windows_tz
-from .category import Category
 
 log = logging.getLogger(__name__)
+
 
 class Task(ApiComponent):
     """ A Microsoft To-Do task """
@@ -53,7 +50,7 @@ class Task(ApiComponent):
         super().__init__(
             protocol=parent.protocol if parent else kwargs.get('protocol'),
             main_resource=main_resource)
-    
+
         cc = self._cc  # alias
         # internal to know which properties need to be updated on the server
         self._track_changes = TrackerSet(casing=cc)
@@ -95,17 +92,16 @@ class Task(ApiComponent):
             marker = 'o'
 
         if self.__due:
-            due_str = '(due: {} at {}) '.format(self.due.date(),self.due.time())
+            due_str = '(due: {} at {}) '.format(self.due.date(), self.due.time())
         else:
             due_str = ''
 
         if self.__completed:
-            compl_str = '(completed: {} at {}) '.format(self.completed.date(),self.completed.time())
+            compl_str = '(completed: {} at {}) '.format(self.completed.date(), self.completed.time())
         else:
             compl_str = ''
-        
-        return 'Task: ({}) {} {} {}'.format(marker,self.__subject,due_str,compl_str)
 
+        return 'Task: ({}) {} {} {}'.format(marker, self.__subject, due_str, compl_str)
 
     def __eq__(self, other):
         return self.task_id == other.task_id
@@ -132,10 +128,10 @@ class Task(ApiComponent):
 
         if self.__due:
             data[cc('dueDateTime')] = self._build_date_time_time_zone(self.__due)
-        
+
         if self.__completed:
             data[cc('completedDateTime')] = self._build_date_time_time_zone(self.__completed)
-         
+
         if restrict_keys:
             for key in list(data.keys()):
                 if key not in restrict_keys:
@@ -239,7 +235,7 @@ class Task(ApiComponent):
             elif value.tzinfo != self.protocol.timezone:
                 value = value.astimezone(self.protocol.timezone)
             self.mark_completed()
-        
+
         self.__completed = value
         self._track_changes.add(self._cc('completedDateTime'))
 
@@ -357,6 +353,7 @@ class Task(ApiComponent):
         else:
             return bs(self.body, 'html.parser')
 
+
 class Folder(ApiComponent):
     """ A Microsoft To-Do folder """
 
@@ -449,10 +446,11 @@ class Folder(ApiComponent):
 
         return True
 
-    def get_tasks(self,batch=None, order_by=None):
+    def get_tasks(self, batch=None, order_by=None):
         """ Returns a list of tasks of a specified folder
 
-        :param folder_id: the folder_id of the task to be retrieved.
+        :param batch: the batch on to retrieve tasks.
+        :param order_by: the order clause to apply to returned tasks.
 
         :rtype: tasks
         """
@@ -462,7 +460,7 @@ class Folder(ApiComponent):
             url = self.build_url(self._endpoints.get('default_tasks'))
         else:
             url = self.build_url(
-                    self._endpoints.get('get_tasks').format(id=self.folder_id))
+                self._endpoints.get('get_tasks').format(id=self.folder_id))
 
         # get tasks by the folder id
         params = {}
@@ -474,23 +472,23 @@ class Folder(ApiComponent):
 
         response = self.con.get(url, params=params,
                                 headers={'Prefer': 'outlook.timezone="UTC"'})
-        
+
         if not response:
             return iter(())
 
         data = response.json()
-        
+
         # Everything received from cloud must be passed as self._cloud_data_key
         tasks = (self.task_constructor(parent=self,
-                                         **{self._cloud_data_key: task})
-                  for task in data.get('value', []))
+                                       **{self._cloud_data_key: task})
+                 for task in data.get('value', []))
         return tasks
 
     def new_task(self, subject=None):
         """ Creates a task within a specified folder """
 
         return self.task_constructor(parent=self, subject=subject,
-                                      folder_id=self.folder_id)
+                                     folder_id=self.folder_id)
 
     def get_task(self, param):
         """ Returns an Task instance by it's id
@@ -505,7 +503,7 @@ class Folder(ApiComponent):
         if isinstance(param, str):
             url = self.build_url(
                 self._endpoints.get('get_task').format(id=self.folder_id,
-                                                        ide=param))
+                                                       ide=param))
             params = None
             by_id = True
         else:
@@ -529,7 +527,8 @@ class Folder(ApiComponent):
             else:
                 return None
         return self.task_constructor(parent=self,
-                                      **{self._cloud_data_key: task})
+                                     **{self._cloud_data_key: task})
+
 
 class ToDo(ApiComponent):
     """ A Microsoft To-Do class
@@ -541,7 +540,7 @@ class ToDo(ApiComponent):
         'root_folders': '/taskfolders',
         'get_folder': '/taskfolders/{id}',
     }
-    
+
     folder_constructor = Folder
     task_constructor = Task
 
@@ -592,7 +591,7 @@ class ToDo(ApiComponent):
         params = {}
         if limit:
             params['$top'] = limit
-       
+
         response = self.con.get(url, params=params or None)
         if not response:
             return []
@@ -625,7 +624,7 @@ class ToDo(ApiComponent):
 
         # Everything received from cloud must be passed as self._cloud_data_key
         return self.folder_constructor(parent=self,
-                                         **{self._cloud_data_key: data})
+                                       **{self._cloud_data_key: data})
 
     def get_folder(self, folder_id=None, folder_name=None):
         """ Returns a folder by it's id or name
