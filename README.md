@@ -71,6 +71,7 @@ What follows is kind of a wiki...
 - [AddressBook](#addressbook)
 - [Directory and Users](#directory-and-users)
 - [Calendar](#calendar)
+- [Tasks](#tasks)
 - [OneDrive](#onedrive)
 - [Excel](#excel)
 - [Sharepoint](#sharepoint)
@@ -377,6 +378,8 @@ calendar                           | 'Calendars.Read'
 calendar_shared                    | 'Calendars.Read.Shared'
 calendar_all                       | 'Calendars.ReadWrite'
 calendar_shared_all                | 'Calendars.ReadWrite.Shared'
+tasks                              | 'Tasks.Read'
+tasks_all                          | 'Tasks.ReadWrite'
 users                              | 'User.ReadBasic.All'
 onedrive                           | 'Files.Read.All'
 onedrive_all                       | 'Files.ReadWrite.All'
@@ -988,7 +991,63 @@ for event in birthdays:
     For some unknow reason, microsoft does not allow to upload an attachment at the event creation time (as opposed with message attachments).
     See [this](https://stackoverflow.com/questions/46438302/office365-rest-api-creating-a-calendar-event-with-attachments?rq=1).
     So, to upload attachments to Events, first save the event, then attach the message and save again.
-    
+
+## Tasks
+
+The tasks functionality is grouped in a `ToDo` object. Note that the tasks functionality currently only works with the `MSOffice365Protocol` protocol.
+
+A `ToDo` instance can list and create task folders. It can also list or create tasks on the default user folder. To use other folders use a `Folder` instance.  
+
+These are the scopes needed to work with the `ToDo`, `Folder` and `Task` classes.
+
+ Raw Scope                        |  Included in Scope Helper                       | Description
+ :---:                            |  :---:                                          | ---
+ *Tasks.Read*                     |  *tasks*                                        | To only read my personal tasks
+ *Tasks.ReadWrite*                |  *tasks_all*                                    | To read and save personal calendars
+ 
+ Working with the `ToDo` instance:
+```python
+import datetime as dt
+
+# ...
+todo = account.tasks()
+
+#list current tasks
+folder = todo.get_default_folder()
+new_task = folder.new_task()  # creates a new unsaved task 
+new_task.subject = 'Send contract to George Best'
+new_task.due = dt.datetime(2020, 9, 25, 18, 30) 
+new_task.save()
+
+#some time later....
+
+new_task.mark_completed()
+new_task.save()
+
+# naive datetimes will automatically be converted to timezone aware datetime
+#  objects using the local timezone detected or the protocol provided timezone
+#  as with the Calendar functionality
+
+```
+
+Working with `Folder` instances:
+
+```python
+#create a new folder
+new_folder = todo.new_folder('Defenders')
+
+#rename a folder
+folder = todo.get_folder(folder_name='Strikers')
+folder.name = 'Forwards'
+folder.update()
+
+#list current tasks
+task_list = folder.get_tasks()
+for task in task_list:
+    print(task)
+    print('')
+```
+ 
 ## OneDrive
 The `Storage` class handles all functionality around One Drive and Document Library Storage in Sharepoint.
 
