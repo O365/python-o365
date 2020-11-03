@@ -13,15 +13,22 @@ Access to Email, Calendar, Contacts, OneDrive, etc. Are easy to do in a way that
 
 The project is currently developed and maintained by [Janscas](https://github.com/janscas). 
 
-Core developers: 
+#### Core developers
 - [Toben Archer](https://github.com/Narcolapser)
-- [Royce Melborn](https://github.com/GeethanadhP)
+- [Geethanadh](https://github.com/GeethanadhP)
 - [Janscas](https://github.com/janscas)
 
-We are always open to new pull requests!
+**We are always open to new pull requests!**
+
+#### Rebuilding HTML Docs
+- Install `shpinx` python library
+    
+    `pip install sphinx==2.2.2`
+
+- Run the shell script `build_docs.sh`, or copy the command from the file when using on windows
 
 
-This is for example how you send a message:
+#### Quick example on sending a message:
 
 ```python
 from O365 import Account
