@@ -752,8 +752,8 @@ You can send inline images by doing this:
 # ...
 msg = account.new_message()
 msg.to.add('george@best.com')
-msg.attchments.add('my_image.png')
-att = msg.attchments[0]  # get the attachment object
+msg.attachments.add('my_image.png')
+att = msg.attachments[0]  # get the attachment object
 
 # this is super important for this to work.
 att.is_inline = True
