@@ -1124,7 +1124,6 @@ class Folder(DriveItem):
     def download_contents(self, to_folder=None):
         """ This will download each file and folder sequentially.
         Caution when downloading big folder structures
-
         :param drive.Folder to_folder: folder where to store the contents
         """
         if to_folder is None:
@@ -1133,13 +1132,22 @@ class Folder(DriveItem):
             except Exception as e:
                 log.error('Could not create folder with name: {}. Error: {}'.format(self.name, e))
                 to_folder = Path()  # fallback to the same folder
-
-        if not to_folder.exists():
-            to_folder.mkdir()
-
+        else:
+            to_folder = Path() / to_folder
+            if not to_folder.exists():
+                to_folder.mkdir()
+        if not isinstance(to_folder,str):
+            if not to_folder.exists():
+                to_folder.mkdir()
+        else:
+            to_folder = Path() / self.name
+        
         for item in self.get_items(query=self.new_query().select('id', 'size', 'folder', 'name')):
             if item.is_folder and item.child_count > 0:
                 item.download_contents(to_folder=to_folder / item.name)
+            elif item.is_folder and item.child_count == 0:
+                if not to_folder.exists():
+                    to_folder.mkdir()
             else:
                 item.download(to_folder)
 
