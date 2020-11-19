@@ -3,6 +3,8 @@ import json
 import datetime as dt
 from pathlib import Path
 from abc import ABC, abstractmethod
+import boto3
+import os
 
 log = logging.getLogger(__name__)
 
@@ -308,5 +310,111 @@ class FirestoreBackend(BaseTokenBackend):
             log.error('Token (collection: {}, doc_id: {}) '
                       'could not be retrieved from the backend: {}'
                       .format(self.collection, self.doc_id, str(e)))
+            doc = None
+        return doc and doc.exists
+
+
+class AwsSecretBackend(BaseTokenBackend):
+    """ A AWS Secrets backend to store tokens """
+
+    def __init__(self,secret_name):
+        """
+        Init Backend
+        :param boto3.client client: the boto3 Client instance
+        :param aws_id: the AWS ACCESS KEY ID
+        :param aws_id: the AWS ACCESS KEY ID
+        :param str field_name: the name of the field that stores the token in the document
+        """
+        super().__init__()
+        self.secret_name = secret_name
+        self.s3 = boto3.client('s3')
+        self.session = boto3.session.Session()
+        self.aws_id = os.environ['AWS_ACCESS_KEY_ID']
+        self.aws_secret = os.environ['AWS_SECRET_ACCESS_KEY']
+        self.region_name = os.environ['AWS_DEFAULT_REGION']
+
+    # AWS helper functions
+    def get_secret(self):
+        client = self.session.client(
+            service_name='secretsmanager', region_name=self.region_name)
+        get_secret_value_response = client.get_secret_value(
+            SecretId=self.secret_name)
+        secret = json.loads(get_secret_value_response['SecretString'])
+
+        return secret    
+    
+    def put_secret(self):
+        client = self.session.client(
+            service_name='secretsmanager', region_name=self.region_name)
+        response = client.update_secret(
+            SecretId=self.secret_name, SecretString=self.token)
+
+        return response    
+
+
+    def delete_secret(self):
+        client = self.session.client(
+            service_name='secretsmanager', region_name=self.region_name)
+        response = client.delete_secret(
+            SecretId=self.secret_name, SecretString=self.token)
+
+        return response
+
+    def load_token(self):
+        """
+        Retrieves the token from the store
+        :return dict or None: The token if exists, None otherwise
+        """
+        token = None
+        try:
+            token_str = self.get_secret(self.secret_name)
+            token = self.token_constructor(self.serializer.loads(token_str))
+        except Exception as e:
+            log.error('Token (secret: {}) '
+                      'could not be retrieved from the backend: {}'
+                      .format(self.secret_name, str(e)))
+        
+        return token
+
+    def save_token(self):
+        """
+        Saves the token dict in the store
+        :return bool: Success / Failure
+        """
+        if self.token is None:
+            raise ValueError('You have to set the "token" first.')
+
+        try:
+            # set token will overwrite previous data
+            self.put_secret()
+        except Exception as e:
+            log.error('Token could not be saved: {}'.format(str(e)))
+            return False
+
+        return True
+
+    def delete_token(self):
+        """
+        Deletes the token from the store
+        :return bool: Success / Failure
+        """
+        try:
+            self.delete_secret()
+        except Exception as e:
+            log.error('Could not delete the token: {}'.format(str(e)))
+            return False
+        return True
+
+    def check_token(self):
+        """
+        Checks if the token exists
+        :return bool: True if it exists on the store
+        """
+        try:
+            doc = self.get_secret(self.secret_name)
+        except Exception as e:
+            log.error('Token (secret: {}) '
+                      'could not be retrieved from the backend: {}'
+                      .format(self.secret_name, str(e)))
             doc = None
         return doc and doc.exists
