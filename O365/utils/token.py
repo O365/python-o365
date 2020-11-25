@@ -320,10 +320,10 @@ class AwsSecretBackend(BaseTokenBackend):
     def __init__(self,secret_name):
         """
         Init Backend
-        :param boto3.client client: the boto3 Client instance
+        :param str secret_name: the name of the field that stores the token in the secret
         :param aws_id: the AWS ACCESS KEY ID
-        :param aws_id: the AWS ACCESS KEY ID
-        :param str field_name: the name of the field that stores the token in the document
+        :param aws_secret: the AWS SECRET ACCESS KEY
+        :param region_name: the AWS REGION
         """
         super().__init__()
         self.secret_name = secret_name
