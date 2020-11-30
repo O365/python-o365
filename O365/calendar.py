@@ -961,6 +961,9 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         if self.__recurrence:
             data[cc('recurrence')] = self.__recurrence.to_api_data()
         
+        if self.has_attachments:
+            data[cc('attachments')] = self.__attachments.to_api_data()
+
         if 'attachments' in restrict_keys:
             self.attachments._update_attachments_to_cloud()
         
