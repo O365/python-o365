@@ -81,7 +81,10 @@ class EventAttachment(BaseAttachment):
 
 
 class EventAttachments(BaseAttachments):
-    _endpoints = {'attachments': '/events/{id}/attachments'}
+    _endpoints = {
+        'attachments': '/events/{id}/attachments',
+        'attachment': '/events/{id}/attachments/{ida}'
+    }
 
     _attachment_constructor = EventAttachment
 
@@ -957,10 +960,13 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
 
         if self.__recurrence:
             data[cc('recurrence')] = self.__recurrence.to_api_data()
-
+        
         if self.has_attachments:
             data[cc('attachments')] = self.__attachments.to_api_data()
 
+        if 'attachments' in restrict_keys:
+            self.attachments._update_attachments_to_cloud()
+        
         if restrict_keys:
             for key in list(data.keys()):
                 if key not in restrict_keys:
