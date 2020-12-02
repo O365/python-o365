@@ -2,6 +2,14 @@
 
 Almost every release features a lot of bugfixes but those are not listed here.
 
+## Version 2.0.12 (2020-12-02)
+
+### Features:
+- NEW: added MS Office 365 Tasks (only available using Office365 protocol)
+- Connection: init now accepts params for the default FileSystemToken
+- Token: added AWS token backend
+
+
 ## Version 2.0.11 (2020-08-25)
 
 ### Features:
