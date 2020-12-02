@@ -1573,7 +1573,7 @@ class WorkSheet(ApiComponent):
         :param str id_or_name: The id or name of the column
         :return: a Table instance
         """
-        url = self.build_url(self._endpoints.get('get_table').format(id=id_or_name))
+        url = self.build_url(self._endpoints.get('get_table').format(id=quote(id_or_name)))
         response = self.session.get(url)
         if not response:
             return None
@@ -1606,7 +1606,7 @@ class WorkSheet(ApiComponent):
         """
         url = self.build_url(self._endpoints.get('get_range'))
         if address is not None:
-            url = "{}(address='{}')".format(url, address)
+            url = "{}(address='{}')".format(url, quote(address))
         response = self.session.get(url)
         if not response:
             return None
@@ -1655,7 +1655,7 @@ class WorkSheet(ApiComponent):
 
     def get_named_range(self, name):
         """ Retrieves a Named range by it's name """
-        url = self.build_url(self._endpoints.get('get_named_range').format(name=name))
+        url = self.build_url(self._endpoints.get('get_named_range').format(name=quote(name)))
         response = self.session.get(url)
         if not response:
             return None
@@ -1797,7 +1797,7 @@ class WorkBook(ApiComponent):
         :param str id_or_name: The id or name of the column
         :return: a Table instance
         """
-        url = self.build_url(self._endpoints.get('get_table').format(id=id_or_name))
+        url = self.build_url(self._endpoints.get('get_table').format(id=quote(id_or_name)))
         response = self.session.get(url)
         if not response:
             return None
@@ -1869,7 +1869,7 @@ class WorkBook(ApiComponent):
 
     def get_named_range(self, name):
         """ Retrieves a Named range by it's name """
-        url = self.build_url(self._endpoints.get('get_named_range').format(name=name))
+        url = self.build_url(self._endpoints.get('get_named_range').format(name=quote(name)))
         response = self.session.get(url)
         if not response:
             return None
