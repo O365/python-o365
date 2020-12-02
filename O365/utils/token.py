@@ -3,11 +3,9 @@ import json
 import datetime as dt
 from pathlib import Path
 from abc import ABC, abstractmethod
-import boto3
 import os
 
 log = logging.getLogger(__name__)
-
 
 EXPIRES_ON_THRESHOLD = 1 * 60  # 1 minute
 
@@ -55,7 +53,7 @@ class Token(dict):
         else:
             # consider the token expired, add 10 second buffer to current dt
             return dt.datetime.now() - dt.timedelta(seconds=10)
-    
+
     @property
     def is_access_expired(self):
         """
@@ -248,7 +246,7 @@ class FirestoreBackend(BaseTokenBackend):
 
     def __repr__(self):
         return 'Collection: {}. Doc Id: {}'.format(self.collection, self.doc_id)
-    
+
     def load_token(self):
         """
         Retrieves the token from the store
@@ -317,21 +315,23 @@ class FirestoreBackend(BaseTokenBackend):
 class AwsSecretBackend(BaseTokenBackend):
     """ A AWS Secrets backend to store tokens """
 
-    def __init__(self,secret_name):
+    def __init__(self, secret_name, client, session, aws_id=None, aws_secret=None, region_name=None):
         """
         Init Backend
         :param str secret_name: the name of the field that stores the token in the secret
+        :param client: a boto3 client
+        :param session: an instance of boto3.session.Session
         :param aws_id: the AWS ACCESS KEY ID
         :param aws_secret: the AWS SECRET ACCESS KEY
         :param region_name: the AWS REGION
         """
         super().__init__()
         self.secret_name = secret_name
-        self.s3 = boto3.client('s3')
-        self.session = boto3.session.Session()
-        self.aws_id = os.environ['AWS_ACCESS_KEY_ID']
-        self.aws_secret = os.environ['AWS_SECRET_ACCESS_KEY']
-        self.region_name = os.environ['AWS_DEFAULT_REGION']
+        self.s3 = client
+        self.session = session
+        self.aws_id = aws_id or os.environ['AWS_ACCESS_KEY_ID']
+        self.aws_secret = aws_secret or os.environ['AWS_SECRET_ACCESS_KEY']
+        self.region_name = region_name or os.environ['AWS_DEFAULT_REGION']
 
     # AWS helper functions
     def get_secret(self):
@@ -341,16 +341,15 @@ class AwsSecretBackend(BaseTokenBackend):
             SecretId=self.secret_name)
         secret = json.loads(get_secret_value_response['SecretString'])
 
-        return secret    
-    
+        return secret
+
     def put_secret(self):
         client = self.session.client(
             service_name='secretsmanager', region_name=self.region_name)
         response = client.update_secret(
             SecretId=self.secret_name, SecretString=self.token)
 
-        return response    
-
+        return response
 
     def delete_secret(self):
         client = self.session.client(
@@ -367,13 +366,12 @@ class AwsSecretBackend(BaseTokenBackend):
         """
         token = None
         try:
-            token_str = self.get_secret(self.secret_name)
+            token_str = self.get_secret()
             token = self.token_constructor(self.serializer.loads(token_str))
         except Exception as e:
             log.error('Token (secret: {}) '
                       'could not be retrieved from the backend: {}'
                       .format(self.secret_name, str(e)))
-        
         return token
 
     def save_token(self):
@@ -411,7 +409,7 @@ class AwsSecretBackend(BaseTokenBackend):
         :return bool: True if it exists on the store
         """
         try:
-            doc = self.get_secret(self.secret_name)
+            doc = self.get_secret()
         except Exception as e:
             log.error('Token (secret: {}) '
                       'could not be retrieved from the backend: {}'
