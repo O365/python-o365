@@ -6,6 +6,7 @@ At this time, only the files stored in business platform is supported by Excel R
 import logging
 import datetime as dt
 from urllib.parse import quote
+import re
 
 from stringcase import snakecase
 
@@ -1573,7 +1574,7 @@ class WorkSheet(ApiComponent):
         :param str id_or_name: The id or name of the column
         :return: a Table instance
         """
-        url = self.build_url(self._endpoints.get('get_table').format(id=quote(id_or_name)))
+        url = self.build_url(self._endpoints.get('get_table').format(id=id_or_name))
         response = self.session.get(url)
         if not response:
             return None
@@ -1606,7 +1607,8 @@ class WorkSheet(ApiComponent):
         """
         url = self.build_url(self._endpoints.get('get_range'))
         if address is not None:
-            url = "{}(address='{}')".format(url, quote(address))
+            address = self.remove_sheet_name_from_address(address)
+            url = "{}(address='{}')".format(url, address)
         response = self.session.get(url)
         if not response:
             return None
@@ -1655,11 +1657,21 @@ class WorkSheet(ApiComponent):
 
     def get_named_range(self, name):
         """ Retrieves a Named range by it's name """
-        url = self.build_url(self._endpoints.get('get_named_range').format(name=quote(name)))
+        url = self.build_url(self._endpoints.get('get_named_range').format(name=name))
         response = self.session.get(url)
         if not response:
             return None
         return self.named_range_constructor(parent=self, **{self._cloud_data_key: response.json()})
+
+    @staticmethod
+    def remove_sheet_name_from_address(address):
+        """ Removes the sheet name from a given address """
+        compiled = re.compile('([a-zA-Z]+[0-9]+):.*?([a-zA-Z]+[0-9]+)')
+        result = compiled.search(address)
+        if result:
+            return ':'.join(result.groups())
+        else:
+            return address
 
 
 class WorkbookApplication(ApiComponent):
@@ -1797,7 +1809,7 @@ class WorkBook(ApiComponent):
         :param str id_or_name: The id or name of the column
         :return: a Table instance
         """
-        url = self.build_url(self._endpoints.get('get_table').format(id=quote(id_or_name)))
+        url = self.build_url(self._endpoints.get('get_table').format(id=id_or_name))
         response = self.session.get(url)
         if not response:
             return None
@@ -1869,7 +1881,7 @@ class WorkBook(ApiComponent):
 
     def get_named_range(self, name):
         """ Retrieves a Named range by it's name """
-        url = self.build_url(self._endpoints.get('get_named_range').format(name=quote(name)))
+        url = self.build_url(self._endpoints.get('get_named_range').format(name=name))
         response = self.session.get(url)
         if not response:
             return None
