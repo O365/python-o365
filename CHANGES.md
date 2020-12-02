@@ -2,6 +2,13 @@
 
 Almost every release features a lot of bugfixes but those are not listed here.
 
+
+## Version 2.0.13 (2020-12-02)
+
+### Features:
+- Bug fixing release
+
+
 ## Version 2.0.12 (2020-12-02)
 
 ### Features:
