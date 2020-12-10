@@ -964,10 +964,10 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         if self.has_attachments:
             data[cc('attachments')] = self.__attachments.to_api_data()
 
-        if 'attachments' in restrict_keys:
-            self.attachments._update_attachments_to_cloud()
-        
         if restrict_keys:
+            if 'attachments' in restrict_keys:
+                self.attachments._update_attachments_to_cloud()
+
             for key in list(data.keys()):
                 if key not in restrict_keys:
                     del data[key]
