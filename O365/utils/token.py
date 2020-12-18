@@ -312,52 +312,26 @@ class FirestoreBackend(BaseTokenBackend):
         return doc and doc.exists
 
 
-class AwsSecretBackend(BaseTokenBackend):
-    """ A AWS Secrets backend to store tokens """
+class AWSS3Backend(BaseTokenBackend):
+    """ An AWS S3 backend to store tokens """
 
-    def __init__(self, secret_name, client, session, aws_id=None, aws_secret=None, region_name=None):
+    def __init__(self, bucket_name, filename):
         """
         Init Backend
-        :param str secret_name: the name of the field that stores the token in the secret
-        :param client: a boto3 client
-        :param session: an instance of boto3.session.Session
-        :param aws_id: the AWS ACCESS KEY ID
-        :param aws_secret: the AWS SECRET ACCESS KEY
-        :param region_name: the AWS REGION
+        :param str file_name: Name of the S3 bucket
+        :param str file_name: Name of the file
         """
+        try:
+            import boto3
+        except ModuleNotFoundError as e:
+            raise Exception('Please install the boto3 package to use this token backend.') from e
         super().__init__()
-        self.secret_name = secret_name
-        self.s3 = client
-        self.session = session
-        self.aws_id = aws_id or os.environ['AWS_ACCESS_KEY_ID']
-        self.aws_secret = aws_secret or os.environ['AWS_SECRET_ACCESS_KEY']
-        self.region_name = region_name or os.environ['AWS_DEFAULT_REGION']
+        self.bucket_name = bucket_name
+        self.filename = filename
+        self._client = boto3.client('s3')
 
-    # AWS helper functions
-    def get_secret(self):
-        client = self.session.client(
-            service_name='secretsmanager', region_name=self.region_name)
-        get_secret_value_response = client.get_secret_value(
-            SecretId=self.secret_name)
-        secret = json.loads(get_secret_value_response['SecretString'])
-
-        return secret
-
-    def put_secret(self):
-        client = self.session.client(
-            service_name='secretsmanager', region_name=self.region_name)
-        response = client.update_secret(
-            SecretId=self.secret_name, SecretString=self.token)
-
-        return response
-
-    def delete_secret(self):
-        client = self.session.client(
-            service_name='secretsmanager', region_name=self.region_name)
-        response = client.delete_secret(
-            SecretId=self.secret_name, SecretString=self.token)
-
-        return response
+    def __repr__(self):
+        return f"AWSS3Backend('{self.bucket_name}', '{self.filename}')"
 
     def load_token(self):
         """
@@ -366,12 +340,11 @@ class AwsSecretBackend(BaseTokenBackend):
         """
         token = None
         try:
-            token_str = self.get_secret()
-            token = self.token_constructor(self.serializer.loads(token_str))
+            token_object = self._client.get_object(Bucket=self.bucket_name, Key=self.filename)
+            token = self.token_constructor(self.serializer.loads(token_object['Body'].read()))
         except Exception as e:
-            log.error('Token (secret: {}) '
-                      'could not be retrieved from the backend: {}'
-                      .format(self.secret_name, str(e)))
+            log.error(f"Token ({self.filename}) could not be retrieved from the backend: {e}")
+
         return token
 
     def save_token(self):
@@ -382,12 +355,29 @@ class AwsSecretBackend(BaseTokenBackend):
         if self.token is None:
             raise ValueError('You have to set the "token" first.')
 
-        try:
-            # set token will overwrite previous data
-            self.put_secret()
-        except Exception as e:
-            log.error('Token could not be saved: {}'.format(str(e)))
-            return False
+        token_str = str.encode(self.serializer.dumps(self.token))
+        if self.check_token():  # file already exists
+            try:
+                _ = self._client.put_object(
+                    Bucket=self.bucket_name,
+                    Key=self.filename,
+                    Body=token_str
+                )
+            except Exception as e:
+                log.error(f"Token file could not be saved: {e}")
+                return False
+        else:  # create a new token file
+            try:
+                r = self._client.put_object(
+                    ACL='private',
+                    Bucket=self.bucket_name,
+                    Key=self.filename,
+                    Body=token_str,
+                    ContentType='text/plain'
+                )
+            except Exception as e:
+                log.error(f"Token secret could not be created: {e}")
+                return False
 
         return True
 
@@ -397,11 +387,13 @@ class AwsSecretBackend(BaseTokenBackend):
         :return bool: Success / Failure
         """
         try:
-            self.delete_secret()
+            r = self._client.delete_object(Bucket=self.bucket_name, Key=self.filename)
         except Exception as e:
-            log.error('Could not delete the token: {}'.format(str(e)))
+            log.error(f"Token file could not be deleted: {e}")
             return False
-        return True
+        else:
+            log.warning(f"Deleted token file {self.filename} in bucket {self.bucket_name}.")
+            return True
 
     def check_token(self):
         """
@@ -409,10 +401,103 @@ class AwsSecretBackend(BaseTokenBackend):
         :return bool: True if it exists on the store
         """
         try:
-            doc = self.get_secret()
+            _ = self._client.head_object(Bucket=self.bucket_name, Key=self.filename)
+        except:
+            return False
+        else:
+            return True
+
+
+class AWSSecretsBackend(BaseTokenBackend):
+    """ An AWS Secrets Manager backend to store tokens """
+
+    def __init__(self, secret_name, region_name):
+        """
+        Init Backend
+        :param str secret_name: Name of the secret stored in Secrets Manager
+        :param str region_name: AWS region hosting the secret (for example, 'us-east-2')
+        """
+        try:
+            import boto3
+        except ModuleNotFoundError as e:
+            raise Exception('Please install the boto3 package to use this token backend.') from e
+        super().__init__()
+        self.secret_name = secret_name
+        self.region_name = region_name
+        self._client = boto3.client('secretsmanager', region_name=region_name)
+
+    def __repr__(self):
+        return f"AWSSecretsBackend('{self.secret_name}', '{self.region_name}')"
+
+    def load_token(self):
+        """
+        Retrieves the token from the store
+        :return dict or None: The token if exists, None otherwise
+        """
+        token = None
+        try:
+            get_secret_value_response = self._client.get_secret_value(SecretId=self.secret_name)
+            token_str = get_secret_value_response['SecretString']
+            token = self.token_constructor(self.serializer.loads(token_str))
         except Exception as e:
-            log.error('Token (secret: {}) '
-                      'could not be retrieved from the backend: {}'
-                      .format(self.secret_name, str(e)))
-            doc = None
-        return doc and doc.exists
+            log.error(f"Token (secret: {self.secret_name}) could not be retrieved from the backend: {e}")
+
+        return token
+
+    def save_token(self):
+        """
+        Saves the token dict in the store
+        :return bool: Success / Failure
+        """
+        if self.token is None:
+            raise ValueError('You have to set the "token" first.')
+
+        if self.check_token():  # secret already exists
+            try:
+                _ = self._client.update_secret(
+                    SecretId=self.secret_name,
+                    SecretString=self.serializer.dumps(self.token)
+                )
+            except Exception as e:
+                log.error(f"Token secret could not be saved: {e}")
+                return False
+        else:  # create a new secret
+            try:
+                r = self._client.create_secret(
+                    Name=self.secret_name,
+                    Description='Token generated by the O365 python package (https://pypi.org/project/O365/).',
+                    SecretString=self.serializer.dumps(self.token)
+                )
+            except Exception as e:
+                log.error(f"Token secret could not be created: {e}")
+                return False
+            else:
+                log.warning(f"\nCreated secret {r['Name']} ({r['ARN']}). Note: using AWS Secrets Manager incurs charges, please see https://aws.amazon.com/secrets-manager/pricing/ for pricing details.\n")
+
+        return True
+
+    def delete_token(self):
+        """
+        Deletes the token from the store
+        :return bool: Success / Failure
+        """
+        try:
+            r = self._client.delete_secret(SecretId=self.secret_name, ForceDeleteWithoutRecovery=True)
+        except Exception as e:
+            log.error(f"Token secret could not be deleted: {e}")
+            return False
+        else:
+            log.warning(f"Deleted token secret {r['Name']} ({r['ARN']}).")
+            return True
+
+    def check_token(self):
+        """
+        Checks if the token exists
+        :return bool: True if it exists on the store
+        """
+        try:
+            _ = self._client.describe_secret(SecretId=self.secret_name)
+        except:
+            return False
+        else:
+            return True
