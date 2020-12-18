@@ -70,13 +70,21 @@ class EventType(CaseEnum):
     Exception = 'exception'  # ?
     SeriesMaster = 'seriesMaster'  # the first recurring event of the series
 
+class OnlineMeetingProviderType(CaseEnum):
+    Unknown = 'unknown'
+    TeamsForBusiness = 'teamsForBusiness'
+    SkypeForBusiness = 'skypeForBusiness'
+    SkypeForConsumer = 'skypeForConsumer'
 
 class EventAttachment(BaseAttachment):
     _endpoints = {'attach': '/events/{id}/attachments'}
 
 
 class EventAttachments(BaseAttachments):
-    _endpoints = {'attachments': '/events/{id}/attachments'}
+    _endpoints = {
+        'attachments': '/events/{id}/attachments',
+        'attachment': '/events/{id}/attachments/{ida}'
+    }
 
     _attachment_constructor = EventAttachment
 
@@ -108,6 +116,10 @@ class EventRecurrence(ApiComponent):
                                                      set())
         self.__first_day_of_week = recurrence_pattern.get(
             self._cc('firstDayOfWeek'), None)
+        if 'type' in recurrence_pattern.keys():
+            if 'weekly' not in recurrence_pattern['type'].lower():
+                self.__first_day_of_week = None
+                
         self.__day_of_month = recurrence_pattern.get(self._cc('dayOfMonth'),
                                                      None)
         self.__month = recurrence_pattern.get(self._cc('month'), None)
@@ -550,6 +562,7 @@ class Attendee:
         :param Response response_status: response status requirement
         :param Event event: event for which to assign the attendee
         """
+        self._untrack = True
         self._address = address
         self._name = name
         self._event = event
@@ -560,6 +573,7 @@ class Attendee:
         self.__attendee_type = AttendeeType.Required
         if attendee_type:
             self.attendee_type = attendee_type
+        self._untrack = False
 
     def __repr__(self):
         if self.name:
@@ -605,7 +619,8 @@ class Attendee:
     def _track_changes(self):
         """ Update the track_changes on the event to reflect a
         needed update on this field """
-        self._event._track_changes.add('attendees')
+        if self._untrack is False:
+            self._event._track_changes.add('attendees')
 
     @property
     def response_status(self):
@@ -865,7 +880,16 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         self.is_organizer = cloud_data.get(cc('isOrganizer'), True)
         self.__location = cloud_data.get(cc('location'), {})
         self.locations = cloud_data.get(cc('locations'), [])  # TODO
+
         self.online_meeting_url = cloud_data.get(cc('onlineMeetingUrl'), None)
+        self.__is_online_meeting = cloud_data.get(cc('isOnlineMeeting'), False)
+        self.__online_meeting_provider = OnlineMeetingProviderType.from_value(
+            cloud_data.get(cc('onlineMeetingProvider'), 'teamsForBusiness'))
+        self.online_meeting = cloud_data.get(cc('onlineMeeting'), None)
+        if not self.online_meeting_url and self.is_online_meeting:
+            self.online_meeting_url = self.online_meeting.get(cc('joinUrl'), None) \
+                if self.online_meeting else None
+
         self.__organizer = self._recipient_from_cloud(
             cloud_data.get(cc('organizer'), None), field=cc('organizer'))
         self.__recurrence = EventRecurrence(event=self,
@@ -930,15 +954,20 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
             cc('responseRequested'): self.__response_requested,
             cc('sensitivity'): cc(self.__sensitivity.value),
             cc('showAs'): cc(self.__show_as.value),
+            cc('isOnlineMeeting'): cc(self.__is_online_meeting),
+            cc('onlineMeetingProvider'): cc(self.__online_meeting_provider.value),
         }
 
         if self.__recurrence:
             data[cc('recurrence')] = self.__recurrence.to_api_data()
-
+        
         if self.has_attachments:
             data[cc('attachments')] = self.__attachments.to_api_data()
 
         if restrict_keys:
+            if 'attachments' in restrict_keys:
+                self.attachments._update_attachments_to_cloud()
+
             for key in list(data.keys()):
                 if key not in restrict_keys:
                     del data[key]
@@ -1256,6 +1285,37 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
     @property
     def event_type(self):
         return self.__event_type
+
+    @property
+    def is_online_meeting(self):
+        """ Status of the online_meeting
+
+        :getter: check is online_meeting enabled or not
+        :setter: enable or disable online_meeting option
+        :type: bool
+        """
+        return self.__is_online_meeting
+
+    @is_online_meeting.setter
+    def is_online_meeting(self, value):
+        self.__is_online_meeting = value
+        self._track_changes.add(self._cc('isOnlineMeeting'))
+
+    @property
+    def online_meeting_provider(self):
+        """ online_meeting_provider of event
+
+        :getter: get current online_meeting_provider configured for the event
+        :setter: set a online_meeting_provider for the event
+        :type: OnlineMeetingProviderType
+        """
+        return self.__online_meeting_provider
+
+    @online_meeting_provider.setter
+    def online_meeting_provider(self, value):
+        self.__online_meeting_provider = (value if isinstance(value, OnlineMeetingProviderType)
+                             else OnlineMeetingProviderType.from_value(value))
+        self._track_changes.add(self._cc('onlineMeetingProvider'))
 
     def get_occurrences(self, start, end, *, limit=None, query=None, order_by=None, batch=None):
         """

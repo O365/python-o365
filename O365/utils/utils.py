@@ -329,15 +329,10 @@ class ApiComponent:
         self.protocol = protocol() if isinstance(protocol, type) else protocol
         if self.protocol is None:
             raise ValueError('Protocol not provided to Api Component')
-        self.main_resource = (self._parse_resource(
-            main_resource if main_resource is not None
-            else protocol.default_resource))
-        # noinspection PyUnresolvedReferences
-        self._base_url = '{}{}'.format(self.protocol.service_url,
-                                       self.main_resource)
-        if self._base_url.endswith('/'):
-            # when self.main_resource is empty then remove the last slash.
-            self._base_url = self._base_url[:-1]
+        mr, bu = self.build_base_url(main_resource)
+        self.main_resource = mr
+        self._base_url = bu
+
         super().__init__()
 
     def __str__(self):
@@ -372,6 +367,26 @@ class ApiComponent:
             return '{}/{}'.format(SITES_RESOURCE, resource)
         else:
             return resource
+
+    def build_base_url(self, resource):
+        """
+        Builds the base url of this ApiComponent
+        :param str resource: the resource to build the base url
+        """
+        main_resource = self._parse_resource(resource if resource is not None else self.protocol.default_resource)
+        # noinspection PyUnresolvedReferences
+        base_url = '{}{}'.format(self.protocol.service_url, main_resource)
+        if base_url.endswith('/'):
+            # when self.main_resource is empty then remove the last slash.
+            base_url = base_url[:-1]
+        return main_resource, base_url
+
+    def set_base_url(self, resource):
+        """
+        Sets the base urls for this ApiComponent
+        :param str resource: the resource to build the base url
+        """
+        self.main_resource, self._base_url = self.build_base_url(resource)
 
     def build_url(self, endpoint):
         """ Returns a url for a given endpoint using the protocol

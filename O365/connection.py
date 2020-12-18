@@ -53,6 +53,8 @@ DEFAULT_SCOPES = {
     'sharepoint': ['Sites.Read.All'],
     'sharepoint_dl': ['Sites.ReadWrite.All'],
     'settings_all': ['MailboxSettings.ReadWrite'],
+    'tasks': ['Tasks.Read'],
+    'tasks_all': ['Tasks.ReadWrite'],
 }
 
 
@@ -323,7 +325,8 @@ class Connection:
                  request_retries=3, token_backend=None,
                  tenant_id='common',
                  auth_flow_type='authorization',
-                 timeout=None, json_encoder=None, **kwargs):
+                 timeout=None, json_encoder=None,
+                 verify_ssl=True, **kwargs):
         """ Creates an API connection object
 
         :param tuple credentials: a tuple of (client_id, client_secret)
@@ -349,26 +352,33 @@ class Connection:
         :param str tenant_id: use this specific tenant id, defaults to common
         :param str auth_flow_type: the auth method flow style used: Options:
             - 'authorization': 2 step web style grant flow using an authentication url
+            - 'public': 2 step web style grant flow using an authentication url for public apps where
+            client secret cannot be secured
             - 'credentials': also called client credentials grant flow using only the cliend id and secret
         :param float or tuple timeout: How long to wait for the server to send
             data before giving up, as a float, or a tuple (connect timeout, read timeout)
         :param JSONEncoder json_encoder: The JSONEnocder to use during the JSON serialization on the request.
+        :param bool verify_ssl: set the verify flag on the requests library
         :param dict kwargs: any extra params passed to Connection
         :raises ValueError: if credentials is not tuple of
          (client_id, client_secret)
         """
-        if not isinstance(credentials, tuple) or len(credentials) != 2 or (
-                not credentials[0] and not credentials[1]):
-            raise ValueError('Provide valid auth credentials')
+        if auth_flow_type == 'public':  # allow client id only for public flow
+            if not isinstance(credentials, tuple) or len(credentials) != 1 or (not credentials[0]):
+                raise ValueError('Provide client id only for public flow credentials')
+        else:
+            if not isinstance(credentials, tuple) or len(credentials) != 2 or (not credentials[0] and not credentials[1]):
+                raise ValueError('Provide valid auth credentials')
 
-        self._auth_flow_type = auth_flow_type  # 'authorization' or 'credentials'
+        self._auth_flow_type = auth_flow_type  # 'authorization' or 'credentials' or 'public'
         if auth_flow_type == 'credentials' and tenant_id == 'common':
             raise ValueError('When using the "credentials" auth_flow the "tenant_id" must be set')
+
         self.tenant_id = tenant_id
         self.auth = credentials
         self.scopes = scopes
         self.store_token = True
-        token_backend = token_backend or FileSystemTokenBackend()
+        token_backend = token_backend or FileSystemTokenBackend(**kwargs)
         if not isinstance(token_backend, BaseTokenBackend):
             raise ValueError('"token_backend" must be an instance of a subclass of BaseTokenBackend')
         self.token_backend = token_backend
@@ -382,6 +392,7 @@ class Connection:
         self.request_retries = request_retries
         self.timeout = timeout
         self.json_encoder = json_encoder
+        self.verify_ssl = verify_ssl
 
         self.naive_session = None  # lazy loaded: holds a requests Session object
 
@@ -389,6 +400,7 @@ class Connection:
                                      '{}/oauth2/v2.0/authorize'.format(tenant_id)
         self._oauth2_token_url = 'https://login.microsoftonline.com/' \
                                  '{}/oauth2/v2.0/token'.format(tenant_id)
+        self.oauth_redirect_url = 'https://login.microsoftonline.com/common/oauth2/nativeclient'
 
     @property
     def auth_flow_type(self):
@@ -422,7 +434,7 @@ class Connection:
                 }
 
     def get_authorization_url(self, requested_scopes=None,
-                              redirect_uri=OAUTH_REDIRECT_URL, **kwargs):
+                              redirect_uri=None, **kwargs):
         """ Initializes the oauth authorization flow, getting the
         authorization url that the user must approve.
 
@@ -432,6 +444,8 @@ class Connection:
         :return: authorization url
         :rtype: str
         """
+
+        redirect_uri = redirect_uri or self.oauth_redirect_url
 
         scopes = requested_scopes or self.scopes
         if not scopes:
@@ -449,7 +463,7 @@ class Connection:
 
     def request_token(self, authorization_url, *,
                       state=None,
-                      redirect_uri=OAUTH_REDIRECT_URL,
+                      redirect_uri=None,
                       requested_scopes=None,
                       store_token=True,
                       **kwargs):
@@ -469,7 +483,7 @@ class Connection:
         :rtype: bool
         """
 
-        _, client_secret = self.auth
+        redirect_uri = redirect_uri or self.oauth_redirect_url
 
         # Allow token scope to not match requested scope.
         # (Other auth libraries allow this, but Requests-OAuthlib
@@ -480,13 +494,13 @@ class Connection:
         scopes = requested_scopes or self.scopes
 
         if self.session is None:
-            if self.auth_flow_type == 'authorization':
+            if self.auth_flow_type in ('authorization', 'public'):
                 self.session = self.get_session(state=state,
                                                 redirect_uri=redirect_uri)
             elif self.auth_flow_type == 'credentials':
                 self.session = self.get_session(scopes=scopes)
             else:
-                raise ValueError('"auth_flow_type" must be either "authorization" or "credentials"')
+                raise ValueError('"auth_flow_type" must be "authorization", "public" or "credentials"')
 
         try:
             if self.auth_flow_type == 'authorization':
@@ -494,12 +508,17 @@ class Connection:
                     token_url=self._oauth2_token_url,
                     authorization_response=authorization_url,
                     include_client_id=True,
-                    client_secret=client_secret))
+                    client_secret=self.auth[1]))
+            elif self.auth_flow_type == 'public':
+                self.token_backend.token = Token(self.session.fetch_token(
+                    token_url=self._oauth2_token_url,
+                    authorization_response=authorization_url,
+                    include_client_id=True))
             elif self.auth_flow_type == 'credentials':
                 self.token_backend.token = Token(self.session.fetch_token(
                     token_url=self._oauth2_token_url,
                     include_client_id=True,
-                    client_secret=client_secret,
+                    client_secret=self.auth[1],
                     scope=scopes))
         except Exception as e:
             log.error('Unable to fetch auth token. Error: {}'.format(str(e)))
@@ -510,7 +529,7 @@ class Connection:
         return True
 
     def get_session(self, *, state=None,
-                    redirect_uri=OAUTH_REDIRECT_URL,
+                    redirect_uri=None,
                     load_token=False,
                     scopes=None):
         """ Create a requests Session object
@@ -523,14 +542,16 @@ class Connection:
         :rtype: OAuth2Session
         """
 
-        client_id, _ = self.auth
+        redirect_uri = redirect_uri or self.oauth_redirect_url
 
-        if self.auth_flow_type == 'authorization':
+        client_id = self.auth[0]
+
+        if self.auth_flow_type in ('authorization', 'public'):
             oauth_client = WebApplicationClient(client_id=client_id)
         elif self.auth_flow_type == 'credentials':
             oauth_client = BackendApplicationClient(client_id=client_id)
         else:
-            raise ValueError('"auth_flow_type" must be either "authorization" or "credentials"')
+            raise ValueError('"auth_flow_type" must be "authorization", "credentials" or "public"')
 
         requested_scopes = scopes or self.scopes
 
@@ -541,7 +562,7 @@ class Connection:
                 raise RuntimeError('No auth token found. Authentication Flow needed')
 
             oauth_client.token = token
-            if self.auth_flow_type == 'authorization':
+            if self.auth_flow_type in ('authorization', 'public'):
                 requested_scopes = None  # the scopes are already in the token (Not if type is backend)
             session = OAuth2Session(client_id=client_id,
                                     client=oauth_client,
@@ -554,6 +575,7 @@ class Connection:
                                     redirect_uri=redirect_uri,
                                     scope=requested_scopes)
 
+        session.verify = self.verify_ssl
         session.proxies = self.proxy
 
         if self.request_retries:
@@ -571,6 +593,7 @@ class Connection:
         """ Creates and returns a naive session """
         naive_session = Session()  # requests Session object
         naive_session.proxies = self.proxy
+        naive_session.verify = self.verify_ssl
 
         if self.request_retries:
             retry = Retry(total=self.request_retries, read=self.request_retries,
@@ -608,7 +631,13 @@ class Connection:
                         client_id=client_id,
                         client_secret=client_secret)
                 )
-
+            elif self.auth_flow_type == 'public':
+                client_id = self.auth[0]
+                self.token_backend.token = Token(
+                    self.session.refresh_token(
+                        self._oauth2_token_url,
+                        client_id=client_id)
+                )
             elif self.auth_flow_type == 'credentials':
                 if self.request_token(None, store_token=False) is False:
                     log.error('Refresh for Client Credentials Grant Flow failed.')

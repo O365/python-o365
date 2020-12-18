@@ -454,23 +454,13 @@ class Site(ApiComponent):
         """
         return self.site_storage.get_drive(drive_id=drive_id)
 
-    def list_document_libraries(self, limit=None, *, query=None, order_by=None,
-                                batch=None):
+    def list_document_libraries(self):
         """ Returns a collection of document libraries for this site
         (a collection of Drive instances)
-
-        :param int limit: max no. of items to get. Over 999 uses batch.
-        :param query: applies a OData filter to the request
-        :type query: Query or str
-        :param order_by: orders the result set based on this condition
-        :type order_by: Query or str
-        :param int batch: batch size, retrieves items in
-         batches allowing to retrieve more items than the limit.
         :return: list of items in this folder
         :rtype: list[Drive] or Pagination
         """
-        return self.site_storage.get_drives(limit=limit, query=query,
-                                            order_by=order_by, batch=batch)
+        return self.site_storage.get_drives()
 
     def get_subsites(self):
         """ Returns a list of subsites defined for this site

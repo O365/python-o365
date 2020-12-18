@@ -3,6 +3,58 @@
 Almost every release features a lot of bugfixes but those are not listed here.
 
 
+## Version 2.0.13 (2020-12-02)
+
+### Features:
+- Bug fixing release
+
+
+## Version 2.0.12 (2020-12-02)
+
+### Features:
+- NEW: added MS Office 365 Tasks (only available using Office365 protocol)
+- Connection: init now accepts params for the default FileSystemToken
+- Token: added AWS token backend
+
+
+## Version 2.0.11 (2020-08-25)
+
+### Features:
+- Drive: added streamable upload and download
+- Drive: added conflict handling flag on uploads (only simple uploads < 4MB)
+- Connection: added `verify_ssl` flag
+- Calendar: added online meeting methods to change providers (teams, etc.)
+
+
+## Version 2.0.10 (2020-06-04)
+
+### Features:
+- Account: added public client auth flow
+- Directory: added query params to retrieve users
+- Calendar: now adapted to teams online meetings
+- Contact: added personal notes 
+
+
+## Version 2.0.9 (2020-04-21)
+
+### Features:
+- Bug fixing release
+
+
+## Version 2.0.8 (2020-04-15)
+
+### Features:
+- NEW: MS Teams available
+- Drive: new method "get_drive" in DriveItems
+
+
+## Version 2.0.7 (2020-02-06)
+
+### Features:
+- Connection: now allows to pass a custom Json Encoder ("json_encoder" param).
+- Added WorkBookApplication on excel.py that can run manual calculations on workbooks.
+
+
 ## Version 2.0.6 (2019-12-13)
 
 ### Features:

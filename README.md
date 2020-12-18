@@ -1,3 +1,8 @@
+[![Downloads](https://pepy.tech/badge/O365)](https://pepy.tech/project/O365)
+[![PyPI](https://img.shields.io/pypi/v/O365.svg)](https://pypi.python.org/pypi/O365)
+[![PyPI pyversions](https://img.shields.io/pypi/pyversions/O365.svg)](https://pypi.python.org/pypi/O365/)
+[![Build Status](https://travis-ci.org/O365/python-o365.svg?branch=master)](https://travis-ci.org/O365/python-o365)
+
 # O365 - Microsoft Graph and Office 365 API made easy
 
 
@@ -8,15 +13,22 @@ Access to Email, Calendar, Contacts, OneDrive, etc. Are easy to do in a way that
 
 The project is currently developed and maintained by [Janscas](https://github.com/janscas). 
 
-Core developers: 
+#### Core developers
 - [Toben Archer](https://github.com/Narcolapser)
-- [Royce Melborn](https://github.com/GeethanadhP)
+- [Geethanadh](https://github.com/GeethanadhP)
 - [Janscas](https://github.com/janscas)
 
-We are always open to new pull requests!
+**We are always open to new pull requests!**
+
+#### Rebuilding HTML Docs
+- Install `shpinx` python library
+    
+    `pip install sphinx==2.2.2`
+
+- Run the shell script `build_docs.sh`, or copy the command from the file when using on windows
 
 
-This is for example how you send a message:
+#### Quick example on sending a message:
 
 ```python
 from O365 import Account
@@ -66,6 +78,7 @@ What follows is kind of a wiki...
 - [AddressBook](#addressbook)
 - [Directory and Users](#directory-and-users)
 - [Calendar](#calendar)
+- [Tasks](#tasks)
 - [OneDrive](#onedrive)
 - [Excel](#excel)
 - [Sharepoint](#sharepoint)
@@ -117,11 +130,13 @@ if not account.is_authenticated:  # will check if there is a token and has not e
 ## Authentication
 You can only authenticate using oauth athentication as Microsoft deprecated basic auth on November 1st 2018.
 
-There are currently two authentication methods:
+There are currently three authentication methods:
 
 - [Authenticate on behalf of a user](https://docs.microsoft.com/en-us/graph/auth-v2-user?context=graph%2Fapi%2F1.0&view=graph-rest-1.0): 
 Any user will give consent to the app to access it's resources. 
 This oauth flow is called **authorization code grant flow**. This is the default authentication method used by this library.
+- [Authenticate on behalf of a user (public)](https://docs.microsoft.com/en-us/graph/auth-v2-user?context=graph%2Fapi%2F1.0&view=graph-rest-1.0):
+Same as the former but for public apps where the client secret can't be secured. Client secret is not required.
 - [Authenticate with your own identity](https://docs.microsoft.com/en-us/graph/auth-v2-service?context=graph%2Fapi%2F1.0&view=graph-rest-1.0): 
 This will use your own identity (the app identity). This oauth flow is called **client credentials grant flow**. 
 
@@ -129,19 +144,19 @@ This will use your own identity (the app identity). This oauth flow is called **
 
 When to use one or the other and requirements:
 
-  Topic                             | On behalf of a user *(auth_flow_type=='authorization')*  | With your own identity *(auth_flow_type=='credentials')*
- :---:                              | :---:                                                    | :---:
- **Register the App**               | Required                                                 | Required
- **Requires Admin Consent**         | Only on certain advanced permissions                     | Yes, for everything
- **App Permission Type**            | Delegated Permissions (on behalf of the user)            | Application Permissions
- **Auth requirements**              | Client Id, Client Secret, Authorization Code             | Client Id, Client Secret
- **Authentication**                 | 2 step authentication with user consent                  | 1 step authentication
- **Auth Scopes**                    | Required                                                 | None
- **Token Expiration**               | 60 Minutes without refresh token or 90 days*             | 60 Minutes*
- **Login Expiration**               | Unlimited if there is a refresh token and as long as a refresh is done within the 90 days          | Unlimited
- **Resources**                      | Access the user resources, and any shared resources      | All Azure AD users the app has access to
- **Microsoft Account Type**         | Any                                                      | Not Allowed for Personal Accounts
- **Tenant ID Required**             | Defaults to "common"                                     | Required (can't be "common")
+  Topic                             | On behalf of a user *(auth_flow_type=='authorization')*  | On behalf of a user (public) *(auth_flow_type=='public')*  | With your own identity *(auth_flow_type=='credentials')*
+ :---:                              | :---:                                                    | :---:                                                      | :---:
+ **Register the App**               | Required                                                 | Required                                                   | Required
+ **Requires Admin Consent**         | Only on certain advanced permissions                     | Only on certain advanced permissions                       | Yes, for everything
+ **App Permission Type**            | Delegated Permissions (on behalf of the user)            | Delegated Permissions (on behalf of the user)              | Application Permissions
+ **Auth requirements**              | Client Id, Client Secret, Authorization Code             | Client Id, Authorization Code                              | Client Id, Client Secret
+ **Authentication**                 | 2 step authentication with user consent                  | 2 step authentication with user consent                    | 1 step authentication
+ **Auth Scopes**                    | Required                                                 | Required                                                   | None
+ **Token Expiration**               | 60 Minutes without refresh token or 90 days*             | 60 Minutes without refresh token or 90 days*               | 60 Minutes*
+ **Login Expiration**               | Unlimited if there is a refresh token and as long as a re| Unlimited if there is a refresh token and as long as a refresh is done within the 90 days          | Unlimited
+ **Resources**                      | Access the user resources, and any shared resources      | Access the user resources, and any shared resources        | All Azure AD users the app has access to
+ **Microsoft Account Type**         | Any                                                      | Any                                                        | Not Allowed for Personal Accounts
+ **Tenant ID Required**             | Defaults to "common"                                     | Defaults to "common"                                       | Required (can't be "common")
 
 **O365 will automatically refresh the token for you on either authentication method. The refresh token lasts 90 days but it's refreshed on each connection so as long as you connect within 90 days you can have unlimited access.*
 
@@ -178,6 +193,8 @@ This section is explained using Microsoft Graph Protocol, almost the same applie
     To authenticate (login) you can use [different authentication interfaces](#different-authentication-interfaces). On the following examples we will be using the Console Based Interface but you can use any one.
     
     - When authenticating on behalf of a user:
+        
+        > **Important:** In case you can't secure the client secret you can use the auth flow type 'public' which only requires the client id. 
     
         1. Instantiate an `Account` object with the credentials (client id and client secret).
         1. Call `account.authenticate` and pass the scopes you want (the ones you previously added on the app registration portal).
@@ -368,6 +385,8 @@ calendar                           | 'Calendars.Read'
 calendar_shared                    | 'Calendars.Read.Shared'
 calendar_all                       | 'Calendars.ReadWrite'
 calendar_shared_all                | 'Calendars.ReadWrite.Shared'
+tasks                              | 'Tasks.Read'
+tasks_all                          | 'Tasks.ReadWrite'
 users                              | 'User.ReadBasic.All'
 onedrive                           | 'Files.Read.All'
 onedrive_all                       | 'Files.ReadWrite.All'
@@ -733,8 +752,8 @@ You can send inline images by doing this:
 # ...
 msg = account.new_message()
 msg.to.add('george@best.com')
-msg.attchments.add('my_image.png')
-att = msg.attchments[0]  # get the attachment object
+msg.attachments.add('my_image.png')
+att = msg.attachments[0]  # get the attachment object
 
 # this is super important for this to work.
 att.is_inline = True
@@ -979,7 +998,63 @@ for event in birthdays:
     For some unknow reason, microsoft does not allow to upload an attachment at the event creation time (as opposed with message attachments).
     See [this](https://stackoverflow.com/questions/46438302/office365-rest-api-creating-a-calendar-event-with-attachments?rq=1).
     So, to upload attachments to Events, first save the event, then attach the message and save again.
-    
+
+## Tasks
+
+The tasks functionality is grouped in a `ToDo` object. Note that the tasks functionality currently only works with the `MSOffice365Protocol` protocol.
+
+A `ToDo` instance can list and create task folders. It can also list or create tasks on the default user folder. To use other folders use a `Folder` instance.  
+
+These are the scopes needed to work with the `ToDo`, `Folder` and `Task` classes.
+
+ Raw Scope                        |  Included in Scope Helper                       | Description
+ :---:                            |  :---:                                          | ---
+ *Tasks.Read*                     |  *tasks*                                        | To only read my personal tasks
+ *Tasks.ReadWrite*                |  *tasks_all*                                    | To read and save personal calendars
+ 
+ Working with the `ToDo` instance:
+```python
+import datetime as dt
+
+# ...
+todo = account.tasks()
+
+#list current tasks
+folder = todo.get_default_folder()
+new_task = folder.new_task()  # creates a new unsaved task 
+new_task.subject = 'Send contract to George Best'
+new_task.due = dt.datetime(2020, 9, 25, 18, 30) 
+new_task.save()
+
+#some time later....
+
+new_task.mark_completed()
+new_task.save()
+
+# naive datetimes will automatically be converted to timezone aware datetime
+#  objects using the local timezone detected or the protocol provided timezone
+#  as with the Calendar functionality
+
+```
+
+Working with `Folder` instances:
+
+```python
+#create a new folder
+new_folder = todo.new_folder('Defenders')
+
+#rename a folder
+folder = todo.get_folder(folder_name='Strikers')
+folder.name = 'Forwards'
+folder.update()
+
+#list current tasks
+task_list = folder.get_tasks()
+for task in task_list:
+    print(task)
+    print('')
+```
+ 
 ## OneDrive
 The `Storage` class handles all functionality around One Drive and Document Library Storage in Sharepoint.
 
@@ -1007,7 +1082,7 @@ storage = account.storage()  # here we get the storage instance that handles all
 drives = storage.get_drives()
 
 # get the default drive
-my_drive = drives.get_default_drive()  # or get_drive('drive-id')
+my_drive = storage.get_default_drive()  # or get_drive('drive-id')
 
 # get some folders:
 root_folder = my_drive.get_root_folder()
@@ -1016,7 +1091,7 @@ attachments_folder = my_drive.get_special_folder('attachments')
 # iterate over the first 25 items on the root folder
 for item in root_folder.get_items(limit=25):
     if item.is_folder:
-        print(item.get_items(2))  # print the first to element on this folder.
+        print(list(item.get_items(2)))  # print the first to element on this folder.
     elif item.is_file:
         if item.is_photo:
             print(item.camera_model)  # print some metadata of this photo

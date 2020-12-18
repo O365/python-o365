@@ -6,6 +6,7 @@ At this time, only the files stored in business platform is supported by Excel R
 import logging
 import datetime as dt
 from urllib.parse import quote
+import re
 
 from stringcase import snakecase
 
@@ -1230,7 +1231,7 @@ class Table(ApiComponent):
         :param id_or_name: the id or name of the column
         :return: WorkBookTableColumn
         """
-        url = self.build_url(self._endpoints.get('get_column').format(quote(id_or_name)))
+        url = self.build_url(self._endpoints.get('get_column').format(id=quote(id_or_name)))
         response = self.session.get(url)
 
         if not response:
@@ -1606,6 +1607,7 @@ class WorkSheet(ApiComponent):
         """
         url = self.build_url(self._endpoints.get('get_range'))
         if address is not None:
+            address = self.remove_sheet_name_from_address(address)
             url = "{}(address='{}')".format(url, address)
         response = self.session.get(url)
         if not response:
@@ -1661,6 +1663,16 @@ class WorkSheet(ApiComponent):
             return None
         return self.named_range_constructor(parent=self, **{self._cloud_data_key: response.json()})
 
+    @staticmethod
+    def remove_sheet_name_from_address(address):
+        """ Removes the sheet name from a given address """
+        compiled = re.compile('([a-zA-Z]+[0-9]+):.*?([a-zA-Z]+[0-9]+)')
+        result = compiled.search(address)
+        if result:
+            return ':'.join(result.groups())
+        else:
+            return address
+
 
 class WorkbookApplication(ApiComponent):
     _endpoints = {
@@ -1711,6 +1723,9 @@ class WorkbookApplication(ApiComponent):
         url = self.build_url(self._endpoints.get('post_calculation'))
         data = {"calculationType": calculation_type}
         headers = {"Content-type": "application/json"}
+
+        if(self.parent.session.session_id):
+            headers['workbook-session-id'] = self.parent.session.session_id
 
         response = self.con.post(url, headers=headers, data=data)
         if not response:

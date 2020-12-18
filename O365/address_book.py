@@ -98,6 +98,8 @@ class Contact(ApiComponent, AttachableMixin):
         self.__categories = cloud_data.get(cc('categories'), [])
         self.__folder_id = cloud_data.get(cc('parentFolderId'), None)
 
+        self.__personal_notes = cloud_data.get(cc('personalNotes'), '')
+
         # When using Users endpoints (GAL)
         # Missing keys: ['mail', 'userPrincipalName']
         mail = cloud_data.get(cc('mail'), None)
@@ -429,6 +431,15 @@ class Contact(ApiComponent, AttachableMixin):
         self._track_changes.add(self._cc('categories'))
 
     @property
+    def personal_notes(self):
+        return self.__personal_notes
+
+    @personal_notes.setter
+    def personal_notes(self, value):
+        self.__personal_notes = value
+        self._track_changes.add(self._cc('personalNotes'))
+
+    @property
     def folder_id(self):
         """ ID of the folder
 
@@ -461,7 +472,8 @@ class Contact(ApiComponent, AttachableMixin):
             cc('businessAddress'): self.__business_address,
             cc('homesAddress'): self.__home_address,
             cc('otherAddress'): self.__other_address,
-            cc('categories'): self.__categories
+            cc('categories'): self.__categories,
+            cc('personalNotes'): self.__personal_notes,
         }
 
         if restrict_keys:

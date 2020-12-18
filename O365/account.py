@@ -1,4 +1,4 @@
-from .connection import Connection, Protocol, MSGraphProtocol
+from .connection import Connection, Protocol, MSGraphProtocol, MSOffice365Protocol
 from .utils import ME_RESOURCE
 
 
@@ -30,7 +30,7 @@ class Account:
         auth_flow_type = kwargs.get('auth_flow_type', 'authorization')
         scopes = kwargs.get('scopes', None)  # retrieve scopes
 
-        if auth_flow_type == 'authorization':
+        if auth_flow_type in ('authorization', 'public'):
             # convert the provided scopes to protocol scopes:
             if scopes is not None:
                 kwargs['scopes'] = self.protocol.get_scopes_for(scopes)
@@ -46,7 +46,7 @@ class Account:
             if main_resource == ME_RESOURCE:
                 main_resource = ''
         else:
-            raise ValueError('"auth_flow_type" must be either "authorization" or "credentials"')
+            raise ValueError('"auth_flow_type" must be "authorization", "credentials" or "public"')
 
         self.con = self.connection_constructor(credentials, **kwargs)
         self.main_resource = main_resource or self.protocol.default_resource
@@ -81,7 +81,7 @@ class Account:
         :rtype: bool
         """
 
-        if self.con.auth_flow_type == 'authorization':
+        if self.con.auth_flow_type in ('authorization', 'public'):
             if scopes is not None:
                 if self.con.scopes is not None:
                     raise RuntimeError('The scopes must be set either at the Account instantiation or on the account.authenticate method.')
@@ -112,11 +112,15 @@ class Account:
         elif self.con.auth_flow_type == 'credentials':
             return self.con.request_token(None, requested_scopes=scopes)
         else:
-            raise ValueError('Connection "auth_flow_type" must be either "authorization" or "credentials"')
+            raise ValueError('Connection "auth_flow_type" must be "authorization", "public" or "credentials"')
 
     def get_current_user(self):
-        directory = self.directory(resource=ME_RESOURCE)
-        return directory.get_current_user()
+        """ Returns the current user """
+        if self.con.auth_flow_type in ('authorization', 'public'):
+            directory = self.directory(resource=ME_RESOURCE)
+            return directory.get_current_user()
+        else:
+            return None
 
     @property
     def connection(self):
@@ -238,6 +242,27 @@ class Account:
 
         from .planner import Planner
         return Planner(parent=self, main_resource=resource)
+
+    def tasks(self, *, resource=''):
+        """ Get an instance to read information from Microsoft ToDo """
+
+        if not isinstance(self.protocol, MSOffice365Protocol):
+            raise RuntimeError(
+                'todo api only works on Microsoft Office 365 API')
+
+        from .tasks import ToDo
+        return ToDo(parent=self, main_resource=resource)
+
+    
+    def teams(self, *, resource=''):
+        """ Get an instance to read information from Microsoft Teams """
+
+        if not isinstance(self.protocol, MSGraphProtocol):
+            raise RuntimeError(
+                'teams api only works on Microsoft Graph API')
+
+        from .teams import Teams
+        return Teams(parent=self, main_resource=resource)
 
     def outlook_categories(self, *, resource=''):
         """ Returns a Categories object to handle the available Outlook Categories """

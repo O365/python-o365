@@ -324,6 +324,7 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         self.__is_draft = cloud_data.get(cc('isDraft'), kwargs.get('is_draft',
                                                                    True))
         self.conversation_id = cloud_data.get(cc('conversationId'), None)
+        self.conversation_index = cloud_data.get(cc('conversationIndex'), None)
         self.folder_id = cloud_data.get(cc('parentFolderId'), None)
 
         flag_data = cloud_data.get(cc('flag'), {})
@@ -989,6 +990,7 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
             self.__modified = parse(self.__modified).astimezone(
                 self.protocol.timezone) if self.__modified else None
 
+            self.web_link = message.get(self._cc('webLink'), '')
         else:
             self.__modified = self.protocol.timezone.localize(dt.datetime.now())
 

@@ -68,3 +68,12 @@ sample_run.py
 
 o365_token\.txt
 local_tests/
+
+# Dev tooling
+.python-version
+Pipfile
+Pipfile.lock
+.vscode/*
+
+# config.py file that contains secrets
+config.py

@@ -1,36 +1,34 @@
-from enum import Enum, auto
+from enum import Enum
 
 from .utils import ApiComponent
 
 
 class CategoryColor(Enum):
-    def _generate_next_value_(name, start, count, last_values):
-        return 'preset{}'.format(count)
-    RED = auto()  # 0
-    ORANGE = auto()  # 1
-    BROWN = auto()  # 2
-    YELLOW = auto()  # 3
-    GREEN = auto()  # 4
-    TEAL = auto()  # 5
-    OLIVE = auto()  # 6
-    BLUE = auto()  # 7
-    PURPLE = auto()  # 8
-    CRANBERRY = auto()  # 9
-    STEEL = auto()  # 10
-    DARKSTEEL = auto()  # 11
-    GRAY = auto()  # 12
-    DARKGREY = auto()  # 13
-    BLACK = auto()  # 14
-    DARKRED = auto()  # 15
-    DARKORANGE = auto()  # 16
-    DARKBROWN = auto()  # 17
-    DARKYELLOW = auto()  # 18
-    DARKGREEN = auto()  # 19
-    DARKTEAL = auto()  # 20
-    DARKOLIVE = auto()  # 21
-    DARKBLUE = auto()  # 22
-    DARKPURPLE = auto()  # 23
-    DARKCRANBERRY = auto()  # 24
+    RED = 'preset0'  # 0
+    ORANGE = 'preset1'  # 1
+    BROWN = 'preset2'  # 2
+    YELLOW = 'preset3'  # 3
+    GREEN = 'preset4'  # 4
+    TEAL = 'preset5'  # 5
+    OLIVE = 'preset6'  # 6
+    BLUE = 'preset7'  # 7
+    PURPLE = 'preset8'  # 8
+    CRANBERRY = 'preset9'  # 9
+    STEEL = 'preset10'  # 10
+    DARKSTEEL = 'preset11'  # 11
+    GRAY = 'preset12'  # 12
+    DARKGREY = 'preset13'  # 13
+    BLACK = 'preset14'  # 14
+    DARKRED = 'preset15'  # 15
+    DARKORANGE = 'preset16'  # 16
+    DARKBROWN = 'preset17'  # 17
+    DARKYELLOW = 'preset18'  # 18
+    DARKGREEN = 'preset19'  # 19
+    DARKTEAL = 'preset20'  # 20
+    DARKOLIVE = 'preset21'  # 21
+    DARKBLUE = 'preset22'  # 22
+    DARKPURPLE = 'preset23'  # 23
+    DARKCRANBERRY = 'preset24'  # 24
 
     @classmethod
     def get(cls, color):
