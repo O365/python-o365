@@ -376,7 +376,7 @@ class AWSS3Backend(BaseTokenBackend):
                     ContentType='text/plain'
                 )
             except Exception as e:
-                log.error(f"Token secret could not be created: {e}")
+                log.error(f"Token file could not be created: {e}")
                 return False
 
         return True
