@@ -181,7 +181,7 @@ class Task(ApiComponent):
         :getter: Check if importance is high
         :type: bool
         """
-        return self.__importance == "High"
+        return self.__importance.casefold() == "High".casefold()
 
 
     @body.setter
