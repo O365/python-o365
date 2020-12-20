@@ -167,7 +167,7 @@ class Task(ApiComponent):
 
     @property
     def importance(self):
-        """ Task importance
+        """ Task importance (Low, Normal, High)
 
         :getter: Get importance level
         :type: str
@@ -176,9 +176,9 @@ class Task(ApiComponent):
 
     @property
     def is_starred(self):
-        """ Task importance
+        """ Is the task starred (high importance)
 
-        :getter: Get importance level
+        :getter: Check if importance is high
         :type: str
         """
         return self.__importance == "High"
