@@ -179,7 +179,7 @@ class Task(ApiComponent):
         """ Is the task starred (high importance)
 
         :getter: Check if importance is high
-        :type: str
+        :type: bool
         """
         return self.__importance == "High"
 
