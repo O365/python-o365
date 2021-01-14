@@ -6,6 +6,53 @@ from .utils import ApiComponent
 log = logging.getLogger(__name__)
 
 
+class Presence(ApiComponent):
+    """ Microsoft Teams Presence  """
+
+    _endpoints = {}
+
+    def __init__(self, *, parent=None, con=None, **kwargs):
+        """ Microsoft Teams Presence
+
+        :param parent: parent object
+        :type parent: Teams
+        :param Connection con: connection to use if no parent specified
+        :param Protocol protocol: protocol to use if no parent specified
+         (kwargs)
+        :param str main_resource: use this resource instead of parent resource
+         (kwargs)
+        """
+        if parent and con:
+            raise ValueError('Need a parent or a connection but not both')
+        self.con = parent.con if parent else con
+
+        cloud_data = kwargs.get(self._cloud_data_key, {})
+
+        self.object_id = cloud_data.get('id')
+
+
+        # Choose the main_resource passed in kwargs over parent main_resource
+        main_resource = kwargs.pop('main_resource', None) or (
+            getattr(parent, 'main_resource', None) if parent else None)
+
+        main_resource = '{}{}'.format(main_resource, '')
+
+        super().__init__(
+            protocol=parent.protocol if parent else kwargs.get('protocol'),
+            main_resource=main_resource)
+
+        self.availability = cloud_data.get('availability')
+        self.activity = cloud_data.get('activity')
+
+    def __str__(self):
+        return self.__repr__()
+
+    def __repr__(self):
+        return 'availability: {}'.format(self.availability)
+
+    def __eq__(self, other):
+        return self.object_id == other.object_id
+
 class Team(ApiComponent):
     """ A Microsoft Teams team """
 
@@ -156,13 +203,14 @@ class Teams(ApiComponent):
     """
 
     _endpoints = {
+        'get_my_presence': '/me/presence',
         'get_my_teams': '/me/joinedTeams',
         'get_channels': '/teams/{team_id}/channels',
         'create_channel': '/teams/{team_id}/channels',
         'get_channel_info': '/teams/{team_id}/channels/{channel_id}',
         'get_apps_in_team': '/teams/{team_id}/installedApps?$expand=teamsAppDefinition',
     }
-
+    presence_constructor = Presence
     team_constructor = Team
     channel_constructor = Channel
     app_constructor = App
@@ -194,6 +242,24 @@ class Teams(ApiComponent):
 
     def __repr__(self):
         return 'Microsoft Teams'
+
+    def get_my_presence(self, *args):
+        """ Returns my availability and activity
+
+        :rtype: teams
+        """
+
+        url = self.build_url(self._endpoints.get('get_my_presence'))
+
+        response = self.con.get(url)
+
+        if not response:
+            return None
+
+        data = response.json()
+
+        return self.presence_constructor(parent=self, **{self._cloud_data_key: data})
+  
 
     def get_my_teams(self, *args):
         """ Returns a list of teams that I am in

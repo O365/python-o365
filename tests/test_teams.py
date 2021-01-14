@@ -10,3 +10,7 @@ class TestTeams:
 
     def teardown_class(self):
         pass
+    # Depends on actual teams status, use for local testing
+    # def test_get_presence(self):
+    #     assert(self.account.teams().get_my_presence().activity == 'Away')
+    
