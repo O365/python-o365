@@ -291,11 +291,11 @@ For the "with your own identity" authentication method, you can just use `accoun
     The following example is done using Flask.
     ```python    
     @route('/stepone')
-    def auth_step_one()
+    def auth_step_one():
     
         callback = 'my absolute url to auth_step_two_callback'
         account = Account(credentials)
-        url, state = account.con.get_authorization_url(requested_scopes=my_scopes
+        url, state = account.con.get_authorization_url(requested_scopes=my_scopes,
                                                        redirect_uri=callback)
         
         # the state must be saved somewhere as it will be needed later
