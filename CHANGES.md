@@ -2,6 +2,10 @@
 
 Almost every release features a lot of bugfixes but those are not listed here.
 
+## Version 2.0.14 (2021-01-28)
+### Features:
+ - NEW: added MS Teams Presence class
+
 
 ## Version 2.0.13 (2020-12-02)
 
