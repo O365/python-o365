@@ -1146,8 +1146,10 @@ class Folder(DriveItem):
             if item.is_folder and item.child_count > 0:
                 item.download_contents(to_folder=to_folder / item.name)
             elif item.is_folder and item.child_count == 0:
-                if not to_folder.exists():
-                    to_folder.mkdir()
+                # Create child folder without contents.
+                child_folder = to_folder / item.name
+                if not child_folder.exists():
+                    child_folder.mkdir()
             else:
                 item.download(to_folder)
 
