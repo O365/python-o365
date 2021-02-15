@@ -69,7 +69,8 @@ class Task(ApiComponent):
         self.__modified = cloud_data.get(cc('lastModifiedDateTime'), None)
         self.__status = cloud_data.get(cc('status'), None)
         self.__is_completed = self.__status == 'Completed'
-
+        self.__importance = cloud_data.get(cc('importance'), None)
+        
         local_tz = self.protocol.timezone
         self.__created = parse(self.__created).astimezone(
             local_tz) if self.__created else None
@@ -163,6 +164,25 @@ class Task(ApiComponent):
         :type: str
         """
         return self.__body
+
+    @property
+    def importance(self):
+        """ Task importance (Low, Normal, High)
+
+        :getter: Get importance level
+        :type: str
+        """
+        return self.__importance
+
+    @property
+    def is_starred(self):
+        """ Is the task starred (high importance)
+
+        :getter: Check if importance is high
+        :type: bool
+        """
+        return self.__importance.casefold() == "High".casefold()
+
 
     @body.setter
     def body(self, value):
