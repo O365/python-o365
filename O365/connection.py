@@ -448,7 +448,12 @@ class Connection:
 
         redirect_uri = redirect_uri or self.oauth_redirect_url
 
-        scopes = requested_scopes or self.scopes
+        if requested_scopes:
+            protocol = MSGraphProtocol()
+            requested_scopes = protocol.get_scopes_for(requested_scopes)
+            scopes = requested_scopes
+        else:
+            scopes = self.scopes
         if not scopes:
             raise ValueError('Must provide at least one scope')
 
