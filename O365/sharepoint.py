@@ -256,10 +256,25 @@ class SharepointList(ApiComponent):
         self.column_name_cw = {col.display_name: col.internal_name for
                                col in self.get_list_columns() if not col.read_only}
 
+    def build_field_filter(self, expand_fields):
+        if expand_fields == True:
+            return 'fields'
+        elif isinstance(expand_fields, list):
+            result = ''
+            for field in expand_fields:
+                if field in self.column_name_cw.values():
+                    result += field + ','         
+                elif field in self.column_name_cw:
+                    result += self.column_name_cw[field] + ','
+                else:
+                    log.warning('"{}" is not a valid field name - check case'.format(field))
+            if result != '':
+                return 'fields(select=' + result.rstrip(',') + ')'
+
     def __eq__(self, other):
         return self.object_id == other.object_id
 
-    def get_items(self, limit=None, *, query=None, order_by=None, batch=None):
+    def get_items(self, limit=None, *, query=None, order_by=None, batch=None, expand_fields=None):
         """ Returns a collection of Sharepoint Items
         :param int limit: max no. of items to get. Over 999 uses batch.
         :param query: applies a filter to the request.
@@ -268,6 +283,9 @@ class SharepointList(ApiComponent):
         :type order_by: Query or str
         :param int batch: batch size, retrieves items in
          batches allowing to retrieve more items than the limit.
+        :param expand_fields: specify user-defined fields to return,
+         True will return all fields
+        :type expand_fields: list or bool         
         :return: list of Sharepoint Items
         :rtype: list[SharepointListItem] or Pagination
         """
@@ -281,7 +299,10 @@ class SharepointList(ApiComponent):
 
         if order_by:
             params['$orderby'] = order_by
-
+            
+        if expand_fields is not None:
+            params['expand'] = self.build_field_filter(expand_fields)
+            
         if query:
             if isinstance(query, str):
                 params['$filter'] = query
@@ -305,12 +326,24 @@ class SharepointList(ApiComponent):
         else:
             return items
 
-    def get_item_by_id(self, item_id):
-        """ Returns a sharepoint list item based on id"""
+    def get_item_by_id(self, item_id, expand_fields=None):
+        """ Returns a sharepoint list item based on id
+        :param int item_id: item id to search for
+        :param expand_fields: specify user-defined fields to return,
+         True will return all fields
+        :type expand_fields: list or bool         
+        :return: Sharepoint Item
+        :rtype: SharepointListItem
+        """
 
         url = self.build_url(self._endpoints.get('get_item_by_id').format(item_id=item_id))
-
-        response = self.con.get(url)
+        
+        params = {}
+        
+        if expand_fields is not None:
+            params['expand'] = self.build_field_filter(expand_fields)
+            
+        response = self.con.get(url, params=params)
 
         if not response:
             return []
@@ -638,3 +671,4 @@ class Sharepoint(ApiComponent):
 
         return self.site_constructor(parent=self,
                                      **{self._cloud_data_key: data})
+    
