@@ -857,7 +857,7 @@ class Connection:
         There is no guarantee that this method will be called by the garbage collection
         But this is not an issue because this connections will be automatically closed.
         """
-        if self.session:
+        if hasattr(self, 'session'):
             self.session.close()
 
 

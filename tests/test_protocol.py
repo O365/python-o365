@@ -6,7 +6,18 @@ from tzlocal import get_localzone
 
 from O365.connection import Connection, Protocol, MSGraphProtocol, MSOffice365Protocol, DEFAULT_SCOPES
 
-TEST_SCOPES = ['Contacts.Read.Shared', 'Mail.Send.Shared', 'User.Read', 'Contacts.ReadWrite.Shared', 'Mail.ReadWrite.Shared', 'Mail.Read.Shared', 'Contacts.Read', 'Sites.ReadWrite.All', 'Mail.Send', 'Mail.ReadWrite', 'offline_access', 'Mail.Read', 'Contacts.ReadWrite', 'Files.ReadWrite.All', 'Calendars.ReadWrite', 'User.ReadBasic.All']
+TEST_SCOPES = [
+    'Calendars.Read', 'Calendars.Read.Shared', 'Calendars.ReadWrite', 'Calendars.ReadWrite.Shared',
+    'Contacts.Read', 'Contacts.Read.Shared', 'Contacts.ReadWrite', 'Contacts.ReadWrite.Shared',
+    'Files.Read.All', 'Files.ReadWrite.All',
+    'Mail.Read', 'Mail.Read.Shared', 'Mail.ReadWrite', 'Mail.ReadWrite.Shared', 'Mail.Send', 'Mail.Send.Shared',
+    'MailboxSettings.ReadWrite',
+    'Presence.Read',
+    'Sites.Read.All', 'Sites.ReadWrite.All',
+    'Tasks.Read', 'Tasks.ReadWrite',
+    'User.Read', 'User.ReadBasic.All',
+    'offline_access'
+    ]
 
 class TestProtocol:
 
