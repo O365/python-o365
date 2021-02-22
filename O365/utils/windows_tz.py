@@ -510,10 +510,9 @@ def get_windows_tz(iana_tz):
     Note: Windows Timezones are SHIT!... no ... really THEY ARE
     HOLY FUCKING SHIT!.
     """
-    timezone = IANA_TO_WIN.get(
-        iana_tz.zone if isinstance(iana_tz, tzinfo) else iana_tz)
+    timezone = IANA_TO_WIN.get(str(iana_tz))
     if timezone is None:
         raise pytz.UnknownTimeZoneError(
-            "Can't find Iana TimeZone " + iana_tz.zone)
+            "Can't find Iana TimeZone " + iana_tz)
 
     return timezone

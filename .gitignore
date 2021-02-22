@@ -64,6 +64,7 @@ target/
 trail.py
 sample_run.py
 
+.vscode/
 
 
 o365_token\.txt

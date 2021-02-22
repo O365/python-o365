@@ -1,13 +1,14 @@
+#!/usr/bin/python3
 import os
 
 from setuptools import setup, find_packages
 
 
-VERSION = '1.1.10'
+VERSION = '1.1.11b'
 
 # Available classifiers: https://pypi.org/pypi?%3Aaction=list_classifiers
 CLASSIFIERS = [
-    'Development Status :: 4 - Beta',
+    'Development Status :: 3 - Alpha',
     'Intended Audience :: Developers',
     'License :: OSI Approved :: Apache Software License',
     'Topic :: Office/Business :: Office Suites',
@@ -43,12 +44,12 @@ setup(
     version=VERSION,
     # packages=['O365', 'O365.utils'],
     packages=find_packages(),
-    url='https://github.com/O365/python-o365',
+    url='https://github.com/topcats/python-o365',
     license='Apache License 2.0',
-    author='Janscas, Roycem90, Narcolapser',
-    author_email='janscas@users.noreply.github.com',
-    maintainer='Janscas',
-    maintainer_email='janscas@users.noreply.github.com',
+    author='topcats (Janscas, Roycem90, Narcolapser)',
+    author_email='topcats@users.noreply.github.com',
+    maintainer='topcats',
+    maintainer_email='topcats@users.noreply.github.com',
     description='Microsoft Graph and Office 365 API made easy',
     long_description=read('README.md'),
     long_description_content_type="text/markdown",
