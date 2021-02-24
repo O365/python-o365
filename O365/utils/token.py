@@ -331,7 +331,7 @@ class AWSS3Backend(BaseTokenBackend):
         self._client = boto3.client('s3')
 
     def __repr__(self):
-        return f"AWSS3Backend('{self.bucket_name}', '{self.filename}')"
+        return "AWSS3Backend('{}', '{}')".format(self.bucket_name, self.filename)
 
     def load_token(self):
         """
@@ -343,7 +343,7 @@ class AWSS3Backend(BaseTokenBackend):
             token_object = self._client.get_object(Bucket=self.bucket_name, Key=self.filename)
             token = self.token_constructor(self.serializer.loads(token_object['Body'].read()))
         except Exception as e:
-            log.error(f"Token ({self.filename}) could not be retrieved from the backend: {e}")
+            log.error("Token ({}) could not be retrieved from the backend: {}".format(self.filename, e))
 
         return token
 
@@ -364,7 +364,7 @@ class AWSS3Backend(BaseTokenBackend):
                     Body=token_str
                 )
             except Exception as e:
-                log.error(f"Token file could not be saved: {e}")
+                log.error("Token file could not be saved: {}".format(e))
                 return False
         else:  # create a new token file
             try:
@@ -376,7 +376,7 @@ class AWSS3Backend(BaseTokenBackend):
                     ContentType='text/plain'
                 )
             except Exception as e:
-                log.error(f"Token file could not be created: {e}")
+                log.error("Token file could not be created: {}".format(e))
                 return False
 
         return True
@@ -389,10 +389,10 @@ class AWSS3Backend(BaseTokenBackend):
         try:
             r = self._client.delete_object(Bucket=self.bucket_name, Key=self.filename)
         except Exception as e:
-            log.error(f"Token file could not be deleted: {e}")
+            log.error("Token file could not be deleted: {}".format(e))
             return False
         else:
-            log.warning(f"Deleted token file {self.filename} in bucket {self.bucket_name}.")
+            log.warning("Deleted token file {} in bucket {}.".format(self.filename, self.bucket_name))
             return True
 
     def check_token(self):
@@ -427,7 +427,7 @@ class AWSSecretsBackend(BaseTokenBackend):
         self._client = boto3.client('secretsmanager', region_name=region_name)
 
     def __repr__(self):
-        return f"AWSSecretsBackend('{self.secret_name}', '{self.region_name}')"
+        return "AWSSecretsBackend('{}', '{}')".format(self.secret_name, self.region_name)
 
     def load_token(self):
         """
@@ -440,7 +440,7 @@ class AWSSecretsBackend(BaseTokenBackend):
             token_str = get_secret_value_response['SecretString']
             token = self.token_constructor(self.serializer.loads(token_str))
         except Exception as e:
-            log.error(f"Token (secret: {self.secret_name}) could not be retrieved from the backend: {e}")
+            log.error("Token (secret: {}) could not be retrieved from the backend: {}".format(self.secret_name, e))
 
         return token
 
@@ -459,7 +459,7 @@ class AWSSecretsBackend(BaseTokenBackend):
                     SecretString=self.serializer.dumps(self.token)
                 )
             except Exception as e:
-                log.error(f"Token secret could not be saved: {e}")
+                log.error("Token secret could not be saved: {}".format(e))
                 return False
         else:  # create a new secret
             try:
@@ -469,10 +469,10 @@ class AWSSecretsBackend(BaseTokenBackend):
                     SecretString=self.serializer.dumps(self.token)
                 )
             except Exception as e:
-                log.error(f"Token secret could not be created: {e}")
+                log.error("Token secret could not be created: {}".format(e))
                 return False
             else:
-                log.warning(f"\nCreated secret {r['Name']} ({r['ARN']}). Note: using AWS Secrets Manager incurs charges, please see https://aws.amazon.com/secrets-manager/pricing/ for pricing details.\n")
+                log.warning("\nCreated secret {} ({}). Note: using AWS Secrets Manager incurs charges, please see https://aws.amazon.com/secrets-manager/pricing/ for pricing details.\n".format(r['Name'], r['ARN']))
 
         return True
 
@@ -484,10 +484,10 @@ class AWSSecretsBackend(BaseTokenBackend):
         try:
             r = self._client.delete_secret(SecretId=self.secret_name, ForceDeleteWithoutRecovery=True)
         except Exception as e:
-            log.error(f"Token secret could not be deleted: {e}")
+            log.error("Token secret could not be deleted: {}".format(e))
             return False
         else:
-            log.warning(f"Deleted token secret {r['Name']} ({r['ARN']}).")
+            log.warning("Deleted token secret {} ({}).".format(r['Name'], r['ARN']))
             return True
 
     def check_token(self):
