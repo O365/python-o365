@@ -857,8 +857,8 @@ class Connection:
         There is no guarantee that this method will be called by the garbage collection
         But this is not an issue because this connections will be automatically closed.
         """
-        if hasattr(self, 'session'):
-            self.session.close()
+        if hasattr(self, 'session') and self.session is not None:
+                self.session.close()
 
 
 def oauth_authentication_flow(client_id, client_secret, scopes=None,
