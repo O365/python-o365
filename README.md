@@ -21,7 +21,7 @@ The project is currently developed and maintained by [Janscas](https://github.co
 **We are always open to new pull requests!**
 
 #### Rebuilding HTML Docs
-- Install `shpinx` python library
+- Install `sphinx` python library
     
     `pip install sphinx==2.2.2`
 
