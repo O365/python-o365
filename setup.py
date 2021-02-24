@@ -54,6 +54,6 @@ setup(
     long_description=read('README.md'),
     long_description_content_type="text/markdown",
     classifiers=CLASSIFIERS,
-    python_requires=">=3.4",
+    python_requires=">=3.6",
     install_requires=requires,
 )
