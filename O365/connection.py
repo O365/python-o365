@@ -365,6 +365,8 @@ class Connection:
          (client_id, client_secret)
         """
         if auth_flow_type == 'public':  # allow client id only for public flow
+            if isinstance(credentials, str): 
+                credentials = (credentials,)
             if not isinstance(credentials, tuple) or len(credentials) != 1 or (not credentials[0]):
                 raise ValueError('Provide client id only for public flow credentials')
         else:
