@@ -1507,6 +1507,31 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
 
         return bool(response)
 
+    def cancel_event(self, comment=None, *, send_response=True):
+        """ Cancel the event
+
+        :param str comment: comment to add
+        :param bool send_response: whether or not to send response back
+        :return: Success / Failure
+        :rtype: bool
+        """
+        if not self.object_id:
+            raise RuntimeError("Can't accept event that doesn't exist")
+
+        url = self.build_url(
+            self._endpoints.get('event').format(id=self.object_id))
+        url = url + '/cancel'
+
+        data = {}
+        if comment and isinstance(comment, str):
+            data[self._cc('comment')] = comment
+        if send_response is False:
+            data[self._cc('sendResponse')] = send_response
+
+        response = self.con.post(url, data=data or None)
+
+        return bool(response)
+
     def get_body_text(self):
         """ Parse the body html and returns the body text using bs4
 
