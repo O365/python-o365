@@ -585,7 +585,8 @@ class Connection:
             retry = Retry(total=self.request_retries, read=self.request_retries,
                           connect=self.request_retries,
                           backoff_factor=RETRIES_BACKOFF_FACTOR,
-                          status_forcelist=RETRIES_STATUS_LIST)
+                          status_forcelist=RETRIES_STATUS_LIST,
+                          respect_retry_after_header=True)
             adapter = HTTPAdapter(max_retries=retry)
             session.mount('http://', adapter)
             session.mount('https://', adapter)
