@@ -29,7 +29,7 @@ storage = account.storage()  # here we get the storage instance that handles all
 # get the default drive
 my_drive = storage.get_default_drive()
 
-print(f"Searching for {f_name}...")
+print("Searching for {}...".format(f_name))
 files = my_drive.search(f_name, limit=1)
 if files:
     numberDoc = files[0]
@@ -40,7 +40,7 @@ else:
     exit()
 
 print("Reading sheet to dataframe")
-df = pd.read_excel(f'{dl_path}/{f_name}')
+df = pd.read_excel('{}/{}'.format(dl_path, f_name))
 
 with pd.option_context('display.max_rows', None, 'display.max_columns', None):
     print(df)

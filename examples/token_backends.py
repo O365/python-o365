@@ -160,8 +160,7 @@ class LockableFileSystemTokenBackend(FileSystemTokenBackend):
                     return None
                 except LockException:
                     self.fs_wait = True
-                    log.warning('Oauth file locked. Sleeping for 2 seconds...'
-                                f'retrying {_ - 1} more times.')
+                    log.warning('Oauth file locked. Sleeping for 2 seconds... retrying {} more times.'.format(_ - 1))
                     time.sleep(2)
                     log.debug('Waking up and rechecking token file for update'
                               ' from other instance...')
@@ -173,5 +172,4 @@ class LockableFileSystemTokenBackend(FileSystemTokenBackend):
 
         # if we exit the loop, that means we were locked out of the file after
         # multiple retries give up and throw an error - something isn't right
-        raise RuntimeError('Could not access locked token file after '
-                           f'{self.max_tries}')
+        raise RuntimeError('Could not access locked token file after {}'.format(self.max_tries))
