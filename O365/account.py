@@ -1,5 +1,5 @@
 from .connection import Connection, Protocol, MSGraphProtocol, MSOffice365Protocol
-from .utils import ME_RESOURCE
+from .utils import ME_RESOURCE, consent
 
 
 class Account:
@@ -69,7 +69,7 @@ class Account:
 
         return token is not None and not token.is_expired
 
-    def authenticate(self, *, scopes=None, **kwargs):
+    def authenticate(self, *, scopes=None, handle_consent=consent.consent_input_token, **kwargs):
         """ Performs the oauth authentication flow using the console resulting in a stored token.
         It uses the credentials passed on instantiation
 
@@ -92,10 +92,7 @@ class Account:
 
             consent_url, _ = self.con.get_authorization_url(**kwargs)
 
-            print('Visit the following url to give consent:')
-            print(consent_url)
-
-            token_url = input('Paste the authenticated url here:\n')
+            token_url = handle_consent(consent_url)
 
             if token_url:
                 result = self.con.request_token(token_url, **kwargs)  # no need to pass state as the session is the same
