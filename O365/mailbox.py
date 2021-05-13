@@ -195,7 +195,7 @@ class Folder(ApiComponent):
             url = self.build_url(self._endpoints.get('folder_messages').format(
                 id=self.folder_id))
 
-        if limit is None or limit > self.protocol.max_top_value:
+        if not batch and (limit is None or limit > self.protocol.max_top_value):
             batch = self.protocol.max_top_value
 
         params = {'$top': batch if batch else limit}
