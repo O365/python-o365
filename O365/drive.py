@@ -774,7 +774,7 @@ class DriveItem(ApiComponent):
         # Find out if the server has run a Sync or Async operation
         location = response.headers.get('Location', None)
 
-        if 'monitor' in location:
+        if response.status_code == 202:
             # Async operation
             return CopyOperation(parent=self.drive, monitor_url=location)
         else:
