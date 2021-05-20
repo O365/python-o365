@@ -49,6 +49,8 @@ class MessageAttachments(BaseAttachments):
         'attachments': '/messages/{id}/attachments',
         'attachment': '/messages/{id}/attachments/{ida}',
         'get_mime': '/messages/{id}/attachments/{ida}/$value',
+        'create_upload_session': '/messages/{id}/attachments/createUploadSession'
+
     }
     _attachment_constructor = MessageAttachment
 
@@ -196,8 +198,10 @@ class MessageFlag(ApiComponent):
             self._cc('flagStatus'): self._cc(self.__status.value)
         }
         if self.__status is Flag.Flagged:
-            data[self._cc('startDateTime')] = self._build_date_time_time_zone(self.__start) if self.__start is not None else None
-            data[self._cc('dueDateTime')] = self._build_date_time_time_zone(self.__due_date) if self.__due_date is not None else None
+            data[self._cc('startDateTime')] = self._build_date_time_time_zone(
+                self.__start) if self.__start is not None else None
+            data[self._cc('dueDateTime')] = self._build_date_time_time_zone(
+                self.__due_date) if self.__due_date is not None else None
 
         if self.__status is Flag.Complete:
             data[self._cc('completedDateTime')] = self._build_date_time_time_zone(self.__completed)
@@ -893,7 +897,8 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         """
         if self.object_id and not self.__is_draft:
             # we are only allowed to save some properties:
-            allowed_changes = {self._cc('isRead'), self._cc('categories'), self._cc('flag')}  # allowed changes to be saved by this method
+            allowed_changes = {self._cc('isRead'), self._cc('categories'),
+                               self._cc('flag')}  # allowed changes to be saved by this method
             changes = {tc for tc in self._track_changes if tc in allowed_changes}
 
             if not changes:
@@ -1079,3 +1084,4 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
                 file_obj.write(mime_content)
             return True
         return False
+
