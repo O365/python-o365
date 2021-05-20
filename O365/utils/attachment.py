@@ -7,6 +7,8 @@ from .utils import ApiComponent
 
 log = logging.getLogger(__name__)
 
+UPLOAD_SIZE_LIMIT_SIMPLE = 1024 * 1024 * 4  # 4 MB
+DEFAULT_UPLOAD_CHUNK_SIZE = 1024 * 1024 * 4
 
 class AttachableMixin:
     def __init__(self, attachment_name_property=None, attachment_type=None):
@@ -59,6 +61,25 @@ class AttachableMixin:
         :rtype: dict
         """
         raise NotImplementedError()
+
+
+class UploadSessionRequest(ApiComponent):
+
+    def __init__(self, parent, attachment):
+        super().__init__(protocol=parent.protocol,
+                         main_resource=parent.main_resource)
+        self._attachment = attachment
+
+    def to_api_data(self):
+        attachment_item = {
+            self._cc('attachmentType'): self._attachment.attachment_type,
+            self._cc('name'): self._attachment.name,
+            self._cc('size'): self._attachment.attachment.stat().st_size
+        }
+        if self._attachment.is_inline:
+            attachment_item[self._cc('isInline')] = self._attachment.is_inline
+        data = {self._cc('AttachmentItem'): attachment_item}
+        return data
 
 
 class BaseAttachment(ApiComponent):
@@ -446,28 +467,92 @@ class BaseAttachments(ApiComponent):
         #  select and then download one by one.
         return True
 
-    def _update_attachments_to_cloud(self):
+    def _update_attachments_to_cloud(self, chunk_size=DEFAULT_UPLOAD_CHUNK_SIZE):
         """ Push new, unsaved attachments to the cloud and remove removed
         attachments. This method should not be called for non draft messages.
         """
-        url = self.build_url(self._endpoints.get('attachments').format(
-            id=self._parent.object_id))
-
         # ! potentially several api requests can be made by this method.
 
         for attachment in self.__attachments:
             if attachment.on_cloud is False:
-                # upload attachment:
-                response = self._parent.con.post(url,
-                                                 data=attachment.to_api_data())
-                if not response:
-                    return False
+                file_size = attachment.attachment.stat().st_size
+                if file_size <= UPLOAD_SIZE_LIMIT_SIMPLE:
+                    url = self.build_url(self._endpoints.get('attachments').format(
+                        id=self._parent.object_id))
+                    # upload attachment:
+                    response = self._parent.con.post(url, data=attachment.to_api_data())
+                    if not response:
+                        return False
 
-                data = response.json()
+                    data = response.json()
 
-                # update attachment data
-                attachment.attachment_id = data.get('id')
-                attachment.content = data.get(self._cc('contentBytes'), None)
+                    # update attachment data
+                    attachment.attachment_id = data.get('id')
+                    attachment.content = data.get(self._cc('contentBytes'), None)
+                else:
+                    # Upload with session
+                    url = self.build_url(
+                        self._endpoints.get('create_upload_session').format(
+                            id=self._parent.object_id))
+
+                    request = UploadSessionRequest(parent=self, attachment=attachment)
+                    file_data = request.to_api_data()
+                    response = self._parent.con.post(url, data=file_data)
+                    if not response:
+                        return False
+
+                    data = response.json()
+
+                    upload_url = data.get(self._cc('uploadUrl'), None)
+                    log.info('Resumable upload on url: {}'.format(upload_url))
+                    expiration_date = data.get(self._cc('expirationDateTime'), None)
+                    if expiration_date:
+                        log.info('Expiration Date for this upload url is: {}'.format(
+                            expiration_date))
+                    if upload_url is None:
+                        log.error('Create upload session response without '
+                                  'upload_url for file {}'.format(attachment.name))
+                        return False
+
+                    def write_stream(file):
+                        current_bytes = 0
+                        while True:
+                            data = file.read(chunk_size)
+                            if not data:
+                                break
+                            transfer_bytes = len(data)
+                            headers = {
+                                'Content-type': 'application/octet-stream',
+                                'Content-Length': str(len(data)),
+                                'Content-Range': 'bytes {}-{}/{}'
+                                                 ''.format(current_bytes,
+                                                           current_bytes +
+                                                           transfer_bytes - 1,
+                                                           file_size)
+                            }
+                            current_bytes += transfer_bytes
+
+                            # this request mut NOT send the authorization header.
+                            # so we use a naive simple request.
+                            response = self._parent.con.naive_request(upload_url, 'PUT',
+                                                              data=data,
+                                                              headers=headers)
+                            if not response:
+                                return False
+
+                            if response.status_code == 201:
+                                # file is completed
+                                break
+                            else:  # Usually 200
+                                data = response.json()
+                                log.debug('Successfully put {} bytes'.format(
+                                    data.get("nextExpectedRanges")))
+                        return True
+
+                    with attachment.attachment.open(mode='rb') as file:
+                        if not write_stream(file):
+                            return False
+
                 attachment.on_cloud = True
 
         for attachment in self.__removed_attachments:
@@ -486,3 +571,4 @@ class BaseAttachments(ApiComponent):
             self._parent.object_id))
 
         return True
+
