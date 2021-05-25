@@ -2,6 +2,15 @@
 
 Almost every release features a lot of bugfixes but those are not listed here.
 
+## Version 2.0.15 (2021-05-25)
+### Features:
+ - Mailbox: upload attachments bigger than 4MB using MS Graph Protocol
+ - Account: added dynamic consent process using functions
+ - Drive: allow pulling DriveItems external to tenant
+ - Sharepoint: added support for list item fields 
+ - Tasks: added Task.importance and Task.is_starred
+
+
 ## Version 2.0.14 (2021-01-28)
 ### Features:
  - NEW: added MS Teams Presence class
