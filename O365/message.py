@@ -216,7 +216,7 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
     _endpoints = {
         'create_draft': '/messages',
         'create_draft_folder': '/mailFolders/{id}/messages',
-        'send_mail': '/sendMail',
+        'send_mail': '/Mail.Send',
         'send_draft': '/messages/{id}/send',
         'get_message': '/messages/{id}',
         'move_message': '/messages/{id}/move',
