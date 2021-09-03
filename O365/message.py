@@ -279,7 +279,7 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
 
         self.__attachments = MessageAttachments(parent=self, attachments=[])
         self.__attachments.add({self._cloud_data_key: cloud_data.get(cc('attachments'), [])})
-        self.has_attachments = cloud_data.get(cc('hasAttachments'), False)
+        self.__has_attachments = cloud_data.get(cc('hasAttachments'), False)
         self.__subject = cloud_data.get(cc('subject'), '')
         self.__body_preview = cloud_data.get(cc('bodyPreview'), '')
         body = cloud_data.get(cc('body'), {})
@@ -290,12 +290,7 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         self.__unique_body = unique_body.get(cc('content'), '')
         self.unique_body_type = unique_body.get(cc('contentType'), 'HTML')  # default to HTML for new messages
 
-        if self.has_attachments is False and self.body_type.upper() == 'HTML':
-            # test for inline attachments (Azure responds with hasAttachments=False when there are only inline attachments):
-            if any(img.get('src', '').startswith('cid:') for img in self.get_body_soup().find_all('img')):
-                self.has_attachments = True
-
-        if self.has_attachments and download_attachments:
+        if download_attachments and self.has_attachments:
             self.attachments.download_attachments()
 
         self.__sender = self._recipient_from_cloud(
@@ -363,6 +358,18 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
     def is_read(self, value):
         self.__is_read = value
         self._track_changes.add('isRead')
+
+    @property
+    def has_attachments(self):
+        """ Check if the message contains attachments
+
+        :type: bool
+        """
+        if self.__has_attachments is False and self.body_type.upper() == 'HTML':
+            # test for inline attachments (Azure responds with hasAttachments=False when there are only inline attachments):
+            if any(img.get('src', '').startswith('cid:') for img in self.get_body_soup().find_all('img')):
+                self.__has_attachments = True
+        return self.__has_attachments
 
     @property
     def is_draft(self):

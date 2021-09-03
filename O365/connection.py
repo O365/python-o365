@@ -100,7 +100,7 @@ class Protocol:
         try:
             self.timezone = timezone or get_localzone()  # pytz timezone
         except UnknownTimeZoneError as e:
-            log.info('Timezone not provided and the local timezone could not be found. Default to UTC.')
+            log.debug('Timezone not provided and the local timezone could not be found. Default to UTC.')
             self.timezone = UTC  # pytz.timezone('UTC')
         self.max_top_value = 500  # Max $top parameter value
 
@@ -626,7 +626,7 @@ class Connection:
             raise RuntimeError('Token not found.')
 
         if token.is_long_lived or self.auth_flow_type == 'credentials':
-            log.info('Refreshing token')
+            log.debug('Refreshing token')
             if self.auth_flow_type == 'authorization':
                 client_id, client_secret = self.auth
                 self.token_backend.token = Token(
@@ -646,7 +646,7 @@ class Connection:
                 if self.request_token(None, store_token=False) is False:
                     log.error('Refresh for Client Credentials Grant Flow failed.')
                     return False
-            log.info('New oauth token fetched by refresh method')
+            log.debug('New oauth token fetched by refresh method')
         else:
             log.error('You can not refresh an access token that has no "refreh_token" available.'
                       'Include "offline_access" scope when authenticating to get a "refresh_token"')
@@ -663,7 +663,7 @@ class Connection:
                         2) * 1000  # difference in miliseconds
             if dif < self.requests_delay:
                 sleep_for = (self.requests_delay - dif)
-                log.info('Sleeping for {} miliseconds'.format(sleep_for))
+                log.debug('Sleeping for {} miliseconds'.format(sleep_for))
                 time.sleep(sleep_for / 1000)  # sleep needs seconds
         self._previous_request_at = time.time()
 
@@ -701,18 +701,18 @@ class Connection:
         while not request_done:
             self._check_delay()  # sleeps if needed
             try:
-                log.info('Requesting ({}) URL: {}'.format(method.upper(), url))
-                log.info('Request parameters: {}'.format(kwargs))
+                log.debug('Requesting ({}) URL: {}'.format(method.upper(), url))
+                log.debug('Request parameters: {}'.format(kwargs))
                 # auto_retry will occur inside this function call if enabled
                 response = request_obj.request(method, url, **kwargs)
                 response.raise_for_status()  # raise 4XX and 5XX error codes.
-                log.info('Received response ({}) from URL {}'.format(
+                log.debug('Received response ({}) from URL {}'.format(
                     response.status_code, response.url))
                 request_done = True
                 return response
             except TokenExpiredError as e:
                 # Token has expired, try to refresh the token and try again on the next loop
-                log.info('Oauth Token is expired')
+                log.debug('Oauth Token is expired')
                 if self.token_backend.token.is_long_lived is False and self.auth_flow_type == 'authorization':
                     raise e
                 if token_refreshed:
