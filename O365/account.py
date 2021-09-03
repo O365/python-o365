@@ -35,10 +35,11 @@ class Account:
             if scopes is not None:
                 kwargs['scopes'] = self.protocol.get_scopes_for(scopes)
         elif auth_flow_type == 'credentials':
-            # for client credential grant flow solely:
-            # append the default scope if it's not provided
+            # for client credential grant flow solely: add the default scope if it's not provided
             if not scopes:
                 kwargs['scopes'] = [self.protocol.prefix_scope('.default')]
+            else:
+                raise ValueError('Auth flow type "credentials" does not require scopes')
 
             # set main_resource to blank when it's the 'ME' resource
             if self.protocol.default_resource == ME_RESOURCE:
