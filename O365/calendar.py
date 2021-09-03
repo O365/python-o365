@@ -1637,7 +1637,7 @@ class Calendar(ApiComponent, HandleRecipientsMixin):
         if not self.calendar_id:
             return False
 
-        url = self.build_url(self._endpoints.get('calendar'))
+        url = self.build_url(self._endpoints.get('calendar').format(id=self.calendar_id))
 
         data = {
             self._cc('name'): self.name,
