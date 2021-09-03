@@ -71,8 +71,8 @@ What follows is kind of a wiki...
 
 - [Install](#install)
 - [Usage](#usage)
-- [Protocols](#protocols)
 - [Authentication](#authentication)
+- [Protocols](#protocols)
 - [Account Class and Modularity](#account)
 - [MailBox](#mailbox)
 - [AddressBook](#addressbook)
