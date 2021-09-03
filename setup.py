@@ -34,7 +34,7 @@ requires = [
     'requests_oauthlib>=1.2.0',
     'python-dateutil>=2.7',
     'pytz>=2018.5',
-    'tzlocal>=1.5.0',
+    'tzlocal>=1.5.0,<3.*',
     'beautifulsoup4>=4.0.0',
     'stringcase>=1.2.0'
 ]
