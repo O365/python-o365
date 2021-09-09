@@ -1218,6 +1218,41 @@ class Folder(DriveItem):
                               next_link=next_link, limit=limit)
         else:
             return items
+        
+    def open_path(self, site_path):
+        """ open a folderpath, create folder if not exists
+
+        :param str site_path: desired path to be opened/created
+        :return: opened last folder
+        :rtype: drive.Folder
+        """
+
+        lpath = site_path.split('/')
+        number = 0
+        modul = self.get_items
+
+        try:
+            next(self.get_items())
+        except StopIteration:
+            self.create_child_folder(lpath[number])
+
+        while number < len(lpath):
+            counter = 1
+            for item in modul():
+                if (counter == item.get_parent().child_count) and (item.name != lpath[number]):
+                    item.get_parent().create_child_folder(lpath[number])
+                    modul = self.get_items
+                    number = 1
+                    break
+                elif (item.name == lpath[number]) and (item.is_folder == True):
+                    number = number + 1
+                    if (item.child_count == 0) and number < len(lpath):
+                        item.create_child_folder(lpath[number])
+                    modul = item.get_items
+                    break
+                else:
+                    counter = counter + 1
+        return item
 
     def upload_file(self, item, item_name=None, chunk_size=DEFAULT_UPLOAD_CHUNK_SIZE,
                     upload_in_chunks=False, stream=None, stream_size=None,
