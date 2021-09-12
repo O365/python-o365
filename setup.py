@@ -56,4 +56,5 @@ setup(
     classifiers=CLASSIFIERS,
     python_requires=">=3.4",
     install_requires=requires,
+    setup_requires=["wheel"],
 )
