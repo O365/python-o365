@@ -1042,7 +1042,7 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
             return None
 
         # select a dummy field (eg. subject) to avoid pull unneccesary data
-        query = self.q().select('subject').expand('event')
+        query = self.q().expand('event')
 
         url = self.build_url(self._endpoints.get('get_message').format(id=self.object_id))
 
