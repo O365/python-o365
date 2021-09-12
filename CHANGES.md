@@ -2,6 +2,13 @@
 
 Almost every release features a lot of bugfixes but those are not listed here.
 
+
+## Version 2.0.16 (2021-09-12)
+### Features:
+ - Calendar: Added 'cancel_event' method
+ - Message: attachment existance is checked lazily
+
+
 ## Version 2.0.15 (2021-05-25)
 ### Features:
  - Mailbox: upload attachments bigger than 4MB using MS Graph Protocol
