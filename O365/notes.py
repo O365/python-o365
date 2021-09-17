@@ -1,0 +1,169 @@
+import logging
+
+from .utils import ApiComponent
+
+log = logging.getLogger(__name__)
+
+
+class Page(ApiComponent):
+    _endpoints = {
+        'content': '/onenote/pages/{id}/content'
+    }
+
+    def __init__(self, *, parent=None, con=None, **kwargs):
+        if parent and con:
+            raise ValueError('Need a parent or a connection but not both')
+        self.con = parent.con if parent else con
+
+        main_resource = kwargs.pop('main_resource', None) or (
+            getattr(parent, 'main_resource', None) if parent else None)
+
+        super().__init__(
+            protocol=parent.protocol if parent else kwargs.get('protocol'),
+            main_resource=main_resource)
+
+        cloud_data = kwargs.get(self._cloud_data_key, {})
+
+        cc = self._cc
+        self.object_id = cloud_data.get(cc('id'), kwargs.get('object_id', None))
+        self.created = cloud_data.get(cc('createdDateTime'), None)
+        self.modified = cloud_data.get(cc('lastModifiedDateTime'), None)
+        self.title = cloud_data.get(self._cc('title'), '')
+        self.__content = None
+
+    def __str__(self):
+        return self.__repr__()
+
+    def __repr__(self):
+        return 'Page: {}'.format(self.title)
+
+    @property
+    def content(self):
+        if not self.__content:
+            url = self.build_url(self._endpoints.get('content').format(id=self.object_id))
+            response = self.con.get(url)
+            self.__content = response.content.decode('utf-8')
+        return self.__content
+
+
+class Section(ApiComponent):
+    _endpoints = {
+        'pages': '/onenote/sections/{id}/pages'
+    }
+    page_constructor = Page
+
+    def __init__(self, *, parent=None, con=None, **kwargs):
+        if parent and con:
+            raise ValueError('Need a parent or a connection but not both')
+        self.con = parent.con if parent else con
+
+        main_resource = kwargs.pop('main_resource', None) or (
+            getattr(parent, 'main_resource', None) if parent else None)
+
+        super().__init__(
+            protocol=parent.protocol if parent else kwargs.get('protocol'),
+            main_resource=main_resource)
+
+        cloud_data = kwargs.get(self._cloud_data_key, {})
+
+        cc = self._cc
+        self.object_id = cloud_data.get(cc('id'), kwargs.get('object_id', None))
+        self.created = cloud_data.get(cc('createdDateTime'), None)
+        self.modified = cloud_data.get(cc('lastModifiedDateTime'), None)
+        self.display_name = cloud_data.get(self._cc('displayName'), '')
+
+    def __str__(self):
+        return self.__repr__()
+
+    def __repr__(self):
+        return 'Section: {}'.format(self.display_name)
+
+    def get_pages(self):
+        url = self.build_url(self._endpoints.get('pages').format(id=self.object_id))
+        response = self.con.get(url)
+        data = response.json()
+        pages = (self.page_constructor(
+            parent=self,
+            **{self._cloud_data_key: page})
+            for page in data.get('value', []))
+        return pages
+
+
+class NoteBook(ApiComponent):
+    _endpoints = {
+        'sections': '/onenote/notebooks/{id}/sections'
+    }
+    section_constructor = Section
+
+    def __init__(self, *, parent=None, con=None, **kwargs):
+        if parent and con:
+            raise ValueError('Need a parent or a connection but not both')
+        self.con = parent.con if parent else con
+
+        main_resource = kwargs.pop('main_resource', None) or (
+            getattr(parent, 'main_resource', None) if parent else None)
+
+        super().__init__(
+            protocol=parent.protocol if parent else kwargs.get('protocol'),
+            main_resource=main_resource)
+
+        cloud_data = kwargs.get(self._cloud_data_key, {})
+
+        cc = self._cc
+        self.object_id = cloud_data.get(cc('id'), kwargs.get('object_id', None))
+        self.created = cloud_data.get(cc('createdDateTime'), None)
+        self.modified = cloud_data.get(cc('lastModifiedDateTime'), None)
+        self.display_name = cloud_data.get(self._cc('displayName'), '')
+    
+    def get_sections(self):
+        url = self.build_url(self._endpoints.get('sections').format(id=self.object_id))
+        response = self.con.get(url)
+        data = response.json()
+        sections = (self.section_constructor(
+            parent=self,
+            **{self._cloud_data_key: section})
+            for section in data.get('value', []))
+        return sections
+
+    def __str__(self):
+        return self.__repr__()
+
+    def __repr__(self):
+        return 'Notebook: {}'.format(self.display_name)
+
+
+class Notes(ApiComponent):
+    """ A Microsoft OneNote"""
+
+    _endpoints = {
+        'notes': '/onenote/notebooks'
+    }
+    notebook_constructor = NoteBook
+
+    def __init__(self, *, parent=None, con=None, **kwargs):
+        if parent and con:
+            raise ValueError('Need a parent or a connection but not both')
+        self.con = parent.con if parent else con
+
+        cloud_data = kwargs.get(self._cloud_data_key, {})
+
+        main_resource = kwargs.pop('main_resource', None) or (
+            getattr(parent, 'main_resource', None) if parent else None)
+
+        super().__init__(
+            protocol=parent.protocol if parent else kwargs.get('protocol'),
+            main_resource=main_resource)
+
+    def get_notebooks(self):
+        url = self.build_url(self._endpoints.get('notes'))
+
+        response = self.con.get(url)
+
+        data = response.json()
+
+        notes = (self.notebook_constructor(
+            parent=self,
+            **{self._cloud_data_key: notebook})
+            for notebook in data.get('value', []))
+
+        return notes
