@@ -150,6 +150,17 @@ class Account:
         from .mailbox import MailBox
         return MailBox(parent=self, main_resource=resource, name='MailBox')
 
+    def notes(self, resource=None):
+        """ Get an instance to the notes for the specified account resource
+
+        :param str resource: Custom resource to be used in this mailbox
+         (Defaults to parent main_resource)
+        :return: a representation of account mailbox
+        :rtype: O365.mailbox.MailBox
+        """
+        from .notes import Notes
+        return Notes(parent=self, main_resource=resource, name='Notes')
+
     def address_book(self, *, resource=None, address_book='personal'):
         """ Get an instance to the specified address book for the
         specified account resource
