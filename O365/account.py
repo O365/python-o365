@@ -153,10 +153,10 @@ class Account:
     def notes(self, resource=None):
         """ Get an instance to the notes for the specified account resource
 
-        :param str resource: Custom resource to be used in this mailbox
+        :param str resource: Custom resource to be used for notes
          (Defaults to parent main_resource)
-        :return: a representation of account mailbox
-        :rtype: O365.mailbox.MailBox
+        :return: a representation of account notes
+        :rtype: O365.notes.Notes
         """
         from .notes import Notes
         return Notes(parent=self, main_resource=resource, name='Notes')
