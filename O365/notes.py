@@ -1,6 +1,7 @@
 import logging
 
 from .utils import ApiComponent
+from .utils import Pagination, NEXT_LINK_KEYWORD
 
 log = logging.getLogger(__name__)
 
@@ -78,15 +79,26 @@ class Section(ApiComponent):
     def __repr__(self):
         return 'Section: {}'.format(self.display_name)
 
-    def get_pages(self):
+    def get_pages(self, limit=25):
         url = self.build_url(self._endpoints.get('pages').format(id=self.object_id))
+
         response = self.con.get(url)
+        
         data = response.json()
+
         pages = (self.page_constructor(
             parent=self,
             **{self._cloud_data_key: page})
             for page in data.get('value', []))
-        return pages
+
+        next_link = data.get(NEXT_LINK_KEYWORD, None)
+        if next_link:
+            return Pagination(parent=self, data=pages,
+                              constructor=self.page_constructor,
+                              next_link=next_link, limit=limit,
+                            )
+        else:
+            return pages
 
 
 class NoteBook(ApiComponent):
