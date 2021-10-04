@@ -136,7 +136,8 @@ class Notes(ApiComponent):
     """ A Microsoft OneNote"""
 
     _endpoints = {
-        'notes': '/onenote/notebooks'
+        'root_notebooks': '/onenote/notebooks',
+        'get_notebook': '/onenote/notebooks/{id}'
     }
     notebook_constructor = NoteBook
 
@@ -154,8 +155,8 @@ class Notes(ApiComponent):
             protocol=parent.protocol if parent else kwargs.get('protocol'),
             main_resource=main_resource)
 
-    def get_notebooks(self):
-        url = self.build_url(self._endpoints.get('notes'))
+    def list_notebooks(self):
+        url = self.build_url(self._endpoints.get('root_notebooks'))
 
         response = self.con.get(url)
 
@@ -167,3 +168,27 @@ class Notes(ApiComponent):
             for notebook in data.get('value', []))
 
         return notes
+
+    def get_notebook(self, notebook_id=None):
+        """ Returns a notebook by it's id
+
+        :param str notebook_id: the notebook id to be retrieved.
+        :return: notebook for the given info
+        :rtype: NoteBook
+        """
+
+        if not notebook_id:
+            raise RuntimeError('Provide notebook id option')
+
+        url = self.build_url(self._endpoints.get('get_notebook').format(id=notebook_id))
+
+        response = self.con.get(url)
+
+        data = response.json()
+
+        notebook = self.notebook_constructor(
+            parent=self,
+            **{self._cloud_data_key: data}
+        )
+
+        return notebook
