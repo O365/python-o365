@@ -1,5 +1,7 @@
 import logging
 
+from dateutil.parser import parse
+
 from .utils import ApiComponent
 from .utils import Pagination, NEXT_LINK_KEYWORD
 
@@ -29,7 +31,16 @@ class Page(ApiComponent):
         self.object_id = cloud_data.get(cc('id'), kwargs.get('object_id', None))
         self.created = cloud_data.get(cc('createdDateTime'), None)
         self.modified = cloud_data.get(cc('lastModifiedDateTime'), None)
-        self.title = cloud_data.get(self._cc('title'), '')
+
+        local_tz = self.protocol.timezone
+        self.created = parse(self.created).astimezone(
+            local_tz) if self.created else None
+        self.modified = parse(self.modified).astimezone(
+            local_tz) if self.modified else None
+
+        self.title = cloud_data.get(cc('title'), '')
+        self.web_link = cloud_data.get(cc('links'), {}).get(cc('oneNoteWebUrl'), {}).get(cc('href'), '')
+        self.onenote_link = cloud_data.get(cc('links'), {}).get(cc('oneNoteClientUrl'), {}).get(cc('href'), '')
         self.__content = None
 
     def __str__(self):
