@@ -676,7 +676,7 @@ class Attendees(ApiComponent):
         return self.__attendees[key]
 
     def __contains__(self, item):
-        return item in {attendee.email for attendee in self.__attendees}
+        return item in {attendee.address for attendee in self.__attendees}
 
     def __len__(self):
         return len(self.__attendees)
