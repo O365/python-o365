@@ -267,3 +267,13 @@ class Account:
         from .category import Categories
 
         return Categories(parent=self, main_resource=resource)
+
+    def groups(self, *, resource=''):
+        """ Get an instance to read information from Microsoft Groups """
+
+        if not isinstance(self.protocol, MSGraphProtocol):
+            raise RuntimeError(
+                'groups api only works on Microsoft Graph API')
+
+        from .groups import Groups
+        return Groups(parent=self, main_resource=resource)
