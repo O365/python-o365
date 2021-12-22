@@ -13,6 +13,13 @@ class ConversationMember(ApiComponent):
     """ A Microsoft Teams conversation member """
 
     def __init__(self, *, parent=None, con=None, **kwargs):
+        """ A Microsoft Teams conversation member
+        :param parent: parent object
+        :type parent: Chat
+        :param Connection con: connection to use if no parent specified
+        :param Protocol protocol: protocol to use if no parent specified (kwargs)
+        :param str main_resource: use this resource instead of parent resource (kwargs)
+        """
         if parent and con:
             raise ValueError('Need a parent or a connection but not both')
         self.con = parent.con if parent else con
@@ -44,6 +51,13 @@ class ChatMessage(ApiComponent):
     """ A Microsoft Teams chat message """
 
     def __init__(self, *, parent=None, con=None, **kwargs):
+        """ A Microsoft Teams chat message
+        :param parent: parent object
+        :type parent: Channel, Chat, or ChannelMessage
+        :param Connection con: connection to use if no parent specified
+        :param Protocol protocol: protocol to use if no parent specified (kwargs)
+        :param str main_resource: use this resource instead of parent resource (kwargs)
+        """
         if parent and con:
             raise ValueError('Need a parent or a connection but not both')
         self.con = parent.con if parent else con
@@ -108,12 +122,14 @@ class ChatMessage(ApiComponent):
 
 
 class ChannelMessage(ChatMessage):
+    """ A Microsoft Teams chat message that is the start of a channel thread """
     _endpoints = {'get_replies': '/replies',
                   'get_reply': '/replies/{message_id}'}
 
     message_constructor = ChatMessage
 
     def __init__(self, **kwargs):
+        """ A Microsoft Teams chat message that is the start of a channel thread """
         super().__init__(**kwargs)
 
         cloud_data = kwargs.get(self._cloud_data_key, {})
@@ -122,7 +138,11 @@ class ChannelMessage(ChatMessage):
         self.channel_id = channel_identity.get('channelId')
 
     def get_reply(self, message_id):
-
+        """ Returns a specified reply to the channel chat message
+        :param message_id: the message_id of the reply to retrieve
+        :type message_id: str or int
+        :rtype: ChatMessage
+        """
         url = self.build_url(self._endpoints.get('get_reply').format(message_id=message_id))
         response = self.con.get(url)
 
@@ -134,6 +154,11 @@ class ChannelMessage(ChatMessage):
         return self.message_constructor(parent=self, **{self._cloud_data_key: data})
 
     def get_replies(self, limit=None, batch=None):
+        """ Returns a list of replies to the channel chat message
+        :param int limit: number of replies to retrieve
+        :param int batch: number of replies to be in each data set
+        :rtype: list or Pagination
+        """
         url = self.build_url(self._endpoints.get('get_replies'))
 
         if not batch and (limit is None or limit > MAX_BATCH_CHAT_MESSAGES):
@@ -156,11 +181,13 @@ class ChannelMessage(ChatMessage):
         else:
             return replies
 
-    def send_reply(self, content=None, content_type='text', **kwargs):
-        data = kwargs.pop('data', None)
-        if data and content:
-            raise ValueError('Need content or data but not both')
-        data = data if data else {'body': {'contentType': content_type, 'content': content}}
+    def send_reply(self, content=None, content_type='text'):
+        """ Sends a reply to the channel chat message
+        :param content: str of text, str of html, or dict representation of json body
+        :type content: str or dict
+        :param str content_type: 'text' to render the content as text or 'html' to render the content as html
+        """
+        data = content if isinstance(content, dict) else {'body': {'contentType': content_type, 'content': content}}
         url = self.build_url(self._endpoints.get('get_replies'))
         response = self.con.post(url, data=data)
 
@@ -182,6 +209,13 @@ class Chat(ApiComponent):
     member_constructor = ConversationMember
 
     def __init__(self, *, parent=None, con=None, **kwargs):
+        """ A Microsoft Teams chat
+        :param parent: parent object
+        :type parent: Teams
+        :param Connection con: connection to use if no parent specified
+        :param Protocol protocol: protocol to use if no parent specified (kwargs)
+        :param str main_resource: use this resource instead of parent resource (kwargs)
+        """
         if parent and con:
             raise ValueError('Need a parent or a connection but not both')
         self.con = parent.con if parent else con
@@ -206,13 +240,12 @@ class Chat(ApiComponent):
         self.created_date = parse(created).astimezone(local_tz) if created else None
         self.last_update_date = parse(last_update).astimezone(local_tz) if last_update else None
 
-    def __repr__(self):
-        return 'Chat: {}'.format(self.chat_type)
-
-    def __str__(self):
-        return self.__repr__()
-
     def get_messages(self, limit=None, batch=None):
+        """ Returns a list of chat messages from the chat
+        :param int limit: number of replies to retrieve
+        :param int batch: number of replies to be in each data set
+        :rtype: list or Pagination
+        """
         url = self.build_url(self._endpoints.get('get_messages'))
 
         if not batch and (limit is None or limit > MAX_BATCH_CHAT_MESSAGES):
@@ -236,6 +269,11 @@ class Chat(ApiComponent):
             return messages
 
     def get_message(self, message_id):
+        """ Returns a specified message from the chat
+        :param message_id: the message_id of the message to receive
+        :type message_id: str or int
+        :rtype: ChatMessage
+        """
         url = self.build_url(self._endpoints.get('get_message').format(message_id=message_id))
         response = self.con.get(url)
         if not response:
@@ -243,11 +281,14 @@ class Chat(ApiComponent):
         data = response.json()
         return self.message_constructor(parent=self, **{self._cloud_data_key: data})
 
-    def send_message(self, content=None, content_type='text', **kwargs):
-        data = kwargs.pop('data', None)
-        if data and content:
-            raise ValueError('Need content or data but not both')
-        data = data if data else {'body': {'contentType': content_type, 'content': content}}
+    def send_message(self, content=None, content_type='text'):
+        """ Sends a message to the chat
+        :param content: str of text, str of html, or dict representation of json body
+        :type content: str or dict
+        :param str content_type: 'text' to render the content as text or 'html' to render the content as html
+        """
+        data = content if isinstance(content, dict) else {'body': {'contentType': content_type, 'content': content}}
+
         url = self.build_url(self._endpoints.get('get_messages'))
         response = self.con.post(url, data=data)
 
@@ -258,6 +299,9 @@ class Chat(ApiComponent):
         return self.message_constructor(parent=self, **{self._cloud_data_key: data})
 
     def get_members(self):
+        """ Returns a list of conversation members
+        :rtype: list
+        """
         url = self.build_url(self._endpoints.get('get_members'))
         response = self.con.get(url)
         if not response:
@@ -268,12 +312,22 @@ class Chat(ApiComponent):
         return members
 
     def get_member(self, membership_id):
+        """Returns a specified conversation member
+        :param str membership_id: membership_id of member to retrieve
+        :rtype: ConversationMember
+        """
         url = self.build_url(self._endpoints.get('get_member').format(membership_id=membership_id))
         response = self.con.get(url)
         if not response:
             return None
         data = response.json()
         return self.member_constructor(parent=self, **{self._cloud_data_key: data})
+
+    def __repr__(self):
+        return 'Chat: {}'.format(self.chat_type)
+
+    def __str__(self):
+        return self.__repr__()
 
 
 class Presence(ApiComponent):
@@ -364,6 +418,11 @@ class Channel(ApiComponent):
         self.email = cloud_data.get('email')
 
     def get_message(self, message_id):
+        """ Returns a specified channel chat messages
+        :param message_id: number of messages to retrieve
+        :type message_id: int or str
+        :rtype: ChannelMessage
+        """
         url = self.build_url(self._endpoints.get('get_message').format(message_id=message_id))
         response = self.con.get(url)
 
@@ -374,6 +433,11 @@ class Channel(ApiComponent):
         return self.message_constructor(parent=self, **{self._cloud_data_key: data})
 
     def get_messages(self, limit=None, batch=None):
+        """ Returns a list of channel chat messages
+        :param int limit: number of messages to retrieve
+        :param int batch: number of messages to be in each data set
+        :rtype: list or Pagination
+        """
         url = self.build_url(self._endpoints.get('get_messages'))
 
         if not batch and (limit is None or limit > MAX_BATCH_CHAT_MESSAGES):
@@ -396,11 +460,14 @@ class Channel(ApiComponent):
         else:
             return messages
 
-    def send_message(self, content=None, content_type='text', **kwargs):
-        data = kwargs.pop('data', None)
-        if data and content:
-            raise ValueError('Need content or data but not both')
-        data = data if data else {'body': {'contentType': content_type, 'content': content}}
+    def send_message(self, content=None, content_type='text'):
+        """ Sends a message to the channel
+        :param content: str of text, str of html, or dict representation of json body
+        :type content: str or dict
+        :param str content_type: 'text' to render the content as text or 'html' to render the content as html
+        """
+        data = content if isinstance(content, dict) else {'body': {'contentType': content_type, 'content': content}}
+
         url = self.build_url(self._endpoints.get('get_messages'))
         response = self.con.post(url, data=data)
 
@@ -472,6 +539,9 @@ class Team(ApiComponent):
         return self.object_id == other.object_id
 
     def get_channels(self):
+        """ Returns a list of channels the team
+        :rtype: list
+        """
         url = self.build_url(self._endpoints.get('get_channels'))
         response = self.con.get(url)
 
@@ -614,7 +684,7 @@ class Teams(ApiComponent):
     def get_my_chats(self):
         """ Returns a list of chats that I am in
 
-        :rtype: list of Chats
+        :rtype: chats
         """
 
         url = self.build_url(self._endpoints.get('get_my_chats'))
