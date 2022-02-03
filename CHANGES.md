@@ -3,7 +3,7 @@
 Almost every release features a lot of bugfixes but those are not listed here.
 
 
-## Version 2.0.18 (2020-12-03)
+## Version 2.0.18 (2022-02-03)
 
 ### Features:
 - Updated requirements to use tzlocal >=4.0
