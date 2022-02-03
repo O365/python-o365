@@ -3,6 +3,12 @@
 Almost every release features a lot of bugfixes but those are not listed here.
 
 
+## Version 2.0.18 (2020-12-03)
+
+### Features:
+- Updated requirements to use tzlocal >=4.0
+
+
 ## Version 2.0.17 (2022-02-01)
 ### Features:
  - Groups: Added groups.py with some read functionality in Office 365 Groups. Thanks @Krukosz*
