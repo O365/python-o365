@@ -8,7 +8,7 @@
 
 > Detailed usage documentation is still in progress
 
-This project aims is to make interact with Microsoft Graph and Office 365 easy to do in a Pythonic way. 
+This project aims to make interacting with Microsoft Graph and Office 365 easy to do in a Pythonic way. 
 Access to Email, Calendar, Contacts, OneDrive, etc. Are easy to do in a way that feel easy and straight forward to beginners and feels just right to seasoned python programmer.
 
 The project is currently developed and maintained by [Janscas](https://github.com/janscas). 
