@@ -827,7 +827,7 @@ class DriveItem(ApiComponent):
         # Everything received from cloud must be passed as self._cloud_data_key
         return DriveItemVersion(parent=self, **{self._cloud_data_key: data})
 
-    def share_with_link(self, share_type='view', share_scope='anonymous'):
+    def share_with_link(self, share_type='view', share_scope='anonymous', share_password=None, share_expiration_date=None):
         """ Creates or returns a link you can share with others
 
         :param str share_type: 'view' to allow only view access,
@@ -835,6 +835,8 @@ class DriveItem(ApiComponent):
          'embed' to allow the DriveItem to be embedded
         :param str share_scope: 'anonymous': anyone with the link can access.
          'organization' Only organization members can access
+        :param str share_password: sharing link password that is set by the creator. Optional.
+        :param str share_expiration_date: format of yyyy-MM-dd (e.g., 2022-02-14) that indicates the expiration date of the permission. Optional.
         :return: link to share
         :rtype: DriveItemPermission
         """
@@ -849,6 +851,10 @@ class DriveItem(ApiComponent):
             'type': share_type,
             'scope': share_scope
         }
+        if share_password is not None:
+            data['password'] = share_password
+        if share_expiration_date is not None:
+            data['expirationDateTime'] = share_expiration_date
 
         response = self.con.post(url, data=data)
         if not response:
@@ -1136,12 +1142,12 @@ class Folder(DriveItem):
             to_folder = Path() / to_folder
             if not to_folder.exists():
                 to_folder.mkdir()
-        if not isinstance(to_folder,str):
+        if not isinstance(to_folder, str):
             if not to_folder.exists():
                 to_folder.mkdir()
         else:
             to_folder = Path() / self.name
-        
+
         for item in self.get_items(query=self.new_query().select('id', 'size', 'folder', 'name')):
             if item.is_folder and item.child_count > 0:
                 item.download_contents(to_folder=to_folder / item.name)
@@ -1285,7 +1291,7 @@ class Folder(DriveItem):
             # If not None, add conflict handling to request
             file_data = {}
             if conflict_handling:
-                file_data["item"] = {"@microsoft.graph.conflictBehavior": conflict_handling }
+                file_data["item"] = {"@microsoft.graph.conflictBehavior": conflict_handling}
 
             response = self.con.post(url, data=file_data)
             if not response:
@@ -1334,6 +1340,7 @@ class Folder(DriveItem):
                         data = response.json()
                         return self._classifier(data)(parent=self, **{
                             self._cloud_data_key: data})
+
             if stream:
                 return write_stream(stream)
             else:
@@ -1454,13 +1461,13 @@ class Drive(ApiComponent):
                                       **{self._cloud_data_key: data})
 
     def _base_get_list(self, url, limit=None, *, query=None, order_by=None,
-                       batch=None, params = {}):
+                       batch=None, params={}):
         """ Returns a collection of drive items """
 
         if limit is None or limit > self.protocol.max_top_value:
             batch = self.protocol.max_top_value
 
-        params ['$top'] = batch if batch else limit
+        params['$top'] = batch if batch else limit
 
         if order_by:
             params['$orderby'] = order_by
@@ -1590,7 +1597,7 @@ class Drive(ApiComponent):
             url = self.build_url(self._endpoints.get('shared_with_me_default'))
 
         # whether to include driveitems external to tenant
-        params = {"allowexternal" : allow_external}
+        params = {"allowexternal": allow_external}
 
         return self._base_get_list(url, limit=limit, query=query,
                                    order_by=order_by, batch=batch, params=params)
