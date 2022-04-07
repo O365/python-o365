@@ -322,3 +322,141 @@ class Directory(ApiComponent):
 
         url = self.build_url('')  # target main_resource
         return self._get_user(url, query=query)
+
+    def get_user_manager(self, user, query=None):
+        """ Returns a Users' manager by the users id, or user principal name
+
+        :param str user: the user id or user principal name
+        :return: User for specified email
+        :rtype: User
+        """
+        url = self.build_url(self._endpoints.get('get_user').format(email=user))
+        return self._get_user(url + '/manager', query=query)
+
+    def get_user_direct_reports(self, user, limit=100, *, query=None, order_by=None, batch=None):
+        """ Gets a list of direct reports for the user provided from the active directory
+
+        When querying the Active Directory the Users endpoint will be used.
+
+        Also using endpoints has some limitations on the querying capabilities.
+
+        To use query an order_by check the OData specification here:
+        http://docs.oasis-open.org/odata/odata/v4.0/errata03/os/complete/
+        part2-url-conventions/odata-v4.0-errata03-os-part2-url-conventions
+        -complete.html
+
+        :param limit: max no. of contacts to get. Over 999 uses batch.
+        :type limit: int or None
+        :param query: applies a OData filter to the request
+        :type query: Query or str
+        :param order_by: orders the result set based on this condition
+        :type order_by: Query or str
+        :param int batch: batch size, retrieves items in
+         batches allowing to retrieve more items than the limit.
+        :return: list of users
+        :rtype: list[User] or Pagination
+        """
+
+        url = self.build_url(self._endpoints.get('get_user').format(email=user))
+
+        if limit is None or limit > self.protocol.max_top_value:
+            batch = self.protocol.max_top_value
+
+        params = {'$top': batch if batch else limit}
+
+        if order_by:
+            params['$orderby'] = order_by
+
+        if query:
+            if isinstance(query, str):
+                params['$filter'] = query
+            else:
+                params.update(query.as_params())
+
+        response = self.con.get(url + '/directReports', params=params)
+        if not response:
+            return iter(())
+
+        data = response.json()
+
+        # Everything received from cloud must be passed as self._cloud_data_key
+        direct_reports = (self.user_constructor(parent=self, **{self._cloud_data_key: user})
+            for user in data.get('value', []))
+
+        next_link = data.get(NEXT_LINK_KEYWORD, None)
+
+        if batch and next_link:
+            return Pagination(parent=self, data=direct_reports,
+                              constructor=self.user_constructor,
+                              next_link=next_link, limit=limit)
+        else:
+            return direct_reports
+
+    def get_user_manager(self, user, query=None):
+        """ Returns a Users' manager by the users id, or user principal name
+
+        :param str user: the user id or user principal name
+        :return: User for specified email
+        :rtype: User
+        """
+        url = self.build_url(self._endpoints.get('get_user').format(email=user))
+        return self._get_user(url + '/manager', query=query)
+
+    def get_user_direct_reports(self, user, limit=100, *, query=None, order_by=None, batch=None):
+        """ Gets a list of direct reports for the user provided from the active directory
+
+        When querying the Active Directory the Users endpoint will be used.
+
+        Also using endpoints has some limitations on the querying capabilities.
+
+        To use query an order_by check the OData specification here:
+        http://docs.oasis-open.org/odata/odata/v4.0/errata03/os/complete/
+        part2-url-conventions/odata-v4.0-errata03-os-part2-url-conventions
+        -complete.html
+
+        :param limit: max no. of contacts to get. Over 999 uses batch.
+        :type limit: int or None
+        :param query: applies a OData filter to the request
+        :type query: Query or str
+        :param order_by: orders the result set based on this condition
+        :type order_by: Query or str
+        :param int batch: batch size, retrieves items in
+         batches allowing to retrieve more items than the limit.
+        :return: list of users
+        :rtype: list[User] or Pagination
+        """
+
+        url = self.build_url(self._endpoints.get('get_user').format(email=user))
+
+        if limit is None or limit > self.protocol.max_top_value:
+            batch = self.protocol.max_top_value
+
+        params = {'$top': batch if batch else limit}
+
+        if order_by:
+            params['$orderby'] = order_by
+
+        if query:
+            if isinstance(query, str):
+                params['$filter'] = query
+            else:
+                params.update(query.as_params())
+
+        response = self.con.get(url + '/directReports', params=params)
+        if not response:
+            return iter(())
+
+        data = response.json()
+
+        # Everything received from cloud must be passed as self._cloud_data_key
+        direct_reports = (self.user_constructor(parent=self, **{self._cloud_data_key: user})
+            for user in data.get('value', []))
+
+        next_link = data.get(NEXT_LINK_KEYWORD, None)
+
+        if batch and next_link:
+            return Pagination(parent=self, data=direct_reports,
+                              constructor=self.user_constructor,
+                              next_link=next_link, limit=limit)
+        else:
+            return direct_reports
