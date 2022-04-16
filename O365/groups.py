@@ -45,6 +45,7 @@ class Group(ApiComponent):
             protocol=parent.protocol if parent else kwargs.get('protocol'),
             main_resource=main_resource)
 
+        self.type = cloud_data.get('@odata.type')
         self.display_name = cloud_data.get(self._cc('displayName'), '')
         self.description = cloud_data.get(self._cc('description'), '')
         self.mail = cloud_data.get(self._cc('mail'), '')
@@ -60,12 +61,25 @@ class Group(ApiComponent):
     def __eq__(self, other):
         return self.object_id == other.object_id
 
-    def get_group_members(self):
-        """ Returns members of given group
+    def __hash__(self):
+        return self.object_id.__hash__()
 
+    def get_group_members(self, recursive=False):
+        """ Returns members of given group
+        :param bool recursive: drill down to users if group has other group as a member
         :rtype: list[User]
         """
+        if recursive:
+            recursive_data = self._get_group_members_raw()
+            for member in recursive_data:
+                if member['@odata.type'] == '#microsoft.graph.group':
+                    recursive_members = Groups(con=self.con, protocol=self.protocol).get_group_by_id(member['id'])._get_group_members_raw()
+                    recursive_data.extend(recursive_members)
+            return [self.member_constructor(parent=self, **{self._cloud_data_key: lst}) for lst in recursive_data]
+        else:
+            return [self.member_constructor(parent=self, **{self._cloud_data_key: lst}) for lst in self._get_group_members_raw()]
 
+    def _get_group_members_raw(self):
         url = self.build_url(self._endpoints.get('get_group_members').format(group_id=self.object_id))
 
         response = self.con.get(url)
@@ -73,8 +87,7 @@ class Group(ApiComponent):
             return []
 
         data = response.json()
-
-        return [self.member_constructor(parent=self, **{self._cloud_data_key: lst}) for lst in data.get('value', [])]
+        return data.get('value', [])
 
     def get_group_owners(self):
         """ Returns owners of given group
@@ -100,8 +113,7 @@ class Groups(ApiComponent):
     _endpoints = {
         'get_user_groups': '/users/{user_id}/memberOf',
         'get_group_by_id': '/groups/{group_id}',
-        'get_group_by_nickname': '/groups/?$search="mailNickname:{group_nickname}"'
-        
+        'get_group_by_mail': '/groups/?$search="mail:{group_mail}"&$count=true'
     }
 
     group_constructor = Group
@@ -160,31 +172,34 @@ class Groups(ApiComponent):
         return self.group_constructor(parent=self,
                                 **{self._cloud_data_key: data})
 
-    def get_group_by_nickname(self, group_name = None):
-        """ Returns Microsoft O365/AD group by mailNickname field
+    def get_group_by_mail(self, group_mail = None):
+        """ Returns Microsoft O365/AD group by mail field
 
-        :param group_name: mailNickname of group
+        :param group_name: mail of group
 
         :rtype: Group
         """
+        if not group_mail:
+            raise RuntimeError('Provide the group mail')
 
-        if not group_name:
-            raise RuntimeError('Provide the group_name')
-
-        if group_name:
-            # get channels by the team id
+        if group_mail:
+            # get groups by filter mail
             url = self.build_url(
-                self._endpoints.get('get_group_by_id').format(group_nickname=group_name))
+                self._endpoints.get('get_group_by_mail').format(group_mail=group_mail))
 
-        response = self.con.get(url)
+        response = self.con.get(url, headers={'ConsistencyLevel': 'eventual'})
 
         if not response:
             return None
 
         data = response.json()
 
+        if '@odata.count' in data and data['@odata.count'] < 1:
+            raise RuntimeError('Not found group with provided filters')
+
+        # mail is unique field so, we expect exact match -> always use first element from list
         return self.group_constructor(parent=self,
-                                **{self._cloud_data_key: data})
+                                **{self._cloud_data_key: data.get('value')[0]})
 
     def get_user_groups(self, user_id = None):
         """ Returns list of groups that given user has membership
