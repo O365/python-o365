@@ -52,6 +52,7 @@ class User(ApiComponent):
         local_tz = self.protocol.timezone
         cc = self._cc
 
+        self.type = cloud_data.get('@odata.type')
         self.user_principal_name = cloud_data.get(cc('userPrincipalName'))
         self.display_name = cloud_data.get(cc('displayName'))
         self.given_name = cloud_data.get(cc('givenName'), '')
@@ -124,6 +125,9 @@ class User(ApiComponent):
 
     def __eq__(self, other):
         return self.object_id == other.object_id
+
+    def __hash__(self):
+        return self.object_id.__hash__()
 
     @property
     def full_name(self):
