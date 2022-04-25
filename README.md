@@ -49,7 +49,7 @@ m.send()
 - Good Abstraction layer between each Api. Change the api (Graph vs Office365) and don't worry about the api internal implementation.
 - Full oauth support with automatic handling of refresh tokens.
 - Automatic handling between local datetimes and server datetimes. Work with your local datetime and let this library do the rest.
-- Change between different resource with ease: access shared mailboxes, other users resources, sharepoint resources, etc.
+- Change between different resource with ease: access shared mailboxes, other users resources, SharePoint resources, etc.
 - Pagination support through a custom iterator that handles future requests automatically. Request Infinite items!
 - A query helper to help you build custom OData queries (filter, order, select and search).
 - Modular ApiComponents can be created and built to achieve further functionality.
@@ -81,7 +81,7 @@ What follows is kind of a wiki...
 - [Tasks](#tasks)
 - [OneDrive](#onedrive)
 - [Excel](#excel)
-- [Sharepoint](#sharepoint)
+- [SharePoint](#sharepoint)
 - [Planner](#planner)
 - [Outlook Categories](#outlook-categories)
 - [Utils](#utils)
@@ -1056,7 +1056,7 @@ for task in task_list:
 ```
  
 ## OneDrive
-The `Storage` class handles all functionality around One Drive and Document Library Storage in Sharepoint.
+The `Storage` class handles all functionality around One Drive and Document Library Storage in SharePoint.
 
 The `Storage` instance allows to retrieve `Drive` instances which handles all the Files and Folders from within the selected `Storage`.
 Usually you will only need to work with the default drive. But the `Storage` instances can handle multiple drives.
@@ -1164,11 +1164,11 @@ for version in versions:
 
 
 ## Excel
-You can interact with new excel files (.xlsx) stored in OneDrive or a Sharepoint Document Library.
+You can interact with new excel files (.xlsx) stored in OneDrive or a SharePoint Document Library.
 You can retrieve workbooks, worksheets, tables, and even cell data.
 You can also write to any excel online.
 
-To work with excel files, first you have to retrieve a `File` instance using the OneDrive or Sharepoint functionallity.
+To work with excel files, first you have to retrieve a `File` instance using the OneDrive or SharePoint functionallity.
 
 The scopes needed to work with the `WorkBook` and Excel related classes are the same used by OneDrive. 
 
@@ -1231,10 +1231,10 @@ column = table.get_column_at_index(1)
 values = column.values[0]  # values returns a two dimensional array.
 ```
 
-## Sharepoint
-The sharepoint api is done but there are no docs yet. Look at the sharepoint.py file to get insights.
+## SharePoint
+The SharePoint api is done but there are no docs yet. Look at the sharepoint.py file to get insights.
 
-These are the scopes needed to work with the `Sharepoint` and `Site` classes.
+These are the scopes needed to work with the `SharePoint` and `Site` classes.
 
  Raw Scope                  |  Included in Scope Helper    | Description
  :---:                      |  :---:                       | ---
@@ -1250,7 +1250,7 @@ The planner functionality requires Administrator Permission.
 You can retrive, update, create and delete outlook categories.
 These categories can be used to categorize Messages, Events and Contacts.
 
-These are the scopes needed to work with the `Sharepoint` and `Site` classes.
+These are the scopes needed to work with the `SharePoint` and `Site` classes.
 
  Raw Scope                      |  Included in Scope Helper     | Description
  :---:                          |  :---:                        | ---
