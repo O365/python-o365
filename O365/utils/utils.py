@@ -353,13 +353,20 @@ class ApiComponent:
             # user resource shorthand
             resource = resource.replace('user:', '', 1)
             return '{}/{}'.format(USERS_RESOURCE, resource)
-        elif '@' in resource and True not in (resource.startswith(prefix) for prefix in
-                                              (USERS_RESOURCE, TEAMS_RESOURCE, CHAT_RESOURCE)):
-            # user resource backup
-            # when for example accessing a shared mailbox the
-            # resource is set to the email address. we have to prefix
-            # the email with the resource 'users/' so --> 'users/email_address'
-            return '{}/{}'.format(USERS_RESOURCE, resource)
+        # elif '@' in resource and True not in (resource.startswith(prefix) for prefix in
+        #                                       (USERS_RESOURCE)):
+        #     # user resource backup
+        #     # when for example accessing a shared mailbox the
+        #     # resource is set to the email address. we have to prefix
+        #     # the email with the resource 'users/' so --> 'users/email_address'
+        #     return '{}/{}'.format(USERS_RESOURCE, resource)
+        # elif '@' in resource and True not in (resource.startswith(prefix) for prefix in
+        #                                       (TEAMS_RESOURCE, CHAT_RESOURCE)):
+        #     # user resource backup
+        #     # when for example accessing a shared mailbox the
+        #     # resource is set to the email address. we have to prefix
+        #     # the email with the resource 'users/' so --> 'users/email_address'
+        #     return '{}/{}'.format(TEAMS_RESOURCE, resource)
         elif resource.startswith('group:'):
             # group resource shorthand
             resource = resource.replace('group:', '', 1)

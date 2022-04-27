@@ -407,8 +407,14 @@ class Channel(ApiComponent):
         main_resource = kwargs.pop('main_resource', None) or (
             getattr(parent, 'main_resource', None) if parent else None)
 
-        resource_prefix = '/channels/{channel_id}'.format(channel_id=self.object_id)
+        self.team_id = kwargs.get('team_id', None)
+
+        if self.team_id is None:
+            raise RuntimeError('Provide the team_id')
+
+        resource_prefix = 'teams/{team_id}/channels/{channel_id}'.format(team_id=self.team_id, channel_id=self.object_id)
         main_resource = '{}{}'.format(main_resource, resource_prefix)
+
         super().__init__(
             protocol=parent.protocol if parent else kwargs.get('protocol'),
             main_resource=main_resource)
@@ -467,7 +473,6 @@ class Channel(ApiComponent):
         :param str content_type: 'text' to render the content as text or 'html' to render the content as html
         """
         data = content if isinstance(content, dict) else {'body': {'contentType': content_type, 'content': content}}
-
         url = self.build_url(self._endpoints.get('get_messages'))
         response = self.con.post(url, data=data)
 
@@ -550,7 +555,7 @@ class Team(ApiComponent):
 
         data = response.json()
 
-        return [self.channel_constructor(parent=self, **{self._cloud_data_key: channel})
+        return [self.channel_constructor(parent=self, **{self._cloud_data_key: channel}, team_id = self.object_id)
                 for channel in data.get('value', [])]
 
 
@@ -722,7 +727,7 @@ class Teams(ApiComponent):
         data = response.json()
 
         return [
-            self.channel_constructor(parent=self, **{self._cloud_data_key: site})
+            self.channel_constructor(parent=self, **{self._cloud_data_key: site}, team_id = team_id)
             for site in data.get('value', [])]
 
     def create_channel(self, team_id=None, display_name=None, description=None):
@@ -759,7 +764,7 @@ class Teams(ApiComponent):
 
         data = response.json()
 
-        return self.channel_constructor(parent=self, **{self._cloud_data_key: data})
+        return self.channel_constructor(parent=self, **{self._cloud_data_key: data}, team_id = team_id)
 
     def get_channel_info(self, team_id=None, channel_id=None):
         """ Returns the channel info for a given channel
@@ -785,7 +790,7 @@ class Teams(ApiComponent):
 
         data = response.json()
 
-        return self.channel_constructor(parent=self, **{self._cloud_data_key: data})
+        return self.channel_constructor(parent=self, **{self._cloud_data_key: data}, team_id = team_id)
 
     def get_apps_in_team(self, team_id=None):
         """ Returns a list of apps of a specified team
