@@ -14,8 +14,8 @@ ME_RESOURCE = 'me'
 USERS_RESOURCE = 'users'
 GROUPS_RESOURCE = 'groups'
 SITES_RESOURCE = 'sites'
-TEAMS_RESOURCE = 'teams'
-CHAT_RESOURCE = 'chats'
+
+
 
 NEXT_LINK_KEYWORD = '@odata.nextLink'
 
@@ -347,18 +347,20 @@ class ApiComponent:
     def _parse_resource(resource):
         """ Parses and completes resource information """
         resource = resource.strip() if resource else resource
-        if resource in {ME_RESOURCE, USERS_RESOURCE, GROUPS_RESOURCE, SITES_RESOURCE}:
+        resource_start = list(filter(lambda part: part, resource.split('/')))[0] if resource else resource
+
+        if ':' not in resource_start and '@' not in resource_start:
             return resource
-        elif resource.startswith('user:'):
-            # user resource shorthand
-            resource = resource.replace('user:', '', 1)
-            return '{}/{}'.format(USERS_RESOURCE, resource)
-        elif '@' in resource and True not in (resource.startswith(prefix) for prefix in
-                                              (USERS_RESOURCE, TEAMS_RESOURCE, CHAT_RESOURCE)):
+
+        if '@' in resource_start:
             # user resource backup
             # when for example accessing a shared mailbox the
             # resource is set to the email address. we have to prefix
             # the email with the resource 'users/' so --> 'users/email_address'
+            return '{}/{}'.format(USERS_RESOURCE, resource)
+        elif resource.startswith('user:'):
+            # user resource shorthand
+            resource = resource.replace('user:', '', 1)
             return '{}/{}'.format(USERS_RESOURCE, resource)
         elif resource.startswith('group:'):
             # group resource shorthand
