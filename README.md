@@ -727,6 +727,20 @@ message.attachments.add('george_best_quotes.txt')
 message.save_draft()  # save the message on the cloud as a draft in the drafts folder
 ```
 
+##### Sending message with attachments bigger than 4MB
+
+MS Graph has attachment limitation to ~4MB when sending emails. To send message with bigger attachments just execute `save_draft()` method before sending, so above code would be like:
+
+```python
+message = mailbox.new_message()
+message.to.add(['example1@example.com', 'example2@example.com'])
+message.sender.address = 'my_shared_account@example.com'  # changing the from address
+message.body = 'George Best quote: I might go to Alcoholics Anonymous, but I think it would be difficult for me to remain anonymous'
+message.attachments.add('george_best_quotes.txt')
+message.save_draft() # this method uses createUploadSession method from API which is solution for big attachments
+message.send()
+```
+
 Working with saved emails is also easy:
 ```python
 query = mailbox.new_query().on_attribute('subject').contains('george best')  # see Query object in Utils
