@@ -515,10 +515,10 @@ class BaseAttachments(ApiComponent):
                                   'upload_url for file {}'.format(attachment.name))
                         return False
 
-                    def write_stream(file):
+                    def write_stream(read_byte_chunk):
                         current_bytes = 0
                         while True:
-                            data = file.read(chunk_size)
+                            data = read_byte_chunk()
                             if not data:
                                 break
                             transfer_bytes = len(data)
@@ -550,9 +550,14 @@ class BaseAttachments(ApiComponent):
                                     data.get("nextExpectedRanges")))
                         return True
 
-                    with attachment.attachment.open(mode='rb') as file:
-                        if not write_stream(file):
-                            return False
+                    if attachment.attachment:
+                      with attachment.attachment.open(mode='rb') as file:
+                          read_from_file = lambda : file.read(chunk_size)
+                          return write_stream(read_byte_chunk=read_from_file)
+                    else:
+                        buffer = BytesIO(base64.b64decode(attachment.content))
+                        read_from_buffer = lambda : buffer.read(chunk_size)
+                        return write_stream(read_byte_chunk=read_from_buffer)
 
                 attachment.on_cloud = True
 
