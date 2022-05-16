@@ -74,7 +74,7 @@ class UploadSessionRequest(ApiComponent):
         attachment_item = {
             self._cc('attachmentType'): self._attachment.attachment_type,
             self._cc('name'): self._attachment.name,
-            self._cc('size'): self._attachment.attachment.stat().st_size
+            self._cc('size'): self._attachment.size
         }
         if self._attachment.is_inline:
             attachment_item[self._cc('isInline')] = self._attachment.is_inline
@@ -154,6 +154,7 @@ class BaseAttachment(ApiComponent):
                 file_obj, custom_name = attachment
                 if isinstance(file_obj, BytesIO):
                     # in memory objects
+                    self.size = file_obj.getbuffer().nbytes
                     self.content = base64.b64encode(file_obj.getvalue()).decode('utf-8')
                 else:
                     self.attachment = Path(file_obj)
@@ -475,7 +476,7 @@ class BaseAttachments(ApiComponent):
 
         for attachment in self.__attachments:
             if attachment.on_cloud is False:
-                file_size = attachment.attachment.stat().st_size
+                file_size = attachment.size
                 if file_size <= UPLOAD_SIZE_LIMIT_SIMPLE:
                     url = self.build_url(self._endpoints.get('attachments').format(
                         id=self._parent.object_id))
@@ -514,10 +515,10 @@ class BaseAttachments(ApiComponent):
                                   'upload_url for file {}'.format(attachment.name))
                         return False
 
-                    def write_stream(file):
+                    def write_stream(read_byte_chunk):
                         current_bytes = 0
                         while True:
-                            data = file.read(chunk_size)
+                            data = read_byte_chunk()
                             if not data:
                                 break
                             transfer_bytes = len(data)
@@ -549,9 +550,14 @@ class BaseAttachments(ApiComponent):
                                     data.get("nextExpectedRanges")))
                         return True
 
-                    with attachment.attachment.open(mode='rb') as file:
-                        if not write_stream(file):
-                            return False
+                    if attachment.attachment:
+                      with attachment.attachment.open(mode='rb') as file:
+                          read_from_file = lambda : file.read(chunk_size)
+                          return write_stream(read_byte_chunk=read_from_file)
+                    else:
+                        buffer = BytesIO(base64.b64decode(attachment.content))
+                        read_from_buffer = lambda : buffer.read(chunk_size)
+                        return write_stream(read_byte_chunk=read_from_buffer)
 
                 attachment.on_cloud = True
 
