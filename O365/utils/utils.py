@@ -586,7 +586,8 @@ class Query:
         'to': 'toRecipients/emailAddress/address',
         'start': 'start/DateTime',
         'end': 'end/DateTime',
-        'flag': 'flag/flagStatus'
+        'flag': 'flag/flagStatus',
+        'body': 'body/content'
     }
 
     def __init__(self, attribute=None, *, protocol):
