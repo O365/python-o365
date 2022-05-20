@@ -551,13 +551,16 @@ class BaseAttachments(ApiComponent):
                         return True
 
                     if attachment.attachment:
-                      with attachment.attachment.open(mode='rb') as file:
-                          read_from_file = lambda : file.read(chunk_size)
-                          return write_stream(read_byte_chunk=read_from_file)
+                        with attachment.attachment.open(mode='rb') as file:
+                            read_from_file = lambda : file.read(chunk_size)
+                            upload_completed = write_stream(read_byte_chunk=read_from_file)
                     else:
                         buffer = BytesIO(base64.b64decode(attachment.content))
-                        read_from_buffer = lambda : buffer.read(chunk_size)
-                        return write_stream(read_byte_chunk=read_from_buffer)
+                        read_byte_chunk = lambda : buffer.read(chunk_size)
+                        upload_completed = write_stream(read_byte_chunk=read_byte_chunk)
+
+                    if not upload_completed:
+                        return False
 
                 attachment.on_cloud = True
 
