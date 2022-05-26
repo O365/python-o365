@@ -3,6 +3,15 @@
 Almost every release features a lot of bugfixes but those are not listed here.
 
 
+## Version 2.0.19 (2022-05-26)
+
+### Features:
+- Drive: added password and expiration date to share_with_link method (Thanks @MagestryMark).
+- Drive: support uploading large attachments from memory (Thanks @sebastiant).
+- Directory: added new methods: `get_user_manager` and `get_user_direct_reports` (Thanks @dionm).
+- Groups: Improvements to `Group` class (Thanks @Krukosz).
+
+
 ## Version 2.0.18 (2022-02-03)
 
 ### Features:
