@@ -468,11 +468,12 @@ class BaseAttachments(ApiComponent):
         #  select and then download one by one.
         return True
 
-    def _update_attachments_to_cloud(self, chunk_size=DEFAULT_UPLOAD_CHUNK_SIZE):
+    def _update_attachments_to_cloud(self, chunk_size=None):
         """ Push new, unsaved attachments to the cloud and remove removed
         attachments. This method should not be called for non draft messages.
         """
         # ! potentially several api requests can be made by this method.
+        chunk_size = chunk_size if chunk_size is not None else DEFAULT_UPLOAD_CHUNK_SIZE
 
         for attachment in self.__attachments:
             if attachment.on_cloud is False:
