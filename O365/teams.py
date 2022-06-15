@@ -7,6 +7,7 @@ from .utils import ApiComponent, NEXT_LINK_KEYWORD, Pagination
 log = logging.getLogger(__name__)
 
 MAX_BATCH_CHAT_MESSAGES = 50
+MAX_BATCH_CHATS = 50
 
 
 class ConversationMember(ApiComponent):
