@@ -7,6 +7,7 @@ from .utils import ApiComponent, NEXT_LINK_KEYWORD, Pagination
 log = logging.getLogger(__name__)
 
 MAX_BATCH_CHAT_MESSAGES = 50
+MAX_BATCH_CHATS = 50
 
 
 class ConversationMember(ApiComponent):
@@ -744,22 +745,35 @@ class Teams(ApiComponent):
             self.team_constructor(parent=self, **{self._cloud_data_key: site})
             for site in data.get('value', [])]
 
-    def get_my_chats(self):
+    def get_my_chats(self, limit=None, batch=None):
         """ Returns a list of chats that I am in
-
-        :rtype: list[Chat]
+        :param int limit: number of chats to retrieve
+        :param int batch: number of chats to be in each data set
+        :rtype: list[ChatMessage] or Pagination of Chat
         """
-
         url = self.build_url(self._endpoints.get('get_my_chats'))
-        response = self.con.get(url)
 
+        if not batch and (limit is None or limit > MAX_BATCH_CHATS):
+            batch = MAX_BATCH_CHATS
+
+        params = {'$top': batch if batch else limit}
+        response = self.con.get(url, params=params)
         if not response:
             return []
 
         data = response.json()
-        return [
-            self.chat_constructor(parent=self, **{self._cloud_data_key: chat})
-            for chat in data.get('value', [])]
+        next_link = data.get(NEXT_LINK_KEYWORD, None)
+
+        chats = [self.chat_constructor(parent=self,
+                                             **{self._cloud_data_key: message})
+                    for message in data.get('value', [])]
+
+        if batch and next_link:
+            return Pagination(parent=self, data=chats,
+                              constructor=self.chat_constructor,
+                              next_link=next_link, limit=limit)
+        else:
+            return chats
 
     def get_channels(self, team_id):
         """ Returns a list of channels of a specified team
