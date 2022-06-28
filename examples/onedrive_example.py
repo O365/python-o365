@@ -74,11 +74,8 @@ class O365Account():
 
     def _get_child_folder(self, folder, child_folder_name):
         items = folder.get_items()
-        child_folder_names = [item.name for item in items if item.is_folder]
-        if child_folder_name in child_folder_names:
-            return list(filter(lambda x: x.name == child_folder_name, items))[0]
-        else:
-            return folder.create_child_folder(child_folder_name)
+        match = list(filter(lambda x: x.name == child_folder_name and x.is_folder, items))
+        return match[0] if match else folder.create_child_folder(child_folder_name)
 
     ''' Get child folder, folder tree from root folder. If child folder not exist, make it. '''
 
