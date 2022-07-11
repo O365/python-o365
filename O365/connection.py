@@ -511,18 +511,21 @@ class Connection:
                     token_url=self._oauth2_token_url,
                     authorization_response=authorization_url,
                     include_client_id=True,
-                    client_secret=self.auth[1]))
+                    client_secret=self.auth[1],
+                    verify=self.verify_ssl))
             elif self.auth_flow_type == 'public':
                 self.token_backend.token = Token(self.session.fetch_token(
                     token_url=self._oauth2_token_url,
                     authorization_response=authorization_url,
-                    include_client_id=True))
+                    include_client_id=True,
+                    verify=self.verify_ssl))
             elif self.auth_flow_type == 'credentials':
                 self.token_backend.token = Token(self.session.fetch_token(
                     token_url=self._oauth2_token_url,
                     include_client_id=True,
                     client_secret=self.auth[1],
-                    scope=scopes))
+                    scope=scopes,
+                    verify=self.verify_ssl))
         except Exception as e:
             log.error('Unable to fetch auth token. Error: {}'.format(str(e)))
             return False
@@ -633,14 +636,16 @@ class Connection:
                     self.session.refresh_token(
                         self._oauth2_token_url,
                         client_id=client_id,
-                        client_secret=client_secret)
+                        client_secret=client_secret,
+                        verify=self.verify_ssl)
                 )
             elif self.auth_flow_type == 'public':
                 client_id = self.auth[0]
                 self.token_backend.token = Token(
                     self.session.refresh_token(
                         self._oauth2_token_url,
-                        client_id=client_id)
+                        client_id=client_id,
+                        verify=self.verify_ssl)
                 )
             elif self.auth_flow_type == 'credentials':
                 if self.request_token(None, store_token=False) is False:
@@ -694,6 +699,8 @@ class Connection:
 
         if self.timeout is not None:
             kwargs['timeout'] = self.timeout
+
+        kwargs.setdefault("verify", self.verify_ssl)
 
         request_done = False
         token_refreshed = False
