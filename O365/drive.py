@@ -63,7 +63,10 @@ class DownloadableMixin:
                 name = name + Path(self.name).suffix
 
             name = name or self.name
-            to_path = to_path / name
+            if convert_to_pdf:
+                to_path = to_path / Path(name).with_suffix(".pdf")
+            else:
+                to_path = to_path / name
 
         url = self.build_url(
             self._endpoints.get('download').format(id=self.object_id))
