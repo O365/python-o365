@@ -262,6 +262,8 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         self._track_changes = TrackerSet(casing=cc)
         self.object_id = cloud_data.get(cc('id'), kwargs.get('object_id', None))
 
+        self.__inferenceClassification = cloud_data.get(cc('inferenceClassification'), None)
+
         self.__created = cloud_data.get(cc('createdDateTime'), None)
         self.__modified = cloud_data.get(cc('lastModifiedDateTime'), None)
         self.__received = cloud_data.get(cc('receivedDateTime'), None)
@@ -408,6 +410,11 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         :type: str
         """
         return self.__body
+
+    @property
+    def inferenceClassification(self):
+        """ Message is focused or not"""
+        return self.__inferenceClassification
 
     @body.setter
     def body(self, value):
@@ -1091,4 +1098,3 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
                 file_obj.write(mime_content)
             return True
         return False
-
