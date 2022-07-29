@@ -322,7 +322,7 @@ class Connection:
 
     def __init__(self, credentials, *, scopes=None,
                  proxy_server=None, proxy_port=8080, proxy_username=None,
-                 proxy_password=None, requests_delay=200, raise_http_errors=True,
+                 proxy_password=None, proxy_http_only=False, requests_delay=200, raise_http_errors=True,
                  request_retries=3, token_backend=None,
                  tenant_id='common',
                  auth_flow_type='authorization',
@@ -388,7 +388,7 @@ class Connection:
         self.session = None  # requests Oauth2Session object
 
         self.proxy = {}
-        self.set_proxy(proxy_server, proxy_port, proxy_username, proxy_password)
+        self.set_proxy(proxy_server, proxy_port, proxy_username, proxy_password, proxy_http_only)
         self.requests_delay = requests_delay or 0
         self._previous_request_at = None  # store previous request time
         self.raise_http_errors = raise_http_errors
@@ -410,7 +410,7 @@ class Connection:
         return self._auth_flow_type
 
     def set_proxy(self, proxy_server, proxy_port, proxy_username,
-                  proxy_password):
+                  proxy_password, proxy_http_only):
         """ Sets a proxy on the Session
 
         :param str proxy_server: the proxy server
@@ -420,20 +420,23 @@ class Connection:
         """
         if proxy_server and proxy_port:
             if proxy_username and proxy_password:
+                proxy_uri = "{}:{}@{}:{}".format(proxy_username,
+                                                proxy_password,
+                                                proxy_server,
+                                                proxy_port)
+            else:
+                proxy_uri = "{}:{}".format(proxy_server,
+                                            proxy_port)
+            
+            if proxy_http_only is False:
                 self.proxy = {
-                    "http": "http://{}:{}@{}:{}".format(proxy_username,
-                                                        proxy_password,
-                                                        proxy_server,
-                                                        proxy_port),
-                    "https": "https://{}:{}@{}:{}".format(proxy_username,
-                                                          proxy_password,
-                                                          proxy_server,
-                                                          proxy_port),
+                    "http": "http://{}".format(proxy_uri),
+                    "https": "https://{}".format(proxy_uri)
                 }
             else:
                 self.proxy = {
-                    "http": "http://{}:{}".format(proxy_server, proxy_port),
-                    "https": "https://{}:{}".format(proxy_server, proxy_port),
+                    "http": "http://{}".format(proxy_uri),
+                    "https": "http://{}".format(proxy_uri)
                 }
 
     def get_authorization_url(self, requested_scopes=None,
