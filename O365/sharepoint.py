@@ -609,19 +609,26 @@ class Sharepoint(ApiComponent):
         if not keyword:
             raise ValueError('Must provide a valid keyword')
 
-        url = self.build_url(
+        next_link = self.build_url(
             self._endpoints.get('search').format(keyword=keyword))
 
-        response = self.con.get(url)
-        if not response:
-            return []
+        sites = []
+        while next_link:
+            response = self.con.get(next_link)
+            if not response:
+                break
 
-        data = response.json()
+            data = response.json()
 
-        # Everything received from cloud must be passed as self._cloud_data_key
-        return [
-            self.site_constructor(parent=self, **{self._cloud_data_key: site})
-            for site in data.get('value', [])]
+            # Everything received from cloud must be passed as self._cloud_data_key
+            sites += [
+                self.site_constructor(parent=self, **{self._cloud_data_key: site})
+                for site in data.get('value', [])
+            ]
+
+            next_link = data.get("@odata.nextLink")
+        
+        return sites
 
     def get_root_site(self):
         """ Returns the root site
