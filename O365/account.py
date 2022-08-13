@@ -40,6 +40,8 @@ class Account:
                 kwargs['scopes'] = [self.protocol.prefix_scope('.default')]
             else:
                 raise ValueError('Auth flow type "credentials" does not require scopes')
+        elif auth_flow_type == 'password':
+            kwargs['scopes'] = self.protocol.get_scopes_for(scopes) if scopes else [self.protocol.prefix_scope('.default')]
 
             # set main_resource to blank when it's the 'ME' resource
             if self.protocol.default_resource == ME_RESOURCE:
@@ -47,7 +49,7 @@ class Account:
             if main_resource == ME_RESOURCE:
                 main_resource = ''
         else:
-            raise ValueError('"auth_flow_type" must be "authorization", "credentials" or "public"')
+            raise ValueError('"auth_flow_type" must be "authorization", "credentials", "password" or "public"')
 
         self.con = self.connection_constructor(credentials, **kwargs)
         self.main_resource = main_resource or self.protocol.default_resource
@@ -107,10 +109,10 @@ class Account:
                 print('Authentication Flow aborted.')
                 return False
 
-        elif self.con.auth_flow_type == 'credentials':
+        elif self.con.auth_flow_type in ('credentials', 'password'):
             return self.con.request_token(None, requested_scopes=scopes)
         else:
-            raise ValueError('Connection "auth_flow_type" must be "authorization", "public" or "credentials"')
+            raise ValueError('Connection "auth_flow_type" must be "authorization", "public", "password" or "credentials"')
 
     def get_current_user(self):
         """ Returns the current user """

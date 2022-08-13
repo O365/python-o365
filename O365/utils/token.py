@@ -110,7 +110,7 @@ class BaseTokenBackend(ABC):
     def should_refresh_token(self, con=None):
         """
         This method is intended to be implemented for environments
-         where multiple Connection instances are running on paralel.
+         where multiple Connection instances are running on parallel.
 
         This method should check if it's time to refresh the token or not.
         The chosen backend can store a flag somewhere to answer this question.
@@ -153,6 +153,59 @@ class BaseTokenBackend(ABC):
         """
         return True
 
+class EnvTokenBackend(BaseTokenBackend):
+    """ A token backend based on environmental variable """
+
+    def __init__(self, token_env_name=None):
+        """
+        Init Backend
+        :param str token_env_name: the name of the environmental variable that will hold the token
+        """
+        super().__init__()
+
+        self.token_env_name = token_env_name if token_env_name else "O365TOKEN"
+
+    def __repr__(self):
+        return str(self.token_env_name)
+
+    def load_token(self):
+        """
+        Retrieves the token from the environmental variable
+        :return dict or None: The token if exists, None otherwise
+        """
+        token = None
+        if self.token_env_name in os.environ:
+            token = self.token_constructor(self.serializer.loads(os.environ.get(self.token_env_name)))
+        return token
+
+    def save_token(self):
+        """
+        Saves the token dict in the specified environmental variable
+        :return bool: Success / Failure
+        """
+        if self.token is None:
+            raise ValueError('You have to set the "token" first.')
+
+        os.environ[self.token_env_name] = self.serializer.dumps(self.token)
+
+        return True
+
+    def delete_token(self):
+        """
+        Deletes the token environmental variable
+        :return bool: Success / Failure
+        """
+        if self.token_env_name in os.environ:
+            del os.environ[self.token_env_name]
+            return True
+        return False
+
+    def check_token(self):
+        """
+        Checks if the token exists in the environmental variables
+        :return bool: True if exists, False otherwise
+        """
+        return self.token_env_name in os.environ
 
 class FileSystemTokenBackend(BaseTokenBackend):
     """ A token backend based on files on the filesystem """
@@ -220,7 +273,7 @@ class FileSystemTokenBackend(BaseTokenBackend):
 
     def check_token(self):
         """
-        Cheks if the token exists in the filesystem
+        Checks if the token exists in the filesystem
         :return bool: True if exists, False otherwise
         """
         return self.token_path.exists()

@@ -3,7 +3,7 @@ import logging
 import os
 import time
 
-from oauthlib.oauth2 import TokenExpiredError, WebApplicationClient, BackendApplicationClient
+from oauthlib.oauth2 import TokenExpiredError, WebApplicationClient, BackendApplicationClient, LegacyApplicationClient
 from requests import Session
 from requests.adapters import HTTPAdapter
 from requests.exceptions import HTTPError, RequestException, ProxyError
@@ -326,6 +326,7 @@ class Connection:
                  request_retries=3, token_backend=None,
                  tenant_id='common',
                  auth_flow_type='authorization',
+                 username=None, password=None,
                  timeout=None, json_encoder=None,
                  verify_ssl=True, **kwargs):
         """ Creates an API connection object
@@ -355,30 +356,34 @@ class Connection:
             - 'authorization': 2 step web style grant flow using an authentication url
             - 'public': 2 step web style grant flow using an authentication url for public apps where
             client secret cannot be secured
-            - 'credentials': also called client credentials grant flow using only the cliend id and secret
+            - 'credentials': also called client credentials grant flow using only the client id and secret
+        :param str username: The user's email address to provide in case of auth_flow_type == 'password'
+        :param str password: The user's password to provide in case of auth_flow_type == 'password'
         :param float or tuple timeout: How long to wait for the server to send
             data before giving up, as a float, or a tuple (connect timeout, read timeout)
-        :param JSONEncoder json_encoder: The JSONEnocder to use during the JSON serialization on the request.
+        :param JSONEncoder json_encoder: The JSONEncoder to use during the JSON serialization on the request.
         :param bool verify_ssl: set the verify flag on the requests library
         :param dict kwargs: any extra params passed to Connection
         :raises ValueError: if credentials is not tuple of
          (client_id, client_secret)
         """
-        if auth_flow_type == 'public':  # allow client id only for public flow
+        if auth_flow_type in ('public', 'password'):  # allow client id only for public or password flow
             if isinstance(credentials, str): 
                 credentials = (credentials,)
             if not isinstance(credentials, tuple) or len(credentials) != 1 or (not credentials[0]):
-                raise ValueError('Provide client id only for public flow credentials')
+                raise ValueError('Provide client id only for public or password flow credentials')
         else:
             if not isinstance(credentials, tuple) or len(credentials) != 2 or (not credentials[0] and not credentials[1]):
                 raise ValueError('Provide valid auth credentials')
 
         self._auth_flow_type = auth_flow_type  # 'authorization' or 'credentials' or 'public'
-        if auth_flow_type == 'credentials' and tenant_id == 'common':
-            raise ValueError('When using the "credentials" auth_flow the "tenant_id" must be set')
+        if auth_flow_type in ('credentials', 'password') and tenant_id == 'common':
+            raise ValueError('When using the "credentials" or "password" auth_flow the "tenant_id" must be set')
 
         self.tenant_id = tenant_id
         self.auth = credentials
+        self.username = username
+        self.password = password
         self.scopes = scopes
         self.store_token = True
         token_backend = token_backend or FileSystemTokenBackend(**kwargs)
@@ -505,6 +510,8 @@ class Connection:
                                                 redirect_uri=redirect_uri)
             elif self.auth_flow_type == 'credentials':
                 self.session = self.get_session(scopes=scopes)
+            elif self.auth_flow_type == 'password':
+                self.session = self.get_session(scopes=scopes)
             else:
                 raise ValueError('"auth_flow_type" must be "authorization", "public" or "credentials"')
 
@@ -527,6 +534,14 @@ class Connection:
                     token_url=self._oauth2_token_url,
                     include_client_id=True,
                     client_secret=self.auth[1],
+                    scope=scopes,
+                    verify=self.verify_ssl))
+            elif self.auth_flow_type == 'password':
+                self.token_backend.token = Token(self.session.fetch_token(
+                    token_url=self._oauth2_token_url,
+                    include_client_id=True,
+                    username=self.username,
+                    password=self.password,
                     scope=scopes,
                     verify=self.verify_ssl))
         except Exception as e:
@@ -559,6 +574,8 @@ class Connection:
             oauth_client = WebApplicationClient(client_id=client_id)
         elif self.auth_flow_type == 'credentials':
             oauth_client = BackendApplicationClient(client_id=client_id)
+        elif self.auth_flow_type == 'password':
+            oauth_client = LegacyApplicationClient(client_id=client_id)
         else:
             raise ValueError('"auth_flow_type" must be "authorization", "credentials" or "public"')
 
@@ -571,7 +588,7 @@ class Connection:
                 raise RuntimeError('No auth token found. Authentication Flow needed')
 
             oauth_client.token = token
-            if self.auth_flow_type in ('authorization', 'public'):
+            if self.auth_flow_type in ('authorization', 'public', 'password'):
                 requested_scopes = None  # the scopes are already in the token (Not if type is backend)
             session = OAuth2Session(client_id=client_id,
                                     client=oauth_client,
@@ -642,7 +659,7 @@ class Connection:
                         client_secret=client_secret,
                         verify=self.verify_ssl)
                 )
-            elif self.auth_flow_type == 'public':
+            elif self.auth_flow_type in ('public', 'password'):
                 client_id = self.auth[0]
                 self.token_backend.token = Token(
                     self.session.refresh_token(
@@ -656,7 +673,7 @@ class Connection:
                     return False
             log.debug('New oauth token fetched by refresh method')
         else:
-            log.error('You can not refresh an access token that has no "refreh_token" available.'
+            log.error('You can not refresh an access token that has no "refresh_token" available.'
                       'Include "offline_access" scope when authenticating to get a "refresh_token"')
             return False
 
@@ -668,10 +685,10 @@ class Connection:
         """ Checks if a delay is needed between requests and sleeps if True """
         if self._previous_request_at:
             dif = round(time.time() - self._previous_request_at,
-                        2) * 1000  # difference in miliseconds
+                        2) * 1000  # difference in milliseconds
             if dif < self.requests_delay:
                 sleep_for = (self.requests_delay - dif)
-                log.debug('Sleeping for {} miliseconds'.format(sleep_for))
+                log.debug('Sleeping for {} milliseconds'.format(sleep_for))
                 time.sleep(sleep_for / 1000)  # sleep needs seconds
         self._previous_request_at = time.time()
 
