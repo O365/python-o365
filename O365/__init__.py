@@ -8,7 +8,7 @@ from .__version__ import __version__
 
 from .account import Account
 from .connection import Connection, Protocol, MSGraphProtocol, MSOffice365Protocol
-from .utils import FileSystemTokenBackend
+from .utils import FileSystemTokenBackend, EnvTokenBackend
 from .message import Message
 
 
