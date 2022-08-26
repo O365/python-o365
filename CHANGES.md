@@ -3,6 +3,16 @@
 Almost every release features a lot of bugfixes but those are not listed here.
 
 
+## Version 2.0.20 (2022-08-26)
+
+### Features:
+- Teams: added pagination to `get_all_chats` (Thanks @jhoult).
+- Message: added access to inferenceClassification in msg object (Thanks @BlueSideStrongSide).
+- Connection: added proxy_http_only flag (Thanks @senor-vu).
+- Connection: added ROPC authentication flow (Thanks @pierfrancesto).
+- Connection: added new `EnvTokenBackend` (Thanks @pierfrancesto).
+ 
+  
 ## Version 2.0.19 (2022-05-26)
 
 ### Features:
