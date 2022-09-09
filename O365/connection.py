@@ -357,6 +357,7 @@ class Connection:
             - 'public': 2 step web style grant flow using an authentication url for public apps where
             client secret cannot be secured
             - 'credentials': also called client credentials grant flow using only the client id and secret
+            - 'certificate': like credentials, but using the client id and a JWT assertion (obtained from a certificate)
         :param str username: The user's email address to provide in case of auth_flow_type == 'password'
         :param str password: The user's password to provide in case of auth_flow_type == 'password'
         :param float or tuple timeout: How long to wait for the server to send
@@ -376,9 +377,10 @@ class Connection:
             if not isinstance(credentials, tuple) or len(credentials) != 2 or (not credentials[0] and not credentials[1]):
                 raise ValueError('Provide valid auth credentials')
 
-        self._auth_flow_type = auth_flow_type  # 'authorization' or 'credentials' or 'public'
-        if auth_flow_type in ('credentials', 'password') and tenant_id == 'common':
-            raise ValueError('When using the "credentials" or "password" auth_flow the "tenant_id" must be set')
+        self._auth_flow_type = auth_flow_type  # 'authorization', 'credentials', 'certificate', 'password', or 'public'
+        if auth_flow_type in ('credentials', 'certificate', 'password') and tenant_id == 'common':
+            raise ValueError('When using the "credentials", "certificate", or "password" auth_flow the "tenant_id" '
+                             'must be set')
 
         self.tenant_id = tenant_id
         self.auth = credentials
@@ -508,12 +510,11 @@ class Connection:
             if self.auth_flow_type in ('authorization', 'public'):
                 self.session = self.get_session(state=state,
                                                 redirect_uri=redirect_uri)
-            elif self.auth_flow_type == 'credentials':
-                self.session = self.get_session(scopes=scopes)
-            elif self.auth_flow_type == 'password':
+            elif self.auth_flow_type in ('credentials', 'certificate', 'password'):
                 self.session = self.get_session(scopes=scopes)
             else:
-                raise ValueError('"auth_flow_type" must be "authorization", "public" or "credentials"')
+                raise ValueError('"auth_flow_type" must be "authorization", "public", "credentials", "password",'
+                                 ' or "certificate"')
 
         try:
             if self.auth_flow_type == 'authorization':
@@ -544,6 +545,14 @@ class Connection:
                     password=self.password,
                     scope=scopes,
                     verify=self.verify_ssl))
+            elif self.auth_flow_type == 'certificate':
+                self.token_backend.token = Token(self.session.fetch_token(
+                    token_url=self._oauth2_token_url,
+                    include_client_id=True,
+                    client_assertion=self.auth[1],
+                    client_assertion_type="urn:ietf:params:oauth:client-assertion-type:jwt-bearer",
+                    scope=scopes,
+                    verify=self.verify_ssl))
         except Exception as e:
             log.error('Unable to fetch auth token. Error: {}'.format(str(e)))
             return False
@@ -572,7 +581,7 @@ class Connection:
 
         if self.auth_flow_type in ('authorization', 'public'):
             oauth_client = WebApplicationClient(client_id=client_id)
-        elif self.auth_flow_type == 'credentials':
+        elif self.auth_flow_type in ('credentials', 'certificate'):
             oauth_client = BackendApplicationClient(client_id=client_id)
         elif self.auth_flow_type == 'password':
             oauth_client = LegacyApplicationClient(client_id=client_id)
@@ -667,7 +676,7 @@ class Connection:
                         client_id=client_id,
                         verify=self.verify_ssl)
                 )
-            elif self.auth_flow_type == 'credentials':
+            elif self.auth_flow_type in ('credentials', 'certificate'):
                 if self.request_token(None, store_token=False) is False:
                     log.error('Refresh for Client Credentials Grant Flow failed.')
                     return False
