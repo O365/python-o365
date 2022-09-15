@@ -42,6 +42,7 @@ class TaskDetails(ApiComponent):
         self.description = cloud_data.get(self._cc('description'), '')
         self.references = cloud_data.get(self._cc('references'), '')
         self.checklist = cloud_data.get(self._cc('checklist'), '')
+        self.preview_type = cloud_data.get(self._cc('previewType'), '')
         self._etag = cloud_data.get('@odata.etag', '')
 
     def __str__(self):
@@ -99,7 +100,7 @@ class TaskDetails(ApiComponent):
 
         if 'references' in data and isinstance(data['references'], dict):
             for key in list(data['references'].keys()):
-                if not '@odata.type' in data['references'][key]:
+                if isinstance(data['checklist'][key], dict) and not '@odata.type' in data['references'][key]:
                     data['references'][key]['@odata.type'] = '#microsoft.graph.plannerExternalReference'
 
                 if any(u in key for u in _unsafe):
@@ -109,7 +110,7 @@ class TaskDetails(ApiComponent):
 
         if 'checklist' in data:
             for key in data['checklist'].keys():
-                if not '@odata.type' in data['checklist'][key]:
+                if isinstance(data['checklist'][key], dict) and not '@odata.type' in data['checklist'][key]:
                     data['checklist'][key]['@odata.type'] = '#microsoft.graph.plannerChecklistItem'
 
         response = self.con.patch(url, data=data, headers = {'If-Match' : self._etag, 'Prefer': 'return=representation'})
@@ -120,7 +121,7 @@ class TaskDetails(ApiComponent):
 
         for key in data:
             value = new_data.get(key, None)
-            if value:
+            if value is not None:
                 setattr(self, self.protocol.to_api_case(key), value)
 
         self._etag = new_data.get('@odata.etag')
@@ -202,7 +203,7 @@ class PlanDetails(ApiComponent):
 
         for key in data:
             value = new_data.get(key, None)
-            if value:
+            if value is not None:
                 setattr(self, self.protocol.to_api_case(key), value)
 
         self._etag = new_data.get('@odata.etag')
@@ -251,19 +252,20 @@ class Task(ApiComponent):
         self.plan_id = cloud_data.get('planId')
         self.bucket_id = cloud_data.get('bucketId')
         self.title = cloud_data.get(self._cc('title'), '')
+        self.priority = cloud_data.get(self._cc('priority'), '')
+        self.assignments = cloud_data.get(self._cc('assignments'), '')
         self.order_hint = cloud_data.get(self._cc('orderHint'), '')
         self.assignee_priority = cloud_data.get(self._cc('assigneePriority'), '')
         self.percent_complete = cloud_data.get(self._cc('percentComplete'), '')
-        self.title = cloud_data.get(self._cc('title'), '')
         self.has_description = cloud_data.get(self._cc('hasDescription'), '')
         created = cloud_data.get(self._cc('createdDateTime'), None)
-        due_date = cloud_data.get(self._cc('dueDateTime'), None)
-        start_date = cloud_data.get(self._cc('startDateTime'), None)
+        due_date_time = cloud_data.get(self._cc('dueDateTime'), None)
+        start_date_time = cloud_data.get(self._cc('startDateTime'), None)
         completed_date = cloud_data.get(self._cc('completedDateTime'), None)
         local_tz = self.protocol.timezone
-        self.start_date = parse(start_date).astimezone(local_tz) if start_date else None
+        self.start_date_time = parse(start_date_time).astimezone(local_tz) if start_date_time else None
         self.created_date = parse(created).astimezone(local_tz) if created else None
-        self.due_date = parse(due_date).astimezone(local_tz) if due_date else None
+        self.due_date_time = parse(due_date_time).astimezone(local_tz) if due_date_time else None
         self.completed_date = parse(completed_date).astimezone(local_tz) if completed_date else None
         self.preview_type = cloud_data.get(self._cc('previewType'), None)
         self.reference_count = cloud_data.get(self._cc('referenceCount'), None)
@@ -323,13 +325,22 @@ class Task(ApiComponent):
 
         data = {self._cc(key): value for key, value in kwargs.items() if
                 key in (
+                    'title',
                     'priority',
+                    'assignments',
                     'order_hint',
-                    'start_date_time',
-                    'due_date_time',
-                    'conversation_thread_id',
                     'assignee_priority',
                     'percent_complete',
+                    'has_description',
+                    'start_date_time',
+                    'created_date',
+                    'due_date_time',
+                    'completed_date',
+                    'preview_type',
+                    'reference_count',
+                    'checklist_item_count',
+                    'active_checklist_item_count',
+                    'conversation_thread_id',
                     'applied_categories',
                 )}
         if not data:
@@ -343,7 +354,7 @@ class Task(ApiComponent):
 
         for key in data:
             value = new_data.get(key, None)
-            if value:
+            if value is not None:
                 setattr(self, self.protocol.to_api_case(key), value)
 
         self._etag = new_data.get('@odata.etag')
@@ -492,14 +503,21 @@ class Bucket(ApiComponent):
 
         kwargs = {self._cc(key): value for key, value in kwargs.items() if
                 key in (
-                    'priority',
-                    'order_hint',
-                    'start_date_time',
-                    'due_date_time',
-                    'conversation_thread_id',
-                    'assignee_priority',
-                    'percent_complete',
-                    'applied_categories',
+                    'priority'
+                    'order_hint'
+                    'assignee_priority'
+                    'percent_complete'
+                    'has_description'
+                    'start_date_time'
+                    'created_date'
+                    'due_date_time'
+                    'completed_date'
+                    'preview_type'
+                    'reference_count'
+                    'checklist_item_count'
+                    'active_checklist_item_count'
+                    'conversation_thread_id'
+                    'applied_categories'
                 )}
 
         data = {
@@ -545,7 +563,7 @@ class Bucket(ApiComponent):
 
         for key in data:
             value = new_data.get(key, None)
-            if value:
+            if value is not None:
                 setattr(self, self.protocol.to_api_case(key), value)
 
         self._etag = new_data.get('@odata.etag')
@@ -754,7 +772,7 @@ class Plan(ApiComponent):
 
         for key in data:
             value = new_data.get(key, None)
-            if value:
+            if value is not None:
                 setattr(self, self.protocol.to_api_case(key), value)
 
         self._etag = new_data.get('@odata.etag')
