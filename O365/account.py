@@ -40,6 +40,13 @@ class Account:
                 kwargs['scopes'] = [self.protocol.prefix_scope('.default')]
             else:
                 raise ValueError(f'Auth flow type "{auth_flow_type}" does not require scopes')
+
+            # set main_resource to blank when it's the 'ME' resource
+            if self.protocol.default_resource == ME_RESOURCE:
+                self.protocol.default_resource = ''
+            if main_resource == ME_RESOURCE:
+                main_resource = ''
+
         elif auth_flow_type == 'password':
             kwargs['scopes'] = self.protocol.get_scopes_for(scopes) if scopes else [self.protocol.prefix_scope('.default')]
 
