@@ -14,9 +14,9 @@ Access to Email, Calendar, Contacts, OneDrive, etc. Are easy to do in a way that
 The project is currently developed and maintained by [Janscas](https://github.com/janscas). 
 
 #### Core developers
+- [Janscas](https://github.com/janscas)
 - [Toben Archer](https://github.com/Narcolapser)
 - [Geethanadh](https://github.com/GeethanadhP)
-- [Janscas](https://github.com/janscas)
 
 **We are always open to new pull requests!**
 
