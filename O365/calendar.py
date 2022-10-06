@@ -861,11 +861,13 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         self.__modified = parse(self.__modified).astimezone(
             local_tz) if self.__modified else None
 
+        self.__is_all_day = cloud_data.get(cc('isAllDay'), False)
+
         start_obj = cloud_data.get(cc('start'), {})
-        self.__start = self._parse_date_time_time_zone(start_obj)
+        self.__start = self._parse_date_time_time_zone(start_obj, self.__is_all_day)
 
         end_obj = cloud_data.get(cc('end'), {})
-        self.__end = self._parse_date_time_time_zone(end_obj)
+        self.__end = self._parse_date_time_time_zone(end_obj, self.__is_all_day)
 
         self.has_attachments = cloud_data.get(cc('hasAttachments'), False)
         self.__attachments = EventAttachments(parent=self, attachments=[])
@@ -875,7 +877,6 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         self.ical_uid = cloud_data.get(cc('iCalUId'), None)
         self.__importance = ImportanceLevel.from_value(
             cloud_data.get(cc('importance'), 'normal') or 'normal')
-        self.__is_all_day = cloud_data.get(cc('isAllDay'), False)
         self.is_cancelled = cloud_data.get(cc('isCancelled'), False)
         self.is_organizer = cloud_data.get(cc('isOrganizer'), True)
         self.__location = cloud_data.get(cc('location'), {})

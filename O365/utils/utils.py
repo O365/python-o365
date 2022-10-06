@@ -411,7 +411,7 @@ class ApiComponent:
         """ Alias for protocol.convert_case """
         return self.protocol.convert_case(dict_key)
 
-    def _parse_date_time_time_zone(self, date_time_time_zone):
+    def _parse_date_time_time_zone(self, date_time_time_zone, is_all_day=False):
         """ Parses and convert to protocol timezone a dateTimeTimeZone resource
         This resource is a dict with a date time and a windows timezone
         This is a common structure on Microsoft apis so it's included here.
@@ -434,7 +434,10 @@ class ApiComponent:
                 date_time = None
 
             if date_time and timezone != local_tz:
-                date_time = date_time.astimezone(local_tz)
+                if not is_all_day:
+                    date_time = date_time.astimezone(local_tz)
+                else:
+                    date_time = date_time.replace(tzinfo=local_tz)
         else:
             # Outlook v1.0 api compatibility (fallback to datetime string)
             try:
