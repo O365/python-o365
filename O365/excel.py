@@ -966,7 +966,7 @@ class TableRow(ApiComponent):
             getattr(parent, 'main_resource', None) if parent else None)
 
         # append the encoded column path
-        main_resource = '{}/rows/{}'.format(main_resource, self.object_id)
+        main_resource = '{}/rows/itemAt(index={})'.format(main_resource, self.object_id)
 
         super().__init__(
             protocol=parent.protocol if parent else kwargs.get('protocol'),
