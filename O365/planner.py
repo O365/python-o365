@@ -1,12 +1,12 @@
 import logging
 from datetime import datetime, date
 from dateutil.parser import parse
-from .utils import ApiComponent
+from .utils import ApiComponent, NEXT_LINK_KEYWORD, Pagination
 
 log = logging.getLogger(__name__)
 
-class TaskDetails(ApiComponent):
 
+class TaskDetails(ApiComponent):
     _endpoints = {'task_detail': '/planner/tasks/{id}/details'}
 
     def __init__(self, *, parent=None, con=None, **kwargs):
@@ -113,7 +113,7 @@ class TaskDetails(ApiComponent):
                 if isinstance(data['checklist'][key], dict) and not '@odata.type' in data['checklist'][key]:
                     data['checklist'][key]['@odata.type'] = '#microsoft.graph.plannerChecklistItem'
 
-        response = self.con.patch(url, data=data, headers = {'If-Match' : self._etag, 'Prefer': 'return=representation'})
+        response = self.con.patch(url, data=data, headers={'If-Match': self._etag, 'Prefer': 'return=representation'})
         if not response:
             return False
 
@@ -128,8 +128,8 @@ class TaskDetails(ApiComponent):
 
         return True
 
-class PlanDetails(ApiComponent):
 
+class PlanDetails(ApiComponent):
     _endpoints = {'plan_detail': '/planner/plans/{id}/details'}
 
     def __init__(self, *, parent=None, con=None, **kwargs):
@@ -195,7 +195,7 @@ class PlanDetails(ApiComponent):
         if not data:
             return False
 
-        response = self.con.patch(url, data=data, headers = {'If-Match' : self._etag, 'Prefer': 'return=representation'})
+        response = self.con.patch(url, data=data, headers={'If-Match': self._etag, 'Prefer': 'return=representation'})
         if not response:
             return False
 
@@ -209,6 +209,7 @@ class PlanDetails(ApiComponent):
         self._etag = new_data.get('@odata.etag')
 
         return True
+
 
 class Task(ApiComponent):
     """ A Microsoft Planner task """
@@ -304,7 +305,7 @@ class Task(ApiComponent):
         data = response.json()
 
         return self.task_details_constructor(parent=self,
-                                    **{self._cloud_data_key: data},)
+                                             **{self._cloud_data_key: data}, )
 
     def update(self, **kwargs):
         """ Updates this task
@@ -346,7 +347,7 @@ class Task(ApiComponent):
         if not data:
             return False
 
-        response = self.con.patch(url, data=data, headers = {'If-Match' : self._etag, 'Prefer': 'return=representation'})
+        response = self.con.patch(url, data=data, headers={'If-Match': self._etag, 'Prefer': 'return=representation'})
         if not response:
             return False
 
@@ -374,7 +375,7 @@ class Task(ApiComponent):
         url = self.build_url(
             self._endpoints.get('task').format(id=self.object_id))
 
-        response = self.con.delete(url, headers = {'If-Match' : self._etag})
+        response = self.con.delete(url, headers={'If-Match': self._etag})
         if not response:
             return False
 
@@ -382,8 +383,8 @@ class Task(ApiComponent):
 
         return True
 
-class Bucket(ApiComponent):
 
+class Bucket(ApiComponent):
     _endpoints = {
         'list_tasks': '/planner/buckets/{id}/tasks',
         'create_task': '/planner/tasks',
@@ -457,7 +458,7 @@ class Bucket(ApiComponent):
             self.task_constructor(parent=self, **{self._cloud_data_key: task})
             for task in data.get('value', [])]
 
-    def create_task(self, title, assignments = None, **kwargs):
+    def create_task(self, title, assignments=None, **kwargs):
         """ Creates a Task
 
         :param str title: the title of the task
@@ -502,23 +503,23 @@ class Bucket(ApiComponent):
                 kwargs[k] = v.strftime('%Y-%m-%dT%H:%M:%SZ') if isinstance(v, (datetime, date)) else v
 
         kwargs = {self._cc(key): value for key, value in kwargs.items() if
-                key in (
-                    'priority'
-                    'order_hint'
-                    'assignee_priority'
-                    'percent_complete'
-                    'has_description'
-                    'start_date_time'
-                    'created_date'
-                    'due_date_time'
-                    'completed_date'
-                    'preview_type'
-                    'reference_count'
-                    'checklist_item_count'
-                    'active_checklist_item_count'
-                    'conversation_thread_id'
-                    'applied_categories'
-                )}
+                  key in (
+                      'priority'
+                      'order_hint'
+                      'assignee_priority'
+                      'percent_complete'
+                      'has_description'
+                      'start_date_time'
+                      'created_date'
+                      'due_date_time'
+                      'completed_date'
+                      'preview_type'
+                      'reference_count'
+                      'checklist_item_count'
+                      'active_checklist_item_count'
+                      'conversation_thread_id'
+                      'applied_categories'
+                  )}
 
         data = {
             'title': title,
@@ -535,7 +536,7 @@ class Bucket(ApiComponent):
         task = response.json()
 
         return self.task_constructor(parent=self,
-                                    **{self._cloud_data_key: task})
+                                     **{self._cloud_data_key: task})
 
     def update(self, **kwargs):
         """ Updates this bucket
@@ -555,7 +556,7 @@ class Bucket(ApiComponent):
         if not data:
             return False
 
-        response = self.con.patch(url, data=data, headers = {'If-Match' : self._etag, 'Prefer': 'return=representation'})
+        response = self.con.patch(url, data=data, headers={'If-Match': self._etag, 'Prefer': 'return=representation'})
         if not response:
             return False
 
@@ -583,7 +584,7 @@ class Bucket(ApiComponent):
         url = self.build_url(
             self._endpoints.get('bucket').format(id=self.object_id))
 
-        response = self.con.delete(url, headers = {'If-Match' : self._etag})
+        response = self.con.delete(url, headers={'If-Match': self._etag})
         if not response:
             return False
 
@@ -591,8 +592,8 @@ class Bucket(ApiComponent):
 
         return True
 
-class Plan(ApiComponent):
 
+class Plan(ApiComponent):
     _endpoints = {
         'list_buckets': '/planner/plans/{id}/buckets',
         'list_tasks': '/planner/plans/{id}/tasks',
@@ -674,7 +675,7 @@ class Plan(ApiComponent):
 
     def list_tasks(self):
         """ Returns list of tasks that given plan has
-        :rtype: list[Task]
+        :rtype: list[Task] or Pagination of Task
         """
 
         if not self.object_id:
@@ -686,13 +687,21 @@ class Plan(ApiComponent):
         response = self.con.get(url)
 
         if not response:
-            return None
+            return []
 
         data = response.json()
+        next_link = data.get(NEXT_LINK_KEYWORD, None)
 
-        return [
+        tasks = [
             self.task_constructor(parent=self, **{self._cloud_data_key: task})
             for task in data.get('value', [])]
+
+        if next_link:
+            return Pagination(parent=self, data=tasks,
+                              constructor=self.task_constructor,
+                              next_link=next_link)
+        else:
+            return tasks
 
     def get_details(self):
         """ Returns Microsoft O365/AD plan with given id
@@ -714,9 +723,9 @@ class Plan(ApiComponent):
         data = response.json()
 
         return self.plan_details_constructor(parent=self,
-                                    **{self._cloud_data_key: data},)
+                                             **{self._cloud_data_key: data}, )
 
-    def create_bucket(self, name, order_hint = ' !'):
+    def create_bucket(self, name, order_hint=' !'):
         """ Creates a Bucket
 
         :param str name: the name of the bucket
@@ -744,7 +753,7 @@ class Plan(ApiComponent):
         bucket = response.json()
 
         return self.bucket_constructor(parent=self,
-                                    **{self._cloud_data_key: bucket})
+                                       **{self._cloud_data_key: bucket})
 
     def update(self, **kwargs):
         """ Updates this plan
@@ -764,7 +773,7 @@ class Plan(ApiComponent):
         if not data:
             return False
 
-        response = self.con.patch(url, data=data, headers = {'If-Match' : self._etag, 'Prefer': 'return=representation'})
+        response = self.con.patch(url, data=data, headers={'If-Match': self._etag, 'Prefer': 'return=representation'})
         if not response:
             return False
 
@@ -792,13 +801,14 @@ class Plan(ApiComponent):
         url = self.build_url(
             self._endpoints.get('plan').format(id=self.object_id))
 
-        response = self.con.delete(url, headers = {'If-Match' : self._etag})
+        response = self.con.delete(url, headers={'If-Match': self._etag})
         if not response:
             return False
 
         self.object_id = None
 
         return True
+
 
 class Planner(ApiComponent):
     """ A microsoft planner class
@@ -866,7 +876,7 @@ class Planner(ApiComponent):
             self.task_constructor(parent=self, **{self._cloud_data_key: site})
             for site in data.get('value', [])]
 
-    def get_plan_by_id(self, plan_id = None):
+    def get_plan_by_id(self, plan_id=None):
         """ Returns Microsoft O365/AD plan with given id
 
         :param plan_id: plan id of plan
@@ -888,9 +898,9 @@ class Planner(ApiComponent):
         data = response.json()
 
         return self.plan_constructor(parent=self,
-                                    **{self._cloud_data_key: data},)
+                                     **{self._cloud_data_key: data}, )
 
-    def get_bucket_by_id(self, bucket_id = None):
+    def get_bucket_by_id(self, bucket_id=None):
         """ Returns Microsoft O365/AD plan with given id
 
         :param bucket_id: bucket id of buckets
@@ -912,9 +922,9 @@ class Planner(ApiComponent):
         data = response.json()
 
         return self.bucket_constructor(parent=self,
-                                **{self._cloud_data_key: data})
+                                       **{self._cloud_data_key: data})
 
-    def get_task_by_id(self, task_id = None):
+    def get_task_by_id(self, task_id=None):
         """ Returns Microsoft O365/AD plan with given id
 
         :param task_id: task id of tasks
@@ -936,9 +946,9 @@ class Planner(ApiComponent):
         data = response.json()
 
         return self.task_constructor(parent=self,
-                                **{self._cloud_data_key: data})
+                                     **{self._cloud_data_key: data})
 
-    def list_user_tasks(self, user_id = None):
+    def list_user_tasks(self, user_id=None):
         """ Returns Microsoft O365/AD plan with given id
 
         :param user_id: user id
@@ -963,7 +973,7 @@ class Planner(ApiComponent):
             self.task_constructor(parent=self, **{self._cloud_data_key: task})
             for task in data.get('value', [])]
 
-    def list_group_plans(self, group_id = None):
+    def list_group_plans(self, group_id=None):
         """ Returns list of plans that given group has
         :param group_id: group id
         :rtype: list[Plan]
@@ -986,7 +996,7 @@ class Planner(ApiComponent):
             self.plan_constructor(parent=self, **{self._cloud_data_key: plan})
             for plan in data.get('value', [])]
 
-    def create_plan(self, owner, title = 'Tasks'):
+    def create_plan(self, owner, title='Tasks'):
         """ Creates a Plan
 
         :param str owner: the id of the group that will own the plan
@@ -1009,4 +1019,4 @@ class Planner(ApiComponent):
         plan = response.json()
 
         return self.plan_constructor(parent=self,
-                                    **{self._cloud_data_key: plan})
+                                     **{self._cloud_data_key: plan})
