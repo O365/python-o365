@@ -83,7 +83,8 @@ class EventAttachment(BaseAttachment):
 class EventAttachments(BaseAttachments):
     _endpoints = {
         'attachments': '/events/{id}/attachments',
-        'attachment': '/events/{id}/attachments/{ida}'
+        'attachment': '/events/{id}/attachments/{ida}',
+        'create_upload_session': '/events/{id}/attachments/createUploadSession'
     }
 
     _attachment_constructor = EventAttachment
