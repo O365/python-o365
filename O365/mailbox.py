@@ -516,9 +516,58 @@ class Folder(ApiComponent):
 
 class MailBox(Folder):
     folder_constructor = Folder
+    _endpoints = {
+        'settings': '/mailboxSettings',
+    }
 
     def __init__(self, *, parent=None, con=None, **kwargs):
         super().__init__(parent=parent, con=con, root=True, **kwargs)
+
+    def set_automatic_reply(self, internal_text, external_text, scheduled_start_date_time,  scheduled_stop_date_time, timezone):
+        """ Set an automatic reply for the mailbox.
+
+        :return: Success / Failure
+        :rtype: bool
+        """
+        url = self.build_url(self._endpoints.get('settings'))
+
+        data = {
+            self._cc('automaticRepliesSetting'): {
+                self._cc('status'): 'scheduled',
+                self._cc('internalReplyMessage'): internal_text,
+                self._cc('externalReplyMessage'): external_text,
+                self._cc('scheduledStartDateTime'): {
+                    self._cc('dateTime'): scheduled_start_date_time,
+                    self._cc('timeZone'): timezone,
+                },
+                self._cc('scheduledEndDateTime'): {
+                    self._cc('dateTime'): scheduled_stop_date_time,
+                    self._cc('timeZone'): timezone,
+                },
+            }
+        }
+
+        response = self.con.patch(url, data=data)
+
+        return bool(response)
+
+    def set_disable_reply(self):
+        """ Disable the automatic reply for the mailbox.
+
+        :return: Success / Failure
+        :rtype: bool
+        """
+        url = self.build_url(self._endpoints.get('settings'))
+
+        data = {
+            self._cc('automaticRepliesSetting'): {
+                self._cc('status'): 'disabled',
+            }
+        }
+
+        response = self.con.patch(url, data=data)
+
+        return bool(response)
 
     def inbox_folder(self):
         """ Shortcut to get Inbox Folder instance
