@@ -681,6 +681,9 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
                 if key not in restrict_keys:
                     del message[key]
 
+        if self.message_headers:
+            message[cc('internetMessageHeaders')] = self.message_headers
+
         return message
 
     def send(self, save_to_sent_folder=True):
