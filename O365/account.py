@@ -255,13 +255,12 @@ class Account:
     def tasks(self, *, resource=''):
         """ Get an instance to read information from Microsoft ToDo """
 
-        if not isinstance(self.protocol, MSOffice365Protocol):
-            raise RuntimeError(
-                'todo api only works on Microsoft Office 365 API')
+        if isinstance(self.protocol, MSOffice365Protocol):
+            from .tasks import ToDo
+        else:
+            from .tasks_graph import ToDo as ToDo
 
-        from .tasks import ToDo
         return ToDo(parent=self, main_resource=resource)
-
     
     def teams(self, *, resource=''):
         """ Get an instance to read information from Microsoft Teams """
