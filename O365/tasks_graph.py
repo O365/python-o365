@@ -619,7 +619,7 @@ class ToDo(ApiComponent):
         """Representation of the ToDo via the Graph api as."""
         return "Microsoft To-Do"
 
-    def list_folders(self, limit=None):
+    def list_folders(self, query=None, limit=None):
         """Return a list of folders.
 
         To use query an order_by check the OData specification here:
@@ -634,6 +634,12 @@ class ToDo(ApiComponent):
         params = {}
         if limit:
             params["$top"] = limit
+
+        if query:
+            if isinstance(query, str):
+                params["$filter"] = query
+            else:
+                params |= query.as_params()
 
         response = self.con.get(url, params=params or None)
         if not response:
@@ -694,10 +700,9 @@ class ToDo(ApiComponent):
                 else None
             )
 
-        folders = self.list_folders(limit=50)
-        for folder in folders:
-            if folder_name and folder.name == folder_name:
-                return folder
+        query = self.new_query("displayName").equals(folder_name)
+        folders = self.list_folders(query=query)
+        return folders[0]
 
     def get_default_folder(self):
         """Return the default folder for the current user.
@@ -706,6 +711,7 @@ class ToDo(ApiComponent):
         """
         folders = self.list_folders()
         for folder in folders:
+            print(folder)
             if folder.is_default:
                 return folder
 
