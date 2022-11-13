@@ -90,6 +90,10 @@ class Task(ApiComponent):
         due_obj = cloud_data.get(cc("dueDateTime"), {})
         self.__due = self._parse_date_time_time_zone(due_obj)
 
+        reminder_obj = cloud_data.get(cc("reminderDateTime"), {})
+        self.__reminder = self._parse_date_time_time_zone(reminder_obj)
+        self.__is_reminder_on = cloud_data.get(cc("isReminderOn"), False)
+
         completed_obj = cloud_data.get(cc("completedDateTime"), {})
         self.__completed = self._parse_date_time_time_zone(completed_obj)
 
@@ -136,6 +140,14 @@ class Task(ApiComponent):
         if self.__due:
             data[cc("dueDateTime")] = self._build_date_time_time_zone(self.__due)
 
+        if self.__reminder:
+            data[cc("reminderDateTime")] = self._build_date_time_time_zone(
+                self.__reminder
+            )
+            data[cc("isReminderOn")] = True
+        else:
+            data[cc("isReminderOn")] = False
+
         if self.__completed:
             data[cc("completedDateTime")] = self._build_date_time_time_zone(
                 self.__completed
@@ -173,6 +185,11 @@ class Task(ApiComponent):
         """
         return self.__body
 
+    @body.setter
+    def body(self, value):
+        self.__body = value
+        self._track_changes.add(self._cc("body"))
+
     @property
     def importance(self):
         """Return Task importance.
@@ -190,11 +207,6 @@ class Task(ApiComponent):
         :type: bool
         """
         return self.__importance.casefold() == "high".casefold()
-
-    @body.setter
-    def body(self, value):
-        self.__body = value
-        self._track_changes.add(self._cc("body"))
 
     @property
     def title(self):
@@ -235,6 +247,47 @@ class Task(ApiComponent):
             value = value.astimezone(self.protocol.timezone)
         self.__due = value
         self._track_changes.add(self._cc("dueDateTime"))
+
+    @property
+    def reminder(self):
+        """Reminder Time of task.
+
+        :getter: get the reminder time
+        :setter: set the reminder time
+        :type: datetime
+        """
+        return self.__reminder
+
+    @reminder.setter
+    def reminder(self, value):
+        if not isinstance(value, dt.date):
+            raise ValueError("'reminder' must be a valid datetime object")
+        if not isinstance(value, dt.datetime):
+            # force datetime
+            value = dt.datetime(value.year, value.month, value.day)
+        if value.tzinfo is None:
+            # localize datetime
+            value = self.protocol.timezone.localize(value)
+        elif value.tzinfo != self.protocol.timezone:
+            value = value.astimezone(self.protocol.timezone)
+        self.__reminder = value
+        self.is_reminder_on = True
+        self._track_changes.add(self._cc("reminderDateTime"))
+
+    @property
+    def is_reminder_on(self):
+        """Return isReminderOn of the task.
+
+        :getter: Get isReminderOn
+        :setter: Set isReminderOn
+        :type: bool
+        """
+        return self.__is_reminder_on
+
+    @is_reminder_on.setter
+    def is_reminder_on(self, value):
+        self.__is_reminder_on = value
+        self._track_changes.add(self._cc("isReminderOn"))
 
     @property
     def completed(self):
@@ -711,7 +764,6 @@ class ToDo(ApiComponent):
         """
         folders = self.list_folders()
         for folder in folders:
-            print(folder)
             if folder.is_default:
                 return folder
 
