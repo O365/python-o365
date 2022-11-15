@@ -1001,7 +1001,7 @@ for event in birthdays:
 
 ## Tasks
 
-The tasks functionality is grouped in a `ToDo` object. Note that the tasks functionality currently only works with the `MSOffice365Protocol` protocol.
+The tasks functionality is grouped in a `ToDo` object. Note that attributes are slightly different between `MSOffice365Protocol` and `MSGRaphProtocol` protocol.
 
 A `ToDo` instance can list and create task folders. It can also list or create tasks on the default user folder. To use other folders use a `Folder` instance.  
 
@@ -1022,7 +1022,8 @@ todo = account.tasks()
 #list current tasks
 folder = todo.get_default_folder()
 new_task = folder.new_task()  # creates a new unsaved task 
-new_task.subject = 'Send contract to George Best'
+new_task.subject = 'Send contract to George Best'  # MSOffice365Protocol
+new_task.title = 'Send contract to George Best'  # MSGraphProtocol
 new_task.due = dt.datetime(2020, 9, 25, 18, 30) 
 new_task.save()
 
