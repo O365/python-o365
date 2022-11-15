@@ -1,4 +1,4 @@
-"""Methods for accessing MS Tasks/Todos vis the MS Graph api."""
+"""Methods for accessing MS Tasks/Todos via the MS Graph api."""
 import datetime as dt
 import logging
 
@@ -31,7 +31,7 @@ class Task(ApiComponent):
         """Representation of a Microsoft To-Do task.
 
         :param parent: parent object
-        :type parent: ToDo
+        :type parent: Folder
         :param Connection con: connection to use if no parent specified
         :param Protocol protocol: protocol to use if no parent specified
          (kwargs)
@@ -133,10 +133,13 @@ class Task(ApiComponent):
 
         data = {
             cc("title"): self.__title,
-            cc("body"): {cc("contentType"): self.body_type, cc("content"): self.__body},
+            cc("body"): {
+                cc("contentType"): self.body_type,
+                cc("content"): self.__body
+            },
+            cc("status"): "completed" if self.__is_completed else "notStarted"
         }
 
-        data[cc("status")] = "completed" if self.__is_completed else "notStarted"
         if self.__due:
             data[cc("dueDateTime")] = self._build_date_time_time_zone(self.__due)
 
@@ -543,6 +546,7 @@ class Folder(ApiComponent):
     def get_tasks(self, query=None, batch=None, order_by=None):
         """Return list of tasks of a specified folder.
 
+        :param query: the query string or object to query tasks
         :param batch: the batch on to retrieve tasks.
         :param order_by: the order clause to apply to returned tasks.
 
@@ -676,9 +680,10 @@ class ToDo(ApiComponent):
         """Return a list of folders.
 
         To use query an order_by check the OData specification here:
-        http://docs.oasis-open.org/odata/odata/v4.0/errata03/os/complete/
+        https://docs.oasis-open.org/odata/odata/v4.0/errata03/os/complete/
         part2-url-conventions/odata-v4.0-errata03-os-part2-url-conventions
         -complete.html
+        :param query: the query string or object to list folders
         :param int limit: max no. of folders to get. Over 999 uses batch.
         :rtype: list[Folder]
         """
@@ -783,7 +788,7 @@ class ToDo(ApiComponent):
     def new_task(self, title=None):
         """Return a new (unsaved) Event object in the default folder.
 
-        :param str subject: subject text for the new task
+        :param str title: subject text for the new task
         :return: new task
         :rtype: Event
         """
