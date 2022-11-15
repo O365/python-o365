@@ -66,7 +66,7 @@ class Task(ApiComponent):
         cloud_data = kwargs.get(self._cloud_data_key, {})
 
         self.task_id = cloud_data.get(cc("id"), None)
-        self.__title = cloud_data.get(cc("title"), kwargs.get("title", "") or "")
+        self.__subject = cloud_data.get(cc("title"), kwargs.get("subject", "") or "")
         body = cloud_data.get(cc("body"), {})
         self.__body = body.get(cc("content"), "")
         self.body_type = body.get(
@@ -117,7 +117,7 @@ class Task(ApiComponent):
         else:
             compl_str = ""
 
-        return f"Task: ({marker}) {self.__title} {due_str} {compl_str}"
+        return f"Task: ({marker}) {self.__subject} {due_str} {compl_str}"
 
     def __eq__(self, other):
         """Comparison of tasks."""
@@ -132,12 +132,9 @@ class Task(ApiComponent):
         cc = self._cc  # pylint: disable=invalid-name
 
         data = {
-            cc("title"): self.__title,
-            cc("body"): {
-                cc("contentType"): self.body_type,
-                cc("content"): self.__body
-            },
-            cc("status"): "completed" if self.__is_completed else "notStarted"
+            cc("title"): self.__subject,
+            cc("body"): {cc("contentType"): self.body_type, cc("content"): self.__body},
+            cc("status"): "completed" if self.__is_completed else "notStarted",
         }
 
         if self.__due:
@@ -212,18 +209,18 @@ class Task(ApiComponent):
         return self.__importance.casefold() == "high".casefold()
 
     @property
-    def title(self):
-        """Title of the task.
+    def subject(self):
+        """Subject of the task.
 
-        :getter: Get title
-        :setter: Set title of task
+        :getter: Get subject
+        :setter: Set subject of task
         :type: str
         """
-        return self.__title
+        return self.__subject
 
-    @title.setter
-    def title(self, value):
-        self.__title = value
+    @subject.setter
+    def subject(self, value):
+        self.__subject = value
         self._track_changes.add(self._cc("title"))
 
     @property
@@ -584,9 +581,11 @@ class Folder(ApiComponent):
             for task in data.get("value", [])
         )
 
-    def new_task(self, title=None):
+    def new_task(self, subject=None):
         """Create a task within a specified folder."""
-        return self.task_constructor(parent=self, title=title, folder_id=self.folder_id)
+        return self.task_constructor(
+            parent=self, subject=subject, folder_id=self.folder_id
+        )
 
     def get_task(self, param):
         """Return a Task instance by it's id.
@@ -785,12 +784,12 @@ class ToDo(ApiComponent):
 
         return default_folder.get_tasks(order_by=order_by, batch=batch)
 
-    def new_task(self, title=None):
+    def new_task(self, subject=None):
         """Return a new (unsaved) Event object in the default folder.
 
-        :param str title: subject text for the new task
+        :param str subjct: subject text for the new task
         :return: new task
         :rtype: Event
         """
         default_folder = self.get_default_folder()
-        return default_folder.new_task(title=title)
+        return default_folder.new_task(subject=subject)
