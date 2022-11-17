@@ -3,6 +3,14 @@
 Almost every release features a lot of bugfixes but those are not listed here.
 
 
+## Version 2.0.22 (2022-11-17)
+
+###Features:
+- NEW: Added Tasks for MS GRAPH Protocol(Thanks @RogerSelwyn)
+- NEW: Mailbox can now set auto reply (Thanks @lodesmets)
+- Planner: Added pagination to Plan.list_tasks (Thanks @hcallen)
+
+
 ## Version 2.0.21 (2022-09-23)
 
 ###Features:
