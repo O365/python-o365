@@ -787,7 +787,7 @@ class ToDo(ApiComponent):
     def new_task(self, subject=None):
         """Return a new (unsaved) Event object in the default folder.
 
-        :param str subjct: subject text for the new task
+        :param str subject: subject text for the new task
         :return: new task
         :rtype: Event
         """
