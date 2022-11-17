@@ -8,10 +8,10 @@
 
 > Detailed usage documentation is [still in progress](https://o365.github.io/python-o365/latest/index.html)
 
-This project aims to make interacting with Microsoft Graph and Office 365 easy to do in a Pythonic way. 
+This project aims to make interacting with Microsoft Graph and Office 365 easy to do in a Pythonic way.
 Access to Email, Calendar, Contacts, OneDrive, etc. Are easy to do in a way that feel easy and straight forward to beginners and feels just right to seasoned python programmer.
 
-The project is currently developed and maintained by [Janscas](https://github.com/janscas). 
+The project is currently developed and maintained by [Janscas](https://github.com/janscas).
 
 #### Core developers
 - [Janscas](https://github.com/janscas)
@@ -22,7 +22,7 @@ The project is currently developed and maintained by [Janscas](https://github.co
 
 #### Rebuilding HTML Docs
 - Install `sphinx` python library
-    
+
     `pip install sphinx==2.2.2`
 
 - Run the shell script `build_docs.sh`, or copy the command from the file when using on windows
@@ -100,8 +100,8 @@ Project dependencies installed by pip:
  - python-dateutil
  - tzlocal
  - pytz
- 
- 
+
+
 ## Usage
 The first step to be able to work with this library is to register an application and retrieve the auth token. See [Authentication](#authentication).
 
@@ -132,15 +132,15 @@ You can only authenticate using oauth athentication as Microsoft deprecated basi
 
 There are currently three authentication methods:
 
-- [Authenticate on behalf of a user](https://docs.microsoft.com/en-us/graph/auth-v2-user?context=graph%2Fapi%2F1.0&view=graph-rest-1.0): 
-Any user will give consent to the app to access it's resources. 
+- [Authenticate on behalf of a user](https://docs.microsoft.com/en-us/graph/auth-v2-user?context=graph%2Fapi%2F1.0&view=graph-rest-1.0):
+Any user will give consent to the app to access it's resources.
 This oauth flow is called **authorization code grant flow**. This is the default authentication method used by this library.
 - [Authenticate on behalf of a user (public)](https://docs.microsoft.com/en-us/graph/auth-v2-user?context=graph%2Fapi%2F1.0&view=graph-rest-1.0):
 Same as the former but for public apps where the client secret can't be secured. Client secret is not required.
-- [Authenticate with your own identity](https://docs.microsoft.com/en-us/graph/auth-v2-service?context=graph%2Fapi%2F1.0&view=graph-rest-1.0): 
-This will use your own identity (the app identity). This oauth flow is called **client credentials grant flow**. 
+- [Authenticate with your own identity](https://docs.microsoft.com/en-us/graph/auth-v2-service?context=graph%2Fapi%2F1.0&view=graph-rest-1.0):
+This will use your own identity (the app identity). This oauth flow is called **client credentials grant flow**.
 
-    > 'Authenticate with your own identity' is not an allowed method for **Microsoft Personal accounts**. 
+    > 'Authenticate with your own identity' is not an allowed method for **Microsoft Personal accounts**.
 
 When to use one or the other and requirements:
 
@@ -172,7 +172,7 @@ This section is explained using Microsoft Graph Protocol, almost the same applie
     1. Login at [Azure Portal (App Registrations)](https://portal.azure.com/#blade/Microsoft_AAD_RegisteredApps/ApplicationsListBlade)
     1. Create an app. Set a name.
     1. In Supported account types choose "Accounts in any organizational directory and personal Microsoft accounts (e.g. Skype, Xbox, Outlook.com)", if you are using a personal account.
-    1. Set the redirect uri (Web) to: `https://login.microsoftonline.com/common/oauth2/nativeclient` and click register. This needs to be inserted into the "Redirect URI" text box as simply checking the check box next to this link seems to be insufficent. This is the default redirect uri used by this library, but you can use any other if you want. 
+    1. Set the redirect uri (Web) to: `https://login.microsoftonline.com/common/oauth2/nativeclient` and click register. This needs to be inserted into the "Redirect URI" text box as simply checking the check box next to this link seems to be insufficent. This is the default redirect uri used by this library, but you can use any other if you want.
     1. Write down the Application (client) ID. You will need this value.
     1. Under "Certificates & secrets", generate a new client secret. Set the expiration preferably to never. Write down the value of the client secret created now. It will be hidden later on.
     1. Under Api Permissions:
@@ -182,83 +182,83 @@ This section is explained using Microsoft Graph Protocol, almost the same applie
         - When authenticating "with your own identity":
             1. add the **application permissions** for Microsoft Graph you want.
             1. Click on the Grant Admin Consent button (if you have admin permissions) or wait until the admin has given consent to your application.
-        
+
         As an example, to read and send emails use:
         1. Mail.ReadWrite
         1. Mail.Send
         1. User.Read
-    
+
 1. Then you need to login for the first time to get the access token that will grant access to the user resources.
-    
+
     To authenticate (login) you can use [different authentication interfaces](#different-authentication-interfaces). On the following examples we will be using the Console Based Interface but you can use any one.
-    
+
     - When authenticating on behalf of a user:
-        
-        > **Important:** In case you can't secure the client secret you can use the auth flow type 'public' which only requires the client id. 
-    
+
+        > **Important:** In case you can't secure the client secret you can use the auth flow type 'public' which only requires the client id.
+
         1. Instantiate an `Account` object with the credentials (client id and client secret).
         1. Call `account.authenticate` and pass the scopes you want (the ones you previously added on the app registration portal).
-        
-            > Note: when using the "on behalf of a user" authentication, you can pass the scopes to either the `Account` init or to the authenticate method. Either way is correct. 
-    
+
+            > Note: when using the "on behalf of a user" authentication, you can pass the scopes to either the `Account` init or to the authenticate method. Either way is correct.
+
             You can pass "protocol scopes" (like: "https://graph.microsoft.com/Calendars.ReadWrite") to the method or use "[scope helpers](https://github.com/O365/python-o365/blob/master/O365/connection.py#L34)" like ("message_all").
-            If you pass protocol scopes, then the `account` instance must be initialized with the same protocol used by the scopes. By using scope helpers you can abstract the protocol from the scopes and let this library work for you.   
+            If you pass protocol scopes, then the `account` instance must be initialized with the same protocol used by the scopes. By using scope helpers you can abstract the protocol from the scopes and let this library work for you.
             Finally, you can mix and match "protocol scopes" with "scope helpers".
             Go to the [procotol section](#protocols) to know more about them.
-        
+
             For Example (following the previous permissions added):
-            
+
             ```python
             from O365 import Account
             credentials = ('my_client_id', 'my_client_secret')
-           
+
             # the default protocol will be Microsoft Graph
             # the default authentication method will be "on behalf of a user"
-           
+
             account = Account(credentials)
             if account.authenticate(scopes=['basic', 'message_all']):
                print('Authenticated!')
-           
+
             # 'basic' adds: 'offline_access' and 'https://graph.microsoft.com/User.Read'
             # 'message_all' adds: 'https://graph.microsoft.com/Mail.ReadWrite' and 'https://graph.microsoft.com/Mail.Send'
             ```
             When using the "on behalf of the user" authentication method, this method call will print a url that the user must visit to give consent to the app on the required permissions.
-        
+
             The user must then visit this url and give consent to the application. When consent is given, the page will rediret to: "https://login.microsoftonline.com/common/oauth2/nativeclient" by default (you can change this) with a url query param called 'code'.
-        
+
             Then the user must copy the resulting page url and paste it back on the console.
             The method will then return True if the login attempt was succesful.
-    
+
     - When authenticating with your own identity:
-    
+
         1. Instantiate an `Account` object with the credentials (client id and client secret), specifying the parameter `auth_flow_type` to *"credentials"*. You also need to provide a 'tenant_id'. You don't need to specify any scopes.
         1. Call `account.authenticate`. This call will request a token for you and store it in the backend. No user interaction is needed. The method will store the token in the backend and return True if the authentication succeeded.
-            
+
             For Example:
             ```python
             from O365 import Account
-           
+
             credentials = ('my_client_id', 'my_client_secret')
-           
+
             # the default protocol will be Microsoft Graph
-           
+
             account = Account(credentials, auth_flow_type='credentials', tenant_id='my-tenant-id')
             if account.authenticate():
                print('Authenticated!')
             ```
-   
-1. At this point you will have an access token stored that will provide valid credentials when using the api. 
+
+1. At this point you will have an access token stored that will provide valid credentials when using the api.
 
     The access token only lasts **60 minutes**, but the app try will automatically request new access tokens.
-    
+
     When using the "on behalf of a user" authentication method this is accomplished through the refresh tokens (if and only if you added the "offline_access" permission), but note that a refresh token only lasts for 90 days. So you must use it before or you will need to request a new access token again (no new consent needed by the user, just a login).
     If your application needs to work for more than 90 days without user interaction and without interacting with the API, then you must implement a periodic call to `Connection.refresh_token` before the 90 days have passed.
-    
+
     **Take care: the access (and refresh) token must remain protected from unauthorized users.**
-    
+
     Under the "on behalf of a user" authentication method, if you change the scope requested, then the current token won't work, and you will need the user to give consent again on the application to gain access to the new scopes requested.
 
-    
+
 ##### Different Authentication Interfaces
 
 To acomplish the authentication you can basically use different approaches.
@@ -268,65 +268,65 @@ For the "with your own identity" authentication method, you can just use `accoun
 1. Console based authentication interface:
 
     You can authenticate using a console. The best way to achieve this is by using the `authenticate` method of the `Account` class.
-    
+
     ```python
     account = Account(credentials)
     account.authenticate(scopes=['basic', 'message_all'])
     ```
-    
+
     The `authenticate` method will print into the console a url that you will have to visit to achieve authentication.
     Then after visiting the link and authenticate you will have to paste back the resulting url into the console.
     The method will return `True` and print a message if it was succesful.
-    
+
     **Tip:** When using MacOs the console is limited to 1024 characters. If your url has multiple scopes it can exceed this limit. To solve this. Just `import readline` a the top of your script.
-   
+
 1. Web app based authentication interface:
 
     You can authenticate your users in a web environment by following this steps:
-    
+
     1. First ensure you are using an appropiate TokenBackend to store the auth tokens (See Token storage below).
     1. From a handler redirect the user to the Microsoft login url. Provide a callback. Store the state.
     1. From the callback handler complete the authentication with the state and other data.
-    
+
     The following example is done using Flask.
-    ```python    
+    ```python
     @route('/stepone')
     def auth_step_one():
-    
+
         callback = 'my absolute url to auth_step_two_callback'
         account = Account(credentials)
         url, state = account.con.get_authorization_url(requested_scopes=my_scopes,
                                                        redirect_uri=callback)
-        
+
         # the state must be saved somewhere as it will be needed later
         my_db.store_state(state) # example...
-        
+
         return redirect(url)
-    
+
     @route('/steptwo')
     def auth_step_two_callback():
         account = Account(credentials)
-        
+
         # retreive the state saved in auth_step_one
         my_saved_state = my_db.get_state()  # example...
-        
+
         # rebuild the redirect_uri used in auth_step_one
         callback = 'my absolute url to auth_step_two_callback'
-        
-        result = account.con.request_token(request.url, 
+
+        result = account.con.request_token(request.url,
                                            state=my_saved_state,
                                            redirect_uri=callback)
-        # if result is True, then authentication was succesful 
+        # if result is True, then authentication was succesful
         #  and the auth token is stored in the token backend
         if result:
             return render_template('auth_complete.html')
         # else ....
-    ``` 
+    ```
 
 1. Other authentication interfaces:
 
     Finally you can configure any other flow by using `connection.get_authorization_url` and `connection.request_token` as you want.
-    
+
 
 ##### Permissions and Scopes:
 
@@ -334,7 +334,7 @@ For the "with your own identity" authentication method, you can just use `accoun
 
 When using oauth, you create an application and allow some resources to be accessed and used by its users.
 These resources are managed with permissions. These can either be delegated (on behalf of a user) or aplication permissions.
-The former are used when the authentication method is "on behalf of a user". Some of these require administrator consent. 
+The former are used when the authentication method is "on behalf of a user". Some of these require administrator consent.
 The latter when using the "with your own identity" authentication method. All of these require administrator consent.
 
 ###### Scopes
@@ -369,8 +369,8 @@ Scope implementation depends on the protocol used. So by using protocol data you
 This is implemented by using 'scope helpers'. Those are little helpers that group scope functionallity and abstract the procotol used.
 
 Scope Helper                       | Scopes included
-:---                               | :---  
-basic                              | 'offline_access' and 'User.Read'     
+:---                               | :---
+basic                              | 'offline_access' and 'User.Read'
 mailbox                            | 'Mail.Read'
 mailbox_shared                     | 'Mail.Read.Shared'
 message_send                       | 'Mail.Send'
@@ -415,7 +415,7 @@ account = Account(credentials, scopes=scopes_office)
 ```
 
 > Note: When passing scopes at the `Account` initialization or on the `account.authenticate` method, the scope helpers are autommatically converted to the protocol flavor.
->Those are the only places where you can use scope helpers. Any other object using scopes (such as the `Connection` object) expects scopes that are already set for the protocol. 
+>Those are the only places where you can use scope helpers. Any other object using scopes (such as the `Connection` object) expects scopes that are already set for the protocol.
 
 
 
@@ -435,7 +435,7 @@ Methods that load tokens:
 
 Methods that stores tokens:
 - `connection.request_token`: by default will store the token, but you can set `store_token=False` to avoid it.
-- `connection.refresh_token`: by default will store the token. To avoid it change `connection.store_token` to False. This however it's a global setting (that only affects the `refresh_token` method). If you only want the next refresh operation to not store the token you will have to set it back to True afterwards. 
+- `connection.refresh_token`: by default will store the token. To avoid it change `connection.store_token` to False. This however it's a global setting (that only affects the `refresh_token` method). If you only want the next refresh operation to not store the token you will have to set it back to True afterwards.
 
 To store the token you will have to provide a properly configured TokenBackend.
 
@@ -482,15 +482,15 @@ account = Account(credentials, token_backend=token_backend)
 ```
 
 To implement a new TokenBackend:
- 
+
  1. Subclass `BaseTokenBackend`
  1. Implement the following methods:
- 
+
      - `__init__` (don't forget to call `super().__init__`)
      - `load_token`: this should load the token from the desired backend and return a `Token` instance or None
      - `save_token`: this should store the `self.token` in the desired backend.
      - Optionally you can implement: `check_token`, `delete_token` and `should_refresh_token`
-     
+
 The `should_refresh_token` method is intended to be implemented for environments where multiple Connection instances are running on paralel.
 This method should check if it's time to refresh the token or not.
 The chosen backend can store a flag somewhere to answer this question.
@@ -564,7 +564,7 @@ account = Account(credentials=my_credentials, protocol=protocol)
 # now account is accesing the shared_mailbox@example.com in every api call.
 shared_mailbox_messages = account.mailbox().get_messages()
 ```
- 
+
 Instead of defining the resource used at the account or protocol level, you can provide it per use case as follows:
 ```python
 # ...
@@ -579,7 +579,7 @@ message = Message(parent=account, main_resource='shared_mailbox@example.com')  #
 
 Usually you will work with the default 'ME' resource, but you can also use one of the following:
 
-- **'me'**: the user which has given consent. the default for every protocol. Overwritten when using "with your own identity" authentication method (Only available on the authorization auth_flow_type). 
+- **'me'**: the user which has given consent. the default for every protocol. Overwritten when using "with your own identity" authentication method (Only available on the authorization auth_flow_type).
 - **'user:user@domain.com'**: a shared mailbox or a user account for which you have permissions. If you don't provide 'user:' will be infered anyways.
 - **'site:sharepoint-site-id'**: a sharepoint site id.
 - **'group:group-site-id'**: a office365 group id.
@@ -626,26 +626,26 @@ It's also easy to implement a custom Class.
 Just Inherit from `ApiComponent`, define the endpoints, and use the connection to make requests. If needed also inherit from Protocol to handle different comunications aspects with the API server.
 
 ```python
-from O365.utils import ApiComponent 
+from O365.utils import ApiComponent
 
 class CustomClass(ApiComponent):
     _endpoints = {'my_url_key': '/customendpoint'}
-    
+
     def __init__(self, *, parent=None, con=None, **kwargs):
         # connection is only needed if you want to communicate with the api provider
         self.con = parent.con if parent else con
         protocol = parent.protocol if parent else kwargs.get('protocol')
         main_resource = parent.main_resource
-        
+
         super().__init__(protocol=protocol, main_resource=main_resource)
         # ...
 
     def do_some_stuff(self):
-        
+
         # self.build_url just merges the protocol service_url with the enpoint passed as a parameter
         # to change the service_url implement your own protocol inherinting from Protocol Class
-        url = self.build_url(self._endpoints.get('my_url_key'))  
-        
+        url = self.build_url(self._endpoints.get('my_url_key'))
+
         my_params = {'param1': 'param1'}
 
         response = self.con.get(url, params=my_params)  # note the use of the connection here.
@@ -794,13 +794,13 @@ Messages and attached messages can be saved as *.eml.
         msg.save_as_eml(to_path=Path('my_saved_email.eml'))
     ```
 - Save attached message as "eml":
-    
+
     Carefull: there's no way to identify that an attachment is in fact a message. You can only check if the attachment.attachment_type == 'item'.
     if is of type "item" then it can be a message (or an event, etc...). You will have to determine this yourself.
 
     ```python
         msg_attachment = msg.attachments[0]  # the first attachment is attachment.attachment_type == 'item' and I know it's a message.
-        msg.attachments.save_as_eml(msg_attachment, to_path=Path('my_saved_email.eml')) 
+        msg.attachments.save_as_eml(msg_attachment, to_path=Path('my_saved_email.eml'))
     ```
 
 ## AddressBook
@@ -911,7 +911,7 @@ new_contact.delete()  # Bonus: deteled from the cloud
 The Directory object can retrieve users.
 
 A User instance contains by default the [basic properties of the user](https://docs.microsoft.com/en-us/graph/api/user-list?view=graph-rest-1.0&tabs=http#optional-query-parameters).
-If you want to include more, you will have to select the desired properties manually. 
+If you want to include more, you will have to select the desired properties manually.
 
 Check [The Global Address List](#the-global-address-list) for further information.
 
@@ -926,7 +926,7 @@ for user in directory.get_users():
 The calendar and events functionality is group in a `Schedule` object.
 
 A `Schedule` instance can list and create calendars. It can also list or create events on the default user calendar.
-To use other calendars use a `Calendar` instance.  
+To use other calendars use a `Calendar` instance.
 
 These are the scopes needed to work with the `Schedule`, `Calendar` and `Event` classes.
 
@@ -936,7 +936,7 @@ These are the scopes needed to work with the `Schedule`, `Calendar` and `Event` 
  *Calendars.Read.Shared*          |  *calendar_shared*                              | To only read another user / shared mailbox calendars
  *Calendars.ReadWrite*            |  *calendar_all*                                 | To read and save personal calendars
  *Calendars.ReadWrite.Shared*     |  *calendar_shared_all*                          | To read and save calendars from another user / shared mailbox
- 
+
 
 Working with the `Schedule` instance:
 ```python
@@ -946,14 +946,14 @@ import datetime as dt
 schedule = account.schedule()
 
 calendar = schedule.get_default_calendar()
-new_event = calendar.new_event()  # creates a new unsaved event 
+new_event = calendar.new_event()  # creates a new unsaved event
 new_event.subject = 'Recruit George Best!'
 new_event.location = 'England'
 
 # naive datetimes will automatically be converted to timezone aware datetime
 #  objects using the local timezone detected or the protocol provided timezone
 
-new_event.start = dt.datetime(2019, 9, 5, 19, 45) 
+new_event.start = dt.datetime(2019, 9, 5, 19, 45)
 # so new_event.start becomes: datetime.datetime(2018, 9, 5, 19, 45, tzinfo=<DstTzInfo 'Europe/Paris' CEST+2:00:00 DST>)
 
 new_event.recurrence.set_daily(1, end=dt.datetime(2019, 9, 10))
@@ -986,8 +986,8 @@ for event in birthdays:
 #### Notes regarding Calendars and Events:
 
 1. Include_recurring=True:
-    > It's important to know that when querying events with `include_recurring=True` (which is the default), it is required that you must provide a query parameter with the start and end attributes defined. 
-    > Unlike when using `include_recurring=False` those attributes will NOT filter the data based on the operations you set on the query (greater_equal, less, etc.) but just filter the events start datetime between the provided start and end datetimes. 
+    > It's important to know that when querying events with `include_recurring=True` (which is the default), it is required that you must provide a query parameter with the start and end attributes defined.
+    > Unlike when using `include_recurring=False` those attributes will NOT filter the data based on the operations you set on the query (greater_equal, less, etc.) but just filter the events start datetime between the provided start and end datetimes.
 
 1. Shared Calendars:
 
@@ -1001,9 +1001,9 @@ for event in birthdays:
 
 ## Tasks
 
-The tasks functionality is grouped in a `ToDo` object. Note that attributes are slightly different between `MSOffice365Protocol` and `MSGRaphProtocol` protocol.
+The tasks functionality is grouped in a `ToDo` object.
 
-A `ToDo` instance can list and create task folders. It can also list or create tasks on the default user folder. To use other folders use a `Folder` instance.  
+A `ToDo` instance can list and create task folders. It can also list or create tasks on the default user folder. To use other folders use a `Folder` instance.
 
 These are the scopes needed to work with the `ToDo`, `Folder` and `Task` classes.
 
@@ -1011,7 +1011,7 @@ These are the scopes needed to work with the `ToDo`, `Folder` and `Task` classes
  :---:                            |  :---:                                          | ---
  *Tasks.Read*                     |  *tasks*                                        | To only read my personal tasks
  *Tasks.ReadWrite*                |  *tasks_all*                                    | To read and save personal calendars
- 
+
  Working with the `ToDo` instance:
 ```python
 import datetime as dt
@@ -1021,9 +1021,8 @@ todo = account.tasks()
 
 #list current tasks
 folder = todo.get_default_folder()
-new_task = folder.new_task()  # creates a new unsaved task 
-new_task.subject = 'Send contract to George Best'  # MSOffice365Protocol
-new_task.title = 'Send contract to George Best'  # MSGraphProtocol
+new_task = folder.new_task()  # creates a new unsaved task
+new_task.subject = 'Send contract to George Best'
 new_task.due = dt.datetime(2020, 9, 25, 18, 30) 
 new_task.save()
 
@@ -1055,7 +1054,7 @@ for task in task_list:
     print(task)
     print('')
 ```
- 
+
 ## OneDrive
 The `Storage` class handles all functionality around One Drive and Document Library Storage in SharePoint.
 
@@ -1103,7 +1102,7 @@ for item in root_folder.get_items(limit=25):
             print(item.mime_type)  # print the mime type
 ```
 
-Both Files and Folders are DriveItems. Both Image and Photo are Files, but Photo is also an Image. All have some different methods and properties. 
+Both Files and Folders are DriveItems. Both Image and Photo are Files, but Photo is also an Image. All have some different methods and properties.
 Take care when using 'is_xxxx'.
 
 When copying a DriveItem the api can return a direct copy of the item or a pointer to a resource that will inform on the progress of the copy operation.
@@ -1118,7 +1117,7 @@ files = my_drive.search('george best quotes', limit=1)
 if files:
     george_best_quotes = files[0]
     operation = george_best_quotes.copy(target=documents_folder)  # operation here is an instance of CopyOperation
-    
+
     # to check for the result just loop over check_status.
     # check_status is a generator that will yield a new status and progress until the file is finally copied
     for status, progress in operation.check_status():  # if it's an async operations, this will request to the api for the status in every loop
@@ -1171,7 +1170,7 @@ You can also write to any excel online.
 
 To work with excel files, first you have to retrieve a `File` instance using the OneDrive or SharePoint functionallity.
 
-The scopes needed to work with the `WorkBook` and Excel related classes are the same used by OneDrive. 
+The scopes needed to work with the `WorkBook` and Excel related classes are the same used by OneDrive.
 
 This is how you update a cell value:
 
@@ -1200,7 +1199,7 @@ You can however change this when creating the `Workbook` instance:
 excel_file = WorkBook(my_file_instance, use_session=False, persist=False)
 ```
 
-#### Available Objects 
+#### Available Objects
 
 After creating the `WorkBook` instance you will have access to the following objects:
 
@@ -1257,7 +1256,7 @@ These are the scopes needed to work with the `SharePoint` and `Site` classes.
  :---:                          |  :---:                        | ---
  *MailboxSettings.Read*         |  *-*                          | To only read outlook settingss
  *MailboxSettings.ReadWrite*    |  *settings_all*               | To read and write outlook settings
- 
+
 Example:
 
 ```python
