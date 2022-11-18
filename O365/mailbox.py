@@ -136,7 +136,8 @@ class Folder(ApiComponent):
         else:
             return folders
 
-    def get_message(self, object_id=None, query=None, *, download_attachments=False):
+    def get_message(self, object_id=None, query=None, *, download_attachments=False,
+                    immutable_id=False):
         """ Get one message from the query result.
          A shortcut to get_messages with limit=1
         :param object_id: the message id to be retrieved.
@@ -144,6 +145,7 @@ class Folder(ApiComponent):
          "displayName eq 'HelloFolder'"
         :type query: Query or str
         :param bool download_attachments: whether or not to download attachments
+        :param bool immutable_id: whether or not to get an immutable id
         :return: one Message
         :rtype: Message or None
         """
@@ -155,7 +157,12 @@ class Folder(ApiComponent):
             params = None
             if query and (query.has_selects or query.has_expands):
                 params = query.as_params()
-            response = self.con.get(url, params=params)
+
+            headers = None
+            if immutable_id:
+                headers = {'Prefer': 'IdType="ImmutableId"'}
+
+            response = self.con.get(url, params=params, headers=headers)
             if not response:
                 return None
 
@@ -172,7 +179,7 @@ class Folder(ApiComponent):
             return messages[0] if messages else None
 
     def get_messages(self, limit=25, *, query=None, order_by=None, batch=None,
-                     download_attachments=False):
+                     download_attachments=False, immutable_id=False):
         """
         Downloads messages from this folder
 
@@ -185,6 +192,7 @@ class Folder(ApiComponent):
         :param int batch: batch size, retrieves items in
          batches allowing to retrieve more items than the limit.
         :param bool download_attachments: whether or not to download attachments
+        :param bool immutable_id: whether or not to get an immutable id
         :return: list of messages
         :rtype: list[Message] or Pagination
         """
@@ -209,7 +217,11 @@ class Folder(ApiComponent):
             else:
                 params.update(query.as_params())
 
-        response = self.con.get(url, params=params)
+        headers = None
+        if immutable_id:
+            headers = {'Prefer': 'IdType="ImmutableId"'}
+
+        response = self.con.get(url, params=params, headers=headers)
         if not response:
             return iter(())
 
