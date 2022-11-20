@@ -516,12 +516,10 @@ class Folder(ApiComponent):
 
 class MailBox(Folder):
     folder_constructor = Folder
-    _endpoints = {
-        'settings': '/mailboxSettings',
-    }
 
     def __init__(self, *, parent=None, con=None, **kwargs):
         super().__init__(parent=parent, con=con, root=True, **kwargs)
+        self._endpoints["settings"] = "/mailboxSettings"
 
     def set_automatic_reply(self, internal_text, external_text, scheduled_start_date_time,  scheduled_stop_date_time, timezone):
         """ Set an automatic reply for the mailbox.
