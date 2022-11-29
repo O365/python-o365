@@ -1452,6 +1452,8 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
                 self.protocol.timezone) if self.__created else None
             self.__modified = parse(self.__modified).astimezone(
                 self.protocol.timezone) if self.__modified else None
+
+            self.ical_uid = event.get(self._cc('iCalUId'), None)
         else:
             self.__modified = self.protocol.timezone.localize(dt.datetime.now())
 
