@@ -1,5 +1,6 @@
 import datetime as dt
 import logging
+from enum import Enum
 
 from .message import Message
 from .utils import Pagination, NEXT_LINK_KEYWORD, \
@@ -7,6 +8,20 @@ from .utils import Pagination, NEXT_LINK_KEYWORD, \
 
 log = logging.getLogger(__name__)
 
+class ExternalAudience(Enum):
+    """Valid values for externalAudience."""
+
+    none = "none"
+    contactsOnly = "contactsonly"
+    all = "all"
+
+
+class AutoReplyStatus(Enum):
+    """Valid values for status."""
+
+    disabled = "disabled"
+    alwaysEnabled = "alwaysenabled"
+    scheduled = "scheduled"
 
 class Folder(ApiComponent):
     """ A Mail Folder representation """
@@ -521,34 +536,73 @@ class MailBox(Folder):
         super().__init__(parent=parent, con=con, root=True, **kwargs)
         self._endpoints["settings"] = "/mailboxSettings"
 
-    def set_automatic_reply(self, internal_text, external_text, scheduled_start_date_time,  scheduled_stop_date_time, timezone, externalAudience='all'):
-        """ Set an automatic reply for the mailbox.
+class MailBox(Folder):
+    folder_constructor = Folder
+
+    def __init__(self, *, parent=None, con=None, **kwargs):
+        super().__init__(parent=parent, con=con, root=True, **kwargs)
+        self._endpoints["settings"] = "/mailboxSettings"
+
+    def set_automatic_reply(
+        self,
+        internal_text: str,
+        external_text: str,
+        scheduled_start_date_time: dt.datetime = None,
+        scheduled_end_date_time: dt.datetime = None,
+        externalAudience: ExternalAudience = ExternalAudience.all,
+    ):
+        """Set an automatic reply for the mailbox.
 
         :return: Success / Failure
         :rtype: bool
         """
-        url = self.build_url(self._endpoints.get('settings'))
+        externalAudience = ExternalAudience(externalAudience.lower())
+        status = AutoReplyStatus.alwaysEnabled
+        if scheduled_start_date_time or scheduled_end_date_time:
+            status = AutoReplyStatus.scheduled
+            scheduled_start_date_time = self._validate_datetime(
+                scheduled_start_date_time, "start"
+            )
+            scheduled_end_date_time = self._validate_datetime(
+                scheduled_end_date_time, "end"
+            )
 
-        data = {
-            self._cc('automaticRepliesSetting'): {
-                self._cc('status'): 'scheduled', 
-                self._cc('externalAudience'): externalAudience,
-                self._cc('internalReplyMessage'): internal_text,
-                self._cc('externalReplyMessage'): external_text,
-                self._cc('scheduledStartDateTime'): {
-                    self._cc('dateTime'): scheduled_start_date_time,
-                    self._cc('timeZone'): timezone,
-                },
-                self._cc('scheduledEndDateTime'): {
-                    self._cc('dateTime'): scheduled_stop_date_time,
-                    self._cc('timeZone'): timezone,
-                },
-            }
+        url = self.build_url(self._endpoints.get("settings"))
+
+        cc = self._cc
+        automatic_reply_settings = {
+            cc("status"): status.name,
+            cc("externalAudience"): externalAudience.name,
+            cc("internalReplyMessage"): internal_text,
+            cc("externalReplyMessage"): external_text,
         }
+        if status == AutoReplyStatus.scheduled:
+            print("blah")
+            automatic_reply_settings[
+                cc("scheduledStartDateTime")
+            ] = self._build_date_time_time_zone(scheduled_start_date_time)
+            automatic_reply_settings[
+                cc("scheduledEndDateTime")
+            ] = self._build_date_time_time_zone(scheduled_end_date_time)
 
+        data = {cc("automaticRepliesSetting"): automatic_reply_settings}
+        
         response = self.con.patch(url, data=data)
 
         return bool(response)
+
+    def _validate_datetime(self, value, erroritem):
+        if not isinstance(value, dt.date):
+            raise ValueError(f"'{erroritem} date' must be a valid datetime object")
+        if not isinstance(value, dt.datetime):
+            # force datetime
+            value = dt.datetime(value.year, value.month, value.day)
+        if value.tzinfo is None:
+            # localize datetime
+            value = self.protocol.timezone.localize(value)
+        elif value.tzinfo != self.protocol.timezone:
+            value = value.astimezone(self.protocol.timezone)
+        return value    
 
     def set_disable_reply(self):
         """ Disable the automatic reply for the mailbox.
