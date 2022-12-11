@@ -11,17 +11,17 @@ log = logging.getLogger(__name__)
 class ExternalAudience(Enum):
     """Valid values for externalAudience."""
 
-    none = "none"
-    contactsOnly = "contactsonly"
-    all = "all"
+    NONE = "none"
+    CONTACTSONLY = "contactsOnly"
+    ALL = "all"
 
 
 class AutoReplyStatus(Enum):
     """Valid values for status."""
 
-    disabled = "disabled"
-    alwaysEnabled = "alwaysenabled"
-    scheduled = "scheduled"
+    DISABLED = "disabled"
+    ALWAYSENABLED = "alwaysEnabled"
+    SCHEDULED = "scheduled"
 
 class Folder(ApiComponent):
     """ A Mail Folder representation """
@@ -549,17 +549,17 @@ class MailBox(Folder):
         external_text: str,
         scheduled_start_date_time: dt.datetime = None,
         scheduled_end_date_time: dt.datetime = None,
-        externalAudience: ExternalAudience = ExternalAudience.all,
+        externalAudience: ExternalAudience = ExternalAudience.ALL,
     ):
         """Set an automatic reply for the mailbox.
 
         :return: Success / Failure
         :rtype: bool
         """
-        externalAudience = ExternalAudience(externalAudience.lower())
-        status = AutoReplyStatus.alwaysEnabled
+        externalAudience = ExternalAudience(externalAudience)
+        status = AutoReplyStatus.ALWAYSENABLED
         if scheduled_start_date_time or scheduled_end_date_time:
-            status = AutoReplyStatus.scheduled
+            status = AutoReplyStatus.SCHEDULED
             scheduled_start_date_time = self._validate_datetime(
                 scheduled_start_date_time, "start"
             )
@@ -571,13 +571,12 @@ class MailBox(Folder):
 
         cc = self._cc
         automatic_reply_settings = {
-            cc("status"): status.name,
-            cc("externalAudience"): externalAudience.name,
+            cc("status"): status.value,
+            cc("externalAudience"): externalAudience.value,
             cc("internalReplyMessage"): internal_text,
             cc("externalReplyMessage"): external_text,
         }
-        if status == AutoReplyStatus.scheduled:
-            print("blah")
+        if status == AutoReplyStatus.SCHEDULED:
             automatic_reply_settings[
                 cc("scheduledStartDateTime")
             ] = self._build_date_time_time_zone(scheduled_start_date_time)
@@ -586,7 +585,7 @@ class MailBox(Folder):
             ] = self._build_date_time_time_zone(scheduled_end_date_time)
 
         data = {cc("automaticRepliesSetting"): automatic_reply_settings}
-        
+
         response = self.con.patch(url, data=data)
 
         return bool(response)
