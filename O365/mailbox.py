@@ -556,7 +556,10 @@ class MailBox(Folder):
         :return: Success / Failure
         :rtype: bool
         """
-        externalAudience = ExternalAudience(externalAudience)
+        if externalAudience:
+            externalAudience = ExternalAudience(externalAudience)
+        else:
+            externalAudience = ExternalAudience.ALL
         status = AutoReplyStatus.ALWAYSENABLED
         if scheduled_start_date_time or scheduled_end_date_time:
             status = AutoReplyStatus.SCHEDULED
