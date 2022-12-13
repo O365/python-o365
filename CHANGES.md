@@ -3,6 +3,12 @@
 Almost every release features a lot of bugfixes but those are not listed here.
 
 
+## Version 2.0.24 (2022-12-13)
+
+###Features:
+- Added externalAudience to automatic replies (Thanks @RogerSelwyn)
+
+
 ## Version 2.0.23 (2022-11-26)
 
 ###Features:
