@@ -35,6 +35,7 @@ DEFAULT_SCOPES = {
     'basic': [('offline_access',), 'User.Read'],
     'mailbox': ['Mail.Read'],
     'mailbox_shared': ['Mail.Read.Shared'],
+    "mailbox_settings": ["MailboxSettings.ReadWrite"],
     'message_send': ['Mail.Send'],
     'message_send_shared': ['Mail.Send.Shared'],
     'message_all': ['Mail.ReadWrite', 'Mail.Send'],

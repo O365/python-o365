@@ -366,13 +366,14 @@ account.authenticate()
 ```
 
 Scope implementation depends on the protocol used. So by using protocol data you can automatically set the scopes needed.
-This is implemented by using 'scope helpers'. Those are little helpers that group scope functionallity and abstract the procotol used.
+This is implemented by using 'scope helpers'. Those are little helpers that group scope functionality and abstract the protocol used.
 
 Scope Helper                       | Scopes included
 :---                               | :---
 basic                              | 'offline_access' and 'User.Read'
 mailbox                            | 'Mail.Read'
 mailbox_shared                     | 'Mail.Read.Shared'
+mailbox_settings                   | 'MailboxSettings.ReadWrite'
 message_send                       | 'Mail.Send'
 message_send_shared                | 'Mail.Send.Shared'
 message_all                        | 'Mail.ReadWrite' and 'Mail.Send'
@@ -667,14 +668,14 @@ Mailbox groups the funcionality of both the messages and the email folders.
 
 These are the scopes needed to work with the `MailBox` and `Message` classes.
 
- Raw Scope                |  Included in Scope Helper                   | Description
- :---:                    |  :---:                                     | ---
- *Mail.Read*              |  *mailbox*                                 | To only read my mailbox
- *Mail.Read.Shared*       |  *mailbox_shared*                          | To only read another user / shared mailboxes
- *Mail.Send*              |  *message_send, message_all*               | To only send message
- *Mail.Send.Shared*       |  *message_send_shared, message_all_shared* | To only send message as another user / shared mailbox
- *Mail.ReadWrite*         |  *message_all*                             | To read and save messages in my mailbox
- *Mail.ReadWrite.Shared*  |  *message_all_shared*                      | To read and save messages in another user / shared mailbox
+ Raw Scope                   |  Included in Scope Helper                  | Description
+ :---:                       |  :---:                                     | ---
+ *Mail.Read*                 |  *mailbox*                                 | To only read my mailbox
+ *Mail.Read.Shared*          |  *mailbox_shared*                          | To only read another user / shared mailboxes
+ *Mail.Send*                 |  *message_send, message_all*               | To only send message
+ *Mail.Send.Shared*          |  *message_send_shared, message_all_shared* | To only send message as another user / shared mailbox
+ *Mail.ReadWrite*            |  *message_all*                             | To read and save messages in my mailbox
+ *MailboxSettings.ReadWrite* |  *mailbox_settings*                        | To read and write suer mailbox settings
 
 ```python
 mailbox = account.mailbox()
@@ -715,7 +716,7 @@ new_folder = archive.create_child_folder('George Best Quotes')
 ```
 
 #### Message
-An email object with all it's data and methods.
+An email object with all its data and methods.
 
 Creating a draft message is as easy as this:
 ```python
@@ -803,8 +804,41 @@ Messages and attached messages can be saved as *.eml.
         msg.attachments.save_as_eml(msg_attachment, to_path=Path('my_saved_email.eml'))
     ```
 
+#### Mailbox Settings
+The mailbox settings and associated methods.
+
+Retrieve and update mailbox auto reply settings:
+```python
+from O365.mailbox import AutoReplyStatus, ExternalAudience
+
+mailboxsettings = mailbox.get_settings()
+ars = mailboxsettings.automaticrepliessettings
+
+ars.scheduled_startdatetime = start # Sets the start date/time
+ars.scheduled_enddatetime = end # Sets the end date/time
+ars.status = AutoReplyStatus.SCHEDULED # DISABLED/SCHEDULED/ALWAYSENABLED - Uses start/end date/time if scheduled.
+ars.external_audience = ExternalAudience.NONE # NONE/CONTACTSONLY/ALL
+ars.internal_reply_message = "ARS Internal" # Internal message
+ars.external_reply_message = "ARS External" # External message
+mailboxsettings.save()
+```
+
+Alternatively to enable and disable
+```python
+mailboxsettings.save()
+
+mailbox.set_automatic_reply(
+    "Internal",
+    "External",
+    scheduled_start_date_time=start, # Status will be 'scheduled' if start/end supplied, otherwise 'alwaysEnabled'
+    scheduled_end_date_time=end,
+    externalAudience=ExternalAudience.NONE, # Defaults to ALL
+)
+mailbox.set_disable_reply()
+```
+
 ## AddressBook
-AddressBook groups the funcionality of both the Contact Folders and Contacts. Outlook Distribution Groups are not supported (By the Microsoft API's).
+AddressBook groups the functionality of both the Contact Folders and Contacts. Outlook Distribution Groups are not supported (By the Microsoft API's).
 
 These are the scopes needed to work with the `AddressBook` and `Contact` classes.
 
