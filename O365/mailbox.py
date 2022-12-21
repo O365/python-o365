@@ -29,6 +29,214 @@ class AutoReplyStatus(Enum):
     SCHEDULED = "scheduled"
 
 
+class AutomaticRepliesSettings(ApiComponent):
+    """The MailboxSettings."""
+
+    def __init__(self, *, parent=None, con=None, **kwargs):
+        """Representation of the AutomaticRepliesSettings.
+
+        :param parent: parent object
+        :type parent: Mailbox
+        :param Connection con: connection to use if no parent specified
+        :param Protocol protocol: protocol to use if no parent specified
+         (kwargs)
+        :param str main_resource: use this resource instead of parent resource
+         (kwargs)
+        """
+        if parent and con:
+            raise ValueError("Need a parent or a connection but not both")
+        self.con = parent.con if parent else con
+
+        # Choose the main_resource passed in kwargs over parent main_resource
+        main_resource = kwargs.pop("main_resource", None) or (
+            getattr(parent, "main_resource", None) if parent else None
+        )
+
+        super().__init__(
+            protocol=parent.protocol if parent else kwargs.get("protocol"),
+            main_resource=main_resource,
+        )
+
+        cloud_data = kwargs.get(self._cloud_data_key, {})
+        self.__external_audience = ExternalAudience(
+            cloud_data.get(self._cc("externalAudience"), "")
+        )
+        self.external_reply_message = cloud_data.get(
+            self._cc("externalReplyMessage"), ""
+        )
+        self.internal_reply_message = cloud_data.get(
+            self._cc("internalReplyMessage"), ""
+        )
+        scheduled_enddatetime_ob = cloud_data.get(self._cc("scheduledEndDateTime"), {})
+        self.__scheduled_enddatetime = self._parse_date_time_time_zone(
+            scheduled_enddatetime_ob
+        )
+
+        scheduled_startdatetime_ob = cloud_data.get(
+            self._cc("scheduledStartDateTime"), {}
+        )
+        self.__scheduled_startdatetime = self._parse_date_time_time_zone(
+            scheduled_startdatetime_ob
+        )
+
+        self.__status = AutoReplyStatus(cloud_data.get(self._cc("status"), ""))
+
+    def __str__(self):
+        """Representation of the AutomaticRepliesSettings via the Graph api as a string."""
+        return self.__repr__()
+
+    @property
+    def scheduled_startdatetime(self):
+        """Scheduled Start Time of auto reply.
+
+        :getter: get the scheduled_startdatetime time
+        :setter: set the scheduled_startdatetime time
+        :type: datetime
+        """
+        return self.__scheduled_startdatetime
+
+    @scheduled_startdatetime.setter
+    def scheduled_startdatetime(self, value):
+        if not isinstance(value, dt.date):
+            raise ValueError(
+                "'scheduled_startdatetime' must be a valid datetime object"
+            )
+        if not isinstance(value, dt.datetime):
+            # force datetime
+            value = dt.datetime(value.year, value.month, value.day)
+        if value.tzinfo is None:
+            # localize datetime
+            value = self.protocol.timezone.localize(value)
+        elif value.tzinfo != self.protocol.timezone:
+            value = value.astimezone(self.protocol.timezone)
+        self.__scheduled_startdatetime = value
+
+    @property
+    def scheduled_enddatetime(self):
+        """Scheduled End Time of auto reply.
+
+        :getter: get the scheduled_enddatetime time
+        :setter: set the reminder time
+        :type: datetime
+        """
+        return self.__scheduled_enddatetime
+
+    @scheduled_enddatetime.setter
+    def scheduled_enddatetime(self, value):
+        if not isinstance(value, dt.date):
+            raise ValueError("'scheduled_enddatetime' must be a valid datetime object")
+        if not isinstance(value, dt.datetime):
+            # force datetime
+            value = dt.datetime(value.year, value.month, value.day)
+        if value.tzinfo is None:
+            # localize datetime
+            value = self.protocol.timezone.localize(value)
+        elif value.tzinfo != self.protocol.timezone:
+            value = value.astimezone(self.protocol.timezone)
+        self.__scheduled_enddatetime = value
+
+    @property
+    def status(self) -> AutoReplyStatus:
+        """Status of auto reply.
+
+        :getter: get the status of auto reply
+        :setter: set the status of auto reply
+        :type: autoreplystatus
+        """
+        return self.__status
+
+    @status.setter
+    def status(self, value: AutoReplyStatus = AutoReplyStatus.DISABLED):
+        self.__status = AutoReplyStatus(value)
+
+    @property
+    def external_audience(self) -> ExternalAudience:
+        """External Audience of auto reply.
+
+        :getter: get the external audience of auto reply
+        :setter: set the external audience of auto reply
+        :type: autoreplystatus
+        """
+        return self.__external_audience
+
+    @external_audience.setter
+    def external_audience(self, value: ExternalAudience = ExternalAudience.ALL):
+        self.__external_audience = ExternalAudience(value)
+
+
+class MailboxSettings(ApiComponent):
+    """The MailboxSettings."""
+
+    _endpoints = {
+        "settings": "/mailboxSettings",
+    }
+    autoreply_constructor = AutomaticRepliesSettings
+
+    def __init__(self, *, parent=None, con=None, **kwargs):
+        """Representation of the MailboxSettings.
+
+        :param parent: parent object
+        :type parent: Mailbox
+        :param Connection con: connection to use if no parent specified
+        :param Protocol protocol: protocol to use if no parent specified
+         (kwargs)
+        :param str main_resource: use this resource instead of parent resource
+         (kwargs)
+        """
+        if parent and con:
+            raise ValueError("Need a parent or a connection but not both")
+        self.con = parent.con if parent else con
+
+        # Choose the main_resource passed in kwargs over parent main_resource
+        main_resource = kwargs.pop("main_resource", None) or (
+            getattr(parent, "main_resource", None) if parent else None
+        )
+
+        super().__init__(
+            protocol=parent.protocol if parent else kwargs.get("protocol"),
+            main_resource=main_resource,
+        )
+
+        cloud_data = kwargs.get(self._cloud_data_key, {})
+        autorepliessettings = cloud_data.get("automaticRepliesSetting")
+        self.automaticrepliessettings = self.autoreply_constructor(
+            parent=self, **{self._cloud_data_key: autorepliessettings}
+        )
+
+    def __str__(self):
+        """Representation of the MailboxSetting via the Graph api as a string."""
+        return self.__repr__()
+
+    def save(self):
+        """Save the MailboxSettings.
+
+        :return: Success / Failure
+        :rtype: bool
+        """
+        url = self.build_url(self._endpoints.get("settings"))
+        cc = self._cc
+        ars = self.automaticrepliessettings
+        automatic_reply_settings = {
+            cc("status"): ars.status.value,
+            cc("externalAudience"): ars.external_audience.value,
+            cc("internalReplyMessage"): ars.internal_reply_message,
+            cc("externalReplyMessage"): ars.external_reply_message,
+        }
+        if ars.status == AutoReplyStatus.SCHEDULED:
+            automatic_reply_settings[
+                cc("scheduledStartDateTime")
+            ] = self._build_date_time_time_zone(ars.scheduled_startdatetime)
+            automatic_reply_settings[
+                cc("scheduledEndDateTime")
+            ] = self._build_date_time_time_zone(ars.scheduled_enddatetime)
+
+        data = {cc("automaticRepliesSetting"): automatic_reply_settings}
+
+        response = self.con.patch(url, data=data)
+
+        return bool(response)
+
+
 class Folder(ApiComponent):
     """A Mail Folder representation."""
 
@@ -572,6 +780,7 @@ class Folder(ApiComponent):
 
 class MailBox(Folder):
     folder_constructor = Folder
+    mailbox_settings_constructor = MailboxSettings
 
     def __init__(self, *, parent=None, con=None, **kwargs):
         super().__init__(parent=parent, con=con, root=True, **kwargs)
@@ -590,39 +799,19 @@ class MailBox(Folder):
         :return: Success / Failure
         :rtype: bool
         """
-        externalAudience = ExternalAudience(externalAudience)
-        status = AutoReplyStatus.ALWAYSENABLED
+        mailboxsettings = self.get_settings()
+        ars = mailboxsettings.automaticrepliessettings
+
+        ars.external_audience = externalAudience
+        ars.status = AutoReplyStatus.ALWAYSENABLED
         if scheduled_start_date_time or scheduled_end_date_time:
-            status = AutoReplyStatus.SCHEDULED
-            scheduled_start_date_time = self._validate_datetime(
-                scheduled_start_date_time, "start"
-            )
-            scheduled_end_date_time = self._validate_datetime(
-                scheduled_end_date_time, "end"
-            )
+            ars.status = AutoReplyStatus.SCHEDULED
+            ars.scheduled_startdatetime = scheduled_start_date_time
+            ars.scheduled_enddatetime = scheduled_end_date_time
+        ars.internal_reply_message = internal_text
+        ars.external_reply_message = external_text
 
-        url = self.build_url(self._endpoints.get("settings"))
-
-        cc = self._cc
-        automatic_reply_settings = {
-            cc("status"): status.value,
-            cc("externalAudience"): externalAudience.value,
-            cc("internalReplyMessage"): internal_text,
-            cc("externalReplyMessage"): external_text,
-        }
-        if status == AutoReplyStatus.SCHEDULED:
-            automatic_reply_settings[
-                cc("scheduledStartDateTime")
-            ] = self._build_date_time_time_zone(scheduled_start_date_time)
-            automatic_reply_settings[
-                cc("scheduledEndDateTime")
-            ] = self._build_date_time_time_zone(scheduled_end_date_time)
-
-        data = {cc("automaticRepliesSetting"): automatic_reply_settings}
-
-        response = self.con.patch(url, data=data)
-
-        return bool(response)
+        return mailboxsettings.save()
 
     def _validate_datetime(self, value, erroritem):
         if not isinstance(value, dt.date):
@@ -643,17 +832,12 @@ class MailBox(Folder):
         :return: Success / Failure
         :rtype: bool
         """
-        url = self.build_url(self._endpoints.get("settings"))
 
-        data = {
-            self._cc("automaticRepliesSetting"): {
-                self._cc("status"): "disabled",
-            }
-        }
+        mailboxsettings = self.get_settings()
+        ars = mailboxsettings.automaticrepliessettings
 
-        response = self.con.patch(url, data=data)
-
-        return bool(response)
+        ars.status = AutoReplyStatus.DISABLED
+        return mailboxsettings.save()
 
     def inbox_folder(self):
         """Shortcut to get Inbox Folder instance
@@ -726,4 +910,25 @@ class MailBox(Folder):
             parent=self,
             name="Archive",
             folder_id=OutlookWellKnowFolderNames.ARCHIVE.value,
+        )
+
+    def get_settings(self):
+        """Return the MailboxSettings.
+
+        :rtype: mailboxsettings
+        """
+        url = self.build_url(self._endpoints.get("settings"))
+        params = {}
+
+        response = self.con.get(
+            url, params=params, headers={"Prefer": 'outlook.timezone="UTC"'}
+        )
+
+        if not response:
+            return iter(())
+
+        data = response.json()
+
+        return self.mailbox_settings_constructor(
+            parent=self, **{self._cloud_data_key: data}
         )
