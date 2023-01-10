@@ -161,6 +161,8 @@ class AutomaticRepliesSettings(ApiComponent):
 
     @external_audience.setter
     def external_audience(self, value: ExternalAudience = ExternalAudience.ALL):
+        if not value:
+            value = ExternalAudience.ALL
         self.__external_audience = ExternalAudience(value)
 
 
