@@ -3,6 +3,12 @@
 Almost every release features a lot of bugfixes but those are not listed here.
 
 
+## Version 2.0.25 (2023-01-13)
+
+###Features:
+- Added get and set of mailbox settings (Thanks @RogerSelwyn)
+
+
 ## Version 2.0.24 (2022-12-13)
 
 ###Features:
