@@ -914,6 +914,116 @@ class MailBox(Folder):
             folder_id=OutlookWellKnowFolderNames.ARCHIVE.value,
         )
 
+    def clutter_folder(self):
+        """Shortcut to get Clutter Folder instance
+           The clutter folder low-priority messages are moved to when using the Clutter feature.
+        
+        :rtype: mailbox.Folder
+        """
+        return self.folder_constructor(
+            parent=self,
+            name="Clutter",
+            folder_id=OutlookWellKnowFolderNames.CLUTTER.value,
+        )
+
+    def conflicts_folder(self):
+        """Shortcut to get Conflicts Folder instance
+           The folder that contains conflicting items in the mailbox.
+        
+        :rtype: mailbox.Folder
+        """
+        return self.folder_constructor(
+            parent=self,
+            name="Conflicts",
+            folder_id=OutlookWellKnowFolderNames.CONFLICTS.value,
+        )
+
+    def conversationhistory_folder(self):
+        """Shortcut to get Conversation History Folder instance
+           The folder where Skype saves IM conversations (if Skype is configured to do so).
+        
+        :rtype: mailbox.Folder
+        """
+        return self.folder_constructor(
+            parent=self,
+            name="Conflicts",
+            folder_id=OutlookWellKnowFolderNames.CONVERSATIONHISTORY.value,
+        )        
+
+    def localfailures_folder(self):
+        """Shortcut to get Local Failure Folder instance
+        The folder that contains items that exist on the local client but could not be uploaded to the server.
+
+        :rtype: mailbox.Folder
+        """
+        return self.folder_constructor(
+            parent=self,
+            name="Local Failures",
+            folder_id=OutlookWellKnowFolderNames.LOCALFAILURES.value,
+        )      
+
+    def recoverableitemsdeletions_folder(self):
+        """Shortcut to get Recoverable Items Deletions (Purges) Folder instance
+        The folder that contains soft-deleted items: deleted either from the Deleted Items folder, or by pressing shift+delete in Outlook. 
+        This folder is not visible in any Outlook email client, 
+        but end users can interact with it through the Recover Deleted Items from Server feature in Outlook or Outlook on the web.
+
+        :rtype: mailbox.Folder
+        """
+        return self.folder_constructor(
+            parent=self,
+            name="Recoverable Items Deletions (Purges)",
+            folder_id=OutlookWellKnowFolderNames.RECOVERABLEITEMSDELETIONS.value,
+        )         
+
+    def scheduled_folder(self):
+        """Shortcut to get Scheduled Folder instance
+        The folder that contains messages that are scheduled to reappear in the inbox using the Schedule feature in Outlook for iOS.
+        
+        :rtype: mailbox.Folder
+        """
+        return self.folder_constructor(
+            parent=self,
+            name="Scheduled",
+            folder_id=OutlookWellKnowFolderNames.SCHEDULED.value,
+        )         
+    
+    def searchfolders_folder(self):
+        """Shortcut to get Search Folders Folder instance
+        The parent folder for all search folders defined in the user's mailbox.
+        
+        :rtype: mailbox.Folder
+        """
+        return self.folder_constructor(
+            parent=self,
+            name="Search Folders",
+            folder_id=OutlookWellKnowFolderNames.SEARCHFOLDERS.value,
+        )     
+    
+    def serverfailures_folder(self):
+        """Shortcut to get Server Failures Folder instance
+        The folder that contains items that exist on the server but could not be synchronized to the local client.
+        
+        :rtype: mailbox.Folder
+        """
+        return self.folder_constructor(
+            parent=self,
+            name="Server Failures",
+            folder_id=OutlookWellKnowFolderNames.SERVERFAILURES.value,
+        )    
+
+    def syncissues_folder(self):
+        """Shortcut to get Sync Issues Folder instance
+        The folder that contains synchronization logs created by Outlook.
+        
+        :rtype: mailbox.Folder
+        """
+        return self.folder_constructor(
+            parent=self,
+            name="Sync Issues",
+            folder_id=OutlookWellKnowFolderNames.SYNCISSUES.value,
+        )         
+
     def get_settings(self):
         """Return the MailboxSettings.
 
@@ -934,3 +1044,4 @@ class MailBox(Folder):
         return self.mailbox_settings_constructor(
             parent=self, **{self._cloud_data_key: data}
         )
+
