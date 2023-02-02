@@ -329,7 +329,9 @@ class Connection:
                  auth_flow_type='authorization',
                  username=None, password=None,
                  timeout=None, json_encoder=None,
-                 verify_ssl=True, **kwargs):
+                 verify_ssl=True,
+                 default_headers: dict = None,
+                 **kwargs):
         """ Creates an API connection object
 
         :param tuple credentials: a tuple of (client_id, client_secret)
@@ -353,6 +355,8 @@ class Connection:
         :param BaseTokenBackend token_backend: the token backend used to get
          and store tokens
         :param str tenant_id: use this specific tenant id, defaults to common
+        :param dict default_headers: allow to force headers in api call
+        (ex: default_headers={"Prefer": 'IdType="ImmutableId"'}) to get constant id for objects.
         :param str auth_flow_type: the auth method flow style used: Options:
             - 'authorization': 2 step web style grant flow using an authentication url
             - 'public': 2 step web style grant flow using an authentication url for public apps where
@@ -388,6 +392,7 @@ class Connection:
         self.username = username
         self.password = password
         self.scopes = scopes
+        self.default_headers = default_headers or dict()
         self.store_token = True
         token_backend = token_backend or FileSystemTokenBackend(**kwargs)
         if not isinstance(token_backend, BaseTokenBackend):
@@ -719,7 +724,11 @@ class Connection:
             kwargs.setdefault('allow_redirects', True)
         elif method in ['post', 'put', 'patch']:
             if 'headers' not in kwargs:
-                kwargs['headers'] = {}
+                kwargs['headers'] = {**self.default_headers}
+            else:
+                for key, value in self.default_headers.items():
+                    if key not in kwargs['headers']:
+                        kwargs['headers'][key] = value
             if kwargs.get('headers') is not None and kwargs['headers'].get(
                     'Content-type') is None:
                 kwargs['headers']['Content-type'] = 'application/json'
