@@ -153,7 +153,7 @@ When to use one or the other and requirements:
  **Authentication**                 | 2 step authentication with user consent                  | 2 step authentication with user consent                    | 1 step authentication
  **Auth Scopes**                    | Required                                                 | Required                                                   | None
  **Token Expiration**               | 60 Minutes without refresh token or 90 days*             | 60 Minutes without refresh token or 90 days*               | 60 Minutes*
- **Login Expiration**               | Unlimited if there is a refresh token and as long as a re| Unlimited if there is a refresh token and as long as a refresh is done within the 90 days          | Unlimited
+ **Login Expiration**               | Unlimited if there is a refresh token and as long as a refresh is done within the 90 days | Unlimited if there is a refresh token and as long as a refresh is done within the 90 days          | Unlimited
  **Resources**                      | Access the user resources, and any shared resources      | Access the user resources, and any shared resources        | All Azure AD users the app has access to
  **Microsoft Account Type**         | Any                                                      | Any                                                        | Not Allowed for Personal Accounts
  **Tenant ID Required**             | Defaults to "common"                                     | Defaults to "common"                                       | Required (can't be "common")
