@@ -440,9 +440,12 @@ Methods that stores tokens:
 
 To store the token you will have to provide a properly configured TokenBackend.
 
-Actually there are only two implemented (but you can easely implement more like a CookieBackend, RedisBackend, etc.):
+There are a few `TokenBackend` classes implemented (and you can easely implement more like a CookieBackend, RedisBackend, etc.):
 - `FileSystemTokenBackend` (Default backend): Stores and retrieves tokens from the file system. Tokens are stored as files.
+- `EnvTokenBackend`: Stores and retrieves tokens from environment variables.
 - `FirestoreTokenBackend`: Stores and retrives tokens from a Google Firestore Datastore. Tokens are stored as documents within a collection.
+- `AWSS3Backend`: Stores and retrieves tokens from an AWS S3 bucket. Tokens are stored as a file within a S3 bucket.
+- `AWSSecretsBackend`: Stores and retrieves tokens from an AWS Secrets Management vault.
 
 For example using the FileSystem Token Backend:
 
