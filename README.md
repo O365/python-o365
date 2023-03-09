@@ -290,10 +290,15 @@ For the "with your own identity" authentication method, you can just use `accoun
 
     The following example is done using Flask.
     ```python
+    from flask import request
+    from O365 import Account
+    
+    
     @route('/stepone')
     def auth_step_one():
+        # callback = absolute url to auth_step_two_callback() page, https://domain.tld/steptwo
+        callback = url_for('auth_step_two_callback', _external=True)  # Flask example
 
-        callback = 'my absolute url to auth_step_two_callback'
         account = Account(credentials)
         url, state = account.con.get_authorization_url(requested_scopes=my_scopes,
                                                        redirect_uri=callback)
@@ -313,7 +318,11 @@ For the "with your own identity" authentication method, you can just use `accoun
         # rebuild the redirect_uri used in auth_step_one
         callback = 'my absolute url to auth_step_two_callback'
 
-        result = account.con.request_token(request.url,
+        # get the request URL of the page which will include additional auth information
+        # Example request: /steptwo?code=abc123&state=xyz456
+        requested_url = request.url  # uses Flask's request() method
+
+        result = account.con.request_token(requested_url,
                                            state=my_saved_state,
                                            redirect_uri=callback)
         # if result is True, then authentication was succesful
@@ -440,7 +449,7 @@ Methods that stores tokens:
 
 To store the token you will have to provide a properly configured TokenBackend.
 
-There are a few `TokenBackend` classes implemented (and you can easely implement more like a CookieBackend, RedisBackend, etc.):
+There are a few `TokenBackend` classes implemented (and you can easily implement more like a CookieBackend, RedisBackend, etc.):
 - `FileSystemTokenBackend` (Default backend): Stores and retrieves tokens from the file system. Tokens are stored as files.
 - `EnvTokenBackend`: Stores and retrieves tokens from environment variables.
 - `FirestoreTokenBackend`: Stores and retrives tokens from a Google Firestore Datastore. Tokens are stored as documents within a collection.
