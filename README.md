@@ -319,7 +319,7 @@ For the "with your own identity" authentication method, you can just use `accoun
         callback = 'my absolute url to auth_step_two_callback'
 
         # get the request URL of the page which will include additional auth information
-        # Example request: /steptwo?code=(redacted)&state=(redacted)
+        # Example request: /steptwo?code=abc123&state=xyz456
         requested_url = request.url  # uses Flask's request() method
 
         result = account.con.request_token(requested_url,
