@@ -297,7 +297,7 @@ For the "with your own identity" authentication method, you can just use `accoun
     @route('/stepone')
     def auth_step_one():
         # callback = absolute url to auth_step_two_callback() page, https://domain.tld/steptwo
-        callback = url_for('auth_Step_two_callback', _external=True)  # Flask example
+        callback = url_for('auth_step_two_callback', _external=True)  # Flask example
 
         account = Account(credentials)
         url, state = account.con.get_authorization_url(requested_scopes=my_scopes,
