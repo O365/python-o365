@@ -1613,6 +1613,10 @@ class Calendar(ApiComponent, HandleRecipientsMixin):
         self.can_share = cloud_data.get(self._cc('canShare'), False)
         self.can_view_private_items = cloud_data.get(
             self._cc('canViewPrivateItems'), False)
+        
+        # Hex color only returns a value when a custom calandar is set
+        # Hex color is read-only, cannot be used to set calendar's color
+        self.hex_color = cloud_data.get(self._cc('hexColor'), None)
 
     def __str__(self):
         return self.__repr__()
