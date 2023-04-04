@@ -600,6 +600,7 @@ class Query:
         'start': 'start/DateTime',
         'end': 'end/DateTime',
         'due': 'duedatetime/DateTime',
+        'reminder': 'reminderdatetime/DateTime',
         'flag': 'flag/flagStatus',
         'body': 'body/content'
     }
