@@ -599,6 +599,7 @@ class Query:
         'to': 'toRecipients/emailAddress/address',
         'start': 'start/DateTime',
         'end': 'end/DateTime',
+        'due': 'duedatetime/DateTime',
         'flag': 'flag/flagStatus',
         'body': 'body/content'
     }
