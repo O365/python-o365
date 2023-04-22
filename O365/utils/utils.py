@@ -55,6 +55,16 @@ class OutlookWellKnowFolderNames(Enum):
     SENT = 'SentItems'
     OUTBOX = 'Outbox'
     ARCHIVE = 'Archive'
+    CLUTTER='clutter'
+    CONFLICTS='conflicts'
+    CONVERSATIONHISTORY='conversationhistory'
+    LOCALFAILURES='localfailures'
+    RECOVERABLEITEMSDELETIONS='recoverableitemsdeletions'
+    SCHEDULED='scheduled'
+    SEARCHFOLDERS='searchfolders'
+    SERVERFAILURES='serverfailures'
+    SYNCISSUES='syncissues'
+
 
 
 class OneDriveWellKnowFolderNames(Enum):

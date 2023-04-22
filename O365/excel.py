@@ -1393,9 +1393,9 @@ class Table(ApiComponent):
         data = {}
         if name:
             data['name'] = name
-        if show_headers:
+        if show_headers is not None:
             data['showHeaders'] = show_headers
-        if show_totals:
+        if show_totals is not None:
             data['showTotals'] = show_totals
         if style:
             data['style'] = style

@@ -153,7 +153,7 @@ When to use one or the other and requirements:
  **Authentication**                 | 2 step authentication with user consent                  | 2 step authentication with user consent                    | 1 step authentication
  **Auth Scopes**                    | Required                                                 | Required                                                   | None
  **Token Expiration**               | 60 Minutes without refresh token or 90 days*             | 60 Minutes without refresh token or 90 days*               | 60 Minutes*
- **Login Expiration**               | Unlimited if there is a refresh token and as long as a re| Unlimited if there is a refresh token and as long as a refresh is done within the 90 days          | Unlimited
+ **Login Expiration**               | Unlimited if there is a refresh token and as long as a refresh is done within the 90 days | Unlimited if there is a refresh token and as long as a refresh is done within the 90 days          | Unlimited
  **Resources**                      | Access the user resources, and any shared resources      | Access the user resources, and any shared resources        | All Azure AD users the app has access to
  **Microsoft Account Type**         | Any                                                      | Any                                                        | Not Allowed for Personal Accounts
  **Tenant ID Required**             | Defaults to "common"                                     | Defaults to "common"                                       | Required (can't be "common")
@@ -290,10 +290,15 @@ For the "with your own identity" authentication method, you can just use `accoun
 
     The following example is done using Flask.
     ```python
+    from flask import request
+    from O365 import Account
+    
+    
     @route('/stepone')
     def auth_step_one():
+        # callback = absolute url to auth_step_two_callback() page, https://domain.tld/steptwo
+        callback = url_for('auth_step_two_callback', _external=True)  # Flask example
 
-        callback = 'my absolute url to auth_step_two_callback'
         account = Account(credentials)
         url, state = account.con.get_authorization_url(requested_scopes=my_scopes,
                                                        redirect_uri=callback)
@@ -313,7 +318,11 @@ For the "with your own identity" authentication method, you can just use `accoun
         # rebuild the redirect_uri used in auth_step_one
         callback = 'my absolute url to auth_step_two_callback'
 
-        result = account.con.request_token(request.url,
+        # get the request URL of the page which will include additional auth information
+        # Example request: /steptwo?code=abc123&state=xyz456
+        requested_url = request.url  # uses Flask's request() method
+
+        result = account.con.request_token(requested_url,
                                            state=my_saved_state,
                                            redirect_uri=callback)
         # if result is True, then authentication was succesful
@@ -440,9 +449,12 @@ Methods that stores tokens:
 
 To store the token you will have to provide a properly configured TokenBackend.
 
-Actually there are only two implemented (but you can easely implement more like a CookieBackend, RedisBackend, etc.):
+There are a few `TokenBackend` classes implemented (and you can easily implement more like a CookieBackend, RedisBackend, etc.):
 - `FileSystemTokenBackend` (Default backend): Stores and retrieves tokens from the file system. Tokens are stored as files.
+- `EnvTokenBackend`: Stores and retrieves tokens from environment variables.
 - `FirestoreTokenBackend`: Stores and retrives tokens from a Google Firestore Datastore. Tokens are stored as documents within a collection.
+- `AWSS3Backend`: Stores and retrieves tokens from an AWS S3 bucket. Tokens are stored as a file within a S3 bucket.
+- `AWSSecretsBackend`: Stores and retrieves tokens from an AWS Secrets Management vault.
 
 For example using the FileSystem Token Backend:
 

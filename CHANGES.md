@@ -3,6 +3,14 @@
 Almost every release features a lot of bugfixes but those are not listed here.
 
 
+## Version 2.0.26 (2023-02-02)
+
+###Features:
+- Connection now allows setting default headers (Thanks @yeyeric)
+- Now it's possible to request inmutable Ids to the MS Graph protocol (Thanks @yeyeric and @NielsDebrier)
+- Added more Well Known Folder Names (Thanks @ponquersohn)
+
+
 ## Version 2.0.25 (2023-01-13)
 
 ###Features:
