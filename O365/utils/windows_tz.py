@@ -453,7 +453,7 @@ IANA_TO_WIN = {
     "Europe/Istanbul": "Turkey Standard Time",
     "Europe/Jersey": "GMT Standard Time",
     "Europe/Kaliningrad": "Kaliningrad Standard Time",
-    "Europe/Kiev": "FLE Standard Time",
+    "Europe/Kyiv": "FLE Standard Time",
     "Europe/Kirov": "Russian Standard Time",
     "Europe/Lisbon": "GMT Standard Time",
     "Europe/Ljubljana": "Central European Standard Time",
