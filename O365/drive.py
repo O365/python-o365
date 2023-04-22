@@ -1291,10 +1291,15 @@ class Folder(DriveItem):
                 self._endpoints.get('create_upload_session').format(
                     id=self.object_id, filename=quote(item.name if item_name is None else item_name)))
 
-            # If not None, add conflict handling to request
+            # WARNING : order matters in the dict, first we need to set conflictBehavior (if any) and then createdDateTime, otherwise microsoft refuses the api
+            # call...
             file_data = {}
             if conflict_handling:
-                file_data["item"] = {"@microsoft.graph.conflictBehavior": conflict_handling}
+                file_data.setdefault("item", dict())["@microsoft.graph.conflictBehavior"] = conflict_handling
+            if file_created_date_time:
+                file_data.setdefault("item", dict()).setdefault("fileSystemInfo", dict())["createdDateTime"] = file_created_date_time
+            if file_last_modified_date_time:
+                file_data.setdefault("item", dict()).setdefault("fileSystemInfo", dict())["lastModifiedDateTime"] = file_last_modified_date_time
 
             response = self.con.post(url, data=file_data)
             if not response:
