@@ -1311,6 +1311,8 @@ class Folder(DriveItem):
                 file_data.setdefault("item", dict()).setdefault("fileSystemInfo", dict())["createdDateTime"] = file_created_date_time
             if file_last_modified_date_time:
                 file_data.setdefault("item", dict()).setdefault("fileSystemInfo", dict())["lastModifiedDateTime"] = file_last_modified_date_time
+               
+            log.info(f'Uploading file with {file_data=}')
 
             response = self.con.post(url, data=file_data)
             if not response:
