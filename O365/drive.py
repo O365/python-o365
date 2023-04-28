@@ -1228,9 +1228,18 @@ class Folder(DriveItem):
         else:
             return items
 
-    def upload_file(self, item, item_name=None, chunk_size=DEFAULT_UPLOAD_CHUNK_SIZE,
-                    upload_in_chunks=False, stream=None, stream_size=None,
-                    conflict_handling=None):
+    def upload_file(
+            self,
+            item,
+            item_name=None,
+            chunk_size=DEFAULT_UPLOAD_CHUNK_SIZE,
+            upload_in_chunks=False,
+            stream=None,
+            stream_size=None,
+            conflict_handling=None,
+            file_created_date_time: str = None,
+            file_last_modified_date_time: str= None
+    ):
         """ Uploads a file
 
         :param item: path to the item you want to upload
@@ -1246,6 +1255,8 @@ class Folder(DriveItem):
         :param conflict_handling: How to handle conflicts.
          NOTE: works for chunk upload only (>4MB or upload_in_chunks is True)
          None to use default (overwrite). Options: fail | replace | rename
+        :param file_created_date_time: allow to force file created date time while uploading
+        :param file_last_modified_date_time: allow to force file last modified date time while uploading
         :type conflict_handling: str
         :return: uploaded file
         :rtype: DriveItem
@@ -1291,10 +1302,17 @@ class Folder(DriveItem):
                 self._endpoints.get('create_upload_session').format(
                     id=self.object_id, filename=quote(item.name if item_name is None else item_name)))
 
-            # If not None, add conflict handling to request
+            # WARNING : order matters in the dict, first we need to set conflictBehavior (if any) and then createdDateTime, otherwise microsoft refuses the api
+            # call...
             file_data = {}
             if conflict_handling:
-                file_data["item"] = {"@microsoft.graph.conflictBehavior": conflict_handling}
+                file_data.setdefault("item", dict())["@microsoft.graph.conflictBehavior"] = conflict_handling
+            if file_created_date_time:
+                file_data.setdefault("item", dict()).setdefault("fileSystemInfo", dict())["createdDateTime"] = file_created_date_time
+            if file_last_modified_date_time:
+                file_data.setdefault("item", dict()).setdefault("fileSystemInfo", dict())["lastModifiedDateTime"] = file_last_modified_date_time
+               
+            log.info(f'Uploading file with {file_data=}')
 
             response = self.con.post(url, data=file_data)
             if not response:
