@@ -1856,7 +1856,7 @@ class WorkBook(ApiComponent):
 
     def invoke_function(self, function_name, **function_params):
         """ Invokes an Excel Function """
-        url = self.build_url(self._endpoints.get('function').format(function_name))
+        url = self.build_url(self._endpoints.get('function').format(name=function_name))
         response = self.session.post(url, data=function_params)
         if not response:
             return None
