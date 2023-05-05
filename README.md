@@ -485,7 +485,7 @@ credentials = ('id', 'secret')
 # this will store the token on firestore under the tokens collection on the defined doc_id.
 # you can pass strings to token_path or Path instances from pathlib
 user_id = 'whatever the user id is'  # used to create the token document id
-document_id = 'token_{}'.format(user_id)  # used to uniquely store this token
+document_id = f"token_{user_id}"  # used to uniquely store this token
 token_backend = FirestoreBackend(client=firestore.Client(), collection='tokens', doc_id=document_id)
 account = Account(credentials, token_backend=token_backend)
 
@@ -1167,7 +1167,7 @@ if files:
     # to check for the result just loop over check_status.
     # check_status is a generator that will yield a new status and progress until the file is finally copied
     for status, progress in operation.check_status():  # if it's an async operations, this will request to the api for the status in every loop
-        print('{} - {}'.format(status, progress))  # prints 'in progress - 77.3' until finally completed: 'completed - 100.0'
+        print(f"{status} - {progress}")  # prints 'in progress - 77.3' until finally completed: 'completed - 100.0'
     copied_item = operation.get_item()  # the copy operation is completed so you can get the item.
     if copied_item:
         copied_item.delete()  # ... oops!
