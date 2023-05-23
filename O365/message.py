@@ -322,7 +322,7 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         meeting_mt = meeting_mt.replace('Tenatively', 'Tentatively')
 
         self.__meeting_message_type = MeetingMessageType.from_value(meeting_mt) if meeting_mt != 'none' else None
-        
+
         # a message is a draft by default
         self.__is_draft = cloud_data.get(cc('isDraft'), kwargs.get('is_draft',
                                                                    True))
