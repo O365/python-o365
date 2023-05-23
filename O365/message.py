@@ -312,6 +312,8 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
 
         self.__is_read_receipt_requested = cloud_data.get(cc('isReadReceiptRequested'), False)
         self.__is_delivery_receipt_requested = cloud_data.get(cc('isDeliveryReceiptRequested'), False)
+        
+        self.__single_value_extended_properties = cloud_data.get(cc('singleValueExtendedProperties'), [])
 
         # if this message is an EventMessage:
         meeting_mt = cloud_data.get(cc('meetingMessageType'), 'none')
@@ -611,6 +613,11 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
     def flag(self):
         """ The Message Flag instance """
         return self.__flag
+    
+    @property
+    def single_value_extended_properties(self):
+        """ singleValueExtendedProperties """
+        return self.__single_value_extended_properties
 
     def to_api_data(self, restrict_keys=None):
         """ Returns a dict representation of this message prepared to be send
