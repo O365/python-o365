@@ -118,7 +118,7 @@ class Account:
                 return False
 
         elif self.con.auth_flow_type in ('credentials', 'certificate', 'password'):
-            return self.con.request_token(None, requested_scopes=scopes)
+            return self.con.request_token(None, requested_scopes=scopes, **kwargs)
         else:
             raise ValueError('Connection "auth_flow_type" must be "authorization", "public", "password", "certificate"'
                              ' or "credentials"')
