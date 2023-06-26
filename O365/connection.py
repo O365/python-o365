@@ -793,7 +793,7 @@ class Connection:
                     error = response.json()
                     error_message = error.get('error', {}).get('message', '')
                     error_code = (
-                        error.get("error", {}).get("innerError", "").get("code", "")
+                        error.get("error", {}).get("innerError", {}).get("code", "")
                     )
                 except ValueError:
                     error_message = ''
