@@ -106,7 +106,7 @@ class AutomaticRepliesSettings(ApiComponent):
             value = dt.datetime(value.year, value.month, value.day)
         if value.tzinfo is None:
             # localize datetime
-            value = self.protocol.timezone.localize(value)
+            value = value.replace(tzinfo=self.protocol.timezone)
         elif value.tzinfo != self.protocol.timezone:
             value = value.astimezone(self.protocol.timezone)
         self.__scheduled_startdatetime = value
@@ -130,7 +130,7 @@ class AutomaticRepliesSettings(ApiComponent):
             value = dt.datetime(value.year, value.month, value.day)
         if value.tzinfo is None:
             # localize datetime
-            value = self.protocol.timezone.localize(value)
+            value = value.replace(tzinfo=self.protocol.timezone)
         elif value.tzinfo != self.protocol.timezone:
             value = value.astimezone(self.protocol.timezone)
         self.__scheduled_enddatetime = value
@@ -823,7 +823,7 @@ class MailBox(Folder):
             value = dt.datetime(value.year, value.month, value.day)
         if value.tzinfo is None:
             # localize datetime
-            value = self.protocol.timezone.localize(value)
+            value = value.replace(tzinfo=self.protocol.timezone)
         elif value.tzinfo != self.protocol.timezone:
             value = value.astimezone(self.protocol.timezone)
         return value

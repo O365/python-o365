@@ -242,7 +242,7 @@ class Task(ApiComponent):
             value = dt.datetime(value.year, value.month, value.day)
         if value.tzinfo is None:
             # localize datetime
-            value = self.protocol.timezone.localize(value)
+            value = value.replace(tzinfo=self.protocol.timezone)
         elif value.tzinfo != self.protocol.timezone:
             value = value.astimezone(self.protocol.timezone)
         self.__due = value
@@ -267,7 +267,7 @@ class Task(ApiComponent):
             value = dt.datetime(value.year, value.month, value.day)
         if value.tzinfo is None:
             # localize datetime
-            value = self.protocol.timezone.localize(value)
+            value = value.replace(tzinfo=self.protocol.timezone)
         elif value.tzinfo != self.protocol.timezone:
             value = value.astimezone(self.protocol.timezone)
         self.__reminder = value
@@ -311,7 +311,7 @@ class Task(ApiComponent):
                 value = dt.datetime(value.year, value.month, value.day)
             if value.tzinfo is None:
                 # localize datetime
-                value = self.protocol.timezone.localize(value)
+                value = value.replace(tzinfo=self.protocol.timezone)
             elif value.tzinfo != self.protocol.timezone:
                 value = value.astimezone(self.protocol.timezone)
             self.mark_completed()
@@ -413,7 +413,7 @@ class Task(ApiComponent):
             )
             self.__is_completed = task.get(self._cc("status"), None) == "completed"
         else:
-            self.__modified = self.protocol.timezone.localize(dt.datetime.now())
+            self.__modified = dt.datetime.now().replace(tzinfo=self.protocol.timezone)
 
         return True
 

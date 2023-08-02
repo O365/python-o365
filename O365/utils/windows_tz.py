@@ -2,8 +2,7 @@
 Mapping from iana timezones to windows timezones and vice versa
 """
 from datetime import tzinfo
-
-import pytz
+from zoneinfo import ZoneInfoNotFoundError
 
 # noinspection SpellCheckingInspection
 IANA_TO_WIN = {
@@ -623,7 +622,7 @@ def get_iana_tz(windows_tz):
 
     # Return what we have.
     if timezone is None:
-        raise pytz.UnknownTimeZoneError(
+        raise ZoneInfoNotFoundError(
             "Can't find Windows TimeZone " + windows_tz)
 
     return timezone
@@ -638,7 +637,7 @@ def get_windows_tz(iana_tz):
     timezone = IANA_TO_WIN.get(
         iana_tz.zone if isinstance(iana_tz, tzinfo) else iana_tz)
     if timezone is None:
-        raise pytz.UnknownTimeZoneError(
+        raise ZoneInfoNotFoundError(
             "Can't find Iana TimeZone " + iana_tz.zone)
 
     return timezone

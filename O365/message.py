@@ -146,9 +146,9 @@ class MessageFlag(ApiComponent):
         start_date = start_date or dt.datetime.now()
         due_date = due_date or dt.datetime.now()
         if start_date.tzinfo is None:
-            start_date = self.protocol.timezone.localize(start_date)
+            start_date = start_date.replace(tzinfo=self.protocol.timezone)
         if due_date.tzinfo is None:
-            due_date = self.protocol.timezone.localize(due_date)
+            due_date = due_date.replace(tzinfo=self.protocol.timezone)
         self.__start = start_date
         self.__due_date = due_date
         self._track_changes()
@@ -160,7 +160,7 @@ class MessageFlag(ApiComponent):
         self.__status = Flag.Complete
         completition_date = completition_date or dt.datetime.now()
         if completition_date.tzinfo is None:
-            completition_date = self.protocol.timezone.localize(completition_date)
+            completition_date = completion_date.replace(tzinfo=self.protocol.timezone)
         self.__completed = completition_date
         self._track_changes()
 
@@ -935,7 +935,7 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
                 return False
 
             self._track_changes.clear()  # reset the tracked changes as they are all saved
-            self.__modified = self.protocol.timezone.localize(dt.datetime.now())
+            self.__modified = dt.datetime.now().replace(tzinfo=self.protocol.timezone)
 
             return True
         else:
@@ -1018,7 +1018,7 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
 
             self.web_link = message.get(self._cc('webLink'), '')
         else:
-            self.__modified = self.protocol.timezone.localize(dt.datetime.now())
+            self.__modified = dt.datetime.now().replace(tzinfo=self.protocol.timezone)
 
         return True
 

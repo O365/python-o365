@@ -1,4 +1,5 @@
 import datetime as dt
+from zoneinfo import ZoneInfoNotFoundError
 import logging
 from collections import OrderedDict
 from enum import Enum
@@ -434,11 +435,11 @@ class ApiComponent:
             try:
                 timezone = pytz.timezone(
                     get_iana_tz(date_time_time_zone.get(self._cc('timeZone'), 'UTC')))
-            except pytz.UnknownTimeZoneError:
+            except pytz.ZoneInfoNotFoundError:
                 timezone = local_tz
             date_time = date_time_time_zone.get(self._cc('dateTime'), None)
             try:
-                date_time = timezone.localize(parse(date_time)) if date_time else None
+                date_time = parse(date_time).replace(tzinfo=timezone) if date_time else None
             except OverflowError as e:
                 log.debug('Could not parse dateTimeTimeZone: {}. Error: {}'.format(date_time_time_zone, str(e)))
                 date_time = None
@@ -451,7 +452,7 @@ class ApiComponent:
         else:
             # Outlook v1.0 api compatibility (fallback to datetime string)
             try:
-                date_time = local_tz.localize(parse(date_time_time_zone)) if date_time_time_zone else None
+                date_time = parse(date_time_time_zone).replace(tzinfo=local_tz) if date_time_time_zone else None
             except Exception as e:
                 log.debug('Could not parse dateTimeTimeZone: {}. Error: {}'.format(date_time_time_zone, str(e)))
                 date_time = None
@@ -947,8 +948,7 @@ class Query:
             if isinstance(word, dt.datetime):
                 if word.tzinfo is None:
                     # if it's a naive datetime, localize the datetime.
-                    word = self.protocol.timezone.localize(
-                        word)  # localize datetime into local tz
+                    word = word.replace(tzinfo=self.protocol.timezone)  # localize datetime into local tz
                 if word.tzinfo != pytz.utc:
                     word = word.astimezone(
                         pytz.utc)  # transform local datetime to utc

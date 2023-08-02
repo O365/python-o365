@@ -1,7 +1,7 @@
 import pytest
 import json
 
-from pytz import UnknownTimeZoneError
+from zoneinfo import ZoneInfoNotFoundError
 from tzlocal import get_localzone
 
 from O365.connection import Connection, Protocol, MSGraphProtocol, MSOffice365Protocol, DEFAULT_SCOPES

@@ -547,7 +547,7 @@ class Contact(ApiComponent, AttachableMixin):
             self.__modified = parse(self.modified).astimezone(
                 local_tz) if self.__modified else None
         else:
-            self.__modified = self.protocol.timezone.localize(dt.datetime.now())
+            self.__modified = dt.datetime.now().replace(tzinfo=self.protocol.timezone)
 
         return True
 
