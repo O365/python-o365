@@ -2,7 +2,6 @@ import datetime as dt
 import logging
 from enum import Enum
 
-import pytz
 # noinspection PyPep8Naming
 from bs4 import BeautifulSoup as bs
 from dateutil.parser import parse
@@ -669,13 +668,13 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
             message[cc('id')] = self.object_id
             if self.created:
                 message[cc('createdDateTime')] = self.created.astimezone(
-                    pytz.utc).isoformat()
+                    dt.timezone.utc).isoformat()
             if self.received:
                 message[cc('receivedDateTime')] = self.received.astimezone(
-                    pytz.utc).isoformat()
+                    dt.timezone.utc).isoformat()
             if self.sent:
                 message[cc('sentDateTime')] = self.sent.astimezone(
-                    pytz.utc).isoformat()
+                    dt.timezone.utc).isoformat()
             message[cc('hasAttachments')] = bool(self.attachments)
             message[cc('isRead')] = self.is_read
             message[cc('isDraft')] = self.__is_draft

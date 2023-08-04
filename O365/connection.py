@@ -99,7 +99,7 @@ class Protocol:
         if timezone and isinstance(timezone, str):
             timezone = dt.timezone(timezone)
         try:
-            self.timezone = timezone or get_localzone()  # pytz timezone
+            self.timezone = timezone or get_localzone() 
         except ZoneInfoNotFoundError as e:
             log.debug('Timezone not provided and the local timezone could not be found. Default to UTC.')
             self.timezone = dt.timezone.utc

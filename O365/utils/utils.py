@@ -3,8 +3,8 @@ from zoneinfo import ZoneInfoNotFoundError
 import logging
 from collections import OrderedDict
 from enum import Enum
+import zoneinfo
 
-import pytz
 from dateutil.parser import parse
 from stringcase import snakecase
 
@@ -433,9 +433,9 @@ class ApiComponent:
         local_tz = self.protocol.timezone
         if isinstance(date_time_time_zone, dict):
             try:
-                timezone = pytz.timezone(
-                    get_iana_tz(date_time_time_zone.get(self._cc('timeZone'), 'UTC')))
-            except pytz.ZoneInfoNotFoundError:
+                timezone = zoneinfo.ZoneInfo(
+                    name=get_iana_tz(date_time_time_zone.get(self._cc('timeZone'), 'UTC')))
+            except ZoneInfoNotFoundError:
                 timezone = local_tz
             date_time = date_time_time_zone.get(self._cc('dateTime'), None)
             try:
@@ -949,9 +949,9 @@ class Query:
                 if word.tzinfo is None:
                     # if it's a naive datetime, localize the datetime.
                     word = word.replace(tzinfo=self.protocol.timezone)  # localize datetime into local tz
-                if word.tzinfo != pytz.utc:
+                if word.tzinfo != dt.timezone.utc:
                     word = word.astimezone(
-                        pytz.utc)  # transform local datetime to utc
+                        dt.timezone.utc)  # transform local datetime to utc
             if '/' in self._attribute:
                 # TODO: this is a fix for the case when the parameter
                 #  filtered is a string instead a dateTimeOffset
