@@ -792,14 +792,20 @@ class Connection:
                 try:
                     error = response.json()
                     error_message = error.get('error', {}).get('message', '')
+                    error_code = error.get("error", {}).get("innerError", {}).get("code", "")
                 except ValueError:
                     error_message = ''
+                    error_code = ''
 
                 status_code = int(e.response.status_code / 100)
                 if status_code == 4:
                     # Client Error
                     # Logged as error. Could be a library error or Api changes
-                    log.error('Client Error: {} | Error Message: {}'.format(str(e), error_message))
+                    log.error(
+                        "Client Error: {} | Error Message: {} | Error Code: {}".format(
+                            str(e), error_message, error_code
+                        )
+                    )
                 else:
                     # Server Error
                     log.debug('Server Error: {}'.format(str(e)))
