@@ -3,6 +3,15 @@
 Almost every release features a lot of bugfixes but those are not listed here.
 
 
+## Version 2.0.27 (2023-05-30)
+
+###Features:
+- Added hex_color to Calendar (Thanks @Invincibear)
+- Add support for filter by due datetime in Tasks (Thanks @RogerSelwyn)
+- Adding option to set file created and last modified time while uploading in drive (Thanks @yeyeric)
+- Add access to singleValueExtendedProperties in Message (Thanks @svmcaro)
+
+
 ## Version 2.0.26 (2023-02-02)
 
 ###Features:
