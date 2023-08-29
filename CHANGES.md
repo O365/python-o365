@@ -2,6 +2,11 @@
 
 Almost every release features a lot of bugfixes but those are not listed here.
 
+## Version 2.0.28 (2023-08-29)
+
+###Features:
+- Bug fixing release
+
 
 ## Version 2.0.27 (2023-05-30)
 
