@@ -374,7 +374,7 @@ class Connection:
          (client_id, client_secret)
         """
         if auth_flow_type in ('public', 'password'):  # allow client id only for public or password flow
-            if isinstance(credentials, str): 
+            if isinstance(credentials, str):
                 credentials = (credentials,)
             if not isinstance(credentials, tuple) or len(credentials) != 1 or (not credentials[0]):
                 raise ValueError('Provide client id only for public or password flow credentials')
@@ -440,7 +440,7 @@ class Connection:
             else:
                 proxy_uri = "{}:{}".format(proxy_server,
                                             proxy_port)
-            
+
             if proxy_http_only is False:
                 self.proxy = {
                     "http": "http://{}".format(proxy_uri),
@@ -476,7 +476,7 @@ class Connection:
         # TODO: access_type='offline' has no effect according to documentation
         #  This is done through scope 'offline_access'.
         auth_url, state = oauth.authorization_url(
-            url=self._oauth2_authorize_url, access_type='offline')
+            url=self._oauth2_authorize_url, access_type='offline', **kwargs)
 
         return auth_url, state
 

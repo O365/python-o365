@@ -909,6 +909,7 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         self.series_master_id = cloud_data.get(cc('seriesMasterId'), None)
         self.__show_as = EventShowAs.from_value(cloud_data.get(cc('showAs'), 'busy'))
         self.__event_type = EventType.from_value(cloud_data.get(cc('type'), 'singleInstance'))
+        self.__no_forwarding = False
 
     def __str__(self):
         return self.__repr__()
@@ -957,6 +958,12 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
             cc('showAs'): cc(self.__show_as.value),
             cc('isOnlineMeeting'): cc(self.__is_online_meeting),
             cc('onlineMeetingProvider'): cc(self.__online_meeting_provider.value),
+            cc("SingleValueExtendedProperties"): [
+                {
+                    "id": "Boolean {00020329-0000-0000-C000-000000000046} Name DoNotForward",
+                    "value": cc(self.__no_forwarding),
+                }
+            ],
         }
 
         if self.__recurrence:
@@ -1317,6 +1324,15 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         self.__online_meeting_provider = (value if isinstance(value, OnlineMeetingProviderType)
                              else OnlineMeetingProviderType.from_value(value))
         self._track_changes.add(self._cc('onlineMeetingProvider'))
+
+    @property
+    def no_forwarding(self):
+        return self.__no_forwarding
+
+    @no_forwarding.setter
+    def no_forwarding(self, value):
+        self.__no_forwarding = value
+        self._track_changes.add('SingleValueExtendedProperties')
 
     def get_occurrences(self, start, end, *, limit=None, query=None, order_by=None, batch=None):
         """
