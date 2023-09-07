@@ -2,7 +2,6 @@ import datetime as dt
 import logging
 from enum import Enum
 
-import pytz
 # noinspection PyPep8Naming
 from bs4 import BeautifulSoup as bs
 from dateutil.parser import parse
@@ -146,9 +145,9 @@ class MessageFlag(ApiComponent):
         start_date = start_date or dt.datetime.now()
         due_date = due_date or dt.datetime.now()
         if start_date.tzinfo is None:
-            start_date = self.protocol.timezone.localize(start_date)
+            start_date = start_date.replace(tzinfo=self.protocol.timezone)
         if due_date.tzinfo is None:
-            due_date = self.protocol.timezone.localize(due_date)
+            due_date = due_date.replace(tzinfo=self.protocol.timezone)
         self.__start = start_date
         self.__due_date = due_date
         self._track_changes()
@@ -160,7 +159,7 @@ class MessageFlag(ApiComponent):
         self.__status = Flag.Complete
         completition_date = completition_date or dt.datetime.now()
         if completition_date.tzinfo is None:
-            completition_date = self.protocol.timezone.localize(completition_date)
+            completition_date = completion_date.replace(tzinfo=self.protocol.timezone)
         self.__completed = completition_date
         self._track_changes()
 
@@ -669,13 +668,13 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
             message[cc('id')] = self.object_id
             if self.created:
                 message[cc('createdDateTime')] = self.created.astimezone(
-                    pytz.utc).isoformat()
+                    dt.timezone.utc).isoformat()
             if self.received:
                 message[cc('receivedDateTime')] = self.received.astimezone(
-                    pytz.utc).isoformat()
+                    dt.timezone.utc).isoformat()
             if self.sent:
                 message[cc('sentDateTime')] = self.sent.astimezone(
-                    pytz.utc).isoformat()
+                    dt.timezone.utc).isoformat()
             message[cc('hasAttachments')] = bool(self.attachments)
             message[cc('isRead')] = self.is_read
             message[cc('isDraft')] = self.__is_draft
@@ -935,7 +934,7 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
                 return False
 
             self._track_changes.clear()  # reset the tracked changes as they are all saved
-            self.__modified = self.protocol.timezone.localize(dt.datetime.now())
+            self.__modified = dt.datetime.now().replace(tzinfo=self.protocol.timezone)
 
             return True
         else:
@@ -1018,7 +1017,7 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
 
             self.web_link = message.get(self._cc('webLink'), '')
         else:
-            self.__modified = self.protocol.timezone.localize(dt.datetime.now())
+            self.__modified = dt.datetime.now().replace(tzinfo=self.protocol.timezone)
 
         return True
 

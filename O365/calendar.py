@@ -2,7 +2,6 @@ import calendar
 import datetime as dt
 import logging
 
-import pytz
 # noinspection PyPep8Naming
 from bs4 import BeautifulSoup as bs
 from dateutil.parser import parse
@@ -1047,7 +1046,7 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
             value = dt.datetime(value.year, value.month, value.day)
         if value.tzinfo is None:
             # localize datetime
-            value = self.protocol.timezone.localize(value)
+            value = value.replace(tzinfo=self.protocol.timezone)
         elif value.tzinfo != self.protocol.timezone:
             value = value.astimezone(self.protocol.timezone)
         self.__start = value
@@ -1074,7 +1073,7 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
             value = dt.datetime(value.year, value.month, value.day)
         if value.tzinfo is None:
             # localize datetime
-            value = self.protocol.timezone.localize(value)
+            value = value.replace(tzinfo=self.protocol.timezone)
         elif value.tzinfo != self.protocol.timezone:
             value = value.astimezone(self.protocol.timezone)
         self.__end = value
@@ -1375,15 +1374,15 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
 
         if start.tzinfo is None:
             # if it's a naive datetime, localize the datetime.
-            start = self.protocol.timezone.localize(start)  # localize datetime into local tz
-        if start.tzinfo != pytz.utc:
-            start = start.astimezone(pytz.utc)  # transform local datetime to utc
+            start = start.replace(tzinfo=self.protocol.timezone)  # localize datetime into local tz
+        if start.tzinfo != dt.timezone.utc:
+            start = start.astimezone(dt.timezone.utc)  # transform local datetime to utc
 
         if end.tzinfo is None:
             # if it's a naive datetime, localize the datetime.
-            end = self.protocol.timezone.localize(end)  # localize datetime into local tz
-        if end.tzinfo != pytz.utc:
-            end = end.astimezone(pytz.utc)  # transform local datetime to utc
+            end = end.replace(tzinfo=self.protocol.timezone)  # localize datetime into local tz
+        if end.tzinfo != dt.timezone.utc:
+            end = end.astimezone(dt.timezone.utc)  # transform local datetime to utc
 
         params[self._cc('startDateTime')] = start.isoformat()
         params[self._cc('endDateTime')] = end.isoformat()
@@ -1471,7 +1470,7 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
 
             self.ical_uid = event.get(self._cc('iCalUId'), None)
         else:
-            self.__modified = self.protocol.timezone.localize(dt.datetime.now())
+            self.__modified = dt.datetime.now().replace(tzinfo=self.protocol.timezone)
 
         return True
 
