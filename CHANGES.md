@@ -2,6 +2,12 @@
 
 Almost every release features a lot of bugfixes but those are not listed here.
 
+## Version 2.0.29 (2023-09-27)
+
+###Features:
+- Calendar: no forwarding events (Thanks @Gregorek85)
+- Account: removed pytz (Thanks @ponquersohn)
+
 ## Version 2.0.28 (2023-08-29)
 
 ###Features:
