@@ -434,7 +434,7 @@ class ApiComponent:
         if isinstance(date_time_time_zone, dict):
             try:
                 timezone = zoneinfo.ZoneInfo(
-                    name=get_iana_tz(date_time_time_zone.get(self._cc('timeZone'), 'UTC')))
+                    get_iana_tz(date_time_time_zone.get(self._cc('timeZone'), 'UTC')))
             except ZoneInfoNotFoundError:
                 timezone = local_tz
             date_time = date_time_time_zone.get(self._cc('dateTime'), None)
