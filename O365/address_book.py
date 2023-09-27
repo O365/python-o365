@@ -67,6 +67,7 @@ class Contact(ApiComponent, AttachableMixin):
             local_tz) if self.__modified else None
 
         self.__display_name = cloud_data.get(cc('displayName'), '')
+        self.__fileAs = cloud_data.get(cc('fileAs'), '')
         self.__name = cloud_data.get(cc('givenName'), '')
         self.__surname = cloud_data.get(cc('surname'), '')
 
@@ -144,12 +145,27 @@ class Contact(ApiComponent, AttachableMixin):
         :type: str
         """
         return self.__display_name
-
+        
     @display_name.setter
     def display_name(self, value):
         self.__display_name = value
         self._track_changes.add(self._cc('displayName'))
+    
+    @property
+    def fileAs(self):
+        """ File As
 
+        :getter: Get the fileAs of the contact
+        :setter: Update the fileAs
+        :type: str
+        """
+        return self.__fileAs
+        
+    @fileAs.setter
+    def fileAs(self, value):
+        self.__fileAs = value
+        self._track_changes.add(self._cc('fileAs'))
+        
     @property
     def name(self):
         """ First Name
@@ -456,6 +472,7 @@ class Contact(ApiComponent, AttachableMixin):
 
         data = {
             cc('displayName'): self.__display_name,
+            cc('fileAs'): self.__fileAs,
             cc('givenName'): self.__name,
             cc('surname'): self.__surname,
             cc('title'): self.__title,
