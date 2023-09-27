@@ -2,6 +2,13 @@
 
 Almost every release features a lot of bugfixes but those are not listed here.
 
+
+## Version 2.0.30 (2023-09-27)
+
+###Features:
+- Dropped support for python <3.9 because of the need to use zoneinfo (dropped pytz).  If you need support for older versions use version 2.0.28.
+
+
 ## Version 2.0.29 (2023-09-27)
 
 ###Features:

@@ -3,7 +3,7 @@ import os
 from setuptools import setup, find_packages
 
 
-VERSION = '2.0.29'
+VERSION = '2.0.30'
 
 # Available classifiers: https://pypi.org/pypi?%3Aaction=list_classifiers
 CLASSIFIERS = [
@@ -14,11 +14,6 @@ CLASSIFIERS = [
     'Topic :: Software Development :: Libraries',
     'Programming Language :: Python',
     'Programming Language :: Python :: 3 :: Only',
-    'Programming Language :: Python :: 3.4',
-    'Programming Language :: Python :: 3.5',
-    'Programming Language :: Python :: 3.6',
-    'Programming Language :: Python :: 3.7',
-    'Programming Language :: Python :: 3.8',
     'Programming Language :: Python :: 3.9',
     'Programming Language :: Python :: 3.10',
     'Programming Language :: Python :: 3.11',
@@ -55,7 +50,7 @@ setup(
     long_description=read('README.md'),
     long_description_content_type="text/markdown",
     classifiers=CLASSIFIERS,
-    python_requires=">=3.4",
+    python_requires=">=3.9",
     install_requires=requires,
     setup_requires=["wheel"],
 )
