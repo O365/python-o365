@@ -91,7 +91,7 @@ class Contact(ApiComponent, AttachableMixin):
             # a Contact from OneDrive?
             self.__emails.add(email)
         self.__business_address = cloud_data.get(cc('businessAddress'), {})
-        self.__home_address = cloud_data.get(cc('homesAddress'), {})
+        self.__home_address = cloud_data.get(cc('homeAddress'), {})
         self.__other_address = cloud_data.get(cc('otherAddress'), {})
         self.__preferred_language = cloud_data.get(cc('preferredLanguage'),
                                                    None)
@@ -385,7 +385,7 @@ class Contact(ApiComponent, AttachableMixin):
         if not isinstance(value, dict):
             raise ValueError('"home_address" must be dict')
         self.__home_address = value
-        self._track_changes.add(self._cc('homesAddress'))
+        self._track_changes.add(self._cc('homeAddress'))
 
     @property
     def other_address(self):
@@ -487,7 +487,7 @@ class Contact(ApiComponent, AttachableMixin):
                                     self._cc('address'): recipient.address}
                                    for recipient in self.emails],
             cc('businessAddress'): self.__business_address,
-            cc('homesAddress'): self.__home_address,
+            cc('homeAddress'): self.__home_address,
             cc('otherAddress'): self.__other_address,
             cc('categories'): self.__categories,
             cc('personalNotes'): self.__personal_notes,
