@@ -30,7 +30,7 @@ requires = [
     'requests>=2.18.0',
     'requests_oauthlib>=1.2.0',
     'python-dateutil>=2.7',
-    'tzlocal>=4.0,<5.0',
+    'tzlocal>=5.0',
     'beautifulsoup4>=4.0.0',
     'stringcase>=1.2.0'
 ]
