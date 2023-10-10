@@ -360,6 +360,9 @@ class DriveItemPermission(ApiComponent):
         self.granted_to = granted_to.get('user', {}).get(
             self._cc('displayName')) or granted_to.get('application', {}).get(
             self._cc('displayName'))
+        self.granted_to_id = granted_to.get('user', {}).get(
+            self._cc('id')) or granted_to.get('application', {}).get(
+            self._cc('id'))
         self.share_id = cloud_data.get(self._cc('shareId'), None)
 
     def __str__(self):
