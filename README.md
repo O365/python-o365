@@ -535,7 +535,24 @@ Reasons to use `MSGraphProtocol`:
 - It can access more resources over Office 365 (for example OneDrive)
 
 Reasons to use `MSOffice365Protocol`:
-- It can send emails with attachments up to 150 MB. MSGraph only allows 4MB on each request (UPDATE: Starting 22 October'19 you can [upload files up to 150MB with MSGraphProtocol **beta** version](https://developer.microsoft.com/en-us/office/blogs/attaching-large-files-to-outlook-messages-in-microsoft-graph-preview/))
+- It can send emails with attachments up to 150 MB. MSGraph only allows 4MB on each request (UPDATE: Starting 22 October'19 you can [upload files up to 150MB with MSGraphProtocol **beta** version](https://developer.microsoft.com/en-us/office/blogs/attaching-large-files-to-outlook-messages-in-microsoft-graph-preview/)) However, this will still run into an issue and return a HTTP 413 error. The workaround for the moment is to do as follows:
+```python
+from O365 import Account
+
+credentials = ('client_id', 'client_secret')
+
+account = Account(credentials, auth_flow_type='credentials', tenant_id='my_tenant_id')
+if account.authenticate():
+   print('Authenticated!')
+   mailbox = account.mailbox('sender_email@my_domain.com') 
+   m = mailbox.new_message()
+   m.to.add('to_example@example.com')
+   m.subject = 'Testing!'
+   m.body = "George Best quote: I've stopped drinking, but only while I'm asleep."
+   m.save_message()
+   m.attachment.add = 'filename.txt'
+   m.send()
+```
 
 The default protocol used by the `Account` Class is `MSGraphProtocol`.
 
