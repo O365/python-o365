@@ -720,15 +720,17 @@ class Connection:
         method = method.lower()
         if method not in self._allowed_methods:
             raise ValueError('Method must be one of the allowed ones')
+
+        if 'headers' not in kwargs:
+            kwargs['headers'] = {**self.default_headers}
+        else:
+            for key, value in self.default_headers.items():
+                if key not in kwargs['headers']:
+                    kwargs['headers'][key] = value
+
         if method == 'get':
             kwargs.setdefault('allow_redirects', True)
         elif method in ['post', 'put', 'patch']:
-            if 'headers' not in kwargs:
-                kwargs['headers'] = {**self.default_headers}
-            else:
-                for key, value in self.default_headers.items():
-                    if key not in kwargs['headers']:
-                        kwargs['headers'][key] = value
             if kwargs.get('headers') is not None and kwargs['headers'].get(
                     'Content-type') is None:
                 kwargs['headers']['Content-type'] = 'application/json'
