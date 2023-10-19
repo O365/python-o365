@@ -17,7 +17,6 @@ GROUPS_RESOURCE = 'groups'
 SITES_RESOURCE = 'sites'
 
 
-
 NEXT_LINK_KEYWORD = '@odata.nextLink'
 
 log = logging.getLogger(__name__)
@@ -56,16 +55,15 @@ class OutlookWellKnowFolderNames(Enum):
     SENT = 'SentItems'
     OUTBOX = 'Outbox'
     ARCHIVE = 'Archive'
-    CLUTTER='clutter'
-    CONFLICTS='conflicts'
-    CONVERSATIONHISTORY='conversationhistory'
-    LOCALFAILURES='localfailures'
-    RECOVERABLEITEMSDELETIONS='recoverableitemsdeletions'
-    SCHEDULED='scheduled'
-    SEARCHFOLDERS='searchfolders'
-    SERVERFAILURES='serverfailures'
-    SYNCISSUES='syncissues'
-
+    CLUTTER = 'clutter'
+    CONFLICTS = 'conflicts'
+    CONVERSATIONHISTORY = 'conversationhistory'
+    LOCALFAILURES = 'localfailures'
+    RECOVERABLEITEMSDELETIONS = 'recoverableitemsdeletions'
+    SCHEDULED = 'scheduled'
+    SEARCHFOLDERS = 'searchfolders'
+    SERVERFAILURES = 'serverfailures'
+    SYNCISSUES = 'syncissues'
 
 
 class OneDriveWellKnowFolderNames(Enum):
