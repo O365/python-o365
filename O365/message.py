@@ -58,9 +58,9 @@ class MessageAttachments(BaseAttachments):
         :param MessageAttachment attachment: the MessageAttachment to store as eml.
         :param Path or str to_path: the path where to store this file
         """
-        if not attachment or not isinstance(attachment, MessageAttachment) \
-                or attachment.attachment_id is None or attachment.attachment_type != 'item':
-            raise ValueError('Must provide a saved "item" attachment of type MessageAttachment')
+        mime_content = self.get_mime_content(attachment)
+        if not mime_content:
+            return False
 
         if to_path is None:
             to_path = Path('message_eml.eml')
@@ -71,6 +71,16 @@ class MessageAttachments(BaseAttachments):
         if not to_path.suffix:
             to_path = to_path.with_suffix('.eml')
 
+        with to_path.open('wb') as file_obj:
+            file_obj.write(mime_content)
+            return True
+    
+    def get_mime_content(self, attachment):
+        """ Returns the MIME contents of this attachment """   
+        if not attachment or not isinstance(attachment, MessageAttachment) \
+                or attachment.attachment_id is None or attachment.attachment_type != 'item':
+            raise ValueError('Must provide a saved "item" attachment of type MessageAttachment')
+        
         msg_id = self._parent.object_id
         if msg_id is None:
             raise RuntimeError('Attempting to get the mime contents of an unsaved message')
@@ -80,15 +90,10 @@ class MessageAttachments(BaseAttachments):
         response = self._parent.con.get(url)
 
         if not response:
-            return False
+            return None
 
-        mime_content = response.content
+        return response.content
 
-        if mime_content:
-            with to_path.open('wb') as file_obj:
-                file_obj.write(mime_content)
-            return True
-        return False
 
 
 class MessageFlag(ApiComponent):
