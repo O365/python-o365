@@ -174,7 +174,7 @@ class CopyOperation(ApiComponent):
         if self.item_id:
             return True
 
-        response = self.con.get(self.monitor_url)
+        response = self.con.naive_request(self.monitor_url, method="get")
         if not response:
             return False
 
