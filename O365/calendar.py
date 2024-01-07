@@ -147,22 +147,35 @@ class EventRecurrence(ApiComponent):
 
     def __repr__(self):
         if self.__interval:
-            pattern = 'Daily: every {} day/s'.format(self.__interval)
+            pattern = 'Daily: every {} day{}'.format(
+                self.__interval,
+                's' if self.__interval != 1 else '')
             if self.__days_of_week:
                 days = ' or '.join(list(self.__days_of_week))
-                pattern = 'Relative Monthly: {} {} every {} month/s'.format(
-                    self.__index, days, self.__interval)
+                pattern = 'Relative Monthly: {} {} every {} month{}'.format(
+                    self.__index,
+                    days,
+                    self.__interval,
+                    's' if self.__interval != 1 else '')
                 if self.__first_day_of_week:
-                    pattern = 'Weekly: every {} week/s on {}'.format(
-                        self.__interval, days)
+                    pattern = 'Weekly: every {} week{} on {}'.format(
+                        self.__interval,
+                        's' if self.__interval != 1 else '',
+                        days)
                 elif self.__month:
-                    pattern = ('Relative Yearly: {} {} every {} year/s on {}'
-                               ''.format(self.__index, days,
-                                         self.__interval,
-                                         MONTH_NAMES[self.__month - 1]))
+                    pattern = ('Relative Yearly: {} {} every {} year{} on {}'
+                               ''.format(
+                                   self.__index,
+                                   days,
+                                   self.__interval,
+                                   's' if self.__interval != 1 else '',
+                                   MONTH_NAMES[self.__month - 1]))
             elif self.__day_of_month:
-                pattern = ('Absolute Monthly: on day {} every {} month/s'
-                           ''.format(self.__day_of_month, self.__interval))
+                pattern = ('Absolute Monthly: on day {} every {} month{}'
+                           ''.format(
+                                self.__day_of_month, 
+                                self.__interval,
+                                's' if self.__interval != 1 else ''))
                 if self.__month:
                     pattern = ('Absolute Yearly: on {} {} every {} year/s'
                                ''.format(MONTH_NAMES[self.__month - 1],
@@ -176,7 +189,9 @@ class EventRecurrence(ApiComponent):
                 if self.__end_date:
                     ends_on = 'ending on {}'.format(self.__end_date)
                 elif self.__occurrences:
-                    ends_on = 'up to {} occurrences'.format(self.__occurrences)
+                    ends_on = 'up to {} occurrence{}'.format(
+                        self.__occurrences,
+                        's' if self.__occurrences != 1 else '')
                 r_range = '{} {}'.format(r_range, ends_on)
             return '{}. {}'.format(pattern, r_range)
         else:
