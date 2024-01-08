@@ -9,6 +9,7 @@ Almost every release features a lot of bugfixes but those are not listed here.
 - AddressBook: Added fileAs attribute (Thanks @LarsK1)
 - Fixed critical bug in 2.0.30 release
 
+
 ## Version 2.0.30 (2023-09-27)
 
 ###Features:
