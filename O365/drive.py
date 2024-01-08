@@ -128,12 +128,14 @@ class CopyOperation(ApiComponent):
         'item': '/items/{id}',
     }
 
-    def __init__(self, *, parent=None, con=None, **kwargs):
+    def __init__(self, *, parent=None, con=None, target=None, **kwargs):
         """
 
-        :param parent: parent for this operation
+        :param parent: parent for this operation i.e. the source of the copied item
         :type parent: Drive
         :param Connection con: connection to use if no parent specified
+        :param target: The target drive for the copy operation
+        :type target: Drive
         :param Protocol protocol: protocol to use if no parent specified
          (kwargs)
         :param str main_resource: use this resource instead of parent resource
@@ -144,7 +146,8 @@ class CopyOperation(ApiComponent):
         if parent and con:
             raise ValueError('Need a parent or a connection but not both')
         self.con = parent.con if parent else con
-        self.parent = parent  # parent will be always a DriveItem
+        self.parent = parent  # parent will be always a Drive
+        self.target = target or parent
 
         # Choose the main_resource passed in kwargs over parent main_resource
         main_resource = kwargs.pop('main_resource', None) or (
@@ -210,7 +213,7 @@ class CopyOperation(ApiComponent):
         :return: Copied Item
         :rtype: DriveItem
         """
-        return self.parent.get_item(
+        return self.target.get_item(
             self.item_id) if self.item_id is not None else None
 
 
@@ -728,6 +731,8 @@ class DriveItem(ApiComponent):
 
         :param target: target location to move to.
          If it's a drive the item will be moved to the root folder.
+         If it's None, the target is the parent of the item being copied i.e. item will be copied
+            into the same location.
         :type target: drive.Folder or Drive
         :param name: a new name for the copy.
         :rtype: CopyOperation
@@ -738,6 +743,7 @@ class DriveItem(ApiComponent):
         if isinstance(target, Folder):
             target_id = target.object_id
             drive_id = target.drive_id
+            target_drive = target.drive
         elif isinstance(target, Drive):
             # we need the root folder
             root_folder = target.get_root_folder()
@@ -745,9 +751,11 @@ class DriveItem(ApiComponent):
                 return None
             target_id = root_folder.object_id
             drive_id = root_folder.drive_id
+            target_drive = root_folder.drive
         elif target is None:
             target_id = None
             drive_id = None
+            target_drive = None
         else:
             raise ValueError('Target, if provided, must be a Folder or Drive')
 
@@ -779,12 +787,12 @@ class DriveItem(ApiComponent):
 
         if response.status_code == 202:
             # Async operation
-            return CopyOperation(parent=self.drive, monitor_url=location)
+            return CopyOperation(parent=self.drive, monitor_url=location, target=target_drive)
         else:
             # Sync operation. Item is ready to be retrieved
             path = urlparse(location).path
             item_id = path.split('/')[-1]
-            return CopyOperation(parent=self.drive, item_id=item_id)
+            return CopyOperation(parent=self.drive, item_id=item_id, target=target_drive)
 
     def get_versions(self):
         """ Returns a list of available versions for this item
