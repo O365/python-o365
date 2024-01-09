@@ -1387,12 +1387,18 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
             else:
                 params.update(query.as_params())
 
+        if isinstance(start, dt.date):
+            # Convert an all-day date which only contains year/month/day into a datetime object
+            start = dt.datetime(start.year, start.month, start.day)
         if start.tzinfo is None:
             # if it's a naive datetime, localize the datetime.
             start = start.replace(tzinfo=self.protocol.timezone)  # localize datetime into local tz
         if start.tzinfo != dt.timezone.utc:
             start = start.astimezone(dt.timezone.utc)  # transform local datetime to utc
 
+        if isinstance(end, dt.date):
+            # Convert an all-day date which only contains year/month/day into a datetime object
+            end = dt.datetime(end.year, end.month, end.day)
         if end.tzinfo is None:
             # if it's a naive datetime, localize the datetime.
             end = end.replace(tzinfo=self.protocol.timezone)  # localize datetime into local tz
