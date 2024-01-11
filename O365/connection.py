@@ -719,7 +719,7 @@ class Connection:
         """
         method = method.lower()
         if method not in self._allowed_methods:
-            raise ValueError('Method must be one of the allowed ones')
+            raise ValueError('Method must be one of: {}'.format(self._allowed_methods))
 
         if 'headers' not in kwargs:
             kwargs['headers'] = {**self.default_headers}
@@ -727,6 +727,8 @@ class Connection:
             for key, value in self.default_headers.items():
                 if key not in kwargs['headers']:
                     kwargs['headers'][key] = value
+                elif key == 'Prefer' and key in kwargs['headers']:
+                    kwargs['headers'][key] = "{}, {}".format(kwargs['headers'][key], value)
 
         if method == 'get':
             kwargs.setdefault('allow_redirects', True)
