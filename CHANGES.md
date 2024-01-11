@@ -3,6 +3,13 @@
 Almost every release features a lot of bugfixes but those are not listed here.
 
 
+## Version 2.0.32 (2024-01-11)
+
+###Features:
+- Connection: Allow default headers to be set for GET request (see #1021)
+- Teams: Add ability to set user presence status and get another users presence status (Thanks @RogerSelwyn)
+
+
 ## Version 2.0.31 (2023-09-27)
 
 ###Features:
