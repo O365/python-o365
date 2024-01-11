@@ -1,6 +1,12 @@
 import datetime as dt
 import logging
 from enum import Enum
+from datetime import datetime, timedelta
+import logging
+from enum import Enum
+import re
+
+import pytz
 
 # noinspection PyPep8Naming
 from bs4 import BeautifulSoup as bs
@@ -755,6 +761,24 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
             return None
 
         message = response.json()
+
+        # adding new feacture to the timezone 
+        html_content = message['body']['content']
+
+        pattern = re.compile(r'<b>Sent:</b> (.*?)<br>')
+
+        def change_sent_time(match):
+            sent_time_str = match.group(1)
+            sent_time = datetime.strptime(sent_time_str, '%A, %B %d, %Y %I:%M:%S %p')
+            # asign the time zone for example bogota
+            timezone_tz = pytz.timezone('America/Bogota')
+            sent_time_new = sent_time.replace(tzinfo=pytz.utc).astimezone(timezone_tz)
+            # return the new value
+            return f'<b>Sent:</b> {sent_time_new.strftime("%A, %B %d, %Y %I:%M:%S %p")}<br>'
+
+        data_modified = pattern.sub(change_sent_time, html_content)
+        # the new value is concatenated 
+        message['body']['content'] = data_modified
 
         # Everything received from cloud must be passed as self._cloud_data_key
         return self.__class__(parent=self, **{self._cloud_data_key: message})
