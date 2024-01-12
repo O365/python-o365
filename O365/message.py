@@ -1,7 +1,7 @@
 import datetime as dt
 import logging
-from enum import Enum
 import re
+from enum import Enum
 
 # noinspection PyPep8Naming
 from bs4 import BeautifulSoup as bs
@@ -756,20 +756,20 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
             return None
 
         message = response.json()
-        message_body_content_html  = message['body']['content']
+        message_body_content_html = message['body']['content']
 
         pattern = re.compile(r'<b>Sent:</b> (.*?)<br>')
 
-        def change_sent_time(match):
+        """Uses RegEx to extract the Sent time and attaches a timezone (self.protocol.timezone) to it"""
+        def change_sent_time_timezone(match):
             sent_time_str = match.group(1)
             sent_time = dt.datetime.strptime(sent_time_str, '%A, %B %d, %Y %I:%M:%S %p')
-            sent_time_new = sent_time.replace(tzinfo=dt.timezone.utc).astimezone(self.protocol.timezone)
-            return '<b>Sent:</b> {:%A, %B %d, %Y %I:%M:%S %p}<br>'.format(sent_time_new)
+            sent_time_as_timezone = (sent_time.replace(tzinfo=dt.timezone.utc)
+                            .astimezone(self.protocol.timezone))
+            return '<b>Sent:</b> {:%A, %B %d, %Y %I:%M:%S %p}<br>'.format(sent_time_as_timezone)
 
-        modified_data = pattern.sub(change_sent_time, message_body_content_html )
+        message['body']['content'] = pattern.sub(change_sent_time_timezone, message_body_content_html)
 
-        message['body']['content'] = modified_data
-        
         # Everything received from cloud must be passed as self._cloud_data_key
         return self.__class__(parent=self, **{self._cloud_data_key: message})
 
