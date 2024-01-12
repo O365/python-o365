@@ -760,12 +760,12 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
 
         pattern = re.compile(r'<b>Sent:</b> (.*?)<br>')
 
-        """Uses RegEx to extract the Sent time and attaches a timezone (self.protocol.timezone) to it"""
         def change_sent_time_timezone(match):
+            """Uses RegEx to extract the Sent time and attaches a timezone (self.protocol.timezone) to it"""
             sent_time_str = match.group(1)
             sent_time = dt.datetime.strptime(sent_time_str, '%A, %B %d, %Y %I:%M:%S %p')
             sent_time_as_timezone = (sent_time.replace(tzinfo=dt.timezone.utc)
-                            .astimezone(self.protocol.timezone))
+                                     .astimezone(self.protocol.timezone))
             return '<b>Sent:</b> {:%A, %B %d, %Y %I:%M:%S %p}<br>'.format(sent_time_as_timezone)
 
         message['body']['content'] = pattern.sub(change_sent_time_timezone, message_body_content_html)
