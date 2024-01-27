@@ -204,6 +204,8 @@ class MailboxSettings(ApiComponent):
         self.automaticrepliessettings = self.autoreply_constructor(
             parent=self, **{self._cloud_data_key: autorepliessettings}
         )
+        self.timezone = cloud_data.get("timeZone") 
+        self.workinghours = cloud_data.get("workingHours") 
 
     def __str__(self):
         """Representation of the MailboxSetting via the Graph api as a string."""
