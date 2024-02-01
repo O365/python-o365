@@ -95,7 +95,6 @@ class MessageAttachments(BaseAttachments):
         return response.content
 
 
-
 class MessageFlag(ApiComponent):
     """ A flag on a message """
 
@@ -164,7 +163,7 @@ class MessageFlag(ApiComponent):
         self.__status = Flag.Complete
         completition_date = completition_date or dt.datetime.now()
         if completition_date.tzinfo is None:
-            completition_date = completion_date.replace(tzinfo=self.protocol.timezone)
+            completition_date = completition_date.replace(tzinfo=self.protocol.timezone)
         self.__completed = completition_date
         self._track_changes()
 
