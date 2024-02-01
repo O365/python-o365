@@ -83,7 +83,7 @@ class Protocol:
          used on api keywords (camelcase / pascalcase)
         :param str protocol_scope_prefix: prefix url for scopes
         :param datetime.timezone.utc or str timezone: preferred timezone, defaults to the
-         system timezone
+         system timezone or fallback to UTC
         :raises ValueError: if protocol_url or api_version are not supplied
         """
         if protocol_url is None or api_version is None:

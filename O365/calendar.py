@@ -1408,8 +1408,8 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         params[self._cc('startDateTime')] = start.isoformat()
         params[self._cc('endDateTime')] = end.isoformat()
 
-        response = self.con.get(url, params=params,
-                                headers={'Prefer': 'outlook.timezone="UTC"'})
+        response = self.con.get(url, params=params)
+
         if not response:
             return iter(())
 
@@ -1794,8 +1794,8 @@ class Calendar(ApiComponent, HandleRecipientsMixin):
             else:
                 params.update(query.as_params())
 
-        response = self.con.get(url, params=params,
-                                headers={'Prefer': 'outlook.timezone="UTC"'})
+        response = self.con.get(url, params=params)
+
         if not response:
             return iter(())
 
@@ -1846,8 +1846,8 @@ class Calendar(ApiComponent, HandleRecipientsMixin):
             params.update(param.as_params())
             by_id = False
 
-        response = self.con.get(url, params=params,
-                                headers={'Prefer': 'outlook.timezone="UTC"'})
+        response = self.con.get(url, params=params)
+
         if not response:
             return None
 
