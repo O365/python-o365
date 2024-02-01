@@ -1399,9 +1399,6 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         if start.tzinfo is None:
             # if it's a naive datetime, localize the datetime.
             start = start.replace(tzinfo=self.protocol.timezone)  # localize datetime into local tz
-        # TODO: convert to utc when quering?
-        if start.tzinfo != dt.timezone.utc:
-            start = start.astimezone(dt.timezone.utc)  # transform local datetime to utc
 
         if isinstance(end, dt.date):
             # Convert an all-day date which only contains year/month/day into a datetime object
@@ -1409,9 +1406,6 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         if end.tzinfo is None:
             # if it's a naive datetime, localize the datetime.
             end = end.replace(tzinfo=self.protocol.timezone)  # localize datetime into local tz
-        # TODO: convert to utc when quering?
-        if end.tzinfo != dt.timezone.utc:
-            end = end.astimezone(dt.timezone.utc)  # transform local datetime to utc
 
         params[self._cc('startDateTime')] = start.isoformat()
         params[self._cc('endDateTime')] = end.isoformat()

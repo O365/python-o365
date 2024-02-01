@@ -970,10 +970,6 @@ class Query:
                 if word.tzinfo is None:
                     # if it's a naive datetime, localize the datetime.
                     word = word.replace(tzinfo=self.protocol.timezone)  # localize datetime into local tz
-                # TODO: remove UTC CONVERSION: not affected when quering calendar events
-                if word.tzinfo != dt.timezone.utc:
-                    word = word.astimezone(
-                        dt.timezone.utc)  # transform local datetime to utc
             if '/' in self._attribute:
                 # TODO: this is a fix for the case when the parameter
                 #  filtered is a string instead a dateTimeOffset
