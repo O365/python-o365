@@ -725,8 +725,7 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         if not response:
             return False
 
-        self.object_id = 'sent_message' if not self.object_id \
-            else self.object_id
+        self.object_id = 'sent_message' if not self.object_id else self.object_id
         self.__is_draft = False
 
         return True

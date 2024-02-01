@@ -6,6 +6,7 @@ from .directory import User
 
 log = logging.getLogger(__name__)
 
+
 class Group(ApiComponent):
     """ A Microsoft O365 group """
 
@@ -103,6 +104,7 @@ class Group(ApiComponent):
         data = response.json()
 
         return [self.member_constructor(parent=self, **{self._cloud_data_key: lst}) for lst in data.get('value', [])]
+
 
 class Groups(ApiComponent):
     """ A microsoft groups class
