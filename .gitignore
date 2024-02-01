@@ -64,11 +64,6 @@ target/
 trail.py
 sample_run.py
 
-
-
-o365_token\.txt
-local_tests/
-
 # Dev tooling
 .python-version
 Pipfile
@@ -77,3 +72,10 @@ Pipfile.lock
 
 # config.py file that contains secrets
 config.py
+
+# virtualenvironments
+venv/
+
+# O365 specific
+o365_token\.txt
+local_tests/
