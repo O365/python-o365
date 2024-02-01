@@ -2,6 +2,7 @@ import json
 import logging
 import os
 import time
+from typing import Optional, Callable, Union
 
 from oauthlib.oauth2 import TokenExpiredError, WebApplicationClient, BackendApplicationClient, LegacyApplicationClient
 from requests import Session
@@ -68,64 +69,68 @@ class Protocol:
     _oauth_scope_prefix = ''  # Prefix for scopes
     _oauth_scopes = {}  # Dictionary of {scopes_name: [scope1, scope2]}
 
-    def __init__(self, *, protocol_url=None, api_version=None,
-                 default_resource=None,
-                 casing_function=None, protocol_scope_prefix=None,
-                 timezone=None, **kwargs):
+    def __init__(self, *, protocol_url: Optional[str] = None,
+                 api_version: Optional[str] = None,
+                 default_resource: Optional[str] = None,
+                 casing_function: Optional[Callable] = None,
+                 protocol_scope_prefix: Optional[str] = None,
+                 timezone: Union[Optional[str], Optional[ZoneInfo]] = None, **kwargs):
         """ Create a new protocol object
 
-        :param str protocol_url: the base url used to communicate with the
+        :param protocol_url: the base url used to communicate with the
          server
-        :param str api_version: the api version
-        :param str default_resource: the default resource to use when there is
+        :param api_version: the api version
+        :param default_resource: the default resource to use when there is
          nothing explicitly specified during the requests
-        :param function casing_function: the casing transform function to be
+        :param casing_function: the casing transform function to be
          used on api keywords (camelcase / pascalcase)
-        :param str protocol_scope_prefix: prefix url for scopes
-        :param datetime.timezone.utc or str timezone: preferred timezone, defaults to the
-         system timezone or fallback to UTC
+        :param protocol_scope_prefix: prefix url for scopes
+        :param timezone: preferred timezone, if not provided will default
+         to the system timezone or fallback to UTC
         :raises ValueError: if protocol_url or api_version are not supplied
         """
         if protocol_url is None or api_version is None:
             raise ValueError(
                 'Must provide valid protocol_url and api_version values')
-        self.protocol_url = protocol_url or self._protocol_url
-        self.protocol_scope_prefix = protocol_scope_prefix or ''
-        self.api_version = api_version
-        self.service_url = '{}{}/'.format(protocol_url, api_version)
-        self.default_resource = default_resource or ME_RESOURCE
-        self.use_default_casing = True if casing_function is None else False
-        self.casing_function = casing_function or camelcase
+        self.protocol_url: str = protocol_url or self._protocol_url
+        self.protocol_scope_prefix: str = protocol_scope_prefix or ''
+        self.api_version: str = api_version
+        self.service_url: str = '{}{}/'.format(protocol_url, api_version)
+        self.default_resource: str = default_resource or ME_RESOURCE
+        self.use_default_casing: bool = True if casing_function is None else False
+        self.casing_function: Callable = casing_function or camelcase
+
         if timezone:
             if isinstance(timezone, str):
                 # convert string to ZoneInfo
                 try:
                     timezone = ZoneInfo(timezone)
-                except ZoneInfoNotFoundError:
-                    log.debug(f'Timezone {timezone} could not be found. Will default to UTC.')
-                    timezone = ZoneInfo('UTC')
+                except ZoneInfoNotFoundError as e:
+                    log.error(f'Timezone {timezone} could not be found.')
+                    raise e
             else:
                 if not isinstance(timezone, ZoneInfo):
                     raise ValueError(f'The timezone parameter must be either a string or a valid ZoneInfo instance.')
+
         # get_localzone() from tzlocal will try to get the system local timezone and if not will return UTC
-        self.timezone = timezone or get_localzone()
-        self.max_top_value = 500  # Max $top parameter value
+        self.timezone: ZoneInfo = timezone or get_localzone()
+        self.max_top_value: int = 500  # Max $top parameter value
 
         # define any keyword that can be different in this protocol
-        # for example, attachments Odata type differs between Outlook
+        # for example, attachments OData type differs between Outlook
         #  rest api and graph: (graph = #microsoft.graph.fileAttachment and
         #  outlook = #Microsoft.OutlookServices.FileAttachment')
-        self.keyword_data_store = {}
+        self.keyword_data_store: dict = {}
 
-    def get_service_keyword(self, keyword):
+    def get_service_keyword(self, keyword: str) -> str:
         """ Returns the data set to the key in the internal data-key dict
 
-        :param str keyword: key to get value for
+        :param keyword: key to get value for
         :return: value of the keyword
         """
         return self.keyword_data_store.get(keyword, None)
 
-    def convert_case(self, key):
+    def convert_case(self, key: str) -> str:
         """ Returns a key converted with this protocol casing method
 
         Converts case to send/read from the cloud
@@ -137,30 +142,26 @@ class Protocol:
 
         Default case in this API is lowerCamelCase
 
-        :param str key: a dictionary key to convert
+        :param  key: a dictionary key to convert
         :return: key after case conversion
-        :rtype: str
         """
         return key if self.use_default_casing else self.casing_function(key)
 
     @staticmethod
-    def to_api_case(key):
+    def to_api_case(key: str) -> str:
         """ Converts key to snake_case
 
-        :param str key: key to convert into snake_case
+        :param key: key to convert into snake_case
         :return: key after case conversion
-        :rtype: str
         """
         return snakecase(key)
 
-    def get_scopes_for(self, user_provided_scopes):
+    def get_scopes_for(self, user_provided_scopes: Optional[Union[list, str, tuple]]) -> list:
         """ Returns a list of scopes needed for each of the
         scope_helpers provided, by adding the prefix to them if required
 
         :param user_provided_scopes: a list of scopes or scope helpers
-        :type user_provided_scopes: list or tuple or str
         :return: scopes with url prefix added
-        :rtype: list
         :raises ValueError: if unexpected datatype of scopes are passed
         """
         if user_provided_scopes is None:
@@ -170,8 +171,7 @@ class Protocol:
             user_provided_scopes = [user_provided_scopes]
 
         if not isinstance(user_provided_scopes, (list, tuple)):
-            raise ValueError(
-                "'user_provided_scopes' must be a list or a tuple of strings")
+            raise ValueError("'user_provided_scopes' must be a list or a tuple of strings")
 
         scopes = set()
         for app_part in user_provided_scopes:
@@ -180,7 +180,7 @@ class Protocol:
 
         return list(scopes)
 
-    def prefix_scope(self, scope):
+    def prefix_scope(self, scope: Union[tuple, str]) -> str:
         """ Inserts the protocol scope prefix if required"""
         if self.protocol_scope_prefix:
             if isinstance(scope, tuple):
@@ -275,7 +275,6 @@ class MSOffice365Protocol(Protocol):
 
 
 class MSBusinessCentral365Protocol(Protocol):
-
     """ A Microsoft Business Central Protocol Implementation
     https://docs.microsoft.com/en-us/dynamics-nav/api-reference/v1.0/endpoints-apis-for-dynamics
     """
@@ -285,7 +284,7 @@ class MSBusinessCentral365Protocol(Protocol):
     _oauth_scopes = DEFAULT_SCOPES
     _protocol_scope_prefix = 'https://api.businesscentral.dynamics.com/'
 
-    def __init__(self, api_version='v1.0', default_resource=None,environment=None,
+    def __init__(self, api_version='v1.0', default_resource=None, environment=None,
                  **kwargs):
         """ Create a new Microsoft Graph protocol object
 
@@ -299,7 +298,7 @@ class MSBusinessCentral365Protocol(Protocol):
         """
         if environment:
             _version = "2.0"
-            _environment = "/"+environment
+            _environment = "/" + environment
         else:
             _version = "1.0"
             _environment = ''
@@ -385,7 +384,8 @@ class Connection:
             if not isinstance(credentials, tuple) or len(credentials) != 1 or (not credentials[0]):
                 raise ValueError('Provide client id only for public or password flow credentials')
         else:
-            if not isinstance(credentials, tuple) or len(credentials) != 2 or (not credentials[0] and not credentials[1]):
+            if not isinstance(credentials, tuple) or len(credentials) != 2 or (
+                    not credentials[0] and not credentials[1]):
                 raise ValueError('Provide valid auth credentials')
 
         self._auth_flow_type = auth_flow_type  # 'authorization', 'credentials', 'certificate', 'password', or 'public'
@@ -440,12 +440,12 @@ class Connection:
         if proxy_server and proxy_port:
             if proxy_username and proxy_password:
                 proxy_uri = "{}:{}@{}:{}".format(proxy_username,
-                                                proxy_password,
-                                                proxy_server,
-                                                proxy_port)
+                                                 proxy_password,
+                                                 proxy_server,
+                                                 proxy_port)
             else:
                 proxy_uri = "{}:{}".format(proxy_server,
-                                            proxy_port)
+                                           proxy_port)
 
             if proxy_http_only is False:
                 self.proxy = {
@@ -823,7 +823,8 @@ class Connection:
                     log.debug('Server Error: {}'.format(str(e)))
                 if self.raise_http_errors:
                     if error_message:
-                        raise HTTPError('{} | Error Message: {}'.format(e.args[0], error_message), response=response) from None
+                        raise HTTPError('{} | Error Message: {}'.format(e.args[0], error_message),
+                                        response=response) from None
                     else:
                         raise e
                 else:
@@ -925,7 +926,7 @@ class Connection:
         But this is not an issue because this connections will be automatically closed.
         """
         if hasattr(self, 'session') and self.session is not None:
-                self.session.close()
+            self.session.close()
 
 
 def oauth_authentication_flow(client_id, client_secret, scopes=None,

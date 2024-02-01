@@ -605,16 +605,14 @@ IANA_TO_WIN = {
 WIN_TO_IANA = {v: k for k, v in IANA_TO_WIN.items() if v != 'UTC' or (v == 'UTC' and k == 'UTC')}
 
 
-def get_iana_tz(windows_tz):
+def get_iana_tz(windows_tz: str) -> ZoneInfo:
     """ Returns a valid pytz TimeZone (Iana/Olson Timezones) from a given
     windows TimeZone
 
     :param windows_tz: windows format timezone usually returned by
      microsoft api response
-    :return:
-    :rtype:
     """
-    timezone = WIN_TO_IANA.get(windows_tz)
+    timezone: str = WIN_TO_IANA.get(windows_tz)
     if timezone is None:
         # Nope, that didn't work. Try adding "Standard Time",
         # it seems to work a lot of times:
@@ -622,10 +620,9 @@ def get_iana_tz(windows_tz):
 
     # Return what we have.
     if timezone is None:
-        raise ZoneInfoNotFoundError(
-            "Can't find Windows TimeZone " + windows_tz)
+        raise ZoneInfoNotFoundError(f"Can't find Windows TimeZone: {windows_tz}")
 
-    return timezone
+    return ZoneInfo(timezone)
 
 
 def get_windows_tz(iana_tz: ZoneInfo) -> str:
@@ -637,6 +634,6 @@ def get_windows_tz(iana_tz: ZoneInfo) -> str:
     timezone = IANA_TO_WIN.get(
         iana_tz.key if isinstance(iana_tz, tzinfo) else iana_tz)
     if timezone is None:
-        raise ZoneInfoNotFoundError(f"Can't find Iana timezone {iana_tz.key}")
+        raise ZoneInfoNotFoundError(f"Can't find Iana timezone: {iana_tz.key}")
 
     return timezone

@@ -430,8 +430,7 @@ class ApiComponent:
         local_tz = self.protocol.timezone
         if isinstance(date_time_time_zone, dict):
             try:
-                timezone = ZoneInfo(
-                    get_iana_tz(date_time_time_zone.get(self._cc('timeZone'), 'UTC')))
+                timezone = get_iana_tz(date_time_time_zone.get(self._cc('timeZone'), 'UTC'))
             except ZoneInfoNotFoundError:
                 timezone = local_tz
             date_time = date_time_time_zone.get(self._cc('dateTime'), None)
@@ -461,11 +460,16 @@ class ApiComponent:
         timezone = None
         if date_time.tzinfo is not None:
             if isinstance(date_time.tzinfo, ZoneInfo):
-                timezone = date_time.tzinfo.key
+                timezone = date_time.tzinfo
             elif isinstance(date_time.tzinfo, dt.tzinfo):
-                timezone = date_time.tzinfo.tzname(date_time)
+                try:
+                    timezone = ZoneInfo(date_time.tzinfo.tzname(date_time))
+                except ZoneInfoNotFoundError as e:
+                    log.error(f'Error while converting datetime.tzinfo to Zoneinfo: '
+                              f'{date_time.tzinfo.tzname(date_time)}')
+                    raise e
             else:
-                raise ValueError('Unexpected tzinfo class.')
+                raise ValueError("Unexpected tzinfo class. Can't convert to ZoneInfo.")
 
         timezone = get_windows_tz(timezone or self.protocol.timezone)
 
