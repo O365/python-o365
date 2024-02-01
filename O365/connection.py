@@ -16,7 +16,7 @@ from requests_oauthlib import OAuth2Session
 from stringcase import pascalcase, camelcase, snakecase
 from tzlocal import get_localzone
 from zoneinfo import ZoneInfoNotFoundError, ZoneInfo
-from .utils import ME_RESOURCE, BaseTokenBackend, FileSystemTokenBackend, Token
+from .utils import ME_RESOURCE, BaseTokenBackend, FileSystemTokenBackend, Token, get_windows_tz
 import datetime as dt
 
 log = logging.getLogger(__name__)
@@ -100,20 +100,12 @@ class Protocol:
         self.use_default_casing: bool = True if casing_function is None else False
         self.casing_function: Callable = casing_function or camelcase
 
-        if timezone:
-            if isinstance(timezone, str):
-                # convert string to ZoneInfo
-                try:
-                    timezone = ZoneInfo(timezone)
-                except ZoneInfoNotFoundError as e:
-                    log.error(f'Timezone {timezone} could not be found.')
-                    raise e
-            else:
-                if not isinstance(timezone, ZoneInfo):
-                    raise ValueError(f'The timezone parameter must be either a string or a valid ZoneInfo instance.')
-
         # get_localzone() from tzlocal will try to get the system local timezone and if not will return UTC
-        self.timezone: ZoneInfo = timezone or get_localzone()
+        self._timezone: ZoneInfo = get_localzone()
+
+        if timezone:
+            self.timezone = timezone  # property setter will convert this timezone to ZoneInfo if a string is provided
+
         self.max_top_value: int = 500  # Max $top parameter value
 
         # define any keyword that can be different in this protocol
@@ -121,6 +113,28 @@ class Protocol:
         #  rest api and graph: (graph = #microsoft.graph.fileAttachment and
         #  outlook = #Microsoft.OutlookServices.FileAttachment')
         self.keyword_data_store: dict = {}
+
+    @property
+    def timezone(self):
+        return self._timezone
+
+    @timezone.setter
+    def timezone(self, timezone: Union[str, ZoneInfo]):
+        self._update_timezone(timezone)
+
+    def _update_timezone(self, timezone: Union[str, ZoneInfo]):
+        """Sets the timezone. This is not done in the setter as you can't call super from a overriden setter """
+        if isinstance(timezone, str):
+            # convert string to ZoneInfo
+            try:
+                timezone = ZoneInfo(timezone)
+            except ZoneInfoNotFoundError as e:
+                log.error(f'Timezone {timezone} could not be found.')
+                raise e
+        else:
+            if not isinstance(timezone, ZoneInfo):
+                raise ValueError(f'The timezone parameter must be either a string or a valid ZoneInfo instance.')
+        self._timezone = timezone
 
     def get_service_keyword(self, keyword: str) -> str:
         """ Returns the data set to the key in the internal data-key dict
@@ -226,11 +240,15 @@ class MSGraphProtocol(Protocol):
 
         self.keyword_data_store['message_type'] = 'microsoft.graph.message'
         self.keyword_data_store['event_message_type'] = 'microsoft.graph.eventMessage'
-        self.keyword_data_store[
-            'file_attachment_type'] = '#microsoft.graph.fileAttachment'
-        self.keyword_data_store[
-            'item_attachment_type'] = '#microsoft.graph.itemAttachment'
+        self.keyword_data_store['file_attachment_type'] = '#microsoft.graph.fileAttachment'
+        self.keyword_data_store['item_attachment_type'] = '#microsoft.graph.itemAttachment'
+        self.keyword_data_store['prefer_timezone_header'] = f'outlook.timezone="{get_windows_tz(self._timezone)}"'
         self.max_top_value = 999  # Max $top parameter value
+
+    @Protocol.timezone.setter
+    def timezone(self, timezone: Union[str, ZoneInfo]):
+        super()._update_timezone(timezone)
+        self.keyword_data_store['prefer_timezone_header'] = f'outlook.timezone="{get_windows_tz(self._timezone)}"'
 
 
 class MSOffice365Protocol(Protocol):
@@ -261,17 +279,17 @@ class MSOffice365Protocol(Protocol):
                          protocol_scope_prefix=self._oauth_scope_prefix,
                          **kwargs)
 
-        self.keyword_data_store[
-            'message_type'] = 'Microsoft.OutlookServices.Message'
-        self.keyword_data_store[
-            'event_message_type'] = 'Microsoft.OutlookServices.EventMessage'
-        self.keyword_data_store[
-            'file_attachment_type'] = '#Microsoft.OutlookServices.' \
-                                      'FileAttachment'
-        self.keyword_data_store[
-            'item_attachment_type'] = '#Microsoft.OutlookServices.' \
-                                      'ItemAttachment'
+        self.keyword_data_store['message_type'] = 'Microsoft.OutlookServices.Message'
+        self.keyword_data_store['event_message_type'] = 'Microsoft.OutlookServices.EventMessage'
+        self.keyword_data_store['file_attachment_type'] = '#Microsoft.OutlookServices.FileAttachment'
+        self.keyword_data_store['item_attachment_type'] = '#Microsoft.OutlookServices.ItemAttachment'
+        self.keyword_data_store['prefer_timezone_header'] = f'outlook.timezone="{get_windows_tz(self.timezone)}"'
         self.max_top_value = 999  # Max $top parameter value
+
+    @Protocol.timezone.setter
+    def timezone(self, timezone: Union[str, ZoneInfo]):
+        super()._update_timezone(timezone)
+        self.keyword_data_store['prefer_timezone_header'] = f'outlook.timezone="{get_windows_tz(self._timezone)}"'
 
 
 class MSBusinessCentral365Protocol(Protocol):
@@ -314,11 +332,15 @@ class MSBusinessCentral365Protocol(Protocol):
 
         self.keyword_data_store['message_type'] = 'microsoft.graph.message'
         self.keyword_data_store['event_message_type'] = 'microsoft.graph.eventMessage'
-        self.keyword_data_store[
-            'file_attachment_type'] = '#microsoft.graph.fileAttachment'
-        self.keyword_data_store[
-            'item_attachment_type'] = '#microsoft.graph.itemAttachment'
+        self.keyword_data_store['file_attachment_type'] = '#microsoft.graph.fileAttachment'
+        self.keyword_data_store['item_attachment_type'] = '#microsoft.graph.itemAttachment'
+        self.keyword_data_store['prefer_timezone_header'] = f'outlook.timezone="{get_windows_tz(self.timezone)}"'
         self.max_top_value = 999  # Max $top parameter value
+
+    @Protocol.timezone.setter
+    def timezone(self, timezone: Union[str, ZoneInfo]):
+        super()._update_timezone(timezone)
+        self.keyword_data_store['prefer_timezone_header'] = f'outlook.timezone="{get_windows_tz(self._timezone)}"'
 
 
 class Connection:

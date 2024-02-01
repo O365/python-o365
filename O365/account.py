@@ -1,6 +1,6 @@
 from typing import Type, Tuple, Optional, Callable
 from .connection import Connection, Protocol, MSGraphProtocol, MSOffice365Protocol
-from .utils import ME_RESOURCE, consent
+from .utils import ME_RESOURCE, consent_input_token
 
 
 class Account:
@@ -81,7 +81,7 @@ class Account:
         return token is not None and not token.is_expired
 
     def authenticate(self, *, scopes: Optional[list] = None,
-                     handle_consent: Callable = consent.consent_input_token, **kwargs) -> bool:
+                     handle_consent: Callable = consent_input_token, **kwargs) -> bool:
         """ Performs the oauth authentication flow using the console resulting in a stored token.
         It uses the credentials passed on instantiation.
         Returns True if succeded otherwise False.

@@ -10,6 +10,7 @@ log = logging.getLogger(__name__)
 UPLOAD_SIZE_LIMIT_SIMPLE = 1024 * 1024 * 3  # 3 MB
 DEFAULT_UPLOAD_CHUNK_SIZE = 1024 * 1024 * 3
 
+
 class AttachableMixin:
     def __init__(self, attachment_name_property=None, attachment_type=None):
         """ Defines the functionality for an object to be attachable.

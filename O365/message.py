@@ -623,7 +623,7 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         return self.__single_value_extended_properties
 
     def to_api_data(self, restrict_keys=None):
-        """ Returns a dict representation of this message prepared to be send
+        """ Returns a dict representation of this message prepared to be sent
         to the cloud
 
         :param restrict_keys: a set of keys to restrict the returned
@@ -749,7 +749,10 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
             url = self.build_url(
                 self._endpoints.get('create_reply').format(id=self.object_id))
 
-        response = self.con.post(url)
+        # set prefer timezone header to protocol timezone
+        headers = {'Prefer': self.protocol.get_service_keyword('prefer_timezone_header')}
+        response = self.con.post(url, headers=headers)
+
         if not response:
             return None
 
