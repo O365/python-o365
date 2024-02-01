@@ -265,7 +265,7 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         self._track_changes = TrackerSet(casing=cc)
         self.object_id = cloud_data.get(cc('id'), kwargs.get('object_id', None))
 
-        self.__inferenceClassification = cloud_data.get(cc('inferenceClassification'), None)
+        self.__inference_classification = cloud_data.get(cc('inferenceClassification'), None)
 
         self.__created = cloud_data.get(cc('createdDateTime'), None)
         self.__modified = cloud_data.get(cc('lastModifiedDateTime'), None)
@@ -417,9 +417,9 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         return self.__body
 
     @property
-    def inferenceClassification(self):
+    def inference_classification(self):
         """ Message is focused or not"""
-        return self.__inferenceClassification
+        return self.__inference_classification
 
     @body.setter
     def body(self, value):
