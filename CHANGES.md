@@ -3,6 +3,13 @@
 Almost every release features a lot of bugfixes but those are not listed here.
 
 
+## Version 2.0.33 (2024-02-01)
+
+###Features:
+- Connection: Add support for multiple Prefer headers in Connection class (Thanks @Invincibear)
+- MailBox: Added timezone & workinghours to MailboxSettings class (Thanks @sdelgadoc)
+- 
+
 ## Version 2.0.32 (2024-01-11)
 
 ###Features:
