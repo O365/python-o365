@@ -86,6 +86,7 @@ class Account:
 
         :param list[str] or None scopes: list of protocol user scopes to be converted
          by the protocol or scope helpers
+        :param handle_consent: a function to handle the consent process by default just input for the token url
         :param kwargs: other configurations to be passed to the
          Connection.get_authorization_url and Connection.request_token methods
         :return: Success / Failure
