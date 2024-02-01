@@ -2,7 +2,7 @@
 Mapping from iana timezones to windows timezones and vice versa
 """
 from datetime import tzinfo
-from zoneinfo import ZoneInfoNotFoundError
+from zoneinfo import ZoneInfoNotFoundError, ZoneInfo
 
 # noinspection SpellCheckingInspection
 IANA_TO_WIN = {
@@ -628,16 +628,15 @@ def get_iana_tz(windows_tz):
     return timezone
 
 
-def get_windows_tz(iana_tz):
+def get_windows_tz(iana_tz: ZoneInfo) -> str:
     """ Returns a valid windows TimeZone from a given pytz TimeZone
     (Iana/Olson Timezones)
     Note: Windows Timezones are SHIT!... no ... really THEY ARE
     HOLY FUCKING SHIT!.
     """
     timezone = IANA_TO_WIN.get(
-        iana_tz.zone if isinstance(iana_tz, tzinfo) else iana_tz)
+        iana_tz.key if isinstance(iana_tz, tzinfo) else iana_tz)
     if timezone is None:
-        raise ZoneInfoNotFoundError(
-            "Can't find Iana TimeZone " + iana_tz.zone)
+        raise ZoneInfoNotFoundError(f"Can't find Iana timezone {iana_tz.key}")
 
     return timezone

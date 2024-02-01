@@ -1,9 +1,8 @@
 import datetime as dt
-from zoneinfo import ZoneInfoNotFoundError
 import logging
 from collections import OrderedDict
 from enum import Enum
-import zoneinfo
+from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 from dateutil.parser import parse
 from stringcase import snakecase
@@ -431,7 +430,7 @@ class ApiComponent:
         local_tz = self.protocol.timezone
         if isinstance(date_time_time_zone, dict):
             try:
-                timezone = zoneinfo.ZoneInfo(
+                timezone = ZoneInfo(
                     get_iana_tz(date_time_time_zone.get(self._cc('timeZone'), 'UTC')))
             except ZoneInfoNotFoundError:
                 timezone = local_tz

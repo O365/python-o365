@@ -14,7 +14,7 @@ from requests.packages.urllib3.util.retry import Retry
 from requests_oauthlib import OAuth2Session
 from stringcase import pascalcase, camelcase, snakecase
 from tzlocal import get_localzone
-from zoneinfo import ZoneInfoNotFoundError
+from zoneinfo import ZoneInfoNotFoundError, ZoneInfo
 from .utils import ME_RESOURCE, BaseTokenBackend, FileSystemTokenBackend, Token
 import datetime as dt
 
@@ -96,13 +96,19 @@ class Protocol:
         self.default_resource = default_resource or ME_RESOURCE
         self.use_default_casing = True if casing_function is None else False
         self.casing_function = casing_function or camelcase
-        if timezone and isinstance(timezone, str):
-            timezone = dt.timezone(timezone)
-        try:
-            self.timezone = timezone or get_localzone() 
-        except ZoneInfoNotFoundError as e:
-            log.debug('Timezone not provided and the local timezone could not be found. Default to UTC.')
-            self.timezone = dt.timezone.utc
+        if timezone:
+            if isinstance(timezone, str):
+                # convert string to ZoneInfo
+                try:
+                    timezone = ZoneInfo(timezone)
+                except ZoneInfoNotFoundError:
+                    log.debug(f'Timezone {timezone} could not be found. Will default to UTC.')
+                    timezone = ZoneInfo('UTC')
+            else:
+                if not isinstance(timezone, ZoneInfo):
+                    raise ValueError(f'The timezone parameter must be either a string or a valid ZoneInfo instance.')
+        # get_localzone() from tzlocal will try to get the system local timezone and if not will return UTC
+        self.timezone = timezone or get_localzone()
         self.max_top_value = 500  # Max $top parameter value
 
         # define any keyword that can be different in this protocol
