@@ -567,9 +567,7 @@ class Folder(ApiComponent):
             else:
                 params |= query.as_params()
 
-        response = self.con.get(
-            url, params=params, headers={"Prefer": 'outlook.timezone="UTC"'}
-        )
+        response = self.con.get(url, params=params)
 
         if not response:
             return iter(())
@@ -610,9 +608,8 @@ class Folder(ApiComponent):
             params |= param.as_params()
             by_id = False
 
-        response = self.con.get(
-            url, params=params, headers={"Prefer": 'outlook.timezone="UTC"'}
-        )
+        response = self.con.get(url, params=params)
+
         if not response:
             return None
 
@@ -748,7 +745,8 @@ class ToDo(ApiComponent):
             url = self.build_url(
                 self._endpoints.get(CONST_GET_FOLDER).format(id=folder_id)
             )
-            response = self.con.get(url, headers={"Prefer": 'outlook.timezone="UTC"'})
+            response = self.con.get(url)
+
             return (
                 self.folder_constructor(
                     parent=self, **{self._cloud_data_key: response.json()}
