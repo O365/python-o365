@@ -1034,9 +1034,7 @@ class MailBox(Folder):
         url = self.build_url(self._endpoints.get("settings"))
         params = {}
 
-        response = self.con.get(
-            url, params=params, headers={"Prefer": 'outlook.timezone="UTC"'}
-        )
+        response = self.con.get(url, params=params)
 
         if not response:
             return iter(())
