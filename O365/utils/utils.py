@@ -2,6 +2,7 @@ import datetime as dt
 import logging
 from collections import OrderedDict
 from enum import Enum
+from typing import Union, Dict
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 from dateutil.parser import parse
@@ -419,10 +420,15 @@ class ApiComponent:
         """ Alias for protocol.convert_case """
         return self.protocol.convert_case(dict_key)
 
-    def _parse_date_time_time_zone(self, date_time_time_zone, is_all_day=False):
-        """ Parses and convert to protocol timezone a dateTimeTimeZone resource
+    def _parse_date_time_time_zone(self,
+                                   date_time_time_zone: Union[dict, str],
+                                   is_all_day: bool = False) -> Union[dt.datetime, None]:
+        """
+        Parses and convert to protocol timezone a dateTimeTimeZone resource
         This resource is a dict with a date time and a windows timezone
         This is a common structure on Microsoft apis so it's included here.
+
+        Returns a dt.datetime with the datime converted to protocol timezone
         """
         if date_time_time_zone is None:
             return None
@@ -432,12 +438,13 @@ class ApiComponent:
             try:
                 timezone = get_iana_tz(date_time_time_zone.get(self._cc('timeZone'), 'UTC'))
             except ZoneInfoNotFoundError:
+                log.debug('TimeZone not found. Using protocol timezone instead.')
                 timezone = local_tz
             date_time = date_time_time_zone.get(self._cc('dateTime'), None)
             try:
                 date_time = parse(date_time).replace(tzinfo=timezone) if date_time else None
             except OverflowError as e:
-                log.debug('Could not parse dateTimeTimeZone: {}. Error: {}'.format(date_time_time_zone, str(e)))
+                log.debug(f'Could not parse dateTimeTimeZone: {date_time_time_zone}. Error: {e}')
                 date_time = None
 
             if date_time and timezone != local_tz:
@@ -450,14 +457,16 @@ class ApiComponent:
             try:
                 date_time = parse(date_time_time_zone).replace(tzinfo=local_tz) if date_time_time_zone else None
             except Exception as e:
-                log.debug('Could not parse dateTimeTimeZone: {}. Error: {}'.format(date_time_time_zone, str(e)))
+                log.debug(f'Could not parse dateTimeTimeZone: {date_time_time_zone}. Error: {e}')
                 date_time = None
 
         return date_time
 
-    def _build_date_time_time_zone(self, date_time):
-        """ Converts a datetime to a dateTimeTimeZone resource """
+    def _build_date_time_time_zone(self, date_time: dt.datetime) -> Dict[str, str]:
+        """ Converts a datetime to a dateTimeTimeZone resource Dict[datetime, windows timezone] """
         timezone = None
+
+        # extract timezone ZoneInfo from provided datetime
         if date_time.tzinfo is not None:
             if isinstance(date_time.tzinfo, ZoneInfo):
                 timezone = date_time.tzinfo
@@ -471,6 +480,7 @@ class ApiComponent:
             else:
                 raise ValueError("Unexpected tzinfo class. Can't convert to ZoneInfo.")
 
+        # convert ZoneInfo timezone (IANA) to a string windows timezone
         timezone = get_windows_tz(timezone or self.protocol.timezone)
 
         return {
@@ -960,6 +970,7 @@ class Query:
                 if word.tzinfo is None:
                     # if it's a naive datetime, localize the datetime.
                     word = word.replace(tzinfo=self.protocol.timezone)  # localize datetime into local tz
+                # TODO: remove UTC CONVERSION: not affected when quering calendar events
                 if word.tzinfo != dt.timezone.utc:
                     word = word.astimezone(
                         dt.timezone.utc)  # transform local datetime to utc

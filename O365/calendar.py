@@ -1,6 +1,7 @@
 import calendar
 import datetime as dt
 import logging
+from zoneinfo import ZoneInfo
 
 # noinspection PyPep8Naming
 from bs4 import BeautifulSoup as bs
@@ -551,10 +552,9 @@ class ResponseStatus(ApiComponent):
                 self.response_time = None
             if self.response_time:
                 try:
-                    self.response_time = parse(self.response_time).astimezone(
-                        self.protocol.timezone)
+                    self.response_time = parse(self.response_time).astimezone(self.protocol.timezone)
                 except OverflowError:
-                    log.debug("Couldn't parse event response time: {}".format(self.response_time))
+                    log.debug(f"Couldn't parse event response time: {self.response_time}")
                     self.response_time = None
         else:
             self.response_time = None
@@ -1066,8 +1066,9 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         if value.tzinfo is None:
             # localize datetime
             value = value.replace(tzinfo=self.protocol.timezone)
-        elif value.tzinfo != self.protocol.timezone:
-            value = value.astimezone(self.protocol.timezone)
+        else:
+            if not isinstance(value.tzinfo, ZoneInfo):
+                raise ValueError('TimeZone data must be set using ZoneInfo objects')
         self.__start = value
         if not self.end:
             self.end = self.__start + dt.timedelta(minutes=30)
@@ -1093,8 +1094,9 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         if value.tzinfo is None:
             # localize datetime
             value = value.replace(tzinfo=self.protocol.timezone)
-        elif value.tzinfo != self.protocol.timezone:
-            value = value.astimezone(self.protocol.timezone)
+        else:
+            if not isinstance(value.tzinfo, ZoneInfo):
+                raise ValueError('TimeZone data must be set using ZoneInfo objects')
         self.__end = value
         self._track_changes.add(self._cc('end'))
 
@@ -1371,7 +1373,7 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         :rtype: list[Event] or Pagination
         """
         if self.event_type != EventType.SeriesMaster:
-            # you can only get occurrences if its a seriesMaster
+            # you can only get occurrences if it's a seriesMaster
             return []
 
         url = self.build_url(
@@ -1397,6 +1399,7 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         if start.tzinfo is None:
             # if it's a naive datetime, localize the datetime.
             start = start.replace(tzinfo=self.protocol.timezone)  # localize datetime into local tz
+        # TODO: convert to utc when quering?
         if start.tzinfo != dt.timezone.utc:
             start = start.astimezone(dt.timezone.utc)  # transform local datetime to utc
 
@@ -1406,6 +1409,7 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         if end.tzinfo is None:
             # if it's a naive datetime, localize the datetime.
             end = end.replace(tzinfo=self.protocol.timezone)  # localize datetime into local tz
+        # TODO: convert to utc when quering?
         if end.tzinfo != dt.timezone.utc:
             end = end.astimezone(dt.timezone.utc)  # transform local datetime to utc
 
@@ -1439,8 +1443,7 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         if self.object_id is None:
             raise RuntimeError('Attempting to delete an unsaved event')
 
-        url = self.build_url(
-            self._endpoints.get('event').format(id=self.object_id))
+        url = self.build_url(self._endpoints.get('event').format(id=self.object_id))
 
         response = self.con.delete(url)
 
@@ -1458,16 +1461,13 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
             # update event
             if not self._track_changes:
                 return True  # there's nothing to update
-            url = self.build_url(
-                self._endpoints.get('event').format(id=self.object_id))
+            url = self.build_url(self._endpoints.get('event').format(id=self.object_id))
             method = self.con.patch
             data = self.to_api_data(restrict_keys=self._track_changes)
         else:
             # new event
             if self.calendar_id:
-                url = self.build_url(
-                    self._endpoints.get('event_calendar').format(
-                        id=self.calendar_id))
+                url = self.build_url(self._endpoints.get('event_calendar').format(id=self.calendar_id))
             else:
                 url = self.build_url(self._endpoints.get('event_default'))
             method = self.con.post
@@ -1721,7 +1721,7 @@ class Calendar(ApiComponent, HandleRecipientsMixin):
 
     def get_events(self, limit=25, *, query=None, order_by=None, batch=None,
                    download_attachments=False, include_recurring=True):
-        """ Get events from the this Calendar
+        """ Get events from this Calendar
 
         :param int limit: max no. of events to get. Over 999 uses batch.
         :param query: applies a OData filter to the request
