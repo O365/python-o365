@@ -490,8 +490,7 @@ class Folder(ApiComponent):
         if order_by:
             params['$orderby'] = order_by
 
-        response = self.con.get(url, params=params,
-                                headers={'Prefer': 'outlook.timezone="UTC"'})
+        response = self.con.get(url, params=params)
 
         if not response:
             return iter(())
@@ -533,8 +532,8 @@ class Folder(ApiComponent):
             params.update(param.as_params())
             by_id = False
 
-        response = self.con.get(url, params=params,
-                                headers={'Prefer': 'outlook.timezone="UTC"'})
+        response = self.con.get(url, params=params)
+
         if not response:
             return None
 
