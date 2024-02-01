@@ -458,10 +458,20 @@ class ApiComponent:
 
     def _build_date_time_time_zone(self, date_time):
         """ Converts a datetime to a dateTimeTimeZone resource """
-        timezone = date_time.tzinfo.zone if date_time.tzinfo is not None else None
+        timezone = None
+        if date_time.tzinfo is not None:
+            if isinstance(date_time.tzinfo, ZoneInfo):
+                timezone = date_time.tzinfo.key
+            elif isinstance(date_time.tzinfo, dt.tzinfo):
+                timezone = date_time.tzinfo.tzname(date_time)
+            else:
+                raise ValueError('Unexpected tzinfo class.')
+
+        timezone = get_windows_tz(timezone or self.protocol.timezone)
+
         return {
             self._cc('dateTime'): date_time.strftime('%Y-%m-%dT%H:%M:%S'),
-            self._cc('timeZone'): get_windows_tz(timezone or self.protocol.timezone)
+            self._cc('timeZone'): timezone
         }
 
     def new_query(self, attribute=None):
