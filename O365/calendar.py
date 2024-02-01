@@ -69,11 +69,13 @@ class EventType(CaseEnum):
     Exception = 'exception'  # ?
     SeriesMaster = 'seriesMaster'  # the first recurring event of the series
 
+
 class OnlineMeetingProviderType(CaseEnum):
     Unknown = 'unknown'
     TeamsForBusiness = 'teamsForBusiness'
     SkypeForBusiness = 'skypeForBusiness'
     SkypeForConsumer = 'skypeForConsumer'
+
 
 class EventAttachment(BaseAttachment):
     _endpoints = {'attach': '/events/{id}/attachments'}
@@ -119,7 +121,7 @@ class EventRecurrence(ApiComponent):
         if 'type' in recurrence_pattern.keys():
             if 'weekly' not in recurrence_pattern['type'].lower():
                 self.__first_day_of_week = None
-                
+
         self.__day_of_month = recurrence_pattern.get(self._cc('dayOfMonth'),
                                                      None)
         self.__month = recurrence_pattern.get(self._cc('month'), None)
@@ -167,17 +169,17 @@ class EventRecurrence(ApiComponent):
             elif self.__month:
                 pattern = ('Relative Yearly: {} {} every {} year{} on {}'
                            ''.format(
-                               self.__index,
-                               days,
-                               self.__interval,
-                               's' if self.__interval != 1 else '',
-                               MONTH_NAMES[self.__month - 1]))
+                    self.__index,
+                    days,
+                    self.__interval,
+                    's' if self.__interval != 1 else '',
+                    MONTH_NAMES[self.__month - 1]))
         elif self.__day_of_month:
             pattern = ('Absolute Monthly: on day {} every {} month{}'
                        ''.format(
-                            self.__day_of_month, 
-                            self.__interval,
-                            's' if self.__interval != 1 else ''))
+                self.__day_of_month,
+                self.__interval,
+                's' if self.__interval != 1 else ''))
             if self.__month:
                 pattern = ('Absolute Yearly: on {} {} every {} year/s'
                            ''.format(MONTH_NAMES[self.__month - 1],
@@ -931,9 +933,11 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
 
     def __repr__(self):
         if self.start.date() == self.end.date():
-            return 'Subject: {} (on: {} from: {} to: {})'.format(self.subject, self.start.date(), self.start.time(), self.end.time())
+            return 'Subject: {} (on: {} from: {} to: {})'.format(self.subject, self.start.date(), self.start.time(),
+                                                                 self.end.time())
         else:
-            return 'Subject: {} (starts: {} {} and ends: {} {})'.format(self.subject, self.start.date(), self.start.time(), self.end.date(),
+            return 'Subject: {} (starts: {} {} and ends: {} {})'.format(self.subject, self.start.date(),
+                                                                        self.start.time(), self.end.date(),
                                                                         self.end.time())
 
     def __eq__(self, other):
@@ -983,7 +987,7 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
 
         if self.__recurrence:
             data[cc('recurrence')] = self.__recurrence.to_api_data()
-        
+
         if self.has_attachments:
             data[cc('attachments')] = self.__attachments.to_api_data()
 
@@ -1337,7 +1341,7 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
     @online_meeting_provider.setter
     def online_meeting_provider(self, value):
         self.__online_meeting_provider = (value if isinstance(value, OnlineMeetingProviderType)
-                             else OnlineMeetingProviderType.from_value(value))
+                                          else OnlineMeetingProviderType.from_value(value))
         self._track_changes.add(self._cc('onlineMeetingProvider'))
 
     @property
@@ -1649,7 +1653,7 @@ class Calendar(ApiComponent, HandleRecipientsMixin):
         self.can_share = cloud_data.get(self._cc('canShare'), False)
         self.can_view_private_items = cloud_data.get(
             self._cc('canViewPrivateItems'), False)
-        
+
         # Hex color only returns a value when a custom calandar is set
         # Hex color is read-only, cannot be used to set calendar's color
         self.hex_color = cloud_data.get(self._cc('hexColor'), None)
@@ -1776,7 +1780,8 @@ class Calendar(ApiComponent, HandleRecipientsMixin):
                         query.remove_filter('end')
 
             if start is None or end is None:
-                raise ValueError("When 'include_recurring' is True you must provide a 'start' and 'end' datetimes inside a Query instance.")
+                raise ValueError(
+                    "When 'include_recurring' is True you must provide a 'start' and 'end' datetimes inside a Query instance.")
 
             if end < start:
                 raise ValueError('When using "include_recurring=True", the date asigned to the "end" datetime'
