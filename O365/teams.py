@@ -29,6 +29,26 @@ class Activity(Enum):
     AWAY = "Away"
     PRESENTING = "Presenting"
 
+class PreferredAvailability(Enum):
+    """Valid values for Availability."""
+
+    AVAILABLE = "Available"
+    BUSY = "Busy"
+    DONOTDISTURB = "DoNotDisturb"
+    BERIGHTBACK = "BeRightBack"
+    AWAY = "Away"
+    OFFLINE = "Offline"
+
+
+class PreferredActivity(Enum):
+    """Valid values for Activity."""
+
+    AVAILABLE = "Available"
+    BUSY = "Busy"
+    DONOTDISTURB = "DoNotDisturb"
+    BERIGHTBACK = "BeRightBack"
+    AWAY = "Away"
+    OFFWORK = "OffWork"
 
 class ConversationMember(ApiComponent):
     """ A Microsoft Teams conversation member """
@@ -781,8 +801,8 @@ class Teams(ApiComponent):
 
     def set_my_user_preferred_presence(
         self,
-        availability: Availability,
-        activity: Activity,
+        availability: PreferredAvailability,
+        activity: PreferredActivity,
         expiration_duration,
     ):
         """Sets my user preferred presence status
