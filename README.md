@@ -11,10 +11,10 @@
 This project aims to make interacting with Microsoft Graph and Office 365 easy to do in a Pythonic way.
 Access to Email, Calendar, Contacts, OneDrive, etc. Are easy to do in a way that feel easy and straight forward to beginners and feels just right to seasoned python programmer.
 
-The project is currently developed and maintained by [Janscas](https://github.com/janscas).
+The project is currently developed and maintained by [alejcas](https://github.com/alejcas).
 
 #### Core developers
-- [Janscas](https://github.com/janscas)
+- [Alejcas](https://github.com/alejcas)
 - [Toben Archer](https://github.com/Narcolapser)
 - [Geethanadh](https://github.com/GeethanadhP)
 
