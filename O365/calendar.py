@@ -927,6 +927,7 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         self.__show_as = EventShowAs.from_value(cloud_data.get(cc('showAs'), 'busy'))
         self.__event_type = EventType.from_value(cloud_data.get(cc('type'), 'singleInstance'))
         self.__no_forwarding = False
+        self.web_link = cloud_data.get(cc('webLink'), None)
 
     def __str__(self):
         return self.__repr__()
