@@ -103,16 +103,16 @@ class Protocol:
         # get_localzone() from tzlocal will try to get the system local timezone and if not will return UTC
         self._timezone: ZoneInfo = get_localzone()
 
-        if timezone:
-            self.timezone = timezone  # property setter will convert this timezone to ZoneInfo if a string is provided
-
-        self.max_top_value: int = 500  # Max $top parameter value
-
         # define any keyword that can be different in this protocol
         # for example, attachments OData type differs between Outlook
         #  rest api and graph: (graph = #microsoft.graph.fileAttachment and
         #  outlook = #Microsoft.OutlookServices.FileAttachment')
         self.keyword_data_store: dict = {}
+
+        self.max_top_value: int = 500  # Max $top parameter value
+
+        if timezone:
+            self.timezone = timezone  # property setter will convert this timezone to ZoneInfo if a string is provided
 
     @property
     def timezone(self):
