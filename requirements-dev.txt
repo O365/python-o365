@@ -1,4 +1,4 @@
-requests>=2.18.0
+requests>=2.31.0
 requests-oauthlib>=1.2.0
 python-dateutil>=2.7
 tzlocal>=5.0
