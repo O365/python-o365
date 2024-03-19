@@ -975,6 +975,9 @@ class File(DriveItem, DownloadableMixin):
         self.mime_type = cloud_data.get(self._cc('file'), {}).get(
             self._cc('mimeType'), None)
 
+        self.hashes = cloud_data.get(self._cc('file'), {}).get(
+            self._cc('hashes'), None)
+
     @property
     def extension(self):
         return Path(self.name).suffix
