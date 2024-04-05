@@ -483,7 +483,7 @@ class Range(ApiComponent):
         'get_row': '/row',
         'rows_above': '/rowsAbove(count={})',
         'rows_below': '/rowsBelow(count={})',
-        'get_used_range': '/usedRange',
+        'get_used_range': '/usedRange(valuesOnly={})',
         'clear_range': '/clear',
         'delete_range': '/delete',
         'insert_range': '/insert',
@@ -761,11 +761,12 @@ class Range(ApiComponent):
     def get_used_range(self, only_values=True):
         """
         Returns the used range of the given range object.
-        :param bool only_values: Optional.
-         Considers only cells with values as used cells.
+        :param bool only_values: Optional. Defaults to True.
+         Considers only cells with values as used cells (ignores formatting).
         :return: Range
         """
-        return self._get_range('get_used_range', valuesOnly=only_values)
+        # Format the "only_values" parameter as a lowercase string to work correctly with the Graph API 
+        return self._get_range('get_used_range', str(only_values).lower())
 
     def clear(self, apply_to='all'):
         """
@@ -1480,7 +1481,7 @@ class WorkSheet(ApiComponent):
         'get_table': '/tables/{id}',
         'get_range': '/range',
         'add_table': '/tables/add',
-        'get_used_range': '/usedRange',
+        'get_used_range': '/usedRange(valuesOnly={})',
         'get_cell': '/cell(row={row},column={column})',
         'add_named_range': '/names/add',
         'add_named_range_f': '/names/addFormulaLocal',
@@ -1614,11 +1615,15 @@ class WorkSheet(ApiComponent):
             return None
         return self.range_constructor(parent=self, **{self._cloud_data_key: response.json()})
 
-    def get_used_range(self):
+    def get_used_range(self, only_values=True):
         """ Returns the smallest range that encompasses any cells that
          have a value or formatting assigned to them.
+        :param bool only_values: Optional. Defaults to True.
+         Considers only cells with values as used cells (ignores formatting).
+        :return: Range
         """
-        url = self.build_url(self._endpoints.get('get_used_range'))
+        # Format the "only_values" parameter as a lowercase string to work properly with the Graph API 
+        url = self.build_url(self._endpoints.get('get_used_range').format(str(only_values).lower()))
         response = self.session.get(url)
         if not response:
             return None
