@@ -133,7 +133,7 @@ class Protocol:
                 raise e
         else:
             if not isinstance(timezone, ZoneInfo):
-                raise ValueError(f'The timezone parameter must be either a string or a valid ZoneInfo instance.')
+                raise ValueError('The timezone parameter must be either a string or a valid ZoneInfo instance.')
         self._timezone = timezone
 
     def get_service_keyword(self, keyword: str) -> str:
