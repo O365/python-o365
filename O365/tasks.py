@@ -230,6 +230,15 @@ class Task(ApiComponent):
         self._track_changes.add(self._cc('dueDateTime'))
 
     @property
+    def status(self):
+        """Status of task
+
+        :getter: get status
+        :type: string
+        """
+        return self.__status
+
+    @property
     def completed(self):
         """ Completed Time of task
 
