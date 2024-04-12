@@ -951,9 +951,12 @@ class Query:
                 self._filters.append(self._chain)
             sentence, attrs = filter_data
             for i, group in enumerate(self._open_group_flag):
-                if group is True:
-                    # Open a group
-                    sentence = '(' + sentence
+                if group is True or group is None:
+                    # Open a group: None Flags a group that is negated
+                    if group is True:
+                        sentence = '(' + sentence
+                    else:
+                        sentence = 'not (' + sentence
                     self._open_group_flag[i] = False  # set to done
             self._filters.append([self._attribute, sentence, attrs])
         else:
@@ -1006,14 +1009,18 @@ class Query:
         :rtype: Query
         """
         word = self._parse_filter_word(word)
+        # consume negation
+        negation = self._negation
+        if negation:
+            self._negation = False
         self._add_filter(
-            *self._prepare_sentence(self._attribute, operation, word,
-                                    self._negation))
+            *self._prepare_sentence(self._attribute, operation, word, negation)
+        )
         return self
 
     @fluent
     def equals(self, word):
-        """ Add a equals check
+        """ Add an equals check
 
         :param word: word to compare with
         :rtype: Query
@@ -1022,7 +1029,7 @@ class Query:
 
     @fluent
     def unequal(self, word):
-        """ Add a unequals check
+        """ Add an unequals check
 
         :param word: word to compare with
         :rtype: Query
@@ -1080,10 +1087,12 @@ class Query:
         :rtype: Query
         """
         word = self._parse_filter_word(word)
-
+        # consume negation
+        negation = self._negation
+        if negation:
+            self._negation = False
         self._add_filter(
-            *self._prepare_function(function_name, self._attribute, word,
-                                    self._negation))
+            *self._prepare_function(function_name, self._attribute, word, negation))
         return self
 
     @fluent
@@ -1115,7 +1124,7 @@ class Query:
 
     @fluent
     def iterable(self, iterable_name, *, collection, word, attribute=None, func=None,
-                 operation=None, negate=False):
+                 operation=None, negation=False):
         """ Performs a filter with the OData 'iterable_name' keyword
         on the collection
 
@@ -1134,7 +1143,7 @@ class Query:
          the collection
         :param str operation: the logical operation to apply to the attribute
          inside the collection
-        :param bool negate: negate the funcion or operation inside the iterable
+        :param bool negation: negate the funcion or operation inside the iterable
         :rtype: Query
         """
 
@@ -1157,13 +1166,18 @@ class Query:
             attribute = 'a/{}'.format(attribute)
 
         if func is not None:
-            sentence = self._prepare_function(func, attribute, word, negate)
+            sentence = self._prepare_function(func, attribute, word, negation)
         else:
-            sentence = self._prepare_sentence(attribute, operation, word, negate)
+            sentence = self._prepare_sentence(attribute, operation, word, negation)
 
         filter_str, attrs = sentence
 
-        filter_data = '{}/{}(a:{})'.format(collection, iterable_name, filter_str), attrs
+        # consume negation
+        negation = 'not' if self._negation else ''
+        if self._negation:
+            self._negation = False
+
+        filter_data = '{} {}/{}(a:{})'.format(negation, collection, iterable_name, filter_str).strip(), attrs
         self._add_filter(*filter_data)
 
         self._attribute = current_att
@@ -1171,7 +1185,7 @@ class Query:
         return self
 
     @fluent
-    def any(self, *, collection, word, attribute=None, func=None, operation=None, negate=False):
+    def any(self, *, collection, word, attribute=None, func=None, operation=None, negation=False):
         """ Performs a filter with the OData 'any' keyword on the collection
 
         For example:
@@ -1189,16 +1203,16 @@ class Query:
          inside the collection
         :param str operation: the logical operation to apply to the
          attribute inside the collection
-        :param bool negate: negate the funcion or operation inside the iterable
+        :param bool negation: negates the funcion or operation inside the iterable
         :rtype: Query
         """
 
         return self.iterable('any', collection=collection, word=word,
                              attribute=attribute, func=func, operation=operation,
-                             negate=negate)
+                             negation=negation)
 
     @fluent
-    def all(self, *, collection, word, attribute=None, func=None, operation=None, negate=False):
+    def all(self, *, collection, word, attribute=None, func=None, operation=None, negation=False):
         """ Performs a filter with the OData 'all' keyword on the collection
 
         For example:
@@ -1216,13 +1230,13 @@ class Query:
          inside the collection
         :param str operation: the logical operation to apply to the
          attribute inside the collection
-        :param bool negate: negate the funcion or operation inside the iterable
+        :param bool negation: negate the funcion or operation inside the iterable
         :rtype: Query
         """
 
         return self.iterable('all', collection=collection, word=word,
                              attribute=attribute, func=func, operation=operation,
-                             negate=negate)
+                             negation=negation)
 
     @fluent
     def order_by(self, attribute=None, *, ascending=True):
@@ -1243,7 +1257,12 @@ class Query:
 
     def open_group(self):
         """ Applies a precedence grouping in the next filters """
-        self._open_group_flag.append(True)
+        # consume negation
+        if self._negation:
+            self._negation = False
+            self._open_group_flag.append(None)  # flag a negated group open with None
+        else:
+            self._open_group_flag.append(True)
         return self
 
     def close_group(self):
