@@ -1065,10 +1065,6 @@ class Folder(DriveItem):
             params['$orderby'] = order_by
 
         if query:
-            # if query.has_filters:
-            #     warnings.warn('Filters are not allowed by the '
-            #                   'Api Provider in this method')
-            #     query.clear_filters()
             if isinstance(query, str):
                 params['$filter'] = query
             else:
@@ -1107,7 +1103,8 @@ class Folder(DriveItem):
         """
 
         if query:
-            query = query.on_attribute('folder').unequal(None)
+            if not isinstance(query, str):
+                query = query.on_attribute('folder').unequal(None)
         else:
             query = self.q('folder').unequal(None)
 
@@ -1211,14 +1208,14 @@ class Folder(DriveItem):
             params['$orderby'] = order_by
 
         if query:
-            if query.has_filters:
-                warnings.warn(
-                    'Filters are not allowed by the Api '
-                    'Provider in this method')
-                query.clear_filters()
             if isinstance(query, str):
                 params['$filter'] = query
             else:
+                if query.has_filters:
+                    warnings.warn(
+                        'Filters are not allowed by the Api '
+                        'Provider in this method')
+                    query.clear_filters()
                 params.update(query.as_params())
 
         response = self.con.get(url, params=params)
