@@ -632,8 +632,14 @@ def get_windows_tz(iana_tz: ZoneInfo) -> str:
     Note: Windows Timezones are SHIT!... no ... really THEY ARE
     HOLY FUCKING SHIT!.
     """
-    timezone = IANA_TO_WIN.get(
-        iana_tz.key if isinstance(iana_tz, tzinfo) else iana_tz)
+    if isinstance(iana_tz, tzinfo):
+        if hasattr(iana_tz, "key"):
+            key = iana_tz.key
+        else:
+            key = "UTC"
+    else:
+        key = iana_tz
+    timezone= IANA_TO_WIN.get(key)
     if timezone is None:
         raise ZoneInfoNotFoundError(f"Can't find Iana timezone: {iana_tz.key}")
 
