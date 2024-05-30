@@ -211,6 +211,25 @@ class TestMessageApiCalls:
         assert msg.con.calls[2].payload == b"conte"
         assert msg.con.calls[3].payload == b"nt"
 
+    def test_save_draft_with_custom_header(self):
+        msg = message()
+        msg.subject = "Test"
+        my_custom_header = [{"name": "x-my-custom-header", "value": "myHeaderValue"}]
+        msg.message_headers = my_custom_header
+
+        assert msg.save_draft() is True
+        [call] = msg.con.calls
+        assert call.url == self.base_url + "me/mailFolders/Drafts/messages"
+        assert call.payload == {
+            "body": {"content": "", "contentType": "HTML"},
+            "flag": {"flagStatus": "notFlagged"},
+            "importance": "normal",
+            "isDeliveryReceiptRequested": False,
+            "isReadReceiptRequested": False,
+            "subject": "Test",
+            "internetMessageHeaders": my_custom_header,
+        }
+
     def test_save_message(self):
         msg = message(__cloud_data__={"id": "123", "isDraft": False})
         msg.subject = "Changed"
@@ -287,6 +306,25 @@ class TestMessageApiCalls:
                 "isDeliveryReceiptRequested": False,
                 "isReadReceiptRequested": False,
                 "subject": "",
+            },
+            "saveToSentItems": False,
+        }
+
+    def test_send_with_headers(self):
+        my_testheader = {"x-my-custom-header": "some_value"}
+        msg = message(__cloud_data__={"internetMessageHeaders": [my_testheader]})
+        assert msg.send(save_to_sent_folder=False)
+        [call] = msg.con.calls
+        assert call.url == self.base_url + "me/sendMail"
+        assert call.payload == {
+            "message": {
+                "body": {"content": "", "contentType": "HTML"},
+                "flag": {"flagStatus": "notFlagged"},
+                "importance": "normal",
+                "isDeliveryReceiptRequested": False,
+                "isReadReceiptRequested": False,
+                "subject": "",
+                "internetMessageHeaders": [my_testheader],
             },
             "saveToSentItems": False,
         }

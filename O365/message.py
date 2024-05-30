@@ -686,6 +686,9 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
             # this property does not form part of the message itself
             message[cc('parentFolderId')] = self.folder_id
 
+        if self.message_headers:
+            message[cc('internetMessageHeaders')] = self.message_headers
+
         if restrict_keys:
             for key in list(message.keys()):
                 if key not in restrict_keys:
