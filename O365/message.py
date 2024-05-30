@@ -340,7 +340,7 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         self.web_link = cloud_data.get(cc('webLink'), '')
 
         # Headers only retrieved when selecting 'internetMessageHeaders'
-        self.message_headers = cloud_data.get(cc('internetMessageHeaders'), [])
+        self.__message_headers = cloud_data.get(cc('internetMessageHeaders'), [])
 
     def __str__(self):
         return self.__repr__()
@@ -621,6 +621,20 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
     def single_value_extended_properties(self):
         """ singleValueExtendedProperties """
         return self.__single_value_extended_properties
+
+    @property
+    def message_headers(self):
+        """ Custom message headers
+            List of internetMessageHeaders, see definition: https://learn.microsoft.com/en-us/graph/api/resources/internetmessageheader?view=graph-rest-1.0
+        :type: list[dict[str, str]]
+        """
+
+        return self.__message_headers
+
+    @message_headers.setter
+    def message_headers(self, value):
+        self.__message_headers = value
+        self._track_changes.add('message_headers')
 
     def to_api_data(self, restrict_keys=None):
         """ Returns a dict representation of this message prepared to be sent
