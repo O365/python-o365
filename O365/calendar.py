@@ -1593,7 +1593,7 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         :return: Html body
         :rtype: BeautifulSoup
         """
-        if self.body_type != 'HTML':
+        if self.body_type.upper() != 'HTML':
             return None
         else:
             return bs(self.body, 'html.parser')
