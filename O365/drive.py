@@ -1658,10 +1658,14 @@ class Drive(ApiComponent):
                                       **{self._cloud_data_key: data})
 
     def get_item_by_path(self, item_path):
-        """ Returns a DriveItem by it's path: /path/to/file
+        """ Returns a DriveItem by it's absolute path: /path/to/file
         :return: one item
         :rtype: DriveItem
         """
+
+        if not item_path.startswith("/"):
+            item_path = "/" + item_path
+
         if self.object_id:
             # reference the current drive_id
             url = self.build_url(
