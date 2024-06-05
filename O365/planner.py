@@ -343,6 +343,7 @@ class Task(ApiComponent):
                     'active_checklist_item_count',
                     'conversation_thread_id',
                     'applied_categories',
+                    'bucket_id'
                 )}
         if not data:
             return False
