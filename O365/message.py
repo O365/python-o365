@@ -639,6 +639,14 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         self.__message_headers = value
         self._track_changes.add('message_headers')
 
+    def add_message_header(self, name, value):
+        # Look if we already have the key. If we do, update it, otherwise write
+        for header in self.__message_headers:
+            if header["name"] == name:
+                header["value"] = value
+                return
+        self.__message_headers.append({"name": name, "value": value})
+
     def to_api_data(self, restrict_keys=None):
         """ Returns a dict representation of this message prepared to be sent
         to the cloud
