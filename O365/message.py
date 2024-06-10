@@ -340,7 +340,7 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         self.web_link = cloud_data.get(cc('webLink'), '')
 
         # Headers only retrieved when selecting 'internetMessageHeaders'
-        self.message_headers = cloud_data.get(cc('internetMessageHeaders'), [])
+        self.__message_headers = cloud_data.get(cc('internetMessageHeaders'), [])
 
     def __str__(self):
         return self.__repr__()
@@ -622,6 +622,31 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         """ singleValueExtendedProperties """
         return self.__single_value_extended_properties
 
+    @property
+    def message_headers(self):
+        """ Custom message headers
+            List of internetMessageHeaders, see definition: https://learn.microsoft.com/en-us/graph/api/resources/internetmessageheader?view=graph-rest-1.0
+        :type: list[dict[str, str]]
+        """
+
+        return self.__message_headers
+
+    @message_headers.setter
+    def message_headers(self, value):
+        if not isinstance(value, list):
+            raise ValueError('"message_header" must be a list')
+
+        self.__message_headers = value
+        self._track_changes.add('message_headers')
+
+    def add_message_header(self, name, value):
+        # Look if we already have the key. If we do, update it, otherwise write
+        for header in self.__message_headers:
+            if header["name"] == name:
+                header["value"] = value
+                return
+        self.__message_headers.append({"name": name, "value": value})
+
     def to_api_data(self, restrict_keys=None):
         """ Returns a dict representation of this message prepared to be sent
         to the cloud
@@ -685,6 +710,9 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
             message[cc('conversationId')] = self.conversation_id
             # this property does not form part of the message itself
             message[cc('parentFolderId')] = self.folder_id
+
+        if self.message_headers:
+            message[cc('internetMessageHeaders')] = self.message_headers
 
         if restrict_keys:
             for key in list(message.keys()):
