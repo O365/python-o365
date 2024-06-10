@@ -633,6 +633,9 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
 
     @message_headers.setter
     def message_headers(self, value):
+        if not isinstance(value, list):
+            raise ValueError('"message_header" must be a list')
+
         self.__message_headers = value
         self._track_changes.add('message_headers')
 
