@@ -2,6 +2,18 @@
 
 Almost every release features a lot of bugfixes but those are not listed here.
 
+## Version 2.0.35 (2024-06-29)
+
+###Features:
+- Tasks: Exposed status property (Thanks @RogerSelwyn)
+- Tasks: Added bucket_id to allowed update-attributes of Task (Thanks @dekiesel) 
+- Drive: Added "hashes" attribute to File (Thanks @Chrisrdouglas)
+- Drive: get_item_by_path now prepends a slash if it's missing (Thanks @dekiesel)
+- Excel: Added "only_values" to "get_used_range" method (Thanks @zstrathe)
+- Query: Added negate to iterables inside Query
+- Protocol: Added 'Europe/Kyiv' as valid Iana timezone (Thanks @jackill88)
+- Message: Added ability to add custom headers (Thanks @ted-mey)
+
 
 ## Version 2.0.34 (2024-02-29)
 
