@@ -2,6 +2,13 @@
 
 Almost every release features a lot of bugfixes but those are not listed here.
 
+
+## Version 2.0.36 (2024-07-04)
+
+Removed dependency: stringcase
+Upgraded requirement requests-oauthlib
+Added classifier python 3.12
+
 ## Version 2.0.35 (2024-06-29)
 
 ###Features:

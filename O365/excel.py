@@ -8,11 +8,10 @@ import datetime as dt
 from urllib.parse import quote
 import re
 
-from stringcase import snakecase
-
 from .drive import File
 from .connection import MSOffice365Protocol
 from .utils import ApiComponent, TrackerSet
+from .utils import to_snake_case
 
 
 log = logging.getLogger(__name__)
@@ -836,7 +835,7 @@ class Range(ApiComponent):
         data = response.json()
 
         for field in self._track_changes:
-            setattr(self, snakecase(field), data.get(field))
+            setattr(self, to_snake_case(field), data.get(field))
         self._track_changes.clear()
 
         return True

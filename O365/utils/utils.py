@@ -6,8 +6,8 @@ from typing import Union, Dict
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 from dateutil.parser import parse
-from stringcase import snakecase
 
+from .casing import to_snake_case
 from .windows_tz import get_iana_tz, get_windows_tz
 from .decorators import fluent
 
@@ -29,14 +29,14 @@ class CaseEnum(Enum):
 
     def __new__(cls, value):
         obj = object.__new__(cls)
-        obj._value_ = snakecase(value)  # value will be transformed to snake_case
+        obj._value_ = to_snake_case(value)  # value will be transformed to snake_case
         return obj
 
     @classmethod
     def from_value(cls, value):
         """ Gets a member by a snaked-case provided value"""
         try:
-            return cls(snakecase(value))
+            return cls(to_snake_case(value))
         except ValueError:
             return None
 

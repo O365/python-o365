@@ -13,10 +13,10 @@ from requests.exceptions import SSLError, Timeout, ConnectionError
 # noinspection PyUnresolvedReferences
 from requests.packages.urllib3.util.retry import Retry
 from requests_oauthlib import OAuth2Session
-from stringcase import pascalcase, camelcase, snakecase
 from tzlocal import get_localzone
 from zoneinfo import ZoneInfoNotFoundError, ZoneInfo
-from .utils import ME_RESOURCE, BaseTokenBackend, FileSystemTokenBackend, Token, get_windows_tz
+from .utils import (ME_RESOURCE, BaseTokenBackend, FileSystemTokenBackend, Token, get_windows_tz, to_camel_case,
+                    to_snake_case, to_pascal_case)
 import datetime as dt
 
 log = logging.getLogger(__name__)
@@ -98,7 +98,7 @@ class Protocol:
         self.service_url: str = '{}{}/'.format(protocol_url, api_version)
         self.default_resource: str = default_resource or ME_RESOURCE
         self.use_default_casing: bool = True if casing_function is None else False
-        self.casing_function: Callable = casing_function or camelcase
+        self.casing_function: Callable = casing_function or to_camel_case
 
         # get_localzone() from tzlocal will try to get the system local timezone and if not will return UTC
         self._timezone: ZoneInfo = get_localzone()
@@ -168,7 +168,7 @@ class Protocol:
         :param key: key to convert into snake_case
         :return: key after case conversion
         """
-        return snakecase(key)
+        return to_snake_case(key)
 
     def get_scopes_for(self, user_provided_scopes: Optional[Union[list, str, tuple]]) -> list:
         """ Returns a list of scopes needed for each of the
@@ -234,7 +234,7 @@ class MSGraphProtocol(Protocol):
         super().__init__(protocol_url=self._protocol_url,
                          api_version=api_version,
                          default_resource=default_resource,
-                         casing_function=camelcase,
+                         casing_function=to_camel_case,
                          protocol_scope_prefix=self._oauth_scope_prefix,
                          **kwargs)
 
@@ -275,7 +275,7 @@ class MSOffice365Protocol(Protocol):
         super().__init__(protocol_url=self._protocol_url,
                          api_version=api_version,
                          default_resource=default_resource,
-                         casing_function=pascalcase,
+                         casing_function=to_pascal_case,
                          protocol_scope_prefix=self._oauth_scope_prefix,
                          **kwargs)
 
@@ -326,7 +326,7 @@ class MSBusinessCentral365Protocol(Protocol):
         super().__init__(protocol_url=self._protocol_url,
                          api_version=api_version,
                          default_resource=default_resource,
-                         casing_function=camelcase,
+                         casing_function=to_camel_case,
                          protocol_scope_prefix=self._protocol_scope_prefix,
                          **kwargs)
 

@@ -1,9 +1,8 @@
 requests>=2.31.0
-requests-oauthlib>=1.2.0
+requests-oauthlib>=2.0.0
 python-dateutil>=2.7
 tzlocal>=5.0
 beautifulsoup4>=4.0.0
-stringcase>=1.2.0
 tzdata>=2023.4
 Click>=7.0
 pytest>=3.9.0

@@ -96,10 +96,9 @@ Project dependencies installed by pip:
  - requests
  - requests-oauthlib
  - beatifulsoup4
- - stringcase
  - python-dateutil
  - tzlocal
- - pytz
+ - tzdata
 
 
 ## Usage
