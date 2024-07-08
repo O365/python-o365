@@ -554,3 +554,55 @@ class AWSSecretsBackend(BaseTokenBackend):
             return False
         else:
             return True
+
+
+class BitwardenSecretsManagerBackend(BaseTokenBackend):
+    """ A Bitwarden Secrets Manager backend to store tokens """
+
+    def __init__(self, access_token: str, secret_id: str):
+        """
+        Init Backend
+        :param str access_token: Access Token used to access the Bitwarden Secrets Manager API
+        :param str secret_id: ID of Bitwarden Secret used to store the O365 token
+        """
+        try:
+            from bitwarden_sdk import BitwardenClient
+        except ModuleNotFoundError as e:
+            raise Exception('Please install the bitwarden-sdk package to use this token backend.') from e
+        super().__init__()
+        self.client = BitwardenClient()
+        self.client.access_token_login(access_token)
+        self.secret_id = secret_id
+
+    def __repr__(self):
+        return "BitwardenSecretsManagerBackend('{}')".format(self.secret_id)
+
+    def load_token(self):
+        """
+        Retrieves the token from Bitwarden Secrets Manager
+        :return dict or None: The token if exists, None otherwise
+        """
+        resp = self.client.secrets().get(self.secret_id)
+        if not resp.success:
+            return None
+        self.secret = resp.data
+        try:
+            return self.token_constructor(self.serializer.loads(self.secret.value))
+        except:
+            logging.warning('Existing token could not be decoded')
+        return None
+
+    def save_token(self):
+        """
+        Saves the token dict in Bitwarden Secrets Manager
+        :return bool: Success / Failure
+        """
+        self.client.secrets().update(
+            self.secret.id,
+            self.secret.key,
+            self.secret.note,
+            self.secret.organization_id,
+            self.serializer.dumps(self.token),
+            [ self.secret.project_id ]
+        )
+        return True
