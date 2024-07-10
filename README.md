@@ -454,6 +454,7 @@ There are a few `TokenBackend` classes implemented (and you can easily implement
 - `FirestoreTokenBackend`: Stores and retrives tokens from a Google Firestore Datastore. Tokens are stored as documents within a collection.
 - `AWSS3Backend`: Stores and retrieves tokens from an AWS S3 bucket. Tokens are stored as a file within a S3 bucket.
 - `AWSSecretsBackend`: Stores and retrieves tokens from an AWS Secrets Management vault.
+- `BitwardenSecretsManagerBackend`: Stores and retrieves tokens from Bitwarden Secrets Manager.
 
 For example using the FileSystem Token Backend:
 
