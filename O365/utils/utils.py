@@ -122,7 +122,7 @@ class Recipient:
 
     def __repr__(self):
         if self.name:
-            return '{} ({})'.format(self.name, self.address)
+            return '{} <{}>'.format(self.name, self.address)
         else:
             return self.address
 
