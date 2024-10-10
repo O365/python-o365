@@ -1334,7 +1334,8 @@ class Table(ApiComponent):
             return None
 
         url = self.build_url(self._endpoints.get('get_row_index'))
-        response = self.session.post(url, data={'index': index})
+        url = '{}(index={})'.format(url, index)
+        response = self.session.get(url)
 
         if not response:
             return None
