@@ -3,7 +3,7 @@ import os
 from setuptools import setup, find_packages
 
 
-VERSION = '2.0.36'
+VERSION = '2.0.37'
 
 # Available classifiers: https://pypi.org/pypi?%3Aaction=list_classifiers
 CLASSIFIERS = [
@@ -28,7 +28,7 @@ def read(fname):
 
 
 requires = [
-    'requests>=2.18.0',
+    'requests>=2.32.0',
     'requests-oauthlib>=2.0.0',
     'python-dateutil>=2.7',
     'tzlocal>=5.0',

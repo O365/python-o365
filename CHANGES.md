@@ -2,6 +2,8 @@
 
 Almost every release features a lot of bugfixes but those are not listed here.
 
+## Version 2.0.37 (2024-10-23)
+-TokenBackend: Added BitwardenSecretsManagerBackend (Thanks @wnagele)
 
 ## Version 2.0.36 (2024-07-04)
 
