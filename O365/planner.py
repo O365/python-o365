@@ -100,7 +100,7 @@ class TaskDetails(ApiComponent):
 
         if 'references' in data and isinstance(data['references'], dict):
             for key in list(data['references'].keys()):
-                if isinstance(data['checklist'][key], dict) and not '@odata.type' in data['references'][key]:
+                if isinstance(data['references'][key], dict) and not '@odata.type' in data['references'][key]:
                     data['references'][key]['@odata.type'] = '#microsoft.graph.plannerExternalReference'
 
                 if any(u in key for u in _unsafe):
