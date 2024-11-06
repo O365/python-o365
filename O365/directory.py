@@ -116,6 +116,7 @@ class User(ApiComponent):
         self.street_address = cloud_data.get(cc('streetAddress'))
         self.usage_location = cloud_data.get(cc('usageLocation'))
         self.user_type = cloud_data.get(cc('userType'))
+        self.on_premises_sam_account_name = cloud_data.get(cc('onPremisesSamAccountName'))
 
     def __str__(self):
         return self.__repr__()
