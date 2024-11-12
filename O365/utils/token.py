@@ -606,3 +606,92 @@ class BitwardenSecretsManagerBackend(BaseTokenBackend):
             [ self.secret.project_id ]
         )
         return True
+
+class DjangoTokenBackend(BaseTokenBackend):
+    """
+    A Django database token backend to store tokens. To use this backend add the `TokenModel` 
+    model below into your Django application.
+        
+    class TokenModel(models.Model):
+        token = models.JSONField()
+        created_at = models.DateTimeField(auto_now_add=True)
+        updated_at = models.DateTimeField(auto_now=True)
+
+        def __str__(self):
+            return f"Token for {self.token.get('client_id', 'unknown')}"
+
+    Example usage:
+    from O365.utils import DjangoTokenBackend
+    from models import TokenModel
+
+    token_backend = DjangoTokenBackend(token_model=TokenModel)
+    account = Account(credentials, token_backend=token_backend)
+    """
+
+    def __init__(self, token_model=None):
+        """
+        Initializes the DjangoTokenBackend.
+
+        :param token_model: The Django model class to use for storing and retrieving tokens (defaults to TokenModel).
+        """
+        super().__init__()
+        # Use the provided token_model class
+        self.token_model = token_model
+
+    def __repr__(self):
+        return 'DjangoTokenBackend'
+
+    def load_token(self):
+        """
+        Retrieves the latest token from the Django database
+        :return dict or None: The token if exists, None otherwise
+        """
+        token = None
+
+        try:
+	        # Retrieve the latest token based on the most recently created record
+            token_record = self.token_model.objects.latest('created_at')
+            token = self.token_constructor(self.serializer.loads(token_record.token))
+        except Exception as e:
+            log.warning(f"No token found in the database, creating a new one: {str(e)}")
+        
+        return token
+
+    def save_token(self):
+        """
+        Saves the token dict in the Django database
+        :return bool: Success / Failure
+        """
+        if self.token is None:
+            raise ValueError('You have to set the "token" first.')
+
+        try:
+            # Create a new token record in the database
+            self.token_model.objects.create(token=self.serializer.dumps(self.token))
+        except Exception as e:
+            log.error(f"Token could not be saved: {str(e)}")
+            return False
+
+        return True
+
+    def delete_token(self):
+        """
+        Deletes the latest token from the Django database
+        :return bool: Success / Failure
+        """
+        try:
+            # Delete the latest token
+            token_record = self.token_model.objects.latest('created_at')
+            token_record.delete()
+        except Exception as e:
+            log.error(f"Could not delete token: {str(e)}")
+            return False
+        return True
+
+    def check_token(self):
+        """
+        Checks if any token exists in the Django database
+        :return bool: True if it exists, False otherwise
+        """
+        return self.token_model.objects.exists()
+    
