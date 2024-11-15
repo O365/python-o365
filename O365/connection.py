@@ -3,7 +3,9 @@ import logging
 import os
 import time
 from typing import Optional, Callable, Union
+from urllib.parse import urlparse, parse_qs
 
+from msal import ConfidentialClientApplication, PublicClientApplication
 from oauthlib.oauth2 import TokenExpiredError, WebApplicationClient, BackendApplicationClient, LegacyApplicationClient
 from requests import Session
 from requests.adapters import HTTPAdapter
@@ -17,7 +19,7 @@ from tzlocal import get_localzone
 from zoneinfo import ZoneInfoNotFoundError, ZoneInfo
 from .utils import (ME_RESOURCE, BaseTokenBackend, FileSystemTokenBackend, Token, get_windows_tz, to_camel_case,
                     to_snake_case, to_pascal_case)
-import datetime as dt
+
 
 log = logging.getLogger(__name__)
 
@@ -440,6 +442,8 @@ class Connection:
 
         self.naive_session = None  # lazy loaded: holds a requests Session object
 
+
+        self._msal_authority = 'https://login.microsoftonline.com/{}'.format(tenant_id)
         self._oauth2_authorize_url = 'https://login.microsoftonline.com/' \
                                      '{}/oauth2/v2.0/authorize'.format(tenant_id)
         self._oauth2_token_url = 'https://login.microsoftonline.com/' \
@@ -479,6 +483,37 @@ class Connection:
                     "http": "http://{}".format(proxy_uri),
                     "https": "http://{}".format(proxy_uri)
                 }
+
+    def get_token_with_msal_simple(self, requested_scopes=None):
+        """ Gets the token using"""
+
+        requested_scopes = requested_scopes or self.scopes
+
+        if self.auth_flow_type == 'public':
+            client = PublicClientApplication(client_id=self.auth[0], authority=self._msal_authority)
+            result = client.acquire_token_interactive(scopes=requested_scopes)
+            return result
+        elif self.auth_flow_type == 'authorization':
+            client = ConfidentialClientApplication(client_id=self.auth[0], client_credential=self.auth[1],
+                                                   authority=self._msal_authority)
+            # using authorization code flow
+            flow = client.initiate_auth_code_flow(scopes=requested_scopes, redirect_uri=self.oauth_redirect_url)
+            auth_url = flow.get("auth_uri")
+            if auth_url:
+                print('Visit the following url to give consent:')
+                print(auth_url)
+
+                response = input('Paste the authenticated url here:\n')
+
+                parsed = urlparse(response)
+                auth_response = {k: v[0] for k, v in parse_qs(parsed.query).items()}
+
+                result = client.acquire_token_by_auth_code_flow(flow, auth_response=auth_response)
+                return result
+
+        elif self.auth_flow_type == 'credentials':
+            pass
+
 
     def get_authorization_url(self, requested_scopes=None,
                               redirect_uri=None, **kwargs):
