@@ -549,20 +549,15 @@ class Connection:
         return flow.get('auth_uri'), flow
 
     def request_token(self, authorization_url, *,
-                      state=None,
-                      redirect_uri=None,
-                      requested_scopes=None,
+                      flow=None,
                       store_token=True,
                       **kwargs):
         """ Authenticates for the specified url and gets the token, save the
         token for future based if requested
 
         :param str or None authorization_url: url given by the authorization flow
-        :param str state: session-state identifier for web-flows
-        :param str redirect_uri: callback url for web-flows
-        :param lst requested_scopes: a list of scopes to be requested.
-         Only used when auth_flow_type is 'credentials'
-        :param bool store_token: whether or not to store the token,
+        :param str flow: dict object holding the data used in get_authorization_url
+        :param bool store_token: True to store the token in the token backend
          so you don't have to keep opening the auth link and
          authenticating every time
         :param kwargs: allow to pass unused params in conjunction with Connection
@@ -570,70 +565,23 @@ class Connection:
         :rtype: bool
         """
 
-        redirect_uri = redirect_uri or self.oauth_redirect_url
+        # parse the authorization url to obtain the query string params
+        parsed = urlparse(authorization_url)
+        query_params_dict = {k: v[0] for k, v in parse_qs(parsed.query).items()}
 
-        # Allow token scope to not match requested scope.
-        # (Other auth libraries allow this, but Requests-OAuthlib
-        # raises exception on scope mismatch by default.)
-        os.environ['OAUTHLIB_RELAX_TOKEN_SCOPE'] = '1'
-        os.environ['OAUTHLIB_IGNORE_SCOPE_CHANGE'] = '1'
+        result = self._msal_client.acquire_token_by_auth_code_flow(flow, auth_response=query_params_dict)
 
-        scopes = requested_scopes or self.scopes
-
-        if self.session is None:
-            if self.auth_flow_type in ('authorization', 'public'):
-                self.session = self.get_session(state=state,
-                                                redirect_uri=redirect_uri)
-            elif self.auth_flow_type in ('credentials', 'certificate', 'password'):
-                self.session = self.get_session(scopes=scopes)
-            else:
-                raise ValueError('"auth_flow_type" must be "authorization", "public", "credentials", "password",'
-                                 ' or "certificate"')
-
-        try:
-            if self.auth_flow_type == 'authorization':
-                self.token_backend.token = Token(self.session.fetch_token(
-                    token_url=self._oauth2_token_url,
-                    authorization_response=authorization_url,
-                    include_client_id=True,
-                    client_secret=self.auth[1],
-                    verify=self.verify_ssl))
-            elif self.auth_flow_type == 'public':
-                self.token_backend.token = Token(self.session.fetch_token(
-                    token_url=self._oauth2_token_url,
-                    authorization_response=authorization_url,
-                    include_client_id=True,
-                    verify=self.verify_ssl))
-            elif self.auth_flow_type == 'credentials':
-                self.token_backend.token = Token(self.session.fetch_token(
-                    token_url=self._oauth2_token_url,
-                    include_client_id=True,
-                    client_secret=self.auth[1],
-                    scope=scopes,
-                    verify=self.verify_ssl))
-            elif self.auth_flow_type == 'password':
-                self.token_backend.token = Token(self.session.fetch_token(
-                    token_url=self._oauth2_token_url,
-                    include_client_id=True,
-                    username=self.username,
-                    password=self.password,
-                    scope=scopes,
-                    verify=self.verify_ssl))
-            elif self.auth_flow_type == 'certificate':
-                self.token_backend.token = Token(self.session.fetch_token(
-                    token_url=self._oauth2_token_url,
-                    include_client_id=True,
-                    client_assertion=self.auth[1],
-                    client_assertion_type="urn:ietf:params:oauth:client-assertion-type:jwt-bearer",
-                    scope=scopes,
-                    verify=self.verify_ssl))
-        except Exception as e:
-            log.error('Unable to fetch auth token. Error: {}'.format(str(e)))
+        if "access_token" not in result:
+            log.error('Unable to fetch auth token. Error: {}'.format(result.get("error")))
             return False
+        else:
+            access_token = result["access_token"]
+            # TODO: retrieve token data from results and create a Token object with it
+            # How to pass this Token object into msal again?
+            if store_token:
+                self.token_backend.save_token()
 
-        if store_token:
-            self.token_backend.save_token()
-        return True
+            return True
 
     def get_session(self, *, state=None,
                     redirect_uri=None,
