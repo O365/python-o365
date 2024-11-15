@@ -442,7 +442,7 @@ class Connection:
 
         self.naive_session = None  # lazy loaded: holds a requests Session object
 
-
+        self._msal_client = None  # store the msal client
         self._msal_authority = 'https://login.microsoftonline.com/{}'.format(tenant_id)
         self._oauth2_authorize_url = 'https://login.microsoftonline.com/' \
                                      '{}/oauth2/v2.0/authorize'.format(tenant_id)
@@ -484,6 +484,19 @@ class Connection:
                     "https": "http://{}".format(proxy_uri)
                 }
 
+    @property
+    def msal_client(self):
+        """ Returns the msal client or creates it if it's not already done """
+        if self.auth_flow_type == 'public':
+            client = PublicClientApplication(client_id=self.auth[0], authority=self._msal_authority)
+        elif self.auth_flow_type in ('authorization', 'credentials'):
+            client = ConfidentialClientApplication(client_id=self.auth[0], client_credential=self.auth[1],
+                                                   authority=self._msal_authority)
+        else:
+            raise ValueError('"auth_flow_type" must be "authorization", "public" or "credentials"')
+        self._msal_client = client
+        return client
+
     def get_token_with_msal_simple(self, requested_scopes=None):
         """ Gets the token using"""
 
@@ -513,7 +526,6 @@ class Connection:
 
         elif self.auth_flow_type == 'credentials':
             pass
-
 
     def get_authorization_url(self, requested_scopes=None,
                               redirect_uri=None, **kwargs):
