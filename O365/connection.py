@@ -535,8 +535,7 @@ class Connection:
         :param list[str] requested_scopes: list of scopes to request access for
         :param str redirect_uri: redirect url configured in registered app
         :param kwargs: allow to pass unused params in conjunction with Connection
-        :return: authorization url
-        :rtype: str
+        :return: authorization url and the flow dict
         """
 
         redirect_uri = redirect_uri or self.oauth_redirect_url
@@ -545,15 +544,9 @@ class Connection:
         if not scopes:
             raise ValueError('Must provide at least one scope')
 
-        self.session = oauth = self.get_session(redirect_uri=redirect_uri,
-                                                scopes=scopes)
+        flow = self._msal_client.initiate_auth_code_flow(scopes=scopes, redirect_uri=redirect_uri)
 
-        # TODO: access_type='offline' has no effect according to documentation
-        #  This is done through scope 'offline_access'.
-        auth_url, state = oauth.authorization_url(
-            url=self._oauth2_authorize_url, access_type='offline', **kwargs)
-
-        return auth_url, state
+        return flow.get('auth_uri'), flow
 
     def request_token(self, authorization_url, *,
                       state=None,
