@@ -2,8 +2,12 @@
 
 Almost every release features a lot of bugfixes but those are not listed here.
 
+## Version 2.0.38 (2024-11-19)
+- Added 'on_premises_sam_account_name' to directory.py (Thanks @danpoltawski)
+- TokenBackend: Added DjangoTokenBackend (Thanks @sdelgadoc)
+
 ## Version 2.0.37 (2024-10-23)
--TokenBackend: Added BitwardenSecretsManagerBackend (Thanks @wnagele)
+- TokenBackend: Added BitwardenSecretsManagerBackend (Thanks @wnagele)
 
 ## Version 2.0.36 (2024-07-04)
 
