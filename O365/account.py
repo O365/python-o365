@@ -73,11 +73,11 @@ class Account:
         Checks whether the library has the authentication and that is not expired.
         Return True if authenticated, False otherwise.
         """
-        token = self.con.token_backend.token
-        if not token:
-            token = self.con.token_backend.get_token()
+        token = self.con.token_backend.access_token
+        if token is None:
+            self.con.token_backend.load_token()
 
-        return token is not None and not token.is_expired
+        return not self.con.token_backend.token_is_expired
 
     def authenticate(self, *, scopes: Optional[list] = None,
                      handle_consent: Callable = consent_input_token, **kwargs) -> bool:
@@ -113,7 +113,7 @@ class Account:
                 else:
                     print('Something go wrong. Please try again.')
 
-                return bool(result)
+                return result
             else:
                 print('Authentication Flow aborted.')
                 return False

@@ -14,10 +14,9 @@ from requests.exceptions import SSLError, Timeout, ConnectionError
 # Dynamic loading of module Retry by requests.packages
 # noinspection PyUnresolvedReferences
 from requests.packages.urllib3.util.retry import Retry
-from requests_oauthlib import OAuth2Session
 from tzlocal import get_localzone
 from zoneinfo import ZoneInfoNotFoundError, ZoneInfo
-from .utils import (ME_RESOURCE, BaseTokenBackend, FileSystemTokenBackend, Token, get_windows_tz, to_camel_case,
+from .utils import (ME_RESOURCE, BaseTokenBackend, FileSystemTokenBackend, get_windows_tz, to_camel_case,
                     to_snake_case, to_pascal_case)
 
 
@@ -574,16 +573,6 @@ class Connection:
         :rtype: bool
         """
 
-        # if self.session is None:
-        #     if self.auth_flow_type in ('authorization', 'public'):
-        #         self.session = self.get_session(state=state,
-        #                                         redirect_uri=redirect_uri)
-        #     elif self.auth_flow_type in ('credentials', 'certificate', 'password'):
-        #         self.session = self.get_session(scopes=scopes)
-        #     else:
-        #         raise ValueError('"auth_flow_type" must be "authorization", "public", "credentials", "password",'
-        #                          ' or "certificate"')
-
         if self.auth_flow_type in ('authorization', 'public'):
             # parse the authorization url to obtain the query string params
             parsed = urlparse(authorization_url)
@@ -609,56 +598,34 @@ class Connection:
             self.token_backend.save_token()
         return True
 
+    def get_session(self, load_token=False):
+        """ Create a requests Session object with the oauth token attached to it
 
-    def get_session(self, *, state=None,
-                    redirect_uri=None,
-                    load_token=False,
-                    scopes=None):
-        """ Create a requests Session object
-
-        :param str state: session-state identifier to rebuild OAuth session (CSRF protection)
-        :param str redirect_uri: callback URL specified in previous requests
-        :param list(str) scopes: list of scopes we require access to
-        :param bool load_token: load and ensure token is present
-        :return: A ready to use requests session, or a rebuilt in-flow session
-        :rtype: OAuth2Session
+        :param bool load_token: load the token from the token backend and load the access token into the session auth
+        :return: A ready to use requests session with authentication header attached
+        :rtype: requests.Session
         """
 
-        redirect_uri = redirect_uri or self.oauth_redirect_url
-
-        client_id = self.auth[0]
-
-        if self.auth_flow_type in ('authorization', 'public'):
-            oauth_client = WebApplicationClient(client_id=client_id)
-        elif self.auth_flow_type == 'credentials':
-            oauth_client = BackendApplicationClient(client_id=client_id)
-        elif self.auth_flow_type == 'password':
-            oauth_client = LegacyApplicationClient(client_id=client_id)
-        else:
-            raise ValueError('"auth_flow_type" must be "authorization", "credentials" or "public"')
-
-        requested_scopes = scopes or self.scopes
-
         if load_token:
-            # gets a fresh token from the store
-            token = self.token_backend.get_token()
-            if token is None:
-                raise RuntimeError('No auth token found. Authentication Flow needed')
+            # loads the token from the token backend
+            self.token_backend.load_token()
 
-            oauth_client.token = token
-            if self.auth_flow_type in ('authorization', 'public', 'password'):
-                requested_scopes = None  # the scopes are already in the token (Not if type is backend)
-            session = OAuth2Session(client_id=client_id,
-                                    client=oauth_client,
-                                    token=token,
-                                    scope=requested_scopes)
+        token = list(self.token_backend.search(
+            self.token_backend.CredentialType.ACCESS_TOKEN,
+            query={'client_id': self.auth[0]}
+        ))
+
+        if len(token) > 0:
+            # get the first result
+            token = token[0]
         else:
-            session = OAuth2Session(client_id=client_id,
-                                    client=oauth_client,
-                                    state=state,
-                                    redirect_uri=redirect_uri,
-                                    scope=requested_scopes)
+            token = None
 
+        if token is None:
+            raise RuntimeError('No auth token found. Authentication Flow needed')
+
+        session = Session()
+        session.headers.update({'Authorization': 'Bearer {}'.format(token['secret'])})
         session.verify = self.verify_ssl
         session.proxies = self.proxy
 
@@ -753,7 +720,7 @@ class Connection:
     def _internal_request(self, request_obj, url, method, **kwargs):
         """ Internal handling of requests. Handles Exceptions.
 
-        :param request_obj: a requests session.
+        :param request_obj: a requests Session instance.
         :param str url: url to send request to
         :param str method: type of request (get/put/post/patch/delete)
         :param kwargs: extra params to send to the request api

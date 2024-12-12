@@ -9,73 +9,50 @@ from msal.token_cache import TokenCache
 
 log = logging.getLogger(__name__)
 
-EXPIRES_ON_THRESHOLD = 1 * 60  # 1 minute
-
-
-class Token(dict):
-    """ A dict subclass with extra methods to resemble a token """
-
-    @property
-    def is_long_lived(self):
-        """
-        Checks whether this token has a refresh token
-        :return bool: True if has a refresh_token
-        """
-        return 'refresh_token' in self
-
-    @property
-    def is_expired(self):
-        """
-        Checks whether this token is expired
-        :return bool: True if the token is expired, False otherwise
-        """
-        return dt.datetime.now() > self.expiration_datetime
-
-    @property
-    def expiration_datetime(self):
-        """
-        Returns the expiration datetime
-        :return datetime: The datetime this token expires
-        """
-        access_expires_at = self.access_expiration_datetime
-        expires_on = access_expires_at - dt.timedelta(seconds=EXPIRES_ON_THRESHOLD)
-        if self.is_long_lived:
-            expires_on = expires_on + dt.timedelta(days=90)
-        return expires_on
-
-    @property
-    def access_expiration_datetime(self):
-        """
-        Returns the token's access expiration datetime
-        :return datetime: The datetime the token's access expires
-        """
-        expires_at = self.get('expires_at')
-        if expires_at:
-            return dt.datetime.fromtimestamp(expires_at)
-        else:
-            # consider the token expired, add 10 second buffer to current dt
-            return dt.datetime.now() - dt.timedelta(seconds=10)
-
-    @property
-    def is_access_expired(self):
-        """
-        Returns whether or not the token's access is expired.
-        :return bool: True if the token's access is expired, False otherwise
-        """
-        return dt.datetime.now() > self.access_expiration_datetime
-
 
 class BaseTokenBackend(TokenCache):
     """ A base token storage class """
 
     serializer = json  # The default serializer is json
-    token_constructor = Token  # the default token constructor
 
     def __init__(self):
         super().__init__()
         self._token = None
         self._has_state_changed = False
         self.cryptography_manager = None
+
+    @property
+    def token_expiration_datetime(self):
+        """
+        Returns the current token expiration datetime
+        If the refresh token is present, then the expiration datetime is extended by 3 months
+        :return dt.datetime or None: The expiration datetime
+        """
+        access_token = self.access_token
+        if access_token is None:
+            return None
+
+        expires_on = access_token.get('expires_on')
+        if expires_on is None:
+            # consider the token expired
+            return None
+        else:
+            expires_on = int(expires_on)
+
+        expiration_datetime = dt.datetime.fromtimestamp(expires_on)
+        if self.refresh_token is not None:
+            # current token is long-lived, add 3 months to the token expiration date
+            expiration_datetime = expiration_datetime + dt.timedelta(days=90)
+
+        return expiration_datetime
+
+    @property
+    def token_is_expired(self):
+        """
+        Checks whether the current token is expired
+        :return bool: True if the token is expired, False otherwise
+        """
+        return dt.datetime.now() > self.token_expiration_datetime
 
     def add(self, event, **kwargs):
         super().add(event, **kwargs)
@@ -118,7 +95,7 @@ class BaseTokenBackend(TokenCache):
         """ Abstract method that will retrieve the token data from the backend """
         raise NotImplementedError
 
-    def save_token(self):
+    def save_token(self, force=False):
         """ Abstract method that will save the token data into the backend """
         raise NotImplementedError
 
@@ -206,18 +183,22 @@ class FileSystemTokenBackend(BaseTokenBackend):
         """
         if self.token_path.exists():
             with self.token_path.open('r') as token_file:
-                self._cache = self.token_constructor(self.deserialize(token_file.read()))
+                self._cache = self.deserialize(token_file.read())
             return True
         return False
 
-    def save_token(self) -> bool:
+    def save_token(self, force=False) -> bool:
         """
         Saves the token cache dict in the specified file
         Will create the folder if it doesn't exist
+        :param bool force: Force save even when state has not changed
         :return bool: Success / Failure
         """
         if not self._cache:
             return False
+
+        if force is False and self._has_state_changed is False:
+            return True
 
         try:
             if not self.token_path.parent.exists():
@@ -269,17 +250,21 @@ class EnvTokenBackend(BaseTokenBackend):
         :return bool: Success / Failure
         """
         if self.token_env_name in os.environ:
-            self._cache = self.token_constructor(self.deserialize(os.environ.get(self.token_env_name)))
+            self._cache = self.deserialize(os.environ.get(self.token_env_name))
             return True
         return False
 
-    def save_token(self) -> bool:
+    def save_token(self, force=False) -> bool:
         """
         Saves the token dict in the specified environmental variable
+        :param bool force: Force save even when state has not changed
         :return bool: Success / Failure
         """
         if not self._cache:
             return False
+
+        if force is False and self._has_state_changed is False:
+            return True
 
         os.environ[self.token_env_name] = self.serialize()
 
@@ -339,17 +324,21 @@ class FirestoreBackend(BaseTokenBackend):
         if doc and doc.exists:
             token_str = doc.get(self.field_name)
             if token_str:
-                self._cache = self.token_constructor(self.deserialize(token_str))
+                self._cache = self.deserialize(token_str)
                 return True
         return False
 
-    def save_token(self) -> bool:
+    def save_token(self, force=False) -> bool:
         """
         Saves the token dict in the store
+        :param bool force: Force save even when state has not changed
         :return bool: Success / Failure
         """
         if not self._cache:
             return False
+
+        if force is False and self._has_state_changed is False:
+            return True
 
         try:
             # set token will overwrite previous data
@@ -416,19 +405,23 @@ class AWSS3Backend(BaseTokenBackend):
         """
         try:
             token_object = self._client.get_object(Bucket=self.bucket_name, Key=self.filename)
-            self._cache = self.token_constructor(self.deserialize(token_object['Body'].read()))
+            self._cache = self.deserialize(token_object['Body'].read())
         except Exception as e:
             log.error("Token ({}) could not be retrieved from the backend: {}".format(self.filename, e))
             return False
         return True
 
-    def save_token(self) -> bool:
+    def save_token(self, force=False) -> bool:
         """
         Saves the token dict in the store
+        :param bool force: Force save even when state has not changed
         :return bool: Success / Failure
         """
         if not self._cache:
             return False
+
+        if force is False and self._has_state_changed is False:
+            return True
 
         token_str = str.encode(self.serialize())
         if self.check_token():  # file already exists
@@ -512,20 +505,24 @@ class AWSSecretsBackend(BaseTokenBackend):
         try:
             get_secret_value_response = self._client.get_secret_value(SecretId=self.secret_name)
             token_str = get_secret_value_response['SecretString']
-            self._cache = self.token_constructor(self.deserialize(token_str))
+            self._cache = self.deserialize(token_str)
         except Exception as e:
             log.error("Token (secret: {}) could not be retrieved from the backend: {}".format(self.secret_name, e))
             return False
 
         return True
 
-    def save_token(self) -> bool:
+    def save_token(self, force=False) -> bool:
         """
         Saves the token dict in the store
+        :param bool force: Force save even when state has not changed
         :return bool: Success / Failure
         """
         if not self._cache:
             return False
+
+        if force is False and self._has_state_changed is False:
+            return True
 
         if self.check_token():  # secret already exists
             try:
@@ -547,7 +544,9 @@ class AWSSecretsBackend(BaseTokenBackend):
                 log.error("Token secret could not be created: {}".format(e))
                 return False
             else:
-                log.warning("\nCreated secret {} ({}). Note: using AWS Secrets Manager incurs charges, please see https://aws.amazon.com/secrets-manager/pricing/ for pricing details.\n".format(r['Name'], r['ARN']))
+                log.warning("\nCreated secret {} ({}). Note: using AWS Secrets Manager incurs charges, "
+                            "please see https://aws.amazon.com/secrets-manager/pricing/ "
+                            "for pricing details.\n".format(r['Name'], r['ARN']))
 
         return True
 
@@ -612,19 +611,26 @@ class BitwardenSecretsManagerBackend(BaseTokenBackend):
         self.secret = resp.data
 
         try:
-            self._cache = self.token_constructor(self.deserialize(self.secret.value))
+            self._cache = self.deserialize(self.secret.value)
             return True
         except:
             logging.warning('Existing token could not be decoded')
             return False
 
-    def save_token(self) -> bool:
+    def save_token(self, force=False) -> bool:
         """
         Saves the token dict in Bitwarden Secrets Manager
+        :param bool force: Force save even when state has not changed
         :return bool: Success / Failure
         """
         if self.secret is None:
             raise ValueError(f'You have to set "self.secret" data first.')
+
+        if not self._cache:
+            return False
+
+        if force is False and self._has_state_changed is False:
+            return True
 
         self.client.secrets().update(
             self.secret.id,
@@ -680,20 +686,24 @@ class DjangoTokenBackend(BaseTokenBackend):
         try:
             # Retrieve the latest token based on the most recently created record
             token_record = self.token_model.objects.latest('created_at')
-            self._cache = self.token_constructor(self.deserialize(token_record.token))
+            self._cache = self.deserialize(token_record.token)
         except Exception as e:
             log.warning(f"No token found in the database, creating a new one: {str(e)}")
             return False
 
         return True
 
-    def save_token(self) -> bool:
+    def save_token(self, force=False) -> bool:
         """
         Saves the token dict in the Django database
+        :param bool force: Force save even when state has not changed
         :return bool: Success / Failure
         """
         if not self._cache:
             return False
+
+        if force is False and self._has_state_changed is False:
+            return True
 
         try:
             # Create a new token record in the database
