@@ -389,9 +389,10 @@ class Connection:
         :param str auth_flow_type: the auth method flow style used: Options:
             - 'authorization': 2 step web style grant flow using an authentication url
             - 'public': 2 step web style grant flow using an authentication url for public apps where
-            client secret cannot be secured
-            - 'credentials': also called client credentials grant flow using only the client id and secret
-            - 'certificate': like credentials, but using the client id and a JWT assertion (obtained from a certificate)
+               client secret cannot be secured
+            - 'credentials': also called client credentials grant flow using only the client id and secret.
+               The secret can be certificate based authentication
+            - 'password': using the username and password. Not recommended
         :param str username: The user's email address to provide in case of auth_flow_type == 'password'
         :param str password: The user's password to provide in case of auth_flow_type == 'password'
         :param float or tuple timeout: How long to wait for the server to send
@@ -412,10 +413,9 @@ class Connection:
                     not credentials[0] and not credentials[1]):
                 raise ValueError('Provide valid auth credentials')
 
-        self._auth_flow_type = auth_flow_type  # 'authorization', 'credentials', 'certificate', 'password', or 'public'
-        if auth_flow_type in ('credentials', 'certificate', 'password') and tenant_id == 'common':
-            raise ValueError('When using the "credentials", "certificate", or "password" auth_flow the "tenant_id" '
-                             'must be set')
+        self._auth_flow_type = auth_flow_type  # 'authorization', 'credentials', 'password', or 'public'
+        if auth_flow_type in ('credentials', 'password') and tenant_id == 'common':
+            raise ValueError('When using the "credentials", or "password" auth_flow the "tenant_id" must be set')
 
         self.tenant_id = tenant_id
         self.auth = credentials
@@ -574,23 +574,41 @@ class Connection:
         :rtype: bool
         """
 
-        # parse the authorization url to obtain the query string params
-        parsed = urlparse(authorization_url)
-        query_params_dict = {k: v[0] for k, v in parse_qs(parsed.query).items()}
+        # if self.session is None:
+        #     if self.auth_flow_type in ('authorization', 'public'):
+        #         self.session = self.get_session(state=state,
+        #                                         redirect_uri=redirect_uri)
+        #     elif self.auth_flow_type in ('credentials', 'certificate', 'password'):
+        #         self.session = self.get_session(scopes=scopes)
+        #     else:
+        #         raise ValueError('"auth_flow_type" must be "authorization", "public", "credentials", "password",'
+        #                          ' or "certificate"')
 
-        result = self.msal_client.acquire_token_by_auth_code_flow(flow, auth_response=query_params_dict)
-        print(result)
+        if self.auth_flow_type in ('authorization', 'public'):
+            # parse the authorization url to obtain the query string params
+            parsed = urlparse(authorization_url)
+            query_params_dict = {k: v[0] for k, v in parse_qs(parsed.query).items()}
+
+            result = self.msal_client.acquire_token_by_auth_code_flow(flow, auth_response=query_params_dict)
+        elif self.auth_flow_type == 'credentials':
+            result = self.msal_client.acquire_token_for_client(scopes=self.scopes)
+        elif self.auth_flow_type == 'password':
+            result = self.msal_client.acquire_token_by_username_password(
+                username=self.username,
+                password=self.password,
+                scopes=self.scopes
+            )
+        else:
+            raise ValueError('"auth_flow_type" must be "authorization", "password", "public" or "credentials"')
+
         if "access_token" not in result:
             log.error('Unable to fetch auth token. Error: {}'.format(result.get("error")))
             return False
-        else:
-            access_token = result["access_token"]
-            # TODO: retrieve token data from results and create a Token object with it
-            # How to pass this Token object into msal again?
-            # if store_token:
-            #     self.token_backend.save_token()
 
-            return True
+        if store_token:
+            self.token_backend.save_token()
+        return True
+
 
     def get_session(self, *, state=None,
                     redirect_uri=None,
@@ -612,7 +630,7 @@ class Connection:
 
         if self.auth_flow_type in ('authorization', 'public'):
             oauth_client = WebApplicationClient(client_id=client_id)
-        elif self.auth_flow_type in ('credentials', 'certificate'):
+        elif self.auth_flow_type == 'credentials':
             oauth_client = BackendApplicationClient(client_id=client_id)
         elif self.auth_flow_type == 'password':
             oauth_client = LegacyApplicationClient(client_id=client_id)
@@ -707,7 +725,7 @@ class Connection:
                         client_id=client_id,
                         verify=self.verify_ssl)
                 )
-            elif self.auth_flow_type in ('credentials', 'certificate'):
+            elif self.auth_flow_type == 'credentials':
                 if self.request_token(None, store_token=False) is False:
                     log.error('Refresh for Client Credentials Grant Flow failed.')
                     return False

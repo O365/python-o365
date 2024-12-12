@@ -161,6 +161,16 @@ When to use one or the other and requirements:
 
 The `Connection` Class handles the authentication.
 
+With auth_flow_type 'credentials' you can authenticate using a certificate based authentication by just passing the client_secret like so:
+
+```python
+client_secret = {
+    "thumbprint": <thumbprint of cert file>,
+    "private_key": <private key from the private_key_file>
+ }
+credentials = client_id, client_secret
+account = Account(credentials)
+```
 
 #### Oauth Authentication
 This section is explained using Microsoft Graph Protocol, almost the same applies to the Office 365 REST API.
