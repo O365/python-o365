@@ -18,6 +18,7 @@ CLASSIFIERS = [
     'Programming Language :: Python :: 3.10',
     'Programming Language :: Python :: 3.11',
     'Programming Language :: Python :: 3.12',
+    'Programming Language :: Python :: 3.13',
     'Operating System :: OS Independent',
 ]
 
@@ -29,7 +30,7 @@ def read(fname):
 
 requires = [
     'requests>=2.32.0',
-    'requests-oauthlib>=2.0.0',
+    'msal>=1.31.1',
     'python-dateutil>=2.7',
     'tzlocal>=5.0',
     'beautifulsoup4>=4.0.0',
@@ -37,9 +38,8 @@ requires = [
 ]
 
 setup(
-    name='O365',
+    name='o365',
     version=VERSION,
-    # packages=['O365', 'O365.utils'],
     packages=find_packages(),
     url='https://github.com/O365/python-o365',
     license='Apache License 2.0',

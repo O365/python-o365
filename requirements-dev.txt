@@ -1,5 +1,5 @@
 requests>=2.31.0
-requests-oauthlib>=2.0.0
+msal>=1.31.1
 python-dateutil>=2.7
 tzlocal>=5.0
 beautifulsoup4>=4.0.0

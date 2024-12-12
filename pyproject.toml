@@ -1,0 +1,14 @@
+[project]
+name = "o365"
+version = "2.0.38"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "beautifulsoup4>=4.12.3",
+    "msal>=1.31.1",
+    "python-dateutil>=2.9.0.post0",
+    "requests>=2.32.3",
+    "tzdata>=2024.2",
+    "tzlocal>=5.2",
+]

@@ -745,7 +745,7 @@ class Connection:
         """
         method = method.lower()
         if method not in self._allowed_methods:
-            raise ValueError('Method must be one of: {}'.format(self._allowed_methods))
+            raise ValueError(f'Method must be one of: {self._allowed_methods}')
 
         if 'headers' not in kwargs:
             kwargs['headers'] = {**self.default_headers}
@@ -769,95 +769,60 @@ class Connection:
         if self.timeout is not None:
             kwargs['timeout'] = self.timeout
 
-        request_done = False
-        token_refreshed = False
+        self._check_delay()  # sleeps if needed
+        try:
+            log.debug(f'Requesting ({method.upper()}) URL: {url}')
+            log.debug(f'Request parameters: {kwargs}')
+            # auto_retry will occur inside this function call if enabled
+            response = request_obj.request(method, url, **kwargs)
 
-        while not request_done:
-            self._check_delay()  # sleeps if needed
+            response.raise_for_status()  # raise 4XX and 5XX error codes.
+            log.debug(f'Received response ({response.status_code}) from URL {response.url}')
+            return response
+        except (ConnectionError, ProxyError, SSLError, Timeout) as e:
+            # We couldn't connect to the target url, raise error
+            log.debug(f'Connection Error calling: {url}.{f"Using proxy {self.proxy}" if self.proxy else ""}')
+            raise e  # re-raise exception
+        except HTTPError as e:
+            # Server response with 4XX or 5XX error status codes
+            if e.response.status_code == 401 and self._token_expired_flag is False:
+                # This could be a token expired error.
+                if self.token_backend.token_is_expired():
+                    log.debug('Oauth Token is expired')
+                    # Token has expired, try to refresh the token and try again on the next loop
+                    self._token_expired_flag = True
+                    raise TokenExpiredError('Oauth Token is expired')
+
+            # try to extract the error message:
             try:
-                log.debug('Requesting ({}) URL: {}'.format(method.upper(), url))
-                log.debug('Request parameters: {}'.format(kwargs))
-                # auto_retry will occur inside this function call if enabled
-                response = request_obj.request(method, url, **kwargs)
-                response.raise_for_status()  # raise 4XX and 5XX error codes.
-                log.debug('Received response ({}) from URL {}'.format(
-                    response.status_code, response.url))
-                request_done = True
-                return response
-            except (ConnectionError, ProxyError, SSLError, Timeout) as e:
-                # We couldn't connect to the target url, raise error
-                log.debug('Connection Error calling: {}.{}'
-                          ''.format(url, ('Using proxy: {}'.format(self.proxy)
-                                          if self.proxy else '')))
-                raise e  # re-raise exception
-            except TokenExpiredError as e:
-                # Token has expired, try to refresh the token and try again on the next loop
-                log.debug('Oauth Token is expired')
-                if self.token_backend.token.is_long_lived is False and self.auth_flow_type == 'authorization':
+                error = e.response.json()
+                error_message = error.get('error', {}).get('message', '')
+                error_code = (
+                    error.get("error", {}).get("innerError", {}).get("code", "")
+                )
+            except ValueError:
+                error_message = ''
+                error_code = ''
+
+            status_code = int(e.response.status_code / 100)
+            if status_code == 4:
+                # Client Error
+                # Logged as error. Could be a library error or Api changes
+                log.error(f'Client Error: {e} | Error Message: {error_message} | Error Code: {error_code}')
+            else:
+                # Server Error
+                log.debug(f'Server Error: {e}')
+            if self.raise_http_errors:
+                if error_message:
+                    raise HTTPError(f'{e.args[0]} | Error Message: {error_message}', response=e.response) from None
+                else:
                     raise e
-                if token_refreshed:
-                    # Refresh token done but still TokenExpiredError raise
-                    raise RuntimeError('Token Refresh Operation not working')
-                should_rt = self.token_backend.should_refresh_token(self)
-                if should_rt is True:
-                    # The backend has checked that we can refresh the token
-                    if self.refresh_token() is False:
-                        raise RuntimeError('Token Refresh Operation not working')
-                    token_refreshed = True
-                elif should_rt is False:
-                    # the token was refreshed by another instance and updated into
-                    # this instance, so: update the session token and
-                    # go back to the loop and try the request again.
-                    request_obj.token = self.token_backend.token
-                else:
-                    # the refresh was performed by the tokend backend.
-                    token_refreshed = True
-            except HTTPError as e:
-                # Server response with 4XX or 5XX error status codes
-
-                if e.response.status_code == 401 and self._token_expired_flag is False:
-                    # This could be a token expired error.
-                    if self.token_backend.token_is_expired():
-                        log.debug('Oauth Token is expired')
-                        # Token has expired, try to refresh the token and try again on the next loop
-                        if self.token_backend.token_is_long_lived is False and self.auth_flow_type == 'authorization':
-                            raise e
-
-                # try to extract the error message:
-                try:
-                    error = response.json()
-                    error_message = error.get('error', {}).get('message', '')
-                    error_code = (
-                        error.get("error", {}).get("innerError", {}).get("code", "")
-                    )
-                except ValueError:
-                    error_message = ''
-                    error_code = ''
-
-                status_code = int(e.response.status_code / 100)
-                if status_code == 4:
-                    # Client Error
-                    # Logged as error. Could be a library error or Api changes
-                    log.error(
-                        "Client Error: {} | Error Message: {} | Error Code: {}".format(
-                            str(e), error_message, error_code
-                        )
-                    )
-                else:
-                    # Server Error
-                    log.debug('Server Error: {}'.format(str(e)))
-                if self.raise_http_errors:
-                    if error_message:
-                        raise HTTPError('{} | Error Message: {}'.format(e.args[0], error_message),
-                                        response=response) from None
-                    else:
-                        raise e
-                else:
-                    return e.response
-            except RequestException as e:
-                # catch any other exception raised by requests
-                log.debug('Request Exception: {}'.format(str(e)))
-                raise e
+            else:
+                return e.response
+        except RequestException as e:
+            # catch any other exception raised by requests
+            log.debug(f'Request Exception: {e}')
+            raise e
 
     def naive_request(self, url, method, **kwargs):
         """ Makes a request to url using an without oauth authorization
@@ -872,6 +837,7 @@ class Connection:
         if self.naive_session is None:
             # lazy creation of a naive session
             self.naive_session = self.get_naive_session()
+
         return self._internal_request(self.naive_session, url, method, **kwargs)
 
     def oauth_request(self, url, method, **kwargs):
@@ -889,10 +855,15 @@ class Connection:
 
         try:
             return self._internal_request(self.session, url, method, **kwargs)
-        except TokenExpiredError:
+        except TokenExpiredError as e:
             # refresh and try again the request!
-            self.refresh_token()
-            return self._internal_request(self.session, url, method, **kwargs)
+            try:
+                if self.refresh_token():
+                    return self._internal_request(self.session, url, method, **kwargs)
+                else:
+                    raise e
+            finally:
+                self._token_expired_flag = False
 
     def get(self, url, params=None, **kwargs):
         """ Shorthand for self.oauth_request(url, 'get')
