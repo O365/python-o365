@@ -6,7 +6,6 @@ from typing import Optional, Callable, Union
 from urllib.parse import urlparse, parse_qs
 
 from msal import ConfidentialClientApplication, PublicClientApplication
-from oauthlib.oauth2 import TokenExpiredError, WebApplicationClient, BackendApplicationClient, LegacyApplicationClient
 from requests import Session
 from requests.adapters import HTTPAdapter
 from requests.exceptions import HTTPError, RequestException, ProxyError
@@ -60,6 +59,10 @@ DEFAULT_SCOPES = {
     'tasks_all': ['Tasks.ReadWrite'],
     'presence': ['Presence.Read']
 }
+
+
+class TokenExpiredError(HTTPError):
+    pass
 
 
 class Protocol:
@@ -359,6 +362,7 @@ class Connection:
                  timeout=None, json_encoder=None,
                  verify_ssl=True,
                  default_headers: dict = None,
+                 store_token_after_refresh: bool = True,
                  **kwargs):
         """ Creates an API connection object
 
@@ -398,6 +402,7 @@ class Connection:
             data before giving up, as a float, or a tuple (connect timeout, read timeout)
         :param JSONEncoder json_encoder: The JSONEncoder to use during the JSON serialization on the request.
         :param bool verify_ssl: set the verify flag on the requests library
+        :param bool store_token_after_refresh: if after a token refresh the token backend should call save_token
         :param dict kwargs: any extra params passed to Connection
         :raises ValueError: if credentials is not tuple of
          (client_id, client_secret)
@@ -422,12 +427,13 @@ class Connection:
         self.password = password
         self.scopes = scopes
         self.default_headers = default_headers or dict()
-        self.store_token = True
+        self.store_token_after_refresh: bool = store_token_after_refresh
+
         token_backend = token_backend or FileSystemTokenBackend(**kwargs)
         if not isinstance(token_backend, BaseTokenBackend):
             raise ValueError('"token_backend" must be an instance of a subclass of BaseTokenBackend')
         self.token_backend = token_backend
-        self.session = None  # requests Oauth2Session object
+        self.session = None  # requests Session object
 
         self.proxy = {}
         self.set_proxy(proxy_server, proxy_port, proxy_username, proxy_password, proxy_http_only)
@@ -436,8 +442,8 @@ class Connection:
         self.raise_http_errors = raise_http_errors
         self.request_retries = request_retries
         self.timeout = timeout
-        self.json_encoder = json_encoder
         self.verify_ssl = verify_ssl
+        self.json_encoder = json_encoder
 
         self.naive_session = None  # lazy loaded: holds a requests Session object
 
@@ -448,6 +454,14 @@ class Connection:
         self._oauth2_token_url = 'https://login.microsoftonline.com/' \
                                  '{}/oauth2/v2.0/token'.format(tenant_id)
         self.oauth_redirect_url = 'https://login.microsoftonline.com/common/oauth2/nativeclient'
+
+        # In the event of a response that returned 401 unauthorised this will flag between requests
+        # that this 401 can be a token expired error. MsGraph is returning 401 when the access token
+        # has expired. We can not distinguish between a real 401 or token expired 401. So in the event
+        # of a 401 http error we will first try to refresh the token, set this flag to True and then
+        # re-run the request. If the 401 goes away we will then set this flag to false. If it keeps the
+        # 401 then we will raise the error.
+        self._token_expired_flag = False
 
     @property
     def auth_flow_type(self):
@@ -658,7 +672,7 @@ class Connection:
 
         return naive_session
 
-    def refresh_token(self):
+    def refresh_token(self) -> bool:
         """
         Refresh the OAuth authorization token.
         This will be called automatically when the access token
@@ -669,40 +683,42 @@ class Connection:
         if self.session is None:
             self.session = self.get_session(load_token=True)
 
-        token = self.token_backend.token
-        if not token:
-            raise RuntimeError('Token not found.')
+        if self.token_backend.access_token is None:
+            raise RuntimeError('Access Token not found.')
 
-        if token.is_long_lived or self.auth_flow_type == 'credentials':
-            log.debug('Refreshing token')
-            if self.auth_flow_type == 'authorization':
-                client_id, client_secret = self.auth
-                self.token_backend.token = Token(
-                    self.session.refresh_token(
-                        self._oauth2_token_url,
-                        client_id=client_id,
-                        client_secret=client_secret,
-                        verify=self.verify_ssl)
+        token_refreshed = False
+
+        if self.token_backend.token_is_long_lived or self.auth_flow_type == 'credentials':
+            should_rt = self.token_backend.should_refresh_token(self)
+            if should_rt is True:
+                # The backend has checked that we can refresh the token
+                log.debug('Refreshing access token')
+                result = self.msal_client.acquire_token_silent_with_error(
+                    scopes=self.scopes,
+                    account=self.msal_client.get_accounts()[0]
                 )
-            elif self.auth_flow_type in ('public', 'password'):
-                client_id = self.auth[0]
-                self.token_backend.token = Token(
-                    self.session.refresh_token(
-                        self._oauth2_token_url,
-                        client_id=client_id,
-                        verify=self.verify_ssl)
-                )
-            elif self.auth_flow_type == 'credentials':
-                if self.request_token(None, store_token=False) is False:
-                    log.error('Refresh for Client Credentials Grant Flow failed.')
-                    return False
-            log.debug('New oauth token fetched by refresh method')
+                token_refreshed = True
+                if result is None:
+                    raise RuntimeError('There is no access token to refresh')
+                elif 'error' in result:
+                    raise RuntimeError(f'Refresh token operation failed: {result["error"]}')
+                elif 'access_token' in result:
+                    # refresh done, update authorization header
+                    self.session.headers.update({'Authorization': 'Bearer {}'.format(result['access_token'])})
+                    log.debug('New oauth token fetched by refresh method')
+            elif should_rt is False:
+                # the token was refreshed by another instance and updated into this instance,
+                # so: update the session token and retry the request again
+                self.session.headers.update({'Authorization': f'Bearer {self.token_backend.access_token["secret"]}'})
+            else:
+                # the refresh was performed by the token backend.
+                pass
         else:
             log.error('You can not refresh an access token that has no "refresh_token" available.'
                       'Include "offline_access" scope when authenticating to get a "refresh_token"')
             return False
 
-        if self.store_token:
+        if token_refreshed and self.store_token_after_refresh:
             self.token_backend.save_token()
         return True
 
@@ -753,8 +769,6 @@ class Connection:
         if self.timeout is not None:
             kwargs['timeout'] = self.timeout
 
-        kwargs.setdefault("verify", self.verify_ssl)
-
         request_done = False
         token_refreshed = False
 
@@ -770,6 +784,12 @@ class Connection:
                     response.status_code, response.url))
                 request_done = True
                 return response
+            except (ConnectionError, ProxyError, SSLError, Timeout) as e:
+                # We couldn't connect to the target url, raise error
+                log.debug('Connection Error calling: {}.{}'
+                          ''.format(url, ('Using proxy: {}'.format(self.proxy)
+                                          if self.proxy else '')))
+                raise e  # re-raise exception
             except TokenExpiredError as e:
                 # Token has expired, try to refresh the token and try again on the next loop
                 log.debug('Oauth Token is expired')
@@ -792,15 +812,16 @@ class Connection:
                 else:
                     # the refresh was performed by the tokend backend.
                     token_refreshed = True
-
-            except (ConnectionError, ProxyError, SSLError, Timeout) as e:
-                # We couldn't connect to the target url, raise error
-                log.debug('Connection Error calling: {}.{}'
-                          ''.format(url, ('Using proxy: {}'.format(self.proxy)
-                                          if self.proxy else '')))
-                raise e  # re-raise exception
             except HTTPError as e:
                 # Server response with 4XX or 5XX error status codes
+
+                if e.response.status_code == 401 and self._token_expired_flag is False:
+                    # This could be a token expired error.
+                    if self.token_backend.token_is_expired():
+                        log.debug('Oauth Token is expired')
+                        # Token has expired, try to refresh the token and try again on the next loop
+                        if self.token_backend.token_is_long_lived is False and self.auth_flow_type == 'authorization':
+                            raise e
 
                 # try to extract the error message:
                 try:
@@ -866,7 +887,12 @@ class Connection:
         if self.session is None:
             self.session = self.get_session(load_token=True)
 
-        return self._internal_request(self.session, url, method, **kwargs)
+        try:
+            return self._internal_request(self.session, url, method, **kwargs)
+        except TokenExpiredError:
+            # refresh and try again the request!
+            self.refresh_token()
+            return self._internal_request(self.session, url, method, **kwargs)
 
     def get(self, url, params=None, **kwargs):
         """ Shorthand for self.oauth_request(url, 'get')

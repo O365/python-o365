@@ -21,11 +21,11 @@ class BaseTokenBackend(TokenCache):
         self._has_state_changed = False
         self.cryptography_manager = None
 
-    @property
-    def token_expiration_datetime(self):
+    def token_expiration_datetime(self, refresh_token=False):
         """
         Returns the current token expiration datetime
         If the refresh token is present, then the expiration datetime is extended by 3 months
+        :param bool refresh_token: if true will check for the refresh token and return its expiration datetime
         :return dt.datetime or None: The expiration datetime
         """
         access_token = self.access_token
@@ -40,19 +40,24 @@ class BaseTokenBackend(TokenCache):
             expires_on = int(expires_on)
 
         expiration_datetime = dt.datetime.fromtimestamp(expires_on)
-        if self.refresh_token is not None:
+        if refresh_token is True and self.token_is_long_lived:
             # current token is long-lived, add 3 months to the token expiration date
             expiration_datetime = expiration_datetime + dt.timedelta(days=90)
 
         return expiration_datetime
 
-    @property
-    def token_is_expired(self):
+    def token_is_expired(self, refresh_token=False):
         """
         Checks whether the current token is expired
+        :param bool refresh_token: if true will check for the refresh token and return its expiration datetime
         :return bool: True if the token is expired, False otherwise
         """
-        return dt.datetime.now() > self.token_expiration_datetime
+        return dt.datetime.now() > self.token_expiration_datetime(refresh_token=refresh_token)
+
+    @property
+    def token_is_long_lived(self):
+        """ Returns if the token has a refresh token """
+        return self.refresh_token is not None
 
     def add(self, event, **kwargs):
         super().add(event, **kwargs)

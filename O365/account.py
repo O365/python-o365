@@ -77,7 +77,7 @@ class Account:
         if token is None:
             self.con.token_backend.load_token()
 
-        return not self.con.token_backend.token_is_expired
+        return not self.con.token_backend.token_is_expired(refresh_token=True)
 
     def authenticate(self, *, scopes: Optional[list] = None,
                      handle_consent: Callable = consent_input_token, **kwargs) -> bool:
