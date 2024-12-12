@@ -103,12 +103,12 @@ class Account:
                 if self.con.scopes is None:
                     raise ValueError('The scopes are not set. Define the scopes requested.')
 
-            consent_url, _ = self.con.get_authorization_url(**kwargs)
+            consent_url, flow = self.con.get_authorization_url(**kwargs)
 
             token_url = handle_consent(consent_url)
 
             if token_url:
-                result = self.con.request_token(token_url, **kwargs)  # no need to pass state as the session is the same
+                result = self.con.request_token(token_url, flow=flow, **kwargs)
                 if result:
                     print('Authentication Flow Completed. Oauth Access Token Stored. You can now use the API.')
                 else:

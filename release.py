@@ -39,8 +39,7 @@ def build(force):
             sys.exit(1)
 
     subprocess.check_call(['python', 'setup.py', 'bdist_wheel'])
-    subprocess.check_call(['python', 'setup.py', 'sdist',
-                           '--formats=gztar'])
+    subprocess.check_call(['python', 'setup.py', 'sdist', '--formats=gztar'])
 
 
 @cli.command()

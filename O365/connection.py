@@ -487,15 +487,16 @@ class Connection:
     @property
     def msal_client(self):
         """ Returns the msal client or creates it if it's not already done """
-        if self.auth_flow_type == 'public':
-            client = PublicClientApplication(client_id=self.auth[0], authority=self._msal_authority)
-        elif self.auth_flow_type in ('authorization', 'credentials'):
-            client = ConfidentialClientApplication(client_id=self.auth[0], client_credential=self.auth[1],
-                                                   authority=self._msal_authority)
-        else:
-            raise ValueError('"auth_flow_type" must be "authorization", "public" or "credentials"')
-        self._msal_client = client
-        return client
+        if self._msal_client is None:
+            if self.auth_flow_type == 'public':
+                client = PublicClientApplication(client_id=self.auth[0], authority=self._msal_authority)
+            elif self.auth_flow_type in ('authorization', 'credentials'):
+                client = ConfidentialClientApplication(client_id=self.auth[0], client_credential=self.auth[1],
+                                                       authority=self._msal_authority)
+            else:
+                raise ValueError('"auth_flow_type" must be "authorization", "public" or "credentials"')
+            self._msal_client = client
+        return self._msal_client
 
     def get_token_with_msal_simple(self, requested_scopes=None):
         """ Gets the token using"""
@@ -544,7 +545,7 @@ class Connection:
         if not scopes:
             raise ValueError('Must provide at least one scope')
 
-        flow = self._msal_client.initiate_auth_code_flow(scopes=scopes, redirect_uri=redirect_uri)
+        flow = self.msal_client.initiate_auth_code_flow(scopes=scopes, redirect_uri=redirect_uri)
 
         return flow.get('auth_uri'), flow
 
@@ -569,8 +570,8 @@ class Connection:
         parsed = urlparse(authorization_url)
         query_params_dict = {k: v[0] for k, v in parse_qs(parsed.query).items()}
 
-        result = self._msal_client.acquire_token_by_auth_code_flow(flow, auth_response=query_params_dict)
-
+        result = self.msal_client.acquire_token_by_auth_code_flow(flow, auth_response=query_params_dict)
+        print(result)
         if "access_token" not in result:
             log.error('Unable to fetch auth token. Error: {}'.format(result.get("error")))
             return False
@@ -578,8 +579,8 @@ class Connection:
             access_token = result["access_token"]
             # TODO: retrieve token data from results and create a Token object with it
             # How to pass this Token object into msal again?
-            if store_token:
-                self.token_backend.save_token()
+            # if store_token:
+            #     self.token_backend.save_token()
 
             return True
 
