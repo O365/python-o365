@@ -489,27 +489,35 @@ class Connection:
         """ Returns the msal client or creates it if it's not already done """
         if self._msal_client is None:
             if self.auth_flow_type == 'public':
-                client = PublicClientApplication(client_id=self.auth[0], authority=self._msal_authority)
+                client = PublicClientApplication(client_id=self.auth[0],
+                                                 authority=self._msal_authority,
+                                                 token_cache=self.token_backend)
             elif self.auth_flow_type in ('authorization', 'credentials'):
-                client = ConfidentialClientApplication(client_id=self.auth[0], client_credential=self.auth[1],
-                                                       authority=self._msal_authority)
+                client = ConfidentialClientApplication(client_id=self.auth[0],
+                                                       client_credential=self.auth[1],
+                                                       authority=self._msal_authority,
+                                                       token_cache=self.token_backend)
             else:
                 raise ValueError('"auth_flow_type" must be "authorization", "public" or "credentials"')
             self._msal_client = client
         return self._msal_client
 
     def get_token_with_msal_simple(self, requested_scopes=None):
-        """ Gets the token using"""
+        """ TEST remove before releaseGets the token using msal"""
 
         requested_scopes = requested_scopes or self.scopes
 
         if self.auth_flow_type == 'public':
-            client = PublicClientApplication(client_id=self.auth[0], authority=self._msal_authority)
+            client = PublicClientApplication(client_id=self.auth[0],
+                                             authority=self._msal_authority,
+                                             token_cache=self.token_backend)
             result = client.acquire_token_interactive(scopes=requested_scopes)
             return result
         elif self.auth_flow_type == 'authorization':
-            client = ConfidentialClientApplication(client_id=self.auth[0], client_credential=self.auth[1],
-                                                   authority=self._msal_authority)
+            client = ConfidentialClientApplication(client_id=self.auth[0],
+                                                   client_credential=self.auth[1],
+                                                   authority=self._msal_authority,
+                                                   token_cache=self.token_backend)
             # using authorization code flow
             flow = client.initiate_auth_code_flow(scopes=requested_scopes, redirect_uri=self.oauth_redirect_url)
             auth_url = flow.get("auth_uri")
@@ -557,8 +565,8 @@ class Connection:
         token for future based if requested
 
         :param str or None authorization_url: url given by the authorization flow
-        :param str flow: dict object holding the data used in get_authorization_url
-        :param bool store_token: True to store the token in the token backend
+        :param dict flow: dict object holding the data used in get_authorization_url
+        :param bool store_token: True to store the token in the token backend,
          so you don't have to keep opening the auth link and
          authenticating every time
         :param kwargs: allow to pass unused params in conjunction with Connection
