@@ -152,7 +152,7 @@ class LockableFileSystemTokenBackend(FileSystemTokenBackend):
                     with Lock(self.token_path, 'r+',
                               fail_when_locked=True, timeout=0):
                         log.debug('Locked oauth token file')
-                        if con.refresh_token() is False:
+                        if con.get_refresh_token() is False:
                             raise RuntimeError('Token Refresh Operation not '
                                                'working')
                         log.info('New oauth token fetched')

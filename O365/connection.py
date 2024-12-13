@@ -1,10 +1,10 @@
 import json
 import logging
 import time
-from typing import Optional, Callable, Union
+from typing import Optional, Callable, Union, Tuple, List, Dict
 from urllib.parse import urlparse, parse_qs
 
-from msal import ConfidentialClientApplication, PublicClientApplication
+from msal import ConfidentialClientApplication, PublicClientApplication, ClientApplication as BaseMsalClientApplication
 from requests import Session
 from requests.adapters import HTTPAdapter
 from requests.exceptions import HTTPError, RequestException, ProxyError
@@ -351,17 +351,18 @@ class Connection:
 
     _allowed_methods = ['get', 'post', 'put', 'patch', 'delete']
 
-    def __init__(self, credentials, *, scopes=None,
-                 proxy_server=None, proxy_port=8080, proxy_username=None,
-                 proxy_password=None, proxy_http_only=False, requests_delay=200, raise_http_errors=True,
-                 request_retries=3, token_backend=None,
-                 tenant_id='common',
-                 auth_flow_type='authorization',
-                 username=None, password=None,
-                 timeout=None, json_encoder=None,
-                 verify_ssl=True,
+    def __init__(self, credentials: Tuple, *, scopes: Optional[List[str]] = None,
+                 proxy_server: Optional[str] = None, proxy_port: Optional[int] = 8080,
+                 proxy_username: Optional[str] = None, proxy_password: Optional[str] = None,
+                 proxy_http_only: bool = False, requests_delay: int = 200, raise_http_errors: bool = True,
+                 request_retries: int = 3, token_backend: Optional[BaseTokenBackend] = None,
+                 tenant_id: str = 'common', auth_flow_type: str = 'authorization',
+                 username: Optional[str] = None, password: Optional[str] = None,
+                 timeout: Optional[int] = None, json_encoder: Optional[json.JSONEncoder] = None,
+                 verify_ssl: bool = True,
                  default_headers: dict = None,
                  store_token_after_refresh: bool = True,
+                 current_username: Optional[str] = None,
                  **kwargs):
         """ Creates an API connection object
 
@@ -389,8 +390,8 @@ class Connection:
         :param dict default_headers: allow to force headers in api call
         (ex: default_headers={"Prefer": 'IdType="ImmutableId"'}) to get constant id for objects.
         :param str auth_flow_type: the auth method flow style used: Options:
-            - 'authorization': 2 step web style grant flow using an authentication url
-            - 'public': 2 step web style grant flow using an authentication url for public apps where
+            - 'authorization': 2-step web style grant flow using an authentication url
+            - 'public': 2-step web style grant flow using an authentication url for public apps where
                client secret cannot be secured
             - 'credentials': also called client credentials grant flow using only the client id and secret.
                The secret can be certificate based authentication
@@ -402,9 +403,11 @@ class Connection:
         :param JSONEncoder json_encoder: The JSONEncoder to use during the JSON serialization on the request.
         :param bool verify_ssl: set the verify flag on the requests library
         :param bool store_token_after_refresh: if after a token refresh the token backend should call save_token
+        :param str current_username: the current username the credentials will be taken from in the token backend.
+            If None, the current_username will be the first one found un the token backend. Only for auth_flow_type
+            authorization or public.
         :param dict kwargs: any extra params passed to Connection
-        :raises ValueError: if credentials is not tuple of
-         (client_id, client_secret)
+        :raises ValueError: if credentials is not tuple of (client_id, client_secret)
         """
         if auth_flow_type in ('public', 'password'):  # allow client id only for public or password flow
             if isinstance(credentials, str):
@@ -420,39 +423,41 @@ class Connection:
         if auth_flow_type in ('credentials', 'password') and tenant_id == 'common':
             raise ValueError('When using the "credentials", or "password" auth_flow the "tenant_id" must be set')
 
-        self.tenant_id = tenant_id
-        self.auth = credentials
-        self.username = username
-        self.password = password
-        self.scopes = scopes
-        self.default_headers = default_headers or dict()
+        self.auth: Tuple = credentials
+        self.scopes: Optional[List[str]] = scopes
+        self.tenant_id: str = tenant_id
+
+        self.username: Optional[str] = username
+        self.password: Optional[str] = password
+
+        self._current_username: Optional[str] = None
+        self.current_username: Optional[str] = current_username  # validate input
+
+        self.default_headers: Dict = default_headers or dict()
         self.store_token_after_refresh: bool = store_token_after_refresh
 
         token_backend = token_backend or FileSystemTokenBackend(**kwargs)
         if not isinstance(token_backend, BaseTokenBackend):
             raise ValueError('"token_backend" must be an instance of a subclass of BaseTokenBackend')
-        self.token_backend = token_backend
-        self.session = None  # requests Session object
+        self.token_backend: BaseTokenBackend = token_backend
+        self.session: Optional[Session] = None
 
-        self.proxy = {}
+        self.proxy: Dict = {}
         self.set_proxy(proxy_server, proxy_port, proxy_username, proxy_password, proxy_http_only)
-        self.requests_delay = requests_delay or 0
-        self._previous_request_at = None  # store previous request time
-        self.raise_http_errors = raise_http_errors
-        self.request_retries = request_retries
-        self.timeout = timeout
-        self.verify_ssl = verify_ssl
-        self.json_encoder = json_encoder
 
-        self.naive_session = None  # lazy loaded: holds a requests Session object
+        self.requests_delay: int = requests_delay or 0
+        self._previous_request_at: Optional[float] = None  # store previous request time
+        self.raise_http_errors: bool = raise_http_errors
+        self.request_retries: int = request_retries
+        self.timeout: int = timeout
+        self.verify_ssl: bool = verify_ssl
+        self.json_encoder: Optional[json.JSONEncoder] = json_encoder
 
-        self._msal_client = None  # store the msal client
-        self._msal_authority = 'https://login.microsoftonline.com/{}'.format(tenant_id)
-        self._oauth2_authorize_url = 'https://login.microsoftonline.com/' \
-                                     '{}/oauth2/v2.0/authorize'.format(tenant_id)
-        self._oauth2_token_url = 'https://login.microsoftonline.com/' \
-                                 '{}/oauth2/v2.0/token'.format(tenant_id)
-        self.oauth_redirect_url = 'https://login.microsoftonline.com/common/oauth2/nativeclient'
+        self.naive_session: Optional[Session] = None  # lazy loaded: holds a requests Session object
+
+        self._msal_client: Optional[BaseMsalClientApplication] = None  # store the msal client
+        self._msal_authority: str = f'https://login.microsoftonline.com/{tenant_id}'
+        self.oauth_redirect_url: str = 'https://login.microsoftonline.com/common/oauth2/nativeclient'
 
         # In the event of a response that returned 401 unauthorised this will flag between requests
         # that this 401 can be a token expired error. MsGraph is returning 401 when the access token
@@ -460,11 +465,32 @@ class Connection:
         # of a 401 http error we will first try to refresh the token, set this flag to True and then
         # re-run the request. If the 401 goes away we will then set this flag to false. If it keeps the
         # 401 then we will raise the error.
-        self._token_expired_flag = False
+        self._token_expired_flag: bool = False
 
     @property
-    def auth_flow_type(self):
+    def auth_flow_type(self) -> str:
         return self._auth_flow_type
+
+    @property
+    def current_username(self) -> Optional[str]:
+        account = self.token_backend.get_account(username=self._current_username)
+        if account:
+            return account['username']
+        else:
+            return None
+
+    @current_username.setter
+    def current_username(self, current_username: Optional[str]) -> None:
+        if self._current_username == current_username:
+            return
+        self._current_username = current_username
+
+        # if the user is changed and a valid session is set we must change the auth token in the session
+        if self.session is not None:
+            access_token = self.token_backend.get_access_token(username=current_username)
+            if access_token is None:
+                raise ValueError(f'No access token found for user: {current_username}')
+            self.session.headers.update({'Authorization': f'Bearer {access_token}'})
 
     def set_proxy(self, proxy_server: str, proxy_port: int,
                   proxy_username: str, proxy_password: str, proxy_http_only: bool):
@@ -501,7 +527,7 @@ class Connection:
     def msal_client(self):
         """ Returns the msal client or creates it if it's not already done """
         if self._msal_client is None:
-            if self.auth_flow_type == 'public':
+            if self.auth_flow_type in ('public', 'password'):
                 client = PublicClientApplication(client_id=self.auth[0],
                                                  authority=self._msal_authority,
                                                  token_cache=self.token_backend)
@@ -515,42 +541,8 @@ class Connection:
             self._msal_client = client
         return self._msal_client
 
-    def get_token_with_msal_simple(self, requested_scopes=None):
-        """ TEST remove before releaseGets the token using msal"""
-
-        requested_scopes = requested_scopes or self.scopes
-
-        if self.auth_flow_type == 'public':
-            client = PublicClientApplication(client_id=self.auth[0],
-                                             authority=self._msal_authority,
-                                             token_cache=self.token_backend)
-            result = client.acquire_token_interactive(scopes=requested_scopes)
-            return result
-        elif self.auth_flow_type == 'authorization':
-            client = ConfidentialClientApplication(client_id=self.auth[0],
-                                                   client_credential=self.auth[1],
-                                                   authority=self._msal_authority,
-                                                   token_cache=self.token_backend)
-            # using authorization code flow
-            flow = client.initiate_auth_code_flow(scopes=requested_scopes, redirect_uri=self.oauth_redirect_url)
-            auth_url = flow.get("auth_uri")
-            if auth_url:
-                print('Visit the following url to give consent:')
-                print(auth_url)
-
-                response = input('Paste the authenticated url here:\n')
-
-                parsed = urlparse(response)
-                auth_response = {k: v[0] for k, v in parse_qs(parsed.query).items()}
-
-                result = client.acquire_token_by_auth_code_flow(flow, auth_response=auth_response)
-                return result
-
-        elif self.auth_flow_type == 'credentials':
-            pass
-
     def get_authorization_url(self, requested_scopes=None,
-                              redirect_uri=None, **kwargs):
+                              redirect_uri=None, **kwargs) -> Tuple[str, dict]:
         """ Initializes the oauth authorization flow, getting the
         authorization url that the user must approve.
 
@@ -620,26 +612,16 @@ class Connection:
         :rtype: requests.Session
         """
 
-        if load_token:
+        if load_token and not self.token_backend.has_data:
             # loads the token from the token backend
             self.token_backend.load_token()
 
-        token = list(self.token_backend.search(
-            self.token_backend.CredentialType.ACCESS_TOKEN,
-            query={'client_id': self.auth[0]}
-        ))
-
-        if len(token) > 0:
-            # get the first result
-            token = token[0]
-        else:
-            token = None
-
+        token = self.token_backend.get_access_token(username=self.current_username)
         if token is None:
             raise RuntimeError('No auth token found. Authentication Flow needed')
 
         session = Session()
-        session.headers.update({'Authorization': 'Bearer {}'.format(token['secret'])})
+        session.headers.update({'Authorization': f'Bearer {token["secret"]}'})
         session.verify = self.verify_ssl
         session.proxies = self.proxy
 
@@ -683,33 +665,39 @@ class Connection:
         if self.session is None:
             self.session = self.get_session(load_token=True)
 
-        if self.token_backend.access_token is None:
-            raise RuntimeError('Access Token not found.')
+        if self.token_backend.get_access_token(username=self.current_username) is None:
+            raise RuntimeError('Access Token not found. You will need to re-authenticate.')
 
         token_refreshed = False
 
-        if self.token_backend.token_is_long_lived or self.auth_flow_type == 'credentials':
+        if (self.token_backend.token_is_long_lived(username=self.current_username) or
+                self.auth_flow_type == 'credentials'):
+
             should_rt = self.token_backend.should_refresh_token(self)
             if should_rt is True:
                 # The backend has checked that we can refresh the token
                 log.debug('Refreshing access token')
                 result = self.msal_client.acquire_token_silent_with_error(
                     scopes=self.scopes,
-                    account=self.msal_client.get_accounts()[0]
+                    account=self.msal_client.get_accounts(username=self.current_username)[0]
                 )
-                token_refreshed = True
                 if result is None:
                     raise RuntimeError('There is no access token to refresh')
                 elif 'error' in result:
                     raise RuntimeError(f'Refresh token operation failed: {result["error"]}')
                 elif 'access_token' in result:
                     # refresh done, update authorization header
-                    self.session.headers.update({'Authorization': 'Bearer {}'.format(result['access_token'])})
-                    log.debug('New oauth token fetched by refresh method')
+                    token_refreshed = True
+                    self.session.headers.update({'Authorization': f'Bearer {result["access_token"]}'})
+                    log.debug(f'New oauth token fetched by refresh method for username: {self.current_username}')
             elif should_rt is False:
                 # the token was refreshed by another instance and updated into this instance,
                 # so: update the session token and retry the request again
-                self.session.headers.update({'Authorization': f'Bearer {self.token_backend.access_token["secret"]}'})
+                access_token = self.token_backend.get_access_token(username=self.current_username)
+                if access_token:
+                    self.session.headers.update({'Authorization': f'Bearer {access_token["secret"]}'})
+                else:
+                    raise RuntimeError("Can't get access token refreshed by another instance.")
             else:
                 # the refresh was performed by the token backend.
                 pass
@@ -787,9 +775,11 @@ class Connection:
             # Server response with 4XX or 5XX error status codes
             if e.response.status_code == 401 and self._token_expired_flag is False:
                 # This could be a token expired error.
-                if self.token_backend.token_is_expired():
-                    log.debug('Oauth Token is expired')
+                if self.token_backend.token_is_expired(username=self.current_username):
                     # Token has expired, try to refresh the token and try again on the next loop
+                    # By raising custom exception TokenExpiredError we signal oauth_request to fire a
+                    # refresh token operation.
+                    log.debug(f'Oauth Token is expired for username: {self.current_username}')
                     self._token_expired_flag = True
                     raise TokenExpiredError('Oauth Token is expired')
 
@@ -930,8 +920,8 @@ class Connection:
             self.session.close()
 
 
-def oauth_authentication_flow(client_id, client_secret, scopes=None,
-                              protocol=None, **kwargs):
+def oauth_authentication_flow(client_id: str, client_secret: str, scopes: List[str] = None,
+                              protocol: Optional[Protocol] = None, **kwargs) -> bool:
     """ A helper method to perform the OAuth2 authentication flow.
     Authenticate and get the oauth token
 
@@ -954,7 +944,7 @@ def oauth_authentication_flow(client_id, client_secret, scopes=None,
     con = Connection(credentials, scopes=protocol.get_scopes_for(scopes),
                      **kwargs)
 
-    consent_url, _ = con.get_authorization_url(**kwargs)
+    consent_url, flow = con.get_authorization_url(**kwargs)
 
     print('Visit the following url to give consent:')
     print(consent_url)
@@ -962,14 +952,14 @@ def oauth_authentication_flow(client_id, client_secret, scopes=None,
     token_url = input('Paste the authenticated url here:\n')
 
     if token_url:
-        result = con.request_token(token_url, **kwargs)  # no need to pass state as the session is the same
+        result = con.request_token(token_url, flow=flow, **kwargs)
         if result:
             print('Authentication Flow Completed. Oauth Access Token Stored. '
                   'You can now use the API.')
         else:
             print('Something go wrong. Please try again.')
 
-        return bool(result)
+        return result
     else:
         print('Authentication Flow aborted.')
         return False

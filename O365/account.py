@@ -73,11 +73,12 @@ class Account:
         Checks whether the library has the authentication and that is not expired.
         Return True if authenticated, False otherwise.
         """
-        token = self.con.token_backend.access_token
+        token = self.con.token_backend.get_access_token(username=self.con.current_username)
         if token is None:
+            # try to load the token from the backend, although it was previously loaded
             self.con.token_backend.load_token()
 
-        return not self.con.token_backend.token_is_expired(refresh_token=True)
+        return not self.con.token_backend.token_is_expired(username=self.con.current_username, refresh_token=True)
 
     def authenticate(self, *, scopes: Optional[list] = None,
                      handle_consent: Callable = consent_input_token, **kwargs) -> bool:
@@ -123,8 +124,21 @@ class Account:
         else:
             raise ValueError('"auth_flow_type" must be "authorization", "public", "password" or "credentials"')
 
-    def get_current_user(self):
-        """ Returns the current user """
+    @property
+    def current_username(self) -> Optional[str]:
+        """ Returns the current username in use for the account"""
+        return self.con.current_username
+
+    @current_username.setter
+    def current_username(self, current_username: Optional[str]) -> None:
+        """
+        Sets the current username in use for this account
+        The current_username can be None, meaning the first user account retrieved from the token_backend
+        """
+        self.con.current_username = current_username
+
+    def get_current_user_data(self):
+        """ Returns the current user data from the active directory """
         if self.con.auth_flow_type in ('authorization', 'public'):
             directory = self.directory(resource=ME_RESOURCE)
             return directory.get_current_user()

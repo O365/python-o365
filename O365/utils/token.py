@@ -3,11 +3,17 @@ import json
 import datetime as dt
 from pathlib import Path
 import os
+from typing import Optional, Protocol, Union
 
 from msal.token_cache import TokenCache
 
 
 log = logging.getLogger(__name__)
+
+
+class CryptographyManagerType(Protocol):
+    def encrypt(self, data: str) -> bytes: ...
+    def decrypt(self, data: bytes) -> str: ...
 
 
 class BaseTokenBackend(TokenCache):
@@ -17,57 +23,128 @@ class BaseTokenBackend(TokenCache):
 
     def __init__(self):
         super().__init__()
-        self._token = None
-        self._has_state_changed = False
-        self.cryptography_manager = None
+        self._has_state_changed: bool = False
+        self.cryptography_manager: Optional[CryptographyManagerType] = None
 
-    def token_expiration_datetime(self, refresh_token=False):
+    @property
+    def has_data(self) -> bool:
+        return bool(self._cache)
+
+    def token_expiration_datetime(self, *,
+                                  username: Optional[str] = None,
+                                  refresh_token: bool = False
+                                  ) -> Optional[dt.datetime]:
         """
         Returns the current token expiration datetime
         If the refresh token is present, then the expiration datetime is extended by 3 months
+        :param str username: The username from which check the tokens
         :param bool refresh_token: if true will check for the refresh token and return its expiration datetime
         :return dt.datetime or None: The expiration datetime
         """
-        access_token = self.access_token
+        access_token = self.get_access_token(username=username)
         if access_token is None:
             return None
 
         expires_on = access_token.get('expires_on')
         if expires_on is None:
-            # consider the token expired
+            # consider the token has expired
             return None
         else:
             expires_on = int(expires_on)
 
         expiration_datetime = dt.datetime.fromtimestamp(expires_on)
-        if refresh_token is True and self.token_is_long_lived:
+        if refresh_token is True and self.token_is_long_lived(username=username):
             # current token is long-lived, add 3 months to the token expiration date
             expiration_datetime = expiration_datetime + dt.timedelta(days=90)
 
         return expiration_datetime
 
-    def token_is_expired(self, refresh_token=False):
+    def token_is_expired(self, *, username: Optional[str] = None, refresh_token: bool = False) -> bool:
         """
         Checks whether the current token is expired
+        :param str username: The username from which check the tokens
         :param bool refresh_token: if true will check for the refresh token and return its expiration datetime
         :return bool: True if the token is expired, False otherwise
         """
-        return dt.datetime.now() > self.token_expiration_datetime(refresh_token=refresh_token)
+        token_expiration_datetime = self.token_expiration_datetime(username=username, refresh_token=refresh_token)
+        if token_expiration_datetime is None:
+            return True
+        else:
+            return dt.datetime.now() > token_expiration_datetime
 
-    @property
-    def token_is_long_lived(self):
+    def token_is_long_lived(self, *, username: Optional[str] = None) -> bool:
         """ Returns if the token has a refresh token """
-        return self.refresh_token is not None
+        return self.get_refresh_token(username=username) is not None
 
-    def add(self, event, **kwargs):
+    def _get_home_account_id(self, username: Optional[str] = None) -> Optional[str]:
+        """ Gets the home_account_id string from the ACCOUNT cache for the specified username """
+        home_account_id = None
+        if username:
+            result = list(self.search(
+                TokenCache.CredentialType.ACCOUNT,
+                query={'username': username}
+            ))
+            if result:
+                home_account_id = result[0].get('home_account_id')
+            else:
+                raise ValueError(f'No account found for username: {username}')
+        return home_account_id
+
+    def get_account(self, *, username: Optional[str] = None) -> Optional[dict]:
+        """ Gets the account object for the specified username """
+        query = None
+        if username is not None:
+            query = {'username': username}
+        result = list(self.search(
+            TokenCache.CredentialType.ACCOUNT,
+            query=query
+        ))
+        if result:
+            return result[0]
+        else:
+            return None
+
+    def get_access_token(self, *, username: Optional[str] = None) -> Optional[dict]:
+        """
+        Retrieve the stored access token
+        If username is None, then the first access token will be retrieved
+        :param str username: The username from which retrieve the access token
+        """
+        home_account_id = self._get_home_account_id(username)
+        query = None
+        if home_account_id:
+            query = {'home_account_id': home_account_id}
+        results = list(self.search(
+            TokenCache.CredentialType.ACCESS_TOKEN,
+            query=query
+        ))
+        return results[0] if results else None
+
+    def get_refresh_token(self, *, username: Optional[str] = None) -> Optional[dict]:
+        """
+        Retrieve the stored refresh token
+        If username is None, then the first access token will be retrieved
+        :param str username: The username from which retrieve the refresh token
+        """
+        home_account_id = self._get_home_account_id(username)
+        query = None
+        if home_account_id:
+            query = {'home_account_id': home_account_id}
+        results = list(self.search(
+            TokenCache.CredentialType.REFRESH_TOKEN,
+            query=query
+        ))
+        return results[0] if results else None
+
+    def add(self, event, **kwargs) -> None:
         super().add(event, **kwargs)
         self._has_state_changed = True
 
-    def modify(self, credential_type, old_entry, new_key_value_pairs=None):
+    def modify(self, credential_type, old_entry, new_key_value_pairs=None) -> None:
         super().modify(credential_type, old_entry, new_key_value_pairs)
         self._has_state_changed = True
 
-    def serialize(self):
+    def serialize(self) -> Union[bytes, str]:
         """Serialize the current cache state into a string."""
         with self._lock:
             self._has_state_changed = False
@@ -76,43 +153,37 @@ class BaseTokenBackend(TokenCache):
                 token_str = self.cryptography_manager.encrypt(token_str)
             return token_str
 
-    def deserialize(self, token_cache_state: str):
-        """Deserialize the cache from a state previously obtained by serialize()"""
+    def deserialize(self, token_cache_state: Union[bytes, str]) -> dict:
+        """ Deserialize the cache from a state previously obtained by serialize() """
         with self._lock:
             self._has_state_changed = False
             if self.cryptography_manager is not None:
                 token_cache_state = self.cryptography_manager.decrypt(token_cache_state)
             return self.serializer.loads(token_cache_state) if token_cache_state else {}
 
-    @property
-    def access_token(self):
-        """ Retrieve the stored access token """
-        results = list(self.search(TokenCache.CredentialType.ACCESS_TOKEN))
-        return results[0] if results else None
-
-    @property
-    def refresh_token(self):
-        """ Retrieve the stored refresh token """
-        results = list(self.search(TokenCache.CredentialType.REFRESH_TOKEN))
-        return results[0] if results else None
-
-    def load_token(self):
-        """ Abstract method that will retrieve the token data from the backend """
+    def load_token(self) -> bool:
+        """
+        Abstract method that will retrieve the token data from the backend
+        This MUST be implemented in subclasses
+        """
         raise NotImplementedError
 
-    def save_token(self, force=False):
-        """ Abstract method that will save the token data into the backend """
+    def save_token(self, force=False) -> bool:
+        """
+        Abstract method that will save the token data into the backend
+        This MUST be implemented in subclasses
+        """
         raise NotImplementedError
 
-    def delete_token(self):
+    def delete_token(self) -> bool:
         """ Optional Abstract method to delete the token from the backend """
         raise NotImplementedError
 
-    def check_token(self):
-        """ Optional Abstract method to check for the token existence """
+    def check_token(self) -> bool:
+        """ Optional Abstract method to check for the token existence in the backend """
         raise NotImplementedError
 
-    def should_refresh_token(self, con=None):
+    def should_refresh_token(self, con=None) -> Optional[bool]:
         """
         This method is intended to be implemented for environments
          where multiple Connection instances are running on parallel.
@@ -124,10 +195,10 @@ class BaseTokenBackend(TokenCache):
 
         > This is an example of how to achieve this:
         > 1) Along with the token store a Flag
-        > 2) The first to see the Flag as True must transacionally update it
+        > 2) The first to see the Flag as True must transactional update it
         >     to False. This method then returns True and therefore the
         >     connection will refresh the token.
-        > 3) The save_token method should be rewrited to also update the flag
+        > 3) The save_token method should be rewritten to also update the flag
         >     back to True always.
         > 4) Meanwhile between steps 2 and 3, any other token backend checking
         >     for this method should get the flag with a False value.
@@ -143,9 +214,9 @@ class BaseTokenBackend(TokenCache):
         If this returns None, then this method already executed the refresh and therefore
          the Connection does not have to.
 
-        By default this always returns True
+        By default, this always returns True
 
-        There is an example of this in the examples folder.
+        There is an example of this in the example's folder.
 
         :param Connection con: the connection that calls this method. This
          is passed because maybe the locking mechanism needs to refresh the
@@ -189,6 +260,7 @@ class FileSystemTokenBackend(BaseTokenBackend):
         if self.token_path.exists():
             with self.token_path.open('r') as token_file:
                 self._cache = self.deserialize(token_file.read())
+                log.debug(f'Token loaded from {self.token_path}')
             return True
         return False
 
