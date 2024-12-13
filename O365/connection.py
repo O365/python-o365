@@ -1,6 +1,5 @@
 import json
 import logging
-import os
 import time
 from typing import Optional, Callable, Union
 from urllib.parse import urlparse, parse_qs
@@ -140,7 +139,7 @@ class Protocol:
                 raise ValueError('The timezone parameter must be either a string or a valid ZoneInfo instance.')
         self._timezone = timezone
 
-    def get_service_keyword(self, keyword: str) -> str:
+    def get_service_keyword(self, keyword: str) -> Optional[str]:
         """ Returns the data set to the key in the internal data-key dict
 
         :param keyword: key to get value for
@@ -467,14 +466,15 @@ class Connection:
     def auth_flow_type(self):
         return self._auth_flow_type
 
-    def set_proxy(self, proxy_server, proxy_port, proxy_username,
-                  proxy_password, proxy_http_only):
+    def set_proxy(self, proxy_server: str, proxy_port: int,
+                  proxy_username: str, proxy_password: str, proxy_http_only: bool):
         """ Sets a proxy on the Session
 
         :param str proxy_server: the proxy server
         :param int proxy_port: the proxy port, defaults to 8080
         :param str proxy_username: the proxy username
         :param str proxy_password: the proxy password
+        :param bool proxy_http_only: if the proxy should only be used for http
         """
         if proxy_server and proxy_port:
             if proxy_username and proxy_password:
