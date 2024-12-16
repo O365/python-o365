@@ -259,7 +259,11 @@ class FileSystemTokenBackend(BaseTokenBackend):
         """
         if self.token_path.exists():
             with self.token_path.open('r') as token_file:
-                self._cache = self.deserialize(token_file.read())
+                token_dict = self.deserialize(token_file.read())
+                if 'access_token' in token_dict:
+                    raise ValueError('The token you are trying to load is not valid anymore. '
+                                     'Please delete the token and proceed to authenticate again.')
+                self._cache = token_dict
                 log.debug(f'Token loaded from {self.token_path}')
             return True
         return False
