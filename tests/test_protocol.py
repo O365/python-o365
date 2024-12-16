@@ -64,12 +64,8 @@ class TestProtocol:
     def test_prefix_scope(self):
         assert(self.proto.prefix_scope('Mail.Read') == 'Mail.Read')
         
-        assert(self.proto.prefix_scope(('Mail.Read',)) == 'Mail.Read')
-        
         self.proto.protocol_scope_prefix = 'test_prefix_'
-        
-        assert(self.proto.prefix_scope(('Mail.Read',)) == 'Mail.Read')
-        
+
         assert(self.proto.prefix_scope('test_prefix_Mail.Read') == 'test_prefix_Mail.Read')
         
         assert(self.proto.prefix_scope('Mail.Read') == 'test_prefix_Mail.Read')

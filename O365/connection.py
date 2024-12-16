@@ -197,7 +197,7 @@ class Protocol:
 
         return list(scopes)
 
-    def prefix_scope(self, scope: Union[tuple, str]) -> str:
+    def prefix_scope(self, scope: str) -> str:
         """ Inserts the protocol scope prefix if required"""
         if self.protocol_scope_prefix:
             if not scope.startswith(self.protocol_scope_prefix):
