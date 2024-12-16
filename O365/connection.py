@@ -4,8 +4,8 @@ import time
 from typing import Optional, Callable, Union, Tuple, List, Dict
 from urllib.parse import urlparse, parse_qs
 
-from msal import ConfidentialClientApplication, PublicClientApplication, ClientApplication as BaseMsalClientApplication
-from requests import Session
+from msal import ConfidentialClientApplication, PublicClientApplication
+from requests import Session, Response
 from requests.adapters import HTTPAdapter
 from requests.exceptions import HTTPError, RequestException, ProxyError
 from requests.exceptions import SSLError, Timeout, ConnectionError
@@ -58,6 +58,8 @@ DEFAULT_SCOPES = {
     'tasks_all': ['Tasks.ReadWrite'],
     'presence': ['Presence.Read']
 }
+
+MsalClientApplication = Union[PublicClientApplication, ConfidentialClientApplication]
 
 
 class TokenExpiredError(HTTPError):
@@ -118,14 +120,14 @@ class Protocol:
             self.timezone = timezone  # property setter will convert this timezone to ZoneInfo if a string is provided
 
     @property
-    def timezone(self):
+    def timezone(self) -> ZoneInfo:
         return self._timezone
 
     @timezone.setter
-    def timezone(self, timezone: Union[str, ZoneInfo]):
+    def timezone(self, timezone: Union[str, ZoneInfo]) -> None:
         self._update_timezone(timezone)
 
-    def _update_timezone(self, timezone: Union[str, ZoneInfo]):
+    def _update_timezone(self, timezone: Union[str, ZoneInfo]) -> None:
         """Sets the timezone. This is not done in the setter as you can't call super from a overriden setter """
         if isinstance(timezone, str):
             # convert string to ZoneInfo
@@ -214,8 +216,7 @@ class MSGraphProtocol(Protocol):
     _oauth_scope_prefix = 'https://graph.microsoft.com/'
     _oauth_scopes = DEFAULT_SCOPES
 
-    def __init__(self, api_version='v1.0', default_resource=None,
-                 **kwargs):
+    def __init__(self, api_version='v1.0', default_resource=None, **kwargs):
         """ Create a new Microsoft Graph protocol object
 
         _protocol_url = 'https://graph.microsoft.com/'
@@ -241,7 +242,7 @@ class MSGraphProtocol(Protocol):
         self.max_top_value = 999  # Max $top parameter value
 
     @Protocol.timezone.setter
-    def timezone(self, timezone: Union[str, ZoneInfo]):
+    def timezone(self, timezone: Union[str, ZoneInfo]) -> None:
         super()._update_timezone(timezone)
         self.keyword_data_store['prefer_timezone_header'] = f'outlook.timezone="{get_windows_tz(self._timezone)}"'
 
@@ -255,8 +256,7 @@ class MSOffice365Protocol(Protocol):
     _oauth_scope_prefix = 'https://outlook.office.com/'
     _oauth_scopes = DEFAULT_SCOPES
 
-    def __init__(self, api_version='v2.0', default_resource=None,
-                 **kwargs):
+    def __init__(self, api_version='v2.0', default_resource=None, **kwargs):
         """ Create a new Office 365 protocol object
 
         _protocol_url = 'https://outlook.office.com/api/'
@@ -282,7 +282,7 @@ class MSOffice365Protocol(Protocol):
         self.max_top_value = 999  # Max $top parameter value
 
     @Protocol.timezone.setter
-    def timezone(self, timezone: Union[str, ZoneInfo]):
+    def timezone(self, timezone: Union[str, ZoneInfo]) -> None:
         super()._update_timezone(timezone)
         self.keyword_data_store['prefer_timezone_header'] = f'outlook.timezone="{get_windows_tz(self._timezone)}"'
 
@@ -297,8 +297,7 @@ class MSBusinessCentral365Protocol(Protocol):
     _oauth_scopes = DEFAULT_SCOPES
     _protocol_scope_prefix = 'https://api.businesscentral.dynamics.com/'
 
-    def __init__(self, api_version='v1.0', default_resource=None, environment=None,
-                 **kwargs):
+    def __init__(self, api_version='v1.0', default_resource=None, environment=None, **kwargs):
         """ Create a new Microsoft Graph protocol object
 
         _protocol_url = 'https://api.businesscentral.dynamics.com/'
@@ -333,7 +332,7 @@ class MSBusinessCentral365Protocol(Protocol):
         self.max_top_value = 999  # Max $top parameter value
 
     @Protocol.timezone.setter
-    def timezone(self, timezone: Union[str, ZoneInfo]):
+    def timezone(self, timezone: Union[str, ZoneInfo]) -> None:
         super()._update_timezone(timezone)
         self.keyword_data_store['prefer_timezone_header'] = f'outlook.timezone="{get_windows_tz(self._timezone)}"'
 
@@ -447,7 +446,7 @@ class Connection:
 
         self.naive_session: Optional[Session] = None  # lazy loaded: holds a requests Session object
 
-        self._msal_client: Optional[BaseMsalClientApplication] = None  # store the msal client
+        self._msal_client: Optional[MsalClientApplication] = None  # store the msal client
         self._msal_authority: str = f'https://login.microsoftonline.com/{tenant_id}'
         self.oauth_redirect_url: str = 'https://login.microsoftonline.com/common/oauth2/nativeclient'
 
@@ -485,7 +484,7 @@ class Connection:
             self.session.headers.update({'Authorization': f'Bearer {access_token}'})
 
     def set_proxy(self, proxy_server: str, proxy_port: int,
-                  proxy_username: str, proxy_password: str, proxy_http_only: bool):
+                  proxy_username: str, proxy_password: str, proxy_http_only: bool) -> None:
         """ Sets a proxy on the Session
 
         :param str proxy_server: the proxy server
@@ -516,7 +515,7 @@ class Connection:
                 }
 
     @property
-    def msal_client(self):
+    def msal_client(self) -> MsalClientApplication:
         """ Returns the msal client or creates it if it's not already done """
         if self._msal_client is None:
             if self.auth_flow_type in ('public', 'password'):
@@ -533,8 +532,8 @@ class Connection:
             self._msal_client = client
         return self._msal_client
 
-    def get_authorization_url(self, requested_scopes=None,
-                              redirect_uri=None, **kwargs) -> Tuple[str, dict]:
+    def get_authorization_url(self, requested_scopes: Optional[List[str]] = None,
+                              redirect_uri: Optional[str] = None, **kwargs) -> Tuple[str, dict]:
         """ Initializes the oauth authorization flow, getting the
         authorization url that the user must approve.
 
@@ -554,10 +553,10 @@ class Connection:
 
         return flow.get('auth_uri'), flow
 
-    def request_token(self, authorization_url, *,
-                      flow=None,
-                      store_token=True,
-                      **kwargs):
+    def request_token(self, authorization_url: str, *,
+                      flow: dict = None,
+                      store_token: bool = True,
+                      **kwargs) -> bool:
         """ Authenticates for the specified url and gets the token, save the
         token for future based if requested
 
@@ -596,7 +595,7 @@ class Connection:
             self.token_backend.save_token()
         return True
 
-    def get_session(self, load_token=False):
+    def get_session(self, load_token: bool = False) -> Session:
         """ Create a requests Session object with the oauth token attached to it
 
         :param bool load_token: load the token from the token backend and load the access token into the session auth
@@ -629,7 +628,7 @@ class Connection:
 
         return session
 
-    def get_naive_session(self):
+    def get_naive_session(self) -> Session:
         """ Creates and returns a naive session """
         naive_session = Session()  # requests Session object
         naive_session.proxies = self.proxy
@@ -645,11 +644,6 @@ class Connection:
             naive_session.mount('https://', adapter)
 
         return naive_session
-
-    def _set_scopes_from_token(self):
-        """ This method will set the connection scopes from the scopes set in the token stored in the token backend"""
-        if self.scopes is None:
-            self.scopes = self.token_backend.get_token_scopes(username=self.current_username)
 
     def refresh_token(self) -> bool:
         """
@@ -676,8 +670,7 @@ class Connection:
                 log.debug('Refreshing access token')
 
                 if self.scopes is None:
-                    # This method will set the connection scopes from the scopes set in the token stored
-                    # in the token backend
+                    # This will set the connection scopes from the scopes set in the stored token
                     self.scopes = self.token_backend.get_token_scopes(
                         username=self.current_username,
                         remove_reserved=True
@@ -716,7 +709,7 @@ class Connection:
             self.token_backend.save_token()
         return True
 
-    def _check_delay(self):
+    def _check_delay(self) -> None:
         """ Checks if a delay is needed between requests and sleeps if True """
         if self._previous_request_at:
             dif = round(time.time() - self._previous_request_at,
@@ -727,10 +720,11 @@ class Connection:
                 time.sleep(sleep_for / 1000)  # sleep needs seconds
         self._previous_request_at = time.time()
 
-    def _internal_request(self, request_obj, url, method, **kwargs):
+    def _internal_request(self, session_obj: Session,
+                          url: str, method: str, **kwargs) -> Response:
         """ Internal handling of requests. Handles Exceptions.
 
-        :param request_obj: a requests Session instance.
+        :param session_obj: a requests Session instance.
         :param str url: url to send request to
         :param str method: type of request (get/put/post/patch/delete)
         :param kwargs: extra params to send to the request api
@@ -768,7 +762,7 @@ class Connection:
             log.debug(f'Requesting ({method.upper()}) URL: {url}')
             log.debug(f'Request parameters: {kwargs}')
             # auto_retry will occur inside this function call if enabled
-            response = request_obj.request(method, url, **kwargs)
+            response = session_obj.request(method, url, **kwargs)
 
             response.raise_for_status()  # raise 4XX and 5XX error codes.
             log.debug(f'Received response ({response.status_code}) from URL {response.url}')
@@ -820,7 +814,7 @@ class Connection:
             log.debug(f'Request Exception: {e}')
             raise e
 
-    def naive_request(self, url, method, **kwargs):
+    def naive_request(self, url: str, method: str, **kwargs) -> Response:
         """ Makes a request to url using an without oauth authorization
         session, but through a normal session
 
@@ -836,7 +830,7 @@ class Connection:
 
         return self._internal_request(self.naive_session, url, method, **kwargs)
 
-    def oauth_request(self, url, method, **kwargs):
+    def oauth_request(self, url: str, method: str, **kwargs) -> Response:
         """ Makes a request to url using an oauth session
 
         :param str url: url to send request to
@@ -861,7 +855,7 @@ class Connection:
             finally:
                 self._token_expired_flag = False
 
-    def get(self, url, params=None, **kwargs):
+    def get(self, url: str, params: Optional[dict] = None, **kwargs) -> Response:
         """ Shorthand for self.oauth_request(url, 'get')
 
         :param str url: url to send get oauth request to
@@ -872,7 +866,7 @@ class Connection:
         """
         return self.oauth_request(url, 'get', params=params, **kwargs)
 
-    def post(self, url, data=None, **kwargs):
+    def post(self, url: str, data: Optional[dict] = None, **kwargs) -> Response:
         """ Shorthand for self.oauth_request(url, 'post')
 
         :param str url: url to send post oauth request to
@@ -883,7 +877,7 @@ class Connection:
         """
         return self.oauth_request(url, 'post', data=data, **kwargs)
 
-    def put(self, url, data=None, **kwargs):
+    def put(self, url: str, data: Optional[dict] = None, **kwargs) -> Response:
         """ Shorthand for self.oauth_request(url, 'put')
 
         :param str url: url to send put oauth request to
@@ -894,7 +888,7 @@ class Connection:
         """
         return self.oauth_request(url, 'put', data=data, **kwargs)
 
-    def patch(self, url, data=None, **kwargs):
+    def patch(self, url: str, data: Optional[dict] = None, **kwargs) -> Response:
         """ Shorthand for self.oauth_request(url, 'patch')
 
         :param str url: url to send patch oauth request to
@@ -905,7 +899,7 @@ class Connection:
         """
         return self.oauth_request(url, 'patch', data=data, **kwargs)
 
-    def delete(self, url, **kwargs):
+    def delete(self, url: str, **kwargs) -> Response:
         """ Shorthand for self.request(url, 'delete')
 
         :param str url: url to send delete oauth request to
@@ -915,7 +909,7 @@ class Connection:
         """
         return self.oauth_request(url, 'delete', **kwargs)
 
-    def __del__(self):
+    def __del__(self) -> None:
         """
         Clear the session by closing it
         This should be called manually by the user "del account.con"
@@ -924,7 +918,8 @@ class Connection:
         """
         if hasattr(self, 'session') and self.session is not None:
             self.session.close()
-
+        if hasattr(self, 'naive_session') and self.naive_session is not None:
+            self.naive_session.close()
 
 def oauth_authentication_flow(client_id: str, client_secret: str, scopes: List[str] = None,
                               protocol: Optional[Protocol] = None, **kwargs) -> bool:

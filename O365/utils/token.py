@@ -330,6 +330,18 @@ class FileSystemTokenBackend(BaseTokenBackend):
         return self.token_path.exists()
 
 
+class MemoryTokenBackend(BaseTokenBackend):
+
+    def __repr__(self):
+        return 'MemoryTokenBackend'
+
+    def load_token(self) -> bool:
+        return True
+
+    def save_token(self, force=False) -> bool:
+        return True
+
+
 class EnvTokenBackend(BaseTokenBackend):
     """ A token backend based on environmental variable """
 

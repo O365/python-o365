@@ -94,7 +94,7 @@ Requirements: >= Python 3.9
 
 Project dependencies installed by pip:
  - requests
- - requests-oauthlib
+ - msal
  - beatifulsoup4
  - python-dateutil
  - tzlocal
@@ -104,7 +104,7 @@ Project dependencies installed by pip:
 ## Usage
 The first step to be able to work with this library is to register an application and retrieve the auth token. See [Authentication](#authentication).
 
-It is highly recommended to add the "offline_access" permission and request this scope when authenticating. Otherwise the library will only have access to the user resources for 1 hour. See [Permissions and Scopes](#permissions-and-scopes).
+It is highly recommended to add the "offline_access" permission. Otherwise the library will only have access to the user resources for 1 hour. See [Permissions and Scopes](#permissions-and-scopes).
 
 With the access token retrieved and stored you will be able to perform api calls to the service.
 
@@ -129,10 +129,12 @@ if not account.is_authenticated:  # will check if there is a token and has not e
 ## Authentication
 You can only authenticate using oauth athentication as Microsoft deprecated basic auth on November 1st 2018.
 
+Until version 3.0 this library was using a custom authentication mechanism. On 3.0 we moved to using msal to achieve the authentication.
+
 There are currently three authentication methods:
 
 - [Authenticate on behalf of a user](https://docs.microsoft.com/en-us/graph/auth-v2-user?context=graph%2Fapi%2F1.0&view=graph-rest-1.0):
-Any user will give consent to the app to access it's resources.
+Any user will give consent to the app to access its resources.
 This oauth flow is called **authorization code grant flow**. This is the default authentication method used by this library.
 - [Authenticate on behalf of a user (public)](https://docs.microsoft.com/en-us/graph/auth-v2-user?context=graph%2Fapi%2F1.0&view=graph-rest-1.0):
 Same as the former but for public apps where the client secret can't be secured. Client secret is not required.
@@ -183,7 +185,7 @@ This section is explained using Microsoft Graph Protocol, almost the same applie
     1. In Supported account types choose "Accounts in any organizational directory and personal Microsoft accounts (e.g. Skype, Xbox, Outlook.com)", if you are using a personal account.
     1. Set the redirect uri (Web) to: `https://login.microsoftonline.com/common/oauth2/nativeclient` and click register. This needs to be inserted into the "Redirect URI" text box as simply checking the check box next to this link seems to be insufficent. This is the default redirect uri used by this library, but you can use any other if you want.
     1. Write down the Application (client) ID. You will need this value.
-    1. Under "Certificates & secrets", generate a new client secret. Set the expiration preferably to never. Write down the value of the client secret created now. It will be hidden later on.
+    1. Under "Certificates & secrets", generate a new client secret. Set the expiration of the secret. Write down the value of the client secret created now. It will be hidden later on.
     1. Under Api Permissions:
         - When authenticating "on behalf of a user":
             1. add the **delegated permissions** for Microsoft Graph you want (see scopes).
@@ -197,9 +199,9 @@ This section is explained using Microsoft Graph Protocol, almost the same applie
         1. Mail.Send
         1. User.Read
 
-1. Then you need to login for the first time to get the access token that will grant access to the user resources.
+1. Then you need to log in for the first time to get the access token that will grant access to the user resources.
 
-    To authenticate (login) you can use [different authentication interfaces](#different-authentication-interfaces). On the following examples we will be using the Console Based Interface but you can use any one.
+    To authenticate (login) you can use [different authentication interfaces](#different-authentication-interfaces). On the following examples we will be using the Console Based Interface, but you can use any one.
 
     - When authenticating on behalf of a user:
 
@@ -228,12 +230,12 @@ This section is explained using Microsoft Graph Protocol, almost the same applie
             if account.authenticate(scopes=['basic', 'message_all']):
                print('Authenticated!')
 
-            # 'basic' adds: 'offline_access' and 'https://graph.microsoft.com/User.Read'
+            # 'basic' adds: 'https://graph.microsoft.com/User.Read'
             # 'message_all' adds: 'https://graph.microsoft.com/Mail.ReadWrite' and 'https://graph.microsoft.com/Mail.Send'
             ```
-            When using the "on behalf of the user" authentication method, this method call will print a url that the user must visit to give consent to the app on the required permissions.
+            When using the "on behalf of the user" authentication method, this method call will print an url that the user must visit to give consent to the app on the required permissions.
 
-            The user must then visit this url and give consent to the application. When consent is given, the page will rediret to: "https://login.microsoftonline.com/common/oauth2/nativeclient" by default (you can change this) with a url query param called 'code'.
+            The user must then visit this url and give consent to the application. When consent is given, the page will rediret to: "https://login.microsoftonline.com/common/oauth2/nativeclient" by default (you can change this) with an url query param called 'code'.
 
             Then the user must copy the resulting page url and paste it back on the console.
             The method will then return True if the login attempt was succesful.
@@ -258,7 +260,7 @@ This section is explained using Microsoft Graph Protocol, almost the same applie
 
 1. At this point you will have an access token stored that will provide valid credentials when using the api.
 
-    The access token only lasts **60 minutes**, but the app try will automatically request new access tokens.
+    The access token only lasts **60 minutes**, but the app will automatically request new access tokens.
 
     When using the "on behalf of a user" authentication method this is accomplished through the refresh tokens (if and only if you added the "offline_access" permission), but note that a refresh token only lasts for 90 days. So you must use it before or you will need to request a new access token again (no new consent needed by the user, just a login).
     If your application needs to work for more than 90 days without user interaction and without interacting with the API, then you must implement a periodic call to `Connection.refresh_token` before the 90 days have passed.
@@ -283,19 +285,19 @@ For the "with your own identity" authentication method, you can just use `accoun
     account.authenticate(scopes=['basic', 'message_all'])
     ```
 
-    The `authenticate` method will print into the console a url that you will have to visit to achieve authentication.
+    The `authenticate` method will print into the console an url that you will have to visit to achieve authentication.
     Then after visiting the link and authenticate you will have to paste back the resulting url into the console.
     The method will return `True` and print a message if it was succesful.
 
-    **Tip:** When using MacOs the console is limited to 1024 characters. If your url has multiple scopes it can exceed this limit. To solve this. Just `import readline` a the top of your script.
+    **Tip:** When using macOS the console is limited to 1024 characters. If your url has multiple scopes it can exceed this limit. To solve this. Just `import readline` at the top of your script.
 
 1. Web app based authentication interface:
 
-    You can authenticate your users in a web environment by following this steps:
+    You can authenticate your users in a web environment by following these steps:
 
     1. First ensure you are using an appropiate TokenBackend to store the auth tokens (See Token storage below).
-    1. From a handler redirect the user to the Microsoft login url. Provide a callback. Store the state.
-    1. From the callback handler complete the authentication with the state and other data.
+    1. From a handler redirect the user to the Microsoft login url. Provide a callback. Store the flow dictionary.
+    1. From the callback handler complete the authentication with the flow dict and other data.
 
     The following example is done using Flask.
     ```python
@@ -309,11 +311,12 @@ For the "with your own identity" authentication method, you can just use `accoun
         callback = url_for('auth_step_two_callback', _external=True)  # Flask example
 
         account = Account(credentials)
-        url, state = account.con.get_authorization_url(requested_scopes=my_scopes,
+        url, flow = account.con.get_authorization_url(requested_scopes=my_scopes,
                                                        redirect_uri=callback)
-
-        # the state must be saved somewhere as it will be needed later
-        my_db.store_state(state) # example...
+        
+        flow_as_string = serialize(flow)  # convert the dict into a string using json for example
+        # the flow must be saved somewhere as it will be needed later
+        my_db.store_flow(flow_as_string) # example...
 
         return redirect(url)
 
@@ -322,7 +325,8 @@ For the "with your own identity" authentication method, you can just use `accoun
         account = Account(credentials)
 
         # retreive the state saved in auth_step_one
-        my_saved_state = my_db.get_state()  # example...
+        my_saved_flow_str = my_db.get_flow()  # example...
+        my_saved_flow = deserialize(my_saved_flow_str)  # convert from a string to a dict using json for example.
 
         # rebuild the redirect_uri used in auth_step_one
         callback = 'my absolute url to auth_step_two_callback'
@@ -332,8 +336,7 @@ For the "with your own identity" authentication method, you can just use `accoun
         requested_url = request.url  # uses Flask's request() method
 
         result = account.con.request_token(requested_url,
-                                           state=my_saved_state,
-                                           redirect_uri=callback)
+                                           flow=my_saved_flow)
         # if result is True, then authentication was succesful
         #  and the auth token is stored in the token backend
         if result:
@@ -361,9 +364,9 @@ The scopes only matter when using the "on behalf of a user" authentication metho
 
 > Note: You only need the scopes when login as those are kept stored within the token on the token backend.
 
-The user of this library can then request access to one or more of this resources by providing scopes to the oauth provider.
+The user of this library can then request access to one or more of these resources by providing scopes to the oauth provider.
 
-> Note: If you latter on change the scopes requested, the current token will be invaled and you will have to re-authenticate. The user that logins will be asked for consent.
+> Note: If you later on change the scopes requested, the current token will be invaled, and you will have to re-authenticate. The user that logins will be asked for consent.
 
 For example your application can have Calendar.Read, Mail.ReadWrite and Mail.Send permissions, but the application can request access only to the Mail.ReadWrite and Mail.Send permission.
 This is done by providing scopes to the `Account` instance or `account.authenticate` method like so:
@@ -373,12 +376,12 @@ from O365 import Account
 
 credentials = ('client_id', 'client_secret')
 
-scopes = ['https://graph.microsoft.com/Mail.ReadWrite', 'https://graph.microsoft.com/Mail.Send']
+scopes = ['Mail.ReadWrite', 'Mail.Send']
 
 account = Account(credentials, scopes=scopes)
 account.authenticate()
 
-# The latter is exactly the same as passing scopes to the authenticate method like so:
+# The later is exactly the same as passing scopes to the authenticate method like so:
 # account = Account(credentials)
 # account.authenticate(scopes=scopes)
 ```
@@ -388,7 +391,7 @@ This is implemented by using 'scope helpers'. Those are little helpers that grou
 
 Scope Helper                       | Scopes included
 :---                               | :---
-basic                              | 'offline_access' and 'User.Read'
+basic                              | 'User.Read'
 mailbox                            | 'Mail.Read'
 mailbox_shared                     | 'Mail.Read.Shared'
 mailbox_settings                   | 'MailboxSettings.ReadWrite'
@@ -404,13 +407,15 @@ calendar                           | 'Calendars.Read'
 calendar_shared                    | 'Calendars.Read.Shared'
 calendar_all                       | 'Calendars.ReadWrite'
 calendar_shared_all                | 'Calendars.ReadWrite.Shared'
-tasks                              | 'Tasks.Read'
-tasks_all                          | 'Tasks.ReadWrite'
 users                              | 'User.ReadBasic.All'
 onedrive                           | 'Files.Read.All'
 onedrive_all                       | 'Files.ReadWrite.All'
 sharepoint                         | 'Sites.Read.All'
 sharepoint_dl                      | 'Sites.ReadWrite.All'
+settings_all                       | 'MailboxSettings.ReadWrite'
+tasks                              | 'Tasks.Read'
+tasks_all                          | 'Tasks.ReadWrite'
+presence                           | 'Presence.Read'
 
 
 You can get the same scopes as before using protocols and scope helpers like this:
@@ -444,27 +449,29 @@ O365 makes no assumptions on where to store the token and tries to abstract this
 
 You can choose where and how to store tokens by using the proper Token Backend.
 
-**Take care: the access (and refresh) token must remain protected from unauthorized users.**
+> **Take care: the access (and refresh) token must remain protected from unauthorized users.** You can plug in a "cryptography_manager" (object that can call encrypt and decrypt) into TokenBackends "cryptography_manager" attribute. 
 
 The library will call (at different stages) the token backend methods to load and save the token.
 
 Methods that load tokens:
 - `account.is_authenticated` property will try to load the token if is not already loaded.
-- `connection.get_session`: this method is called when there isn't a request session set. By default it will not try to load the token. Set `load_token=True` to load it.
+- `connection.get_session`: this method is called when there isn't a request session set.
 
 Methods that stores tokens:
 - `connection.request_token`: by default will store the token, but you can set `store_token=False` to avoid it.
-- `connection.refresh_token`: by default will store the token. To avoid it change `connection.store_token` to False. This however it's a global setting (that only affects the `refresh_token` method). If you only want the next refresh operation to not store the token you will have to set it back to True afterwards.
+- `connection.refresh_token`: by default will store the token. To avoid it change `connection.store_token_after_refresh` to False. This however it's a global setting (that only affects the `refresh_token` method). If you only want the next refresh operation to not store the token you will have to set it back to True afterward.
 
 To store the token you will have to provide a properly configured TokenBackend.
 
 There are a few `TokenBackend` classes implemented (and you can easily implement more like a CookieBackend, RedisBackend, etc.):
-- `FileSystemTokenBackend` (Default backend): Stores and retrieves tokens from the file system. Tokens are stored as files.
+- `FileSystemTokenBackend` (Default backend): Stores and retrieves tokens from the file system. Tokens are stored as text files.
+- `MemoryTokenBackend`: Stores the tokens in memory. Basically load_token and save_token does nothing.
 - `EnvTokenBackend`: Stores and retrieves tokens from environment variables.
 - `FirestoreTokenBackend`: Stores and retrives tokens from a Google Firestore Datastore. Tokens are stored as documents within a collection.
 - `AWSS3Backend`: Stores and retrieves tokens from an AWS S3 bucket. Tokens are stored as a file within a S3 bucket.
 - `AWSSecretsBackend`: Stores and retrieves tokens from an AWS Secrets Management vault.
 - `BitwardenSecretsManagerBackend`: Stores and retrieves tokens from Bitwarden Secrets Manager.
+- `DjangoTokenBackend`: Stores and retrieves tokens using a Django model. 
 
 For example using the FileSystem Token Backend:
 
@@ -523,10 +530,23 @@ The method should return three posible values:
 - **False**: then the Connection will NOT refresh the token.
 - **None**: then this method already executed the refresh and therefore the Connection does not have to.
 
-By default this always returns True as it's asuming there is are no parallel connections running at once.
+By default, this always returns True as it's asuming there is are no parallel connections running at once.
 
 There are two examples of this method in the examples folder [here](https://github.com/O365/python-o365/blob/master/examples/token_backends.py).
 
+
+## Multi user handling
+A single `Account` object can hold more than one user being authenticated. You can authenticate different users and the token backend will hold each authentication.
+When using the library you can use the `account.current_username` property to get or set the current user.
+By default, the current user is set to the first authentication found in the token backend.
+
+```python
+account.current_username = 'user1@domain.com'
+#  issue some calls to retrieve data using the auth of the user1
+account.current_username = 'user2@domain.com'
+#  now every call will use the auth of the user2
+```
+> This is only possible in version 3.0. Before 3.0 you had to instantiate one Account for each user.
 
 ## Protocols
 Protocols handles the aspects of communications between different APIs.
@@ -1251,11 +1271,11 @@ for version in versions:
 
 
 ## Excel
-You can interact with new excel files (.xlsx) stored in OneDrive or a SharePoint Document Library.
+You can interact with new Excel files (.xlsx) stored in OneDrive or a SharePoint Document Library.
 You can retrieve workbooks, worksheets, tables, and even cell data.
 You can also write to any excel online.
 
-To work with excel files, first you have to retrieve a `File` instance using the OneDrive or SharePoint functionallity.
+To work with Excel files, first you have to retrieve a `File` instance using the OneDrive or SharePoint functionallity.
 
 The scopes needed to work with the `WorkBook` and Excel related classes are the same used by OneDrive.
 
@@ -1274,8 +1294,8 @@ cella1.update()
 ```
 
 #### Workbook Sessions
-When interacting with excel, you can use a workbook session to efficiently make changes in a persistent or nonpersistent way.
-This sessions become usefull if you perform numerous changes to the excel file.
+When interacting with Excel, you can use a workbook session to efficiently make changes in a persistent or nonpersistent way.
+These sessions become usefull if you perform numerous changes to the Excel file.
 
 The default is to use a session in a persistent way.
 Sessions expire after some time of inactivity. When working with persistent sessions, new sessions will automatically be created when old ones expire.
@@ -1456,7 +1476,7 @@ messages = mailbox.get_messages(query=query)
 #### Request Error Handling
 
 Whenever a Request error raises, the connection object will raise an exception.
-Then the exception will be captured and logged it to the stdout with it's message, an return Falsy (None, False, [], etc...)
+Then the exception will be captured and logged it to the stdout with its message, and return Falsy (None, False, [], etc...)
 
 HttpErrors 4xx (Bad Request) and 5xx (Internal Server Error) are considered exceptions and raised also by the connection.
 You can tell the `Connection` to not raise http errors by passing `raise_http_errors=False` (defaults to True).

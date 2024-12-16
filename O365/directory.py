@@ -320,7 +320,7 @@ class Directory(ApiComponent):
         return self._get_user(url, query=query)
 
     def get_current_user(self, query=None):
-        """ Returns the current logged in user"""
+        """ Returns the current logged-in user"""
 
         if self.main_resource != ME_RESOURCE:
             raise ValueError("Can't get the current user. The main resource must be set to '{}'".format(ME_RESOURCE))
