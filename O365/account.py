@@ -76,7 +76,8 @@ class Account:
         token = self.con.token_backend.get_access_token(username=self.con.current_username)
         if token is None:
             # try to load the token from the backend, although it was previously loaded
-            self.con.token_backend.load_token()
+            if self.con.token_backend.load_token() is False:
+                return False
 
         return not self.con.token_backend.token_is_expired(username=self.con.current_username, refresh_token=True)
 

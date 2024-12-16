@@ -646,6 +646,11 @@ class Connection:
 
         return naive_session
 
+    def _set_scopes_from_token(self):
+        """ This method will set the connection scopes from the scopes set in the token stored in the token backend"""
+        if self.scopes is None:
+            self.scopes = self.token_backend.get_token_scopes(username=self.current_username)
+
     def refresh_token(self) -> bool:
         """
         Refresh the OAuth authorization token.
@@ -669,6 +674,15 @@ class Connection:
             if should_rt is True:
                 # The backend has checked that we can refresh the token
                 log.debug('Refreshing access token')
+
+                if self.scopes is None:
+                    # This method will set the connection scopes from the scopes set in the token stored
+                    # in the token backend
+                    self.scopes = self.token_backend.get_token_scopes(
+                        username=self.current_username,
+                        remove_reserved=True
+                    )
+
                 result = self.msal_client.acquire_token_silent_with_error(
                     scopes=self.scopes,
                     account=self.msal_client.get_accounts(username=self.current_username)[0]

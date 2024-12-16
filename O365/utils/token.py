@@ -11,6 +11,9 @@ from msal.token_cache import TokenCache
 log = logging.getLogger(__name__)
 
 
+RESERVED_SCOPES = {'profile', 'openid', 'offline_access'}
+
+
 class CryptographyManagerType(Protocol):
     def encrypt(self, data: str) -> bytes: ...
     def decrypt(self, data: bytes) -> str: ...
@@ -136,15 +139,21 @@ class BaseTokenBackend(TokenCache):
         ))
         return results[0] if results else None
 
-    def get_token_scopes(self, *, username: Optional[str] = None) -> Optional[list]:
+    def get_token_scopes(self, *, username: Optional[str] = None,
+                         remove_reserved: bool = False) -> Optional[list]:
         """
         Retrieve the scopes the access token has permissions on
         :param str username: The username from which retrieve the refresh token
+        :param bool remove_reserved: if True RESERVED_SCOPES will be removed from the list
         """
         access_token = self.get_access_token(username=username)
         if access_token:
             scopes_str = access_token.get('target')
-            return scopes_str.split(' ') if scopes_str else None
+            if scopes_str:
+                scopes = scopes_str.split(' ')
+                if remove_reserved:
+                    scopes = [scope for scope in scopes if scope not in RESERVED_SCOPES]
+                return scopes
         return None
 
     def add(self, event, **kwargs) -> None:
