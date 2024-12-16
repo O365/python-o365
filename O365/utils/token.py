@@ -136,6 +136,17 @@ class BaseTokenBackend(TokenCache):
         ))
         return results[0] if results else None
 
+    def get_token_scopes(self, *, username: Optional[str] = None) -> Optional[list]:
+        """
+        Retrieve the scopes the access token has permissions on
+        :param str username: The username from which retrieve the refresh token
+        """
+        access_token = self.get_access_token(username=username)
+        if access_token:
+            scopes_str = access_token.get('target')
+            return scopes_str.split(' ') if scopes_str else None
+        return None
+
     def add(self, event, **kwargs) -> None:
         super().add(event, **kwargs)
         self._has_state_changed = True
