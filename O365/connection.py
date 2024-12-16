@@ -32,7 +32,7 @@ RETRIES_BACKOFF_FACTOR = 0.5
 
 DEFAULT_SCOPES = {
     # wrap any scope in a 1 element tuple to avoid prefixing
-    'basic': [('offline_access',), 'User.Read'],
+    'basic': ['User.Read'],
     'mailbox': ['Mail.Read'],
     'mailbox_shared': ['Mail.Read.Shared'],
     "mailbox_settings": ["MailboxSettings.ReadWrite"],
@@ -200,17 +200,9 @@ class Protocol:
     def prefix_scope(self, scope: Union[tuple, str]) -> str:
         """ Inserts the protocol scope prefix if required"""
         if self.protocol_scope_prefix:
-            if isinstance(scope, tuple):
-                return scope[0]
-            elif scope.startswith(self.protocol_scope_prefix):
-                return scope
-            else:
+            if not scope.startswith(self.protocol_scope_prefix):
                 return '{}{}'.format(self.protocol_scope_prefix, scope)
-        else:
-            if isinstance(scope, tuple):
-                return scope[0]
-            else:
-                return scope
+        return scope
 
 
 class MSGraphProtocol(Protocol):
