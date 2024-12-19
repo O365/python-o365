@@ -127,7 +127,7 @@ if not account.is_authenticated:  # will check if there is a token and has not e
 ```
 
 ## Authentication
-You can only authenticate using oauth athentication as Microsoft deprecated basic auth on November 1st 2018.
+You can only authenticate using oauth authentication as Microsoft deprecated basic auth on November 1st 2018.
 
 Until version 3.0 this library was using a custom authentication mechanism. On 3.0 we moved to using msal to achieve the authentication.
 
