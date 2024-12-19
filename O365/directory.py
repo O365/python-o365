@@ -43,7 +43,7 @@ class User(ApiComponent):
         self.object_id = cloud_data.get('id')
 
         if main_resource == USERS_RESOURCE:
-            main_resource += '/{}'.format(self.object_id)
+            main_resource += f'/{self.object_id}'
 
         super().__init__(
             protocol=parent.protocol if parent else kwargs.get('protocol'),
@@ -135,7 +135,7 @@ class User(ApiComponent):
         """ Full Name (Name + Surname)
         :rtype: str
         """
-        return '{} {}'.format(self.given_name, self.surname).strip()
+        return f'{self.given_name} {self.surname}'.strip()
 
     def new_message(self, recipient=None, *, recipient_type=RecipientType.TO):
         """ This method returns a new draft Message instance with this
@@ -175,7 +175,7 @@ class User(ApiComponent):
         try:
             response = self.con.get(url)
         except HTTPError as e:
-            log.debug('Error while retrieving the user profile photo. Error: {}'.format(e))
+            log.debug(f'Error while retrieving the user profile photo. Error: {e}')
             return None
 
         if not response:
@@ -323,7 +323,7 @@ class Directory(ApiComponent):
         """ Returns the current logged-in user"""
 
         if self.main_resource != ME_RESOURCE:
-            raise ValueError("Can't get the current user. The main resource must be set to '{}'".format(ME_RESOURCE))
+            raise ValueError(f"Can't get the current user. The main resource must be set to '{ME_RESOURCE}'")
 
         url = self.build_url('')  # target main_resource
         return self._get_user(url, query=query)
