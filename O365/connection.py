@@ -100,7 +100,7 @@ class Protocol:
         self.protocol_url: str = protocol_url or self._protocol_url
         self.protocol_scope_prefix: str = protocol_scope_prefix or ''
         self.api_version: str = api_version
-        self.service_url: str = '{}{}/'.format(protocol_url, api_version)
+        self.service_url: str = f'{protocol_url}{api_version}/'
         self.default_resource: str = default_resource or ME_RESOURCE
         self.use_default_casing: bool = True if casing_function is None else False
         self.casing_function: Callable = casing_function or to_camel_case
@@ -203,7 +203,7 @@ class Protocol:
         """ Inserts the protocol scope prefix if required"""
         if self.protocol_scope_prefix:
             if not scope.startswith(self.protocol_scope_prefix):
-                return '{}{}'.format(self.protocol_scope_prefix, scope)
+                return f'{self.protocol_scope_prefix}{scope}'
         return scope
 
 
@@ -315,7 +315,7 @@ class MSBusinessCentral365Protocol(Protocol):
             _version = "1.0"
             _environment = ''
 
-        self._protocol_url = "{}v{}{}/api/".format(self._protocol_url, _version, _environment)
+        self._protocol_url = f"{self._protocol_url}v{_version}{_environment}/api/"
 
         super().__init__(protocol_url=self._protocol_url,
                          api_version=api_version,
@@ -412,7 +412,7 @@ class Connection:
 
         self._auth_flow_type = auth_flow_type  # 'authorization', 'credentials', 'password', or 'public'
         if auth_flow_type in ('credentials', 'password') and tenant_id == 'common':
-            raise ValueError('When using the "credentials", or "password" auth_flow the "tenant_id" must be set')
+            raise ValueError('When using the "credentials" or "password" auth_flow, the "tenant_id" must be set')
 
         self.auth: Tuple = credentials
         self.scopes: Optional[List[str]] = scopes
@@ -495,23 +495,19 @@ class Connection:
         """
         if proxy_server and proxy_port:
             if proxy_username and proxy_password:
-                proxy_uri = "{}:{}@{}:{}".format(proxy_username,
-                                                 proxy_password,
-                                                 proxy_server,
-                                                 proxy_port)
+                proxy_uri = f"{proxy_username}:{proxy_password}@{proxy_server}:{proxy_port}"
             else:
-                proxy_uri = "{}:{}".format(proxy_server,
-                                           proxy_port)
+                proxy_uri = f"{proxy_server}:{proxy_port}"
 
             if proxy_http_only is False:
                 self.proxy = {
-                    "http": "http://{}".format(proxy_uri),
-                    "https": "https://{}".format(proxy_uri)
+                    "http": f"http://{proxy_uri}",
+                    "https": f"https://{proxy_uri}"
                 }
             else:
                 self.proxy = {
-                    "http": "http://{}".format(proxy_uri),
-                    "https": "http://{}".format(proxy_uri)
+                    "http": f"http://{proxy_uri}",
+                    "https": f"http://{proxy_uri}"
                 }
 
     @property
@@ -588,7 +584,7 @@ class Connection:
             raise ValueError('"auth_flow_type" must be "authorization", "password", "public" or "credentials"')
 
         if "access_token" not in result:
-            log.error('Unable to fetch auth token. Error: {}'.format(result.get("error")))
+            log.error(f'Unable to fetch auth token. Error: {result.get("error")} | Description: {result.get("error_description")}')
             return False
 
         if store_token:
@@ -716,7 +712,7 @@ class Connection:
                         2) * 1000  # difference in milliseconds
             if dif < self.requests_delay:
                 sleep_for = (self.requests_delay - dif)
-                log.debug('Sleeping for {} milliseconds'.format(sleep_for))
+                log.debug(f'Sleeping for {sleep_for} milliseconds')
                 time.sleep(sleep_for / 1000)  # sleep needs seconds
         self._previous_request_at = time.time()
 
@@ -742,7 +738,7 @@ class Connection:
                 if key not in kwargs['headers']:
                     kwargs['headers'][key] = value
                 elif key == 'Prefer' and key in kwargs['headers']:
-                    kwargs['headers'][key] = "{}, {}".format(kwargs['headers'][key], value)
+                    kwargs['headers'][key] = f"{kwargs['headers'][key]}, {value}"
 
         if method == 'get':
             kwargs.setdefault('allow_redirects', True)

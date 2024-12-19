@@ -63,7 +63,7 @@ class Account:
 
     def __repr__(self):
         if self.con.auth:
-            return 'Account Client Id: {}'.format(self.con.auth[0])
+            return f'Account Client Id: {self.con.auth[0]}'
         else:
             return 'Unidentified Account'
 
