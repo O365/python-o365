@@ -116,11 +116,11 @@ scopes = ['my_required_scopes']  # you can use scope helpers here (see Permissio
 account = Account(credentials)
 
 if not account.is_authenticated:  # will check if there is a token and has not expired
-    # ask for a login
-    # console based authentication See Authentication for other flows
-    account.authenticate(scopes=scopes)
+    # ask for a login using console based authentication. See Authentication for other flows
+    if account.authenticate(scopes=scopes) is False:
+        raise RuntimeError('Authentication Failed')
 
-# now we are autheticated
+# now we are authenticated
 # use the library from now on
 
 # ...
