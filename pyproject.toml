@@ -12,3 +12,4 @@ dependencies = [
     "tzdata>=2024.2",
     "tzlocal>=5.2",
 ]
+dynamic = ["license", "authors", "maintainers", "classifiers"]
