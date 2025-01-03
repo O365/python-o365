@@ -4,36 +4,89 @@ Getting Started
 
 Installation
 ============
-* Stable Version from Pypi
-    https://pypi.org has the latest stable package.
+Stable Version (PyPI)
+---------------------
+The latest stable package is hosted on `PyPI <https://pypi.org>`_. 
 
-    For installing the package using pip, run :code:`pip install o365`
+To install using pip, run:
 
-* Latest Development Version from Github
-    Github has the latest development version, which may have more features but could be unstable.
-    So **Use as own risk**
+.. code-block:: console
 
-    For installing code from github, run :code:`pip install git+https://github.com/O365/python-o365.git`
+   pip install o365
+
+Latest Development Version (GitHub)
+-----------------------------------
+The latest development version is available on `GitHub <https://github.com/O365/python-o365>`_. 
+This version may include new features but could be unstable. **Use at your own risk**.
+
+To install from GitHub, run:
+
+.. code-block:: console
+
+   pip install git+https://github.com/O365/python-o365.git
 
 
-OAuth Setup (Pre Requisite)
-===========================
-You will need to register your application at `Microsoft Apps <https://apps.dev.microsoft.com/>`_. Steps below
+OAuth Setup (Prerequisite)
+==========================
+Before you can use python-o365, you must register your application in the 
+`Microsoft Entra Admin Center <https://entra.microsoft.com/>`_. Follow the steps below:
 
-#. Login to https://apps.dev.microsoft.com/
-#. Create an app, note your app id (**client_id**)
-#. Generate a new password (**client_secret**) under **Application Secrets** section
-#. Under the **Platform** section, add a new Web platform and set "https://outlook.office365.com/owa/" as the redirect URL
-#. Under "Microsoft Graph Permissions" section, Add the below delegated permission (or based on what scopes you plan to use)
-    #. email
-    #. Mail.ReadWrite
-    #. Mail.Send
-    #. User.Read
+1. **Log in to the Microsoft Entra Admin Center**
 
-#. Note the **client_id** and **client_secret** as they will be using for establishing the connection through the api
+   - Visit https://entra.microsoft.com/ and sign in.
+
+2. **Create a new application and note its App (client) ID**
+   
+   - In the left navigation bar, select **Applications** > **App registrations**.
+   - Click **+ New registration**.
+   - Provide a **Name** for the application and keep all defaults.
+   - From the **Overview** of your new application, copy the (client_id) **Application (client) ID** for later reference.
+
+3. **Generate a new password (client_secret)**
+   
+   - In the **Overview** window, select **Certificates & secrets**.
+   - Click **New client secret**.
+   - In the **Add a client secret** window, provide a Description and Expiration, then click **Add**.
+   - Save the (client_secret) **Value** for later reference.
+
+4. **Add redirect URIs**
+   
+   - In the **Overview** window, click **Add a redirect URI**.
+   - Click **+ Add a platform**, then select **Web**.
+   - Add ``https://outlook.office365.com/owa/`` as the redirect URI.
+   - Check **Access tokens (used for implicit flows)** and **ID tokens (used for implicit and hybrid flows)**.
+   - Click **Configure**.
+
+5. **Add required permissions**
+   
+   - In the left navigation bar, select **API permissions**.
+   - Click **+ Add a permission**.
+   - Under **Microsoft Graph**, select **Delegated permissions**.
+   - Add the delegated permissions you plan to use (for example):
+     
+     - email
+     - Mail.ReadWrite
+     - Mail.Send
+     - User.Read
+     - offline_access
+
+   - Click **Add permissions**.
 
 
 Basic Usage
 ===========
+Here is a simple example showing how to send an email using python-o365. 
+Create a Python file and add the following code:
 
-Work in progress
+.. code-block:: python
+
+   from O365 import Account
+
+   credentials = ('client_id', 'client_secret')
+   account = Account(credentials)
+
+   m = account.new_message()
+   m.to.add('to_example@example.com')
+   m.subject = 'Testing!'
+   m.body = "George Best quote: I've stopped drinking, but only while I'm asleep."
+   m.send()
