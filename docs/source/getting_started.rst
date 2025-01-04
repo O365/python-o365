@@ -53,9 +53,8 @@ Before you can use python-o365, you must register your application in the
    
    - In the **Overview** window, click **Add a redirect URI**.
    - Click **+ Add a platform**, then select **Web**.
-   - Add ``https://outlook.office365.com/owa/`` as the redirect URI.
-   - Check **Access tokens (used for implicit flows)** and **ID tokens (used for implicit and hybrid flows)**.
-   - Click **Configure**.
+   - Add ``https://login.microsoftonline.com/common/oauth2/nativeclient`` as the redirect URI.
+   - Click **Save**.
 
 5. **Add required permissions**
    
@@ -64,10 +63,11 @@ Before you can use python-o365, you must register your application in the
    - Under **Microsoft Graph**, select **Delegated permissions**.
    - Add the delegated permissions you plan to use (for example):
      
-     - email
+     - Mail.Read
      - Mail.ReadWrite
      - Mail.Send
      - User.Read
+     - User.ReadBasic.All
      - offline_access
 
    - Click **Add permissions**.
