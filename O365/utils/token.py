@@ -139,6 +139,22 @@ class BaseTokenBackend(TokenCache):
         ))
         return results[0] if results else None
 
+    def get_id_token(self, *, username: Optional[str] = None) -> Optional[dict]:
+        """
+        Retrieve the stored id token
+        If username is None, then the first id token will be retrieved
+        :param str username: The username from which retrieve the id token
+        """
+        home_account_id = self._get_home_account_id(username)
+        query = None
+        if home_account_id:
+            query = {'home_account_id': home_account_id}
+        results = list(self.search(
+            TokenCache.CredentialType.ID_TOKEN,
+            query=query
+        ))
+        return results[0] if results else None
+
     def get_token_scopes(self, *, username: Optional[str] = None,
                          remove_reserved: bool = False) -> Optional[list]:
         """
@@ -155,6 +171,53 @@ class BaseTokenBackend(TokenCache):
                     scopes = [scope for scope in scopes if scope not in RESERVED_SCOPES]
                 return scopes
         return None
+
+    def remove_data(self, *, username: Optional[str] = None) -> bool:
+        """
+        Removes all tokens and all related data from the token cache for the specified username.
+        If username is None, then the data of the first user account found will be removed.
+        Returns success or failure.
+        :param str username: The username from which remove the tokens
+        """
+        home_account_id = self._get_home_account_id(username)
+        if not home_account_id:
+            return False
+
+        query = {'home_account_id': home_account_id}
+
+        # remove id token
+        results = list(self.search(
+            TokenCache.CredentialType.ID_TOKEN,
+            query=query
+        ))
+        for id_token in results:
+            self.remove_idt(id_token)
+
+        # remove access token
+        results = list(self.search(
+            TokenCache.CredentialType.ACCESS_TOKEN,
+            query=query
+        ))
+        for access_token in results:
+            self.remove_at(access_token)
+
+        # remove refresh tokens
+        results = list(self.search(
+            TokenCache.CredentialType.REFRESH_TOKEN,
+            query=query
+        ))
+        for refresh_token in results:
+            self.remove_rt(refresh_token)
+
+        # remove accounts
+        results = list(self.search(
+            TokenCache.CredentialType.ACCOUNT,
+            query=query
+        ))
+        for account in results:
+            self.remove_account(account)
+
+        return True
 
     def add(self, event, **kwargs) -> None:
         super().add(event, **kwargs)
