@@ -127,7 +127,7 @@ if not account.is_authenticated:  # will check if there is a token and has not e
 ```
 
 ## Authentication
-You can only authenticate using oauth athentication as Microsoft deprecated basic auth on November 1st 2018.
+You can only authenticate using oauth athentication because Microsoft deprecated basic auth on November 1st 2018.
 
 There are currently three authentication methods:
 
@@ -166,26 +166,39 @@ The `Connection` Class handles the authentication.
 This section is explained using Microsoft Graph Protocol, almost the same applies to the Office 365 REST API.
 
 ##### Authentication Steps
-1. To allow authentication you first need to register your application at [Azure App Registrations](https://portal.azure.com/#blade/Microsoft_AAD_RegisteredApps/ApplicationsListBlade).
+1. **Log in to the Microsoft Entra Admin Center**  
+   - Visit [https://entra.microsoft.com/](https://entra.microsoft.com/) and sign in.
 
-    1. Login at [Azure Portal (App Registrations)](https://portal.azure.com/#blade/Microsoft_AAD_RegisteredApps/ApplicationsListBlade)
-    1. Create an app. Set a name.
-    1. In Supported account types choose "Accounts in any organizational directory and personal Microsoft accounts (e.g. Skype, Xbox, Outlook.com)", if you are using a personal account.
-    1. Set the redirect uri (Web) to: `https://login.microsoftonline.com/common/oauth2/nativeclient` and click register. This needs to be inserted into the "Redirect URI" text box as simply checking the check box next to this link seems to be insufficent. This is the default redirect uri used by this library, but you can use any other if you want.
-    1. Write down the Application (client) ID. You will need this value.
-    1. Under "Certificates & secrets", generate a new client secret. Set the expiration preferably to never. Write down the value of the client secret created now. It will be hidden later on.
-    1. Under Api Permissions:
-        - When authenticating "on behalf of a user":
-            1. add the **delegated permissions** for Microsoft Graph you want (see scopes).
-            1. It is highly recommended to add "offline_access" permission. If not the user you will have to re-authenticate every hour.
-        - When authenticating "with your own identity":
-            1. add the **application permissions** for Microsoft Graph you want.
-            1. Click on the Grant Admin Consent button (if you have admin permissions) or wait until the admin has given consent to your application.
+1. **Create a new application and note its App (client) ID**  
+   - In the left navigation bar, select **Applications** > **App registrations**.  
+   - Click **+ New registration**.  
+   - Provide a **Name** for the application and keep all defaults.  
+   - From the **Overview** of your new application, copy the (client_id) **Application (client) ID** for later reference.
 
-        As an example, to read and send emails use:
-        1. Mail.ReadWrite
-        1. Mail.Send
-        1. User.Read
+1. **Generate a new password (client_secret)**  
+   - In the **Overview** window, select **Certificates & secrets**.  
+   - Click **New client secret**.  
+   - In the **Add a client secret** window, provide a Description and Expiration, then click **Add**.  
+   - Save the (client_secret) **Value** for later reference.
+
+1. **Add redirect URIs**  
+   - In the **Overview** window, click **Add a redirect URI**.  
+   - Click **+ Add a platform**, then select **Web**.  
+   - Add `https://login.microsoftonline.com/common/oauth2/nativeclient` as the redirect URI.  
+   - Click **Save**.
+
+1. **Add required permissions**  
+   - In the left navigation bar, select **API permissions**.  
+   - Click **+ Add a permission**.  
+   - Under **Microsoft Graph**, select **Delegated permissions**.  
+   - Add the delegated permissions you plan to use (for example):
+     - Mail.Read
+     - Mail.ReadWrite
+     - Mail.Send
+     - User.Read
+     - User.ReadBasic.All
+     - offline_access
+   - Click **Add permissions**.
 
 1. Then you need to login for the first time to get the access token that will grant access to the user resources.
 
