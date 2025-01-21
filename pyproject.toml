@@ -12,3 +12,10 @@ dependencies = [
     "tzdata>=2024.2",
     "tzlocal>=5.2",
 ]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3.4",
+    "sphinx>=7.4.7",
+    "sphinx-rtd-theme>=3.0.2",
+]

@@ -12,15 +12,16 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-# import os
-# import sys
-# sys.path.insert(0, os.path.abspath('.'))
+import os
+import sys
+sys.path.insert(0, os.path.abspath('../..'))
+print(f"PATH ES: {os.path.abspath('../../O365')}")
 
 
 # -- Project information -----------------------------------------------------
 project = 'O365'
-copyright = '2018, Narcolapser'
-author = 'Narcolapser'
+copyright = '2024, alejcas'
+author = 'alejcas'
 
 # The short X.Y version
 version = ''
@@ -63,7 +64,7 @@ master_doc = 'index'
 #
 # This is also used if you do content translation via gettext catalogs.
 # Usually you set "language" from the command line for these cases.
-language = None
+language = 'en'
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
@@ -145,7 +146,7 @@ latex_elements = {
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
     (master_doc, 'O365.tex', 'O365 Documentation',
-     'Narcolapser', 'manual'),
+     author, 'manual'),
 ]
 
 # -- Options for manual page output ------------------------------------------
