@@ -221,8 +221,8 @@ This section is explained using Microsoft Graph Protocol, almost the same applie
 
     - When authenticating on behalf of a user:
 
-        > [!IMPORTANT]
-        > **Important:** In case you can't secure the client secret you can use the auth flow type 'public' which only requires the client id.
+> [!IMPORTANT]
+>  In case you can't secure the client secret you can use the auth flow type 'public' which only requires the client id.
 
         1. Instantiate an `Account` object with the credentials (client id and client secret).
         1. Call `account.authenticate` and pass the scopes you want (the ones you previously added on the app registration portal).
