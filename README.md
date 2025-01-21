@@ -104,8 +104,6 @@ Project dependencies installed by pip:
 ## Usage
 The first step to be able to work with this library is to register an application and retrieve the auth token. See [Authentication](#authentication).
 
-It is highly recommended to add the "offline_access" permission. Otherwise the library will only have access to the user resources for 1 hour. See [Permissions and Scopes](#permissions-and-scopes).
-
 With the access token retrieved and stored you will be able to perform api calls to the service.
 
 A common pattern to check for authentication and use the library is this one:
@@ -129,7 +127,8 @@ if not account.is_authenticated:  # will check if there is a token and has not e
 ## Authentication
 You can only authenticate using oauth authentication because Microsoft deprecated basic auth on November 1st 2018.
 
-Until version 3.0 this library was using a custom authentication mechanism. On 3.0 we moved to using msal to achieve the authentication.
+> [!IMPORTANT]
+> Until version 3.0 this library was using a custom authentication mechanism. On 3.0 we moved to using **[msal](https://learn.microsoft.com/es-es/entra/identity-platform/msal-overview)** to achieve the authentication.
 
 There are currently three authentication methods:
 
@@ -141,6 +140,7 @@ Same as the former but for public apps where the client secret can't be secured.
 - [Authenticate with your own identity](https://docs.microsoft.com/en-us/graph/auth-v2-service?context=graph%2Fapi%2F1.0&view=graph-rest-1.0):
 This will use your own identity (the app identity). This oauth flow is called **client credentials grant flow**.
 
+    > [!NOTE]
     > 'Authenticate with your own identity' is not an allowed method for **Microsoft Personal accounts**.
 
 When to use one or the other and requirements:
@@ -212,6 +212,9 @@ This section is explained using Microsoft Graph Protocol, almost the same applie
      - offline_access
    - Click **Add permissions**.
 
+    > [!IMPORTANT]
+    > The offline_access permission is required for the refresh token to work.
+
 1. Then you need to log in for the first time to get the access token that will grant access to the user resources.
 
     To authenticate (login) you can use [different authentication interfaces](#different-authentication-interfaces). On the following examples we will be using the Console Based Interface, but you can use any one.
@@ -273,12 +276,13 @@ This section is explained using Microsoft Graph Protocol, almost the same applie
 
 1. At this point you will have an access token stored that will provide valid credentials when using the api.
 
-    The access token only lasts **60 minutes**, but the app will automatically request new access tokens.
+    The access token only lasts **60 minutes**, but the app will automatically request new access tokens if you added the 'offline access' permission.
 
-    When using the "on behalf of a user" authentication method this is accomplished through the refresh tokens (if and only if you added the "offline_access" permission), but note that a refresh token only lasts for 90 days. So you must use it before or you will need to request a new access token again (no new consent needed by the user, just a login).
+    When using the "on behalf of a user" authentication method this is accomplished through the refresh tokens (if and only if you added the "offline_access" permission), but note that a refresh token only lasts for 90 days. So you must use it before, or you will need to request a new access token again (no new consent needed by the user, just a login).
     If your application needs to work for more than 90 days without user interaction and without interacting with the API, then you must implement a periodic call to `Connection.refresh_token` before the 90 days have passed.
 
-    **Take care: the access (and refresh) token must remain protected from unauthorized users.**
+    > [!IMPORTANT]
+    > Take care: the access (and refresh) token must **remain protected from unauthorized users**.
 
     Under the "on behalf of a user" authentication method, if you change the scope requested, then the current token won't work, and you will need the user to give consent again on the application to gain access to the new scopes requested.
 
