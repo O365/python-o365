@@ -281,8 +281,8 @@ This section is explained using Microsoft Graph Protocol, almost the same applie
     When using the "on behalf of a user" authentication method this is accomplished through the refresh tokens (if and only if you added the "offline_access" permission), but note that a refresh token only lasts for 90 days. So you must use it before, or you will need to request a new access token again (no new consent needed by the user, just a login).
     If your application needs to work for more than 90 days without user interaction and without interacting with the API, then you must implement a periodic call to `Connection.refresh_token` before the 90 days have passed.
 
-    > [!IMPORTANT]
-    > Take care: the access (and refresh) token must **remain protected from unauthorized users**.
+> [!IMPORTANT]
+> Take care: the access (and refresh) token must **remain protected from unauthorized users**.
 
     Under the "on behalf of a user" authentication method, if you change the scope requested, then the current token won't work, and you will need the user to give consent again on the application to gain access to the new scopes requested.
 
