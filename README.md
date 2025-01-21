@@ -212,8 +212,8 @@ This section is explained using Microsoft Graph Protocol, almost the same applie
      - offline_access
    - Click **Add permissions**.
 
-    > [!IMPORTANT]
-    > The offline_access permission is required for the refresh token to work.
+> [!IMPORTANT]
+> The offline_access permission is required for the refresh token to work.
 
 1. Then you need to log in for the first time to get the access token that will grant access to the user resources.
 
@@ -221,6 +221,7 @@ This section is explained using Microsoft Graph Protocol, almost the same applie
 
     - When authenticating on behalf of a user:
 
+        > [!IMPORTANT]
         > **Important:** In case you can't secure the client secret you can use the auth flow type 'public' which only requires the client id.
 
         1. Instantiate an `Account` object with the credentials (client id and client secret).
