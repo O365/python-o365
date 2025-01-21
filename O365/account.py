@@ -85,7 +85,7 @@ class Account:
                      handle_consent: Callable = consent_input_token, **kwargs) -> bool:
         """ Performs the oauth authentication flow using the console resulting in a stored token.
         It uses the credentials passed on instantiation.
-        Returns True if succeded otherwise False.
+        Returns True if succeeded otherwise False.
 
         :param scopes: list of protocol user scopes to be converted
          by the protocol or scope helpers

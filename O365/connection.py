@@ -554,7 +554,8 @@ class Connection:
                       store_token: bool = True,
                       **kwargs) -> bool:
         """ Authenticates for the specified url and gets the token, save the
-        token for future based if requested
+        token for future based if requested. This will remove any other tokens stored
+        for the same username that is currently authenticating.
 
         :param str or None authorization_url: url given by the authorization flow
         :param dict flow: dict object holding the data used in get_authorization_url

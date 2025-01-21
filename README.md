@@ -324,7 +324,7 @@ For the "with your own identity" authentication method, you can just use `accoun
     def auth_step_two_callback():
         account = Account(credentials)
 
-        # retreive the state saved in auth_step_one
+        # retrieve the state saved in auth_step_one
         my_saved_flow_str = my_db.get_flow()  # example...
         my_saved_flow = deserialize(my_saved_flow_str)  # convert from a string to a dict using json for example.
 
@@ -530,7 +530,7 @@ The method should return three posible values:
 - **False**: then the Connection will NOT refresh the token.
 - **None**: then this method already executed the refresh and therefore the Connection does not have to.
 
-By default, this always returns True as it's asuming there is are no parallel connections running at once.
+By default, this always returns True as it's assuming there is are no parallel connections running at once.
 
 There are two examples of this method in the examples folder [here](https://github.com/O365/python-o365/blob/master/examples/token_backends.py).
 
