@@ -1,4 +1,6 @@
-from typing import Type, Tuple, Optional, Callable
+from typing import Type, Tuple, Optional, Callable, List
+import warnings
+
 from .connection import Connection, Protocol, MSGraphProtocol, MSOffice365Protocol
 from .utils import ME_RESOURCE, consent_input_token
 
@@ -29,19 +31,15 @@ class Account:
             raise ValueError("'protocol' must be a subclass of Protocol")
 
         auth_flow_type = kwargs.get('auth_flow_type', 'authorization')
-        scopes = kwargs.get('scopes', None)  # retrieve scopes
 
-        if auth_flow_type in ('authorization', 'public'):
-            # convert the provided scopes to protocol scopes:
-            if scopes is not None:
-                kwargs['scopes'] = self.protocol.get_scopes_for(scopes)
-        elif auth_flow_type == 'credentials':
-            # for client credential grant flow solely: add the default scope if it's not provided
-            if not scopes:
-                kwargs['scopes'] = [self.protocol.prefix_scope('.default')]
-            else:
-                raise ValueError(f'Auth flow type "{auth_flow_type}" does not require scopes')
+        if auth_flow_type not in ['authorization', 'public', 'credentials', 'password']:
+            raise ValueError('"auth_flow_type" must be "authorization", "credentials", "password" or "public"')
 
+        scopes = kwargs.get('scopes', None)
+        if scopes:
+            warnings.warn("Since 3.0 scopes are only needed during authentication.", DeprecationWarning)
+
+        if auth_flow_type == 'credentials':
             # set main_resource to blank when it's the 'ME' resource
             if self.protocol.default_resource == ME_RESOURCE:
                 self.protocol.default_resource = ''
@@ -49,16 +47,11 @@ class Account:
                 main_resource = ''
 
         elif auth_flow_type == 'password':
-            kwargs['scopes'] = self.protocol.get_scopes_for(scopes) if scopes else [
-                self.protocol.prefix_scope('.default')]
-
             # set main_resource to blank when it's the 'ME' resource
             if self.protocol.default_resource == ME_RESOURCE:
                 self.protocol.default_resource = ''
             if main_resource == ME_RESOURCE:
                 main_resource = ''
-        else:
-            raise ValueError('"auth_flow_type" must be "authorization", "credentials", "password" or "public"')
 
         kwargs['username'] = username
 
@@ -87,27 +80,18 @@ class Account:
 
     def authenticate(self, *, scopes: Optional[list] = None,
                      handle_consent: Callable = consent_input_token, **kwargs) -> bool:
-        """ Performs the oauth authentication flow using the console resulting in a stored token.
+        """ Performs the console authentication flow resulting in a stored token.
         It uses the credentials passed on instantiation.
         Returns True if succeeded otherwise False.
 
         :param scopes: list of protocol user scopes to be converted
-         by the protocol or scope helpers
+         by the protocol or scope helpers or specific protocol scopes
         :param handle_consent: a function to handle the consent process by default just input for the token url
         :param kwargs: other configurations to be passed to the
          Connection.get_authorization_url and Connection.request_token methods
         """
 
         if self.con.auth_flow_type in ('authorization', 'public'):
-            if scopes is not None:
-                if self.con.scopes is not None:
-                    raise RuntimeError('The scopes must be set either at the Account '
-                                       'instantiation or on the account.authenticate method.')
-                self.con.scopes = self.protocol.get_scopes_for(scopes)
-            else:
-                if self.con.scopes is None:
-                    raise ValueError('The scopes are not set. Define the scopes requested.')
-
             consent_url, flow = self.con.get_authorization_url(**kwargs)
 
             token_url = handle_consent(consent_url)
@@ -126,8 +110,68 @@ class Account:
 
         elif self.con.auth_flow_type in ('credentials', 'password'):
             return self.con.request_token(None, requested_scopes=scopes, **kwargs)
+
         else:
             raise ValueError('"auth_flow_type" must be "authorization", "public", "password" or "credentials"')
+
+    def get_authorization_url(self,
+                              requested_scopes: List[str],
+                              redirect_uri: Optional[str] = None,
+                              **kwargs) -> Tuple[str, dict]:
+        """ Initializes the oauth authorization flow, getting the
+        authorization url that the user must approve.
+
+        :param list[str] requested_scopes: list of scopes to request access for
+        :param str redirect_uri: redirect url configured in registered app
+        :param kwargs: allow to pass unused params in conjunction with Connection
+        :return: authorization url and the flow dict
+        """
+
+        # convert request scopes based on the defined protocol
+        requested_scopes = self.protocol.get_scopes_for(requested_scopes)
+
+        return self.con.get_authorization_url(requested_scopes, redirect_uri=redirect_uri, **kwargs)
+
+    def request_token(self, authorization_url: Optional[str], *,
+                      flow: dict = None,
+                      requested_scopes: Optional[List[str]] = None,
+                      store_token: bool = True,
+                      **kwargs) -> bool:
+        """ Authenticates for the specified url and gets the oauth token data. Saves the
+        token in the backend if store_token is True. This will replace any other tokens stored
+        for the same username and scopes requested.
+        If the token data is successfully requested, then this method will try to set the username if
+        not previously set.
+
+        :param str or None authorization_url: url given by the authorization flow or None if it's client credentials
+        :param dict flow: dict object holding the data used in get_authorization_url
+        :param list[str] requested_scopes: list of scopes to request access for
+        :param bool store_token: True to store the token in the token backend,
+         so you don't have to keep opening the auth link and
+         authenticating every time
+        :param kwargs: allow to pass unused params in conjunction with Connection
+        :return: Success/Failure
+        :rtype: bool
+        """
+        if self.con.auth_flow_type == 'credentials':
+            if not requested_scopes:
+                requested_scopes = [self.protocol.prefix_scope('.default')]
+            else:
+                if len(requested_scopes) > 1 or requested_scopes[0] != self.protocol.prefix_scope('.default'):
+                    raise ValueError('Provided scope for auth flow type "credentials" does not match '
+                                     'default scope for the current protocol')
+        elif self.con.auth_flow_type == 'password':
+            if requested_scopes:
+                requested_scopes = self.protocol.get_scopes_for(requested_scopes)
+            else:
+                requested_scopes = [self.protocol.prefix_scope('.default')]
+        else:
+            raise ValueError(f'Auth flow type "{self.con.auth_flow_type}" does not require scopes')
+
+        return self.con.request_token(authorization_url,
+                                      flow=flow,
+                                      requested_scopes=requested_scopes,
+                                      store_token=store_token, **kwargs)
 
     @property
     def username(self) -> Optional[str]:

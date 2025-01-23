@@ -342,7 +342,7 @@ class Connection:
 
     _allowed_methods = ['get', 'post', 'put', 'patch', 'delete']
 
-    def __init__(self, credentials: Tuple, *, scopes: Optional[List[str]] = None,
+    def __init__(self, credentials: Tuple, *,
                  proxy_server: Optional[str] = None, proxy_port: Optional[int] = 8080,
                  proxy_username: Optional[str] = None, proxy_password: Optional[str] = None,
                  proxy_http_only: bool = False, requests_delay: int = 200, raise_http_errors: bool = True,
@@ -357,9 +357,7 @@ class Connection:
         """ Creates an API connection object
 
         :param tuple credentials: a tuple of (client_id, client_secret)
-
          Generate client_id and client_secret in https://entra.microsoft.com/
-        :param list[str] scopes: list of scopes to request access to
         :param str proxy_server: the proxy server
         :param int proxy_port: the proxy port, defaults to 8080
         :param str proxy_username: the proxy username
@@ -413,7 +411,6 @@ class Connection:
             raise ValueError('When using the "credentials" or "password" auth_flow, the "tenant_id" must be set')
 
         self.auth: Tuple = credentials
-        self.scopes: Optional[List[str]] = scopes
         self.tenant_id: str = tenant_id
 
         self.default_headers: Dict = default_headers or dict()
@@ -541,8 +538,10 @@ class Connection:
             self._msal_client = client
         return self._msal_client
 
-    def get_authorization_url(self, requested_scopes: Optional[List[str]] = None,
-                              redirect_uri: Optional[str] = None, **kwargs) -> Tuple[str, dict]:
+    def get_authorization_url(self,
+                              requested_scopes: List[str],
+                              redirect_uri: Optional[str] = None,
+                              **kwargs) -> Tuple[str, dict]:
         """ Initializes the oauth authorization flow, getting the
         authorization url that the user must approve.
 
@@ -554,16 +553,19 @@ class Connection:
 
         redirect_uri = redirect_uri or self.oauth_redirect_url
 
-        scopes = requested_scopes or self.scopes
-        if not scopes:
+        if self.auth_flow_type not in ('authorization', 'public'):
+            raise RuntimeError('This method is only valid for auth flow type "authorization" and "public"')
+
+        if not requested_scopes:
             raise ValueError('Must provide at least one scope')
 
-        flow = self.msal_client.initiate_auth_code_flow(scopes=scopes, redirect_uri=redirect_uri)
+        flow = self.msal_client.initiate_auth_code_flow(scopes=requested_scopes, redirect_uri=redirect_uri)
 
         return flow.get('auth_uri'), flow
 
     def request_token(self, authorization_url: Optional[str], *,
-                      flow: dict = None,
+                      flow: Optional[dict] = None,
+                      requested_scopes: Optional[List[str]] = None,
                       store_token: bool = True,
                       **kwargs) -> bool:
         """ Authenticates for the specified url and gets the oauth token data. Saves the
@@ -574,6 +576,7 @@ class Connection:
 
         :param str or None authorization_url: url given by the authorization flow or None if it's client credentials
         :param dict flow: dict object holding the data used in get_authorization_url
+        :param list[str] requested_scopes: list of scopes to request access for
         :param bool store_token: True to store the token in the token backend,
          so you don't have to keep opening the auth link and
          authenticating every time
@@ -583,18 +586,28 @@ class Connection:
         """
 
         if self.auth_flow_type in ('authorization', 'public'):
+            if not authorization_url:
+                raise ValueError(f'Authorization url not provided for oauth flow {self.auth_flow_type}')
             # parse the authorization url to obtain the query string params
             parsed = urlparse(authorization_url)
             query_params_dict = {k: v[0] for k, v in parse_qs(parsed.query).items()}
 
             result = self.msal_client.acquire_token_by_auth_code_flow(flow, auth_response=query_params_dict)
+
         elif self.auth_flow_type == 'credentials':
-            result = self.msal_client.acquire_token_for_client(scopes=self.scopes)
+            if requested_scopes is None:
+                raise ValueError(f'Auth flow type "credentials" needs the default scope for a resource.'
+                                 f' For example: https://graph.microsoft.com/.default')
+
+            result = self.msal_client.acquire_token_for_client(scopes=requested_scopes)
+
         elif self.auth_flow_type == 'password':
+            if not requested_scopes:
+                raise ValueError('Auth flow type "password" requires scopes and none where given')
             result = self.msal_client.acquire_token_by_username_password(
                 username=self.username,
                 password=self.password,
-                scopes=self.scopes
+                scopes=requested_scopes
             )
         else:
             raise ValueError('"auth_flow_type" must be "authorization", "password", "public" or "credentials"')
@@ -706,15 +719,14 @@ class Connection:
                 # The backend has checked that we can refresh the token
                 log.debug('Refreshing access token')
 
-                if self.scopes is None:
-                    # This will set the connection scopes from the scopes set in the stored token
-                    self.scopes = self.token_backend.get_token_scopes(
-                        username=self.username,
-                        remove_reserved=True
-                    )
+                # This will set the connection scopes from the scopes set in the stored token
+                scopes = self.token_backend.get_token_scopes(
+                    username=self.username,
+                    remove_reserved=True
+                )
 
                 result = self.msal_client.acquire_token_silent_with_error(
-                    scopes=self.scopes,
+                    scopes=scopes,
                     account=self.msal_client.get_accounts(username=self.username)[0]
                 )
                 if result is None:
@@ -962,6 +974,7 @@ class Connection:
         if hasattr(self, 'naive_session') and self.naive_session is not None:
             self.naive_session.close()
 
+
 def oauth_authentication_flow(client_id: str, client_secret: str, scopes: List[str] = None,
                               protocol: Optional[Protocol] = None, **kwargs) -> bool:
     """ A helper method to perform the OAuth2 authentication flow.
@@ -983,10 +996,9 @@ def oauth_authentication_flow(client_id: str, client_secret: str, scopes: List[s
 
     protocol = protocol or MSGraphProtocol()
 
-    con = Connection(credentials, scopes=protocol.get_scopes_for(scopes),
-                     **kwargs)
+    con = Connection(credentials, **kwargs)
 
-    consent_url, flow = con.get_authorization_url(**kwargs)
+    consent_url, flow = con.get_authorization_url(requested_scopes=protocol.get_scopes_for(scopes), **kwargs)
 
     print('Visit the following url to give consent:')
     print(consent_url)
