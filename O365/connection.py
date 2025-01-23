@@ -22,7 +22,7 @@ log = logging.getLogger(__name__)
 
 O365_API_VERSION = 'v2.0'
 GRAPH_API_VERSION = 'v1.0'
-OAUTH_REDIRECT_URL = 'https://login.microsoftonline.com/common/oauth2/nativeclient'  # version <= 1.1.3.  : 'https://outlook.office365.com/owa/'
+OAUTH_REDIRECT_URL = 'https://login.microsoftonline.com/common/oauth2/nativeclient'
 
 RETRIES_STATUS_LIST = (
     429,  # Status code for TooManyRequests
@@ -359,7 +359,7 @@ class Connection:
 
         :param tuple credentials: a tuple of (client_id, client_secret)
 
-         Generate client_id and client_secret in https://apps.dev.microsoft.com
+         Generate client_id and client_secret in https://entra.microsoft.com/
         :param list[str] scopes: list of scopes to request access to
         :param str proxy_server: the proxy server
         :param int proxy_port: the proxy port, defaults to 8080
@@ -486,6 +486,7 @@ class Connection:
     def current_username(self, current_username: Optional[str]) -> None:
         if self._current_username == current_username:
             return
+        log.debug(f'Current username changed from {self._current_username} to {current_username}')
         self._current_username = current_username
 
         # if the user is changed and a valid session is set we must change the auth token in the session
@@ -601,11 +602,15 @@ class Connection:
             log.error(f'Unable to fetch auth token. Error: {result.get("error")} | Description: {result.get("error_description")}')
             return False
         else:
-            # extract from the result the home_account_id used in the authentication to retrieve his username
+            # extract from the result the home_account_id used in the authentication to retrieve its username
             id_token_claims = result.get('id_token_claims')
-            home_account_id = f"{id_token_claims.get('oid')}.{id_token_claims.get('tid')}"
-            # the next call will change the current_username, updating the session headers if session exists
-            self._set_current_username_from_token_backend(home_account_id=home_account_id)
+            if id_token_claims:
+                oid = id_token_claims.get('oid')
+                tid = id_token_claims.get('tid')
+                if oid and tid:
+                    home_account_id = f"{oid}.{tid}"
+                    # the next call will change the current_username, updating the session headers if session exists
+                    self._set_current_username_from_token_backend(home_account_id=home_account_id)
 
         if store_token:
             self.token_backend.save_token()
