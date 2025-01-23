@@ -353,7 +353,6 @@ class Connection:
                  verify_ssl: bool = True,
                  default_headers: dict = None,
                  store_token_after_refresh: bool = True,
-                 current_username: Optional[str] = None,
                  **kwargs):
         """ Creates an API connection object
 
@@ -387,16 +386,15 @@ class Connection:
             - 'credentials': also called client credentials grant flow using only the client id and secret.
                The secret can be certificate based authentication
             - 'password': using the username and password. Not recommended
-        :param str username: The user's email address to provide in case of auth_flow_type == 'password'
+        :param str username: The username the credentials will be taken from in the token backend.
+            If None, the username will be the first one found in the token backend.
+            The user's email address to provide in case of auth_flow_type == 'password'
         :param str password: The user's password to provide in case of auth_flow_type == 'password'
         :param float or tuple timeout: How long to wait for the server to send
             data before giving up, as a float, or a tuple (connect timeout, read timeout)
         :param JSONEncoder json_encoder: The JSONEncoder to use during the JSON serialization on the request.
         :param bool verify_ssl: set the verify flag on the requests library
         :param bool store_token_after_refresh: if after a token refresh the token backend should call save_token
-        :param str current_username: the current username the credentials will be taken from in the token backend.
-            If None, the current_username will be the first one found un the token backend. Only for auth_flow_type
-            authorization or public.
         :param dict kwargs: any extra params passed to Connection
         :raises ValueError: if credentials is not tuple of (client_id, client_secret)
         """
@@ -418,11 +416,10 @@ class Connection:
         self.scopes: Optional[List[str]] = scopes
         self.tenant_id: str = tenant_id
 
-        self.username: Optional[str] = username
         self.password: Optional[str] = password
 
-        self._current_username: Optional[str] = None
-        self.current_username: Optional[str] = current_username  # validate input
+        self._username: Optional[str] = None
+        self.username: Optional[str] = username  # validate input
 
         self.default_headers: Dict = default_headers or dict()
         self.store_token_after_refresh: bool = store_token_after_refresh
@@ -462,39 +459,38 @@ class Connection:
     def auth_flow_type(self) -> str:
         return self._auth_flow_type
 
-    def _set_current_username_from_token_backend(self, *, home_account_id: Optional[str] = None) -> None:
+    def _set_username_from_token_backend(self, *, home_account_id: Optional[str] = None) -> None:
         """
-        If token data is present, this will try to set current_username to the first account found
-         from the token_backend.
+        If token data is present, this will try to set the username. If home_account_id is not provided this will try
+        to set the username from the first account found on the token_backend.
         """
         account_info = self.token_backend.get_account(home_account_id=home_account_id)
         if account_info:
-            self.current_username = account_info.get('username')
+            self.username = account_info.get('username')
 
     @property
-    def current_username(self) -> Optional[str]:
+    def username(self) -> Optional[str]:
         """
-        Returns the current_username in use
-        If current_username is not set this will try to set current_username to the first account found
+        Returns the username in use
+        If username is not set this will try to set the username to the first account found
          from the token_backend.
         """
-        if not self._current_username:
-            self._set_current_username_from_token_backend()
-        return self._current_username
+        if not self._username:
+            self._set_username_from_token_backend()
+        return self._username
 
-    @current_username.setter
-    def current_username(self, current_username: Optional[str]) -> None:
-        if self._current_username == current_username:
+    @username.setter
+    def username(self, username: Optional[str]) -> None:
+        if self._username == username:
             return
-        log.debug(f'Current username changed from {self._current_username} to {current_username}')
-        self._current_username = current_username
+        log.debug(f'Current username changed from {self._username} to {username}')
+        self._username = username
 
         # if the user is changed and a valid session is set we must change the auth token in the session
         if self.session is not None:
-            access_token = self.token_backend.get_access_token(username=current_username)
-            if access_token is None:
-                raise ValueError(f'No access token found for user: {current_username}')
-            self.session.headers.update({'Authorization': f'Bearer {access_token}'})
+            access_token = self.token_backend.get_access_token(username=username)
+            if access_token is not None:
+                self.session.headers.update({'Authorization': f'Bearer {access_token}'})
 
     def set_proxy(self, proxy_server: str, proxy_port: int,
                   proxy_username: str, proxy_password: str, proxy_http_only: bool) -> None:
@@ -568,8 +564,9 @@ class Connection:
                       **kwargs) -> bool:
         """ Authenticates for the specified url and gets the oauth token data. Saves the
         token in the backend if store_token is True. This will replace any other tokens stored
-        for the same username currently authenticating and scopes requested.
-        If the token data is successfully requested, then this method will set current_username if not previously set.
+        for the same username and scopes requested.
+        If the token data is successfully requested, then this method will try to set the username if
+        not previously set.
 
         :param str or None authorization_url: url given by the authorization flow or None if it's client credentials
         :param dict flow: dict object holding the data used in get_authorization_url
@@ -609,20 +606,25 @@ class Connection:
                 tid = id_token_claims.get('tid')
                 if oid and tid:
                     home_account_id = f"{oid}.{tid}"
-                    # the next call will change the current_username, updating the session headers if session exists
-                    self._set_current_username_from_token_backend(home_account_id=home_account_id)
+                    # the next call will change the current username, updating the session headers if session exists
+                    self._set_username_from_token_backend(home_account_id=home_account_id)
+
+            # Update the session headers if the session exists
+            if self.session is not None:
+                access_token = result['access_token']
+                self.session.headers.update({'Authorization': f'Bearer {access_token}'})
 
         if store_token:
             self.token_backend.save_token()
         return True
 
     def load_token_from_backend(self) -> bool:
-        """ Loads the token from the backend and tries to set the self.current_username if it's not set"""
+        """ Loads the token from the backend and tries to set the self.username if it's not set"""
         if self.token_backend.load_token():
-            if self._current_username is None:
+            if self._username is None:
                 account_info = self.token_backend.get_account()
                 if account_info:
-                    self.current_username = account_info.get('username')
+                    self.username = account_info.get('username')
             return True
         return False
 
@@ -638,7 +640,7 @@ class Connection:
             # try to load the token from the token backend
             self.load_token_from_backend()
 
-        token = self.token_backend.get_access_token(username=self.current_username)
+        token = self.token_backend.get_access_token(username=self.username)
         if token is None:
             raise RuntimeError('No auth token found. Authentication Flow needed')
 
@@ -687,12 +689,12 @@ class Connection:
         if self.session is None:
             self.session = self.get_session(load_token=True)
 
-        if self.token_backend.get_access_token(username=self.current_username) is None:
+        if self.token_backend.get_access_token(username=self.username) is None:
             raise RuntimeError('Access Token not found. You will need to re-authenticate.')
 
         token_refreshed = False
 
-        if (self.token_backend.token_is_long_lived(username=self.current_username) or
+        if (self.token_backend.token_is_long_lived(username=self.username) or
                 self.auth_flow_type == 'credentials'):
 
             should_rt = self.token_backend.should_refresh_token(self)
@@ -703,13 +705,13 @@ class Connection:
                 if self.scopes is None:
                     # This will set the connection scopes from the scopes set in the stored token
                     self.scopes = self.token_backend.get_token_scopes(
-                        username=self.current_username,
+                        username=self.username,
                         remove_reserved=True
                     )
 
                 result = self.msal_client.acquire_token_silent_with_error(
                     scopes=self.scopes,
-                    account=self.msal_client.get_accounts(username=self.current_username)[0]
+                    account=self.msal_client.get_accounts(username=self.username)[0]
                 )
                 if result is None:
                     raise RuntimeError('There is no access token to refresh')
@@ -719,11 +721,11 @@ class Connection:
                     # refresh done, update authorization header
                     token_refreshed = True
                     self.session.headers.update({'Authorization': f'Bearer {result["access_token"]}'})
-                    log.debug(f'New oauth token fetched by refresh method for username: {self.current_username}')
+                    log.debug(f'New oauth token fetched by refresh method for username: {self.username}')
             elif should_rt is False:
                 # the token was refreshed by another instance and updated into this instance,
                 # so: update the session token and retry the request again
-                access_token = self.token_backend.get_access_token(username=self.current_username)
+                access_token = self.token_backend.get_access_token(username=self.username)
                 if access_token:
                     self.session.headers.update({'Authorization': f'Bearer {access_token["secret"]}'})
                 else:
@@ -806,11 +808,11 @@ class Connection:
             # Server response with 4XX or 5XX error status codes
             if e.response.status_code == 401 and self._token_expired_flag is False:
                 # This could be a token expired error.
-                if self.token_backend.token_is_expired(username=self.current_username):
+                if self.token_backend.token_is_expired(username=self.username):
                     # Token has expired, try to refresh the token and try again on the next loop
                     # By raising custom exception TokenExpiredError we signal oauth_request to fire a
                     # refresh token operation.
-                    log.debug(f'Oauth Token is expired for username: {self.current_username}')
+                    log.debug(f'Oauth Token is expired for username: {self.username}')
                     self._token_expired_flag = True
                     raise TokenExpiredError('Oauth Token is expired')
 

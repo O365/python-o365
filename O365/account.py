@@ -7,11 +7,13 @@ class Account:
     connection_constructor: Type = Connection
 
     def __init__(self, credentials: Tuple[str, str], *,
+                 username: Optional[str] = None,
                  protocol: Optional[Protocol] = None,
                  main_resource: Optional[str] = None, **kwargs):
         """ Creates an object which is used to access resources related to the specified credentials.
 
         :param credentials: a tuple containing the client_id and client_secret
+        :param username: the username to be used by this account
         :param protocol: the protocol to be used in this account
         :param main_resource: the resource to be used by this account ('me' or 'users', etc.)
         :param kwargs: any extra args to be passed to the Connection instance
@@ -58,6 +60,8 @@ class Account:
         else:
             raise ValueError('"auth_flow_type" must be "authorization", "credentials", "password" or "public"')
 
+        kwargs['username'] = username
+
         self.con = self.connection_constructor(credentials, **kwargs)
         self.main_resource: str = main_resource or self.protocol.default_resource
 
@@ -79,7 +83,7 @@ class Account:
             if self.con.load_token_from_backend() is False:
                 return False
 
-        return not self.con.token_backend.token_is_expired(username=self.con.current_username, refresh_token=True)
+        return not self.con.token_backend.token_is_expired(username=self.con.username, refresh_token=True)
 
     def authenticate(self, *, scopes: Optional[list] = None,
                      handle_consent: Callable = consent_input_token, **kwargs) -> bool:
@@ -126,17 +130,17 @@ class Account:
             raise ValueError('"auth_flow_type" must be "authorization", "public", "password" or "credentials"')
 
     @property
-    def current_username(self) -> Optional[str]:
-        """ Returns the current username in use for the account"""
-        return self.con.current_username
+    def username(self) -> Optional[str]:
+        """ Returns the username in use for the account"""
+        return self.con.username
 
-    @current_username.setter
-    def current_username(self, current_username: Optional[str]) -> None:
+    @username.setter
+    def username(self, username: Optional[str]) -> None:
         """
-        Sets the current username in use for this account
-        The current_username can be None, meaning the first user account retrieved from the token_backend
+        Sets the username in use for this account
+        The username can be None, meaning the first user account retrieved from the token_backend
         """
-        self.con.current_username = current_username
+        self.con.username = username
 
     def get_current_user_data(self):
         """ Returns the current user data from the active directory """
