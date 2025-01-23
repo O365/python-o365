@@ -167,7 +167,8 @@ class Account:
             else:
                 requested_scopes = [self.protocol.prefix_scope('.default')]
         else:
-            raise ValueError(f'Auth flow type "{self.con.auth_flow_type}" does not require scopes')
+            if requested_scopes:
+                raise ValueError(f'Auth flow type "{self.con.auth_flow_type}" does not require scopes')
 
         return self.con.request_token(authorization_url,
                                       flow=flow,
