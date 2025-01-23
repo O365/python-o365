@@ -556,7 +556,8 @@ There are two examples of this method in the examples folder [here](https://gith
 ## Multi user handling
 A single `Account` object can hold more than one user being authenticated. You can authenticate different users and the token backend will hold each authentication.
 When using the library you can use the `account.current_username` property to get or set the current user.
-By default, the current user is set to the first authentication found in the token backend.
+If current_username is not provided, the current_username will be set automatically to the first authentication found in the token backend.
+Also, whenever you perform a new call to `request_token` (manually or through a call to `account.authenticate`), the current_username will be set to the user performing the authentication.
 
 ```python
 account.current_username = 'user1@domain.com'

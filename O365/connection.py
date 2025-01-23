@@ -462,13 +462,25 @@ class Connection:
     def auth_flow_type(self) -> str:
         return self._auth_flow_type
 
+    def _set_current_username_from_token_backend(self, *, home_account_id: Optional[str] = None) -> None:
+        """
+        If token data is present, this will try to set current_username to the first account found
+         from the token_backend.
+        """
+        account_info = self.token_backend.get_account(home_account_id=home_account_id)
+        if account_info:
+            self.current_username = account_info.get('username')
+
     @property
     def current_username(self) -> Optional[str]:
-        account = self.token_backend.get_account(username=self._current_username)
-        if account:
-            return account['username']
-        else:
-            return None
+        """
+        Returns the current_username in use
+        If current_username is not set this will try to set current_username to the first account found
+         from the token_backend.
+        """
+        if not self._current_username:
+            self._set_current_username_from_token_backend()
+        return self._current_username
 
     @current_username.setter
     def current_username(self, current_username: Optional[str]) -> None:
@@ -549,15 +561,16 @@ class Connection:
 
         return flow.get('auth_uri'), flow
 
-    def request_token(self, authorization_url: str, *,
+    def request_token(self, authorization_url: Optional[str], *,
                       flow: dict = None,
                       store_token: bool = True,
                       **kwargs) -> bool:
-        """ Authenticates for the specified url and gets the token, save the
-        token for future based if requested. This will remove any other tokens stored
-        for the same username that is currently authenticating.
+        """ Authenticates for the specified url and gets the oauth token data. Saves the
+        token in the backend if store_token is True. This will replace any other tokens stored
+        for the same username currently authenticating and scopes requested.
+        If the token data is successfully requested, then this method will set current_username if not previously set.
 
-        :param str or None authorization_url: url given by the authorization flow
+        :param str or None authorization_url: url given by the authorization flow or None if it's client credentials
         :param dict flow: dict object holding the data used in get_authorization_url
         :param bool store_token: True to store the token in the token backend,
          so you don't have to keep opening the auth link and
@@ -587,10 +600,26 @@ class Connection:
         if "access_token" not in result:
             log.error(f'Unable to fetch auth token. Error: {result.get("error")} | Description: {result.get("error_description")}')
             return False
+        else:
+            # extract from the result the home_account_id used in the authentication to retrieve his username
+            id_token_claims = result.get('id_token_claims')
+            home_account_id = f"{id_token_claims.get('oid')}.{id_token_claims.get('tid')}"
+            # the next call will change the current_username, updating the session headers if session exists
+            self._set_current_username_from_token_backend(home_account_id=home_account_id)
 
         if store_token:
             self.token_backend.save_token()
         return True
+
+    def load_token_from_backend(self) -> bool:
+        """ Loads the token from the backend and tries to set the self.current_username if it's not set"""
+        if self.token_backend.load_token():
+            if self._current_username is None:
+                account_info = self.token_backend.get_account()
+                if account_info:
+                    self.current_username = account_info.get('username')
+            return True
+        return False
 
     def get_session(self, load_token: bool = False) -> Session:
         """ Create a requests Session object with the oauth token attached to it
@@ -601,8 +630,8 @@ class Connection:
         """
 
         if load_token and not self.token_backend.has_data:
-            # loads the token from the token backend
-            self.token_backend.load_token()
+            # try to load the token from the token backend
+            self.load_token_from_backend()
 
         token = self.token_backend.get_access_token(username=self.current_username)
         if token is None:

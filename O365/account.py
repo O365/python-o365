@@ -71,12 +71,12 @@ class Account:
     def is_authenticated(self) -> bool:
         """
         Checks whether the library has the authentication and that is not expired.
+        This will try to load the token from the backend if not already loaded.
         Return True if authenticated, False otherwise.
         """
-        token = self.con.token_backend.get_access_token(username=self.con.current_username)
-        if token is None:
-            # try to load the token from the backend, although it was previously loaded
-            if self.con.token_backend.load_token() is False:
+        if self.con.token_backend.has_data is False:
+            # try to load the token from the backend
+            if self.con.load_token_from_backend() is False:
                 return False
 
         return not self.con.token_backend.token_is_expired(username=self.con.current_username, refresh_token=True)
