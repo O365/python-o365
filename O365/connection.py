@@ -416,11 +416,6 @@ class Connection:
         self.scopes: Optional[List[str]] = scopes
         self.tenant_id: str = tenant_id
 
-        self.password: Optional[str] = password
-
-        self._username: Optional[str] = None
-        self.username: Optional[str] = username  # validate input
-
         self.default_headers: Dict = default_headers or dict()
         self.store_token_after_refresh: bool = store_token_after_refresh
 
@@ -429,6 +424,11 @@ class Connection:
             raise ValueError('"token_backend" must be an instance of a subclass of BaseTokenBackend')
         self.token_backend: BaseTokenBackend = token_backend
         self.session: Optional[Session] = None
+
+        self.password: Optional[str] = password
+
+        self._username: Optional[str] = None
+        self.username: Optional[str] = username  # validate input
 
         self.proxy: Dict = {}
         self.set_proxy(proxy_server, proxy_port, proxy_username, proxy_password, proxy_http_only)
