@@ -228,6 +228,7 @@ class BaseTokenBackend(TokenCache):
         for account in results:
             self.remove_account(account)
 
+        self._has_state_changed = True
         return True
 
     def add(self, event, **kwargs) -> None:
