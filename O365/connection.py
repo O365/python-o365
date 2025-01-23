@@ -491,6 +491,10 @@ class Connection:
             access_token = self.token_backend.get_access_token(username=username)
             if access_token is not None:
                 self.session.headers.update({'Authorization': f'Bearer {access_token}'})
+            else:
+                # if we can't find an access token for the current user, then remove the auth header from the session
+                if 'Authorization' in self.session.headers:
+                    del self.session.headers['Authorization']
 
     def set_proxy(self, proxy_server: str, proxy_port: int,
                   proxy_username: str, proxy_password: str, proxy_http_only: bool) -> None:
@@ -864,7 +868,8 @@ class Connection:
         return self._internal_request(self.naive_session, url, method, **kwargs)
 
     def oauth_request(self, url: str, method: str, **kwargs) -> Response:
-        """ Makes a request to url using an oauth session
+        """ Makes a request to url using an oauth session.
+        Raises RuntimeError if the session does not have an Authorization header
 
         :param str url: url to send request to
         :param str method: type of request (get/put/post/patch/delete)
@@ -875,6 +880,9 @@ class Connection:
         # oauth authentication
         if self.session is None:
             self.session = self.get_session(load_token=True)
+        else:
+            if self.session.headers.get('Authorization') is None:
+                raise RuntimeError('No auth token found. Authentication Flow needed')
 
         try:
             return self._internal_request(self.session, url, method, **kwargs)
