@@ -74,7 +74,7 @@ class Account:
     @property
     def is_authenticated(self) -> bool:
         """
-        Checks whether the library has the authentication and that is not expired.
+        Checks whether the library has the authentication data and that is not expired for the current username.
         This will try to load the token from the backend if not already loaded.
         Return True if authenticated, False otherwise.
         """

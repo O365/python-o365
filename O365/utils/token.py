@@ -87,10 +87,10 @@ class BaseTokenBackend(TokenCache):
             query={'username': username}
         ))
         if result:
-            home_account_id = result[0].get('home_account_id')
+            return result[0].get('home_account_id')
         else:
-            raise ValueError(f'No account found for username: {username}')
-        return home_account_id
+            log.debug(f'No account found for username: {username}')
+            return None
 
     def get_account(self, *, username: Optional[str] = None, home_account_id: Optional[str] = None) -> Optional[dict]:
         """ Gets the account object for the specified username or home_account_id """
@@ -114,8 +114,7 @@ class BaseTokenBackend(TokenCache):
             return None
 
     def get_access_token(self, *, username: Optional[str] = None) -> Optional[dict]:
-        """
-        Retrieve the stored access token
+        """ Retrieve the stored access token
         If username is None, then the first access token will be retrieved
         :param str username: The username from which retrieve the access token
         """
@@ -124,6 +123,8 @@ class BaseTokenBackend(TokenCache):
             home_account_id = self._get_home_account_id(username)
             if home_account_id:
                 query = {'home_account_id': home_account_id}
+            else:
+                return None
 
         results = list(self.search(
             TokenCache.CredentialType.ACCESS_TOKEN,
@@ -132,8 +133,7 @@ class BaseTokenBackend(TokenCache):
         return results[0] if results else None
 
     def get_refresh_token(self, *, username: Optional[str] = None) -> Optional[dict]:
-        """
-        Retrieve the stored refresh token
+        """ Retrieve the stored refresh token
         If username is None, then the first access token will be retrieved
         :param str username: The username from which retrieve the refresh token
         """
@@ -142,6 +142,8 @@ class BaseTokenBackend(TokenCache):
             home_account_id = self._get_home_account_id(username)
             if home_account_id:
                 query = {'home_account_id': home_account_id}
+            else:
+                return None
 
         results = list(self.search(
             TokenCache.CredentialType.REFRESH_TOKEN,
@@ -150,8 +152,7 @@ class BaseTokenBackend(TokenCache):
         return results[0] if results else None
 
     def get_id_token(self, *, username: Optional[str] = None) -> Optional[dict]:
-        """
-        Retrieve the stored id token
+        """ Retrieve the stored id token
         If username is None, then the first id token will be retrieved
         :param str username: The username from which retrieve the id token
         """
@@ -160,6 +161,8 @@ class BaseTokenBackend(TokenCache):
             home_account_id = self._get_home_account_id(username)
             if home_account_id:
                 query = {'home_account_id': home_account_id}
+            else:
+                return None
 
         results = list(self.search(
             TokenCache.CredentialType.ID_TOKEN,
