@@ -894,7 +894,7 @@ class Connection:
             self.session = self.get_session(load_token=True)
         else:
             if self.session.headers.get('Authorization') is None:
-                raise RuntimeError('No auth token found. Authentication Flow needed')
+                raise RuntimeError(f'No auth token found. Authentication Flow needed for user {self.username}')
 
         try:
             return self._internal_request(self.session, url, method, **kwargs)

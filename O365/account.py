@@ -78,26 +78,27 @@ class Account:
 
         return not self.con.token_backend.token_is_expired(username=self.con.username, refresh_token=True)
 
-    def authenticate(self, *, scopes: Optional[list] = None,
+    def authenticate(self, *, requested_scopes: Optional[list] = None, redirect_uri: Optional[str] = None,
                      handle_consent: Callable = consent_input_token, **kwargs) -> bool:
         """ Performs the console authentication flow resulting in a stored token.
         It uses the credentials passed on instantiation.
         Returns True if succeeded otherwise False.
 
-        :param scopes: list of protocol user scopes to be converted
-         by the protocol or scope helpers or specific protocol scopes
+        :param list[str] requested_scopes: list of protocol user scopes to be converted
+         by the protocol or scope helpers or raw scopes
+        :param str redirect_uri: redirect url configured in registered app
         :param handle_consent: a function to handle the consent process by default just input for the token url
         :param kwargs: other configurations to be passed to the
          Connection.get_authorization_url and Connection.request_token methods
         """
 
         if self.con.auth_flow_type in ('authorization', 'public'):
-            consent_url, flow = self.con.get_authorization_url(**kwargs)
+            consent_url, flow = self.get_authorization_url(requested_scopes, redirect_uri=redirect_uri, **kwargs)
 
             token_url = handle_consent(consent_url)
 
             if token_url:
-                result = self.con.request_token(token_url, flow=flow, **kwargs)
+                result = self.request_token(token_url, flow=flow, **kwargs)
                 if result:
                     print('Authentication Flow Completed. Oauth Access Token Stored. You can now use the API.')
                 else:
@@ -109,7 +110,7 @@ class Account:
                 return False
 
         elif self.con.auth_flow_type in ('credentials', 'password'):
-            return self.con.request_token(None, requested_scopes=scopes, **kwargs)
+            return self.request_token(None, requested_scopes=requested_scopes, **kwargs)
 
         else:
             raise ValueError('"auth_flow_type" must be "authorization", "public", "password" or "credentials"')
