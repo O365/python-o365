@@ -193,10 +193,12 @@ This section is explained using Microsoft Graph Protocol, almost the same applie
    - In the **Add a client secret** window, provide a Description and Expiration, then click **Add**.  
    - Save the (client_secret) **Value** for later reference.
 
-1. **Add redirect URIs**  
+1. **Add redirect URIs and set Multitenant Account Type**  
    - In the **Overview** window, click **Add a redirect URI**.  
    - Click **+ Add a platform**, then select **Web**.  
-   - Add `https://login.microsoftonline.com/common/oauth2/nativeclient` as the redirect URI.  
+   - Add `https://login.microsoftonline.com/common/oauth2/nativeclient` as the redirect URI.
+   - Scroll down to **Supported account types**
+   - Select the radio button in front of **Accounts in any organizational directory (Any Microsoft Entra ID tenant - Multitenant)**
    - Click **Save**.
 
 1. **Add required permissions**  
