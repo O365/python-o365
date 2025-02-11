@@ -92,6 +92,10 @@ class BaseTokenBackend(TokenCache):
             log.debug(f'No account found for username: {username}')
             return None
 
+    def get_all_accounts(self) -> list[dict]:
+        """ Returns a list of all accounts present in the token cache"""
+        return list(self.search(TokenCache.CredentialType.ACCOUNT))
+
     def get_account(self, *, username: Optional[str] = None, home_account_id: Optional[str] = None) -> Optional[dict]:
         """ Gets the account object for the specified username or home_account_id """
         if username and home_account_id:

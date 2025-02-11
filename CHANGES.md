@@ -2,6 +2,17 @@
 
 Almost every release features a lot of bugfixes but those are not listed here.
 
+## Version 2.1.0 (2025-02-13)
+
+[!IMPORTANT]
+> Removed custom authentication in favour of msal. Old tokens will not work with this version and will require a new authentication flow.
+
+- Account: you can now work with multiple users by changing `account.username` when using auth flow type authorization.
+- Connection methods `get_authorization_url` and `request_token` are now present in the `Account`object. You will no longer need to use the ones from the `Connection` object unless doing something fancy.
+- Account and Connection: the authentication flow has changed and now returns different objects (`get_authorization_url` and `request_token`).
+- TokenBackend: they now inherit from the msal cache system. You can now remove tokens, get access scopes from tokens, add a cryptography manager to encrypt and decrypt and much more.
+- Scopes are now longer stored into the connection. Scopes are only needed when authenticating and will be stored inside the token data on the token backend.
+
 ## Version 2.0.38 (2024-11-19)
 - Added 'on_premises_sam_account_name' to directory.py (Thanks @danpoltawski)
 - TokenBackend: Added DjangoTokenBackend (Thanks @sdelgadoc)

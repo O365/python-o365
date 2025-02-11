@@ -8,6 +8,9 @@
 
 > Detailed usage documentation is [still in progress](https://o365.github.io/python-o365/latest/index.html)
 
+> [!IMPORTANT]
+> With version 2.1 old access tokens will not work and the library will require a new authentication flow to get new access and refresh tokens.
+
 This project aims to make interacting with Microsoft Graph and Office 365 easy to do in a Pythonic way.
 Access to Email, Calendar, Contacts, OneDrive, etc. Are easy to do in a way that feel easy and straight forward to beginners and feels just right to seasoned python programmer.
 
@@ -128,7 +131,7 @@ if not account.is_authenticated:  # will check if there is a token and has not e
 You can only authenticate using oauth authentication because Microsoft deprecated basic auth on November 1st 2018.
 
 > [!IMPORTANT]
-> Until version 3.0 this library was using a custom authentication mechanism. On 3.0 we moved to using **[msal](https://learn.microsoft.com/es-es/entra/identity-platform/msal-overview)** to achieve the authentication.
+> Until version 2.1 this library was using a custom authentication mechanism. On 2.1 we moved to using **[msal](https://learn.microsoft.com/es-es/entra/identity-platform/msal-overview)** to achieve the authentication.
 
 There are currently three authentication methods:
 
@@ -567,7 +570,7 @@ account.username = 'user1@domain.com'
 account.username = 'user2@domain.com'
 #  now every call will use the auth of the user2
 ```
-> This is only possible in version 3.0. Before 3.0 you had to instantiate one Account for each user.
+> This is only possible in version 2.1. Before 2.1 you had to instantiate one Account for each user.
 
 ## Protocols
 Protocols handles the aspects of communications between different APIs.

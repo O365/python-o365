@@ -180,6 +180,16 @@ class Account:
         """ Returns the username in use for the account"""
         return self.con.username
 
+    def get_authenticated_usernames(self) -> list[str]:
+        """ Returns a list of usernames that are authenticated and have a valid access or refresh token. """
+        usernames = []
+        for account in self.con.token_backend.get_all_accounts():
+            username = account.get('username')
+            if username and not self.con.token_backend.token_is_expired(username=username, refresh_token=True):
+                usernames.append(username)
+
+        return usernames
+
     @username.setter
     def username(self, username: Optional[str]) -> None:
         """
