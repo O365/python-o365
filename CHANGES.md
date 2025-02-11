@@ -2,7 +2,7 @@
 
 Almost every release features a lot of bugfixes but those are not listed here.
 
-## Version 2.1.0 (2025-02-13)
+## Version 2.1.0 (2025-02-11)
 
 > [!IMPORTANT]
 > Removed custom authentication in favour of msal. Old tokens will not work with this version and will require a new authentication flow.
