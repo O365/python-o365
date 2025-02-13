@@ -1,9 +1,27 @@
 [project]
+dynamic = ["license"]
 name = "o365"
 version = "2.1.0"
 description = "O365 - Microsoft Graph and Office 365 API made easy"
 readme = "README.md"
 requires-python = ">=3.9"
+authors = [
+    { name = "Alejcas", email = "alejcas@users.noreply.github.com" },
+    { name = "Narcolapser", email = "narcolapser@users.noreply.github.com" },
+    { name = "Roycem90", email = "roycem90@users.noreply.github.com" }
+]
+maintainers = [{ name = "Alejcas", email = "alejcas@users.noreply.github.com" }]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Operating System :: OS Independent",
+]
 dependencies = [
     "beautifulsoup4>=4.12.3",
     "msal>=1.31.1",
@@ -12,7 +30,6 @@ dependencies = [
     "tzdata>=2024.2",
     "tzlocal>=5.2",
 ]
-dynamic = ["license", "authors", "maintainers", "classifiers"]
 
 [dependency-groups]
 dev = [
@@ -21,3 +38,8 @@ dev = [
     "sphinx>=7.4.7",
     "sphinx-rtd-theme>=3.0.2",
 ]
+
+# This is a fix for an issue in setuptools. See: https://github.com/pypa/setuptools/issues/4759
+# This shoulde be removed when the issue is resolved.
+[tool.setuptools]
+license-files = []
