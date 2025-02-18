@@ -134,9 +134,16 @@ class Task(ApiComponent):
 
         data = {
             cc("title"): self.__subject,
-            cc("body"): {cc("contentType"): self.body_type, cc("content"): self.__body},
             cc("status"): "completed" if self.__is_completed else "notStarted",
         }
+
+        if self.__body:
+            data[cc("body")] = {
+                cc("contentType"): self.body_type,
+                cc("content"): self.__body,
+            }
+        else:
+            data[cc("body")] = None
 
         if self.__due:
             data[cc("dueDateTime")] = self._build_date_time_time_zone(self.__due)
