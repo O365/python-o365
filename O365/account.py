@@ -37,7 +37,7 @@ class Account:
 
         scopes = kwargs.get('scopes', None)
         if scopes:
-            warnings.warn("Since 3.0 scopes are only needed during authentication.", DeprecationWarning)
+            warnings.warn("Since 2.1 scopes are only needed during authentication.", DeprecationWarning)
 
         if auth_flow_type == 'credentials':
             # set main_resource to blank when it's the 'ME' resource
