@@ -23,6 +23,10 @@ jobs:
       - name: "Build pages"
         run: sphinx-build -b html -c ./docs/source/ ./docs/source/ ./docs/latest/ 
 
+      - name: "Pull any updates"
+        shell: bash
+        run: git pull
+
       - name: "Check for changes"
         shell: bash
         run: git status
@@ -37,6 +41,7 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git commit -m "Update the docs" || true
+
       - name: Push changes
         uses: ad-m/github-push-action@master
         with:
