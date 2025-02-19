@@ -2,7 +2,6 @@ name: Pages Build
 
 on:
     push:
-        branches: [ "main" ]
 
 jobs:
   pages_build:
