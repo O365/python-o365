@@ -5,7 +5,8 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>Resources &mdash; O365  documentation</title>
@@ -23,9 +24,10 @@
     
 
   
-
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Account" href="account.html" />
@@ -78,7 +80,7 @@
               
             
             
-              <p class="caption"><span class="caption-text">Contents:</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../usage.html">Detailed Usage</a><ul class="current">
@@ -170,8 +172,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="resources">
-<h1>Resources<a class="headerlink" href="#resources" title="Permalink to this headline">¶</a></h1>
+  <section id="resources">
+<h1>Resources<a class="headerlink" href="#resources" title="Link to this heading">¶</a></h1>
 <p>Each API endpoint requires a resource. This usually defines the owner of the data.</p>
 <p>Usually you will work with the default ‘ME’ resuorce, but you can also use one of the following:</p>
 <ul class="simple">
@@ -182,9 +184,9 @@
 </ul>
 <p><strong>ME</strong> is the default resource used everywhere in this library. But you can change this behaviour by providing it to Protocol constructor.</p>
 <p>This can be done however at any point (Protocol / Account / Mailbox / Message ..). Examples can be found in their respective documentation pages</p>
-</div>
-<div class="section" id="protocols">
-<h1>Protocols<a class="headerlink" href="#protocols" title="Permalink to this headline">¶</a></h1>
+</section>
+<section id="protocols">
+<h1>Protocols<a class="headerlink" href="#protocols" title="Link to this heading">¶</a></h1>
 <p>A protocol is just an interface to specify various options related to an API set,
 like base url, word case used for request and response attributes etc..</p>
 <p>This project has two different set of API’s inbuilt (Office 365 APIs or Microsoft Graph APIs)</p>
@@ -194,8 +196,8 @@ like base url, word case used for request and response attributes etc..</p>
 <li><p><strong>MSGraphProtocol</strong> to use the <a class="reference external" href="https://developer.microsoft.com/en-us/graph/docs/concepts/overview">Microsoft Graph API</a></p></li>
 <li><p><strong>MSOffice365Protocol</strong> to use the <a class="reference external" href="https://msdn.microsoft.com/en-us/office/office365/api/api-catalog">Office 365 API</a></p></li>
 </ul>
-<div class="section" id="choosing-between-graph-vs-office365-api">
-<h2>Choosing between Graph vs Office365 API<a class="headerlink" href="#choosing-between-graph-vs-office365-api" title="Permalink to this headline">¶</a></h2>
+<section id="choosing-between-graph-vs-office365-api">
+<h2>Choosing between Graph vs Office365 API<a class="headerlink" href="#choosing-between-graph-vs-office365-api" title="Link to this heading">¶</a></h2>
 <p>Reasons to use <strong>MSGraphProtocol</strong>:</p>
 <ul class="simple">
 <li><p>It is the recommended Protocol by Microsoft.</p></li>
@@ -211,34 +213,34 @@ like base url, word case used for request and response attributes etc..</p>
 <p>The default protocol used by the <strong>Account</strong> Class is <strong>MSGraphProtocol</strong>.</p>
 </div>
 <p>You can implement your own protocols by inheriting from <strong>Protocol</strong> to communicate with other Microsoft APIs.</p>
-</div>
-<div class="section" id="initialing-protocol">
-<h2>Initialing Protocol<a class="headerlink" href="#initialing-protocol" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="initialing-protocol">
+<h2>Initialing Protocol<a class="headerlink" href="#initialing-protocol" title="Link to this heading">¶</a></h2>
 <p><strong>Using Graph Beta API</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">O365</span> <span class="kn">import</span> <span class="n">MSGraphProtocol</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">O365</span><span class="w"> </span><span class="kn">import</span> <span class="n">MSGraphProtocol</span>
 
 <span class="c1"># try the api version beta of the Microsoft Graph endpoint.</span>
 <span class="n">protocol</span> <span class="o">=</span> <span class="n">MSGraphProtocol</span><span class="p">(</span><span class="n">api_version</span><span class="o">=</span><span class="s1">&#39;beta&#39;</span><span class="p">)</span>  <span class="c1"># MSGraphProtocol defaults to v1.0 api version</span>
 </pre></div>
 </div>
 <p><strong>Using Shared User Account</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">O365</span> <span class="kn">import</span> <span class="n">MSGraphProtocol</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">O365</span><span class="w"> </span><span class="kn">import</span> <span class="n">MSGraphProtocol</span>
 
 <span class="n">protocol</span> <span class="o">=</span> <span class="n">MSGraphProtocol</span><span class="p">(</span><span class="n">default_resource</span><span class="o">=</span><span class="s1">&#39;shared_mailbox@example.com&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="utilizing-a-protocol-instance">
-<h2>Utilizing a Protocol Instance<a class="headerlink" href="#utilizing-a-protocol-instance" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="utilizing-a-protocol-instance">
+<h2>Utilizing a Protocol Instance<a class="headerlink" href="#utilizing-a-protocol-instance" title="Link to this heading">¶</a></h2>
 <p>Protocol itself does not do anything job, it has to be plugged into this library api using Account class</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">O365</span> <span class="kn">import</span> <span class="n">Account</span><span class="p">,</span> <span class="n">MSGraphProtocol</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">O365</span><span class="w"> </span><span class="kn">import</span> <span class="n">Account</span><span class="p">,</span> <span class="n">MSGraphProtocol</span>
 
 <span class="n">my_protocol</span> <span class="o">=</span> <span class="n">MSGraphProtocol</span><span class="p">(</span><span class="s1">&#39;beta&#39;</span><span class="p">,</span> <span class="s1">&#39;shared_mailbox@example.com&#39;</span><span class="p">)</span>
-<span class="n">account</span> <span class="o">=</span> <span class="n">Account</span><span class="p">(</span><span class="n">credential</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;&lt;client_id&gt;&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;client_secret&gt;&#39;</span><span class="p">,</span> <span class="n">protocol</span><span class="o">=</span><span class="n">my_protocol</span><span class="p">))</span>
+<span class="n">account</span> <span class="o">=</span> <span class="n">Account</span><span class="p">(</span><span class="n">credentials</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;&lt;client_id&gt;&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;client_secret&gt;&#39;</span><span class="p">),</span> <span class="n">protocol</span><span class="o">=</span><span class="n">my_protocol</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
@@ -260,7 +262,7 @@ like base url, word case used for request and response attributes etc..</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2018, Narcolapser
+        &copy; Copyright 2024, alejcas
 
     </p>
   </div>
@@ -281,10 +283,9 @@ like base url, word case used for request and response attributes etc..</p>
 
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script src="../_static/language_data.js"></script>
+        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../_static/doctools.js?v=9bcbadda"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     
 
   

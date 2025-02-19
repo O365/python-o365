@@ -23,9 +23,10 @@
     
 
   
-
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
 
@@ -76,7 +77,7 @@
               
             
             
-              <p class="caption"><span class="caption-text">Contents:</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../getting_started.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../usage.html">Detailed Usage</a></li>
@@ -144,179 +145,292 @@
            <div itemprop="articleBody">
             
   <h1>Source code for O365.account</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">.connection</span> <span class="kn">import</span> <span class="n">Connection</span><span class="p">,</span> <span class="n">Protocol</span><span class="p">,</span> <span class="n">MSGraphProtocol</span>
-<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">ME_RESOURCE</span>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Type</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">List</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.connection</span><span class="w"> </span><span class="kn">import</span> <span class="n">Connection</span><span class="p">,</span> <span class="n">Protocol</span><span class="p">,</span> <span class="n">MSGraphProtocol</span><span class="p">,</span> <span class="n">MSOffice365Protocol</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">ME_RESOURCE</span><span class="p">,</span> <span class="n">consent_input_token</span>
 
 
-<div class="viewcode-block" id="Account"><a class="viewcode-back" href="../../api/account.html#O365.account.Account">[docs]</a><span class="k">class</span> <span class="nc">Account</span><span class="p">:</span>
+<div class="viewcode-block" id="Account">
+<a class="viewcode-back" href="../../api/account.html#O365.account.Account">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Account</span><span class="p">:</span>
+    <span class="n">connection_constructor</span><span class="p">:</span> <span class="n">Type</span> <span class="o">=</span> <span class="n">Connection</span>
 
-    <span class="n">connection_constructor</span> <span class="o">=</span> <span class="n">Connection</span>
+<div class="viewcode-block" id="Account.__init__">
+<a class="viewcode-back" href="../../api/account.html#O365.account.Account.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">credentials</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="o">*</span><span class="p">,</span>
+                 <span class="n">username</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">protocol</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Protocol</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">main_resource</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Creates an object which is used to access resources related to the specified credentials.</span>
 
-<div class="viewcode-block" id="Account.__init__"><a class="viewcode-back" href="../../api/account.html#O365.account.Account.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">credentials</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">protocol</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">main_resource</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Creates an object which is used to access resources related to the</span>
-<span class="sd">        specified credentials</span>
-
-<span class="sd">        :param tuple credentials: a tuple containing the client_id</span>
-<span class="sd">         and client_secret</span>
-<span class="sd">        :param Protocol protocol: the protocol to be used in this account</span>
-<span class="sd">        :param str main_resource: the resource to be used by this account</span>
-<span class="sd">         (&#39;me&#39; or &#39;users&#39;, etc.)</span>
+<span class="sd">        :param credentials: a tuple containing the client_id and client_secret</span>
+<span class="sd">        :param username: the username to be used by this account</span>
+<span class="sd">        :param protocol: the protocol to be used in this account</span>
+<span class="sd">        :param main_resource: the resource to be used by this account (&#39;me&#39; or &#39;users&#39;, etc.)</span>
 <span class="sd">        :param kwargs: any extra args to be passed to the Connection instance</span>
 <span class="sd">        :raises ValueError: if an invalid protocol is passed</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">protocol</span> <span class="o">=</span> <span class="n">protocol</span> <span class="ow">or</span> <span class="n">MSGraphProtocol</span>  <span class="c1"># Defaults to Graph protocol</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">protocol</span> <span class="o">=</span> <span class="n">protocol</span><span class="p">(</span><span class="n">default_resource</span><span class="o">=</span><span class="n">main_resource</span><span class="p">,</span>
-                                 <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">protocol</span><span class="p">,</span>
-                                                         <span class="nb">type</span><span class="p">)</span> <span class="k">else</span> <span class="n">protocol</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">protocol</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
+            <span class="n">protocol</span> <span class="o">=</span> <span class="n">protocol</span><span class="p">(</span><span class="n">default_resource</span><span class="o">=</span><span class="n">main_resource</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">protocol</span><span class="p">:</span> <span class="n">Protocol</span> <span class="o">=</span> <span class="n">protocol</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">protocol</span><span class="p">,</span> <span class="n">Protocol</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;protocol&#39; must be a subclass of Protocol&quot;</span><span class="p">)</span>
 
         <span class="n">auth_flow_type</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;auth_flow_type&#39;</span><span class="p">,</span> <span class="s1">&#39;authorization&#39;</span><span class="p">)</span>
-        <span class="n">scopes</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;scopes&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>  <span class="c1"># retrieve scopes</span>
 
-        <span class="k">if</span> <span class="n">auth_flow_type</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;authorization&#39;</span><span class="p">,</span> <span class="s1">&#39;public&#39;</span><span class="p">):</span>
-            <span class="c1"># convert the provided scopes to protocol scopes:</span>
-            <span class="k">if</span> <span class="n">scopes</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;scopes&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">protocol</span><span class="o">.</span><span class="n">get_scopes_for</span><span class="p">(</span><span class="n">scopes</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">auth_flow_type</span> <span class="o">==</span> <span class="s1">&#39;credentials&#39;</span><span class="p">:</span>
-            <span class="c1"># for client credential grant flow solely:</span>
-            <span class="c1"># append the default scope if it&#39;s not provided</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">scopes</span><span class="p">:</span>
-                <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;scopes&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">protocol</span><span class="o">.</span><span class="n">prefix_scope</span><span class="p">(</span><span class="s1">&#39;.default&#39;</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="n">auth_flow_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;authorization&#39;</span><span class="p">,</span> <span class="s1">&#39;public&#39;</span><span class="p">,</span> <span class="s1">&#39;credentials&#39;</span><span class="p">,</span> <span class="s1">&#39;password&#39;</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;&quot;auth_flow_type&quot; must be &quot;authorization&quot;, &quot;credentials&quot;, &quot;password&quot; or &quot;public&quot;&#39;</span><span class="p">)</span>
 
+        <span class="n">scopes</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;scopes&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">scopes</span><span class="p">:</span>
+            <span class="k">del</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;scopes&#39;</span><span class="p">]</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Since 2.1 scopes are only needed during authentication.&quot;</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">auth_flow_type</span> <span class="o">==</span> <span class="s1">&#39;credentials&#39;</span><span class="p">:</span>
             <span class="c1"># set main_resource to blank when it&#39;s the &#39;ME&#39; resource</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">protocol</span><span class="o">.</span><span class="n">default_resource</span> <span class="o">==</span> <span class="n">ME_RESOURCE</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">protocol</span><span class="o">.</span><span class="n">default_resource</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
             <span class="k">if</span> <span class="n">main_resource</span> <span class="o">==</span> <span class="n">ME_RESOURCE</span><span class="p">:</span>
                 <span class="n">main_resource</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;&quot;auth_flow_type&quot; must be &quot;authorization&quot;, &quot;credentials&quot; or &quot;public&quot;&#39;</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">auth_flow_type</span> <span class="o">==</span> <span class="s1">&#39;password&#39;</span><span class="p">:</span>
+            <span class="c1"># set main_resource to blank when it&#39;s the &#39;ME&#39; resource</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">protocol</span><span class="o">.</span><span class="n">default_resource</span> <span class="o">==</span> <span class="n">ME_RESOURCE</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">protocol</span><span class="o">.</span><span class="n">default_resource</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+            <span class="k">if</span> <span class="n">main_resource</span> <span class="o">==</span> <span class="n">ME_RESOURCE</span><span class="p">:</span>
+                <span class="n">main_resource</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;username&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">username</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">con</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">connection_constructor</span><span class="p">(</span><span class="n">credentials</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">main_resource</span> <span class="o">=</span> <span class="n">main_resource</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">protocol</span><span class="o">.</span><span class="n">default_resource</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">main_resource</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">main_resource</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">protocol</span><span class="o">.</span><span class="n">default_resource</span></div>
 
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">auth</span><span class="p">:</span>
-            <span class="k">return</span> <span class="s1">&#39;Account Client Id: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">auth</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;Account Client Id: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">auth</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="s1">&#39;Unidentified Account&#39;</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">is_authenticated</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Checks whether the library has the authentication and that is not expired</span>
-<span class="sd">        :return: True if authenticated, False otherwise</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_authenticated</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Checks whether the library has the authentication data and that is not expired for the current username.</span>
+<span class="sd">        This will try to load the token from the backend if not already loaded.</span>
+<span class="sd">        Return True if authenticated, False otherwise.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">token</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">token_backend</span><span class="o">.</span><span class="n">token</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">token</span><span class="p">:</span>
-            <span class="n">token</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">token_backend</span><span class="o">.</span><span class="n">get_token</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">token_backend</span><span class="o">.</span><span class="n">has_data</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="c1"># try to load the token from the backend</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">load_token_from_backend</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">False</span>
 
-        <span class="k">return</span> <span class="n">token</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">token</span><span class="o">.</span><span class="n">is_expired</span>
+        <span class="k">return</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">token_backend</span><span class="o">.</span><span class="n">token_is_expired</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">username</span><span class="p">,</span> <span class="n">refresh_token</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Account.authenticate"><a class="viewcode-back" href="../../api/account.html#O365.account.Account.authenticate">[docs]</a>    <span class="k">def</span> <span class="nf">authenticate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">scopes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Performs the oauth authentication flow using the console resulting in a stored token.</span>
-<span class="sd">        It uses the credentials passed on instantiation</span>
+<div class="viewcode-block" id="Account.authenticate">
+<a class="viewcode-back" href="../../api/account.html#O365.account.Account.authenticate">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">authenticate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">requested_scopes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">redirect_uri</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                     <span class="n">handle_consent</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="n">consent_input_token</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Performs the console authentication flow resulting in a stored token.</span>
+<span class="sd">        It uses the credentials passed on instantiation.</span>
+<span class="sd">        Returns True if succeeded otherwise False.</span>
 
-<span class="sd">        :param list[str] or None scopes: list of protocol user scopes to be converted</span>
-<span class="sd">         by the protocol or scope helpers</span>
+<span class="sd">        :param list[str] requested_scopes: list of protocol user scopes to be converted</span>
+<span class="sd">         by the protocol or scope helpers or raw scopes</span>
+<span class="sd">        :param str redirect_uri: redirect url configured in registered app</span>
+<span class="sd">        :param handle_consent: a function to handle the consent process by default just input for the token url</span>
 <span class="sd">        :param kwargs: other configurations to be passed to the</span>
 <span class="sd">         Connection.get_authorization_url and Connection.request_token methods</span>
-<span class="sd">        :return: Success / Failure</span>
-<span class="sd">        :rtype: bool</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">auth_flow_type</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;authorization&#39;</span><span class="p">,</span> <span class="s1">&#39;public&#39;</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">scopes</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">scopes</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;The scopes must be set either at the Account instantiation or on the account.authenticate method.&#39;</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">scopes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">protocol</span><span class="o">.</span><span class="n">get_scopes_for</span><span class="p">(</span><span class="n">scopes</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">scopes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;The scopes are not set. Define the scopes requested.&#39;</span><span class="p">)</span>
+            <span class="n">consent_url</span><span class="p">,</span> <span class="n">flow</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_authorization_url</span><span class="p">(</span><span class="n">requested_scopes</span><span class="p">,</span> <span class="n">redirect_uri</span><span class="o">=</span><span class="n">redirect_uri</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-            <span class="n">consent_url</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">get_authorization_url</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-
-            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Visit the following url to give consent:&#39;</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="n">consent_url</span><span class="p">)</span>
-
-            <span class="n">token_url</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s1">&#39;Paste the authenticated url here:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">token_url</span> <span class="o">=</span> <span class="n">handle_consent</span><span class="p">(</span><span class="n">consent_url</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="n">token_url</span><span class="p">:</span>
-                <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">request_token</span><span class="p">(</span><span class="n">token_url</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>  <span class="c1"># no need to pass state as the session is the same</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">request_token</span><span class="p">(</span><span class="n">token_url</span><span class="p">,</span> <span class="n">flow</span><span class="o">=</span><span class="n">flow</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">result</span><span class="p">:</span>
                     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Authentication Flow Completed. Oauth Access Token Stored. You can now use the API.&#39;</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Something go wrong. Please try again.&#39;</span><span class="p">)</span>
 
-                <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">result</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Authentication Flow aborted.&#39;</span><span class="p">)</span>
                 <span class="k">return</span> <span class="kc">False</span>
 
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">auth_flow_type</span> <span class="o">==</span> <span class="s1">&#39;credentials&#39;</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">request_token</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">requested_scopes</span><span class="o">=</span><span class="n">scopes</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Connection &quot;auth_flow_type&quot; must be &quot;authorization&quot;, &quot;public&quot; or &quot;credentials&quot;&#39;</span><span class="p">)</span></div>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">auth_flow_type</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;credentials&#39;</span><span class="p">,</span> <span class="s1">&#39;password&#39;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">request_token</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">requested_scopes</span><span class="o">=</span><span class="n">requested_scopes</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Account.get_current_user"><a class="viewcode-back" href="../../api/account.html#O365.account.Account.get_current_user">[docs]</a>    <span class="k">def</span> <span class="nf">get_current_user</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Returns the current user &quot;&quot;&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;&quot;auth_flow_type&quot; must be &quot;authorization&quot;, &quot;public&quot;, &quot;password&quot; or &quot;credentials&quot;&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Account.get_authorization_url">
+<a class="viewcode-back" href="../../api/account.html#O365.account.Account.get_authorization_url">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_authorization_url</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                              <span class="n">requested_scopes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+                              <span class="n">redirect_uri</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                              <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Initializes the oauth authorization flow, getting the</span>
+<span class="sd">        authorization url that the user must approve.</span>
+
+<span class="sd">        :param list[str] requested_scopes: list of scopes to request access for</span>
+<span class="sd">        :param str redirect_uri: redirect url configured in registered app</span>
+<span class="sd">        :param kwargs: allow to pass unused params in conjunction with Connection</span>
+<span class="sd">        :return: authorization url and the flow dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># convert request scopes based on the defined protocol</span>
+        <span class="n">requested_scopes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">protocol</span><span class="o">.</span><span class="n">get_scopes_for</span><span class="p">(</span><span class="n">requested_scopes</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">get_authorization_url</span><span class="p">(</span><span class="n">requested_scopes</span><span class="p">,</span> <span class="n">redirect_uri</span><span class="o">=</span><span class="n">redirect_uri</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Account.request_token">
+<a class="viewcode-back" href="../../api/account.html#O365.account.Account.request_token">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">request_token</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">authorization_url</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="o">*</span><span class="p">,</span>
+                      <span class="n">flow</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                      <span class="n">requested_scopes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                      <span class="n">store_token</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                      <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Authenticates for the specified url and gets the oauth token data. Saves the</span>
+<span class="sd">        token in the backend if store_token is True. This will replace any other tokens stored</span>
+<span class="sd">        for the same username and scopes requested.</span>
+<span class="sd">        If the token data is successfully requested, then this method will try to set the username if</span>
+<span class="sd">        not previously set.</span>
+
+<span class="sd">        :param str or None authorization_url: url given by the authorization flow or None if it&#39;s client credentials</span>
+<span class="sd">        :param dict flow: dict object holding the data used in get_authorization_url</span>
+<span class="sd">        :param list[str] requested_scopes: list of scopes to request access for</span>
+<span class="sd">        :param bool store_token: True to store the token in the token backend,</span>
+<span class="sd">         so you don&#39;t have to keep opening the auth link and</span>
+<span class="sd">         authenticating every time</span>
+<span class="sd">        :param kwargs: allow to pass unused params in conjunction with Connection</span>
+<span class="sd">        :return: Success/Failure</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">auth_flow_type</span> <span class="o">==</span> <span class="s1">&#39;credentials&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">requested_scopes</span><span class="p">:</span>
+                <span class="n">requested_scopes</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">protocol</span><span class="o">.</span><span class="n">prefix_scope</span><span class="p">(</span><span class="s1">&#39;.default&#39;</span><span class="p">)]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">requested_scopes</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">requested_scopes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">protocol</span><span class="o">.</span><span class="n">prefix_scope</span><span class="p">(</span><span class="s1">&#39;.default&#39;</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Provided scope for auth flow type &quot;credentials&quot; does not match &#39;</span>
+                                     <span class="s1">&#39;default scope for the current protocol&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">auth_flow_type</span> <span class="o">==</span> <span class="s1">&#39;password&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">requested_scopes</span><span class="p">:</span>
+                <span class="n">requested_scopes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">protocol</span><span class="o">.</span><span class="n">get_scopes_for</span><span class="p">(</span><span class="n">requested_scopes</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">requested_scopes</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">protocol</span><span class="o">.</span><span class="n">prefix_scope</span><span class="p">(</span><span class="s1">&#39;.default&#39;</span><span class="p">)]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">requested_scopes</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Auth flow type &quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">auth_flow_type</span><span class="si">}</span><span class="s1">&quot; does not require scopes&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">request_token</span><span class="p">(</span><span class="n">authorization_url</span><span class="p">,</span>
+                                      <span class="n">flow</span><span class="o">=</span><span class="n">flow</span><span class="p">,</span>
+                                      <span class="n">requested_scopes</span><span class="o">=</span><span class="n">requested_scopes</span><span class="p">,</span>
+                                      <span class="n">store_token</span><span class="o">=</span><span class="n">store_token</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">username</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns the username in use for the account&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">username</span>
+
+<div class="viewcode-block" id="Account.get_authenticated_usernames">
+<a class="viewcode-back" href="../../api/account.html#O365.account.Account.get_authenticated_usernames">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_authenticated_usernames</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns a list of usernames that are authenticated and have a valid access or refresh token. &quot;&quot;&quot;</span>
+        <span class="n">usernames</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">account</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">token_backend</span><span class="o">.</span><span class="n">get_all_accounts</span><span class="p">():</span>
+            <span class="n">username</span> <span class="o">=</span> <span class="n">account</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;username&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">username</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">token_backend</span><span class="o">.</span><span class="n">token_is_expired</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="n">username</span><span class="p">,</span> <span class="n">refresh_token</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+                <span class="n">usernames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">username</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">usernames</span></div>
+
+
+    <span class="nd">@username</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">username</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">username</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the username in use for this account</span>
+<span class="sd">        The username can be None, meaning the first user account retrieved from the token_backend</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">username</span> <span class="o">=</span> <span class="n">username</span>
+
+<div class="viewcode-block" id="Account.get_current_user_data">
+<a class="viewcode-back" href="../../api/account.html#O365.account.Account.get_current_user_data">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_current_user_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns the current user data from the active directory &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">auth_flow_type</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;authorization&#39;</span><span class="p">,</span> <span class="s1">&#39;public&#39;</span><span class="p">):</span>
             <span class="n">directory</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">directory</span><span class="p">(</span><span class="n">resource</span><span class="o">=</span><span class="n">ME_RESOURCE</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">directory</span><span class="o">.</span><span class="n">get_current_user</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span></div>
 
+
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">connection</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Alias for self.con</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">connection</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Alias for self.con</span>
 
 <span class="sd">        :rtype: type(self.connection_constructor)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">con</span>
 
-<div class="viewcode-block" id="Account.new_message"><a class="viewcode-back" href="../../api/account.html#O365.account.Account.new_message">[docs]</a>    <span class="k">def</span> <span class="nf">new_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Creates a new message to be sent or stored</span>
+<div class="viewcode-block" id="Account.new_message">
+<a class="viewcode-back" href="../../api/account.html#O365.account.Account.new_message">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">new_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Creates a new message to be sent or stored</span>
 
 <span class="sd">        :param str resource: Custom resource to be used in this message</span>
 <span class="sd">         (Defaults to parent main_resource)</span>
 <span class="sd">        :return: New empty message</span>
 <span class="sd">        :rtype: Message</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">.message</span> <span class="kn">import</span> <span class="n">Message</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">.message</span><span class="w"> </span><span class="kn">import</span> <span class="n">Message</span>
         <span class="k">return</span> <span class="n">Message</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">main_resource</span><span class="o">=</span><span class="n">resource</span><span class="p">,</span> <span class="n">is_draft</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Account.mailbox"><a class="viewcode-back" href="../../api/account.html#O365.account.Account.mailbox">[docs]</a>    <span class="k">def</span> <span class="nf">mailbox</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Get an instance to the mailbox for the specified account resource</span>
 
-<span class="sd">        :param str resource: Custom resource to be used in this mailbox</span>
+<div class="viewcode-block" id="Account.mailbox">
+<a class="viewcode-back" href="../../api/account.html#O365.account.Account.mailbox">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">mailbox</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Get an instance to the mailbox for the specified account resource</span>
+
+<span class="sd">        :param resource: Custom resource to be used in this mailbox</span>
 <span class="sd">         (Defaults to parent main_resource)</span>
 <span class="sd">        :return: a representation of account mailbox</span>
 <span class="sd">        :rtype: O365.mailbox.MailBox</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">.mailbox</span> <span class="kn">import</span> <span class="n">MailBox</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">.mailbox</span><span class="w"> </span><span class="kn">import</span> <span class="n">MailBox</span>
         <span class="k">return</span> <span class="n">MailBox</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">main_resource</span><span class="o">=</span><span class="n">resource</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;MailBox&#39;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Account.address_book"><a class="viewcode-back" href="../../api/account.html#O365.account.Account.address_book">[docs]</a>    <span class="k">def</span> <span class="nf">address_book</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">resource</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">address_book</span><span class="o">=</span><span class="s1">&#39;personal&#39;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Get an instance to the specified address book for the</span>
+
+<div class="viewcode-block" id="Account.address_book">
+<a class="viewcode-back" href="../../api/account.html#O365.account.Account.address_book">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">address_book</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">resource</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">address_book</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;personal&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Get an instance to the specified address book for the</span>
 <span class="sd">        specified account resource</span>
 
-<span class="sd">        :param str resource: Custom resource to be used in this address book</span>
+<span class="sd">        :param resource: Custom resource to be used in this address book</span>
 <span class="sd">         (Defaults to parent main_resource)</span>
-<span class="sd">        :param str address_book: Choose from &#39;Personal&#39; or &#39;Directory&#39;</span>
+<span class="sd">        :param address_book: Choose from &#39;Personal&#39; or &#39;Directory&#39;</span>
 <span class="sd">        :return: a representation of the specified address book</span>
 <span class="sd">        :rtype: AddressBook or GlobalAddressList</span>
 <span class="sd">        :raises RuntimeError: if invalid address_book is specified</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">address_book</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;personal&#39;</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">.address_book</span> <span class="kn">import</span> <span class="n">AddressBook</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">.address_book</span><span class="w"> </span><span class="kn">import</span> <span class="n">AddressBook</span>
 
             <span class="k">return</span> <span class="n">AddressBook</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">main_resource</span><span class="o">=</span><span class="n">resource</span><span class="p">,</span>
                                <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Personal Address Book&#39;</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">address_book</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;gal&#39;</span><span class="p">,</span> <span class="s1">&#39;directory&#39;</span><span class="p">):</span>
             <span class="c1"># for backwards compatibility only</span>
-            <span class="kn">from</span> <span class="nn">.directory</span> <span class="kn">import</span> <span class="n">Directory</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">.directory</span><span class="w"> </span><span class="kn">import</span> <span class="n">Directory</span>
 
             <span class="k">return</span> <span class="n">Directory</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">main_resource</span><span class="o">=</span><span class="n">resource</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -324,29 +438,38 @@
                 <span class="s1">&#39;address_book must be either &quot;Personal&quot; &#39;</span>
                 <span class="s1">&#39;(resource address book) or &quot;Directory&quot; (Active Directory)&#39;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Account.directory"><a class="viewcode-back" href="../../api/account.html#O365.account.Account.directory">[docs]</a>    <span class="k">def</span> <span class="nf">directory</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Returns the active directory instance&quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">.directory</span> <span class="kn">import</span> <span class="n">Directory</span><span class="p">,</span> <span class="n">USERS_RESOURCE</span>
+
+<div class="viewcode-block" id="Account.directory">
+<a class="viewcode-back" href="../../api/account.html#O365.account.Account.directory">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">directory</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns the active directory instance&quot;&quot;&quot;</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">.directory</span><span class="w"> </span><span class="kn">import</span> <span class="n">Directory</span><span class="p">,</span> <span class="n">USERS_RESOURCE</span>
 
         <span class="k">return</span> <span class="n">Directory</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">main_resource</span><span class="o">=</span><span class="n">resource</span> <span class="ow">or</span> <span class="n">USERS_RESOURCE</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Account.schedule"><a class="viewcode-back" href="../../api/account.html#O365.account.Account.schedule">[docs]</a>    <span class="k">def</span> <span class="nf">schedule</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">resource</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Get an instance to work with calendar events for the</span>
+
+<div class="viewcode-block" id="Account.schedule">
+<a class="viewcode-back" href="../../api/account.html#O365.account.Account.schedule">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">schedule</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">resource</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Get an instance to work with calendar events for the</span>
 <span class="sd">        specified account resource</span>
 
-<span class="sd">        :param str resource: Custom resource to be used in this schedule object</span>
+<span class="sd">        :param resource: Custom resource to be used in this schedule object</span>
 <span class="sd">         (Defaults to parent main_resource)</span>
 <span class="sd">        :return: a representation of calendar events</span>
 <span class="sd">        :rtype: Schedule</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">.calendar</span> <span class="kn">import</span> <span class="n">Schedule</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">.calendar</span><span class="w"> </span><span class="kn">import</span> <span class="n">Schedule</span>
         <span class="k">return</span> <span class="n">Schedule</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">main_resource</span><span class="o">=</span><span class="n">resource</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Account.storage"><a class="viewcode-back" href="../../api/account.html#O365.account.Account.storage">[docs]</a>    <span class="k">def</span> <span class="nf">storage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">resource</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Get an instance to handle file storage (OneDrive / Sharepoint)</span>
+
+<div class="viewcode-block" id="Account.storage">
+<a class="viewcode-back" href="../../api/account.html#O365.account.Account.storage">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">storage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">resource</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Get an instance to handle file storage (OneDrive / Sharepoint)</span>
 <span class="sd">        for the specified account resource</span>
 
-<span class="sd">        :param str resource: Custom resource to be used in this drive object</span>
+<span class="sd">        :param resource: Custom resource to be used in this drive object</span>
 <span class="sd">         (Defaults to parent main_resource)</span>
 <span class="sd">        :return: a representation of OneDrive File Storage</span>
 <span class="sd">        :rtype: Storage</span>
@@ -356,14 +479,17 @@
             <span class="c1"># TODO: Custom protocol accessing OneDrive/Sharepoint Api fails here</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
                 <span class="s1">&#39;Drive options only works on Microsoft Graph API&#39;</span><span class="p">)</span>
-        <span class="kn">from</span> <span class="nn">.drive</span> <span class="kn">import</span> <span class="n">Storage</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">.drive</span><span class="w"> </span><span class="kn">import</span> <span class="n">Storage</span>
         <span class="k">return</span> <span class="n">Storage</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">main_resource</span><span class="o">=</span><span class="n">resource</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Account.sharepoint"><a class="viewcode-back" href="../../api/account.html#O365.account.Account.sharepoint">[docs]</a>    <span class="k">def</span> <span class="nf">sharepoint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">resource</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Get an instance to read information from Sharepoint sites for the</span>
+
+<div class="viewcode-block" id="Account.sharepoint">
+<a class="viewcode-back" href="../../api/account.html#O365.account.Account.sharepoint">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sharepoint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">resource</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Get an instance to read information from Sharepoint sites for the</span>
 <span class="sd">        specified account resource</span>
 
-<span class="sd">        :param str resource: Custom resource to be used in this sharepoint</span>
+<span class="sd">        :param resource: Custom resource to be used in this sharepoint</span>
 <span class="sd">         object (Defaults to parent main_resource)</span>
 <span class="sd">        :return: a representation of Sharepoint Sites</span>
 <span class="sd">        :rtype: Sharepoint</span>
@@ -375,35 +501,72 @@
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
                 <span class="s1">&#39;Sharepoint api only works on Microsoft Graph API&#39;</span><span class="p">)</span>
 
-        <span class="kn">from</span> <span class="nn">.sharepoint</span> <span class="kn">import</span> <span class="n">Sharepoint</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">.sharepoint</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sharepoint</span>
         <span class="k">return</span> <span class="n">Sharepoint</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">main_resource</span><span class="o">=</span><span class="n">resource</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Account.planner"><a class="viewcode-back" href="../../api/account.html#O365.account.Account.planner">[docs]</a>    <span class="k">def</span> <span class="nf">planner</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">resource</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Get an instance to read information from Microsoft planner &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Account.planner">
+<a class="viewcode-back" href="../../api/account.html#O365.account.Account.planner">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">planner</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">resource</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Get an instance to read information from Microsoft planner &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">protocol</span><span class="p">,</span> <span class="n">MSGraphProtocol</span><span class="p">):</span>
             <span class="c1"># TODO: Custom protocol accessing OneDrive/Sharepoint Api fails here</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
                 <span class="s1">&#39;planner api only works on Microsoft Graph API&#39;</span><span class="p">)</span>
 
-        <span class="kn">from</span> <span class="nn">.planner</span> <span class="kn">import</span> <span class="n">Planner</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">.planner</span><span class="w"> </span><span class="kn">import</span> <span class="n">Planner</span>
         <span class="k">return</span> <span class="n">Planner</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">main_resource</span><span class="o">=</span><span class="n">resource</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Account.teams"><a class="viewcode-back" href="../../api/account.html#O365.account.Account.teams">[docs]</a>    <span class="k">def</span> <span class="nf">teams</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">resource</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Get an instance to read information from Microsoft Teams &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Account.tasks">
+<a class="viewcode-back" href="../../api/account.html#O365.account.Account.tasks">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">tasks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">resource</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Get an instance to read information from Microsoft ToDo &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">protocol</span><span class="p">,</span> <span class="n">MSOffice365Protocol</span><span class="p">):</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">.tasks</span><span class="w"> </span><span class="kn">import</span> <span class="n">ToDo</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">.tasks_graph</span><span class="w"> </span><span class="kn">import</span> <span class="n">ToDo</span> <span class="k">as</span> <span class="n">ToDo</span>
+
+        <span class="k">return</span> <span class="n">ToDo</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">main_resource</span><span class="o">=</span><span class="n">resource</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Account.teams">
+<a class="viewcode-back" href="../../api/account.html#O365.account.Account.teams">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">teams</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">resource</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Get an instance to read information from Microsoft Teams &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">protocol</span><span class="p">,</span> <span class="n">MSGraphProtocol</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
                 <span class="s1">&#39;teams api only works on Microsoft Graph API&#39;</span><span class="p">)</span>
 
-        <span class="kn">from</span> <span class="nn">.teams</span> <span class="kn">import</span> <span class="n">Teams</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">.teams</span><span class="w"> </span><span class="kn">import</span> <span class="n">Teams</span>
         <span class="k">return</span> <span class="n">Teams</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">main_resource</span><span class="o">=</span><span class="n">resource</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Account.outlook_categories"><a class="viewcode-back" href="../../api/account.html#O365.account.Account.outlook_categories">[docs]</a>    <span class="k">def</span> <span class="nf">outlook_categories</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">resource</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Returns a Categories object to handle the available Outlook Categories &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">.category</span> <span class="kn">import</span> <span class="n">Categories</span>
 
-        <span class="k">return</span> <span class="n">Categories</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">main_resource</span><span class="o">=</span><span class="n">resource</span><span class="p">)</span></div></div>
+<div class="viewcode-block" id="Account.outlook_categories">
+<a class="viewcode-back" href="../../api/account.html#O365.account.Account.outlook_categories">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">outlook_categories</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">resource</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns a Categories object to handle the available Outlook Categories &quot;&quot;&quot;</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">.category</span><span class="w"> </span><span class="kn">import</span> <span class="n">Categories</span>
+
+        <span class="k">return</span> <span class="n">Categories</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">main_resource</span><span class="o">=</span><span class="n">resource</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Account.groups">
+<a class="viewcode-back" href="../../api/account.html#O365.account.Account.groups">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">groups</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">resource</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Get an instance to read information from Microsoft Groups &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">protocol</span><span class="p">,</span> <span class="n">MSGraphProtocol</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="s1">&#39;groups api only works on Microsoft Graph API&#39;</span><span class="p">)</span>
+
+        <span class="kn">from</span><span class="w"> </span><span class="nn">.groups</span><span class="w"> </span><span class="kn">import</span> <span class="n">Groups</span>
+        <span class="k">return</span> <span class="n">Groups</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">main_resource</span><span class="o">=</span><span class="n">resource</span><span class="p">)</span></div>
+</div>
+
 </pre></div>
 
            </div>
@@ -416,7 +579,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2018, Narcolapser
+        &copy; Copyright 2024, alejcas
 
     </p>
   </div>
@@ -437,10 +600,9 @@
 
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/language_data.js"></script>
+        <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../../_static/doctools.js?v=9bcbadda"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     
 
   

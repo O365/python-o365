@@ -23,9 +23,10 @@
     
 
   
-
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
 
@@ -76,7 +77,7 @@
               
             
             
-              <p class="caption"><span class="caption-text">Contents:</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../getting_started.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../usage.html">Detailed Usage</a></li>
@@ -144,24 +145,30 @@
            <div itemprop="articleBody">
             
   <h1>Source code for O365.address_book</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">datetime</span> <span class="k">as</span> <span class="nn">dt</span>
-<span class="kn">import</span> <span class="nn">logging</span>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">dt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 
-<span class="kn">from</span> <span class="nn">dateutil.parser</span> <span class="kn">import</span> <span class="n">parse</span>
-<span class="kn">from</span> <span class="nn">requests.exceptions</span> <span class="kn">import</span> <span class="n">HTTPError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dateutil.parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">requests.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">HTTPError</span>
 
-<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">Recipients</span>
-<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">AttachableMixin</span><span class="p">,</span> <span class="n">TrackerSet</span>
-<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">Pagination</span><span class="p">,</span> <span class="n">NEXT_LINK_KEYWORD</span><span class="p">,</span> <span class="n">ApiComponent</span>
-<span class="kn">from</span> <span class="nn">.message</span> <span class="kn">import</span> <span class="n">Message</span><span class="p">,</span> <span class="n">RecipientType</span>
-<span class="kn">from</span> <span class="nn">.category</span> <span class="kn">import</span> <span class="n">Category</span>
-
+<span class="kn">from</span><span class="w"> </span><span class="nn">.category</span><span class="w"> </span><span class="kn">import</span> <span class="n">Category</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.message</span><span class="w"> </span><span class="kn">import</span> <span class="n">Message</span><span class="p">,</span> <span class="n">RecipientType</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.utils</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">NEXT_LINK_KEYWORD</span><span class="p">,</span>
+    <span class="n">ApiComponent</span><span class="p">,</span>
+    <span class="n">AttachableMixin</span><span class="p">,</span>
+    <span class="n">Pagination</span><span class="p">,</span>
+    <span class="n">Recipients</span><span class="p">,</span>
+    <span class="n">TrackerSet</span><span class="p">,</span>
+<span class="p">)</span>
 
 <span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="Contact"><a class="viewcode-back" href="../../api/address_book.html#O365.address_book.Contact">[docs]</a><span class="k">class</span> <span class="nc">Contact</span><span class="p">(</span><span class="n">ApiComponent</span><span class="p">,</span> <span class="n">AttachableMixin</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Contact manages lists of events on associated contact on office365. &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="Contact">
+<a class="viewcode-back" href="../../api/address_book.html#O365.address_book.Contact">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Contact</span><span class="p">(</span><span class="n">ApiComponent</span><span class="p">,</span> <span class="n">AttachableMixin</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Contact manages lists of events on associated contact on office365. &quot;&quot;&quot;</span>
 
     <span class="n">_endpoints</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s1">&#39;contact&#39;</span><span class="p">:</span> <span class="s1">&#39;/contacts&#39;</span><span class="p">,</span>
@@ -173,8 +180,10 @@
 
     <span class="n">message_constructor</span> <span class="o">=</span> <span class="n">Message</span>
 
-<div class="viewcode-block" id="Contact.__init__"><a class="viewcode-back" href="../../api/address_book.html#O365.address_book.Contact.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">con</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Create a contact API component</span>
+<div class="viewcode-block" id="Contact.__init__">
+<a class="viewcode-back" href="../../api/address_book.html#O365.address_book.Contact.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">con</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Create a contact API component</span>
 
 <span class="sd">        :param parent: parent account for this folder</span>
 <span class="sd">        :type parent: Account</span>
@@ -213,6 +222,7 @@
             <span class="n">local_tz</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__modified</span> <span class="k">else</span> <span class="kc">None</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">__display_name</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cc</span><span class="p">(</span><span class="s1">&#39;displayName&#39;</span><span class="p">),</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__fileAs</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cc</span><span class="p">(</span><span class="s1">&#39;fileAs&#39;</span><span class="p">),</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__name</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cc</span><span class="p">(</span><span class="s1">&#39;givenName&#39;</span><span class="p">),</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__surname</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cc</span><span class="p">(</span><span class="s1">&#39;surname&#39;</span><span class="p">),</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
 
@@ -236,7 +246,7 @@
             <span class="c1"># a Contact from OneDrive?</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__emails</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">email</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__business_address</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cc</span><span class="p">(</span><span class="s1">&#39;businessAddress&#39;</span><span class="p">),</span> <span class="p">{})</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__home_address</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cc</span><span class="p">(</span><span class="s1">&#39;homesAddress&#39;</span><span class="p">),</span> <span class="p">{})</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__home_address</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cc</span><span class="p">(</span><span class="s1">&#39;homeAddress&#39;</span><span class="p">),</span> <span class="p">{})</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__other_address</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cc</span><span class="p">(</span><span class="s1">&#39;otherAddress&#39;</span><span class="p">),</span> <span class="p">{})</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__preferred_language</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cc</span><span class="p">(</span><span class="s1">&#39;preferredLanguage&#39;</span><span class="p">),</span>
                                                    <span class="kc">None</span><span class="p">)</span>
@@ -256,49 +266,65 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">emails</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">user_principal_name</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__emails</span><span class="o">.</span><span class="n">untrack</span> <span class="o">=</span> <span class="kc">False</span></div>
 
-    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">display_name</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">full_name</span> <span class="ow">or</span> <span class="s1">&#39;Unknown Name&#39;</span>
 
-    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">object_id</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">object_id</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">created</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Created Time</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">created</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Created Time</span>
 
 <span class="sd">        :rtype: datetime</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__created</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">modified</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Last Modified Time</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">modified</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Last Modified Time</span>
 
 <span class="sd">        :rtype: datetime</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__modified</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">display_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Display Name</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">display_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Display Name</span>
 
 <span class="sd">        :getter: Get the display name of the contact</span>
 <span class="sd">        :setter: Update the display name</span>
 <span class="sd">        :type: str</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__display_name</span>
-
+        
     <span class="nd">@display_name</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">display_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">display_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__display_name</span> <span class="o">=</span> <span class="n">value</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_track_changes</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cc</span><span class="p">(</span><span class="s1">&#39;displayName&#39;</span><span class="p">))</span>
-
+    
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; First Name</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fileAs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; File As</span>
+
+<span class="sd">        :getter: Get the fileAs of the contact</span>
+<span class="sd">        :setter: Update the fileAs</span>
+<span class="sd">        :type: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__fileAs</span>
+        
+    <span class="nd">@fileAs</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fileAs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__fileAs</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_track_changes</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cc</span><span class="p">(</span><span class="s1">&#39;fileAs&#39;</span><span class="p">))</span>
+        
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; First Name</span>
 
 <span class="sd">        :getter: Get the name of the contact</span>
 <span class="sd">        :setter: Update the name</span>
@@ -307,13 +333,13 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__name</span>
 
     <span class="nd">@name</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__name</span> <span class="o">=</span> <span class="n">value</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_track_changes</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cc</span><span class="p">(</span><span class="s1">&#39;givenName&#39;</span><span class="p">))</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">surname</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Surname of Contact</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">surname</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Surname of Contact</span>
 
 <span class="sd">        :getter: Get the surname of the contact</span>
 <span class="sd">        :setter: Update the surname</span>
@@ -322,21 +348,21 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__surname</span>
 
     <span class="nd">@surname</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">surname</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">surname</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__surname</span> <span class="o">=</span> <span class="n">value</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_track_changes</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cc</span><span class="p">(</span><span class="s1">&#39;surname&#39;</span><span class="p">))</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">full_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Full Name (Name + Surname)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">full_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Full Name (Name + Surname)</span>
 
 <span class="sd">        :rtype: str</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">surname</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">title</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Title (Mr., Ms., etc..)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">title</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Title (Mr., Ms., etc..)</span>
 
 <span class="sd">        :getter: Get the title of the contact</span>
 <span class="sd">        :setter: Update the title</span>
@@ -345,13 +371,13 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__title</span>
 
     <span class="nd">@title</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">title</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">title</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__title</span> <span class="o">=</span> <span class="n">value</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_track_changes</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cc</span><span class="p">(</span><span class="s1">&#39;title&#39;</span><span class="p">))</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">job_title</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Job Title</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">job_title</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Job Title</span>
 
 <span class="sd">        :getter: Get the job title of contact</span>
 <span class="sd">        :setter: Update the job title</span>
@@ -360,13 +386,13 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__job_title</span>
 
     <span class="nd">@job_title</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">job_title</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">job_title</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__job_title</span> <span class="o">=</span> <span class="n">value</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_track_changes</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cc</span><span class="p">(</span><span class="s1">&#39;jobTitle&#39;</span><span class="p">))</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">company_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Name of the company</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">company_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Name of the company</span>
 
 <span class="sd">        :getter: Get the company name of contact</span>
 <span class="sd">        :setter: Update the company name</span>
@@ -375,13 +401,13 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__company_name</span>
 
     <span class="nd">@company_name</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">company_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">company_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__company_name</span> <span class="o">=</span> <span class="n">value</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_track_changes</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cc</span><span class="p">(</span><span class="s1">&#39;companyName&#39;</span><span class="p">))</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">department</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Department</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">department</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Department</span>
 
 <span class="sd">        :getter: Get the department of contact</span>
 <span class="sd">        :setter: Update the department</span>
@@ -390,13 +416,13 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__department</span>
 
     <span class="nd">@department</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">department</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">department</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__department</span> <span class="o">=</span> <span class="n">value</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_track_changes</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cc</span><span class="p">(</span><span class="s1">&#39;department&#39;</span><span class="p">))</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">office_location</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Office Location</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">office_location</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Office Location</span>
 
 <span class="sd">        :getter: Get the office location of contact</span>
 <span class="sd">        :setter: Update the office location</span>
@@ -405,13 +431,13 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__office_location</span>
 
     <span class="nd">@office_location</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">office_location</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">office_location</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__office_location</span> <span class="o">=</span> <span class="n">value</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_track_changes</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cc</span><span class="p">(</span><span class="s1">&#39;officeLocation&#39;</span><span class="p">))</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">business_phones</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Business Contact numbers</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">business_phones</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Business Contact numbers</span>
 
 <span class="sd">        :getter: Get the contact numbers of contact</span>
 <span class="sd">        :setter: Update the contact numbers</span>
@@ -420,7 +446,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__business_phones</span>
 
     <span class="nd">@business_phones</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">business_phones</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">business_phones</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
             <span class="n">value</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
@@ -429,8 +455,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_track_changes</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cc</span><span class="p">(</span><span class="s1">&#39;businessPhones&#39;</span><span class="p">))</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">mobile_phone</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Personal Contact numbers</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">mobile_phone</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Personal Contact numbers</span>
 
 <span class="sd">        :getter: Get the contact numbers of contact</span>
 <span class="sd">        :setter: Update the contact numbers</span>
@@ -439,13 +465,13 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__mobile_phone</span>
 
     <span class="nd">@mobile_phone</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">mobile_phone</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">mobile_phone</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__mobile_phone</span> <span class="o">=</span> <span class="n">value</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_track_changes</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cc</span><span class="p">(</span><span class="s1">&#39;mobilePhone&#39;</span><span class="p">))</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">home_phones</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Home Contact numbers</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">home_phones</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Home Contact numbers</span>
 
 <span class="sd">        :getter: Get the contact numbers of contact</span>
 <span class="sd">        :setter: Update the contact numbers</span>
@@ -454,7 +480,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__home_phones</span>
 
     <span class="nd">@home_phones</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">home_phones</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">home_phones</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__home_phones</span> <span class="o">=</span> <span class="n">value</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
@@ -466,16 +492,16 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_track_changes</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cc</span><span class="p">(</span><span class="s1">&#39;homePhones&#39;</span><span class="p">))</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">emails</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; List of email ids of the Contact</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">emails</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; List of email ids of the Contact</span>
 
 <span class="sd">        :rtype: Recipients</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__emails</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">main_email</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Primary(First) email id of the Contact</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">main_email</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Primary(First) email id of the Contact</span>
 
 <span class="sd">        :rtype: str</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -484,8 +510,8 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">emails</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">address</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">business_address</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Business Address</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">business_address</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Business Address</span>
 
 <span class="sd">        :getter: Get the address of contact</span>
 <span class="sd">        :setter: Update the address</span>
@@ -494,15 +520,15 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__business_address</span>
 
     <span class="nd">@business_address</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">business_address</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">business_address</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;&quot;business_address&quot; must be dict&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__business_address</span> <span class="o">=</span> <span class="n">value</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_track_changes</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cc</span><span class="p">(</span><span class="s1">&#39;businessAddress&#39;</span><span class="p">))</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">home_address</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Home Address</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">home_address</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Home Address</span>
 
 <span class="sd">        :getter: Get the address of contact</span>
 <span class="sd">        :setter: Update the address</span>
@@ -511,15 +537,15 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__home_address</span>
 
     <span class="nd">@home_address</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">home_address</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">home_address</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;&quot;home_address&quot; must be dict&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__home_address</span> <span class="o">=</span> <span class="n">value</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_track_changes</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cc</span><span class="p">(</span><span class="s1">&#39;homesAddress&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_track_changes</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cc</span><span class="p">(</span><span class="s1">&#39;homeAddress&#39;</span><span class="p">))</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">other_address</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Other Address</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">other_address</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Other Address</span>
 
 <span class="sd">        :getter: Get the address of contact</span>
 <span class="sd">        :setter: Update the address</span>
@@ -528,15 +554,15 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__other_address</span>
 
     <span class="nd">@other_address</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">other_address</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">other_address</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;&quot;other_address&quot; must be dict&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__other_address</span> <span class="o">=</span> <span class="n">value</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_track_changes</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cc</span><span class="p">(</span><span class="s1">&#39;otherAddress&#39;</span><span class="p">))</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">preferred_language</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Preferred Language</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">preferred_language</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Preferred Language</span>
 
 <span class="sd">        :getter: Get the language of contact</span>
 <span class="sd">        :setter: Update the language</span>
@@ -545,13 +571,13 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__preferred_language</span>
 
     <span class="nd">@preferred_language</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">preferred_language</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">preferred_language</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__preferred_language</span> <span class="o">=</span> <span class="n">value</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_track_changes</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cc</span><span class="p">(</span><span class="s1">&#39;preferredLanguage&#39;</span><span class="p">))</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">categories</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Assigned Categories</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">categories</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Assigned Categories</span>
 
 <span class="sd">        :getter: Get the categories</span>
 <span class="sd">        :setter: Update the categories</span>
@@ -560,7 +586,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__categories</span>
 
     <span class="nd">@categories</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">categories</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">categories</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__categories</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
@@ -577,24 +603,26 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_track_changes</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cc</span><span class="p">(</span><span class="s1">&#39;categories&#39;</span><span class="p">))</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">personal_notes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">personal_notes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__personal_notes</span>
 
     <span class="nd">@personal_notes</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">personal_notes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">personal_notes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__personal_notes</span> <span class="o">=</span> <span class="n">value</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_track_changes</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cc</span><span class="p">(</span><span class="s1">&#39;personalNotes&#39;</span><span class="p">))</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">folder_id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; ID of the folder</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">folder_id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; ID of the folder</span>
 
 <span class="sd">        :rtype: str</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__folder_id</span>
 
-<div class="viewcode-block" id="Contact.to_api_data"><a class="viewcode-back" href="../../api/address_book.html#O365.address_book.Contact.to_api_data">[docs]</a>    <span class="k">def</span> <span class="nf">to_api_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">restrict_keys</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Returns a dictionary in cloud format</span>
+<div class="viewcode-block" id="Contact.to_api_data">
+<a class="viewcode-back" href="../../api/address_book.html#O365.address_book.Contact.to_api_data">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_api_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">restrict_keys</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns a dictionary in cloud format</span>
 
 <span class="sd">        :param restrict_keys: a set of keys to restrict the returned data to.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -602,6 +630,7 @@
 
         <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
             <span class="n">cc</span><span class="p">(</span><span class="s1">&#39;displayName&#39;</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">__display_name</span><span class="p">,</span>
+            <span class="n">cc</span><span class="p">(</span><span class="s1">&#39;fileAs&#39;</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">__fileAs</span><span class="p">,</span>
             <span class="n">cc</span><span class="p">(</span><span class="s1">&#39;givenName&#39;</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">__name</span><span class="p">,</span>
             <span class="n">cc</span><span class="p">(</span><span class="s1">&#39;surname&#39;</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">__surname</span><span class="p">,</span>
             <span class="n">cc</span><span class="p">(</span><span class="s1">&#39;title&#39;</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">__title</span><span class="p">,</span>
@@ -616,7 +645,7 @@
                                     <span class="bp">self</span><span class="o">.</span><span class="n">_cc</span><span class="p">(</span><span class="s1">&#39;address&#39;</span><span class="p">):</span> <span class="n">recipient</span><span class="o">.</span><span class="n">address</span><span class="p">}</span>
                                    <span class="k">for</span> <span class="n">recipient</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">emails</span><span class="p">],</span>
             <span class="n">cc</span><span class="p">(</span><span class="s1">&#39;businessAddress&#39;</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">__business_address</span><span class="p">,</span>
-            <span class="n">cc</span><span class="p">(</span><span class="s1">&#39;homesAddress&#39;</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">__home_address</span><span class="p">,</span>
+            <span class="n">cc</span><span class="p">(</span><span class="s1">&#39;homeAddress&#39;</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">__home_address</span><span class="p">,</span>
             <span class="n">cc</span><span class="p">(</span><span class="s1">&#39;otherAddress&#39;</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">__other_address</span><span class="p">,</span>
             <span class="n">cc</span><span class="p">(</span><span class="s1">&#39;categories&#39;</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">__categories</span><span class="p">,</span>
             <span class="n">cc</span><span class="p">(</span><span class="s1">&#39;personalNotes&#39;</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">__personal_notes</span><span class="p">,</span>
@@ -630,8 +659,11 @@
                     <span class="k">del</span> <span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">data</span></div>
 
-<div class="viewcode-block" id="Contact.delete"><a class="viewcode-back" href="../../api/address_book.html#O365.address_book.Contact.delete">[docs]</a>    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Deletes this contact</span>
+
+<div class="viewcode-block" id="Contact.delete">
+<a class="viewcode-back" href="../../api/address_book.html#O365.address_book.Contact.delete">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Deletes this contact</span>
 
 <span class="sd">        :return: Success or Failure</span>
 <span class="sd">        :rtype: bool</span>
@@ -647,8 +679,11 @@
 
         <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">response</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Contact.save"><a class="viewcode-back" href="../../api/address_book.html#O365.address_book.Contact.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Saves this contact to the cloud (create or update existing one</span>
+
+<div class="viewcode-block" id="Contact.save">
+<a class="viewcode-back" href="../../api/address_book.html#O365.address_book.Contact.save">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Saves this contact to the cloud (create or update existing one</span>
 <span class="sd">        based on what values have changed)</span>
 
 <span class="sd">        :return: Saved or Not</span>
@@ -693,12 +728,15 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">__modified</span> <span class="o">=</span> <span class="n">parse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">modified</span><span class="p">)</span><span class="o">.</span><span class="n">astimezone</span><span class="p">(</span>
                 <span class="n">local_tz</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__modified</span> <span class="k">else</span> <span class="kc">None</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__modified</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">protocol</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">localize</span><span class="p">(</span><span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">())</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__modified</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">protocol</span><span class="o">.</span><span class="n">timezone</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="kc">True</span></div>
 
-<div class="viewcode-block" id="Contact.new_message"><a class="viewcode-back" href="../../api/address_book.html#O365.address_book.Contact.new_message">[docs]</a>    <span class="k">def</span> <span class="nf">new_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">recipient</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">recipient_type</span><span class="o">=</span><span class="n">RecipientType</span><span class="o">.</span><span class="n">TO</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; This method returns a new draft Message instance with</span>
+
+<div class="viewcode-block" id="Contact.new_message">
+<a class="viewcode-back" href="../../api/address_book.html#O365.address_book.Contact.new_message">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">new_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">recipient</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">recipient_type</span><span class="o">=</span><span class="n">RecipientType</span><span class="o">.</span><span class="n">TO</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; This method returns a new draft Message instance with</span>
 <span class="sd">        contacts first email as a recipient</span>
 
 <span class="sd">        :param Recipient recipient: a Recipient instance where to send this</span>
@@ -722,10 +760,12 @@
 
         <span class="k">return</span> <span class="n">new_message</span></div>
 
-<div class="viewcode-block" id="Contact.get_profile_photo"><a class="viewcode-back" href="../../api/address_book.html#O365.address_book.Contact.get_profile_photo">[docs]</a>    <span class="k">def</span> <span class="nf">get_profile_photo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Returns this contact profile photo</span>
-<span class="sd">        :param str size: 48x48, 64x64, 96x96, 120x120, 240x240,</span>
-<span class="sd">         360x360, 432x432, 504x504, and 648x648</span>
+
+<div class="viewcode-block" id="Contact.get_profile_photo">
+<a class="viewcode-back" href="../../api/address_book.html#O365.address_book.Contact.get_profile_photo">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_profile_photo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns this contact profile photo</span>
+<span class="sd">        :param str size: 48x48, 64x64, 96x96, 120x120, 240x240, 360x360, 432x432, 504x504, and 648x648</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">size</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_url</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_endpoints</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;photo&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">object_id</span><span class="p">))</span>
@@ -743,19 +783,26 @@
 
         <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">content</span></div>
 
-<div class="viewcode-block" id="Contact.update_profile_photo"><a class="viewcode-back" href="../../api/address_book.html#O365.address_book.Contact.update_profile_photo">[docs]</a>    <span class="k">def</span> <span class="nf">update_profile_photo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">photo</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Updates this contact profile photo</span>
+
+<div class="viewcode-block" id="Contact.update_profile_photo">
+<a class="viewcode-back" href="../../api/address_book.html#O365.address_book.Contact.update_profile_photo">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_profile_photo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">photo</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Updates this contact profile photo</span>
 <span class="sd">        :param bytes photo: the photo data in bytes</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_url</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_endpoints</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;photo&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">object_id</span><span class="p">))</span>
         <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">photo</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;Content-type&#39;</span><span class="p">:</span> <span class="s1">&#39;image/jpeg&#39;</span><span class="p">})</span>
 
-        <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">response</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">response</span><span class="p">)</span></div>
+</div>
 
 
-<div class="viewcode-block" id="BaseContactFolder"><a class="viewcode-back" href="../../api/address_book.html#O365.address_book.BaseContactFolder">[docs]</a><span class="k">class</span> <span class="nc">BaseContactFolder</span><span class="p">(</span><span class="n">ApiComponent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Base Contact Folder Grouping Functionality &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="BaseContactFolder">
+<a class="viewcode-back" href="../../api/address_book.html#O365.address_book.BaseContactFolder">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">BaseContactFolder</span><span class="p">(</span><span class="n">ApiComponent</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Base Contact Folder Grouping Functionality &quot;&quot;&quot;</span>
 
     <span class="n">_endpoints</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s1">&#39;root_contacts&#39;</span><span class="p">:</span> <span class="s1">&#39;/contacts&#39;</span><span class="p">,</span>
@@ -768,8 +815,10 @@
     <span class="n">contact_constructor</span> <span class="o">=</span> <span class="n">Contact</span>
     <span class="n">message_constructor</span> <span class="o">=</span> <span class="n">Message</span>
 
-<div class="viewcode-block" id="BaseContactFolder.__init__"><a class="viewcode-back" href="../../api/address_book.html#O365.address_book.BaseContactFolder.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">con</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Create a contact folder component</span>
+<div class="viewcode-block" id="BaseContactFolder.__init__">
+<a class="viewcode-back" href="../../api/address_book.html#O365.address_book.BaseContactFolder.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">con</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Create a contact folder component</span>
 
 <span class="sd">        :param parent: parent folder/account for this folder</span>
 <span class="sd">        :type parent: BaseContactFolder or Account</span>
@@ -805,17 +854,20 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">folder_id</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cc</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">parent_id</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cc</span><span class="p">(</span><span class="s1">&#39;parentFolderId&#39;</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s1">&#39;Contact Folder: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">folder_id</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">folder_id</span>
 
-<div class="viewcode-block" id="BaseContactFolder.get_contacts"><a class="viewcode-back" href="../../api/address_book.html#O365.address_book.BaseContactFolder.get_contacts">[docs]</a>    <span class="k">def</span> <span class="nf">get_contacts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">order_by</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">batch</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Gets a list of contacts from this address book</span>
+<div class="viewcode-block" id="BaseContactFolder.get_contacts">
+<a class="viewcode-back" href="../../api/address_book.html#O365.address_book.BaseContactFolder.get_contacts">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_contacts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">order_by</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">batch</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Gets a list of contacts from this address book</span>
 
 <span class="sd">        To use query an order_by check the OData specification here:</span>
 <span class="sd">        http://docs.oasis-open.org/odata/odata/v4.0/errata03/os/complete/</span>
@@ -875,8 +927,11 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">contacts</span></div>
 
-<div class="viewcode-block" id="BaseContactFolder.get_contact_by_email"><a class="viewcode-back" href="../../api/address_book.html#O365.address_book.BaseContactFolder.get_contact_by_email">[docs]</a>    <span class="k">def</span> <span class="nf">get_contact_by_email</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">email</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Returns a Contact by it&#39;s email</span>
+
+<div class="viewcode-block" id="BaseContactFolder.get_contact_by_email">
+<a class="viewcode-back" href="../../api/address_book.html#O365.address_book.BaseContactFolder.get_contact_by_email">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_contact_by_email</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">email</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns a Contact by it&#39;s email</span>
 
 <span class="sd">        :param email: email to get contact for</span>
 <span class="sd">        :return: Contact for specified email</span>
@@ -888,14 +943,20 @@
         <span class="n">query</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">q</span><span class="p">()</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">collection</span><span class="o">=</span><span class="s1">&#39;email_addresses&#39;</span><span class="p">,</span> <span class="n">attribute</span><span class="o">=</span><span class="s1">&#39;address&#39;</span><span class="p">,</span>
                              <span class="n">word</span><span class="o">=</span><span class="n">email</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span> <span class="n">operation</span><span class="o">=</span><span class="s1">&#39;eq&#39;</span><span class="p">)</span>
         <span class="n">contacts</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_contacts</span><span class="p">(</span><span class="n">limit</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="n">query</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">contacts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">contacts</span> <span class="k">else</span> <span class="kc">None</span></div></div>
+        <span class="k">return</span> <span class="n">contacts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">contacts</span> <span class="k">else</span> <span class="kc">None</span></div>
+</div>
 
 
-<div class="viewcode-block" id="ContactFolder"><a class="viewcode-back" href="../../api/address_book.html#O365.address_book.ContactFolder">[docs]</a><span class="k">class</span> <span class="nc">ContactFolder</span><span class="p">(</span><span class="n">BaseContactFolder</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; A Contact Folder representation &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="ContactFolder.get_folder"><a class="viewcode-back" href="../../api/address_book.html#O365.address_book.ContactFolder.get_folder">[docs]</a>    <span class="k">def</span> <span class="nf">get_folder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">folder_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">folder_name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Returns a Contact Folder by it&#39;s id or child folders by name</span>
+<div class="viewcode-block" id="ContactFolder">
+<a class="viewcode-back" href="../../api/address_book.html#O365.address_book.ContactFolder">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ContactFolder</span><span class="p">(</span><span class="n">BaseContactFolder</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; A Contact Folder representation &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="ContactFolder.get_folder">
+<a class="viewcode-back" href="../../api/address_book.html#O365.address_book.ContactFolder.get_folder">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_folder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">folder_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">folder_name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns a Contact Folder by it&#39;s id or child folders by name</span>
 
 <span class="sd">        :param folder_id: the folder_id to be retrieved.</span>
 <span class="sd">         Can be any folder Id (child or not)</span>
@@ -946,8 +1007,11 @@
                               <span class="n">main_resource</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">main_resource</span><span class="p">,</span>
                               <span class="o">**</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_cloud_data_key</span><span class="p">:</span> <span class="n">folder</span><span class="p">})</span></div>
 
-<div class="viewcode-block" id="ContactFolder.get_folders"><a class="viewcode-back" href="../../api/address_book.html#O365.address_book.ContactFolder.get_folders">[docs]</a>    <span class="k">def</span> <span class="nf">get_folders</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">order_by</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Returns a list of child folders</span>
+
+<div class="viewcode-block" id="ContactFolder.get_folders">
+<a class="viewcode-back" href="../../api/address_book.html#O365.address_book.ContactFolder.get_folders">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_folders</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">order_by</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns a list of child folders</span>
 
 <span class="sd">        :param int limit: max no. of folders to get. Over 999 uses batch.</span>
 <span class="sd">        :param query: applies a OData filter to the request</span>
@@ -986,8 +1050,11 @@
         <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_cloud_data_key</span><span class="p">:</span> <span class="n">folder</span><span class="p">})</span>
                 <span class="k">for</span> <span class="n">folder</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="p">[])]</span></div>
 
-<div class="viewcode-block" id="ContactFolder.create_child_folder"><a class="viewcode-back" href="../../api/address_book.html#O365.address_book.ContactFolder.create_child_folder">[docs]</a>    <span class="k">def</span> <span class="nf">create_child_folder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">folder_name</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Creates a new child folder</span>
+
+<div class="viewcode-block" id="ContactFolder.create_child_folder">
+<a class="viewcode-back" href="../../api/address_book.html#O365.address_book.ContactFolder.create_child_folder">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_child_folder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">folder_name</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Creates a new child folder</span>
 
 <span class="sd">        :param str folder_name: name of the new folder to create</span>
 <span class="sd">        :return: newly created folder</span>
@@ -1013,8 +1080,11 @@
         <span class="c1"># Everything received from cloud must be passed as self._cloud_data_key</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_cloud_data_key</span><span class="p">:</span> <span class="n">folder</span><span class="p">})</span></div>
 
-<div class="viewcode-block" id="ContactFolder.update_folder_name"><a class="viewcode-back" href="../../api/address_book.html#O365.address_book.ContactFolder.update_folder_name">[docs]</a>    <span class="k">def</span> <span class="nf">update_folder_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Change this folder name</span>
+
+<div class="viewcode-block" id="ContactFolder.update_folder_name">
+<a class="viewcode-back" href="../../api/address_book.html#O365.address_book.ContactFolder.update_folder_name">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_folder_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Change this folder name</span>
 
 <span class="sd">        :param str name: new name to change to</span>
 <span class="sd">        :return: Updated or Not</span>
@@ -1039,8 +1109,11 @@
 
         <span class="k">return</span> <span class="kc">True</span></div>
 
-<div class="viewcode-block" id="ContactFolder.move_folder"><a class="viewcode-back" href="../../api/address_book.html#O365.address_book.ContactFolder.move_folder">[docs]</a>    <span class="k">def</span> <span class="nf">move_folder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">to_folder</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Change this folder name</span>
+
+<div class="viewcode-block" id="ContactFolder.move_folder">
+<a class="viewcode-back" href="../../api/address_book.html#O365.address_book.ContactFolder.move_folder">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">move_folder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">to_folder</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Change this folder name</span>
 
 <span class="sd">        :param to_folder: folder_id/ContactFolder to move into</span>
 <span class="sd">        :type to_folder: str or ContactFolder</span>
@@ -1074,8 +1147,11 @@
 
         <span class="k">return</span> <span class="kc">True</span></div>
 
-<div class="viewcode-block" id="ContactFolder.delete"><a class="viewcode-back" href="../../api/address_book.html#O365.address_book.ContactFolder.delete">[docs]</a>    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Deletes this folder</span>
+
+<div class="viewcode-block" id="ContactFolder.delete">
+<a class="viewcode-back" href="../../api/address_book.html#O365.address_book.ContactFolder.delete">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Deletes this folder</span>
 
 <span class="sd">        :return: Deleted or Not</span>
 <span class="sd">        :rtype: bool</span>
@@ -1095,8 +1171,11 @@
 
         <span class="k">return</span> <span class="kc">True</span></div>
 
-<div class="viewcode-block" id="ContactFolder.new_contact"><a class="viewcode-back" href="../../api/address_book.html#O365.address_book.ContactFolder.new_contact">[docs]</a>    <span class="k">def</span> <span class="nf">new_contact</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Creates a new contact to be saved into it&#39;s parent folder</span>
+
+<div class="viewcode-block" id="ContactFolder.new_contact">
+<a class="viewcode-back" href="../../api/address_book.html#O365.address_book.ContactFolder.new_contact">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">new_contact</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Creates a new contact to be saved into it&#39;s parent folder</span>
 
 <span class="sd">        :return: newly created contact</span>
 <span class="sd">        :rtype: Contact</span>
@@ -1106,8 +1185,11 @@
             <span class="n">contact</span><span class="o">.</span><span class="n">__folder_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">folder_id</span>
         <span class="k">return</span> <span class="n">contact</span></div>
 
-<div class="viewcode-block" id="ContactFolder.new_message"><a class="viewcode-back" href="../../api/address_book.html#O365.address_book.ContactFolder.new_message">[docs]</a>    <span class="k">def</span> <span class="nf">new_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">recipient_type</span><span class="o">=</span><span class="n">RecipientType</span><span class="o">.</span><span class="n">TO</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; This method returns a new draft Message instance with all the</span>
+
+<div class="viewcode-block" id="ContactFolder.new_message">
+<a class="viewcode-back" href="../../api/address_book.html#O365.address_book.ContactFolder.new_message">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">new_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">recipient_type</span><span class="o">=</span><span class="n">RecipientType</span><span class="o">.</span><span class="n">TO</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; This method returns a new draft Message instance with all the</span>
 <span class="sd">        contacts first email as a recipient</span>
 
 <span class="sd">        :param RecipientType recipient_type: section to add recipient into</span>
@@ -1131,18 +1213,26 @@
         <span class="n">target_recipients</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">new_message</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">recipient_type</span><span class="o">.</span><span class="n">value</span><span class="p">))</span>
         <span class="n">target_recipients</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">recipients</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">new_message</span></div></div>
+        <span class="k">return</span> <span class="n">new_message</span></div>
+</div>
 
 
-<div class="viewcode-block" id="AddressBook"><a class="viewcode-back" href="../../api/address_book.html#O365.address_book.AddressBook">[docs]</a><span class="k">class</span> <span class="nc">AddressBook</span><span class="p">(</span><span class="n">ContactFolder</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; A class representing an address book &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="AddressBook.__init__"><a class="viewcode-back" href="../../api/address_book.html#O365.address_book.AddressBook.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">con</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="AddressBook">
+<a class="viewcode-back" href="../../api/address_book.html#O365.address_book.AddressBook">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">AddressBook</span><span class="p">(</span><span class="n">ContactFolder</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; A class representing an address book &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="AddressBook.__init__">
+<a class="viewcode-back" href="../../api/address_book.html#O365.address_book.AddressBook.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">con</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="c1"># Set instance to be a root instance</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="n">parent</span><span class="p">,</span> <span class="n">con</span><span class="o">=</span><span class="n">con</span><span class="p">,</span> <span class="n">root</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s1">&#39;Address Book resource: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">main_resource</span><span class="p">)</span></div>
+
 </pre></div>
 
            </div>
@@ -1155,7 +1245,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2018, Narcolapser
+        &copy; Copyright 2024, alejcas
 
     </p>
   </div>
@@ -1176,10 +1266,9 @@
 
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/language_data.js"></script>
+        <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../../_static/doctools.js?v=9bcbadda"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     
 
   

@@ -5,7 +5,8 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>Sharepoint &mdash; O365  documentation</title>
@@ -23,9 +24,10 @@
     
 
   
-
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="O365 API" href="../api.html" />
@@ -78,7 +80,7 @@
               
             
             
-              <p class="caption"><span class="caption-text">Contents:</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../usage.html">Detailed Usage</a><ul class="current">
@@ -171,12 +173,12 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="sharepoint">
-<h1>Sharepoint<a class="headerlink" href="#sharepoint" title="Permalink to this headline">¶</a></h1>
+  <section id="sharepoint">
+<h1>Sharepoint<a class="headerlink" href="#sharepoint" title="Link to this heading">¶</a></h1>
 <p>Assuming an authenticated account, create a Sharepoint instance, and connect
 to a Sharepoint site.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1">#Create Sharepoint instance and connect to a site</span>
-<span class="kn">from</span> <span class="nn">O365</span> <span class="kn">import</span> <span class="n">Account</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">O365</span><span class="w"> </span><span class="kn">import</span> <span class="n">Account</span>
 <span class="n">acct</span> <span class="o">=</span> <span class="n">Account</span><span class="p">((</span><span class="s1">&#39;app_id&#39;</span><span class="p">,</span> <span class="s1">&#39;app_pw&#39;</span><span class="p">))</span>
 <span class="n">sp_site</span> <span class="o">=</span> <span class="n">acct</span><span class="o">.</span><span class="n">sharepoint</span><span class="p">()</span><span class="o">.</span><span class="n">get_site</span><span class="p">(</span><span class="s1">&#39;root&#39;</span><span class="p">,</span> <span class="s1">&#39;path/tosite&#39;</span><span class="p">)</span>
 </pre></div>
@@ -196,8 +198,8 @@ Sharepoint sites by the <code class="code docutils literal notranslate"><span cl
 <span class="n">new_sp_site</span> <span class="o">=</span> <span class="n">sp_site_subsites</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="c1">#return the first subsite</span>
 </pre></div>
 </div>
-<div class="section" id="sharepoint-lists">
-<h2>Sharepoint Lists<a class="headerlink" href="#sharepoint-lists" title="Permalink to this headline">¶</a></h2>
+<section id="sharepoint-lists">
+<h2>Sharepoint Lists<a class="headerlink" href="#sharepoint-lists" title="Link to this heading">¶</a></h2>
 <p>Sharepoint Lists are accessible from their Sharepoint site using <code class="code docutils literal notranslate"><span class="pre">.get_lists()</span></code> which
 returns a Python list of Sharepoint list objects.  A known list can be accessed
 by providing a <code class="code docutils literal notranslate"><span class="pre">list_name</span></code> to <code class="code docutils literal notranslate"><span class="pre">.get_list_by_name('list_name')</span></code> which will return
@@ -212,8 +214,8 @@ the requested list as a <code class="code docutils literal notranslate"><span cl
 <p>Commmon functions on a Sharepoint list include <code class="code docutils literal notranslate"><span class="pre">.get_list_columns()</span></code>,
 <code class="code docutils literal notranslate"><span class="pre">.get_items()</span></code>, <code class="code docutils literal notranslate"><span class="pre">.get_item_by_id()</span></code>, <code class="code docutils literal notranslate"><span class="pre">.create_list_item()</span></code>,
 <code class="code docutils literal notranslate"><span class="pre">.delete_list_item()</span></code>.</p>
-<div class="section" id="sharepoint-list-items">
-<h3>Sharepoint List Items<a class="headerlink" href="#sharepoint-list-items" title="Permalink to this headline">¶</a></h3>
+<section id="sharepoint-list-items">
+<h3>Sharepoint List Items<a class="headerlink" href="#sharepoint-list-items" title="Link to this heading">¶</a></h3>
 <p>Accessing a list item from a Sharepoint list is done by utilizing <code class="code docutils literal notranslate"><span class="pre">.get_items()</span></code>,
 or <code class="code docutils literal notranslate"><span class="pre">.get_item_by_id(item_id)</span></code>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1">#Return a list of sharepoint list Items</span>
@@ -251,9 +253,9 @@ to the internal column name, otherwise an error will occur.</p>
 <span class="n">new_item</span><span class="o">.</span><span class="n">save_updates</span><span class="p">()</span> <span class="c1">#Returns True if successful</span>
 </pre></div>
 </div>
-</div>
-</div>
-</div>
+</section>
+</section>
+</section>
 
 
            </div>
@@ -275,7 +277,7 @@ to the internal column name, otherwise an error will occur.</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2018, Narcolapser
+        &copy; Copyright 2024, alejcas
 
     </p>
   </div>
@@ -296,10 +298,9 @@ to the internal column name, otherwise an error will occur.</p>
 
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script src="../_static/language_data.js"></script>
+        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../_static/doctools.js?v=9bcbadda"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     
 
   

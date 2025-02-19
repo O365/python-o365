@@ -23,9 +23,10 @@
     
 
   
-
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
 
@@ -76,7 +77,7 @@
               
             
             
-              <p class="caption"><span class="caption-text">Contents:</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../getting_started.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../usage.html">Detailed Usage</a></li>
@@ -144,23 +145,27 @@
            <div itemprop="articleBody">
             
   <h1>Source code for O365.sharepoint</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">logging</span>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 
-<span class="kn">from</span> <span class="nn">dateutil.parser</span> <span class="kn">import</span> <span class="n">parse</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dateutil.parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse</span>
 
-<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">ApiComponent</span><span class="p">,</span> <span class="n">TrackerSet</span><span class="p">,</span> <span class="n">NEXT_LINK_KEYWORD</span><span class="p">,</span> <span class="n">Pagination</span>
-<span class="kn">from</span> <span class="nn">.address_book</span> <span class="kn">import</span> <span class="n">Contact</span>
-<span class="kn">from</span> <span class="nn">.drive</span> <span class="kn">import</span> <span class="n">Storage</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.address_book</span><span class="w"> </span><span class="kn">import</span> <span class="n">Contact</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.drive</span><span class="w"> </span><span class="kn">import</span> <span class="n">Storage</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">NEXT_LINK_KEYWORD</span><span class="p">,</span> <span class="n">ApiComponent</span><span class="p">,</span> <span class="n">Pagination</span><span class="p">,</span> <span class="n">TrackerSet</span>
 
 <span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="SharepointListColumn"><a class="viewcode-back" href="../../api/sharepoint.html#O365.sharepoint.SharepointListColumn">[docs]</a><span class="k">class</span> <span class="nc">SharepointListColumn</span><span class="p">(</span><span class="n">ApiComponent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; A Sharepoint List column within a SharepointList &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="SharepointListColumn">
+<a class="viewcode-back" href="../../api/sharepoint.html#O365.sharepoint.SharepointListColumn">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SharepointListColumn</span><span class="p">(</span><span class="n">ApiComponent</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; A Sharepoint List column within a SharepointList &quot;&quot;&quot;</span>
 
     <span class="n">_endpoints</span> <span class="o">=</span> <span class="p">{}</span>
 
-<div class="viewcode-block" id="SharepointListColumn.__init__"><a class="viewcode-back" href="../../api/sharepoint.html#O365.sharepoint.SharepointListColumn.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">con</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="SharepointListColumn.__init__">
+<a class="viewcode-back" href="../../api/sharepoint.html#O365.sharepoint.SharepointListColumn.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">con</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">parent</span> <span class="ow">and</span> <span class="n">con</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Need a parent or a connection but not both&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">con</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">con</span> <span class="k">if</span> <span class="n">parent</span> <span class="k">else</span> <span class="n">con</span>
@@ -207,19 +212,25 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">field_type</span> <span class="o">=</span> <span class="kc">None</span></div>
 
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s1">&#39;List Column: </span><span class="si">{0}</span><span class="s1">-</span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">display_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">field_type</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">object_id</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">object_id</span></div>
 
 
-<div class="viewcode-block" id="SharepointListItem"><a class="viewcode-back" href="../../api/sharepoint.html#O365.sharepoint.SharepointListItem">[docs]</a><span class="k">class</span> <span class="nc">SharepointListItem</span><span class="p">(</span><span class="n">ApiComponent</span><span class="p">):</span>
+
+<div class="viewcode-block" id="SharepointListItem">
+<a class="viewcode-back" href="../../api/sharepoint.html#O365.sharepoint.SharepointListItem">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SharepointListItem</span><span class="p">(</span><span class="n">ApiComponent</span><span class="p">):</span>
     <span class="n">_endpoints</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;update_list_item&#39;</span><span class="p">:</span> <span class="s1">&#39;/items/</span><span class="si">{item_id}</span><span class="s1">/fields&#39;</span><span class="p">,</span>
                   <span class="s1">&#39;delete_list_item&#39;</span><span class="p">:</span> <span class="s1">&#39;/items/</span><span class="si">{item_id}</span><span class="s1">&#39;</span><span class="p">}</span>
 
-<div class="viewcode-block" id="SharepointListItem.__init__"><a class="viewcode-back" href="../../api/sharepoint.html#O365.sharepoint.SharepointListItem.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">con</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; A Sharepoint ListItem within a SharepointList</span>
+<div class="viewcode-block" id="SharepointListItem.__init__">
+<a class="viewcode-back" href="../../api/sharepoint.html#O365.sharepoint.SharepointListItem.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">con</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; A Sharepoint ListItem within a SharepointList</span>
 
 <span class="sd">        :param parent: parent object</span>
 <span class="sd">        :type parent: SharepointList</span>
@@ -265,16 +276,17 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">fields</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cc</span><span class="p">(</span><span class="s1">&#39;fields&#39;</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s1">&#39;List Item: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">web_url</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">object_id</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">object_id</span>
 
-    <span class="k">def</span> <span class="nf">_clear_tracker</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_clear_tracker</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_track_changes</span> <span class="o">=</span> <span class="n">TrackerSet</span><span class="p">(</span><span class="n">casing</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_cc</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_valid_field</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_valid_field</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">):</span>
         <span class="c1"># Verify the used field names are valid internal field names</span>
         <span class="n">valid_field_names</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span> \
             <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span><span class="o">.</span><span class="n">column_name_cw</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> \
@@ -286,8 +298,10 @@
         <span class="c1"># If no parent is given, and no internal fields are defined assume correct, API will check</span>
         <span class="k">return</span> <span class="kc">True</span>
 
-<div class="viewcode-block" id="SharepointListItem.update_fields"><a class="viewcode-back" href="../../api/sharepoint.html#O365.sharepoint.SharepointListItem.update_fields">[docs]</a>    <span class="k">def</span> <span class="nf">update_fields</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">updates</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="SharepointListItem.update_fields">
+<a class="viewcode-back" href="../../api/sharepoint.html#O365.sharepoint.SharepointListItem.update_fields">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_fields</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">updates</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Update the value for a field(s) in the listitem</span>
 
 <span class="sd">        :param update: A dict of {&#39;field name&#39;: newvalue}</span>
@@ -305,8 +319,11 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">fields</span> <span class="o">=</span> <span class="n">updates</span></div>
 
-<div class="viewcode-block" id="SharepointListItem.save_updates"><a class="viewcode-back" href="../../api/sharepoint.html#O365.sharepoint.SharepointListItem.save_updates">[docs]</a>    <span class="k">def</span> <span class="nf">save_updates</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Save the updated fields to the cloud&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="SharepointListItem.save_updates">
+<a class="viewcode-back" href="../../api/sharepoint.html#O365.sharepoint.SharepointListItem.save_updates">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">save_updates</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Save the updated fields to the cloud&quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_track_changes</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">True</span>  <span class="c1"># there&#39;s nothing to update</span>
@@ -321,13 +338,20 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_clear_tracker</span><span class="p">()</span>
         <span class="k">return</span> <span class="kc">True</span></div>
 
-<div class="viewcode-block" id="SharepointListItem.delete"><a class="viewcode-back" href="../../api/sharepoint.html#O365.sharepoint.SharepointListItem.delete">[docs]</a>    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="SharepointListItem.delete">
+<a class="viewcode-back" href="../../api/sharepoint.html#O365.sharepoint.SharepointListItem.delete">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_url</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_endpoints</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;delete_list_item&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">item_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">object_id</span><span class="p">))</span>
         <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
-        <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">response</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">response</span><span class="p">)</span></div>
+</div>
 
 
-<div class="viewcode-block" id="SharepointList"><a class="viewcode-back" href="../../api/sharepoint.html#O365.sharepoint.SharepointList">[docs]</a><span class="k">class</span> <span class="nc">SharepointList</span><span class="p">(</span><span class="n">ApiComponent</span><span class="p">):</span>
+
+<div class="viewcode-block" id="SharepointList">
+<a class="viewcode-back" href="../../api/sharepoint.html#O365.sharepoint.SharepointList">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SharepointList</span><span class="p">(</span><span class="n">ApiComponent</span><span class="p">):</span>
     <span class="n">_endpoints</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s1">&#39;get_items&#39;</span><span class="p">:</span> <span class="s1">&#39;/items&#39;</span><span class="p">,</span>
         <span class="s1">&#39;get_item_by_id&#39;</span><span class="p">:</span> <span class="s1">&#39;/items/</span><span class="si">{item_id}</span><span class="s1">&#39;</span><span class="p">,</span>
@@ -336,8 +360,10 @@
     <span class="n">list_item_constructor</span> <span class="o">=</span> <span class="n">SharepointListItem</span>
     <span class="n">list_column_constructor</span> <span class="o">=</span> <span class="n">SharepointListColumn</span>
 
-<div class="viewcode-block" id="SharepointList.__init__"><a class="viewcode-back" href="../../api/sharepoint.html#O365.sharepoint.SharepointList.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">con</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; A Sharepoint site List</span>
+<div class="viewcode-block" id="SharepointList.__init__">
+<a class="viewcode-back" href="../../api/sharepoint.html#O365.sharepoint.SharepointList.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">con</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; A Sharepoint site List</span>
 
 <span class="sd">        :param parent: parent object</span>
 <span class="sd">        :type parent: Site</span>
@@ -402,18 +428,40 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">column_name_cw</span> <span class="o">=</span> <span class="p">{</span><span class="n">col</span><span class="o">.</span><span class="n">display_name</span><span class="p">:</span> <span class="n">col</span><span class="o">.</span><span class="n">internal_name</span> <span class="k">for</span>
                                <span class="n">col</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_list_columns</span><span class="p">()</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">col</span><span class="o">.</span><span class="n">read_only</span><span class="p">}</span></div>
 
-    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">object_id</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">object_id</span>
 
-<div class="viewcode-block" id="SharepointList.get_items"><a class="viewcode-back" href="../../api/sharepoint.html#O365.sharepoint.SharepointList.get_items">[docs]</a>    <span class="k">def</span> <span class="nf">get_items</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">order_by</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">batch</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Returns a collection of Sharepoint Items</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">object_id</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">object_id</span>
+    
+<div class="viewcode-block" id="SharepointList.build_field_filter">
+<a class="viewcode-back" href="../../api/sharepoint.html#O365.sharepoint.SharepointList.build_field_filter">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">build_field_filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">expand_fields</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">expand_fields</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;fields&#39;</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">expand_fields</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+            <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">expand_fields</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">field</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">column_name_cw</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+                    <span class="n">result</span> <span class="o">+=</span> <span class="n">field</span> <span class="o">+</span> <span class="s1">&#39;,&#39;</span>         
+                <span class="k">elif</span> <span class="n">field</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">column_name_cw</span><span class="p">:</span>
+                    <span class="n">result</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">column_name_cw</span><span class="p">[</span><span class="n">field</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;,&#39;</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;&quot;</span><span class="si">{}</span><span class="s1">&quot; is not a valid field name - check case&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">field</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">result</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+                <span class="k">return</span> <span class="s1">&#39;fields(select=&#39;</span> <span class="o">+</span> <span class="n">result</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span></div>
+
+            
+<div class="viewcode-block" id="SharepointList.get_items">
+<a class="viewcode-back" href="../../api/sharepoint.html#O365.sharepoint.SharepointList.get_items">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_items</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">order_by</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">batch</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">expand_fields</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a collection of Sharepoint Items</span>
 <span class="sd">        :param int limit: max no. of items to get. Over 999 uses batch.</span>
 <span class="sd">        :param query: applies a filter to the request.</span>
 <span class="sd">        :type query: Query or str</span>
 <span class="sd">        :param order_by: orders the result set based on this condition</span>
 <span class="sd">        :type order_by: Query or str</span>
-<span class="sd">        :param int batch: batch size, retrieves items in</span>
-<span class="sd">         batches allowing to retrieve more items than the limit.</span>
+<span class="sd">        :param int batch: batch size, retrieves items in batches allowing to retrieve more items than the limit.</span>
+<span class="sd">        :param expand_fields: specify user-defined fields to return, True will return all fields</span>
+<span class="sd">        :type expand_fields: list or bool</span>
 <span class="sd">        :return: list of Sharepoint Items</span>
 <span class="sd">        :rtype: list[SharepointListItem] or Pagination</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -425,6 +473,9 @@
 
         <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;$top&#39;</span><span class="p">:</span> <span class="n">batch</span> <span class="k">if</span> <span class="n">batch</span> <span class="k">else</span> <span class="n">limit</span><span class="p">}</span>
 
+        <span class="k">if</span> <span class="n">expand_fields</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">params</span><span class="p">[</span><span class="s1">&#39;expand&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_field_filter</span><span class="p">(</span><span class="n">expand_fields</span><span class="p">)</span>
+            
         <span class="k">if</span> <span class="n">order_by</span><span class="p">:</span>
             <span class="n">params</span><span class="p">[</span><span class="s1">&#39;$orderby&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">order_by</span>
 
@@ -451,12 +502,26 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">items</span></div>
 
-<div class="viewcode-block" id="SharepointList.get_item_by_id"><a class="viewcode-back" href="../../api/sharepoint.html#O365.sharepoint.SharepointList.get_item_by_id">[docs]</a>    <span class="k">def</span> <span class="nf">get_item_by_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item_id</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Returns a sharepoint list item based on id&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="SharepointList.get_item_by_id">
+<a class="viewcode-back" href="../../api/sharepoint.html#O365.sharepoint.SharepointList.get_item_by_id">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_item_by_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item_id</span><span class="p">,</span> <span class="n">expand_fields</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a sharepoint list item based on id</span>
+<span class="sd">        :param int item_id: item id to search for</span>
+<span class="sd">        :param expand_fields: specify user-defined fields to return, True will return all fields</span>
+<span class="sd">        :type expand_fields: list or bool</span>
+<span class="sd">        :return: Sharepoint Item</span>
+<span class="sd">        :rtype: SharepointListItem</span>
+<span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_url</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_endpoints</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;get_item_by_id&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">item_id</span><span class="o">=</span><span class="n">item_id</span><span class="p">))</span>
-
-        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+        
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
+        
+        <span class="k">if</span> <span class="n">expand_fields</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">params</span><span class="p">[</span><span class="s1">&#39;expand&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_field_filter</span><span class="p">(</span><span class="n">expand_fields</span><span class="p">)</span>
+            
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">response</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">[]</span>
@@ -465,8 +530,11 @@
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_item_constructor</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_cloud_data_key</span><span class="p">:</span> <span class="n">data</span><span class="p">})</span></div>
 
-<div class="viewcode-block" id="SharepointList.get_list_columns"><a class="viewcode-back" href="../../api/sharepoint.html#O365.sharepoint.SharepointList.get_list_columns">[docs]</a>    <span class="k">def</span> <span class="nf">get_list_columns</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Returns the sharepoint list columns &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="SharepointList.get_list_columns">
+<a class="viewcode-back" href="../../api/sharepoint.html#O365.sharepoint.SharepointList.get_list_columns">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_list_columns</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns the sharepoint list columns &quot;&quot;&quot;</span>
 
         <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_url</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_endpoints</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;get_list_columns&#39;</span><span class="p">))</span>
 
@@ -480,8 +548,11 @@
         <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">list_column_constructor</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_cloud_data_key</span><span class="p">:</span> <span class="n">column</span><span class="p">})</span>
                 <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="p">[])]</span></div>
 
-<div class="viewcode-block" id="SharepointList.create_list_item"><a class="viewcode-back" href="../../api/sharepoint.html#O365.sharepoint.SharepointList.create_list_item">[docs]</a>    <span class="k">def</span> <span class="nf">create_list_item</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_data</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Create new list item</span>
+
+<div class="viewcode-block" id="SharepointList.create_list_item">
+<a class="viewcode-back" href="../../api/sharepoint.html#O365.sharepoint.SharepointList.create_list_item">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_list_item</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_data</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create new list item</span>
 
 <span class="sd">        :param new_data: dictionary of {&#39;col_name&#39;: col_value}</span>
 
@@ -498,8 +569,11 @@
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_item_constructor</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_cloud_data_key</span><span class="p">:</span> <span class="n">data</span><span class="p">})</span></div>
 
-<div class="viewcode-block" id="SharepointList.delete_list_item"><a class="viewcode-back" href="../../api/sharepoint.html#O365.sharepoint.SharepointList.delete_list_item">[docs]</a>    <span class="k">def</span> <span class="nf">delete_list_item</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item_id</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Delete an existing list item</span>
+
+<div class="viewcode-block" id="SharepointList.delete_list_item">
+<a class="viewcode-back" href="../../api/sharepoint.html#O365.sharepoint.SharepointList.delete_list_item">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">delete_list_item</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item_id</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Delete an existing list item</span>
 
 <span class="sd">        :param item_id: Id of the item to be delted</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -508,11 +582,15 @@
 
         <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">response</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">response</span><span class="p">)</span></div>
+</div>
 
 
-<div class="viewcode-block" id="Site"><a class="viewcode-back" href="../../api/sharepoint.html#O365.sharepoint.Site">[docs]</a><span class="k">class</span> <span class="nc">Site</span><span class="p">(</span><span class="n">ApiComponent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; A Sharepoint Site &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Site">
+<a class="viewcode-back" href="../../api/sharepoint.html#O365.sharepoint.Site">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Site</span><span class="p">(</span><span class="n">ApiComponent</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; A Sharepoint Site &quot;&quot;&quot;</span>
 
     <span class="n">_endpoints</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s1">&#39;get_subsites&#39;</span><span class="p">:</span> <span class="s1">&#39;/sites&#39;</span><span class="p">,</span>
@@ -521,8 +599,10 @@
     <span class="p">}</span>
     <span class="n">list_constructor</span> <span class="o">=</span> <span class="n">SharepointList</span>
 
-<div class="viewcode-block" id="Site.__init__"><a class="viewcode-back" href="../../api/sharepoint.html#O365.sharepoint.Site.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">con</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; A Sharepoint site List</span>
+<div class="viewcode-block" id="Site.__init__">
+<a class="viewcode-back" href="../../api/sharepoint.html#O365.sharepoint.Site.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">con</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; A Sharepoint site List</span>
 
 <span class="sd">        :param parent: parent object</span>
 <span class="sd">        :type parent: Sharepoint</span>
@@ -574,17 +654,20 @@
                                     <span class="n">main_resource</span><span class="o">=</span><span class="s1">&#39;/sites/</span><span class="si">{id}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                                         <span class="nb">id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">object_id</span><span class="p">))</span></div>
 
-    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s1">&#39;Site: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">object_id</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">object_id</span>
 
-<div class="viewcode-block" id="Site.get_default_document_library"><a class="viewcode-back" href="../../api/sharepoint.html#O365.sharepoint.Site.get_default_document_library">[docs]</a>    <span class="k">def</span> <span class="nf">get_default_document_library</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request_drive</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Returns the default document library of this site (Drive instance)</span>
+<div class="viewcode-block" id="Site.get_default_document_library">
+<a class="viewcode-back" href="../../api/sharepoint.html#O365.sharepoint.Site.get_default_document_library">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_default_document_library</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request_drive</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns the default document library of this site (Drive instance)</span>
 
 <span class="sd">        :param request_drive: True will make an api call to retrieve</span>
 <span class="sd">         the drive data</span>
@@ -592,24 +675,33 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">site_storage</span><span class="o">.</span><span class="n">get_default_drive</span><span class="p">(</span><span class="n">request_drive</span><span class="o">=</span><span class="n">request_drive</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Site.get_document_library"><a class="viewcode-back" href="../../api/sharepoint.html#O365.sharepoint.Site.get_document_library">[docs]</a>    <span class="k">def</span> <span class="nf">get_document_library</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">drive_id</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Returns a Document Library (a Drive instance)</span>
+
+<div class="viewcode-block" id="Site.get_document_library">
+<a class="viewcode-back" href="../../api/sharepoint.html#O365.sharepoint.Site.get_document_library">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_document_library</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">drive_id</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns a Document Library (a Drive instance)</span>
 
 <span class="sd">        :param drive_id: the drive_id to be retrieved.</span>
 <span class="sd">        :rtype: Drive</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">site_storage</span><span class="o">.</span><span class="n">get_drive</span><span class="p">(</span><span class="n">drive_id</span><span class="o">=</span><span class="n">drive_id</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Site.list_document_libraries"><a class="viewcode-back" href="../../api/sharepoint.html#O365.sharepoint.Site.list_document_libraries">[docs]</a>    <span class="k">def</span> <span class="nf">list_document_libraries</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Returns a collection of document libraries for this site</span>
+
+<div class="viewcode-block" id="Site.list_document_libraries">
+<a class="viewcode-back" href="../../api/sharepoint.html#O365.sharepoint.Site.list_document_libraries">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">list_document_libraries</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns a collection of document libraries for this site</span>
 <span class="sd">        (a collection of Drive instances)</span>
 <span class="sd">        :return: list of items in this folder</span>
 <span class="sd">        :rtype: list[Drive] or Pagination</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">site_storage</span><span class="o">.</span><span class="n">get_drives</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="Site.get_subsites"><a class="viewcode-back" href="../../api/sharepoint.html#O365.sharepoint.Site.get_subsites">[docs]</a>    <span class="k">def</span> <span class="nf">get_subsites</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Returns a list of subsites defined for this site</span>
+
+<div class="viewcode-block" id="Site.get_subsites">
+<a class="viewcode-back" href="../../api/sharepoint.html#O365.sharepoint.Site.get_subsites">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_subsites</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns a list of subsites defined for this site</span>
 
 <span class="sd">        :rtype: list[Site]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -626,8 +718,11 @@
         <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_cloud_data_key</span><span class="p">:</span> <span class="n">site</span><span class="p">})</span> <span class="k">for</span>
                 <span class="n">site</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="p">[])]</span></div>
 
-<div class="viewcode-block" id="Site.get_lists"><a class="viewcode-back" href="../../api/sharepoint.html#O365.sharepoint.Site.get_lists">[docs]</a>    <span class="k">def</span> <span class="nf">get_lists</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Returns a collection of lists within this site</span>
+
+<div class="viewcode-block" id="Site.get_lists">
+<a class="viewcode-back" href="../../api/sharepoint.html#O365.sharepoint.Site.get_lists">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_lists</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns a collection of lists within this site</span>
 
 <span class="sd">        :rtype: list[SharepointList]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -641,8 +736,11 @@
 
         <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">list_constructor</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_cloud_data_key</span><span class="p">:</span> <span class="n">lst</span><span class="p">})</span> <span class="k">for</span> <span class="n">lst</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="p">[])]</span></div>
 
-<div class="viewcode-block" id="Site.get_list_by_name"><a class="viewcode-back" href="../../api/sharepoint.html#O365.sharepoint.Site.get_list_by_name">[docs]</a>    <span class="k">def</span> <span class="nf">get_list_by_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">display_name</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Site.get_list_by_name">
+<a class="viewcode-back" href="../../api/sharepoint.html#O365.sharepoint.Site.get_list_by_name">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_list_by_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">display_name</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns a sharepoint list based on the display name of the list</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -659,8 +757,11 @@
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_constructor</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_cloud_data_key</span><span class="p">:</span> <span class="n">data</span><span class="p">})</span></div>
 
-<div class="viewcode-block" id="Site.create_list"><a class="viewcode-back" href="../../api/sharepoint.html#O365.sharepoint.Site.create_list">[docs]</a>    <span class="k">def</span> <span class="nf">create_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">list_data</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Site.create_list">
+<a class="viewcode-back" href="../../api/sharepoint.html#O365.sharepoint.Site.create_list">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">list_data</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Creates a SharePoint list.</span>
 <span class="sd">        :param list_data: Dict representation of list.</span>
 <span class="sd">        :type list_data: Dict</span>
@@ -673,11 +774,15 @@
             <span class="k">return</span> <span class="kc">None</span>
 
         <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_constructor</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_cloud_data_key</span><span class="p">:</span> <span class="n">data</span><span class="p">})</span></div></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_constructor</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_cloud_data_key</span><span class="p">:</span> <span class="n">data</span><span class="p">})</span></div>
+</div>
 
 
-<div class="viewcode-block" id="Sharepoint"><a class="viewcode-back" href="../../api/sharepoint.html#O365.sharepoint.Sharepoint">[docs]</a><span class="k">class</span> <span class="nc">Sharepoint</span><span class="p">(</span><span class="n">ApiComponent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; A Sharepoint parent class to group functionality &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Sharepoint">
+<a class="viewcode-back" href="../../api/sharepoint.html#O365.sharepoint.Sharepoint">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Sharepoint</span><span class="p">(</span><span class="n">ApiComponent</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; A Sharepoint parent class to group functionality &quot;&quot;&quot;</span>
 
     <span class="n">_endpoints</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s1">&#39;get_site&#39;</span><span class="p">:</span> <span class="s1">&#39;/sites/</span><span class="si">{id}</span><span class="s1">&#39;</span><span class="p">,</span>
@@ -685,8 +790,10 @@
     <span class="p">}</span>
     <span class="n">site_constructor</span> <span class="o">=</span> <span class="n">Site</span>
 
-<div class="viewcode-block" id="Sharepoint.__init__"><a class="viewcode-back" href="../../api/sharepoint.html#O365.sharepoint.Sharepoint.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">con</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; A Sharepoint site List</span>
+<div class="viewcode-block" id="Sharepoint.__init__">
+<a class="viewcode-back" href="../../api/sharepoint.html#O365.sharepoint.Sharepoint.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">con</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; A Sharepoint site List</span>
 
 <span class="sd">        :param parent: parent object</span>
 <span class="sd">        :type parent: Account</span>
@@ -707,14 +814,17 @@
             <span class="n">protocol</span><span class="o">=</span><span class="n">parent</span><span class="o">.</span><span class="n">protocol</span> <span class="k">if</span> <span class="n">parent</span> <span class="k">else</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;protocol&#39;</span><span class="p">),</span>
             <span class="n">main_resource</span><span class="o">=</span><span class="n">main_resource</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s1">&#39;Sharepoint&#39;</span>
 
-<div class="viewcode-block" id="Sharepoint.search_site"><a class="viewcode-back" href="../../api/sharepoint.html#O365.sharepoint.Sharepoint.search_site">[docs]</a>    <span class="k">def</span> <span class="nf">search_site</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keyword</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Search a sharepoint host for sites with the provided keyword</span>
+<div class="viewcode-block" id="Sharepoint.search_site">
+<a class="viewcode-back" href="../../api/sharepoint.html#O365.sharepoint.Sharepoint.search_site">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">search_site</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keyword</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Search a sharepoint host for sites with the provided keyword</span>
 
 <span class="sd">        :param keyword: a keyword to search sites</span>
 <span class="sd">        :rtype: list[Site]</span>
@@ -722,29 +832,42 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">keyword</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Must provide a valid keyword&#39;</span><span class="p">)</span>
 
-        <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_url</span><span class="p">(</span>
+        <span class="n">next_link</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_url</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_endpoints</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;search&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">keyword</span><span class="o">=</span><span class="n">keyword</span><span class="p">))</span>
 
-        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">response</span><span class="p">:</span>
-            <span class="k">return</span> <span class="p">[]</span>
+        <span class="n">sites</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">while</span> <span class="n">next_link</span><span class="p">:</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">next_link</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">response</span><span class="p">:</span>
+                <span class="k">break</span>
 
-        <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
 
-        <span class="c1"># Everything received from cloud must be passed as self._cloud_data_key</span>
-        <span class="k">return</span> <span class="p">[</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">site_constructor</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_cloud_data_key</span><span class="p">:</span> <span class="n">site</span><span class="p">})</span>
-            <span class="k">for</span> <span class="n">site</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="p">[])]</span></div>
+            <span class="c1"># Everything received from cloud must be passed as self._cloud_data_key</span>
+            <span class="n">sites</span> <span class="o">+=</span> <span class="p">[</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">site_constructor</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_cloud_data_key</span><span class="p">:</span> <span class="n">site</span><span class="p">})</span>
+                <span class="k">for</span> <span class="n">site</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="p">[])</span>
+            <span class="p">]</span>
 
-<div class="viewcode-block" id="Sharepoint.get_root_site"><a class="viewcode-back" href="../../api/sharepoint.html#O365.sharepoint.Sharepoint.get_root_site">[docs]</a>    <span class="k">def</span> <span class="nf">get_root_site</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Returns the root site</span>
+            <span class="n">next_link</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;@odata.nextLink&quot;</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">sites</span></div>
+
+
+<div class="viewcode-block" id="Sharepoint.get_root_site">
+<a class="viewcode-back" href="../../api/sharepoint.html#O365.sharepoint.Sharepoint.get_root_site">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_root_site</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns the root site</span>
 
 <span class="sd">        :rtype: Site</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_site</span><span class="p">(</span><span class="s1">&#39;root&#39;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Sharepoint.get_site"><a class="viewcode-back" href="../../api/sharepoint.html#O365.sharepoint.Sharepoint.get_site">[docs]</a>    <span class="k">def</span> <span class="nf">get_site</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Returns a sharepoint site</span>
+
+<div class="viewcode-block" id="Sharepoint.get_site">
+<a class="viewcode-back" href="../../api/sharepoint.html#O365.sharepoint.Sharepoint.get_site">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_site</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns a sharepoint site</span>
 
 <span class="sd">        :param args: It accepts multiple ways of retrieving a site:</span>
 
@@ -783,7 +906,9 @@
         <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">site_constructor</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
-                                     <span class="o">**</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_cloud_data_key</span><span class="p">:</span> <span class="n">data</span><span class="p">})</span></div></div>
+                                     <span class="o">**</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_cloud_data_key</span><span class="p">:</span> <span class="n">data</span><span class="p">})</span></div>
+</div>
+
 </pre></div>
 
            </div>
@@ -796,7 +921,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2018, Narcolapser
+        &copy; Copyright 2024, alejcas
 
     </p>
   </div>
@@ -817,10 +942,9 @@
 
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/language_data.js"></script>
+        <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../../_static/doctools.js?v=9bcbadda"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     
 
   

@@ -5,7 +5,8 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>Mailbox &mdash; O365  documentation</title>
@@ -23,9 +24,10 @@
     
 
   
-
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Sharepoint" href="sharepoint.html" />
@@ -78,7 +80,7 @@
               
             
             
-              <p class="caption"><span class="caption-text">Contents:</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../usage.html">Detailed Usage</a><ul class="current">
@@ -172,14 +174,14 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="mailbox">
-<h1>Mailbox<a class="headerlink" href="#mailbox" title="Permalink to this headline">¶</a></h1>
+  <section id="mailbox">
+<h1>Mailbox<a class="headerlink" href="#mailbox" title="Link to this heading">¶</a></h1>
 <p>Check <a class="reference internal" href="account.html#accessing-services"><span class="std std-ref">Accessing Services</span></a> section for knowing how to get Mailbox instance</p>
-<div class="section" id="accessing-various-folders">
-<h2>Accessing Various Folders<a class="headerlink" href="#accessing-various-folders" title="Permalink to this headline">¶</a></h2>
+<section id="accessing-various-folders">
+<h2>Accessing Various Folders<a class="headerlink" href="#accessing-various-folders" title="Link to this heading">¶</a></h2>
 <p><cite>get_folder()</cite> and <cite>get_folders()</cite> are useful to fetch folders that are available under the current instance</p>
-<div class="section" id="get-single-folder">
-<h3>Get Single Folder<a class="headerlink" href="#get-single-folder" title="Permalink to this headline">¶</a></h3>
+<section id="get-single-folder">
+<h3>Get Single Folder<a class="headerlink" href="#get-single-folder" title="Link to this heading">¶</a></h3>
 <p><strong>Using Name</strong></p>
 <p>Using name to get a folder will only search the folders directly under the current folder or root</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># By Name - Will only find direct child folder</span>
@@ -215,9 +217,9 @@ As they are generally used we have added functions to quickly access them</p>
 <span class="n">mail_folder</span> <span class="o">=</span> <span class="n">mailbox</span><span class="o">.</span><span class="n">outbox_folder</span><span class="p">()</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="get-child-folders">
-<h3>Get Child Folders<a class="headerlink" href="#get-child-folders" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="get-child-folders">
+<h3>Get Child Folders<a class="headerlink" href="#get-child-folders" title="Link to this heading">¶</a></h3>
 <p><strong>All or Some Child Folders</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># All child folders under root</span>
 <span class="n">mail_folders</span> <span class="o">=</span> <span class="n">mailbox</span><span class="o">.</span><span class="n">get_folders</span><span class="p">()</span>
@@ -235,9 +237,9 @@ As they are generally used we have added functions to quickly access them</p>
 <span class="n">mail_folders</span> <span class="o">=</span> <span class="n">mailbox</span><span class="o">.</span><span class="n">get_folders</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="n">mailbox</span><span class="o">.</span><span class="n">new_query</span><span class="p">(</span><span class="s1">&#39;displayName&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;Top&#39;</span><span class="p">))</span>
 </pre></div>
 </div>
-</div>
-</div>
-</div>
+</section>
+</section>
+</section>
 
 
            </div>
@@ -259,7 +261,7 @@ As they are generally used we have added functions to quickly access them</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2018, Narcolapser
+        &copy; Copyright 2024, alejcas
 
     </p>
   </div>
@@ -280,10 +282,9 @@ As they are generally used we have added functions to quickly access them</p>
 
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script src="../_static/language_data.js"></script>
+        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../_static/doctools.js?v=9bcbadda"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     
 
   

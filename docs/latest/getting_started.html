@@ -5,7 +5,8 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>Getting Started &mdash; O365  documentation</title>
@@ -23,9 +24,10 @@
     
 
   
-
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Detailed Usage" href="usage.html" />
@@ -78,11 +80,15 @@
               
             
             
-              <p class="caption"><span class="caption-text">Contents:</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Getting Started</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#oauth-setup-pre-requisite">OAuth Setup (Pre Requisite)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#stable-version-pypi">Stable Version (PyPI)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#latest-development-version-github">Latest Development Version (GitHub)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#oauth-setup-prerequisite">OAuth Setup (Prerequisite)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#basic-usage">Basic Usage</a></li>
 </ul>
 </li>
@@ -161,52 +167,100 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="getting-started">
-<h1>Getting Started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="installation">
-<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
-<ul>
-<li><dl>
-<dt>Stable Version from Pypi</dt><dd><p><a class="reference external" href="https://pypi.org">https://pypi.org</a> has the latest stable package.</p>
-<p>For installing the package using pip, run <code class="code docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">o365</span></code></p>
-</dd>
-</dl>
-</li>
-<li><dl>
-<dt>Latest Development Version from Github</dt><dd><p>Github has the latest development version, which may have more features but could be unstable.
-So <strong>Use as own risk</strong></p>
-<p>For installing code from github, run <code class="code docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">git+https://github.com/O365/python-o365.git</span></code></p>
-</dd>
-</dl>
-</li>
-</ul>
+  <section id="getting-started">
+<h1>Getting Started<a class="headerlink" href="#getting-started" title="Link to this heading">¶</a></h1>
+<section id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Link to this heading">¶</a></h2>
+<section id="stable-version-pypi">
+<h3>Stable Version (PyPI)<a class="headerlink" href="#stable-version-pypi" title="Link to this heading">¶</a></h3>
+<p>The latest stable package is hosted on <a class="reference external" href="https://pypi.org">PyPI</a>.</p>
+<p>To install using pip, run:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">pip install o365</span>
+</pre></div>
 </div>
-<div class="section" id="oauth-setup-pre-requisite">
-<h2>OAuth Setup (Pre Requisite)<a class="headerlink" href="#oauth-setup-pre-requisite" title="Permalink to this headline">¶</a></h2>
-<p>You will need to register your application at <a class="reference external" href="https://apps.dev.microsoft.com/">Microsoft Apps</a>. Steps below</p>
+</section>
+<section id="latest-development-version-github">
+<h3>Latest Development Version (GitHub)<a class="headerlink" href="#latest-development-version-github" title="Link to this heading">¶</a></h3>
+<p>The latest development version is available on <a class="reference external" href="https://github.com/O365/python-o365">GitHub</a>.
+This version may include new features but could be unstable. <strong>Use at your own risk</strong>.</p>
+<p>To install from GitHub, run:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">pip install git+https://github.com/O365/python-o365.git</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="oauth-setup-prerequisite">
+<h2>OAuth Setup (Prerequisite)<a class="headerlink" href="#oauth-setup-prerequisite" title="Link to this heading">¶</a></h2>
+<p>Before you can use python-o365, you must register your application in the
+<a class="reference external" href="https://entra.microsoft.com/">Microsoft Entra Admin Center</a>. Follow the steps below:</p>
 <ol class="arabic simple">
-<li><p>Login to <a class="reference external" href="https://apps.dev.microsoft.com/">https://apps.dev.microsoft.com/</a></p></li>
-<li><p>Create an app, note your app id (<strong>client_id</strong>)</p></li>
-<li><p>Generate a new password (<strong>client_secret</strong>) under <strong>Application Secrets</strong> section</p></li>
-<li><p>Under the <strong>Platform</strong> section, add a new Web platform and set “<a class="reference external" href="https://outlook.office365.com/owa/">https://outlook.office365.com/owa/</a>” as the redirect URL</p></li>
-<li><dl class="simple">
-<dt>Under “Microsoft Graph Permissions” section, Add the below delegated permission (or based on what scopes you plan to use)</dt><dd><ol class="arabic simple">
-<li><p>email</p></li>
+<li><p><strong>Log in to the Microsoft Entra Admin Center</strong></p>
+<ul class="simple">
+<li><p>Visit <a class="reference external" href="https://entra.microsoft.com/">https://entra.microsoft.com/</a> and sign in.</p></li>
+</ul>
+</li>
+<li><p><strong>Create a new application and note its App (client) ID</strong></p>
+<ul class="simple">
+<li><p>In the left navigation bar, select <strong>Applications</strong> &gt; <strong>App registrations</strong>.</p></li>
+<li><p>Click <strong>+ New registration</strong>.</p></li>
+<li><p>Provide a <strong>Name</strong> for the application and keep all defaults.</p></li>
+<li><p>From the <strong>Overview</strong> of your new application, copy the (client_id) <strong>Application (client) ID</strong> for later reference.</p></li>
+</ul>
+</li>
+<li><p><strong>Generate a new password (client_secret)</strong></p>
+<ul class="simple">
+<li><p>In the <strong>Overview</strong> window, select <strong>Certificates &amp; secrets</strong>.</p></li>
+<li><p>Click <strong>New client secret</strong>.</p></li>
+<li><p>In the <strong>Add a client secret</strong> window, provide a Description and Expiration, then click <strong>Add</strong>.</p></li>
+<li><p>Save the (client_secret) <strong>Value</strong> for later reference.</p></li>
+</ul>
+</li>
+<li><p><strong>Add redirect URIs</strong></p>
+<ul class="simple">
+<li><p>In the <strong>Overview</strong> window, click <strong>Add a redirect URI</strong>.</p></li>
+<li><p>Click <strong>+ Add a platform</strong>, then select <strong>Web</strong>.</p></li>
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">https://login.microsoftonline.com/common/oauth2/nativeclient</span></code> as the redirect URI.</p></li>
+<li><p>Click <strong>Save</strong>.</p></li>
+</ul>
+</li>
+<li><p><strong>Add required permissions</strong></p>
+<ul class="simple">
+<li><p>In the left navigation bar, select <strong>API permissions</strong>.</p></li>
+<li><p>Click <strong>+ Add a permission</strong>.</p></li>
+<li><p>Under <strong>Microsoft Graph</strong>, select <strong>Delegated permissions</strong>.</p></li>
+<li><p>Add the delegated permissions you plan to use (for example):</p>
+<ul>
+<li><p>Mail.Read</p></li>
 <li><p>Mail.ReadWrite</p></li>
 <li><p>Mail.Send</p></li>
 <li><p>User.Read</p></li>
-</ol>
-</dd>
-</dl>
+<li><p>User.ReadBasic.All</p></li>
+<li><p>offline_access</p></li>
+</ul>
 </li>
-<li><p>Note the <strong>client_id</strong> and <strong>client_secret</strong> as they will be using for establishing the connection through the api</p></li>
+<li><p>Click <strong>Add permissions</strong>.</p></li>
+</ul>
+</li>
 </ol>
+</section>
+<section id="basic-usage">
+<h2>Basic Usage<a class="headerlink" href="#basic-usage" title="Link to this heading">¶</a></h2>
+<p>Here is a simple example showing how to send an email using python-o365.
+Create a Python file and add the following code:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">O365</span><span class="w"> </span><span class="kn">import</span> <span class="n">Account</span>
+
+<span class="n">credentials</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;client_id&#39;</span><span class="p">,</span> <span class="s1">&#39;client_secret&#39;</span><span class="p">)</span>
+<span class="n">account</span> <span class="o">=</span> <span class="n">Account</span><span class="p">(</span><span class="n">credentials</span><span class="p">)</span>
+
+<span class="n">m</span> <span class="o">=</span> <span class="n">account</span><span class="o">.</span><span class="n">new_message</span><span class="p">()</span>
+<span class="n">m</span><span class="o">.</span><span class="n">to</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s1">&#39;to_example@example.com&#39;</span><span class="p">)</span>
+<span class="n">m</span><span class="o">.</span><span class="n">subject</span> <span class="o">=</span> <span class="s1">&#39;Testing!&#39;</span>
+<span class="n">m</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="s2">&quot;George Best quote: I&#39;ve stopped drinking, but only while I&#39;m asleep.&quot;</span>
+<span class="n">m</span><span class="o">.</span><span class="n">send</span><span class="p">()</span>
+</pre></div>
 </div>
-<div class="section" id="basic-usage">
-<h2>Basic Usage<a class="headerlink" href="#basic-usage" title="Permalink to this headline">¶</a></h2>
-<p>Work in progress</p>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
@@ -228,7 +282,7 @@ So <strong>Use as own risk</strong></p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2018, Narcolapser
+        &copy; Copyright 2024, alejcas
 
     </p>
   </div>
@@ -249,10 +303,9 @@ So <strong>Use as own risk</strong></p>
 
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
+        <script src="_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="_static/doctools.js?v=9bcbadda"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     
 
   
