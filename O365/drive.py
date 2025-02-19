@@ -2,13 +2,17 @@ import logging
 import warnings
 from pathlib import Path
 from time import sleep
-from urllib.parse import urlparse, quote
+from urllib.parse import quote, urlparse
 
 from dateutil.parser import parse
 
 from .address_book import Contact
-from .utils import ApiComponent, Pagination, NEXT_LINK_KEYWORD, \
-    OneDriveWellKnowFolderNames
+from .utils import (
+    NEXT_LINK_KEYWORD,
+    ApiComponent,
+    OneDriveWellKnowFolderNames,
+    Pagination,
+)
 
 log = logging.getLogger(__name__)
 
@@ -726,17 +730,18 @@ class DriveItem(ApiComponent):
         return True
 
     def copy(self, target=None, name=None):
-        """ Asynchronously creates a copy of this DriveItem and all it's
+        """Asynchronously creates a copy of this DriveItem and all it's
         child elements.
 
         :param target: target location to move to.
-         If it's a drive the item will be moved to the root folder.
-         If it's None, the target is the parent of the item being copied i.e. item will be copied
+            If it's a drive the item will be moved to the root folder.
+            If it's None, the target is the parent of the item being copied i.e. item will be copied
             into the same location.
         :type target: drive.Folder or Drive
         :param name: a new name for the copy.
         :rtype: CopyOperation
         """
+
         if target is None and name is None:
             raise ValueError('Must provide a target or a name (or both)')
 

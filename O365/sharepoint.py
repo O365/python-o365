@@ -2,9 +2,9 @@ import logging
 
 from dateutil.parser import parse
 
-from .utils import ApiComponent, TrackerSet, NEXT_LINK_KEYWORD, Pagination
 from .address_book import Contact
 from .drive import Storage
+from .utils import NEXT_LINK_KEYWORD, ApiComponent, Pagination, TrackerSet
 
 log = logging.getLogger(__name__)
 
@@ -275,17 +275,15 @@ class SharepointList(ApiComponent):
                 return 'fields(select=' + result.rstrip(',') + ')'
             
     def get_items(self, limit=None, *, query=None, order_by=None, batch=None, expand_fields=None):
-        """ Returns a collection of Sharepoint Items
+        """Returns a collection of Sharepoint Items
         :param int limit: max no. of items to get. Over 999 uses batch.
         :param query: applies a filter to the request.
         :type query: Query or str
         :param order_by: orders the result set based on this condition
         :type order_by: Query or str
-        :param int batch: batch size, retrieves items in
-         batches allowing to retrieve more items than the limit.
-        :param expand_fields: specify user-defined fields to return,
-         True will return all fields
-        :type expand_fields: list or bool         
+        :param int batch: batch size, retrieves items in batches allowing to retrieve more items than the limit.
+        :param expand_fields: specify user-defined fields to return, True will return all fields
+        :type expand_fields: list or bool
         :return: list of Sharepoint Items
         :rtype: list[SharepointListItem] or Pagination
         """
@@ -327,11 +325,10 @@ class SharepointList(ApiComponent):
             return items
 
     def get_item_by_id(self, item_id, expand_fields=None):
-        """ Returns a sharepoint list item based on id
+        """Returns a sharepoint list item based on id
         :param int item_id: item id to search for
-        :param expand_fields: specify user-defined fields to return,
-         True will return all fields
-        :type expand_fields: list or bool         
+        :param expand_fields: specify user-defined fields to return, True will return all fields
+        :type expand_fields: list or bool
         :return: Sharepoint Item
         :rtype: SharepointListItem
         """
