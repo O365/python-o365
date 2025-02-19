@@ -1,0 +1,345 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>O365.category &mdash; O365  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage.html">Detailed Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">O365 API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">O365</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">O365.category</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for O365.category</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">ApiComponent</span>
+
+
+<div class="viewcode-block" id="CategoryColor">
+<a class="viewcode-back" href="../../api/category.html#O365.category.CategoryColor">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">CategoryColor</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">RED</span> <span class="o">=</span> <span class="s1">&#39;preset0&#39;</span>  <span class="c1"># 0</span>
+    <span class="n">ORANGE</span> <span class="o">=</span> <span class="s1">&#39;preset1&#39;</span>  <span class="c1"># 1</span>
+    <span class="n">BROWN</span> <span class="o">=</span> <span class="s1">&#39;preset2&#39;</span>  <span class="c1"># 2</span>
+    <span class="n">YELLOW</span> <span class="o">=</span> <span class="s1">&#39;preset3&#39;</span>  <span class="c1"># 3</span>
+    <span class="n">GREEN</span> <span class="o">=</span> <span class="s1">&#39;preset4&#39;</span>  <span class="c1"># 4</span>
+    <span class="n">TEAL</span> <span class="o">=</span> <span class="s1">&#39;preset5&#39;</span>  <span class="c1"># 5</span>
+    <span class="n">OLIVE</span> <span class="o">=</span> <span class="s1">&#39;preset6&#39;</span>  <span class="c1"># 6</span>
+    <span class="n">BLUE</span> <span class="o">=</span> <span class="s1">&#39;preset7&#39;</span>  <span class="c1"># 7</span>
+    <span class="n">PURPLE</span> <span class="o">=</span> <span class="s1">&#39;preset8&#39;</span>  <span class="c1"># 8</span>
+    <span class="n">CRANBERRY</span> <span class="o">=</span> <span class="s1">&#39;preset9&#39;</span>  <span class="c1"># 9</span>
+    <span class="n">STEEL</span> <span class="o">=</span> <span class="s1">&#39;preset10&#39;</span>  <span class="c1"># 10</span>
+    <span class="n">DARKSTEEL</span> <span class="o">=</span> <span class="s1">&#39;preset11&#39;</span>  <span class="c1"># 11</span>
+    <span class="n">GRAY</span> <span class="o">=</span> <span class="s1">&#39;preset12&#39;</span>  <span class="c1"># 12</span>
+    <span class="n">DARKGREY</span> <span class="o">=</span> <span class="s1">&#39;preset13&#39;</span>  <span class="c1"># 13</span>
+    <span class="n">BLACK</span> <span class="o">=</span> <span class="s1">&#39;preset14&#39;</span>  <span class="c1"># 14</span>
+    <span class="n">DARKRED</span> <span class="o">=</span> <span class="s1">&#39;preset15&#39;</span>  <span class="c1"># 15</span>
+    <span class="n">DARKORANGE</span> <span class="o">=</span> <span class="s1">&#39;preset16&#39;</span>  <span class="c1"># 16</span>
+    <span class="n">DARKBROWN</span> <span class="o">=</span> <span class="s1">&#39;preset17&#39;</span>  <span class="c1"># 17</span>
+    <span class="n">DARKYELLOW</span> <span class="o">=</span> <span class="s1">&#39;preset18&#39;</span>  <span class="c1"># 18</span>
+    <span class="n">DARKGREEN</span> <span class="o">=</span> <span class="s1">&#39;preset19&#39;</span>  <span class="c1"># 19</span>
+    <span class="n">DARKTEAL</span> <span class="o">=</span> <span class="s1">&#39;preset20&#39;</span>  <span class="c1"># 20</span>
+    <span class="n">DARKOLIVE</span> <span class="o">=</span> <span class="s1">&#39;preset21&#39;</span>  <span class="c1"># 21</span>
+    <span class="n">DARKBLUE</span> <span class="o">=</span> <span class="s1">&#39;preset22&#39;</span>  <span class="c1"># 22</span>
+    <span class="n">DARKPURPLE</span> <span class="o">=</span> <span class="s1">&#39;preset23&#39;</span>  <span class="c1"># 23</span>
+    <span class="n">DARKCRANBERRY</span> <span class="o">=</span> <span class="s1">&#39;preset24&#39;</span>  <span class="c1"># 24</span>
+
+<div class="viewcode-block" id="CategoryColor.get">
+<a class="viewcode-back" href="../../api/category.html#O365.category.CategoryColor.get">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">color</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gets a color by name or value.</span>
+<span class="sd">        Raises ValueError if not found whithin the collection of colors.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">color</span><span class="o">.</span><span class="n">capitalize</span><span class="p">())</span>  <span class="c1"># &#39;preset0&#39; to &#39;Preset0&#39;</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">cls</span><span class="p">[</span><span class="n">color</span><span class="o">.</span><span class="n">upper</span><span class="p">()]</span>  <span class="c1"># &#39;red&#39; to &#39;RED&#39;</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;color is not a valid color from CategoryColor&#39;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="Category">
+<a class="viewcode-back" href="../../api/category.html#O365.category.Category">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Category</span><span class="p">(</span><span class="n">ApiComponent</span><span class="p">):</span>
+
+    <span class="n">_endpoints</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;update&#39;</span><span class="p">:</span> <span class="s1">&#39;/outlook/masterCategories/</span><span class="si">{id}</span><span class="s1">&#39;</span>
+    <span class="p">}</span>
+
+<div class="viewcode-block" id="Category.__init__">
+<a class="viewcode-back" href="../../api/category.html#O365.category.Category.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">con</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Represents a category by which a user can group Outlook items such as messages and events.</span>
+<span class="sd">        It can be used in conjunction with Event, Message, Contact and Post.</span>
+
+<span class="sd">        :param parent: parent object</span>
+<span class="sd">        :type parent: Account</span>
+<span class="sd">        :param Connection con: connection to use if no parent specified</span>
+<span class="sd">        :param Protocol protocol: protocol to use if no parent specified</span>
+<span class="sd">         (kwargs)</span>
+<span class="sd">        :param str main_resource: use this resource instead of parent resource</span>
+<span class="sd">         (kwargs)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">parent</span> <span class="ow">and</span> <span class="n">con</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Need a parent or a connection but not both&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">con</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">con</span> <span class="k">if</span> <span class="n">parent</span> <span class="k">else</span> <span class="n">con</span>
+
+        <span class="c1"># Choose the main_resource passed in kwargs over parent main_resource</span>
+        <span class="n">main_resource</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;main_resource&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
+            <span class="nb">getattr</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="s1">&#39;main_resource&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="k">if</span> <span class="n">parent</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">protocol</span><span class="o">=</span><span class="n">parent</span><span class="o">.</span><span class="n">protocol</span> <span class="k">if</span> <span class="n">parent</span> <span class="k">else</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;protocol&#39;</span><span class="p">),</span>
+            <span class="n">main_resource</span><span class="o">=</span><span class="n">main_resource</span><span class="p">)</span>
+
+        <span class="n">cloud_data</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cloud_data_key</span><span class="p">,</span> <span class="p">{})</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">object_id</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cc</span><span class="p">(</span><span class="s1">&#39;displayName&#39;</span><span class="p">))</span>
+        <span class="n">color</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cc</span><span class="p">(</span><span class="s1">&#39;color&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">color</span> <span class="o">=</span> <span class="n">CategoryColor</span><span class="p">(</span><span class="n">color</span><span class="p">)</span> <span class="k">if</span> <span class="n">color</span> <span class="k">else</span> <span class="kc">None</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> (color: </span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">color</span><span class="o">.</span><span class="n">name</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">color</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Category.update_color">
+<a class="viewcode-back" href="../../api/category.html#O365.category.Category.update_color">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_color</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">color</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Updates this Category color</span>
+<span class="sd">        :param None or str or CategoryColor color: the category color</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_url</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_endpoints</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;update&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">object_id</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">color</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">color</span><span class="p">,</span> <span class="n">CategoryColor</span><span class="p">):</span>
+            <span class="n">color</span> <span class="o">=</span> <span class="n">CategoryColor</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">color</span><span class="p">)</span>
+
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;color&#39;</span><span class="p">:</span> <span class="n">color</span><span class="o">.</span><span class="n">value</span> <span class="k">if</span> <span class="n">color</span> <span class="k">else</span> <span class="kc">None</span><span class="p">})</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">response</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">color</span> <span class="o">=</span> <span class="n">color</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="Category.delete">
+<a class="viewcode-back" href="../../api/category.html#O365.category.Category.delete">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Deletes this Category &quot;&quot;&quot;</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_url</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_endpoints</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;update&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">object_id</span><span class="p">))</span>
+
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">response</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="Categories">
+<a class="viewcode-back" href="../../api/category.html#O365.category.Categories">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Categories</span><span class="p">(</span><span class="n">ApiComponent</span><span class="p">):</span>
+
+    <span class="n">_endpoints</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;list&#39;</span><span class="p">:</span> <span class="s1">&#39;/outlook/masterCategories&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;get&#39;</span><span class="p">:</span> <span class="s1">&#39;/outlook/masterCategories/</span><span class="si">{id}</span><span class="s1">&#39;</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="n">category_constructor</span> <span class="o">=</span> <span class="n">Category</span>
+
+<div class="viewcode-block" id="Categories.__init__">
+<a class="viewcode-back" href="../../api/category.html#O365.category.Categories.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">con</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Object to retrive categories</span>
+
+<span class="sd">        :param parent: parent object</span>
+<span class="sd">        :type parent: Account</span>
+<span class="sd">        :param Connection con: connection to use if no parent specified</span>
+<span class="sd">        :param Protocol protocol: protocol to use if no parent specified</span>
+<span class="sd">         (kwargs)</span>
+<span class="sd">        :param str main_resource: use this resource instead of parent resource</span>
+<span class="sd">         (kwargs)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">parent</span> <span class="ow">and</span> <span class="n">con</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Need a parent or a connection but not both&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">con</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">con</span> <span class="k">if</span> <span class="n">parent</span> <span class="k">else</span> <span class="n">con</span>
+
+        <span class="c1"># Choose the main_resource passed in kwargs over parent main_resource</span>
+        <span class="n">main_resource</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;main_resource&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
+            <span class="nb">getattr</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="s1">&#39;main_resource&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="k">if</span> <span class="n">parent</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">protocol</span><span class="o">=</span><span class="n">parent</span><span class="o">.</span><span class="n">protocol</span> <span class="k">if</span> <span class="n">parent</span> <span class="k">else</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;protocol&#39;</span><span class="p">),</span>
+            <span class="n">main_resource</span><span class="o">=</span><span class="n">main_resource</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Categories.get_categories">
+<a class="viewcode-back" href="../../api/category.html#O365.category.Categories.get_categories">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_categories</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns a list of categories&quot;&quot;&quot;</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_url</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_endpoints</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;list&#39;</span><span class="p">))</span>
+
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">response</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">category_constructor</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_cloud_data_key</span><span class="p">:</span> <span class="n">category</span><span class="p">})</span>
+            <span class="k">for</span> <span class="n">category</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="p">[])</span>
+        <span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="Categories.get_category">
+<a class="viewcode-back" href="../../api/category.html#O365.category.Categories.get_category">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_category</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">category_id</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns a category by id&quot;&quot;&quot;</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_url</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_endpoints</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;get&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">category_id</span><span class="p">))</span>
+
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">response</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">category_constructor</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_cloud_data_key</span><span class="p">:</span> <span class="n">data</span><span class="p">})</span></div>
+
+
+<div class="viewcode-block" id="Categories.create_category">
+<a class="viewcode-back" href="../../api/category.html#O365.category.Categories.create_category">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_category</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Creates a category.</span>
+<span class="sd">        If the color is not provided it will be choosed from the pool of unused colors.</span>
+
+<span class="sd">        :param str name: The name of this outlook category. Must be unique.</span>
+<span class="sd">        :param str or CategoryColor color: optional color. If not provided will be assigned automatically.</span>
+<span class="sd">        :return: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">color</span> <span class="o">==</span> <span class="s1">&#39;auto&#39;</span><span class="p">:</span>
+            <span class="n">used_colors</span> <span class="o">=</span> <span class="p">{</span><span class="n">category</span><span class="o">.</span><span class="n">color</span> <span class="k">for</span> <span class="n">category</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_categories</span><span class="p">()}</span>
+            <span class="n">all_colors</span> <span class="o">=</span> <span class="p">{</span><span class="n">color</span> <span class="k">for</span> <span class="n">color</span> <span class="ow">in</span> <span class="n">CategoryColor</span><span class="p">}</span>
+            <span class="n">available_colors</span> <span class="o">=</span> <span class="n">all_colors</span> <span class="o">-</span> <span class="n">used_colors</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">color</span> <span class="o">=</span> <span class="n">available_colors</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="c1"># re-use a color</span>
+                <span class="n">color</span> <span class="o">=</span> <span class="n">all_colors</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">color</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">color</span><span class="p">,</span> <span class="n">CategoryColor</span><span class="p">):</span>
+                <span class="n">color</span> <span class="o">=</span> <span class="n">CategoryColor</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">color</span><span class="p">)</span>
+
+        <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_url</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_endpoints</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;list&#39;</span><span class="p">))</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_cc</span><span class="p">(</span><span class="s1">&#39;displayName&#39;</span><span class="p">):</span> <span class="n">name</span><span class="p">,</span> <span class="s1">&#39;color&#39;</span><span class="p">:</span> <span class="n">color</span><span class="o">.</span><span class="n">value</span> <span class="k">if</span> <span class="n">color</span> <span class="k">else</span> <span class="kc">None</span><span class="p">}</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">response</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="n">category</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">category_constructor</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_cloud_data_key</span><span class="p">:</span> <span class="n">category</span><span class="p">})</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, alejcas.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

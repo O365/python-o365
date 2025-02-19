@@ -1,0 +1,1230 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>O365.teams &mdash; O365  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage.html">Detailed Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">O365 API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">O365</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">O365.teams</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for O365.teams</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">dateutil.parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">ApiComponent</span><span class="p">,</span> <span class="n">NEXT_LINK_KEYWORD</span><span class="p">,</span> <span class="n">Pagination</span>
+
+<span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="n">MAX_BATCH_CHAT_MESSAGES</span> <span class="o">=</span> <span class="mi">50</span>
+<span class="n">MAX_BATCH_CHATS</span> <span class="o">=</span> <span class="mi">50</span>
+
+
+<div class="viewcode-block" id="Availability">
+<a class="viewcode-back" href="../../api/teams.html#O365.teams.Availability">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Availability</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Valid values for Availability.&quot;&quot;&quot;</span>
+
+    <span class="n">AVAILABLE</span> <span class="o">=</span> <span class="s2">&quot;Available&quot;</span>
+    <span class="n">BUSY</span> <span class="o">=</span> <span class="s2">&quot;Busy&quot;</span>
+    <span class="n">AWAY</span> <span class="o">=</span> <span class="s2">&quot;Away&quot;</span>
+    <span class="n">DONOTDISTURB</span> <span class="o">=</span> <span class="s2">&quot;DoNotDisturb&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="Activity">
+<a class="viewcode-back" href="../../api/teams.html#O365.teams.Activity">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Activity</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Valid values for Activity.&quot;&quot;&quot;</span>
+
+    <span class="n">AVAILABLE</span> <span class="o">=</span> <span class="s2">&quot;Available&quot;</span>
+    <span class="n">INACALL</span> <span class="o">=</span> <span class="s2">&quot;InACall&quot;</span>
+    <span class="n">INACONFERENCECALL</span> <span class="o">=</span> <span class="s2">&quot;InAConferenceCall&quot;</span>
+    <span class="n">AWAY</span> <span class="o">=</span> <span class="s2">&quot;Away&quot;</span>
+    <span class="n">PRESENTING</span> <span class="o">=</span> <span class="s2">&quot;Presenting&quot;</span></div>
+
+
+<div class="viewcode-block" id="PreferredAvailability">
+<a class="viewcode-back" href="../../api/teams.html#O365.teams.PreferredAvailability">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">PreferredAvailability</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Valid values for Availability.&quot;&quot;&quot;</span>
+
+    <span class="n">AVAILABLE</span> <span class="o">=</span> <span class="s2">&quot;Available&quot;</span>
+    <span class="n">BUSY</span> <span class="o">=</span> <span class="s2">&quot;Busy&quot;</span>
+    <span class="n">DONOTDISTURB</span> <span class="o">=</span> <span class="s2">&quot;DoNotDisturb&quot;</span>
+    <span class="n">BERIGHTBACK</span> <span class="o">=</span> <span class="s2">&quot;BeRightBack&quot;</span>
+    <span class="n">AWAY</span> <span class="o">=</span> <span class="s2">&quot;Away&quot;</span>
+    <span class="n">OFFLINE</span> <span class="o">=</span> <span class="s2">&quot;Offline&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="PreferredActivity">
+<a class="viewcode-back" href="../../api/teams.html#O365.teams.PreferredActivity">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">PreferredActivity</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Valid values for Activity.&quot;&quot;&quot;</span>
+
+    <span class="n">AVAILABLE</span> <span class="o">=</span> <span class="s2">&quot;Available&quot;</span>
+    <span class="n">BUSY</span> <span class="o">=</span> <span class="s2">&quot;Busy&quot;</span>
+    <span class="n">DONOTDISTURB</span> <span class="o">=</span> <span class="s2">&quot;DoNotDisturb&quot;</span>
+    <span class="n">BERIGHTBACK</span> <span class="o">=</span> <span class="s2">&quot;BeRightBack&quot;</span>
+    <span class="n">AWAY</span> <span class="o">=</span> <span class="s2">&quot;Away&quot;</span>
+    <span class="n">OFFWORK</span> <span class="o">=</span> <span class="s2">&quot;OffWork&quot;</span></div>
+
+
+<div class="viewcode-block" id="ConversationMember">
+<a class="viewcode-back" href="../../api/teams.html#O365.teams.ConversationMember">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ConversationMember</span><span class="p">(</span><span class="n">ApiComponent</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; A Microsoft Teams conversation member &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="ConversationMember.__init__">
+<a class="viewcode-back" href="../../api/teams.html#O365.teams.ConversationMember.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">con</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; A Microsoft Teams conversation member</span>
+<span class="sd">        :param parent: parent object</span>
+<span class="sd">        :type parent: Chat</span>
+<span class="sd">        :param Connection con: connection to use if no parent specified</span>
+<span class="sd">        :param Protocol protocol: protocol to use if no parent specified (kwargs)</span>
+<span class="sd">        :param str main_resource: use this resource instead of parent resource (kwargs)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">parent</span> <span class="ow">and</span> <span class="n">con</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Need a parent or a connection but not both&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">con</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">con</span> <span class="k">if</span> <span class="n">parent</span> <span class="k">else</span> <span class="n">con</span>
+        <span class="n">cloud_data</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cloud_data_key</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">object_id</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Choose the main_resource passed in kwargs over parent main_resource</span>
+        <span class="n">main_resource</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;main_resource&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
+            <span class="nb">getattr</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="s1">&#39;main_resource&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="k">if</span> <span class="n">parent</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">resource_prefix</span> <span class="o">=</span> <span class="s1">&#39;/members/</span><span class="si">{membership_id}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">membership_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">object_id</span><span class="p">)</span>
+        <span class="n">main_resource</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">main_resource</span><span class="p">,</span> <span class="n">resource_prefix</span><span class="p">)</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">protocol</span><span class="o">=</span><span class="n">parent</span><span class="o">.</span><span class="n">protocol</span> <span class="k">if</span> <span class="n">parent</span> <span class="k">else</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;protocol&#39;</span><span class="p">),</span>
+            <span class="n">main_resource</span><span class="o">=</span><span class="n">main_resource</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">roles</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;roles&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">display_name</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;displayName&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">user_id</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;userId&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">email</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;email&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tenant_id</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;tenantId&#39;</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;ConversationMember: </span><span class="si">{}</span><span class="s1"> - </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">display_name</span><span class="p">,</span>
+                                                    <span class="bp">self</span><span class="o">.</span><span class="n">email</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="ChatMessage">
+<a class="viewcode-back" href="../../api/teams.html#O365.teams.ChatMessage">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ChatMessage</span><span class="p">(</span><span class="n">ApiComponent</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; A Microsoft Teams chat message &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="ChatMessage.__init__">
+<a class="viewcode-back" href="../../api/teams.html#O365.teams.ChatMessage.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">con</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; A Microsoft Teams chat message</span>
+<span class="sd">        :param parent: parent object</span>
+<span class="sd">        :type parent: Channel, Chat, or ChannelMessage</span>
+<span class="sd">        :param Connection con: connection to use if no parent specified</span>
+<span class="sd">        :param Protocol protocol: protocol to use if no parent specified (kwargs)</span>
+<span class="sd">        :param str main_resource: use this resource instead of parent resource (kwargs)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">parent</span> <span class="ow">and</span> <span class="n">con</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Need a parent or a connection but not both&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">con</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">con</span> <span class="k">if</span> <span class="n">parent</span> <span class="k">else</span> <span class="n">con</span>
+        <span class="n">cloud_data</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cloud_data_key</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">object_id</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Choose the main_resource passed in kwargs over parent main_resource</span>
+        <span class="n">main_resource</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;main_resource&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
+            <span class="nb">getattr</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="s1">&#39;main_resource&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="k">if</span> <span class="n">parent</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="c1"># determine proper resource prefix based on whether the message is a reply</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reply_to_id</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;replyToId&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">reply_to_id</span><span class="p">:</span>
+            <span class="n">resource_prefix</span> <span class="o">=</span> <span class="s1">&#39;/replies/</span><span class="si">{message_id}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">message_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">object_id</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">resource_prefix</span> <span class="o">=</span> <span class="s1">&#39;/messages/</span><span class="si">{message_id}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">message_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">object_id</span><span class="p">)</span>
+
+        <span class="n">main_resource</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">main_resource</span><span class="p">,</span> <span class="n">resource_prefix</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">protocol</span><span class="o">=</span><span class="n">parent</span><span class="o">.</span><span class="n">protocol</span> <span class="k">if</span> <span class="n">parent</span> <span class="k">else</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;protocol&#39;</span><span class="p">),</span>
+            <span class="n">main_resource</span><span class="o">=</span><span class="n">main_resource</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">message_type</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;messageType&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">subject</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;subject&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">summary</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;summary&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">importance</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;importance&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">web_url</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;webUrl&#39;</span><span class="p">)</span>
+
+        <span class="n">local_tz</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">protocol</span><span class="o">.</span><span class="n">timezone</span>
+        <span class="n">created</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;createdDateTime&#39;</span><span class="p">)</span>
+        <span class="n">last_modified</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;lastModifiedDateTime&#39;</span><span class="p">)</span>
+        <span class="n">last_edit</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;lastEditedDateTime&#39;</span><span class="p">)</span>
+        <span class="n">deleted</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;deletedDateTime&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">created_date</span> <span class="o">=</span> <span class="n">parse</span><span class="p">(</span><span class="n">created</span><span class="p">)</span><span class="o">.</span><span class="n">astimezone</span><span class="p">(</span>
+            <span class="n">local_tz</span><span class="p">)</span> <span class="k">if</span> <span class="n">created</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_modified_date</span> <span class="o">=</span> <span class="n">parse</span><span class="p">(</span><span class="n">last_modified</span><span class="p">)</span><span class="o">.</span><span class="n">astimezone</span><span class="p">(</span>
+            <span class="n">local_tz</span><span class="p">)</span> <span class="k">if</span> <span class="n">last_modified</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_edited_date</span> <span class="o">=</span> <span class="n">parse</span><span class="p">(</span><span class="n">last_edit</span><span class="p">)</span><span class="o">.</span><span class="n">astimezone</span><span class="p">(</span>
+            <span class="n">local_tz</span><span class="p">)</span> <span class="k">if</span> <span class="n">last_edit</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">deleted_date</span> <span class="o">=</span> <span class="n">parse</span><span class="p">(</span><span class="n">deleted</span><span class="p">)</span><span class="o">.</span><span class="n">astimezone</span><span class="p">(</span>
+            <span class="n">local_tz</span><span class="p">)</span> <span class="k">if</span> <span class="n">deleted</span> <span class="k">else</span> <span class="kc">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">chat_id</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;chatId&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">channel_identity</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;channelIdentity&#39;</span><span class="p">)</span>
+
+        <span class="n">sent_from</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;from&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">sent_from</span><span class="p">:</span>
+            <span class="n">from_key</span> <span class="o">=</span> <span class="s1">&#39;user&#39;</span> <span class="k">if</span> <span class="n">sent_from</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;user&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="k">else</span> <span class="s1">&#39;application&#39;</span>
+            <span class="n">from_data</span> <span class="o">=</span> <span class="n">sent_from</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">from_key</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">from_data</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">from_key</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">from_id</span> <span class="o">=</span> <span class="n">from_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="n">sent_from</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">from_display_name</span> <span class="o">=</span> <span class="n">from_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;displayName&#39;</span><span class="p">,</span>
+                                               <span class="kc">None</span><span class="p">)</span> <span class="k">if</span> <span class="n">sent_from</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">from_type</span> <span class="o">=</span> <span class="n">from_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+            <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">IdentityType&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">from_key</span><span class="p">))</span> <span class="k">if</span> <span class="n">sent_from</span> <span class="k">else</span> <span class="kc">None</span>
+
+        <span class="n">body</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;body&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">content_type</span> <span class="o">=</span> <span class="n">body</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;contentType&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">content</span> <span class="o">=</span> <span class="n">body</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;content&#39;</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;ChatMessage: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">from_display_name</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="ChannelMessage">
+<a class="viewcode-back" href="../../api/teams.html#O365.teams.ChannelMessage">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ChannelMessage</span><span class="p">(</span><span class="n">ChatMessage</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; A Microsoft Teams chat message that is the start of a channel thread &quot;&quot;&quot;</span>
+    <span class="n">_endpoints</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;get_replies&#39;</span><span class="p">:</span> <span class="s1">&#39;/replies&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;get_reply&#39;</span><span class="p">:</span> <span class="s1">&#39;/replies/</span><span class="si">{message_id}</span><span class="s1">&#39;</span><span class="p">}</span>
+
+    <span class="n">message_constructor</span> <span class="o">=</span> <span class="n">ChatMessage</span>
+
+<div class="viewcode-block" id="ChannelMessage.__init__">
+<a class="viewcode-back" href="../../api/teams.html#O365.teams.ChannelMessage.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; A Microsoft Teams chat message that is the start of a channel thread &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="n">cloud_data</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cloud_data_key</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="n">channel_identity</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;channelIdentity&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">team_id</span> <span class="o">=</span> <span class="n">channel_identity</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;teamId&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">channel_id</span> <span class="o">=</span> <span class="n">channel_identity</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;channelId&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ChannelMessage.get_reply">
+<a class="viewcode-back" href="../../api/teams.html#O365.teams.ChannelMessage.get_reply">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_reply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message_id</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns a specified reply to the channel chat message</span>
+<span class="sd">        :param message_id: the message_id of the reply to retrieve</span>
+<span class="sd">        :type message_id: str or int</span>
+<span class="sd">        :rtype: ChatMessage</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_url</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_endpoints</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;get_reply&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">message_id</span><span class="o">=</span><span class="n">message_id</span><span class="p">))</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">response</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">message_constructor</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
+                                        <span class="o">**</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_cloud_data_key</span><span class="p">:</span> <span class="n">data</span><span class="p">})</span></div>
+
+
+<div class="viewcode-block" id="ChannelMessage.get_replies">
+<a class="viewcode-back" href="../../api/teams.html#O365.teams.ChannelMessage.get_replies">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_replies</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">batch</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns a list of replies to the channel chat message</span>
+<span class="sd">        :param int limit: number of replies to retrieve</span>
+<span class="sd">        :param int batch: number of replies to be in each data set</span>
+<span class="sd">        :rtype: list or Pagination</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_url</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_endpoints</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;get_replies&#39;</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">batch</span> <span class="ow">and</span> <span class="p">(</span><span class="n">limit</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">limit</span> <span class="o">&gt;</span> <span class="n">MAX_BATCH_CHAT_MESSAGES</span><span class="p">):</span>
+            <span class="n">batch</span> <span class="o">=</span> <span class="n">MAX_BATCH_CHAT_MESSAGES</span>
+
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;$top&#39;</span><span class="p">:</span> <span class="n">batch</span> <span class="k">if</span> <span class="n">batch</span> <span class="k">else</span> <span class="n">limit</span><span class="p">}</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">response</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+        <span class="n">next_link</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">NEXT_LINK_KEYWORD</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="n">replies</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">message_constructor</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
+                                            <span class="o">**</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_cloud_data_key</span><span class="p">:</span> <span class="n">reply</span><span class="p">})</span>
+                   <span class="k">for</span> <span class="n">reply</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="p">[])]</span>
+
+        <span class="k">if</span> <span class="n">batch</span> <span class="ow">and</span> <span class="n">next_link</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Pagination</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">replies</span><span class="p">,</span>
+                              <span class="n">constructor</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">message_constructor</span><span class="p">,</span>
+                              <span class="n">next_link</span><span class="o">=</span><span class="n">next_link</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="n">limit</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">replies</span></div>
+
+
+<div class="viewcode-block" id="ChannelMessage.send_reply">
+<a class="viewcode-back" href="../../api/teams.html#O365.teams.ChannelMessage.send_reply">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">send_reply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">content</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">content_type</span><span class="o">=</span><span class="s1">&#39;text&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Sends a reply to the channel chat message</span>
+<span class="sd">        :param content: str of text, str of html, or dict representation of json body</span>
+<span class="sd">        :type content: str or dict</span>
+<span class="sd">        :param str content_type: &#39;text&#39; to render the content as text or &#39;html&#39; to render the content as html</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">content</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="s1">&#39;body&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;contentType&#39;</span><span class="p">:</span> <span class="n">content_type</span><span class="p">,</span> <span class="s1">&#39;content&#39;</span><span class="p">:</span> <span class="n">content</span><span class="p">}}</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_url</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_endpoints</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;get_replies&#39;</span><span class="p">))</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">response</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">message_constructor</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
+                                        <span class="o">**</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_cloud_data_key</span><span class="p">:</span> <span class="n">data</span><span class="p">})</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="Chat">
+<a class="viewcode-back" href="../../api/teams.html#O365.teams.Chat">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Chat</span><span class="p">(</span><span class="n">ApiComponent</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; A Microsoft Teams chat &quot;&quot;&quot;</span>
+    <span class="n">_endpoints</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;get_messages&#39;</span><span class="p">:</span> <span class="s1">&#39;/messages&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;get_message&#39;</span><span class="p">:</span> <span class="s1">&#39;/messages/</span><span class="si">{message_id}</span><span class="s1">&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;get_members&#39;</span><span class="p">:</span> <span class="s1">&#39;/members&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;get_member&#39;</span><span class="p">:</span> <span class="s1">&#39;/members/</span><span class="si">{membership_id}</span><span class="s1">&#39;</span><span class="p">}</span>
+
+    <span class="n">message_constructor</span> <span class="o">=</span> <span class="n">ChatMessage</span>
+    <span class="n">member_constructor</span> <span class="o">=</span> <span class="n">ConversationMember</span>
+
+<div class="viewcode-block" id="Chat.__init__">
+<a class="viewcode-back" href="../../api/teams.html#O365.teams.Chat.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">con</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; A Microsoft Teams chat</span>
+<span class="sd">        :param parent: parent object</span>
+<span class="sd">        :type parent: Teams</span>
+<span class="sd">        :param Connection con: connection to use if no parent specified</span>
+<span class="sd">        :param Protocol protocol: protocol to use if no parent specified (kwargs)</span>
+<span class="sd">        :param str main_resource: use this resource instead of parent resource (kwargs)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">parent</span> <span class="ow">and</span> <span class="n">con</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Need a parent or a connection but not both&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">con</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">con</span> <span class="k">if</span> <span class="n">parent</span> <span class="k">else</span> <span class="n">con</span>
+
+        <span class="n">cloud_data</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cloud_data_key</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">object_id</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Choose the main_resource passed in kwargs over parent main_resource</span>
+        <span class="n">main_resource</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;main_resource&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
+            <span class="nb">getattr</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="s1">&#39;main_resource&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="k">if</span> <span class="n">parent</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">resource_prefix</span> <span class="o">=</span> <span class="s1">&#39;/chats/</span><span class="si">{chat_id}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">chat_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">object_id</span><span class="p">)</span>
+        <span class="n">main_resource</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">main_resource</span><span class="p">,</span> <span class="n">resource_prefix</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">protocol</span><span class="o">=</span><span class="n">parent</span><span class="o">.</span><span class="n">protocol</span> <span class="k">if</span> <span class="n">parent</span> <span class="k">else</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;protocol&#39;</span><span class="p">),</span>
+            <span class="n">main_resource</span><span class="o">=</span><span class="n">main_resource</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">topic</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;topic&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">chat_type</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;chatType&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">web_url</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;webUrl&#39;</span><span class="p">)</span>
+        <span class="n">created</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;createdDateTime&#39;</span><span class="p">)</span>
+        <span class="n">last_update</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;lastUpdatedDateTime&#39;</span><span class="p">)</span>
+        <span class="n">local_tz</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">protocol</span><span class="o">.</span><span class="n">timezone</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">created_date</span> <span class="o">=</span> <span class="n">parse</span><span class="p">(</span><span class="n">created</span><span class="p">)</span><span class="o">.</span><span class="n">astimezone</span><span class="p">(</span>
+            <span class="n">local_tz</span><span class="p">)</span> <span class="k">if</span> <span class="n">created</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_update_date</span> <span class="o">=</span> <span class="n">parse</span><span class="p">(</span><span class="n">last_update</span><span class="p">)</span><span class="o">.</span><span class="n">astimezone</span><span class="p">(</span>
+            <span class="n">local_tz</span><span class="p">)</span> <span class="k">if</span> <span class="n">last_update</span> <span class="k">else</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="Chat.get_messages">
+<a class="viewcode-back" href="../../api/teams.html#O365.teams.Chat.get_messages">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_messages</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">batch</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns a list of chat messages from the chat</span>
+<span class="sd">        :param int limit: number of replies to retrieve</span>
+<span class="sd">        :param int batch: number of replies to be in each data set</span>
+<span class="sd">        :rtype: list[ChatMessage] or Pagination of ChatMessage</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_url</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_endpoints</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;get_messages&#39;</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">batch</span> <span class="ow">and</span> <span class="p">(</span><span class="n">limit</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">limit</span> <span class="o">&gt;</span> <span class="n">MAX_BATCH_CHAT_MESSAGES</span><span class="p">):</span>
+            <span class="n">batch</span> <span class="o">=</span> <span class="n">MAX_BATCH_CHAT_MESSAGES</span>
+
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;$top&#39;</span><span class="p">:</span> <span class="n">batch</span> <span class="k">if</span> <span class="n">batch</span> <span class="k">else</span> <span class="n">limit</span><span class="p">}</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">response</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+        <span class="n">next_link</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">NEXT_LINK_KEYWORD</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="n">messages</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">message_constructor</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
+                                             <span class="o">**</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_cloud_data_key</span><span class="p">:</span> <span class="n">message</span><span class="p">})</span>
+                    <span class="k">for</span> <span class="n">message</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="p">[])]</span>
+
+        <span class="k">if</span> <span class="n">batch</span> <span class="ow">and</span> <span class="n">next_link</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Pagination</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">messages</span><span class="p">,</span>
+                              <span class="n">constructor</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">message_constructor</span><span class="p">,</span>
+                              <span class="n">next_link</span><span class="o">=</span><span class="n">next_link</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="n">limit</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">messages</span></div>
+
+
+<div class="viewcode-block" id="Chat.get_message">
+<a class="viewcode-back" href="../../api/teams.html#O365.teams.Chat.get_message">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message_id</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns a specified message from the chat</span>
+<span class="sd">        :param message_id: the message_id of the message to receive</span>
+<span class="sd">        :type message_id: str or int</span>
+<span class="sd">        :rtype: ChatMessage</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_url</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_endpoints</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;get_message&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">message_id</span><span class="o">=</span><span class="n">message_id</span><span class="p">))</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">response</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">message_constructor</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
+                                        <span class="o">**</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_cloud_data_key</span><span class="p">:</span> <span class="n">data</span><span class="p">})</span></div>
+
+
+<div class="viewcode-block" id="Chat.send_message">
+<a class="viewcode-back" href="../../api/teams.html#O365.teams.Chat.send_message">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">send_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">content</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">content_type</span><span class="o">=</span><span class="s1">&#39;text&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Sends a message to the chat</span>
+<span class="sd">        :param content: str of text, str of html, or dict representation of json body</span>
+<span class="sd">        :type content: str or dict</span>
+<span class="sd">        :param str content_type: &#39;text&#39; to render the content as text or &#39;html&#39; to render the content as html</span>
+<span class="sd">        :rtype: ChatMessage</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">content</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="s1">&#39;body&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;contentType&#39;</span><span class="p">:</span> <span class="n">content_type</span><span class="p">,</span> <span class="s1">&#39;content&#39;</span><span class="p">:</span> <span class="n">content</span><span class="p">}}</span>
+
+        <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_url</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_endpoints</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;get_messages&#39;</span><span class="p">))</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">response</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">message_constructor</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
+                                        <span class="o">**</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_cloud_data_key</span><span class="p">:</span> <span class="n">data</span><span class="p">})</span></div>
+
+
+<div class="viewcode-block" id="Chat.get_members">
+<a class="viewcode-back" href="../../api/teams.html#O365.teams.Chat.get_members">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_members</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns a list of conversation members</span>
+<span class="sd">        :rtype: list[ConversationMember]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_url</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_endpoints</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;get_members&#39;</span><span class="p">))</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">response</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+        <span class="n">members</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">member_constructor</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
+                                           <span class="o">**</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_cloud_data_key</span><span class="p">:</span> <span class="n">member</span><span class="p">})</span>
+                   <span class="k">for</span> <span class="n">member</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="p">[])]</span>
+        <span class="k">return</span> <span class="n">members</span></div>
+
+
+<div class="viewcode-block" id="Chat.get_member">
+<a class="viewcode-back" href="../../api/teams.html#O365.teams.Chat.get_member">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_member</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">membership_id</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a specified conversation member</span>
+<span class="sd">        :param str membership_id: membership_id of member to retrieve</span>
+<span class="sd">        :rtype: ConversationMember</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_url</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_endpoints</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;get_member&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">membership_id</span><span class="o">=</span><span class="n">membership_id</span><span class="p">))</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">response</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">member_constructor</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
+                                       <span class="o">**</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_cloud_data_key</span><span class="p">:</span> <span class="n">data</span><span class="p">})</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;Chat: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">chat_type</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="Presence">
+<a class="viewcode-back" href="../../api/teams.html#O365.teams.Presence">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Presence</span><span class="p">(</span><span class="n">ApiComponent</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Microsoft Teams Presence  &quot;&quot;&quot;</span>
+
+    <span class="n">_endpoints</span> <span class="o">=</span> <span class="p">{}</span>
+
+<div class="viewcode-block" id="Presence.__init__">
+<a class="viewcode-back" href="../../api/teams.html#O365.teams.Presence.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">con</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Microsoft Teams Presence</span>
+
+<span class="sd">        :param parent: parent object</span>
+<span class="sd">        :type parent: Teams</span>
+<span class="sd">        :param Connection con: connection to use if no parent specified</span>
+<span class="sd">        :param Protocol protocol: protocol to use if no parent specified</span>
+<span class="sd">         (kwargs)</span>
+<span class="sd">        :param str main_resource: use this resource instead of parent resource</span>
+<span class="sd">         (kwargs)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">parent</span> <span class="ow">and</span> <span class="n">con</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Need a parent or a connection but not both&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">con</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">con</span> <span class="k">if</span> <span class="n">parent</span> <span class="k">else</span> <span class="n">con</span>
+
+        <span class="n">cloud_data</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cloud_data_key</span><span class="p">,</span> <span class="p">{})</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">object_id</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Choose the main_resource passed in kwargs over parent main_resource</span>
+        <span class="n">main_resource</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;main_resource&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
+            <span class="nb">getattr</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="s1">&#39;main_resource&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="k">if</span> <span class="n">parent</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="n">main_resource</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">main_resource</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">protocol</span><span class="o">=</span><span class="n">parent</span><span class="o">.</span><span class="n">protocol</span> <span class="k">if</span> <span class="n">parent</span> <span class="k">else</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;protocol&#39;</span><span class="p">),</span>
+            <span class="n">main_resource</span><span class="o">=</span><span class="n">main_resource</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">availability</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;availability&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">activity</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;activity&#39;</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;availability: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">availability</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">object_id</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">object_id</span></div>
+
+
+
+<div class="viewcode-block" id="Channel">
+<a class="viewcode-back" href="../../api/teams.html#O365.teams.Channel">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Channel</span><span class="p">(</span><span class="n">ApiComponent</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; A Microsoft Teams channel &quot;&quot;&quot;</span>
+
+    <span class="n">_endpoints</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;get_messages&#39;</span><span class="p">:</span> <span class="s1">&#39;/messages&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;get_message&#39;</span><span class="p">:</span> <span class="s1">&#39;/messages/</span><span class="si">{message_id}</span><span class="s1">&#39;</span><span class="p">}</span>
+
+    <span class="n">message_constructor</span> <span class="o">=</span> <span class="n">ChannelMessage</span>
+
+<div class="viewcode-block" id="Channel.__init__">
+<a class="viewcode-back" href="../../api/teams.html#O365.teams.Channel.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">con</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; A Microsoft Teams channel</span>
+
+<span class="sd">        :param parent: parent object</span>
+<span class="sd">        :type parent: Teams or Team</span>
+<span class="sd">        :param Connection con: connection to use if no parent specified</span>
+<span class="sd">        :param Protocol protocol: protocol to use if no parent specified</span>
+<span class="sd">         (kwargs)</span>
+<span class="sd">        :param str main_resource: use this resource instead of parent resource</span>
+<span class="sd">         (kwargs)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">parent</span> <span class="ow">and</span> <span class="n">con</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Need a parent or a connection but not both&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">con</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">con</span> <span class="k">if</span> <span class="n">parent</span> <span class="k">else</span> <span class="n">con</span>
+
+        <span class="n">cloud_data</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cloud_data_key</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">object_id</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Choose the main_resource passed in kwargs over parent main_resource</span>
+        <span class="n">main_resource</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;main_resource&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
+            <span class="nb">getattr</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="s1">&#39;main_resource&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="k">if</span> <span class="n">parent</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="n">resource_prefix</span> <span class="o">=</span> <span class="s1">&#39;/channels/</span><span class="si">{channel_id}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">channel_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">object_id</span><span class="p">)</span>
+        <span class="n">main_resource</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">main_resource</span><span class="p">,</span> <span class="n">resource_prefix</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">protocol</span><span class="o">=</span><span class="n">parent</span><span class="o">.</span><span class="n">protocol</span> <span class="k">if</span> <span class="n">parent</span> <span class="k">else</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;protocol&#39;</span><span class="p">),</span>
+            <span class="n">main_resource</span><span class="o">=</span><span class="n">main_resource</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">display_name</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cc</span><span class="p">(</span><span class="s1">&#39;displayName&#39;</span><span class="p">),</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;description&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">email</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;email&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Channel.get_message">
+<a class="viewcode-back" href="../../api/teams.html#O365.teams.Channel.get_message">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message_id</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns a specified channel chat messages</span>
+<span class="sd">        :param message_id: number of messages to retrieve</span>
+<span class="sd">        :type message_id: int or str</span>
+<span class="sd">        :rtype: ChannelMessage</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_url</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_endpoints</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;get_message&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">message_id</span><span class="o">=</span><span class="n">message_id</span><span class="p">))</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">response</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">message_constructor</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
+                                        <span class="o">**</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_cloud_data_key</span><span class="p">:</span> <span class="n">data</span><span class="p">})</span></div>
+
+
+<div class="viewcode-block" id="Channel.get_messages">
+<a class="viewcode-back" href="../../api/teams.html#O365.teams.Channel.get_messages">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_messages</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">batch</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns a list of channel chat messages</span>
+<span class="sd">        :param int limit: number of messages to retrieve</span>
+<span class="sd">        :param int batch: number of messages to be in each data set</span>
+<span class="sd">        :rtype: list[ChannelMessage] or Pagination of ChannelMessage</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_url</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_endpoints</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;get_messages&#39;</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">batch</span> <span class="ow">and</span> <span class="p">(</span><span class="n">limit</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">limit</span> <span class="o">&gt;</span> <span class="n">MAX_BATCH_CHAT_MESSAGES</span><span class="p">):</span>
+            <span class="n">batch</span> <span class="o">=</span> <span class="n">MAX_BATCH_CHAT_MESSAGES</span>
+
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;$top&#39;</span><span class="p">:</span> <span class="n">batch</span> <span class="k">if</span> <span class="n">batch</span> <span class="k">else</span> <span class="n">limit</span><span class="p">}</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">response</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+        <span class="n">next_link</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">NEXT_LINK_KEYWORD</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="n">messages</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">message_constructor</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
+                                             <span class="o">**</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_cloud_data_key</span><span class="p">:</span> <span class="n">message</span><span class="p">})</span>
+                    <span class="k">for</span> <span class="n">message</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="p">[])]</span>
+
+        <span class="k">if</span> <span class="n">batch</span> <span class="ow">and</span> <span class="n">next_link</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Pagination</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">messages</span><span class="p">,</span>
+                              <span class="n">constructor</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">message_constructor</span><span class="p">,</span>
+                              <span class="n">next_link</span><span class="o">=</span><span class="n">next_link</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="n">limit</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">messages</span></div>
+
+
+<div class="viewcode-block" id="Channel.send_message">
+<a class="viewcode-back" href="../../api/teams.html#O365.teams.Channel.send_message">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">send_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">content</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">content_type</span><span class="o">=</span><span class="s1">&#39;text&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Sends a message to the channel</span>
+<span class="sd">        :param content: str of text, str of html, or dict representation of json body</span>
+<span class="sd">        :type content: str or dict</span>
+<span class="sd">        :param str content_type: &#39;text&#39; to render the content as text or &#39;html&#39; to render the content as html</span>
+<span class="sd">        :rtype: ChannelMessage</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">content</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="s1">&#39;body&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;contentType&#39;</span><span class="p">:</span> <span class="n">content_type</span><span class="p">,</span> <span class="s1">&#39;content&#39;</span><span class="p">:</span> <span class="n">content</span><span class="p">}}</span>
+
+        <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_url</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_endpoints</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;get_messages&#39;</span><span class="p">))</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">response</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">message_constructor</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
+                                        <span class="o">**</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_cloud_data_key</span><span class="p">:</span> <span class="n">data</span><span class="p">})</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;Channel: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">display_name</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">object_id</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">object_id</span></div>
+
+
+
+<div class="viewcode-block" id="Team">
+<a class="viewcode-back" href="../../api/teams.html#O365.teams.Team">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Team</span><span class="p">(</span><span class="n">ApiComponent</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; A Microsoft Teams team &quot;&quot;&quot;</span>
+
+    <span class="n">_endpoints</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;get_channels&#39;</span><span class="p">:</span> <span class="s1">&#39;/channels&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;get_channel&#39;</span><span class="p">:</span> <span class="s1">&#39;/channels/</span><span class="si">{channel_id}</span><span class="s1">&#39;</span><span class="p">}</span>
+
+    <span class="n">channel_constructor</span> <span class="o">=</span> <span class="n">Channel</span>
+
+<div class="viewcode-block" id="Team.__init__">
+<a class="viewcode-back" href="../../api/teams.html#O365.teams.Team.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">con</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; A Microsoft Teams team</span>
+
+<span class="sd">        :param parent: parent object</span>
+<span class="sd">        :type parent: Teams</span>
+<span class="sd">        :param Connection con: connection to use if no parent specified</span>
+<span class="sd">        :param Protocol protocol: protocol to use if no parent specified</span>
+<span class="sd">         (kwargs)</span>
+<span class="sd">        :param str main_resource: use this resource instead of parent resource</span>
+<span class="sd">         (kwargs)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">parent</span> <span class="ow">and</span> <span class="n">con</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Need a parent or a connection but not both&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">con</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">con</span> <span class="k">if</span> <span class="n">parent</span> <span class="k">else</span> <span class="n">con</span>
+
+        <span class="n">cloud_data</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cloud_data_key</span><span class="p">,</span> <span class="p">{})</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">object_id</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Choose the main_resource passed in kwargs over parent main_resource</span>
+        <span class="n">main_resource</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;main_resource&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
+            <span class="nb">getattr</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="s1">&#39;main_resource&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="k">if</span> <span class="n">parent</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="n">resource_prefix</span> <span class="o">=</span> <span class="s1">&#39;/teams/</span><span class="si">{team_id}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">team_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">object_id</span><span class="p">)</span>
+        <span class="n">main_resource</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">main_resource</span><span class="p">,</span> <span class="n">resource_prefix</span><span class="p">)</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">protocol</span><span class="o">=</span><span class="n">parent</span><span class="o">.</span><span class="n">protocol</span> <span class="k">if</span> <span class="n">parent</span> <span class="k">else</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;protocol&#39;</span><span class="p">),</span>
+            <span class="n">main_resource</span><span class="o">=</span><span class="n">main_resource</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">display_name</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cc</span><span class="p">(</span><span class="s1">&#39;displayName&#39;</span><span class="p">),</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cc</span><span class="p">(</span><span class="s1">&#39;description&#39;</span><span class="p">),</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_archived</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cc</span><span class="p">(</span><span class="s1">&#39;isArchived&#39;</span><span class="p">),</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">web_url</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cc</span><span class="p">(</span><span class="s1">&#39;webUrl&#39;</span><span class="p">),</span> <span class="s1">&#39;&#39;</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;Team: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">display_name</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">object_id</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">object_id</span>
+
+<div class="viewcode-block" id="Team.get_channels">
+<a class="viewcode-back" href="../../api/teams.html#O365.teams.Team.get_channels">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_channels</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns a list of channels the team</span>
+
+<span class="sd">        :rtype: list[Channel]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_url</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_endpoints</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;get_channels&#39;</span><span class="p">))</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">response</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">channel_constructor</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
+                                         <span class="o">**</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_cloud_data_key</span><span class="p">:</span> <span class="n">channel</span><span class="p">})</span>
+                <span class="k">for</span> <span class="n">channel</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="p">[])]</span></div>
+
+
+<div class="viewcode-block" id="Team.get_channel">
+<a class="viewcode-back" href="../../api/teams.html#O365.teams.Team.get_channel">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_channel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">channel_id</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns a channel of the team</span>
+
+<span class="sd">        :param channel_id: the team_id of the channel to be retrieved.</span>
+
+<span class="sd">        :rtype: Channel</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_url</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_endpoints</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;get_channel&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">channel_id</span><span class="o">=</span><span class="n">channel_id</span><span class="p">))</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">response</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">channel_constructor</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_cloud_data_key</span><span class="p">:</span> <span class="n">data</span><span class="p">})</span></div>
+</div>
+
+
+
+
+
+<div class="viewcode-block" id="App">
+<a class="viewcode-back" href="../../api/teams.html#O365.teams.App">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">App</span><span class="p">(</span><span class="n">ApiComponent</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; A Microsoft Teams app &quot;&quot;&quot;</span>
+
+    <span class="n">_endpoints</span> <span class="o">=</span> <span class="p">{}</span>
+
+<div class="viewcode-block" id="App.__init__">
+<a class="viewcode-back" href="../../api/teams.html#O365.teams.App.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">con</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; A Microsoft Teams app</span>
+
+<span class="sd">        :param parent: parent object</span>
+<span class="sd">        :type parent: Teams</span>
+<span class="sd">        :param Connection con: connection to use if no parent specified</span>
+<span class="sd">        :param Protocol protocol: protocol to use if no parent specified</span>
+<span class="sd">         (kwargs)</span>
+<span class="sd">        :param str main_resource: use this resource instead of parent resource</span>
+<span class="sd">         (kwargs)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">parent</span> <span class="ow">and</span> <span class="n">con</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Need a parent or a connection but not both&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">con</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">con</span> <span class="k">if</span> <span class="n">parent</span> <span class="k">else</span> <span class="n">con</span>
+
+        <span class="n">cloud_data</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cloud_data_key</span><span class="p">,</span> <span class="p">{})</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">object_id</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Choose the main_resource passed in kwargs over parent main_resource</span>
+        <span class="n">main_resource</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;main_resource&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
+            <span class="nb">getattr</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="s1">&#39;main_resource&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="k">if</span> <span class="n">parent</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="n">main_resource</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">main_resource</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">protocol</span><span class="o">=</span><span class="n">parent</span><span class="o">.</span><span class="n">protocol</span> <span class="k">if</span> <span class="n">parent</span> <span class="k">else</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;protocol&#39;</span><span class="p">),</span>
+            <span class="n">main_resource</span><span class="o">=</span><span class="n">main_resource</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">app_definition</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cc</span><span class="p">(</span><span class="s1">&#39;teamsAppDefinition&#39;</span><span class="p">),</span>
+                                             <span class="p">{})</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;App: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">app_definition</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;displayName&#39;</span><span class="p">))</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">object_id</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">object_id</span></div>
+
+
+
+<div class="viewcode-block" id="Teams">
+<a class="viewcode-back" href="../../api/teams.html#O365.teams.Teams">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Teams</span><span class="p">(</span><span class="n">ApiComponent</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; A Microsoft Teams class&quot;&quot;&quot;</span>
+
+    <span class="n">_endpoints</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;get_my_presence&quot;</span><span class="p">:</span> <span class="s2">&quot;/me/presence&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;get_user_presence&quot;</span><span class="p">:</span> <span class="s2">&quot;/users/</span><span class="si">{user_id}</span><span class="s2">/presence&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;set_my_presence&quot;</span><span class="p">:</span> <span class="s2">&quot;/me/presence/setPresence&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;set_my_user_preferred_presence&quot;</span><span class="p">:</span> <span class="s2">&quot;/me/presence/setUserPreferredPresence&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;get_my_teams&quot;</span><span class="p">:</span> <span class="s2">&quot;/me/joinedTeams&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;get_channels&quot;</span><span class="p">:</span> <span class="s2">&quot;/teams/</span><span class="si">{team_id}</span><span class="s2">/channels&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;create_channel&quot;</span><span class="p">:</span> <span class="s2">&quot;/teams/</span><span class="si">{team_id}</span><span class="s2">/channels&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;get_channel&quot;</span><span class="p">:</span> <span class="s2">&quot;/teams/</span><span class="si">{team_id}</span><span class="s2">/channels/</span><span class="si">{channel_id}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;get_apps_in_team&quot;</span><span class="p">:</span> <span class="s2">&quot;/teams/</span><span class="si">{team_id}</span><span class="s2">/installedApps?$expand=teamsAppDefinition&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;get_my_chats&quot;</span><span class="p">:</span> <span class="s2">&quot;/me/chats&quot;</span>
+    <span class="p">}</span>
+    <span class="n">presence_constructor</span> <span class="o">=</span> <span class="n">Presence</span>
+    <span class="n">team_constructor</span> <span class="o">=</span> <span class="n">Team</span>
+    <span class="n">channel_constructor</span> <span class="o">=</span> <span class="n">Channel</span>
+    <span class="n">app_constructor</span> <span class="o">=</span> <span class="n">App</span>
+    <span class="n">chat_constructor</span> <span class="o">=</span> <span class="n">Chat</span>
+
+<div class="viewcode-block" id="Teams.__init__">
+<a class="viewcode-back" href="../../api/teams.html#O365.teams.Teams.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">con</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; A Teams object</span>
+
+<span class="sd">        :param parent: parent object</span>
+<span class="sd">        :type parent: Account</span>
+<span class="sd">        :param Connection con: connection to use if no parent specified</span>
+<span class="sd">        :param Protocol protocol: protocol to use if no parent specified</span>
+<span class="sd">         (kwargs)</span>
+<span class="sd">        :param str main_resource: use this resource instead of parent resource</span>
+<span class="sd">         (kwargs)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">parent</span> <span class="ow">and</span> <span class="n">con</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Need a parent or a connection but not both&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">con</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">con</span> <span class="k">if</span> <span class="n">parent</span> <span class="k">else</span> <span class="n">con</span>
+
+        <span class="c1"># Choose the main_resource passed in kwargs over the host_name</span>
+        <span class="n">main_resource</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;main_resource&#39;</span><span class="p">,</span>
+                                   <span class="s1">&#39;&#39;</span><span class="p">)</span>  <span class="c1"># defaults to blank resource</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">protocol</span><span class="o">=</span><span class="n">parent</span><span class="o">.</span><span class="n">protocol</span> <span class="k">if</span> <span class="n">parent</span> <span class="k">else</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;protocol&#39;</span><span class="p">),</span>
+            <span class="n">main_resource</span><span class="o">=</span><span class="n">main_resource</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;Microsoft Teams&#39;</span>
+
+<div class="viewcode-block" id="Teams.get_my_presence">
+<a class="viewcode-back" href="../../api/teams.html#O365.teams.Teams.get_my_presence">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_my_presence</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns my availability and activity</span>
+
+<span class="sd">        :rtype: Presence</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_url</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_endpoints</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;get_my_presence&#39;</span><span class="p">))</span>
+
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">response</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">presence_constructor</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
+                                         <span class="o">**</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_cloud_data_key</span><span class="p">:</span> <span class="n">data</span><span class="p">})</span></div>
+
+
+<div class="viewcode-block" id="Teams.set_my_presence">
+<a class="viewcode-back" href="../../api/teams.html#O365.teams.Teams.set_my_presence">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_my_presence</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">session_id</span><span class="p">,</span>
+        <span class="n">availability</span><span class="p">:</span> <span class="n">Availability</span><span class="p">,</span>
+        <span class="n">activity</span><span class="p">:</span> <span class="n">Activity</span><span class="p">,</span>
+        <span class="n">expiration_duration</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets my presence status</span>
+
+<span class="sd">        :param session_id: the session/capplication id.</span>
+<span class="sd">        :param availability: the availability.</span>
+<span class="sd">        :param activity: the activity.</span>
+<span class="sd">        :param activity: the expiration_duration when status will be unset.</span>
+<span class="sd">        :rtype: Presence</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_url</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_endpoints</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;set_my_presence&quot;</span><span class="p">))</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;sessionId&quot;</span><span class="p">:</span> <span class="n">session_id</span><span class="p">,</span>
+            <span class="s2">&quot;availability&quot;</span><span class="p">:</span> <span class="n">availability</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+            <span class="s2">&quot;activity&quot;</span><span class="p">:</span> <span class="n">activity</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+            <span class="s2">&quot;expirationDutaion&quot;</span><span class="p">:</span> <span class="n">expiration_duration</span><span class="p">,</span>
+        <span class="p">}</span>
+
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_my_presence</span><span class="p">()</span> <span class="k">if</span> <span class="n">response</span> <span class="k">else</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="Teams.set_my_user_preferred_presence">
+<a class="viewcode-back" href="../../api/teams.html#O365.teams.Teams.set_my_user_preferred_presence">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_my_user_preferred_presence</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">availability</span><span class="p">:</span> <span class="n">PreferredAvailability</span><span class="p">,</span>
+        <span class="n">activity</span><span class="p">:</span> <span class="n">PreferredActivity</span><span class="p">,</span>
+        <span class="n">expiration_duration</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets my user preferred presence status</span>
+
+<span class="sd">        :param availability: the availability.</span>
+<span class="sd">        :param activity: the activity.</span>
+<span class="sd">        :param activity: the expiration_duration when status will be unset.</span>
+<span class="sd">        :rtype: Presence</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_url</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_endpoints</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;set_my_user_preferred_presence&quot;</span><span class="p">))</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;availability&quot;</span><span class="p">:</span> <span class="n">availability</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+            <span class="s2">&quot;activity&quot;</span><span class="p">:</span> <span class="n">activity</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+            <span class="s2">&quot;expirationDutaion&quot;</span><span class="p">:</span> <span class="n">expiration_duration</span><span class="p">,</span>
+        <span class="p">}</span>
+
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_my_presence</span><span class="p">()</span> <span class="k">if</span> <span class="n">response</span> <span class="k">else</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="Teams.get_user_presence">
+<a class="viewcode-back" href="../../api/teams.html#O365.teams.Teams.get_user_presence">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_user_presence</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">email</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns specific user availability and activity</span>
+
+<span class="sd">        :rtype: Presence</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_url</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_endpoints</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;get_user_presence&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">user_id</span><span class="o">=</span><span class="n">user_id</span><span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">response</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">presence_constructor</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_cloud_data_key</span><span class="p">:</span> <span class="n">data</span><span class="p">})</span></div>
+
+
+<div class="viewcode-block" id="Teams.get_my_teams">
+<a class="viewcode-back" href="../../api/teams.html#O365.teams.Teams.get_my_teams">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_my_teams</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns a list of teams that I am in</span>
+
+<span class="sd">        :rtype: list[Team]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_url</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_endpoints</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;get_my_teams&#39;</span><span class="p">))</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">response</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">team_constructor</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_cloud_data_key</span><span class="p">:</span> <span class="n">site</span><span class="p">})</span>
+            <span class="k">for</span> <span class="n">site</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="p">[])]</span></div>
+
+
+<div class="viewcode-block" id="Teams.get_my_chats">
+<a class="viewcode-back" href="../../api/teams.html#O365.teams.Teams.get_my_chats">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_my_chats</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">batch</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns a list of chats that I am in</span>
+<span class="sd">        :param int limit: number of chats to retrieve</span>
+<span class="sd">        :param int batch: number of chats to be in each data set</span>
+<span class="sd">        :rtype: list[ChatMessage] or Pagination of Chat</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_url</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_endpoints</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;get_my_chats&#39;</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">batch</span> <span class="ow">and</span> <span class="p">(</span><span class="n">limit</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">limit</span> <span class="o">&gt;</span> <span class="n">MAX_BATCH_CHATS</span><span class="p">):</span>
+            <span class="n">batch</span> <span class="o">=</span> <span class="n">MAX_BATCH_CHATS</span>
+
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;$top&#39;</span><span class="p">:</span> <span class="n">batch</span> <span class="k">if</span> <span class="n">batch</span> <span class="k">else</span> <span class="n">limit</span><span class="p">}</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">response</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+        <span class="n">next_link</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">NEXT_LINK_KEYWORD</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="n">chats</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">chat_constructor</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
+                                             <span class="o">**</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_cloud_data_key</span><span class="p">:</span> <span class="n">message</span><span class="p">})</span>
+                    <span class="k">for</span> <span class="n">message</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="p">[])]</span>
+
+        <span class="k">if</span> <span class="n">batch</span> <span class="ow">and</span> <span class="n">next_link</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Pagination</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">chats</span><span class="p">,</span>
+                              <span class="n">constructor</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">chat_constructor</span><span class="p">,</span>
+                              <span class="n">next_link</span><span class="o">=</span><span class="n">next_link</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="n">limit</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">chats</span></div>
+
+
+<div class="viewcode-block" id="Teams.get_channels">
+<a class="viewcode-back" href="../../api/teams.html#O365.teams.Teams.get_channels">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_channels</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">team_id</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns a list of channels of a specified team</span>
+
+<span class="sd">        :param team_id: the team_id of the channel to be retrieved.</span>
+
+<span class="sd">        :rtype: list[Channel]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_url</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_endpoints</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;get_channels&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">team_id</span><span class="o">=</span><span class="n">team_id</span><span class="p">))</span>
+
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">response</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">channel_constructor</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
+                                     <span class="o">**</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_cloud_data_key</span><span class="p">:</span> <span class="n">channel</span><span class="p">})</span>
+            <span class="k">for</span> <span class="n">channel</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="p">[])]</span></div>
+
+
+<div class="viewcode-block" id="Teams.create_channel">
+<a class="viewcode-back" href="../../api/teams.html#O365.teams.Teams.create_channel">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_channel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">team_id</span><span class="p">,</span> <span class="n">display_name</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Creates a channel within a specified team</span>
+
+<span class="sd">        :param team_id: the team_id where the channel is created.</span>
+<span class="sd">        :param display_name: the channel display name.</span>
+<span class="sd">        :param description: the channel description.</span>
+<span class="sd">        :rtype: Channel</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_url</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_endpoints</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;get_channels&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">team_id</span><span class="o">=</span><span class="n">team_id</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">description</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;displayName&#39;</span><span class="p">:</span> <span class="n">display_name</span><span class="p">,</span>
+                <span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="n">description</span><span class="p">,</span>
+            <span class="p">}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;displayName&#39;</span><span class="p">:</span> <span class="n">display_name</span><span class="p">,</span>
+            <span class="p">}</span>
+
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">response</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">channel_constructor</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
+                                        <span class="o">**</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_cloud_data_key</span><span class="p">:</span> <span class="n">data</span><span class="p">})</span></div>
+
+
+<div class="viewcode-block" id="Teams.get_channel">
+<a class="viewcode-back" href="../../api/teams.html#O365.teams.Teams.get_channel">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_channel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">team_id</span><span class="p">,</span> <span class="n">channel_id</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns the channel info for a given channel</span>
+
+<span class="sd">        :param team_id: the team_id of the channel.</span>
+<span class="sd">        :param channel_id: the channel_id of the channel.</span>
+
+<span class="sd">        :rtype: list[Channel]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_url</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_endpoints</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;get_channel&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">team_id</span><span class="o">=</span><span class="n">team_id</span><span class="p">,</span>
+                                                        <span class="n">channel_id</span><span class="o">=</span><span class="n">channel_id</span><span class="p">))</span>
+
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">response</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">channel_constructor</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
+                                        <span class="o">**</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_cloud_data_key</span><span class="p">:</span> <span class="n">data</span><span class="p">})</span></div>
+
+
+<div class="viewcode-block" id="Teams.get_apps_in_team">
+<a class="viewcode-back" href="../../api/teams.html#O365.teams.Teams.get_apps_in_team">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_apps_in_team</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">team_id</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns a list of apps of a specified team</span>
+
+<span class="sd">        :param team_id: the team_id of the team to get the apps of.</span>
+
+<span class="sd">        :rtype: list[App]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_url</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_endpoints</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;get_apps_in_team&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">team_id</span><span class="o">=</span><span class="n">team_id</span><span class="p">))</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">response</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">app_constructor</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_cloud_data_key</span><span class="p">:</span> <span class="n">site</span><span class="p">})</span>
+            <span class="k">for</span> <span class="n">site</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="p">[])]</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, alejcas.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

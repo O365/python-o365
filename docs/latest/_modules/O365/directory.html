@@ -1,0 +1,540 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>O365.directory &mdash; O365  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage.html">Detailed Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">O365 API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">O365</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">O365.directory</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for O365.directory</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">dateutil.parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">requests.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">HTTPError</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.message</span><span class="w"> </span><span class="kn">import</span> <span class="n">Message</span><span class="p">,</span> <span class="n">RecipientType</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">ME_RESOURCE</span><span class="p">,</span> <span class="n">NEXT_LINK_KEYWORD</span><span class="p">,</span> <span class="n">ApiComponent</span><span class="p">,</span> <span class="n">Pagination</span>
+
+<span class="n">USERS_RESOURCE</span> <span class="o">=</span> <span class="s1">&#39;users&#39;</span>
+
+<span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="User">
+<a class="viewcode-back" href="../../api/directory.html#O365.directory.User">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">User</span><span class="p">(</span><span class="n">ApiComponent</span><span class="p">):</span>
+
+    <span class="n">_endpoints</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;photo&#39;</span><span class="p">:</span> <span class="s1">&#39;/photo/$value&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;photo_size&#39;</span><span class="p">:</span> <span class="s1">&#39;/photos/</span><span class="si">{size}</span><span class="s1">/$value&#39;</span>
+    <span class="p">}</span>
+
+    <span class="n">message_constructor</span> <span class="o">=</span> <span class="n">Message</span>
+
+<div class="viewcode-block" id="User.__init__">
+<a class="viewcode-back" href="../../api/directory.html#O365.directory.User.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">con</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Represents an Azure AD user account</span>
+
+<span class="sd">        :param parent: parent object</span>
+<span class="sd">        :type parent: Account</span>
+<span class="sd">        :param Connection con: connection to use if no parent specified</span>
+<span class="sd">        :param Protocol protocol: protocol to use if no parent specified</span>
+<span class="sd">         (kwargs)</span>
+<span class="sd">        :param str main_resource: use this resource instead of parent resource</span>
+<span class="sd">         (kwargs)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">parent</span> <span class="ow">and</span> <span class="n">con</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Need a parent or a connection but not both&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">con</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">con</span> <span class="k">if</span> <span class="n">parent</span> <span class="k">else</span> <span class="n">con</span>
+
+        <span class="c1"># Choose the main_resource passed in kwargs over parent main_resource</span>
+        <span class="n">main_resource</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;main_resource&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
+            <span class="nb">getattr</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="s1">&#39;main_resource&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="k">if</span> <span class="n">parent</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="n">cloud_data</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cloud_data_key</span><span class="p">,</span> <span class="p">{})</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">object_id</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">main_resource</span> <span class="o">==</span> <span class="n">USERS_RESOURCE</span><span class="p">:</span>
+            <span class="n">main_resource</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">object_id</span><span class="si">}</span><span class="s1">&#39;</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">protocol</span><span class="o">=</span><span class="n">parent</span><span class="o">.</span><span class="n">protocol</span> <span class="k">if</span> <span class="n">parent</span> <span class="k">else</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;protocol&#39;</span><span class="p">),</span>
+            <span class="n">main_resource</span><span class="o">=</span><span class="n">main_resource</span><span class="p">)</span>
+
+        <span class="n">local_tz</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">protocol</span><span class="o">.</span><span class="n">timezone</span>
+        <span class="n">cc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cc</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;@odata.type&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">user_principal_name</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cc</span><span class="p">(</span><span class="s1">&#39;userPrincipalName&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">display_name</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cc</span><span class="p">(</span><span class="s1">&#39;displayName&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">given_name</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cc</span><span class="p">(</span><span class="s1">&#39;givenName&#39;</span><span class="p">),</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">surname</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cc</span><span class="p">(</span><span class="s1">&#39;surname&#39;</span><span class="p">),</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mail</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cc</span><span class="p">(</span><span class="s1">&#39;mail&#39;</span><span class="p">))</span>  <span class="c1"># read only</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">business_phones</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cc</span><span class="p">(</span><span class="s1">&#39;businessPhones&#39;</span><span class="p">),</span> <span class="p">[])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">job_title</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cc</span><span class="p">(</span><span class="s1">&#39;jobTitle&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mobile_phone</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cc</span><span class="p">(</span><span class="s1">&#39;mobilePhone&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">office_location</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cc</span><span class="p">(</span><span class="s1">&#39;officeLocation&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">preferred_language</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cc</span><span class="p">(</span><span class="s1">&#39;preferredLanguage&#39;</span><span class="p">))</span>
+        <span class="c1"># End of default properties. Next properties must be selected</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">about_me</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cc</span><span class="p">(</span><span class="s1">&#39;aboutMe&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">account_enabled</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cc</span><span class="p">(</span><span class="s1">&#39;accountEnabled&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">age_group</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cc</span><span class="p">(</span><span class="s1">&#39;ageGroup&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assigned_licenses</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cc</span><span class="p">(</span><span class="s1">&#39;assignedLicenses&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assigned_plans</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cc</span><span class="p">(</span><span class="s1">&#39;assignedPlans&#39;</span><span class="p">))</span>  <span class="c1"># read only</span>
+        <span class="n">birthday</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cc</span><span class="p">(</span><span class="s1">&#39;birthday&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">birthday</span> <span class="o">=</span> <span class="n">parse</span><span class="p">(</span><span class="n">birthday</span><span class="p">)</span><span class="o">.</span><span class="n">astimezone</span><span class="p">(</span><span class="n">local_tz</span><span class="p">)</span> <span class="k">if</span> <span class="n">birthday</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">city</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cc</span><span class="p">(</span><span class="s1">&#39;city&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">company_name</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cc</span><span class="p">(</span><span class="s1">&#39;companyName&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">consent_provided_for_minor</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cc</span><span class="p">(</span><span class="s1">&#39;consentProvidedForMinor&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">country</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cc</span><span class="p">(</span><span class="s1">&#39;country&#39;</span><span class="p">))</span>
+        <span class="n">created</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cc</span><span class="p">(</span><span class="s1">&#39;createdDateTime&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">created</span> <span class="o">=</span> <span class="n">parse</span><span class="p">(</span><span class="n">created</span><span class="p">)</span><span class="o">.</span><span class="n">astimezone</span><span class="p">(</span>
+            <span class="n">local_tz</span><span class="p">)</span> <span class="k">if</span> <span class="n">created</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">department</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cc</span><span class="p">(</span><span class="s1">&#39;department&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">employee_id</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cc</span><span class="p">(</span><span class="s1">&#39;employeeId&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fax_number</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cc</span><span class="p">(</span><span class="s1">&#39;faxNumber&#39;</span><span class="p">))</span>
+        <span class="n">hire_date</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cc</span><span class="p">(</span><span class="s1">&#39;hireDate&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hire_date</span> <span class="o">=</span> <span class="n">parse</span><span class="p">(</span><span class="n">hire_date</span><span class="p">)</span><span class="o">.</span><span class="n">astimezone</span><span class="p">(</span>
+            <span class="n">local_tz</span><span class="p">)</span> <span class="k">if</span> <span class="n">hire_date</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">im_addresses</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cc</span><span class="p">(</span><span class="s1">&#39;imAddresses&#39;</span><span class="p">))</span>  <span class="c1"># read only</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">interests</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cc</span><span class="p">(</span><span class="s1">&#39;interests&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_resource_account</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cc</span><span class="p">(</span><span class="s1">&#39;isResourceAccount&#39;</span><span class="p">))</span>
+        <span class="n">last_password_change</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cc</span><span class="p">(</span><span class="s1">&#39;lastPasswordChangeDateTime&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_password_change</span> <span class="o">=</span> <span class="n">parse</span><span class="p">(</span><span class="n">last_password_change</span><span class="p">)</span><span class="o">.</span><span class="n">astimezone</span><span class="p">(</span>
+            <span class="n">local_tz</span><span class="p">)</span> <span class="k">if</span> <span class="n">last_password_change</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">legal_age_group_classification</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cc</span><span class="p">(</span><span class="s1">&#39;legalAgeGroupClassification&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">license_assignment_states</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cc</span><span class="p">(</span><span class="s1">&#39;licenseAssignmentStates&#39;</span><span class="p">))</span>  <span class="c1"># read only</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mailbox_settings</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cc</span><span class="p">(</span><span class="s1">&#39;mailboxSettings&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mail_nickname</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cc</span><span class="p">(</span><span class="s1">&#39;mailNickname&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">my_site</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cc</span><span class="p">(</span><span class="s1">&#39;mySite&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">other_mails</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cc</span><span class="p">(</span><span class="s1">&#39;otherMails&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">password_policies</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cc</span><span class="p">(</span><span class="s1">&#39;passwordPolicies&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">password_profile</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cc</span><span class="p">(</span><span class="s1">&#39;passwordProfile&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">past_projects</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cc</span><span class="p">(</span><span class="s1">&#39;pastProjects&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">postal_code</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cc</span><span class="p">(</span><span class="s1">&#39;postalCode&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">preferred_data_location</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cc</span><span class="p">(</span><span class="s1">&#39;preferredDataLocation&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">preferred_name</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cc</span><span class="p">(</span><span class="s1">&#39;preferredName&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">provisioned_plans</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cc</span><span class="p">(</span><span class="s1">&#39;provisionedPlans&#39;</span><span class="p">))</span>  <span class="c1"># read only</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">proxy_addresses</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cc</span><span class="p">(</span><span class="s1">&#39;proxyAddresses&#39;</span><span class="p">))</span>  <span class="c1"># read only</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">responsibilities</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cc</span><span class="p">(</span><span class="s1">&#39;responsibilities&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">schools</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cc</span><span class="p">(</span><span class="s1">&#39;schools&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">show_in_address_list</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cc</span><span class="p">(</span><span class="s1">&#39;showInAddressList&#39;</span><span class="p">),</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">skills</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cc</span><span class="p">(</span><span class="s1">&#39;skills&#39;</span><span class="p">))</span>
+        <span class="n">sign_in_sessions_valid_from</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cc</span><span class="p">(</span><span class="s1">&#39;signInSessionsValidFromDateTime&#39;</span><span class="p">))</span>  <span class="c1"># read only</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sign_in_sessions_valid_from</span> <span class="o">=</span> <span class="n">parse</span><span class="p">(</span><span class="n">sign_in_sessions_valid_from</span><span class="p">)</span><span class="o">.</span><span class="n">astimezone</span><span class="p">(</span>
+            <span class="n">local_tz</span><span class="p">)</span> <span class="k">if</span> <span class="n">sign_in_sessions_valid_from</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cc</span><span class="p">(</span><span class="s1">&#39;state&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">street_address</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cc</span><span class="p">(</span><span class="s1">&#39;streetAddress&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">usage_location</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cc</span><span class="p">(</span><span class="s1">&#39;usageLocation&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">user_type</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cc</span><span class="p">(</span><span class="s1">&#39;userType&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">on_premises_sam_account_name</span> <span class="o">=</span> <span class="n">cloud_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cc</span><span class="p">(</span><span class="s1">&#39;onPremisesSamAccountName&#39;</span><span class="p">))</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">display_name</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">full_name</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">user_principal_name</span> <span class="ow">or</span> <span class="s1">&#39;Unknown Name&#39;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">object_id</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">object_id</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">object_id</span><span class="o">.</span><span class="fm">__hash__</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">full_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Full Name (Name + Surname)</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">given_name</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">surname</span><span class="si">}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+<div class="viewcode-block" id="User.new_message">
+<a class="viewcode-back" href="../../api/directory.html#O365.directory.User.new_message">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">new_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">recipient</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">recipient_type</span><span class="o">=</span><span class="n">RecipientType</span><span class="o">.</span><span class="n">TO</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; This method returns a new draft Message instance with this</span>
+<span class="sd">        user email as a recipient</span>
+
+<span class="sd">        :param Recipient recipient: a Recipient instance where to send this</span>
+<span class="sd">         message. If None the email of this contact will be used</span>
+<span class="sd">        :param RecipientType recipient_type: section to add recipient into</span>
+<span class="sd">        :return: newly created message</span>
+<span class="sd">        :rtype: Message or None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">recipient_type</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">recipient_type</span> <span class="o">=</span> <span class="n">RecipientType</span><span class="p">(</span><span class="n">recipient_type</span><span class="p">)</span>
+
+        <span class="n">recipient</span> <span class="o">=</span> <span class="n">recipient</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">mail</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">recipient</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="n">new_message</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">message_constructor</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">is_draft</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">target_recipients</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">new_message</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">recipient_type</span><span class="o">.</span><span class="n">value</span><span class="p">))</span>
+        <span class="n">target_recipients</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">recipient</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">new_message</span></div>
+
+
+<div class="viewcode-block" id="User.get_profile_photo">
+<a class="viewcode-back" href="../../api/directory.html#O365.directory.User.get_profile_photo">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_profile_photo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the user profile photo</span>
+
+<span class="sd">        :param str size: 48x48, 64x64, 96x96, 120x120, 240x240,</span>
+<span class="sd">         360x360, 432x432, 504x504, and 648x648</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">size</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_url</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_endpoints</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;photo&#39;</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_url</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_endpoints</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;photo_size&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">size</span><span class="p">))</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">HTTPError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error while retrieving the user profile photo. Error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">response</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">content</span></div>
+
+
+<div class="viewcode-block" id="User.update_profile_photo">
+<a class="viewcode-back" href="../../api/directory.html#O365.directory.User.update_profile_photo">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_profile_photo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">photo</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Updates this user profile photo</span>
+<span class="sd">        :param bytes photo: the photo data in bytes</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_url</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_endpoints</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;photo&#39;</span><span class="p">))</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">photo</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;Content-type&#39;</span><span class="p">:</span> <span class="s1">&#39;image/jpeg&#39;</span><span class="p">})</span>
+
+        <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">response</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="Directory">
+<a class="viewcode-back" href="../../api/directory.html#O365.directory.Directory">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Directory</span><span class="p">(</span><span class="n">ApiComponent</span><span class="p">):</span>
+
+    <span class="n">_endpoints</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;get_user&#39;</span><span class="p">:</span> <span class="s1">&#39;/</span><span class="si">{email}</span><span class="s1">&#39;</span>
+    <span class="p">}</span>
+    <span class="n">user_constructor</span> <span class="o">=</span> <span class="n">User</span>
+
+<div class="viewcode-block" id="Directory.__init__">
+<a class="viewcode-back" href="../../api/directory.html#O365.directory.Directory.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">con</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Represents the Active Directory</span>
+
+<span class="sd">        :param parent: parent object</span>
+<span class="sd">        :type parent: Account</span>
+<span class="sd">        :param Connection con: connection to use if no parent specified</span>
+<span class="sd">        :param Protocol protocol: protocol to use if no parent specified</span>
+<span class="sd">         (kwargs)</span>
+<span class="sd">        :param str main_resource: use this resource instead of parent resource</span>
+<span class="sd">         (kwargs)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">parent</span> <span class="ow">and</span> <span class="n">con</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Need a parent or a connection but not both&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">con</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">con</span> <span class="k">if</span> <span class="n">parent</span> <span class="k">else</span> <span class="n">con</span>
+
+        <span class="c1"># Choose the main_resource passed in kwargs over parent main_resource</span>
+        <span class="n">main_resource</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;main_resource&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
+            <span class="nb">getattr</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="s1">&#39;main_resource&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="k">if</span> <span class="n">parent</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">protocol</span><span class="o">=</span><span class="n">parent</span><span class="o">.</span><span class="n">protocol</span> <span class="k">if</span> <span class="n">parent</span> <span class="k">else</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;protocol&#39;</span><span class="p">),</span>
+            <span class="n">main_resource</span><span class="o">=</span><span class="n">main_resource</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;Active Directory&#39;</span>
+
+<div class="viewcode-block" id="Directory.get_users">
+<a class="viewcode-back" href="../../api/directory.html#O365.directory.Directory.get_users">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_users</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">order_by</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">batch</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Gets a list of users from the active directory</span>
+
+<span class="sd">        When querying the Active Directory the Users endpoint will be used.</span>
+<span class="sd">        Only a limited set of information will be available unless you have</span>
+<span class="sd">        access to scope &#39;User.Read.All&#39; which requires App Administration</span>
+<span class="sd">        Consent.</span>
+
+<span class="sd">        Also using endpoints has some limitations on the querying capabilities.</span>
+
+<span class="sd">        To use query an order_by check the OData specification here:</span>
+<span class="sd">        http://docs.oasis-open.org/odata/odata/v4.0/errata03/os/complete/</span>
+<span class="sd">        part2-url-conventions/odata-v4.0-errata03-os-part2-url-conventions</span>
+<span class="sd">        -complete.html</span>
+
+<span class="sd">        :param limit: max no. of contacts to get. Over 999 uses batch.</span>
+<span class="sd">        :type limit: int or None</span>
+<span class="sd">        :param query: applies a OData filter to the request</span>
+<span class="sd">        :type query: Query or str</span>
+<span class="sd">        :param order_by: orders the result set based on this condition</span>
+<span class="sd">        :type order_by: Query or str</span>
+<span class="sd">        :param int batch: batch size, retrieves items in</span>
+<span class="sd">         batches allowing to retrieve more items than the limit.</span>
+<span class="sd">        :return: list of users</span>
+<span class="sd">        :rtype: list[User] or Pagination</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_url</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>  <span class="c1"># target the main_resource</span>
+
+        <span class="k">if</span> <span class="n">limit</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">limit</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">protocol</span><span class="o">.</span><span class="n">max_top_value</span><span class="p">:</span>
+            <span class="n">batch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">protocol</span><span class="o">.</span><span class="n">max_top_value</span>
+
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;$top&#39;</span><span class="p">:</span> <span class="n">batch</span> <span class="k">if</span> <span class="n">batch</span> <span class="k">else</span> <span class="n">limit</span><span class="p">}</span>
+
+        <span class="k">if</span> <span class="n">order_by</span><span class="p">:</span>
+            <span class="n">params</span><span class="p">[</span><span class="s1">&#39;$orderby&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">order_by</span>
+
+        <span class="k">if</span> <span class="n">query</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="n">params</span><span class="p">[</span><span class="s1">&#39;$filter&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">query</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">query</span><span class="o">.</span><span class="n">as_params</span><span class="p">())</span>
+
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">response</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">iter</span><span class="p">(())</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+
+        <span class="c1"># Everything received from cloud must be passed as self._cloud_data_key</span>
+        <span class="n">users</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">user_constructor</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_cloud_data_key</span><span class="p">:</span> <span class="n">user</span><span class="p">})</span>
+                 <span class="k">for</span> <span class="n">user</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="p">[]))</span>
+
+        <span class="n">next_link</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">NEXT_LINK_KEYWORD</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">batch</span> <span class="ow">and</span> <span class="n">next_link</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Pagination</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">users</span><span class="p">,</span>
+                              <span class="n">constructor</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">user_constructor</span><span class="p">,</span>
+                              <span class="n">next_link</span><span class="o">=</span><span class="n">next_link</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="n">limit</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">users</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_user</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Helper method so DRY&quot;&quot;&quot;</span>
+
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="n">query</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="n">params</span><span class="p">[</span><span class="s1">&#39;$filter&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">query</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">query</span><span class="o">.</span><span class="n">as_params</span><span class="p">())</span>
+
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">response</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+
+        <span class="c1"># Everything received from cloud must be passed as self._cloud_data_key</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">user_constructor</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_cloud_data_key</span><span class="p">:</span> <span class="n">data</span><span class="p">})</span>
+
+<div class="viewcode-block" id="Directory.get_user">
+<a class="viewcode-back" href="../../api/directory.html#O365.directory.Directory.get_user">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_user</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns a User by it&#39;s id or user principal name</span>
+
+<span class="sd">        :param str user: the user id or user principal name</span>
+<span class="sd">        :return: User for specified email</span>
+<span class="sd">        :rtype: User</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_url</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_endpoints</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;get_user&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">email</span><span class="o">=</span><span class="n">user</span><span class="p">))</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_user</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="n">query</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Directory.get_current_user">
+<a class="viewcode-back" href="../../api/directory.html#O365.directory.Directory.get_current_user">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_current_user</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns the current logged-in user&quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">main_resource</span> <span class="o">!=</span> <span class="n">ME_RESOURCE</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Can&#39;t get the current user. The main resource must be set to &#39;</span><span class="si">{</span><span class="n">ME_RESOURCE</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+
+        <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_url</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>  <span class="c1"># target main_resource</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_user</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="n">query</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Directory.get_user_manager">
+<a class="viewcode-back" href="../../api/directory.html#O365.directory.Directory.get_user_manager">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_user_manager</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns a Users&#39; manager by the users id, or user principal name</span>
+
+<span class="sd">        :param str user: the user id or user principal name</span>
+<span class="sd">        :return: User for specified email</span>
+<span class="sd">        :rtype: User</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_url</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_endpoints</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;get_user&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">email</span><span class="o">=</span><span class="n">user</span><span class="p">))</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_user</span><span class="p">(</span><span class="n">url</span> <span class="o">+</span> <span class="s1">&#39;/manager&#39;</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="n">query</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Directory.get_user_direct_reports">
+<a class="viewcode-back" href="../../api/directory.html#O365.directory.Directory.get_user_direct_reports">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_user_direct_reports</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">order_by</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">batch</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Gets a list of direct reports for the user provided from the active directory</span>
+
+<span class="sd">        When querying the Active Directory the Users endpoint will be used.</span>
+
+<span class="sd">        Also using endpoints has some limitations on the querying capabilities.</span>
+
+<span class="sd">        To use query an order_by check the OData specification here:</span>
+<span class="sd">        http://docs.oasis-open.org/odata/odata/v4.0/errata03/os/complete/</span>
+<span class="sd">        part2-url-conventions/odata-v4.0-errata03-os-part2-url-conventions</span>
+<span class="sd">        -complete.html</span>
+
+<span class="sd">        :param limit: max no. of contacts to get. Over 999 uses batch.</span>
+<span class="sd">        :type limit: int or None</span>
+<span class="sd">        :param query: applies a OData filter to the request</span>
+<span class="sd">        :type query: Query or str</span>
+<span class="sd">        :param order_by: orders the result set based on this condition</span>
+<span class="sd">        :type order_by: Query or str</span>
+<span class="sd">        :param int batch: batch size, retrieves items in</span>
+<span class="sd">         batches allowing to retrieve more items than the limit.</span>
+<span class="sd">        :return: list of users</span>
+<span class="sd">        :rtype: list[User] or Pagination</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_url</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_endpoints</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;get_user&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">email</span><span class="o">=</span><span class="n">user</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">limit</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">limit</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">protocol</span><span class="o">.</span><span class="n">max_top_value</span><span class="p">:</span>
+            <span class="n">batch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">protocol</span><span class="o">.</span><span class="n">max_top_value</span>
+
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;$top&#39;</span><span class="p">:</span> <span class="n">batch</span> <span class="k">if</span> <span class="n">batch</span> <span class="k">else</span> <span class="n">limit</span><span class="p">}</span>
+
+        <span class="k">if</span> <span class="n">order_by</span><span class="p">:</span>
+            <span class="n">params</span><span class="p">[</span><span class="s1">&#39;$orderby&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">order_by</span>
+
+        <span class="k">if</span> <span class="n">query</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="n">params</span><span class="p">[</span><span class="s1">&#39;$filter&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">query</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">query</span><span class="o">.</span><span class="n">as_params</span><span class="p">())</span>
+
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span> <span class="o">+</span> <span class="s1">&#39;/directReports&#39;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">response</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">iter</span><span class="p">(())</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+
+        <span class="c1"># Everything received from cloud must be passed as self._cloud_data_key</span>
+        <span class="n">direct_reports</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">user_constructor</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_cloud_data_key</span><span class="p">:</span> <span class="n">user</span><span class="p">})</span>
+            <span class="k">for</span> <span class="n">user</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="p">[]))</span>
+
+        <span class="n">next_link</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">NEXT_LINK_KEYWORD</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">batch</span> <span class="ow">and</span> <span class="n">next_link</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Pagination</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">direct_reports</span><span class="p">,</span>
+                              <span class="n">constructor</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">user_constructor</span><span class="p">,</span>
+                              <span class="n">next_link</span><span class="o">=</span><span class="n">next_link</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="n">limit</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">direct_reports</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, alejcas.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

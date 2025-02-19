@@ -1,0 +1,704 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tasks &mdash; O365  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Teams" href="teams.html" />
+    <link rel="prev" title="Sharepoint" href="sharepoint.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html">
+            
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage.html">Detailed Usage</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">O365 API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="account.html">Account</a></li>
+<li class="toctree-l2"><a class="reference internal" href="address_book.html">Address Book</a></li>
+<li class="toctree-l2"><a class="reference internal" href="attachment.html">Attachment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="calendar.html">Calendar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="category.html">Outlook Category</a></li>
+<li class="toctree-l2"><a class="reference internal" href="connection.html">Connection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="directory.html">Directory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="drive.html">One Drive</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group.html">Group</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mailbox.html">Mailbox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="message.html">Message</a></li>
+<li class="toctree-l2"><a class="reference internal" href="planner.html">Planner</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sharepoint.html">Sharepoint</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Tasks</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#O365.tasks_graph.Folder"><code class="docutils literal notranslate"><span class="pre">Folder</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#O365.tasks_graph.Folder.__init__"><code class="docutils literal notranslate"><span class="pre">Folder.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.tasks_graph.Folder.delete"><code class="docutils literal notranslate"><span class="pre">Folder.delete()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.tasks_graph.Folder.get_task"><code class="docutils literal notranslate"><span class="pre">Folder.get_task()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.tasks_graph.Folder.get_tasks"><code class="docutils literal notranslate"><span class="pre">Folder.get_tasks()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.tasks_graph.Folder.new_task"><code class="docutils literal notranslate"><span class="pre">Folder.new_task()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.tasks_graph.Folder.task_constructor"><code class="docutils literal notranslate"><span class="pre">Folder.task_constructor</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.tasks_graph.Folder.update"><code class="docutils literal notranslate"><span class="pre">Folder.update()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#O365.tasks_graph.Task"><code class="docutils literal notranslate"><span class="pre">Task</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#O365.tasks_graph.Task.__init__"><code class="docutils literal notranslate"><span class="pre">Task.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.tasks_graph.Task.body"><code class="docutils literal notranslate"><span class="pre">Task.body</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.tasks_graph.Task.completed"><code class="docutils literal notranslate"><span class="pre">Task.completed</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.tasks_graph.Task.created"><code class="docutils literal notranslate"><span class="pre">Task.created</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.tasks_graph.Task.delete"><code class="docutils literal notranslate"><span class="pre">Task.delete()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.tasks_graph.Task.due"><code class="docutils literal notranslate"><span class="pre">Task.due</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.tasks_graph.Task.get_body_soup"><code class="docutils literal notranslate"><span class="pre">Task.get_body_soup()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.tasks_graph.Task.get_body_text"><code class="docutils literal notranslate"><span class="pre">Task.get_body_text()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.tasks_graph.Task.importance"><code class="docutils literal notranslate"><span class="pre">Task.importance</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.tasks_graph.Task.is_completed"><code class="docutils literal notranslate"><span class="pre">Task.is_completed</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.tasks_graph.Task.is_reminder_on"><code class="docutils literal notranslate"><span class="pre">Task.is_reminder_on</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.tasks_graph.Task.is_starred"><code class="docutils literal notranslate"><span class="pre">Task.is_starred</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.tasks_graph.Task.mark_completed"><code class="docutils literal notranslate"><span class="pre">Task.mark_completed()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.tasks_graph.Task.mark_uncompleted"><code class="docutils literal notranslate"><span class="pre">Task.mark_uncompleted()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.tasks_graph.Task.modified"><code class="docutils literal notranslate"><span class="pre">Task.modified</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.tasks_graph.Task.reminder"><code class="docutils literal notranslate"><span class="pre">Task.reminder</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.tasks_graph.Task.save"><code class="docutils literal notranslate"><span class="pre">Task.save()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.tasks_graph.Task.status"><code class="docutils literal notranslate"><span class="pre">Task.status</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.tasks_graph.Task.subject"><code class="docutils literal notranslate"><span class="pre">Task.subject</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.tasks_graph.Task.to_api_data"><code class="docutils literal notranslate"><span class="pre">Task.to_api_data()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#O365.tasks_graph.ToDo"><code class="docutils literal notranslate"><span class="pre">ToDo</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#O365.tasks_graph.ToDo.__init__"><code class="docutils literal notranslate"><span class="pre">ToDo.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.tasks_graph.ToDo.folder_constructor"><code class="docutils literal notranslate"><span class="pre">ToDo.folder_constructor</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.tasks_graph.ToDo.get_default_folder"><code class="docutils literal notranslate"><span class="pre">ToDo.get_default_folder()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.tasks_graph.ToDo.get_folder"><code class="docutils literal notranslate"><span class="pre">ToDo.get_folder()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.tasks_graph.ToDo.get_tasks"><code class="docutils literal notranslate"><span class="pre">ToDo.get_tasks()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.tasks_graph.ToDo.list_folders"><code class="docutils literal notranslate"><span class="pre">ToDo.list_folders()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.tasks_graph.ToDo.new_folder"><code class="docutils literal notranslate"><span class="pre">ToDo.new_folder()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.tasks_graph.ToDo.new_task"><code class="docutils literal notranslate"><span class="pre">ToDo.new_task()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.tasks_graph.ToDo.task_constructor"><code class="docutils literal notranslate"><span class="pre">ToDo.task_constructor</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="teams.html">Teams</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html">Utils</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">O365</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../api.html">O365 API</a></li>
+      <li class="breadcrumb-item active">Tasks</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/api/tasks.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="sharepoint.html" class="btn btn-neutral float-left" title="Sharepoint" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="teams.html" class="btn btn-neutral float-right" title="Teams" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-O365.tasks_graph">
+<span id="tasks"></span><h1>Tasks<a class="headerlink" href="#module-O365.tasks_graph" title="Link to this heading"></a></h1>
+<p>Methods for accessing MS Tasks/Todos via the MS Graph api.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="O365.tasks_graph.Folder">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.tasks_graph.</span></span><span class="sig-name descname"><span class="pre">Folder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">con</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/tasks_graph.html#Folder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.tasks_graph.Folder" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">ApiComponent</span></code></a></p>
+<p>A Microsoft To-Do folder.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.tasks_graph.Folder.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">con</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/tasks_graph.html#Folder.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.tasks_graph.Folder.__init__" title="Link to this definition"></a></dt>
+<dd><p>Representation of a Microsoft To-Do Folder.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>parent</strong> (<a class="reference internal" href="#O365.tasks_graph.ToDo" title="O365.tasks_graph.ToDo"><em>ToDo</em></a>) – parent object</p></li>
+<li><p><strong>con</strong> (<a class="reference internal" href="connection.html#O365.connection.Connection" title="O365.connection.Connection"><em>Connection</em></a>) – connection to use if no parent specified</p></li>
+<li><p><strong>protocol</strong> (<a class="reference internal" href="connection.html#O365.connection.Protocol" title="O365.connection.Protocol"><em>Protocol</em></a>) – protocol to use if no parent specified
+(kwargs)</p></li>
+<li><p><strong>main_resource</strong> (<em>str</em>) – use this resource instead of parent resource
+(kwargs)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.tasks_graph.Folder.delete">
+<span class="sig-name descname"><span class="pre">delete</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/tasks_graph.html#Folder.delete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.tasks_graph.Folder.delete" title="Link to this definition"></a></dt>
+<dd><p>Delete this folder.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Success / Failure</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.tasks_graph.Folder.get_task">
+<span class="sig-name descname"><span class="pre">get_task</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">param</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/tasks_graph.html#Folder.get_task"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.tasks_graph.Folder.get_task" title="Link to this definition"></a></dt>
+<dd><p>Return a Task instance by it’s id.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>param</strong> – an task_id or a Query instance</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>task for the specified info</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="calendar.html#O365.calendar.Event" title="O365.calendar.Event">Event</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.tasks_graph.Folder.get_tasks">
+<span class="sig-name descname"><span class="pre">get_tasks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order_by</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/tasks_graph.html#Folder.get_tasks"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.tasks_graph.Folder.get_tasks" title="Link to this definition"></a></dt>
+<dd><p>Return list of tasks of a specified folder.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>query</strong> – the query string or object to query tasks</p></li>
+<li><p><strong>batch</strong> – the batch on to retrieve tasks.</p></li>
+<li><p><strong>order_by</strong> – the order clause to apply to returned tasks.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>tasks</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.tasks_graph.Folder.new_task">
+<span class="sig-name descname"><span class="pre">new_task</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">subject</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/tasks_graph.html#Folder.new_task"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.tasks_graph.Folder.new_task" title="Link to this definition"></a></dt>
+<dd><p>Create a task within a specified folder.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.tasks_graph.Folder.task_constructor">
+<span class="sig-name descname"><span class="pre">task_constructor</span></span><a class="headerlink" href="#O365.tasks_graph.Folder.task_constructor" title="Link to this definition"></a></dt>
+<dd><p>alias of <a class="reference internal" href="#O365.tasks_graph.Task" title="O365.tasks_graph.Task"><code class="xref py py-class docutils literal notranslate"><span class="pre">Task</span></code></a></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.tasks_graph.Folder.update">
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/tasks_graph.html#Folder.update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.tasks_graph.Folder.update" title="Link to this definition"></a></dt>
+<dd><p>Update this folder. Only name can be changed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Success / Failure</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="O365.tasks_graph.Task">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.tasks_graph.</span></span><span class="sig-name descname"><span class="pre">Task</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">con</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/tasks_graph.html#Task"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.tasks_graph.Task" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">ApiComponent</span></code></a></p>
+<p>A Microsoft To-Do task.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.tasks_graph.Task.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">con</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/tasks_graph.html#Task.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.tasks_graph.Task.__init__" title="Link to this definition"></a></dt>
+<dd><p>Representation of a Microsoft To-Do task.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>parent</strong> (<a class="reference internal" href="#O365.tasks_graph.Folder" title="O365.tasks_graph.Folder"><em>Folder</em></a>) – parent object</p></li>
+<li><p><strong>con</strong> (<a class="reference internal" href="connection.html#O365.connection.Connection" title="O365.connection.Connection"><em>Connection</em></a>) – connection to use if no parent specified</p></li>
+<li><p><strong>protocol</strong> (<a class="reference internal" href="connection.html#O365.connection.Protocol" title="O365.connection.Protocol"><em>Protocol</em></a>) – protocol to use if no parent specified
+(kwargs)</p></li>
+<li><p><strong>main_resource</strong> (<em>str</em>) – use this resource instead of parent resource
+(kwargs)</p></li>
+<li><p><strong>folder_id</strong> (<em>str</em>) – id of the calender to add this task in
+(kwargs)</p></li>
+<li><p><strong>subject</strong> (<em>str</em>) – subject of the task (kwargs)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="O365.tasks_graph.Task.body">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">body</span></span><a class="headerlink" href="#O365.tasks_graph.Task.body" title="Link to this definition"></a></dt>
+<dd><p>Return Body of the task.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Get body text</p>
+</dd>
+<dt class="field-even">Setter<span class="colon">:</span></dt>
+<dd class="field-even"><p>Set body of task</p>
+</dd>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="O365.tasks_graph.Task.completed">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">completed</span></span><a class="headerlink" href="#O365.tasks_graph.Task.completed" title="Link to this definition"></a></dt>
+<dd><p>Completed Time of task.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
+<dd class="field-odd"><p>get the completed time</p>
+</dd>
+<dt class="field-even">Setter<span class="colon">:</span></dt>
+<dd class="field-even"><p>set the completed time</p>
+</dd>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>datetime</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="O365.tasks_graph.Task.created">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">created</span></span><a class="headerlink" href="#O365.tasks_graph.Task.created" title="Link to this definition"></a></dt>
+<dd><p>Return Created time of the task.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>datetime</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.tasks_graph.Task.delete">
+<span class="sig-name descname"><span class="pre">delete</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/tasks_graph.html#Task.delete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.tasks_graph.Task.delete" title="Link to this definition"></a></dt>
+<dd><p>Delete a stored task.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Success / Failure</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="O365.tasks_graph.Task.due">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">due</span></span><a class="headerlink" href="#O365.tasks_graph.Task.due" title="Link to this definition"></a></dt>
+<dd><p>Due Time of task.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
+<dd class="field-odd"><p>get the due time</p>
+</dd>
+<dt class="field-even">Setter<span class="colon">:</span></dt>
+<dd class="field-even"><p>set the due time</p>
+</dd>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>datetime</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.tasks_graph.Task.get_body_soup">
+<span class="sig-name descname"><span class="pre">get_body_soup</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/tasks_graph.html#Task.get_body_soup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.tasks_graph.Task.get_body_soup" title="Link to this definition"></a></dt>
+<dd><p>Return the beautifulsoup4 of the html body.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Html body</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>BeautifulSoup</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.tasks_graph.Task.get_body_text">
+<span class="sig-name descname"><span class="pre">get_body_text</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/tasks_graph.html#Task.get_body_text"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.tasks_graph.Task.get_body_text" title="Link to this definition"></a></dt>
+<dd><p>Parse the body html and returns the body text using bs4.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>body text</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="O365.tasks_graph.Task.importance">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">importance</span></span><a class="headerlink" href="#O365.tasks_graph.Task.importance" title="Link to this definition"></a></dt>
+<dd><p>Return Task importance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Get importance level (Low, Normal, High)</p>
+</dd>
+<dt class="field-even">Type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="O365.tasks_graph.Task.is_completed">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_completed</span></span><a class="headerlink" href="#O365.tasks_graph.Task.is_completed" title="Link to this definition"></a></dt>
+<dd><p>Is task completed or not.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Is completed</p>
+</dd>
+<dt class="field-even">Setter<span class="colon">:</span></dt>
+<dd class="field-even"><p>set the task to completted</p>
+</dd>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="O365.tasks_graph.Task.is_reminder_on">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_reminder_on</span></span><a class="headerlink" href="#O365.tasks_graph.Task.is_reminder_on" title="Link to this definition"></a></dt>
+<dd><p>Return isReminderOn of the task.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Get isReminderOn</p>
+</dd>
+<dt class="field-even">Type<span class="colon">:</span></dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="O365.tasks_graph.Task.is_starred">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_starred</span></span><a class="headerlink" href="#O365.tasks_graph.Task.is_starred" title="Link to this definition"></a></dt>
+<dd><p>Is the task starred (high importance).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Check if importance is high</p>
+</dd>
+<dt class="field-even">Type<span class="colon">:</span></dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.tasks_graph.Task.mark_completed">
+<span class="sig-name descname"><span class="pre">mark_completed</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/tasks_graph.html#Task.mark_completed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.tasks_graph.Task.mark_completed" title="Link to this definition"></a></dt>
+<dd><p>Mark the ask as completed.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.tasks_graph.Task.mark_uncompleted">
+<span class="sig-name descname"><span class="pre">mark_uncompleted</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/tasks_graph.html#Task.mark_uncompleted"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.tasks_graph.Task.mark_uncompleted" title="Link to this definition"></a></dt>
+<dd><p>Mark the task as uncompleted.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="O365.tasks_graph.Task.modified">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">modified</span></span><a class="headerlink" href="#O365.tasks_graph.Task.modified" title="Link to this definition"></a></dt>
+<dd><p>Return Last modified time of the task.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>datetime</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="O365.tasks_graph.Task.reminder">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">reminder</span></span><a class="headerlink" href="#O365.tasks_graph.Task.reminder" title="Link to this definition"></a></dt>
+<dd><p>Reminder Time of task.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
+<dd class="field-odd"><p>get the reminder time</p>
+</dd>
+<dt class="field-even">Setter<span class="colon">:</span></dt>
+<dd class="field-even"><p>set the reminder time</p>
+</dd>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>datetime</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.tasks_graph.Task.save">
+<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/tasks_graph.html#Task.save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.tasks_graph.Task.save" title="Link to this definition"></a></dt>
+<dd><p>Create a new task or update an existing one.</p>
+<p>Does update by checking what values have changed and update them on the server
+:return: Success / Failure
+:rtype: bool</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="O365.tasks_graph.Task.status">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">status</span></span><a class="headerlink" href="#O365.tasks_graph.Task.status" title="Link to this definition"></a></dt>
+<dd><p>Status of task</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
+<dd class="field-odd"><p>get status</p>
+</dd>
+<dt class="field-even">Type<span class="colon">:</span></dt>
+<dd class="field-even"><p>string</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="O365.tasks_graph.Task.subject">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">subject</span></span><a class="headerlink" href="#O365.tasks_graph.Task.subject" title="Link to this definition"></a></dt>
+<dd><p>Subject of the task.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Get subject</p>
+</dd>
+<dt class="field-even">Setter<span class="colon">:</span></dt>
+<dd class="field-even"><p>Set subject of task</p>
+</dd>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.tasks_graph.Task.to_api_data">
+<span class="sig-name descname"><span class="pre">to_api_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">restrict_keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/tasks_graph.html#Task.to_api_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.tasks_graph.Task.to_api_data" title="Link to this definition"></a></dt>
+<dd><p>Return a dict to communicate with the server.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>restrict_keys</strong> – a set of keys to restrict the returned data to</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="O365.tasks_graph.ToDo">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.tasks_graph.</span></span><span class="sig-name descname"><span class="pre">ToDo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">con</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/tasks_graph.html#ToDo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.tasks_graph.ToDo" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">ApiComponent</span></code></a></p>
+<p>A of Microsoft To-Do class for MS Graph API.</p>
+<p>In order to use the API following permissions are required.
+Delegated (work or school account) - Tasks.Read, Tasks.ReadWrite</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.tasks_graph.ToDo.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">con</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/tasks_graph.html#ToDo.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.tasks_graph.ToDo.__init__" title="Link to this definition"></a></dt>
+<dd><p>Initialise the ToDo object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>parent</strong> (<a class="reference internal" href="account.html#O365.account.Account" title="O365.account.Account"><em>Account</em></a>) – parent object</p></li>
+<li><p><strong>con</strong> (<a class="reference internal" href="connection.html#O365.connection.Connection" title="O365.connection.Connection"><em>Connection</em></a>) – connection to use if no parent specified</p></li>
+<li><p><strong>protocol</strong> (<a class="reference internal" href="connection.html#O365.connection.Protocol" title="O365.connection.Protocol"><em>Protocol</em></a>) – protocol to use if no parent specified
+(kwargs)</p></li>
+<li><p><strong>main_resource</strong> (<em>str</em>) – use this resource instead of parent resource
+(kwargs)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.tasks_graph.ToDo.folder_constructor">
+<span class="sig-name descname"><span class="pre">folder_constructor</span></span><a class="headerlink" href="#O365.tasks_graph.ToDo.folder_constructor" title="Link to this definition"></a></dt>
+<dd><p>alias of <a class="reference internal" href="#O365.tasks_graph.Folder" title="O365.tasks_graph.Folder"><code class="xref py py-class docutils literal notranslate"><span class="pre">Folder</span></code></a></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.tasks_graph.ToDo.get_default_folder">
+<span class="sig-name descname"><span class="pre">get_default_folder</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/tasks_graph.html#ToDo.get_default_folder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.tasks_graph.ToDo.get_default_folder" title="Link to this definition"></a></dt>
+<dd><p>Return the default folder for the current user.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#O365.tasks_graph.Folder" title="O365.tasks_graph.Folder">Folder</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.tasks_graph.ToDo.get_folder">
+<span class="sig-name descname"><span class="pre">get_folder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">folder_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">folder_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/tasks_graph.html#ToDo.get_folder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.tasks_graph.ToDo.get_folder" title="Link to this definition"></a></dt>
+<dd><p>Return a folder by it’s id or name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>folder_id</strong> (<em>str</em>) – the folder id to be retrieved.</p></li>
+<li><p><strong>folder_name</strong> (<em>str</em>) – the folder name to be retrieved.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>folder for the given info</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="calendar.html#O365.calendar.Calendar" title="O365.calendar.Calendar">Calendar</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.tasks_graph.ToDo.get_tasks">
+<span class="sig-name descname"><span class="pre">get_tasks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order_by</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/tasks_graph.html#ToDo.get_tasks"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.tasks_graph.ToDo.get_tasks" title="Link to this definition"></a></dt>
+<dd><p>Get tasks from the default Calendar.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>order_by</strong> – orders the result set based on this condition</p></li>
+<li><p><strong>batch</strong> (<em>int</em>) – batch size, retrieves items in
+batches allowing to retrieve more items than the limit.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>list of items in this folder</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[<a class="reference internal" href="calendar.html#O365.calendar.Event" title="O365.calendar.Event">Event</a>] or <a class="reference internal" href="utils.html#O365.utils.utils.Pagination" title="O365.utils.utils.Pagination">Pagination</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.tasks_graph.ToDo.list_folders">
+<span class="sig-name descname"><span class="pre">list_folders</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/tasks_graph.html#ToDo.list_folders"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.tasks_graph.ToDo.list_folders" title="Link to this definition"></a></dt>
+<dd><p>Return a list of folders.</p>
+<p>To use query an order_by check the OData specification here:
+<a class="reference external" href="https://docs.oasis-open.org/odata/odata/v4.0/errata03/os/complete/">https://docs.oasis-open.org/odata/odata/v4.0/errata03/os/complete/</a>
+part2-url-conventions/odata-v4.0-errata03-os-part2-url-conventions
+-complete.html
+:param query: the query string or object to list folders
+:param int limit: max no. of folders to get. Over 999 uses batch.
+:rtype: list[Folder]</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.tasks_graph.ToDo.new_folder">
+<span class="sig-name descname"><span class="pre">new_folder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">folder_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/tasks_graph.html#ToDo.new_folder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.tasks_graph.ToDo.new_folder" title="Link to this definition"></a></dt>
+<dd><p>Create a new folder.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>folder_name</strong> (<em>str</em>) – name of the new folder</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a new Calendar instance</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="calendar.html#O365.calendar.Calendar" title="O365.calendar.Calendar">Calendar</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.tasks_graph.ToDo.new_task">
+<span class="sig-name descname"><span class="pre">new_task</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">subject</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/tasks_graph.html#ToDo.new_task"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.tasks_graph.ToDo.new_task" title="Link to this definition"></a></dt>
+<dd><p>Return a new (unsaved) Event object in the default folder.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>subject</strong> (<em>str</em>) – subject text for the new task</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>new task</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="calendar.html#O365.calendar.Event" title="O365.calendar.Event">Event</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.tasks_graph.ToDo.task_constructor">
+<span class="sig-name descname"><span class="pre">task_constructor</span></span><a class="headerlink" href="#O365.tasks_graph.ToDo.task_constructor" title="Link to this definition"></a></dt>
+<dd><p>alias of <a class="reference internal" href="#O365.tasks_graph.Task" title="O365.tasks_graph.Task"><code class="xref py py-class docutils literal notranslate"><span class="pre">Task</span></code></a></p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="sharepoint.html" class="btn btn-neutral float-left" title="Sharepoint" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="teams.html" class="btn btn-neutral float-right" title="Teams" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, alejcas.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
