@@ -1,8 +1,10 @@
 import logging
+
 from dateutil.parser import parse
 from requests.exceptions import HTTPError
+
 from .message import Message, RecipientType
-from .utils import ApiComponent, NEXT_LINK_KEYWORD, Pagination, ME_RESOURCE
+from .utils import ME_RESOURCE, NEXT_LINK_KEYWORD, ApiComponent, Pagination
 
 USERS_RESOURCE = 'users'
 
@@ -163,7 +165,8 @@ class User(ApiComponent):
         return new_message
 
     def get_profile_photo(self, size=None):
-        """ Returns the user profile photo
+        """Returns the user profile photo
+
         :param str size: 48x48, 64x64, 96x96, 120x120, 240x240,
          360x360, 432x432, 504x504, and 648x648
         """

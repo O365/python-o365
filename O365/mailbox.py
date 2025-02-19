@@ -374,8 +374,10 @@ class Folder(ApiComponent):
             return folders
 
     def get_message(self, object_id=None, query=None, *, download_attachments=False):
-        """Get one message from the query result.
-         A shortcut to get_messages with limit=1
+        """
+        Get one message from the query result.
+        A shortcut to get_messages with limit=1
+
         :param object_id: the message id to be retrieved.
         :param query: applies a filter to the request such as
          "displayName eq 'HelloFolder'"
@@ -384,6 +386,7 @@ class Folder(ApiComponent):
         :return: one Message
         :rtype: Message or None
         """
+
         if object_id is None and query is None:
             raise ValueError("Must provide object id or query.")
 

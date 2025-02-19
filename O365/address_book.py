@@ -599,7 +599,9 @@ class Contact(ApiComponent, AttachableMixin):
 
     def get_profile_photo(self, size=None):
         """Returns this contact profile photo
-        :param str size: 48x48, 64x64, 96x96, 120x120, 240x240, 360x360, 432x432, 504x504, and 648x648
+
+        :param str size: 48x48, 64x64, 96x96, 120x120, 240x240,
+         360x360, 432x432, 504x504, and 648x648
         """
         if size is None:
             url = self.build_url(self._endpoints.get('photo').format(id=self.object_id))
