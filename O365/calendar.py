@@ -1,19 +1,26 @@
 import calendar
 import datetime as dt
 import logging
-from zoneinfo import ZoneInfo
 
 # noinspection PyPep8Naming
 from bs4 import BeautifulSoup as bs
 from dateutil.parser import parse
+from zoneinfo import ZoneInfo
 
-from .utils import CaseEnum
-from .utils import HandleRecipientsMixin
-from .utils import AttachableMixin, ImportanceLevel, TrackerSet
-from .utils import BaseAttachments, BaseAttachment
-from .utils import Pagination, NEXT_LINK_KEYWORD, ApiComponent
-from .utils.windows_tz import get_windows_tz
 from .category import Category
+from .utils import (
+    NEXT_LINK_KEYWORD,
+    ApiComponent,
+    AttachableMixin,
+    BaseAttachment,
+    BaseAttachments,
+    CaseEnum,
+    HandleRecipientsMixin,
+    ImportanceLevel,
+    Pagination,
+    TrackerSet,
+)
+from .utils.windows_tz import get_windows_tz
 
 log = logging.getLogger(__name__)
 
@@ -1359,6 +1366,7 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
     def get_occurrences(self, start, end, *, limit=None, query=None, order_by=None, batch=None):
         """
         Returns all the occurrences of a seriesMaster event for a specified time range.
+
         :type start: datetime
         :param start: the start of the time range
         :type end: datetime

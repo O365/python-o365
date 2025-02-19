@@ -72,5 +72,5 @@ Protocol itself does not do anything job, it has to be plugged into this library
     from O365 import Account, MSGraphProtocol
 
     my_protocol = MSGraphProtocol('beta', 'shared_mailbox@example.com')
-    account = Account(credential=('<client_id>', '<client_secret>', protocol=my_protocol))
+    account = Account(credentials=('<client_id>', '<client_secret>'), protocol=my_protocol)
 

@@ -53,9 +53,7 @@ class Category(ApiComponent):
     }
 
     def __init__(self, *, parent=None, con=None, **kwargs):
-        """
-        Represents a category by which a user can group Outlook
-         items such as messages and events.
+        """Represents a category by which a user can group Outlook items such as messages and events.
         It can be used in conjunction with Event, Message, Contact and Post.
 
         :param parent: parent object
@@ -65,6 +63,7 @@ class Category(ApiComponent):
          (kwargs)
         :param str main_resource: use this resource instead of parent resource
          (kwargs)
+
         """
 
         if parent and con:

@@ -1,7 +1,9 @@
 import logging
-from datetime import datetime, date
+from datetime import date, datetime
+
 from dateutil.parser import parse
-from .utils import ApiComponent, NEXT_LINK_KEYWORD, Pagination
+
+from .utils import NEXT_LINK_KEYWORD, ApiComponent, Pagination
 
 log = logging.getLogger(__name__)
 
@@ -55,10 +57,13 @@ class TaskDetails(ApiComponent):
         return self.object_id == other.object_id
 
     def update(self, **kwargs):
-        """ Updates this task detail
+        """Updates this task detail
 
         :param kwargs: all the properties to be updated.
         :param dict checklist: the collection of checklist items on the task.
+
+        .. code-block::
+
             e.g. checklist = {
               "string GUID": {
                 "isChecked": bool,
@@ -66,10 +71,16 @@ class TaskDetails(ApiComponent):
                 "title": string
               }
             } (kwargs)
+
         :param str description: description of the task
         :param str preview_type: this sets the type of preview that shows up on the task.
+
             The possible values are: automatic, noPreview, checklist, description, reference.
+
         :param dict references: the collection of references on the task.
+
+        .. code-block::
+
             e.g. references = {
               "URL of the resource" : {
                 "alias": string,
@@ -77,43 +88,69 @@ class TaskDetails(ApiComponent):
                 "type": string, #e.g. PowerPoint, Excel, Word, Pdf...
               }
             }
+
         :return: Success / Failure
         :rtype: bool
         """
         if not self.object_id:
             return False
 
-        _unsafe = '.:@#'
+        _unsafe = ".:@#"
 
         url = self.build_url(
-            self._endpoints.get('task_detail').format(id=self.object_id))
+            self._endpoints.get("task_detail").format(id=self.object_id)
+        )
 
-        data = {self._cc(key): value for key, value in kwargs.items() if
-                key in (
-                    'checklist',
-                    'description',
-                    'preview_type',
-                    'references',
-                )}
+        data = {
+            self._cc(key): value
+            for key, value in kwargs.items()
+            if key
+            in (
+                "checklist",
+                "description",
+                "preview_type",
+                "references",
+            )
+        }
         if not data:
             return False
 
-        if 'references' in data and isinstance(data['references'], dict):
-            for key in list(data['references'].keys()):
-                if isinstance(data['references'][key], dict) and not '@odata.type' in data['references'][key]:
-                    data['references'][key]['@odata.type'] = '#microsoft.graph.plannerExternalReference'
+        if "references" in data and isinstance(data["references"], dict):
+            for key in list(data["references"].keys()):
+                if (
+                    isinstance(data["references"][key], dict)
+                    and not "@odata.type" in data["references"][key]
+                ):
+                    data["references"][key]["@odata.type"] = (
+                        "#microsoft.graph.plannerExternalReference"
+                    )
 
                 if any(u in key for u in _unsafe):
-                    sanitized_key = ''.join([chr(b) if b not in _unsafe.encode('utf-8', 'strict')
-                                             else '%{:02X}'.format(b) for b in key.encode('utf-8', 'strict')])
-                    data['references'][sanitized_key] = data['references'].pop(key)
+                    sanitized_key = "".join(
+                        [
+                            chr(b)
+                            if b not in _unsafe.encode("utf-8", "strict")
+                            else "%{:02X}".format(b)
+                            for b in key.encode("utf-8", "strict")
+                        ]
+                    )
+                    data["references"][sanitized_key] = data["references"].pop(key)
 
-        if 'checklist' in data:
-            for key in data['checklist'].keys():
-                if isinstance(data['checklist'][key], dict) and not '@odata.type' in data['checklist'][key]:
-                    data['checklist'][key]['@odata.type'] = '#microsoft.graph.plannerChecklistItem'
+        if "checklist" in data:
+            for key in data["checklist"].keys():
+                if (
+                    isinstance(data["checklist"][key], dict)
+                    and not "@odata.type" in data["checklist"][key]
+                ):
+                    data["checklist"][key]["@odata.type"] = (
+                        "#microsoft.graph.plannerChecklistItem"
+                    )
 
-        response = self.con.patch(url, data=data, headers={'If-Match': self._etag, 'Prefer': 'return=representation'})
+        response = self.con.patch(
+            url,
+            data=data,
+            headers={"If-Match": self._etag, "Prefer": "return=representation"},
+        )
         if not response:
             return False
 
@@ -124,16 +161,16 @@ class TaskDetails(ApiComponent):
             if value is not None:
                 setattr(self, self.protocol.to_api_case(key), value)
 
-        self._etag = new_data.get('@odata.etag')
+        self._etag = new_data.get("@odata.etag")
 
         return True
 
 
 class PlanDetails(ApiComponent):
-    _endpoints = {'plan_detail': '/planner/plans/{id}/details'}
+    _endpoints = {"plan_detail": "/planner/plans/{id}/details"}
 
     def __init__(self, *, parent=None, con=None, **kwargs):
-        """ A Microsoft O365 plan details
+        """A Microsoft O365 plan details
 
         :param parent: parent object
         :type parent: Plan
@@ -145,38 +182,42 @@ class PlanDetails(ApiComponent):
         """
 
         if parent and con:
-            raise ValueError('Need a parent or a connection but not both')
+            raise ValueError("Need a parent or a connection but not both")
         self.con = parent.con if parent else con
 
         cloud_data = kwargs.get(self._cloud_data_key, {})
 
-        self.object_id = cloud_data.get('id')
+        self.object_id = cloud_data.get("id")
 
         # Choose the main_resource passed in kwargs over parent main_resource
-        main_resource = kwargs.pop('main_resource', None) or (
-            getattr(parent, 'main_resource', None) if parent else None)
+        main_resource = kwargs.pop("main_resource", None) or (
+            getattr(parent, "main_resource", None) if parent else None
+        )
 
-        main_resource = '{}{}'.format(main_resource, '')
+        main_resource = "{}{}".format(main_resource, "")
 
         super().__init__(
-            protocol=parent.protocol if parent else kwargs.get('protocol'),
-            main_resource=main_resource)
+            protocol=parent.protocol if parent else kwargs.get("protocol"),
+            main_resource=main_resource,
+        )
 
-        self.shared_with = cloud_data.get(self._cc('sharedWith'), '')
-        self.category_descriptions = cloud_data.get(self._cc('categoryDescriptions'), '')
-        self._etag = cloud_data.get('@odata.etag', '')
+        self.shared_with = cloud_data.get(self._cc("sharedWith"), "")
+        self.category_descriptions = cloud_data.get(
+            self._cc("categoryDescriptions"), ""
+        )
+        self._etag = cloud_data.get("@odata.etag", "")
 
     def __str__(self):
         return self.__repr__()
 
     def __repr__(self):
-        return 'Plan Details'
+        return "Plan Details"
 
     def __eq__(self, other):
         return self.object_id == other.object_id
 
     def update(self, **kwargs):
-        """ Updates this plan detail
+        """Updates this plan detail
 
         :param kwargs: all the properties to be updated.
         :param dict shared_with: dict where keys are user_ids and values are boolean (kwargs)
@@ -188,14 +229,22 @@ class PlanDetails(ApiComponent):
             return False
 
         url = self.build_url(
-            self._endpoints.get('plan_detail').format(id=self.object_id))
+            self._endpoints.get("plan_detail").format(id=self.object_id)
+        )
 
-        data = {self._cc(key): value for key, value in kwargs.items() if
-                key in ('shared_with', 'category_descriptions')}
+        data = {
+            self._cc(key): value
+            for key, value in kwargs.items()
+            if key in ("shared_with", "category_descriptions")
+        }
         if not data:
             return False
 
-        response = self.con.patch(url, data=data, headers={'If-Match': self._etag, 'Prefer': 'return=representation'})
+        response = self.con.patch(
+            url,
+            data=data,
+            headers={"If-Match": self._etag, "Prefer": "return=representation"},
+        )
         if not response:
             return False
 
@@ -206,23 +255,23 @@ class PlanDetails(ApiComponent):
             if value is not None:
                 setattr(self, self.protocol.to_api_case(key), value)
 
-        self._etag = new_data.get('@odata.etag')
+        self._etag = new_data.get("@odata.etag")
 
         return True
 
 
 class Task(ApiComponent):
-    """ A Microsoft Planner task """
+    """A Microsoft Planner task"""
 
     _endpoints = {
-        'get_details': '/planner/tasks/{id}/details',
-        'task': '/planner/tasks/{id}',
+        "get_details": "/planner/tasks/{id}/details",
+        "task": "/planner/tasks/{id}",
     }
 
     task_details_constructor = TaskDetails
 
     def __init__(self, *, parent=None, con=None, **kwargs):
-        """ A Microsoft planner task
+        """A Microsoft planner task
 
         :param parent: parent object
         :type parent: Planner or Plan or Bucket
@@ -233,69 +282,82 @@ class Task(ApiComponent):
          (kwargs)
         """
         if parent and con:
-            raise ValueError('Need a parent or a connection but not both')
+            raise ValueError("Need a parent or a connection but not both")
         self.con = parent.con if parent else con
 
         cloud_data = kwargs.get(self._cloud_data_key, {})
 
-        self.object_id = cloud_data.get('id')
+        self.object_id = cloud_data.get("id")
 
         # Choose the main_resource passed in kwargs over parent main_resource
-        main_resource = kwargs.pop('main_resource', None) or (
-            getattr(parent, 'main_resource', None) if parent else None)
+        main_resource = kwargs.pop("main_resource", None) or (
+            getattr(parent, "main_resource", None) if parent else None
+        )
 
-        main_resource = '{}{}'.format(main_resource, '')
+        main_resource = "{}{}".format(main_resource, "")
 
         super().__init__(
-            protocol=parent.protocol if parent else kwargs.get('protocol'),
-            main_resource=main_resource)
+            protocol=parent.protocol if parent else kwargs.get("protocol"),
+            main_resource=main_resource,
+        )
 
-        self.plan_id = cloud_data.get('planId')
-        self.bucket_id = cloud_data.get('bucketId')
-        self.title = cloud_data.get(self._cc('title'), '')
-        self.priority = cloud_data.get(self._cc('priority'), '')
-        self.assignments = cloud_data.get(self._cc('assignments'), '')
-        self.order_hint = cloud_data.get(self._cc('orderHint'), '')
-        self.assignee_priority = cloud_data.get(self._cc('assigneePriority'), '')
-        self.percent_complete = cloud_data.get(self._cc('percentComplete'), '')
-        self.has_description = cloud_data.get(self._cc('hasDescription'), '')
-        created = cloud_data.get(self._cc('createdDateTime'), None)
-        due_date_time = cloud_data.get(self._cc('dueDateTime'), None)
-        start_date_time = cloud_data.get(self._cc('startDateTime'), None)
-        completed_date = cloud_data.get(self._cc('completedDateTime'), None)
+        self.plan_id = cloud_data.get("planId")
+        self.bucket_id = cloud_data.get("bucketId")
+        self.title = cloud_data.get(self._cc("title"), "")
+        self.priority = cloud_data.get(self._cc("priority"), "")
+        self.assignments = cloud_data.get(self._cc("assignments"), "")
+        self.order_hint = cloud_data.get(self._cc("orderHint"), "")
+        self.assignee_priority = cloud_data.get(self._cc("assigneePriority"), "")
+        self.percent_complete = cloud_data.get(self._cc("percentComplete"), "")
+        self.has_description = cloud_data.get(self._cc("hasDescription"), "")
+        created = cloud_data.get(self._cc("createdDateTime"), None)
+        due_date_time = cloud_data.get(self._cc("dueDateTime"), None)
+        start_date_time = cloud_data.get(self._cc("startDateTime"), None)
+        completed_date = cloud_data.get(self._cc("completedDateTime"), None)
         local_tz = self.protocol.timezone
-        self.start_date_time = parse(start_date_time).astimezone(local_tz) if start_date_time else None
+        self.start_date_time = (
+            parse(start_date_time).astimezone(local_tz) if start_date_time else None
+        )
         self.created_date = parse(created).astimezone(local_tz) if created else None
-        self.due_date_time = parse(due_date_time).astimezone(local_tz) if due_date_time else None
-        self.completed_date = parse(completed_date).astimezone(local_tz) if completed_date else None
-        self.preview_type = cloud_data.get(self._cc('previewType'), None)
-        self.reference_count = cloud_data.get(self._cc('referenceCount'), None)
-        self.checklist_item_count = cloud_data.get(self._cc('checklistItemCount'), None)
-        self.active_checklist_item_count = cloud_data.get(self._cc('activeChecklistItemCount'), None)
-        self.conversation_thread_id = cloud_data.get(self._cc('conversationThreadId'), None)
-        self.applied_categories = cloud_data.get(self._cc('appliedCategories'), None)
-        self._etag = cloud_data.get('@odata.etag', '')
+        self.due_date_time = (
+            parse(due_date_time).astimezone(local_tz) if due_date_time else None
+        )
+        self.completed_date = (
+            parse(completed_date).astimezone(local_tz) if completed_date else None
+        )
+        self.preview_type = cloud_data.get(self._cc("previewType"), None)
+        self.reference_count = cloud_data.get(self._cc("referenceCount"), None)
+        self.checklist_item_count = cloud_data.get(self._cc("checklistItemCount"), None)
+        self.active_checklist_item_count = cloud_data.get(
+            self._cc("activeChecklistItemCount"), None
+        )
+        self.conversation_thread_id = cloud_data.get(
+            self._cc("conversationThreadId"), None
+        )
+        self.applied_categories = cloud_data.get(self._cc("appliedCategories"), None)
+        self._etag = cloud_data.get("@odata.etag", "")
 
     def __str__(self):
         return self.__repr__()
 
     def __repr__(self):
-        return 'Task: {}'.format(self.title)
+        return "Task: {}".format(self.title)
 
     def __eq__(self, other):
         return self.object_id == other.object_id
 
     def get_details(self):
-        """ Returns Microsoft O365/AD plan with given id
+        """Returns Microsoft O365/AD plan with given id
 
         :rtype: PlanDetails
         """
 
         if not self.object_id:
-            raise RuntimeError('Plan is not initialized correctly. Id is missing...')
+            raise RuntimeError("Plan is not initialized correctly. Id is missing...")
 
         url = self.build_url(
-            self._endpoints.get('get_details').format(id=self.object_id))
+            self._endpoints.get("get_details").format(id=self.object_id)
+        )
 
         response = self.con.get(url)
 
@@ -304,11 +366,13 @@ class Task(ApiComponent):
 
         data = response.json()
 
-        return self.task_details_constructor(parent=self,
-                                             **{self._cloud_data_key: data}, )
+        return self.task_details_constructor(
+            parent=self,
+            **{self._cloud_data_key: data},
+        )
 
     def update(self, **kwargs):
-        """ Updates this task
+        """Updates this task
 
         :param kwargs: all the properties to be updated.
         :return: Success / Failure
@@ -317,38 +381,49 @@ class Task(ApiComponent):
         if not self.object_id:
             return False
 
-        url = self.build_url(
-            self._endpoints.get('task').format(id=self.object_id))
+        url = self.build_url(self._endpoints.get("task").format(id=self.object_id))
 
         for k, v in kwargs.items():
-            if k in ('start_date_time', 'due_date_time'):
-                kwargs[k] = v.strftime('%Y-%m-%dT%H:%M:%SZ') if isinstance(v, (datetime, date)) else v
+            if k in ("start_date_time", "due_date_time"):
+                kwargs[k] = (
+                    v.strftime("%Y-%m-%dT%H:%M:%SZ")
+                    if isinstance(v, (datetime, date))
+                    else v
+                )
 
-        data = {self._cc(key): value for key, value in kwargs.items() if
-                key in (
-                    'title',
-                    'priority',
-                    'assignments',
-                    'order_hint',
-                    'assignee_priority',
-                    'percent_complete',
-                    'has_description',
-                    'start_date_time',
-                    'created_date',
-                    'due_date_time',
-                    'completed_date',
-                    'preview_type',
-                    'reference_count',
-                    'checklist_item_count',
-                    'active_checklist_item_count',
-                    'conversation_thread_id',
-                    'applied_categories',
-                    'bucket_id'
-                )}
+        data = {
+            self._cc(key): value
+            for key, value in kwargs.items()
+            if key
+            in (
+                "title",
+                "priority",
+                "assignments",
+                "order_hint",
+                "assignee_priority",
+                "percent_complete",
+                "has_description",
+                "start_date_time",
+                "created_date",
+                "due_date_time",
+                "completed_date",
+                "preview_type",
+                "reference_count",
+                "checklist_item_count",
+                "active_checklist_item_count",
+                "conversation_thread_id",
+                "applied_categories",
+                "bucket_id",
+            )
+        }
         if not data:
             return False
 
-        response = self.con.patch(url, data=data, headers={'If-Match': self._etag, 'Prefer': 'return=representation'})
+        response = self.con.patch(
+            url,
+            data=data,
+            headers={"If-Match": self._etag, "Prefer": "return=representation"},
+        )
         if not response:
             return False
 
@@ -359,12 +434,12 @@ class Task(ApiComponent):
             if value is not None:
                 setattr(self, self.protocol.to_api_case(key), value)
 
-        self._etag = new_data.get('@odata.etag')
+        self._etag = new_data.get("@odata.etag")
 
         return True
 
     def delete(self):
-        """ Deletes this task
+        """Deletes this task
 
         :return: Success / Failure
         :rtype: bool
@@ -373,10 +448,9 @@ class Task(ApiComponent):
         if not self.object_id:
             return False
 
-        url = self.build_url(
-            self._endpoints.get('task').format(id=self.object_id))
+        url = self.build_url(self._endpoints.get("task").format(id=self.object_id))
 
-        response = self.con.delete(url, headers={'If-Match': self._etag})
+        response = self.con.delete(url, headers={"If-Match": self._etag})
         if not response:
             return False
 
@@ -387,14 +461,14 @@ class Task(ApiComponent):
 
 class Bucket(ApiComponent):
     _endpoints = {
-        'list_tasks': '/planner/buckets/{id}/tasks',
-        'create_task': '/planner/tasks',
-        'bucket': '/planner/buckets/{id}',
+        "list_tasks": "/planner/buckets/{id}/tasks",
+        "create_task": "/planner/tasks",
+        "bucket": "/planner/buckets/{id}",
     }
     task_constructor = Task
 
     def __init__(self, *, parent=None, con=None, **kwargs):
-        """ A Microsoft O365 bucket
+        """A Microsoft O365 bucket
 
         :param parent: parent object
         :type parent: Planner or Plan
@@ -406,47 +480,50 @@ class Bucket(ApiComponent):
         """
 
         if parent and con:
-            raise ValueError('Need a parent or a connection but not both')
+            raise ValueError("Need a parent or a connection but not both")
         self.con = parent.con if parent else con
 
         cloud_data = kwargs.get(self._cloud_data_key, {})
 
-        self.object_id = cloud_data.get('id')
+        self.object_id = cloud_data.get("id")
 
         # Choose the main_resource passed in kwargs over parent main_resource
-        main_resource = kwargs.pop('main_resource', None) or (
-            getattr(parent, 'main_resource', None) if parent else None)
+        main_resource = kwargs.pop("main_resource", None) or (
+            getattr(parent, "main_resource", None) if parent else None
+        )
 
-        main_resource = '{}{}'.format(main_resource, '')
+        main_resource = "{}{}".format(main_resource, "")
 
         super().__init__(
-            protocol=parent.protocol if parent else kwargs.get('protocol'),
-            main_resource=main_resource)
+            protocol=parent.protocol if parent else kwargs.get("protocol"),
+            main_resource=main_resource,
+        )
 
-        self.name = cloud_data.get(self._cc('name'), '')
-        self.order_hint = cloud_data.get(self._cc('orderHint'), '')
-        self.plan_id = cloud_data.get(self._cc('planId'), '')
-        self._etag = cloud_data.get('@odata.etag', '')
+        self.name = cloud_data.get(self._cc("name"), "")
+        self.order_hint = cloud_data.get(self._cc("orderHint"), "")
+        self.plan_id = cloud_data.get(self._cc("planId"), "")
+        self._etag = cloud_data.get("@odata.etag", "")
 
     def __str__(self):
         return self.__repr__()
 
     def __repr__(self):
-        return 'Bucket: {}'.format(self.name)
+        return "Bucket: {}".format(self.name)
 
     def __eq__(self, other):
         return self.object_id == other.object_id
 
     def list_tasks(self):
-        """ Returns list of tasks that given plan has
+        """Returns list of tasks that given plan has
         :rtype: list[Task]
         """
 
         if not self.object_id:
-            raise RuntimeError('Bucket is not initialized correctly. Id is missing...')
+            raise RuntimeError("Bucket is not initialized correctly. Id is missing...")
 
         url = self.build_url(
-            self._endpoints.get('list_tasks').format(id=self.object_id))
+            self._endpoints.get("list_tasks").format(id=self.object_id)
+        )
 
         response = self.con.get(url)
 
@@ -457,13 +534,17 @@ class Bucket(ApiComponent):
 
         return [
             self.task_constructor(parent=self, **{self._cloud_data_key: task})
-            for task in data.get('value', [])]
+            for task in data.get("value", [])
+        ]
 
     def create_task(self, title, assignments=None, **kwargs):
-        """ Creates a Task
+        """Creates a Task
 
         :param str title: the title of the task
         :param dict assignments: the dict of users to which tasks are to be assigned.
+
+        .. code-block:: python
+
             e.g. assignments = {
                   "ca2a1df2-e36b-4987-9f6b-0ea462f4eb47": null,
                   "4e98f8f1-bb03-4015-b8e0-19bb370949d8": {
@@ -471,19 +552,27 @@ class Bucket(ApiComponent):
                       "orderHint": "String"
                     }
                 }
-            if "user_id": null -> task is unassigned to user. if "user_id": dict -> task is assigned to user
+            if "user_id": null -> task is unassigned to user.
+            if "user_id": dict -> task is assigned to user
+
         :param dict kwargs: optional extra parameters to include in the task
-        :param int priority: priority of the task. The valid range of values is between 0 and 10,
+        :param int priority: priority of the task. The valid range of values is between 0 and 10.
+
             1 -> "urgent", 3 -> "important", 5 -> "medium", 9 -> "low" (kwargs)
+
         :param str order_hint: the order of the bucket. Default is on top (kwargs)
         :param datetime or str start_date_time: the starting date of the task. If str format should be: "%Y-%m-%dT%H:%M:%SZ" (kwargs)
         :param datetime or str due_date_time: the due date of the task. If str format should be: "%Y-%m-%dT%H:%M:%SZ" (kwargs)
         :param str conversation_thread_id: thread ID of the conversation on the task.
+
             This is the ID of the conversation thread object created in the group (kwargs)
+
         :param str assignee_priority: hint used to order items of this type in a list view (kwargs)
         :param int percent_complete: percentage of task completion. When set to 100, the task is considered completed (kwargs)
         :param dict applied_categories: The categories (labels) to which the task has been applied.
+
             Format should be e.g. {"category1": true, "category3": true, "category5": true } should (kwargs)
+
         :return: newly created task
         :rtype: Task
         """

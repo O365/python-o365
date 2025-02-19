@@ -26,7 +26,7 @@ The project is currently developed and maintained by [alejcas](https://github.co
 #### Rebuilding HTML Docs
 - Install `sphinx` python library
 
-    `pip install sphinx==2.2.2`
+    `pip install sphinx`
 
 - Run the shell script `build_docs.sh`, or copy the command from the file when using on windows
 

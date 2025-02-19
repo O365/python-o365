@@ -1,22 +1,36 @@
 import json
 import logging
 import time
-from typing import Optional, Callable, Union, Tuple, List, Dict
-from urllib.parse import urlparse, parse_qs
+from typing import Callable, Dict, List, Optional, Tuple, Union
+from urllib.parse import parse_qs, urlparse
 
 from msal import ConfidentialClientApplication, PublicClientApplication
-from requests import Session, Response
+from requests import Response, Session
 from requests.adapters import HTTPAdapter
-from requests.exceptions import HTTPError, RequestException, ProxyError
-from requests.exceptions import SSLError, Timeout, ConnectionError
+from requests.exceptions import (
+    ConnectionError,
+    HTTPError,
+    ProxyError,
+    RequestException,
+    SSLError,
+    Timeout,
+)
+
 # Dynamic loading of module Retry by requests.packages
 # noinspection PyUnresolvedReferences
 from requests.packages.urllib3.util.retry import Retry
 from tzlocal import get_localzone
-from zoneinfo import ZoneInfoNotFoundError, ZoneInfo
-from .utils import (ME_RESOURCE, BaseTokenBackend, FileSystemTokenBackend, get_windows_tz, to_camel_case,
-                    to_snake_case, to_pascal_case)
+from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
+from .utils import (
+    ME_RESOURCE,
+    BaseTokenBackend,
+    FileSystemTokenBackend,
+    get_windows_tz,
+    to_camel_case,
+    to_pascal_case,
+    to_snake_case,
+)
 
 log = logging.getLogger(__name__)
 
@@ -354,7 +368,7 @@ class Connection:
                  default_headers: dict = None,
                  store_token_after_refresh: bool = True,
                  **kwargs):
-        """ Creates an API connection object
+        """Creates an API connection object
 
         :param tuple credentials: a tuple of (client_id, client_secret)
          Generate client_id and client_secret in https://entra.microsoft.com/
@@ -376,14 +390,16 @@ class Connection:
          and store tokens
         :param str tenant_id: use this specific tenant id, defaults to common
         :param dict default_headers: allow to force headers in api call
-        (ex: default_headers={"Prefer": 'IdType="ImmutableId"'}) to get constant id for objects.
+         (ex: default_headers={"Prefer": 'IdType="ImmutableId"'}) to get constant id for objects.
         :param str auth_flow_type: the auth method flow style used: Options:
+
             - 'authorization': 2-step web style grant flow using an authentication url
             - 'public': 2-step web style grant flow using an authentication url for public apps where
-               client secret cannot be secured
+                client secret cannot be secured
             - 'credentials': also called client credentials grant flow using only the client id and secret.
-               The secret can be certificate based authentication
+                The secret can be certificate based authentication
             - 'password': using the username and password. Not recommended
+
         :param str username: The username the credentials will be taken from in the token backend.
             If None, the username will be the first one found in the token backend.
             The user's email address to provide in case of auth_flow_type == 'password'
@@ -395,20 +411,38 @@ class Connection:
         :param bool store_token_after_refresh: if after a token refresh the token backend should call save_token
         :param dict kwargs: any extra params passed to Connection
         :raises ValueError: if credentials is not tuple of (client_id, client_secret)
+
         """
-        if auth_flow_type in ('public', 'password'):  # allow client id only for public or password flow
+
+        if auth_flow_type in (
+            "public",
+            "password",
+        ):  # allow client id only for public or password flow
             if isinstance(credentials, str):
                 credentials = (credentials,)
-            if not isinstance(credentials, tuple) or len(credentials) != 1 or (not credentials[0]):
-                raise ValueError('Provide client id only for public or password flow credentials')
+            if (
+                not isinstance(credentials, tuple)
+                or len(credentials) != 1
+                or (not credentials[0])
+            ):
+                raise ValueError(
+                    "Provide client id only for public or password flow credentials"
+                )
         else:
-            if not isinstance(credentials, tuple) or len(credentials) != 2 or (
-                    not credentials[0] and not credentials[1]):
-                raise ValueError('Provide valid auth credentials')
+            if (
+                not isinstance(credentials, tuple)
+                or len(credentials) != 2
+                or (not credentials[0] and not credentials[1])
+            ):
+                raise ValueError("Provide valid auth credentials")
 
-        self._auth_flow_type = auth_flow_type  # 'authorization', 'credentials', 'password', or 'public'
-        if auth_flow_type in ('credentials', 'password') and tenant_id == 'common':
-            raise ValueError('When using the "credentials" or "password" auth_flow, the "tenant_id" must be set')
+        self._auth_flow_type = (
+            auth_flow_type  # 'authorization', 'credentials', 'password', or 'public'
+        )
+        if auth_flow_type in ("credentials", "password") and tenant_id == "common":
+            raise ValueError(
+                'When using the "credentials" or "password" auth_flow, the "tenant_id" must be set'
+            )
 
         self.auth: Tuple = credentials
         self.tenant_id: str = tenant_id
@@ -418,7 +452,9 @@ class Connection:
 
         token_backend = token_backend or FileSystemTokenBackend(**kwargs)
         if not isinstance(token_backend, BaseTokenBackend):
-            raise ValueError('"token_backend" must be an instance of a subclass of BaseTokenBackend')
+            raise ValueError(
+                '"token_backend" must be an instance of a subclass of BaseTokenBackend'
+            )
         self.token_backend: BaseTokenBackend = token_backend
         self.session: Optional[Session] = None
 
@@ -428,7 +464,9 @@ class Connection:
         self.username: Optional[str] = username  # validate input
 
         self.proxy: Dict = {}
-        self.set_proxy(proxy_server, proxy_port, proxy_username, proxy_password, proxy_http_only)
+        self.set_proxy(
+            proxy_server, proxy_port, proxy_username, proxy_password, proxy_http_only
+        )
 
         self.requests_delay: int = requests_delay or 0
         self._previous_request_at: Optional[float] = None  # store previous request time
@@ -438,11 +476,17 @@ class Connection:
         self.verify_ssl: bool = verify_ssl
         self.json_encoder: Optional[json.JSONEncoder] = json_encoder
 
-        self.naive_session: Optional[Session] = None  # lazy loaded: holds a requests Session object
+        self.naive_session: Optional[Session] = (
+            None  # lazy loaded: holds a requests Session object
+        )
 
-        self._msal_client: Optional[MsalClientApplication] = None  # store the msal client
-        self._msal_authority: str = f'https://login.microsoftonline.com/{tenant_id}'
-        self.oauth_redirect_url: str = 'https://login.microsoftonline.com/common/oauth2/nativeclient'
+        self._msal_client: Optional[MsalClientApplication] = (
+            None  # store the msal client
+        )
+        self._msal_authority: str = f"https://login.microsoftonline.com/{tenant_id}"
+        self.oauth_redirect_url: str = (
+            "https://login.microsoftonline.com/common/oauth2/nativeclient"
+        )
 
         # In the event of a response that returned 401 unauthorised this will flag between requests
         # that this 401 can be a token expired error. MsGraph is returning 401 when the access token
@@ -456,21 +500,23 @@ class Connection:
     def auth_flow_type(self) -> str:
         return self._auth_flow_type
 
-    def _set_username_from_token_backend(self, *, home_account_id: Optional[str] = None) -> None:
+    def _set_username_from_token_backend(
+        self, *, home_account_id: Optional[str] = None
+    ) -> None:
         """
         If token data is present, this will try to set the username. If home_account_id is not provided this will try
         to set the username from the first account found on the token_backend.
         """
         account_info = self.token_backend.get_account(home_account_id=home_account_id)
         if account_info:
-            self.username = account_info.get('username')
+            self.username = account_info.get("username")
 
     @property
     def username(self) -> Optional[str]:
         """
         Returns the username in use
         If username is not set this will try to set the username to the first account found
-         from the token_backend.
+        from the token_backend.
         """
         if not self._username:
             self._set_username_from_token_backend()
@@ -480,22 +526,28 @@ class Connection:
     def username(self, username: Optional[str]) -> None:
         if self._username == username:
             return
-        log.debug(f'Current username changed from {self._username} to {username}')
+        log.debug(f"Current username changed from {self._username} to {username}")
         self._username = username
 
         # if the user is changed and a valid session is set we must change the auth token in the session
         if self.session is not None:
             access_token = self.token_backend.get_access_token(username=username)
             if access_token is not None:
-                self.session.headers.update({'Authorization': f'Bearer {access_token}'})
+                self.session.headers.update({"Authorization": f"Bearer {access_token}"})
             else:
                 # if we can't find an access token for the current user, then remove the auth header from the session
-                if 'Authorization' in self.session.headers:
-                    del self.session.headers['Authorization']
+                if "Authorization" in self.session.headers:
+                    del self.session.headers["Authorization"]
 
-    def set_proxy(self, proxy_server: str, proxy_port: int,
-                  proxy_username: str, proxy_password: str, proxy_http_only: bool) -> None:
-        """ Sets a proxy on the Session
+    def set_proxy(
+        self,
+        proxy_server: str,
+        proxy_port: int,
+        proxy_username: str,
+        proxy_password: str,
+        proxy_http_only: bool,
+    ) -> None:
+        """Sets a proxy on the Session
 
         :param str proxy_server: the proxy server
         :param int proxy_port: the proxy port, defaults to 8080
@@ -505,44 +557,51 @@ class Connection:
         """
         if proxy_server and proxy_port:
             if proxy_username and proxy_password:
-                proxy_uri = f"{proxy_username}:{proxy_password}@{proxy_server}:{proxy_port}"
+                proxy_uri = (
+                    f"{proxy_username}:{proxy_password}@{proxy_server}:{proxy_port}"
+                )
             else:
                 proxy_uri = f"{proxy_server}:{proxy_port}"
 
             if proxy_http_only is False:
                 self.proxy = {
                     "http": f"http://{proxy_uri}",
-                    "https": f"https://{proxy_uri}"
+                    "https": f"https://{proxy_uri}",
                 }
             else:
                 self.proxy = {
                     "http": f"http://{proxy_uri}",
-                    "https": f"http://{proxy_uri}"
+                    "https": f"http://{proxy_uri}",
                 }
 
     @property
     def msal_client(self) -> MsalClientApplication:
-        """ Returns the msal client or creates it if it's not already done """
+        """Returns the msal client or creates it if it's not already done"""
         if self._msal_client is None:
-            if self.auth_flow_type in ('public', 'password'):
-                client = PublicClientApplication(client_id=self.auth[0],
-                                                 authority=self._msal_authority,
-                                                 token_cache=self.token_backend)
-            elif self.auth_flow_type in ('authorization', 'credentials'):
-                client = ConfidentialClientApplication(client_id=self.auth[0],
-                                                       client_credential=self.auth[1],
-                                                       authority=self._msal_authority,
-                                                       token_cache=self.token_backend)
+            if self.auth_flow_type in ("public", "password"):
+                client = PublicClientApplication(
+                    client_id=self.auth[0],
+                    authority=self._msal_authority,
+                    token_cache=self.token_backend,
+                )
+            elif self.auth_flow_type in ("authorization", "credentials"):
+                client = ConfidentialClientApplication(
+                    client_id=self.auth[0],
+                    client_credential=self.auth[1],
+                    authority=self._msal_authority,
+                    token_cache=self.token_backend,
+                )
             else:
-                raise ValueError('"auth_flow_type" must be "authorization", "public" or "credentials"')
+                raise ValueError(
+                    '"auth_flow_type" must be "authorization", "public" or "credentials"'
+                )
             self._msal_client = client
         return self._msal_client
 
-    def get_authorization_url(self,
-                              requested_scopes: List[str],
-                              redirect_uri: Optional[str] = None,
-                              **kwargs) -> Tuple[str, dict]:
-        """ Initializes the oauth authorization flow, getting the
+    def get_authorization_url(
+        self, requested_scopes: List[str], redirect_uri: Optional[str] = None, **kwargs
+    ) -> Tuple[str, dict]:
+        """Initializes the oauth authorization flow, getting the
         authorization url that the user must approve.
 
         :param list[str] requested_scopes: list of scopes to request access for
@@ -553,22 +612,30 @@ class Connection:
 
         redirect_uri = redirect_uri or self.oauth_redirect_url
 
-        if self.auth_flow_type not in ('authorization', 'public'):
-            raise RuntimeError('This method is only valid for auth flow type "authorization" and "public"')
+        if self.auth_flow_type not in ("authorization", "public"):
+            raise RuntimeError(
+                'This method is only valid for auth flow type "authorization" and "public"'
+            )
 
         if not requested_scopes:
-            raise ValueError('Must provide at least one scope')
+            raise ValueError("Must provide at least one scope")
 
-        flow = self.msal_client.initiate_auth_code_flow(scopes=requested_scopes, redirect_uri=redirect_uri)
+        flow = self.msal_client.initiate_auth_code_flow(
+            scopes=requested_scopes, redirect_uri=redirect_uri
+        )
 
-        return flow.get('auth_uri'), flow
+        return flow.get("auth_uri"), flow
 
-    def request_token(self, authorization_url: Optional[str], *,
-                      flow: Optional[dict] = None,
-                      requested_scopes: Optional[List[str]] = None,
-                      store_token: bool = True,
-                      **kwargs) -> bool:
-        """ Authenticates for the specified url and gets the oauth token data. Saves the
+    def request_token(
+        self,
+        authorization_url: Optional[str],
+        *,
+        flow: Optional[dict] = None,
+        requested_scopes: Optional[List[str]] = None,
+        store_token: bool = True,
+        **kwargs,
+    ) -> bool:
+        """Authenticates for the specified url and gets the oauth token data. Saves the
         token in the backend if store_token is True. This will replace any other tokens stored
         for the same username and scopes requested.
         If the token data is successfully requested, then this method will try to set the username if
@@ -585,68 +652,80 @@ class Connection:
         :rtype: bool
         """
 
-        if self.auth_flow_type in ('authorization', 'public'):
+        if self.auth_flow_type in ("authorization", "public"):
             if not authorization_url:
-                raise ValueError(f'Authorization url not provided for oauth flow {self.auth_flow_type}')
+                raise ValueError(
+                    f"Authorization url not provided for oauth flow {self.auth_flow_type}"
+                )
             # parse the authorization url to obtain the query string params
             parsed = urlparse(authorization_url)
             query_params_dict = {k: v[0] for k, v in parse_qs(parsed.query).items()}
 
-            result = self.msal_client.acquire_token_by_auth_code_flow(flow, auth_response=query_params_dict)
+            result = self.msal_client.acquire_token_by_auth_code_flow(
+                flow, auth_response=query_params_dict
+            )
 
-        elif self.auth_flow_type == 'credentials':
+        elif self.auth_flow_type == "credentials":
             if requested_scopes is None:
-                raise ValueError(f'Auth flow type "credentials" needs the default scope for a resource.'
-                                 f' For example: https://graph.microsoft.com/.default')
+                raise ValueError(
+                    f'Auth flow type "credentials" needs the default scope for a resource.'
+                    f" For example: https://graph.microsoft.com/.default"
+                )
 
             result = self.msal_client.acquire_token_for_client(scopes=requested_scopes)
 
-        elif self.auth_flow_type == 'password':
+        elif self.auth_flow_type == "password":
             if not requested_scopes:
-                raise ValueError('Auth flow type "password" requires scopes and none where given')
+                raise ValueError(
+                    'Auth flow type "password" requires scopes and none where given'
+                )
             result = self.msal_client.acquire_token_by_username_password(
-                username=self.username,
-                password=self.password,
-                scopes=requested_scopes
+                username=self.username, password=self.password, scopes=requested_scopes
             )
         else:
-            raise ValueError('"auth_flow_type" must be "authorization", "password", "public" or "credentials"')
+            raise ValueError(
+                '"auth_flow_type" must be "authorization", "password", "public" or "credentials"'
+            )
 
         if "access_token" not in result:
-            log.error(f'Unable to fetch auth token. Error: {result.get("error")} | Description: {result.get("error_description")}')
+            log.error(
+                f'Unable to fetch auth token. Error: {result.get("error")} | Description: {result.get("error_description")}'
+            )
             return False
         else:
             # extract from the result the home_account_id used in the authentication to retrieve its username
-            id_token_claims = result.get('id_token_claims')
+            id_token_claims = result.get("id_token_claims")
             if id_token_claims:
-                oid = id_token_claims.get('oid')
-                tid = id_token_claims.get('tid')
+                oid = id_token_claims.get("oid")
+                tid = id_token_claims.get("tid")
                 if oid and tid:
                     home_account_id = f"{oid}.{tid}"
                     # the next call will change the current username, updating the session headers if session exists
-                    self._set_username_from_token_backend(home_account_id=home_account_id)
+                    self._set_username_from_token_backend(
+                        home_account_id=home_account_id
+                    )
 
             # Update the session headers if the session exists
             if self.session is not None:
-                access_token = result['access_token']
-                self.session.headers.update({'Authorization': f'Bearer {access_token}'})
+                access_token = result["access_token"]
+                self.session.headers.update({"Authorization": f"Bearer {access_token}"})
 
         if store_token:
             self.token_backend.save_token()
         return True
 
     def load_token_from_backend(self) -> bool:
-        """ Loads the token from the backend and tries to set the self.username if it's not set"""
+        """Loads the token from the backend and tries to set the self.username if it's not set"""
         if self.token_backend.load_token():
             if self._username is None:
                 account_info = self.token_backend.get_account()
                 if account_info:
-                    self.username = account_info.get('username')
+                    self.username = account_info.get("username")
             return True
         return False
 
     def get_session(self, load_token: bool = False) -> Session:
-        """ Create a requests Session object with the oauth token attached to it
+        """Create a requests Session object with the oauth token attached to it
 
         :param bool load_token: load the token from the token backend and load the access token into the session auth
         :return: A ready to use requests session with authentication header attached
@@ -659,39 +738,45 @@ class Connection:
 
         token = self.token_backend.get_access_token(username=self.username)
         if token is None:
-            raise RuntimeError('No auth token found. Authentication Flow needed')
+            raise RuntimeError("No auth token found. Authentication Flow needed")
 
         session = Session()
-        session.headers.update({'Authorization': f'Bearer {token["secret"]}'})
+        session.headers.update({"Authorization": f'Bearer {token["secret"]}'})
         session.verify = self.verify_ssl
         session.proxies = self.proxy
 
         if self.request_retries:
-            retry = Retry(total=self.request_retries, read=self.request_retries,
-                          connect=self.request_retries,
-                          backoff_factor=RETRIES_BACKOFF_FACTOR,
-                          status_forcelist=RETRIES_STATUS_LIST,
-                          respect_retry_after_header=True)
+            retry = Retry(
+                total=self.request_retries,
+                read=self.request_retries,
+                connect=self.request_retries,
+                backoff_factor=RETRIES_BACKOFF_FACTOR,
+                status_forcelist=RETRIES_STATUS_LIST,
+                respect_retry_after_header=True,
+            )
             adapter = HTTPAdapter(max_retries=retry)
-            session.mount('http://', adapter)
-            session.mount('https://', adapter)
+            session.mount("http://", adapter)
+            session.mount("https://", adapter)
 
         return session
 
     def get_naive_session(self) -> Session:
-        """ Creates and returns a naive session """
+        """Creates and returns a naive session"""
         naive_session = Session()  # requests Session object
         naive_session.proxies = self.proxy
         naive_session.verify = self.verify_ssl
 
         if self.request_retries:
-            retry = Retry(total=self.request_retries, read=self.request_retries,
-                          connect=self.request_retries,
-                          backoff_factor=RETRIES_BACKOFF_FACTOR,
-                          status_forcelist=RETRIES_STATUS_LIST)
+            retry = Retry(
+                total=self.request_retries,
+                read=self.request_retries,
+                connect=self.request_retries,
+                backoff_factor=RETRIES_BACKOFF_FACTOR,
+                status_forcelist=RETRIES_STATUS_LIST,
+            )
             adapter = HTTPAdapter(max_retries=retry)
-            naive_session.mount('http://', adapter)
-            naive_session.mount('https://', adapter)
+            naive_session.mount("http://", adapter)
+            naive_session.mount("https://", adapter)
 
         return naive_session
 
@@ -699,8 +784,9 @@ class Connection:
         """
         Refresh the OAuth authorization token.
         This will be called automatically when the access token
-         expires, however, you can manually call this method to
-         request a new refresh token.
+        expires, however, you can manually call this method to
+        request a new refresh token.
+
         :return bool: Success / Failure
         """
         if self.session is None:

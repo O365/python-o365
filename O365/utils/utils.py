@@ -2,14 +2,14 @@ import datetime as dt
 import logging
 from collections import OrderedDict
 from enum import Enum
-from typing import Union, Dict
-from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
+from typing import Dict, Union
 
 from dateutil.parser import parse
+from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 from .casing import to_snake_case
-from .windows_tz import get_iana_tz, get_windows_tz
 from .decorators import fluent
+from .windows_tz import get_iana_tz, get_windows_tz
 
 ME_RESOURCE = 'me'
 USERS_RESOURCE = 'users'
@@ -683,18 +683,24 @@ class Query:
 
     @fluent
     def expand(self, *relationships):
-        """ Adds the relationships (e.g. "event" or "attachments")
+        """
+        Adds the relationships (e.g. "event" or "attachments")
         that should be expanded with the $expand parameter
         Important: The ApiComponent using this should know how to handle this relationships.
-            eg: Message knows how to handle attachments, and event (if it's an EventMessage).
+
+            eg: Message knows how to handle attachments, and event (if it's an EventMessage)
+
         Important: When using expand on multi-value relationships a max of 20 items will be returned.
+
         :param str relationships: the relationships tuple to expand.
         :rtype: Query
         """
 
         for relationship in relationships:
-            if relationship == 'event':
-                relationship = '{}/event'.format(self.protocol.get_service_keyword('event_message_type'))
+            if relationship == "event":
+                relationship = "{}/event".format(
+                    self.protocol.get_service_keyword("event_message_type")
+                )
             self._expands.add(relationship)
 
         return self
@@ -704,9 +710,11 @@ class Query:
         """
         Perform a search.
         Not from graph docs:
+
          You can currently search only message and person collections.
          A $search request returns up to 250 results.
          You cannot use $filter or $orderby in a search request.
+
         :param str text: the text to search
         :return: the Query instance
         """
