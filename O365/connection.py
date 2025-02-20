@@ -105,8 +105,6 @@ class Protocol:
         self.use_default_casing: bool = True if casing_function is None else False
         self.casing_function: Callable = casing_function or to_camel_case
 
-        # get_localzone() from tzlocal will try to get the system local timezone and if not will return UTC
-        self._timezone: ZoneInfo = get_localzone()
 
         # define any keyword that can be different in this protocol
         # for example, attachments OData type differs between Outlook
@@ -117,7 +115,11 @@ class Protocol:
         self.max_top_value: int = 500  # Max $top parameter value
 
         if timezone:
+            self._timezone = None
             self.timezone = timezone  # property setter will convert this timezone to ZoneInfo if a string is provided
+        else:
+            # get_localzone() from tzlocal will try to get the system local timezone and if not will return UTC
+            self._timezone: ZoneInfo = get_localzone()
 
     @property
     def timezone(self) -> ZoneInfo:
