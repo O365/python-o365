@@ -253,6 +253,7 @@ class Folder(ApiComponent):
         "copy_folder": "/mailFolders/{id}/copy",
         "move_folder": "/mailFolders/{id}/move",
         "message": "/messages/{id}",
+        "subscriptions": "/subscriptions",
     }
     message_constructor = Message
 
@@ -1045,3 +1046,61 @@ class MailBox(Folder):
             parent=self, **{self._cloud_data_key: data}
         )
 
+    '''
+    def set_email_subscription(self, notificationurl, minutes):
+        """Set a webhook subscription to send post request every 
+        time an email is received
+
+        :return: response from the connection
+        :rtype: connection
+        """
+        
+        # Get the current UTC time
+        now_utc = dr.datetime.utcnow()
+    
+        # Calculate the future time by adding 4200 minutes
+        future_utc = now_utc + dt.timedelta(minutes=minutes)
+    
+        # Format with 7 decimal places and append 'Z' to indicate UTC
+        # '%f' gives 6 digits for microseconds; we add an extra '0' for 7 decimal places.
+        expiration_str = future_utc.strftime("%Y-%m-%dT%H:%M:%S.%f0Z")
+
+        url = "https://graph.microsoft.com/v1.0/subscriptions"
+
+        params = {
+                    "changeType": "created,updated",
+                    "notificationUrl": notificationurl,
+                    "resource": "/me/mailfolders('inbox')/messages",
+                    "expirationDateTime": expiration_str,
+                }
+
+        response = self.con.get(url, params=my_params)
+
+        
+    def renew_email_subscription(self, id, minutes):
+        """Renew a webhook subscription to send post request every 
+        time an email is received
+
+        :return: response from the connection
+        :rtype: connection
+        """
+        
+        # Get the current UTC time
+        now_utc = dr.datetime.utcnow()
+    
+        # Calculate the future time by adding 4200 minutes
+        future_utc = now_utc + dt.timedelta(minutes=minutes)
+    
+        # Format with 7 decimal places and append 'Z' to indicate UTC
+        # '%f' gives 6 digits for microseconds; we add an extra '0' for 7 decimal places.
+        expiration_str = future_utc.strftime("%Y-%m-%dT%H:%M:%S.%f0Z")
+
+        url = f'https://graph.microsoft.com/v1.0/subscriptions/{id}'
+
+        params = {
+                    "expirationDateTime": expiration_str,
+                }
+
+        response = self.con.get(url, params=my_params)        
+
+    '''
