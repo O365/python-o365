@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Account &mdash; O365  documentation</title>
+  <title>Multi user handling &mdash; O365  documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
 
@@ -20,7 +20,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Mailbox" href="mailbox.html" />
-    <link rel="prev" title="Resources" href="connection.html" /> 
+    <link rel="prev" title="Protocols" href="connection.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -47,9 +47,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../overview.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../usage.html">Detailed Usage</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="connection.html">Resources</a></li>
-<li class="toctree-l2"><a class="reference internal" href="connection.html#protocols">Protocols</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Account</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="connection.html">Protocols</a></li>
+<li class="toctree-l2"><a class="reference internal" href="connection.html#resources">Resources</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Multi user handling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#account">Account</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#setting-your-account-instance">Setting your Account Instance</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#connecting-to-api-account">Connecting to API Account</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#setting-proxy">Setting Proxy</a></li>
@@ -58,9 +59,9 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#authenticating-your-account">Authenticating your Account</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#accessing-services">Accessing Services</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#account-class-and-modularity">Account Class and Modularity</a></li>
 <li class="toctree-l2"><a class="reference internal" href="mailbox.html">Mailbox</a></li>
 <li class="toctree-l2"><a class="reference internal" href="query.html">Query</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sharepoint.html">Sharepoint</a></li>
@@ -84,12 +85,12 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../usage.html">Detailed Usage</a></li>
-      <li class="breadcrumb-item active">Account</li>
+      <li class="breadcrumb-item active">Multi user handling</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/usage/account.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
-        <a href="connection.html" class="btn btn-neutral float-left" title="Resources" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="connection.html" class="btn btn-neutral float-left" title="Protocols" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="mailbox.html" class="btn btn-neutral float-right" title="Mailbox" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
   </div>
   <hr/>
@@ -97,7 +98,22 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="account">
+  <section id="multi-user-handling">
+<h1>Multi user handling<a class="headerlink" href="#multi-user-handling" title="Link to this heading"></a></h1>
+<p>A single <code class="docutils literal notranslate"><span class="pre">Account</span></code> object can hold more than one user being authenticated. You can authenticate different users and the token backend
+will hold each authentication. When using the library you can use the <code class="docutils literal notranslate"><span class="pre">account.username</span></code> property to get or set the current user.
+If username is not provided, the username will be set automatically to the first authentication found in the token backend. Also,
+whenever you perform a new call to request_token (manually or through a call to <code class="docutils literal notranslate"><span class="pre">account.authenticate</span></code>),
+the username will be set to the user performing the authentication.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">account</span><span class="o">.</span><span class="n">username</span> <span class="o">=</span> <span class="s1">&#39;user1@domain.com&#39;</span>
+<span class="c1">#  issue some calls to retrieve data using the auth of the user1</span>
+<span class="n">account</span><span class="o">.</span><span class="n">username</span> <span class="o">=</span> <span class="s1">&#39;user2@domain.com&#39;</span>
+<span class="c1">#  now every call will use the auth of the user2</span>
+</pre></div>
+</div>
+<p>This is only possible in version 2.1. Before 2.1 you had to instantiate one Account for each user.</p>
+</section>
+<section id="account">
 <h1>Account<a class="headerlink" href="#account" title="Link to this heading"></a></h1>
 <p>Account class represents a specific account you would like to connect</p>
 <section id="setting-your-account-instance">
@@ -231,9 +247,9 @@
 </div>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>The call to authenticate is only required when u haven’t authenticate before. If you already did the token file would have been saved</p>
+<p>The call to authenticate is only required when you haven’t authenticated before. If you already did the token file would have been saved</p>
 </div>
-<p>The authenticate() method forces a authentication flow, which prints out a url</p>
+<p>The authenticate() method forces an authentication flow, which prints out a url</p>
 <ol class="arabic">
 <li><p>Open the printed url</p></li>
 <li><p>Give consent(approve) to the application</p></li>
@@ -249,77 +265,81 @@
 <li><p>That’s it, you don’t need this hassle again unless you want to add more scopes than you approved for</p></li>
 </ol>
 </section>
-<section id="accessing-services">
-<span id="id1"></span><h2>Accessing Services<a class="headerlink" href="#accessing-services" title="Link to this heading"></a></h2>
-<p>Below are the currently supported services</p>
-<ul>
-<li><dl>
-<dt>Mailbox - Read, Reply or send new mails to others</dt><dd><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Access Mailbox</span>
+</section>
+<section id="account-class-and-modularity">
+<h1>Account Class and Modularity<a class="headerlink" href="#account-class-and-modularity" title="Link to this heading"></a></h1>
+<p>Usually you will only need to work with the <code class="docutils literal notranslate"><span class="pre">Account</span></code> Class. This is a wrapper around all functionality.</p>
+<p>But you can also work only with the pieces you want.</p>
+<p>For example, instead of:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">O365</span><span class="w"> </span><span class="kn">import</span> <span class="n">Account</span>
+
+<span class="n">account</span> <span class="o">=</span> <span class="n">Account</span><span class="p">((</span><span class="s1">&#39;client_id&#39;</span><span class="p">,</span> <span class="s1">&#39;client_secret&#39;</span><span class="p">))</span>
+<span class="n">message</span> <span class="o">=</span> <span class="n">account</span><span class="o">.</span><span class="n">new_message</span><span class="p">()</span>
+<span class="c1"># ...</span>
 <span class="n">mailbox</span> <span class="o">=</span> <span class="n">account</span><span class="o">.</span><span class="n">mailbox</span><span class="p">()</span>
-
-<span class="c1"># Access mailbox of another resource</span>
-<span class="n">mailbox</span> <span class="o">=</span> <span class="n">account</span><span class="o">.</span><span class="n">mailbox</span><span class="p">(</span><span class="n">resource</span><span class="o">=</span><span class="s1">&#39;someone@example.com&#39;</span><span class="p">)</span>
+<span class="c1"># ...</span>
 </pre></div>
 </div>
-</dd>
-</dl>
-</li>
-<li><dl>
-<dt>Address Book - Read or add new contacts to your address book</dt><dd><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Access personal address book</span>
-<span class="n">contacts</span> <span class="o">=</span> <span class="n">account</span><span class="o">.</span><span class="n">address_book</span><span class="p">()</span>
+<p>You can work only with the required pieces:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">O365</span><span class="w"> </span><span class="kn">import</span> <span class="n">Connection</span><span class="p">,</span> <span class="n">MSGraphProtocol</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">O365.message</span><span class="w"> </span><span class="kn">import</span> <span class="n">Message</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">O365.mailbox</span><span class="w"> </span><span class="kn">import</span> <span class="n">MailBox</span>
 
-<span class="c1"># Access personal address book of another resource</span>
-<span class="n">contacts</span> <span class="o">=</span> <span class="n">account</span><span class="o">.</span><span class="n">mailbox</span><span class="p">(</span><span class="n">resource</span><span class="o">=</span><span class="s1">&#39;someone@example.com&#39;</span><span class="p">)</span>
+<span class="n">protocol</span> <span class="o">=</span> <span class="n">MSGraphProtocol</span><span class="p">()</span>
+<span class="n">scopes</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;...&#39;</span><span class="p">]</span>
+<span class="n">con</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">((</span><span class="s1">&#39;client_id&#39;</span><span class="p">,</span> <span class="s1">&#39;client_secret&#39;</span><span class="p">),</span> <span class="n">scopes</span><span class="o">=</span><span class="n">scopes</span><span class="p">)</span>
 
-<span class="c1"># Access global shared server address book (Global Address List)</span>
-<span class="n">contacts</span> <span class="o">=</span> <span class="n">account</span><span class="o">.</span><span class="n">mailbox</span><span class="p">(</span><span class="n">address_book</span><span class="o">=</span><span class="s1">&#39;gal&#39;</span><span class="p">)</span>
+<span class="n">message</span> <span class="o">=</span> <span class="n">Message</span><span class="p">(</span><span class="n">con</span><span class="o">=</span><span class="n">con</span><span class="p">,</span> <span class="n">protocol</span><span class="o">=</span><span class="n">protocol</span><span class="p">)</span>
+<span class="c1"># ...</span>
+<span class="n">mailbox</span> <span class="o">=</span> <span class="n">MailBox</span><span class="p">(</span><span class="n">con</span><span class="o">=</span><span class="n">con</span><span class="p">,</span> <span class="n">protocol</span><span class="o">=</span><span class="n">protocol</span><span class="p">)</span>
+<span class="n">message2</span> <span class="o">=</span> <span class="n">Message</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="n">mailbox</span><span class="p">)</span>  <span class="c1"># message will inherit the connection and protocol from mailbox when using parent.</span>
+<span class="c1"># ...</span>
 </pre></div>
 </div>
-</dd>
-</dl>
-</li>
-<li><dl>
-<dt>Calendar Scheduler - Read or add new events to your calendar</dt><dd><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Access scheduler</span>
-<span class="n">scheduler</span> <span class="o">=</span> <span class="n">account</span><span class="o">.</span><span class="n">schedule</span><span class="p">()</span>
+<p>It’s also easy to implement a custom Class. Just Inherit from ApiComponent, define the endpoints, and use the connection to make requests. If needed also inherit from Protocol to handle different comunications aspects with the API server.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">O365.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">ApiComponent</span>
 
-<span class="c1"># Access scheduler of another resource</span>
-<span class="n">scheduler</span> <span class="o">=</span> <span class="n">account</span><span class="o">.</span><span class="n">schedule</span><span class="p">(</span><span class="n">resource</span><span class="o">=</span><span class="s1">&#39;someone@example.com&#39;</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">CustomClass</span><span class="p">(</span><span class="n">ApiComponent</span><span class="p">):</span>
+    <span class="n">_endpoints</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;my_url_key&#39;</span><span class="p">:</span> <span class="s1">&#39;/customendpoint&#39;</span><span class="p">}</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">con</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="c1"># connection is only needed if you want to communicate with the api provider</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">con</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">con</span> <span class="k">if</span> <span class="n">parent</span> <span class="k">else</span> <span class="n">con</span>
+        <span class="n">protocol</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">protocol</span> <span class="k">if</span> <span class="n">parent</span> <span class="k">else</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;protocol&#39;</span><span class="p">)</span>
+        <span class="n">main_resource</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">main_resource</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">protocol</span><span class="o">=</span><span class="n">protocol</span><span class="p">,</span> <span class="n">main_resource</span><span class="o">=</span><span class="n">main_resource</span><span class="p">)</span>
+        <span class="c1"># ...</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">do_some_stuff</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="c1"># self.build_url just merges the protocol service_url with the enpoint passed as a parameter</span>
+        <span class="c1"># to change the service_url implement your own protocol inherinting from Protocol Class</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_url</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_endpoints</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;my_url_key&#39;</span><span class="p">))</span>
+
+        <span class="n">my_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;param1&#39;</span><span class="p">:</span> <span class="s1">&#39;param1&#39;</span><span class="p">}</span>
+
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">my_params</span><span class="p">)</span>  <span class="c1"># note the use of the connection here.</span>
+
+        <span class="c1"># handle response and return to the user...</span>
+
+<span class="c1"># the use it as follows:</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">O365</span><span class="w"> </span><span class="kn">import</span> <span class="n">Connection</span><span class="p">,</span> <span class="n">MSGraphProtocol</span>
+
+<span class="n">protocol</span> <span class="o">=</span> <span class="n">MSGraphProtocol</span><span class="p">()</span>  <span class="c1"># or maybe a user defined protocol</span>
+<span class="n">con</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">((</span><span class="s1">&#39;client_id&#39;</span><span class="p">,</span> <span class="s1">&#39;client_secret&#39;</span><span class="p">),</span> <span class="n">scopes</span><span class="o">=</span><span class="n">protocol</span><span class="o">.</span><span class="n">get_scopes_for</span><span class="p">([</span><span class="s1">&#39;...&#39;</span><span class="p">]))</span>
+<span class="n">custom_class</span> <span class="o">=</span> <span class="n">CustomClass</span><span class="p">(</span><span class="n">con</span><span class="o">=</span><span class="n">con</span><span class="p">,</span> <span class="n">protocol</span><span class="o">=</span><span class="n">protocol</span><span class="p">)</span>
+
+<span class="n">custom_class</span><span class="o">.</span><span class="n">do_some_stuff</span><span class="p">()</span>
 </pre></div>
 </div>
-</dd>
-</dl>
-</li>
-<li><dl>
-<dt>One Drive or Sharepoint Storage - Manipulate and Organize your Storage Drives</dt><dd><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Access storage</span>
-<span class="n">storage</span> <span class="o">=</span> <span class="n">account</span><span class="o">.</span><span class="n">storage</span><span class="p">()</span>
-
-<span class="c1"># Access storage of another resource</span>
-<span class="n">storage</span> <span class="o">=</span> <span class="n">account</span><span class="o">.</span><span class="n">storage</span><span class="p">(</span><span class="n">resource</span><span class="o">=</span><span class="s1">&#39;someone@example.com&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-</dd>
-</dl>
-</li>
-<li><dl>
-<dt>Sharepoint Sites - Read and access items in your sharepoint sites</dt><dd><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Access sharepoint</span>
-<span class="n">sharepoint</span> <span class="o">=</span> <span class="n">account</span><span class="o">.</span><span class="n">sharepoint</span><span class="p">()</span>
-
-<span class="c1"># Access sharepoint of another resource</span>
-<span class="n">sharepoint</span> <span class="o">=</span> <span class="n">account</span><span class="o">.</span><span class="n">sharepoint</span><span class="p">(</span><span class="n">resource</span><span class="o">=</span><span class="s1">&#39;someone@example.com&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-</dd>
-</dl>
-</li>
-</ul>
-</section>
-</section>
+<span class="target" id="accessing-services"></span></section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="connection.html" class="btn btn-neutral float-left" title="Resources" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="connection.html" class="btn btn-neutral float-left" title="Protocols" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="mailbox.html" class="btn btn-neutral float-right" title="Mailbox" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

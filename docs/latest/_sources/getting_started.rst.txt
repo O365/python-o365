@@ -461,6 +461,7 @@ There are a few ``TokenBackend`` classes implemented (and you can easily impleme
 For example using the FileSystem Token Backend:
 
 .. code-block:: python
+
    from O365 import Account, FileSystemTokenBackend
 
    credentials = ('id', 'secret')
@@ -499,7 +500,7 @@ To implement a new TokenBackend:
 
 1. Subclass ``BaseTokenBackend``
 
-1. Implement the following methods:
+2. Implement the following methods:
 
    * ``__init__`` (don't forget to call ``super().__init__``)
    * ``load_token``: this should load the token from the desired backend and return a ``Token`` instance or None

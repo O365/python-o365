@@ -619,6 +619,20 @@ The authenticate method will print into the console an url that you will have to
 <li><p><code class="docutils literal notranslate"><span class="pre">DjangoTokenBackend</span></code>: Stores and retrieves tokens using a Django model.</p></li>
 </ul>
 <p>For example using the FileSystem Token Backend:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">O365</span><span class="w"> </span><span class="kn">import</span> <span class="n">Account</span><span class="p">,</span> <span class="n">FileSystemTokenBackend</span>
+
+<span class="n">credentials</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="s1">&#39;secret&#39;</span><span class="p">)</span>
+
+<span class="c1"># this will store the token under: &quot;my_project_folder/my_folder/my_token.txt&quot;.</span>
+<span class="c1"># you can pass strings to token_path or Path instances from pathlib</span>
+<span class="n">token_backend</span> <span class="o">=</span> <span class="n">FileSystemTokenBackend</span><span class="p">(</span><span class="n">token_path</span><span class="o">=</span><span class="s1">&#39;my_folder&#39;</span><span class="p">,</span> <span class="n">token_filename</span><span class="o">=</span><span class="s1">&#39;my_token.txt&#39;</span><span class="p">)</span>
+<span class="n">account</span> <span class="o">=</span> <span class="n">Account</span><span class="p">(</span><span class="n">credentials</span><span class="p">,</span> <span class="n">token_backend</span><span class="o">=</span><span class="n">token_backend</span><span class="p">)</span>
+
+<span class="c1"># This account instance tokens will be stored on the token_backend configured before.</span>
+<span class="c1"># You don&#39;t have to do anything more</span>
+<span class="c1"># ...</span>
+</pre></div>
+</div>
 <p>And now using the same example using FirestoreTokenBackend:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">O365</span><span class="w"> </span><span class="kn">import</span> <span class="n">Account</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">O365.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">FirestoreBackend</span>
@@ -641,8 +655,6 @@ The authenticate method will print into the console an url that you will have to
 <p>To implement a new TokenBackend:</p>
 <ol class="arabic simple">
 <li><p>Subclass <code class="docutils literal notranslate"><span class="pre">BaseTokenBackend</span></code></p></li>
-</ol>
-<ol class="arabic simple">
 <li><p>Implement the following methods:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">__init__</span></code> (don’t forget to call <code class="docutils literal notranslate"><span class="pre">super().__init__</span></code>)</p></li>
