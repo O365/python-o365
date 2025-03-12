@@ -2,7 +2,11 @@
 Overview
 ########
 
-**O365 - Microsoft Graph API made easy**
+**O365 - Microsoft Graph and Office 365 API made easy**
+
+.. important::
+
+   With version 2.1 old access tokens will not work and the library will require a new authentication flow to get new access and refresh tokens.
 
 This project aims to make interacting with Microsoft Graph and Office 365 easy to do in a Pythonic way. Access to Email, Calendar, Contacts, OneDrive, etc. Are easy to do in a way that feel easy and straight forward to beginners and feels just right to seasoned python programmer.
 
@@ -18,11 +22,32 @@ We are always open to new pull requests!
 
 Rebuilding HTML Docs
 --------------------
-* Install ``sphinx`` python library::
+* Install ``sphinx`` python library:
+
+.. code-block:: console 
 
    pip install sphinx
 
 * Run the shell script ``build_docs.sh``, or copy the command from the file when using on windows
+
+Quick example
+-------------
+Here is a simple example showing how to send an email using python-o365. 
+Create a Python file and add the following code:
+
+.. code-block:: python
+
+   from O365 import Account
+
+   credentials = ('client_id', 'client_secret')
+   account = Account(credentials)
+
+   m = account.new_message()
+   m.to.add('to_example@example.com')
+   m.subject = 'Testing!'
+   m.body = "George Best quote: I've stopped drinking, but only while I'm asleep."
+   m.send()
+
 
 Why choose O365?
 ----------------
