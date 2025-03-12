@@ -1,5 +1,8 @@
-Multi user handling
-===================
+Account
+=======
+
+Multi-user handling
+^^^^^^^^^^^^^^^^^^^
 A single ``Account`` object can hold more than one user being authenticated. You can authenticate different users and the token backend 
 will hold each authentication. When using the library you can use the ``account.username`` property to get or set the current user. 
 If username is not provided, the username will be set automatically to the first authentication found in the token backend. Also, 
@@ -14,9 +17,6 @@ the username will be set to the user performing the authentication.
     #  now every call will use the auth of the user2
 
 This is only possible in version 2.1. Before 2.1 you had to instantiate one Account for each user.
-
-Account
-=======
 Account class represents a specific account you would like to connect
 
 Setting your Account Instance
@@ -81,7 +81,7 @@ Setting Scopes
     account = Account(credentials=('my_client_id', 'my_client_secret'),
                       scopes=['message_all'])
 
-    # Why change everytime, add all at a time :)
+    # Why change every time, add all at a time :)
     account = Account(credentials=('my_client_id', 'my_client_secret'),
                       scopes=['message_all', 'message_all_shared', 'address_book_all',
                               'address_book_all_shared',
@@ -102,7 +102,7 @@ The authenticate() method forces an authentication flow, which prints out a url
 #. Open the printed url
 #. Give consent(approve) to the application
 #. You will be redirected out outlook home page, copy the resulting url
-    .. note:: If the url is simply https://outlook.office.com/owa/?realm=blahblah, and nothing else after that.. then you are currently on new Outlook look, revert back to old look and try the authentication flow again
+    .. note:: If the url is simply https://outlook.office.com/owa/?realm=blahblah, and nothing else after that, then you are currently on new Outlook look, revert to old look and try the authentication flow again
 #. Paste the resulting URL into the python console.
 #. That's it, you don't need this hassle again unless you want to add more scopes than you approved for
 
@@ -143,7 +143,7 @@ You can work only with the required pieces:
     message2 = Message(parent=mailbox)  # message will inherit the connection and protocol from mailbox when using parent.
     # ...
 
-It's also easy to implement a custom Class. Just Inherit from ApiComponent, define the endpoints, and use the connection to make requests. If needed also inherit from Protocol to handle different comunications aspects with the API server.
+It's also easy to implement a custom Class. Just Inherit from ApiComponent, define the endpoints, and use the connection to make requests. If needed also inherit from Protocol to handle different communications aspects with the API server.
 
 .. code-block:: python
 
@@ -163,8 +163,8 @@ It's also easy to implement a custom Class. Just Inherit from ApiComponent, defi
 
         def do_some_stuff(self):
 
-            # self.build_url just merges the protocol service_url with the enpoint passed as a parameter
-            # to change the service_url implement your own protocol inherinting from Protocol Class
+            # self.build_url just merges the protocol service_url with the endpoint passed as a parameter
+            # to change the service_url implement your own protocol inheriting from Protocol Class
             url = self.build_url(self._endpoints.get('my_url_key'))
 
             my_params = {'param1': 'param1'}

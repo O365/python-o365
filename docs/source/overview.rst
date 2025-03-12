@@ -6,7 +6,7 @@ Overview
 
 .. important::
 
-   With version 2.1 old access tokens will not work and the library will require a new authentication flow to get new access and refresh tokens.
+   With version 2.1 old access tokens will not work, and the library will require a new authentication flow to get new access and refresh tokens.
 
 This project aims to make interacting with Microsoft Graph and Office 365 easy to do in a Pythonic way. Access to Email, Calendar, Contacts, OneDrive, etc. Are easy to do in a way that feel easy and straight forward to beginners and feels just right to seasoned python programmer.
 
@@ -28,7 +28,7 @@ Rebuilding HTML Docs
 
    pip install sphinx
 
-* Run the shell script ``build_docs.sh``, or copy the command from the file when using on windows
+* Run the shell script ``build_docs.sh``, or copy the command from the file when using on Windows
 
 Quick example
 -------------
@@ -53,7 +53,7 @@ Why choose O365?
 ----------------
 * Almost Full Support for MsGraph Rest Api.
 * Good Abstraction layer between each Api. Change the api (Graph vs Office365) and don't worry about the api internal implementation.
-* Full oauth support with automatic handling of refresh tokens.
+* Full OAuth support with automatic handling of refresh tokens.
 * Automatic handling between local datetimes and server datetimes. Work with your local datetime and let this library do the rest.
 * Change between different resource with ease: access shared mailboxes, other users resources, SharePoint resources, etc.
 * Pagination support through a custom iterator that handles future requests automatically. Request Infinite items!
