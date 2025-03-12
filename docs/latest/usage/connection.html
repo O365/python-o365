@@ -19,7 +19,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Multi user handling" href="account.html" />
+    <link rel="next" title="Account" href="account.html" />
     <link rel="prev" title="Detailed Usage" href="../usage.html" /> 
 </head>
 
@@ -49,12 +49,18 @@
 <li class="toctree-l1 current"><a class="reference internal" href="../usage.html">Detailed Usage</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Protocols</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#resources">Resources</a></li>
-<li class="toctree-l2"><a class="reference internal" href="account.html">Multi user handling</a></li>
-<li class="toctree-l2"><a class="reference internal" href="account.html#account">Account</a></li>
+<li class="toctree-l2"><a class="reference internal" href="account.html">Account</a></li>
 <li class="toctree-l2"><a class="reference internal" href="account.html#account-class-and-modularity">Account Class and Modularity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="addressbook.html">Address Book</a></li>
+<li class="toctree-l2"><a class="reference internal" href="calendar.html">Calendar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="directory.html">Directory and Users</a></li>
+<li class="toctree-l2"><a class="reference internal" href="excel.html">Excel</a></li>
 <li class="toctree-l2"><a class="reference internal" href="mailbox.html">Mailbox</a></li>
-<li class="toctree-l2"><a class="reference internal" href="query.html">Query</a></li>
+<li class="toctree-l2"><a class="reference internal" href="onedrive.html">OneDrive</a></li>
+<li class="toctree-l2"><a class="reference internal" href="planner.html">Planner</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sharepoint.html">Sharepoint</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tasks.html">Tasks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html">Utils</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../api.html">O365 API</a></li>
@@ -81,7 +87,7 @@
       </li>
   </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
         <a href="../usage.html" class="btn btn-neutral float-left" title="Detailed Usage" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="account.html" class="btn btn-neutral float-right" title="Multi user handling" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="account.html" class="btn btn-neutral float-right" title="Account" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
   </div>
   <hr/>
 </div>
@@ -104,7 +110,7 @@
 </ul>
 <p><strong>Reasons to use MSOffice365Protocol</strong>:</p>
 <ul class="simple">
-<li><p>It can send emails with attachments up to 150 MB. MSGraph only allows 4MB on each request (UPDATE: Starting 22 October’19 you can upload files up to 150MB with MSGraphProtocol beta version) However, this will still run into an issue and return a HTTP 413 error. The workaround for the moment is to do as follows:</p></li>
+<li><p>It can send emails with attachments up to 150 MB. MSGraph only allows 4MB on each request (UPDATE: Starting 22 October’19 you can upload files up to 150MB with MSGraphProtocol beta version) However, this will still run into an issue and return an HTTP 413 error. The workaround for the moment is to do as follows:</p></li>
 </ul>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">O365</span><span class="w"> </span><span class="kn">import</span> <span class="n">Account</span>
 
@@ -173,11 +179,11 @@
 <p>Usually you will work with the default ‘ME’ resource, but you can also use one of the following:</p>
 <ul class="simple">
 <li><p>‘me’: the user which has given consent. The default for every protocol. Overwritten when using “with your own identity” authentication method (Only available on the authorization auth_flow_type).</p></li>
-<li><p>‘user:user&#64;domain.com’: a shared mailbox or a user account for which you have permissions. If you don’t provide ‘user:’ will be inferred anyways.</p></li>
-<li><p>‘site:sharepoint-site-id’: a sharepoint site id.</p></li>
-<li><p>‘group:group-site-id’: a office365 group id.</p></li>
+<li><p>‘user:user&#64;domain.com’: a shared mailbox or a user account for which you have permissions. If you don’t provide ‘user:’ it will be inferred anyway.</p></li>
+<li><p>‘site:sharepoint-site-id’: a Sharepoint site id.</p></li>
+<li><p>‘group:group-site-id’: an Office 365 group id.</p></li>
 </ul>
-<p>By setting the resource prefix (such as ‘user:’ or ‘group:’) you help the library understand the type of resource. You can also pass it like <a class="reference external" href="mailto:'users/example&#37;&#52;&#48;exampl&#46;com">‘users/example<span>&#64;</span>exampl<span>&#46;</span>com</a>’. Same applies to the other resource prefixes.</p>
+<p>By setting the resource prefix (such as ‘user:’ or ‘group:’) you help the library understand the type of resource. You can also pass it like <a class="reference external" href="mailto:'users/example&#37;&#52;&#48;exampl&#46;com">‘users/example<span>&#64;</span>exampl<span>&#46;</span>com</a>’. The same applies to the other resource prefixes.</p>
 </section>
 
 
@@ -185,7 +191,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="../usage.html" class="btn btn-neutral float-left" title="Detailed Usage" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="account.html" class="btn btn-neutral float-right" title="Multi user handling" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="account.html" class="btn btn-neutral float-right" title="Account" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

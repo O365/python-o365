@@ -264,3 +264,31 @@ Retrieve and update mailbox auto reply settings:
     mailbox.set_disable_reply()
 
 
+Outlook Categories
+""""""""""""""""""
+You can retrieve, update, create and delete outlook categories. These categories can be used to categorize Messages, Events and Contacts.
+
+These are the scopes needed to work with the SharePoint and Site classes.
+
+=========================  =======================================  ======================================
+Raw Scope                  Included in Scope Helper                 Description
+=========================  =======================================  ======================================
+MailboxSettings.Read       —                                        To only read outlook settings
+MailboxSettings.ReadWrite  settings_all                             To read and write outlook settings
+=========================  =======================================  ======================================
+
+Example:
+
+.. code-block:: python
+
+    from O365.category import CategoryColor
+
+    oc = account.outlook_categories()
+    categories = oc.get_categories()
+    for category in categories:
+        print(category.name, category.color)
+
+    my_category = oc.create_category('Important Category', color=CategoryColor.RED)
+    my_category.update_color(CategoryColor.DARKGREEN)
+
+    my_category.delete()  # oops!

@@ -16,7 +16,7 @@ Both protocols are similar but consider the following:
 
 **Reasons to use MSOffice365Protocol**:
 
-* It can send emails with attachments up to 150 MB. MSGraph only allows 4MB on each request (UPDATE: Starting 22 October'19 you can upload files up to 150MB with MSGraphProtocol beta version) However, this will still run into an issue and return a HTTP 413 error. The workaround for the moment is to do as follows:
+* It can send emails with attachments up to 150 MB. MSGraph only allows 4MB on each request (UPDATE: Starting 22 October'19 you can upload files up to 150MB with MSGraphProtocol beta version) However, this will still run into an issue and return an HTTP 413 error. The workaround for the moment is to do as follows:
 
 .. code-block:: python
 
@@ -96,8 +96,8 @@ Instead of defining the resource used at the account or protocol level, you can 
 Usually you will work with the default 'ME' resource, but you can also use one of the following:
 
 * 'me': the user which has given consent. The default for every protocol. Overwritten when using "with your own identity" authentication method (Only available on the authorization auth_flow_type).
-* 'user:user@domain.com': a shared mailbox or a user account for which you have permissions. If you don't provide 'user:' will be inferred anyways.
-* 'site:sharepoint-site-id': a sharepoint site id.
-* 'group:group-site-id': a office365 group id.
+* 'user:user@domain.com': a shared mailbox or a user account for which you have permissions. If you don't provide 'user:' it will be inferred anyway.
+* 'site:sharepoint-site-id': a Sharepoint site id.
+* 'group:group-site-id': an Office 365 group id.
 
-By setting the resource prefix (such as 'user:' or 'group:') you help the library understand the type of resource. You can also pass it like 'users/example@exampl.com'. Same applies to the other resource prefixes.
+By setting the resource prefix (such as 'user:' or 'group:') you help the library understand the type of resource. You can also pass it like 'users/example@exampl.com'. The same applies to the other resource prefixes.

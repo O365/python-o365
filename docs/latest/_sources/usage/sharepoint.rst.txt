@@ -1,5 +1,15 @@
 Sharepoint
 ==========
+
+These are the scopes needed to work with the SharePoint and Site classes.
+
+=========================  =======================================  ======================================
+Raw Scope                  Included in Scope Helper                 Description
+=========================  =======================================  ======================================
+Sites.Read.All             sharepoint                               To only read sites, lists and items
+Sites.ReadWrite.All        sharepoint_dl                            To read and save sites, lists and items
+=========================  =======================================  ======================================
+
 Assuming an authenticated account, create a Sharepoint instance, and connect
 to a Sharepoint site.
 
