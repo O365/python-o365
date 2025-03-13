@@ -1,22 +1,10 @@
 Protocols
 =========
-Protocols handles the aspects of communications between different APIs. This project uses either the Microsoft Graph APIs (by default) or the Office 365 APIs. But, you can use many other Microsoft APIs as long as you implement the protocol needed.
+Protocols handles the aspects of communications between different APIs. This project uses the Microsoft Graph APIs. But, you can use many other Microsoft APIs as long as you implement the protocol needed.
 
-You can use one or the other:
+You can use:
 
 * MSGraphProtocol to use the `Microsoft Graph API <https://developer.microsoft.com/en-us/graph/docs/concepts/overview>`_
-* MSOffice365Protocol to use the `Office 365 API <https://msdn.microsoft.com/en-us/office/office365/api/api-catalog>`_
-
-Both protocols are similar but consider the following:
-
-**Reasons to use MSGraphProtocol**:
-
-* It is the recommended Protocol by Microsoft.
-* It can access more resources over Office 365 (for example OneDrive)
-
-**Reasons to use MSOffice365Protocol**:
-
-* It can send emails with attachments up to 150 MB. MSGraph only allows 4MB on each request (UPDATE: Starting 22 October'19 you can upload files up to 150MB with MSGraphProtocol beta version) However, this will still run into an issue and return an HTTP 413 error. The workaround for the moment is to do as follows:
 
 .. code-block:: python
 
@@ -51,6 +39,7 @@ You can instantiate and use protocols like this:
     # try the api version beta of the Microsoft Graph endpoint.
     protocol = MSGraphProtocol(api_version='beta')  # MSGraphProtocol defaults to v1.0 api version
     account = Account(credentials, protocol=protocol)
+
 
 Resources
 =========

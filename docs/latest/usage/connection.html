@@ -98,21 +98,10 @@
              
   <section id="protocols">
 <h1>Protocols<a class="headerlink" href="#protocols" title="Link to this heading"></a></h1>
-<p>Protocols handles the aspects of communications between different APIs. This project uses either the Microsoft Graph APIs (by default) or the Office 365 APIs. But, you can use many other Microsoft APIs as long as you implement the protocol needed.</p>
-<p>You can use one or the other:</p>
+<p>Protocols handles the aspects of communications between different APIs. This project uses the Microsoft Graph APIs. But, you can use many other Microsoft APIs as long as you implement the protocol needed.</p>
+<p>You can use:</p>
 <ul class="simple">
 <li><p>MSGraphProtocol to use the <a class="reference external" href="https://developer.microsoft.com/en-us/graph/docs/concepts/overview">Microsoft Graph API</a></p></li>
-<li><p>MSOffice365Protocol to use the <a class="reference external" href="https://msdn.microsoft.com/en-us/office/office365/api/api-catalog">Office 365 API</a></p></li>
-</ul>
-<p>Both protocols are similar but consider the following:</p>
-<p><strong>Reasons to use MSGraphProtocol</strong>:</p>
-<ul class="simple">
-<li><p>It is the recommended Protocol by Microsoft.</p></li>
-<li><p>It can access more resources over Office 365 (for example OneDrive)</p></li>
-</ul>
-<p><strong>Reasons to use MSOffice365Protocol</strong>:</p>
-<ul class="simple">
-<li><p>It can send emails with attachments up to 150 MB. MSGraph only allows 4MB on each request (UPDATE: Starting 22 October’19 you can upload files up to 150MB with MSGraphProtocol beta version) However, this will still run into an issue and return an HTTP 413 error. The workaround for the moment is to do as follows:</p></li>
 </ul>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">O365</span><span class="w"> </span><span class="kn">import</span> <span class="n">Account</span>
 

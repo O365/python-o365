@@ -12,7 +12,7 @@ For example:
 
     mailbox = account.mailbox()
 
-    messages = mailbox.get_messages(limit=1500)  # the Office 365 and MS Graph API have a 999 items limit returned per api call.
+    messages = mailbox.get_messages(limit=1500)  # the MS Graph API have a 999 items limit returned per api call.
 
     # Here messages is a Pagination instance. It's an Iterator so you can iterate over.
 
@@ -39,9 +39,6 @@ For example:
 
 Query helper
 ------------
-When using the Office 365 API you can filter, order, select, expand or search on some fields. 
-This filtering is tedious as is using `Open Data Protocol (OData) <http://docs.oasis-open.org/odata/odata/v4.0/errata03/os/complete/part2-url-conventions/odata-v4.0-errata03-os-part2-url-conventions-complete.html>`_.
-
 Every ``ApiComponent`` (such as ``MailBox``) implements a new_query method that will return a ``Query`` instance. This ``Query`` instance can handle the filtering, sorting, selecting, expanding and search very easily.
 
 For example:

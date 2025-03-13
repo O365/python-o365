@@ -53,12 +53,12 @@ You can get any folder in your address book by requesting child folders or filte
 
 Global Address List
 -------------------
-Office 365 API (Nor MS Graph API) has no concept such as the Outlook Global Address List. 
+MS Graph API has no concept such as the Outlook Global Address List. 
 However you can use the `Users API <https://developer.microsoft.com/en-us/graph/docs/api-reference/v1.0/resources/users>`_ to access all the users within your organization.
 
 Without admin consent you can only access a few properties of each user such as name and email and little more. You can search by name or retrieve a contact specifying the complete email.
 
-* Basic Permision needed is Users.ReadBasic.All (limit info)
+* Basic Permission needed is Users.ReadBasic.All (limit info)
 * Full Permission is Users.Read.All but needs admin consent.
 
 To search the Global Address List (Users API):

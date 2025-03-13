@@ -255,7 +255,6 @@ refresh is done within the 90 days</p></td>
 </section>
 <section id="oauth-setup-prerequisite">
 <h3>OAuth Setup (Prerequisite)<a class="headerlink" href="#oauth-setup-prerequisite" title="Link to this heading"></a></h3>
-<p>This section is explained using Microsoft Graph Protocol, almost the same applies to the Office 365 REST API.</p>
 <p>Before you can use python-o365, you must register your application in the
 <a class="reference external" href="https://entra.microsoft.com/">Microsoft Entra Admin Center</a>. Follow the steps below:</p>
 <ol class="arabic simple">
@@ -577,17 +576,9 @@ The authenticate method will print into the console an url that you will have to
 <span class="n">account</span> <span class="o">=</span> <span class="n">Account</span><span class="p">(</span><span class="n">credentials</span><span class="p">,</span> <span class="n">scopes</span><span class="o">=</span><span class="n">scopes_graph</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">protocol_office</span> <span class="o">=</span> <span class="n">MSOffice365Protocol</span><span class="p">()</span>
-
-<span class="n">scopes_office</span> <span class="o">=</span> <span class="n">protocol</span><span class="o">.</span><span class="n">get_scopes_for</span><span class="p">(</span><span class="s1">&#39;message all&#39;</span><span class="p">)</span>
-<span class="c1"># scopes here are: [&#39;https://outlook.office.com/Mail.ReadWrite&#39;, &#39;https://outlook.office.com/Mail.Send&#39;]</span>
-
-<span class="n">account</span> <span class="o">=</span> <span class="n">Account</span><span class="p">(</span><span class="n">credentials</span><span class="p">,</span> <span class="n">scopes</span><span class="o">=</span><span class="n">scopes_office</span><span class="p">)</span>
-</pre></div>
-</div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>When passing scopes at the Account initialization or on the account.authenticate method, the scope helpers are automatically converted to the protocol flavor. Those are the only places where you can use scope helpers. Any other object using scopes (such as the Connection object) expects scopes that are already set for the protocol.</p>
+<p>When passing scopes at the Account initialization or on the account.authenticate method, the scope helpers are automatically converted to the protocol flavour. Those are the only places where you can use scope helpers. Any other object using scopes (such as the Connection object) expects scopes that are already set for the protocol.</p>
 </div>
 </section>
 </section>

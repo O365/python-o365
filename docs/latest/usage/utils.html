@@ -110,7 +110,7 @@
 <p>For example:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">mailbox</span> <span class="o">=</span> <span class="n">account</span><span class="o">.</span><span class="n">mailbox</span><span class="p">()</span>
 
-<span class="n">messages</span> <span class="o">=</span> <span class="n">mailbox</span><span class="o">.</span><span class="n">get_messages</span><span class="p">(</span><span class="n">limit</span><span class="o">=</span><span class="mi">1500</span><span class="p">)</span>  <span class="c1"># the Office 365 and MS Graph API have a 999 items limit returned per api call.</span>
+<span class="n">messages</span> <span class="o">=</span> <span class="n">mailbox</span><span class="o">.</span><span class="n">get_messages</span><span class="p">(</span><span class="n">limit</span><span class="o">=</span><span class="mi">1500</span><span class="p">)</span>  <span class="c1"># the MS Graph API have a 999 items limit returned per api call.</span>
 
 <span class="c1"># Here messages is a Pagination instance. It&#39;s an Iterator so you can iterate over.</span>
 
@@ -136,8 +136,6 @@
 </section>
 <section id="query-helper">
 <h2>Query helper<a class="headerlink" href="#query-helper" title="Link to this heading"></a></h2>
-<p>When using the Office 365 API you can filter, order, select, expand or search on some fields.
-This filtering is tedious as is using <a class="reference external" href="http://docs.oasis-open.org/odata/odata/v4.0/errata03/os/complete/part2-url-conventions/odata-v4.0-errata03-os-part2-url-conventions-complete.html">Open Data Protocol (OData)</a>.</p>
 <p>Every <code class="docutils literal notranslate"><span class="pre">ApiComponent</span></code> (such as <code class="docutils literal notranslate"><span class="pre">MailBox</span></code>) implements a new_query method that will return a <code class="docutils literal notranslate"><span class="pre">Query</span></code> instance. This <code class="docutils literal notranslate"><span class="pre">Query</span></code> instance can handle the filtering, sorting, selecting, expanding and search very easily.</p>
 <p>For example:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">query</span> <span class="o">=</span> <span class="n">mailbox</span><span class="o">.</span><span class="n">new_query</span><span class="p">()</span>  <span class="c1"># you can use the shorthand: mailbox.q()</span>
