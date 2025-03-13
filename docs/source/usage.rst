@@ -10,11 +10,13 @@ Detailed Usage
    usage/account
    usage/addressbook
    usage/calendar
-   usage/directory 
+   usage/directory
    usage/excel
+   usage/group
    usage/mailbox
    usage/onedrive
    usage/planner
    usage/sharepoint
-   usage/tasks 
+   usage/tasks
+   usage/teams
    usage/utils

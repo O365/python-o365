@@ -9,10 +9,10 @@ log = logging.getLogger(__name__)
 
 
 class TaskDetails(ApiComponent):
-    _endpoints = {'task_detail': '/planner/tasks/{id}/details'}
+    _endpoints = {"task_detail": "/planner/tasks/{id}/details"}
 
     def __init__(self, *, parent=None, con=None, **kwargs):
-        """ A Microsoft O365 plan details
+        """A Microsoft O365 plan details
 
         :param parent: parent object
         :type parent: Task
@@ -24,34 +24,36 @@ class TaskDetails(ApiComponent):
         """
 
         if parent and con:
-            raise ValueError('Need a parent or a connection but not both')
+            raise ValueError("Need a parent or a connection but not both")
         self.con = parent.con if parent else con
 
         cloud_data = kwargs.get(self._cloud_data_key, {})
 
-        self.object_id = cloud_data.get('id')
+        self.object_id = cloud_data.get("id")
 
         # Choose the main_resource passed in kwargs over parent main_resource
-        main_resource = kwargs.pop('main_resource', None) or (
-            getattr(parent, 'main_resource', None) if parent else None)
+        main_resource = kwargs.pop("main_resource", None) or (
+            getattr(parent, "main_resource", None) if parent else None
+        )
 
-        main_resource = '{}{}'.format(main_resource, '')
+        main_resource = "{}{}".format(main_resource, "")
 
         super().__init__(
-            protocol=parent.protocol if parent else kwargs.get('protocol'),
-            main_resource=main_resource)
+            protocol=parent.protocol if parent else kwargs.get("protocol"),
+            main_resource=main_resource,
+        )
 
-        self.description = cloud_data.get(self._cc('description'), '')
-        self.references = cloud_data.get(self._cc('references'), '')
-        self.checklist = cloud_data.get(self._cc('checklist'), '')
-        self.preview_type = cloud_data.get(self._cc('previewType'), '')
-        self._etag = cloud_data.get('@odata.etag', '')
+        self.description = cloud_data.get(self._cc("description"), "")
+        self.references = cloud_data.get(self._cc("references"), "")
+        self.checklist = cloud_data.get(self._cc("checklist"), "")
+        self.preview_type = cloud_data.get(self._cc("previewType"), "")
+        self._etag = cloud_data.get("@odata.etag", "")
 
     def __str__(self):
         return self.__repr__()
 
     def __repr__(self):
-        return 'Task Details'
+        return "Task Details"
 
     def __eq__(self, other):
         return self.object_id == other.object_id
@@ -577,46 +579,53 @@ class Bucket(ApiComponent):
         :rtype: Task
         """
         if not title:
-            raise RuntimeError('Provide a title for the Task')
+            raise RuntimeError("Provide a title for the Task")
 
         if not self.object_id and not self.plan_id:
             return None
 
-        url = self.build_url(
-            self._endpoints.get('create_task'))
+        url = self.build_url(self._endpoints.get("create_task"))
 
         if not assignments:
-            assignments = {'@odata.type': 'microsoft.graph.plannerAssignments'}
+            assignments = {"@odata.type": "microsoft.graph.plannerAssignments"}
 
         for k, v in kwargs.items():
-            if k in ('start_date_time', 'due_date_time'):
-                kwargs[k] = v.strftime('%Y-%m-%dT%H:%M:%SZ') if isinstance(v, (datetime, date)) else v
+            if k in ("start_date_time", "due_date_time"):
+                kwargs[k] = (
+                    v.strftime("%Y-%m-%dT%H:%M:%SZ")
+                    if isinstance(v, (datetime, date))
+                    else v
+                )
 
-        kwargs = {self._cc(key): value for key, value in kwargs.items() if
-                  key in (
-                      'priority'
-                      'order_hint'
-                      'assignee_priority'
-                      'percent_complete'
-                      'has_description'
-                      'start_date_time'
-                      'created_date'
-                      'due_date_time'
-                      'completed_date'
-                      'preview_type'
-                      'reference_count'
-                      'checklist_item_count'
-                      'active_checklist_item_count'
-                      'conversation_thread_id'
-                      'applied_categories'
-                  )}
+        kwargs = {
+            self._cc(key): value
+            for key, value in kwargs.items()
+            if key
+            in (
+                "priority"
+                "order_hint"
+                "assignee_priority"
+                "percent_complete"
+                "has_description"
+                "start_date_time"
+                "created_date"
+                "due_date_time"
+                "completed_date"
+                "preview_type"
+                "reference_count"
+                "checklist_item_count"
+                "active_checklist_item_count"
+                "conversation_thread_id"
+                "applied_categories"
+            )
+        }
 
         data = {
-            'title': title,
-            'assignments': assignments,
-            'bucketId': self.object_id,
-            'planId': self.plan_id,
-            **kwargs
+            "title": title,
+            "assignments": assignments,
+            "bucketId": self.object_id,
+            "planId": self.plan_id,
+            **kwargs,
         }
 
         response = self.con.post(url, data=data)
@@ -625,11 +634,10 @@ class Bucket(ApiComponent):
 
         task = response.json()
 
-        return self.task_constructor(parent=self,
-                                     **{self._cloud_data_key: task})
+        return self.task_constructor(parent=self, **{self._cloud_data_key: task})
 
     def update(self, **kwargs):
-        """ Updates this bucket
+        """Updates this bucket
 
         :param kwargs: all the properties to be updated.
         :return: Success / Failure
@@ -638,15 +646,21 @@ class Bucket(ApiComponent):
         if not self.object_id:
             return False
 
-        url = self.build_url(
-            self._endpoints.get('bucket').format(id=self.object_id))
+        url = self.build_url(self._endpoints.get("bucket").format(id=self.object_id))
 
-        data = {self._cc(key): value for key, value in kwargs.items() if
-                key in ('name', 'order_hint')}
+        data = {
+            self._cc(key): value
+            for key, value in kwargs.items()
+            if key in ("name", "order_hint")
+        }
         if not data:
             return False
 
-        response = self.con.patch(url, data=data, headers={'If-Match': self._etag, 'Prefer': 'return=representation'})
+        response = self.con.patch(
+            url,
+            data=data,
+            headers={"If-Match": self._etag, "Prefer": "return=representation"},
+        )
         if not response:
             return False
 
@@ -657,12 +671,12 @@ class Bucket(ApiComponent):
             if value is not None:
                 setattr(self, self.protocol.to_api_case(key), value)
 
-        self._etag = new_data.get('@odata.etag')
+        self._etag = new_data.get("@odata.etag")
 
         return True
 
     def delete(self):
-        """ Deletes this bucket
+        """Deletes this bucket
 
         :return: Success / Failure
         :rtype: bool
@@ -671,10 +685,9 @@ class Bucket(ApiComponent):
         if not self.object_id:
             return False
 
-        url = self.build_url(
-            self._endpoints.get('bucket').format(id=self.object_id))
+        url = self.build_url(self._endpoints.get("bucket").format(id=self.object_id))
 
-        response = self.con.delete(url, headers={'If-Match': self._etag})
+        response = self.con.delete(url, headers={"If-Match": self._etag})
         if not response:
             return False
 
@@ -685,11 +698,11 @@ class Bucket(ApiComponent):
 
 class Plan(ApiComponent):
     _endpoints = {
-        'list_buckets': '/planner/plans/{id}/buckets',
-        'list_tasks': '/planner/plans/{id}/tasks',
-        'get_details': '/planner/plans/{id}/details',
-        'plan': '/planner/plans/{id}',
-        'create_bucket': '/planner/buckets'
+        "list_buckets": "/planner/plans/{id}/buckets",
+        "list_tasks": "/planner/plans/{id}/tasks",
+        "get_details": "/planner/plans/{id}/details",
+        "plan": "/planner/plans/{id}",
+        "create_bucket": "/planner/buckets",
     }
 
     bucket_constructor = Bucket
@@ -697,7 +710,7 @@ class Plan(ApiComponent):
     plan_details_constructor = PlanDetails
 
     def __init__(self, *, parent=None, con=None, **kwargs):
-        """ A Microsoft O365 plan
+        """A Microsoft O365 plan
 
         :param parent: parent object
         :type parent: Planner
@@ -709,48 +722,51 @@ class Plan(ApiComponent):
         """
 
         if parent and con:
-            raise ValueError('Need a parent or a connection but not both')
+            raise ValueError("Need a parent or a connection but not both")
         self.con = parent.con if parent else con
 
         cloud_data = kwargs.get(self._cloud_data_key, {})
 
-        self.object_id = cloud_data.get('id')
+        self.object_id = cloud_data.get("id")
 
         # Choose the main_resource passed in kwargs over parent main_resource
-        main_resource = kwargs.pop('main_resource', None) or (
-            getattr(parent, 'main_resource', None) if parent else None)
+        main_resource = kwargs.pop("main_resource", None) or (
+            getattr(parent, "main_resource", None) if parent else None
+        )
 
-        main_resource = '{}{}'.format(main_resource, '')
+        main_resource = "{}{}".format(main_resource, "")
 
         super().__init__(
-            protocol=parent.protocol if parent else kwargs.get('protocol'),
-            main_resource=main_resource)
+            protocol=parent.protocol if parent else kwargs.get("protocol"),
+            main_resource=main_resource,
+        )
 
-        self.created_date_time = cloud_data.get(self._cc('createdDateTime'), '')
-        container = cloud_data.get(self._cc('container'), {})
-        self.group_id = container.get(self._cc('containerId'), '')
-        self.title = cloud_data.get(self._cc('title'), '')
-        self._etag = cloud_data.get('@odata.etag', '')
+        self.created_date_time = cloud_data.get(self._cc("createdDateTime"), "")
+        container = cloud_data.get(self._cc("container"), {})
+        self.group_id = container.get(self._cc("containerId"), "")
+        self.title = cloud_data.get(self._cc("title"), "")
+        self._etag = cloud_data.get("@odata.etag", "")
 
     def __str__(self):
         return self.__repr__()
 
     def __repr__(self):
-        return 'Plan: {}'.format(self.title)
+        return "Plan: {}".format(self.title)
 
     def __eq__(self, other):
         return self.object_id == other.object_id
 
     def list_buckets(self):
-        """ Returns list of buckets that given plan has
+        """Returns list of buckets that given plan has
         :rtype: list[Bucket]
         """
 
         if not self.object_id:
-            raise RuntimeError('Plan is not initialized correctly. Id is missing...')
+            raise RuntimeError("Plan is not initialized correctly. Id is missing...")
 
         url = self.build_url(
-            self._endpoints.get('list_buckets').format(id=self.object_id))
+            self._endpoints.get("list_buckets").format(id=self.object_id)
+        )
 
         response = self.con.get(url)
 
@@ -761,18 +777,20 @@ class Plan(ApiComponent):
 
         return [
             self.bucket_constructor(parent=self, **{self._cloud_data_key: bucket})
-            for bucket in data.get('value', [])]
+            for bucket in data.get("value", [])
+        ]
 
     def list_tasks(self):
-        """ Returns list of tasks that given plan has
+        """Returns list of tasks that given plan has
         :rtype: list[Task] or Pagination of Task
         """
 
         if not self.object_id:
-            raise RuntimeError('Plan is not initialized correctly. Id is missing...')
+            raise RuntimeError("Plan is not initialized correctly. Id is missing...")
 
         url = self.build_url(
-            self._endpoints.get('list_tasks').format(id=self.object_id))
+            self._endpoints.get("list_tasks").format(id=self.object_id)
+        )
 
         response = self.con.get(url)
 
@@ -784,26 +802,31 @@ class Plan(ApiComponent):
 
         tasks = [
             self.task_constructor(parent=self, **{self._cloud_data_key: task})
-            for task in data.get('value', [])]
+            for task in data.get("value", [])
+        ]
 
         if next_link:
-            return Pagination(parent=self, data=tasks,
-                              constructor=self.task_constructor,
-                              next_link=next_link)
+            return Pagination(
+                parent=self,
+                data=tasks,
+                constructor=self.task_constructor,
+                next_link=next_link,
+            )
         else:
             return tasks
 
     def get_details(self):
-        """ Returns Microsoft O365/AD plan with given id
+        """Returns Microsoft O365/AD plan with given id
 
         :rtype: PlanDetails
         """
 
         if not self.object_id:
-            raise RuntimeError('Plan is not initialized correctly. Id is missing...')
+            raise RuntimeError("Plan is not initialized correctly. Id is missing...")
 
         url = self.build_url(
-            self._endpoints.get('get_details').format(id=self.object_id))
+            self._endpoints.get("get_details").format(id=self.object_id)
+        )
 
         response = self.con.get(url)
 
@@ -812,11 +835,13 @@ class Plan(ApiComponent):
 
         data = response.json()
 
-        return self.plan_details_constructor(parent=self,
-                                             **{self._cloud_data_key: data}, )
+        return self.plan_details_constructor(
+            parent=self,
+            **{self._cloud_data_key: data},
+        )
 
-    def create_bucket(self, name, order_hint=' !'):
-        """ Creates a Bucket
+    def create_bucket(self, name, order_hint=" !"):
+        """Creates a Bucket
 
         :param str name: the name of the bucket
         :param str order_hint: the order of the bucket. Default is on top.
@@ -826,15 +851,14 @@ class Plan(ApiComponent):
         """
 
         if not name:
-            raise RuntimeError('Provide a name for the Bucket')
+            raise RuntimeError("Provide a name for the Bucket")
 
         if not self.object_id:
             return None
 
-        url = self.build_url(
-            self._endpoints.get('create_bucket'))
+        url = self.build_url(self._endpoints.get("create_bucket"))
 
-        data = {'name': name, 'orderHint': order_hint, 'planId': self.object_id}
+        data = {"name": name, "orderHint": order_hint, "planId": self.object_id}
 
         response = self.con.post(url, data=data)
         if not response:
@@ -842,11 +866,10 @@ class Plan(ApiComponent):
 
         bucket = response.json()
 
-        return self.bucket_constructor(parent=self,
-                                       **{self._cloud_data_key: bucket})
+        return self.bucket_constructor(parent=self, **{self._cloud_data_key: bucket})
 
     def update(self, **kwargs):
-        """ Updates this plan
+        """Updates this plan
 
         :param kwargs: all the properties to be updated.
         :return: Success / Failure
@@ -855,15 +878,19 @@ class Plan(ApiComponent):
         if not self.object_id:
             return False
 
-        url = self.build_url(
-            self._endpoints.get('plan').format(id=self.object_id))
+        url = self.build_url(self._endpoints.get("plan").format(id=self.object_id))
 
-        data = {self._cc(key): value for key, value in kwargs.items() if
-                key in ('title')}
+        data = {
+            self._cc(key): value for key, value in kwargs.items() if key in ("title")
+        }
         if not data:
             return False
 
-        response = self.con.patch(url, data=data, headers={'If-Match': self._etag, 'Prefer': 'return=representation'})
+        response = self.con.patch(
+            url,
+            data=data,
+            headers={"If-Match": self._etag, "Prefer": "return=representation"},
+        )
         if not response:
             return False
 
@@ -874,12 +901,12 @@ class Plan(ApiComponent):
             if value is not None:
                 setattr(self, self.protocol.to_api_case(key), value)
 
-        self._etag = new_data.get('@odata.etag')
+        self._etag = new_data.get("@odata.etag")
 
         return True
 
     def delete(self):
-        """ Deletes this plan
+        """Deletes this plan
 
         :return: Success / Failure
         :rtype: bool
@@ -888,10 +915,9 @@ class Plan(ApiComponent):
         if not self.object_id:
             return False
 
-        url = self.build_url(
-            self._endpoints.get('plan').format(id=self.object_id))
+        url = self.build_url(self._endpoints.get("plan").format(id=self.object_id))
 
-        response = self.con.delete(url, headers={'If-Match': self._etag})
+        response = self.con.delete(url, headers={"If-Match": self._etag})
         if not response:
             return False
 
@@ -901,26 +927,27 @@ class Plan(ApiComponent):
 
 
 class Planner(ApiComponent):
-    """ A microsoft planner class
-        In order to use the API following permissions are required.
-        Delegated (work or school account) - Group.Read.All, Group.ReadWrite.All
+    """A microsoft planner class
+
+    In order to use the API following permissions are required.
+    Delegated (work or school account) - Group.Read.All, Group.ReadWrite.All
     """
 
     _endpoints = {
-        'get_my_tasks': '/me/planner/tasks',
-        'get_plan_by_id': '/planner/plans/{plan_id}',
-        'get_bucket_by_id': '/planner/buckets/{bucket_id}',
-        'get_task_by_id': '/planner/tasks/{task_id}',
-        'list_user_tasks': '/users/{user_id}/planner/tasks',
-        'list_group_plans': '/groups/{group_id}/planner/plans',
-        'create_plan': '/planner/plans',
+        "get_my_tasks": "/me/planner/tasks",
+        "get_plan_by_id": "/planner/plans/{plan_id}",
+        "get_bucket_by_id": "/planner/buckets/{bucket_id}",
+        "get_task_by_id": "/planner/tasks/{task_id}",
+        "list_user_tasks": "/users/{user_id}/planner/tasks",
+        "list_group_plans": "/groups/{group_id}/planner/plans",
+        "create_plan": "/planner/plans",
     }
     plan_constructor = Plan
     bucket_constructor = Bucket
     task_constructor = Task
 
     def __init__(self, *, parent=None, con=None, **kwargs):
-        """ A Planner object
+        """A Planner object
 
         :param parent: parent object
         :type parent: Account
@@ -931,29 +958,29 @@ class Planner(ApiComponent):
          (kwargs)
         """
         if parent and con:
-            raise ValueError('Need a parent or a connection but not both')
+            raise ValueError("Need a parent or a connection but not both")
         self.con = parent.con if parent else con
 
         # Choose the main_resource passed in kwargs over the host_name
-        main_resource = kwargs.pop('main_resource',
-                                   '')  # defaults to blank resource
+        main_resource = kwargs.pop("main_resource", "")  # defaults to blank resource
         super().__init__(
-            protocol=parent.protocol if parent else kwargs.get('protocol'),
-            main_resource=main_resource)
+            protocol=parent.protocol if parent else kwargs.get("protocol"),
+            main_resource=main_resource,
+        )
 
     def __str__(self):
         return self.__repr__()
 
     def __repr__(self):
-        return 'Microsoft Planner'
+        return "Microsoft Planner"
 
     def get_my_tasks(self, *args):
-        """ Returns a list of open planner tasks assigned to me
+        """Returns a list of open planner tasks assigned to me
 
         :rtype: tasks
         """
 
-        url = self.build_url(self._endpoints.get('get_my_tasks'))
+        url = self.build_url(self._endpoints.get("get_my_tasks"))
 
         response = self.con.get(url)
 
@@ -964,10 +991,11 @@ class Planner(ApiComponent):
 
         return [
             self.task_constructor(parent=self, **{self._cloud_data_key: site})
-            for site in data.get('value', [])]
+            for site in data.get("value", [])
+        ]
 
     def get_plan_by_id(self, plan_id=None):
-        """ Returns Microsoft O365/AD plan with given id
+        """Returns Microsoft O365/AD plan with given id
 
         :param plan_id: plan id of plan
 
@@ -975,10 +1003,11 @@ class Planner(ApiComponent):
         """
 
         if not plan_id:
-            raise RuntimeError('Provide the plan_id')
+            raise RuntimeError("Provide the plan_id")
 
         url = self.build_url(
-            self._endpoints.get('get_plan_by_id').format(plan_id=plan_id))
+            self._endpoints.get("get_plan_by_id").format(plan_id=plan_id)
+        )
 
         response = self.con.get(url)
 
@@ -987,11 +1016,13 @@ class Planner(ApiComponent):
 
         data = response.json()
 
-        return self.plan_constructor(parent=self,
-                                     **{self._cloud_data_key: data}, )
+        return self.plan_constructor(
+            parent=self,
+            **{self._cloud_data_key: data},
+        )
 
     def get_bucket_by_id(self, bucket_id=None):
-        """ Returns Microsoft O365/AD plan with given id
+        """Returns Microsoft O365/AD plan with given id
 
         :param bucket_id: bucket id of buckets
 
@@ -999,10 +1030,11 @@ class Planner(ApiComponent):
         """
 
         if not bucket_id:
-            raise RuntimeError('Provide the bucket_id')
+            raise RuntimeError("Provide the bucket_id")
 
         url = self.build_url(
-            self._endpoints.get('get_bucket_by_id').format(bucket_id=bucket_id))
+            self._endpoints.get("get_bucket_by_id").format(bucket_id=bucket_id)
+        )
 
         response = self.con.get(url)
 
@@ -1011,11 +1043,10 @@ class Planner(ApiComponent):
 
         data = response.json()
 
-        return self.bucket_constructor(parent=self,
-                                       **{self._cloud_data_key: data})
+        return self.bucket_constructor(parent=self, **{self._cloud_data_key: data})
 
     def get_task_by_id(self, task_id=None):
-        """ Returns Microsoft O365/AD plan with given id
+        """Returns Microsoft O365/AD plan with given id
 
         :param task_id: task id of tasks
 
@@ -1023,10 +1054,11 @@ class Planner(ApiComponent):
         """
 
         if not task_id:
-            raise RuntimeError('Provide the task_id')
+            raise RuntimeError("Provide the task_id")
 
         url = self.build_url(
-            self._endpoints.get('get_task_by_id').format(task_id=task_id))
+            self._endpoints.get("get_task_by_id").format(task_id=task_id)
+        )
 
         response = self.con.get(url)
 
@@ -1035,11 +1067,10 @@ class Planner(ApiComponent):
 
         data = response.json()
 
-        return self.task_constructor(parent=self,
-                                     **{self._cloud_data_key: data})
+        return self.task_constructor(parent=self, **{self._cloud_data_key: data})
 
     def list_user_tasks(self, user_id=None):
-        """ Returns Microsoft O365/AD plan with given id
+        """Returns Microsoft O365/AD plan with given id
 
         :param user_id: user id
 
@@ -1047,10 +1078,11 @@ class Planner(ApiComponent):
         """
 
         if not user_id:
-            raise RuntimeError('Provide the user_id')
+            raise RuntimeError("Provide the user_id")
 
         url = self.build_url(
-            self._endpoints.get('list_user_tasks').format(user_id=user_id))
+            self._endpoints.get("list_user_tasks").format(user_id=user_id)
+        )
 
         response = self.con.get(url)
 
@@ -1061,19 +1093,21 @@ class Planner(ApiComponent):
 
         return [
             self.task_constructor(parent=self, **{self._cloud_data_key: task})
-            for task in data.get('value', [])]
+            for task in data.get("value", [])
+        ]
 
     def list_group_plans(self, group_id=None):
-        """ Returns list of plans that given group has
+        """Returns list of plans that given group has
         :param group_id: group id
         :rtype: list[Plan]
         """
 
         if not group_id:
-            raise RuntimeError('Provide the group_id')
+            raise RuntimeError("Provide the group_id")
 
         url = self.build_url(
-            self._endpoints.get('list_group_plans').format(group_id=group_id))
+            self._endpoints.get("list_group_plans").format(group_id=group_id)
+        )
 
         response = self.con.get(url)
 
@@ -1084,10 +1118,11 @@ class Planner(ApiComponent):
 
         return [
             self.plan_constructor(parent=self, **{self._cloud_data_key: plan})
-            for plan in data.get('value', [])]
+            for plan in data.get("value", [])
+        ]
 
-    def create_plan(self, owner, title='Tasks'):
-        """ Creates a Plan
+    def create_plan(self, owner, title="Tasks"):
+        """Creates a Plan
 
         :param str owner: the id of the group that will own the plan
         :param str title: the title of the new plan. Default set to "Tasks"
@@ -1095,12 +1130,11 @@ class Planner(ApiComponent):
         :rtype: Plan
         """
         if not owner:
-            raise RuntimeError('Provide the owner (group_id)')
+            raise RuntimeError("Provide the owner (group_id)")
 
-        url = self.build_url(
-            self._endpoints.get('create_plan'))
+        url = self.build_url(self._endpoints.get("create_plan"))
 
-        data = {'owner': owner, 'title': title}
+        data = {"owner": owner, "title": title}
 
         response = self.con.post(url, data=data)
         if not response:
@@ -1108,5 +1142,4 @@ class Planner(ApiComponent):
 
         plan = response.json()
 
-        return self.plan_constructor(parent=self,
-                                     **{self._cloud_data_key: plan})
+        return self.plan_constructor(parent=self, **{self._cloud_data_key: plan})
