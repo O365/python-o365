@@ -13,9 +13,9 @@ These are the scopes needed to work with the ``Storage``, ``Drive`` and ``DriveI
 =========================  =======================================  ======================================
 Raw Scope                  Included in Scope Helper                 Description
 =========================  =======================================  ======================================
-Files.Read                 -                                        To only read my files
+Files.Read                 —                                        To only read my files
 Files.Read.All             onedrive                                 To only read all the files the user has access
-Files.ReadWrite            -                                        To read and save my files
+Files.ReadWrite            —                                        To read and save my files
 Files.ReadWrite.All        onedrive_all                             To read and save all the files the user has access
 =========================  =======================================  ======================================
 

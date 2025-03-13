@@ -13,10 +13,11 @@ O365 API
    api/category
    api/connection
    api/directory
-   api/drive
+   api/excel
    api/group
    api/mailbox
    api/message
+   api/onedrive
    api/planner
    api/sharepoint
    api/tasks
