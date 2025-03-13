@@ -2,13 +2,13 @@
 Overview
 ########
 
-**O365 - Microsoft Graph and Office 365 API made easy**
+**O365 - Microsoft Graph API made easy**
 
 .. important::
 
    With version 2.1 old access tokens will not work, and the library will require a new authentication flow to get new access and refresh tokens.
 
-This project aims to make interacting with Microsoft Graph and Office 365 easy to do in a Pythonic way. Access to Email, Calendar, Contacts, OneDrive, etc. Are easy to do in a way that feel easy and straight forward to beginners and feels just right to seasoned python programmer.
+This project aims to make interacting with Microsoft Graph easy to do in a Pythonic way. Access to Email, Calendar, Contacts, OneDrive, etc. Are easy to do in a way that feel easy and straight forward to beginners and feels just right to seasoned python programmer.
 
 The project is currently developed and maintained by `alejcas <https://github.com/alejcas/>`_.
 
@@ -52,7 +52,6 @@ Create a Python file and add the following code:
 Why choose O365?
 ----------------
 * Almost Full Support for MsGraph Rest Api.
-* Good Abstraction layer between each Api. Change the api (Graph vs Office365) and don't worry about the api internal implementation.
 * Full OAuth support with automatic handling of refresh tokens.
 * Automatic handling between local datetimes and server datetimes. Work with your local datetime and let this library do the rest.
 * Change between different resource with ease: access shared mailboxes, other users resources, SharePoint resources, etc.

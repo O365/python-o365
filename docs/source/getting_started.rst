@@ -135,8 +135,6 @@ With auth_flow_type 'credentials' you can authenticate using a certificate based
 OAuth Setup (Prerequisite)
 --------------------------
 
-This section is explained using Microsoft Graph Protocol, almost the same applies to the Office 365 REST API.
-
 Before you can use python-o365, you must register your application in the 
 `Microsoft Entra Admin Center <https://entra.microsoft.com/>`_. Follow the steps below:
 
@@ -412,17 +410,9 @@ You can get the same scopes as before using protocols and scope helpers like thi
 
    account = Account(credentials, scopes=scopes_graph)
 
-.. code-block:: python
-
-   protocol_office = MSOffice365Protocol()
-
-   scopes_office = protocol.get_scopes_for('message all')
-   # scopes here are: ['https://outlook.office.com/Mail.ReadWrite', 'https://outlook.office.com/Mail.Send']
-
-   account = Account(credentials, scopes=scopes_office)
-
 .. note::
-   When passing scopes at the Account initialization or on the account.authenticate method, the scope helpers are automatically converted to the protocol flavor. Those are the only places where you can use scope helpers. Any other object using scopes (such as the Connection object) expects scopes that are already set for the protocol.
+   
+   When passing scopes at the Account initialization or on the account.authenticate method, the scope helpers are automatically converted to the protocol flavour. Those are the only places where you can use scope helpers. Any other object using scopes (such as the Connection object) expects scopes that are already set for the protocol.
 
 Token Storage
 =============
