@@ -20,7 +20,9 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Detailed Usage" href="usage.html" />
-    <link rel="prev" title="Overview" href="overview.html" /> 
+    <link rel="prev" title="Overview" href="overview.html" />
+    <link href="_static/css/style.css" rel="stylesheet" type="text/css">
+
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -155,16 +157,16 @@ This version may include new features but could be unstable. <strong>Use at your
 <span id="id1"></span><h2>Authentication<a class="headerlink" href="#authentication" title="Link to this heading"></a></h2>
 <section id="types">
 <h3>Types<a class="headerlink" href="#types" title="Link to this heading"></a></h3>
-<p>You can only authenticate using oauth authentication because Microsoft deprecated basic auth on November 1st 2018.</p>
+<p>You can only authenticate using OAuth authentication because Microsoft deprecated basic auth on November 1st 2018.</p>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
 <p>With version 2.1 old access tokens will not work and the library will require a new authentication flow to get new access and refresh tokens.</p>
 </div>
 <p>There are currently three authentication methods:</p>
 <ul class="simple">
-<li><p><a class="reference external" href="https://docs.microsoft.com/en-us/graph/auth-v2-user?context=graph%2Fapi%2F1.0&amp;view=graph-rest-1.0/">Authenticate on behalf of a user</a>: Any user will give consent to the app to access its resources. This oauth flow is called authorization code grant flow. This is the default authentication method used by this library.</p></li>
+<li><p><a class="reference external" href="https://docs.microsoft.com/en-us/graph/auth-v2-user?context=graph%2Fapi%2F1.0&amp;view=graph-rest-1.0/">Authenticate on behalf of a user</a>: Any user will give consent to the app to access its resources. This OAuth flow is called authorization code grant flow. This is the default authentication method used by this library.</p></li>
 <li><p><a class="reference external" href="https://docs.microsoft.com/en-us/graph/auth-v2-user?context=graph%2Fapi%2F1.0&amp;view=graph-rest-1.0/">Authenticate on behalf of a user (public)</a>: Same as the former but for public apps where the client secret can’t be secured. Client secret is not required.</p></li>
-<li><p><a class="reference external" href="https://docs.microsoft.com/en-us/graph/auth-v2-service?context=graph%2Fapi%2F1.0&amp;view=graph-rest-1.0">Authenticate with your own identity</a>: This will use your own identity (the app identity). This oauth flow is called client credentials grant flow.</p></li>
+<li><p><a class="reference external" href="https://docs.microsoft.com/en-us/graph/auth-v2-service?context=graph%2Fapi%2F1.0&amp;view=graph-rest-1.0">Authenticate with your own identity</a>: This will use your own identity (the app identity). This OAuth flow is called client credentials grant flow.</p></li>
 </ul>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -172,12 +174,14 @@ This version may include new features but could be unstable. <strong>Use at your
 </div>
 <p>When to use one or the other and requirements:</p>
 <table class="docutils align-default">
-<tbody>
-<tr class="row-odd"><td><p>Topic</p></td>
-<td><p>On behalf of a user <em>(auth_flow_type==’authorization’)</em></p></td>
-<td><p>On behalf of a user (public) <em>(auth_flow_type==’public’)</em></p></td>
-<td><p>With your own identity <em>(auth_flow_type==’credentials’)</em></p></td>
+<thead>
+<tr class="row-odd"><th class="head"><p>Topic</p></th>
+<th class="head"><p>On behalf of a user <em>(auth_flow_type==’authorization’)</em></p></th>
+<th class="head"><p>On behalf of a user (public) <em>(auth_flow_type==’public’)</em></p></th>
+<th class="head"><p>With your own identity <em>(auth_flow_type==’credentials’)</em></p></th>
 </tr>
+</thead>
+<tbody>
 <tr class="row-even"><td><p><strong>Register the App</strong></p></td>
 <td><p>Required</p></td>
 <td><p>Required</p></td>
@@ -237,7 +241,7 @@ refresh is done within the 90 days</p></td>
 </tr>
 </tbody>
 </table>
-<p><em>Note: *O365 will automatically refresh the token for you on either authentication method. The refresh token lasts 90 days but it’s refreshed on each connection so as long as you connect within 90 days you can have unlimited access.</em></p>
+<p><em>Note: *O365 will automatically refresh the token for you on either authentication method. The refresh token lasts 90 days, but it’s refreshed on each connection so as long as you connect within 90 days you can have unlimited access.</em></p>
 <p>The Connection Class handles the authentication.</p>
 <p>With auth_flow_type ‘credentials’ you can authenticate using a certificate based authentication by just passing the client_secret like so:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">client_secret</span> <span class="o">=</span> <span class="p">{</span>
@@ -459,7 +463,7 @@ The authenticate method will print into the console an url that you will have to
 <p class="admonition-title">Note</p>
 <p>You only need the scopes when login as those are kept stored within the token on the token backend.</p>
 </div>
-<p>The user of this library can then request access to one or more of these resources by providing scopes to the oauth provider.</p>
+<p>The user of this library can then request access to one or more of these resources by providing scopes to the OAuth provider.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>If you later on change the scopes requested, the current token will be invalid, and you will have to re-authenticate. The user that logins will be asked for consent.</p>
