@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Multi user handling &mdash; O365  documentation</title>
+  <title>Account &mdash; O365  documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
 
@@ -19,7 +19,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Mailbox" href="mailbox.html" />
+    <link rel="next" title="Address Book" href="addressbook.html" />
     <link rel="prev" title="Protocols" href="connection.html" /> 
 </head>
 
@@ -49,8 +49,8 @@
 <li class="toctree-l1 current"><a class="reference internal" href="../usage.html">Detailed Usage</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="connection.html">Protocols</a></li>
 <li class="toctree-l2"><a class="reference internal" href="connection.html#resources">Resources</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Multi user handling</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#account">Account</a><ul>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Account</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#multi-user-handling">Multi-user handling</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#setting-your-account-instance">Setting your Account Instance</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#connecting-to-api-account">Connecting to API Account</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#setting-proxy">Setting Proxy</a></li>
@@ -62,9 +62,16 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#account-class-and-modularity">Account Class and Modularity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="addressbook.html">Address Book</a></li>
+<li class="toctree-l2"><a class="reference internal" href="calendar.html">Calendar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="directory.html">Directory and Users</a></li>
+<li class="toctree-l2"><a class="reference internal" href="excel.html">Excel</a></li>
 <li class="toctree-l2"><a class="reference internal" href="mailbox.html">Mailbox</a></li>
-<li class="toctree-l2"><a class="reference internal" href="query.html">Query</a></li>
+<li class="toctree-l2"><a class="reference internal" href="onedrive.html">OneDrive</a></li>
+<li class="toctree-l2"><a class="reference internal" href="planner.html">Planner</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sharepoint.html">Sharepoint</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tasks.html">Tasks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html">Utils</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../api.html">O365 API</a></li>
@@ -85,21 +92,23 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../usage.html">Detailed Usage</a></li>
-      <li class="breadcrumb-item active">Multi user handling</li>
+      <li class="breadcrumb-item active">Account</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/usage/account.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
         <a href="connection.html" class="btn btn-neutral float-left" title="Protocols" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="mailbox.html" class="btn btn-neutral float-right" title="Mailbox" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="addressbook.html" class="btn btn-neutral float-right" title="Address Book" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
   </div>
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="multi-user-handling">
-<h1>Multi user handling<a class="headerlink" href="#multi-user-handling" title="Link to this heading"></a></h1>
+  <section id="account">
+<h1>Account<a class="headerlink" href="#account" title="Link to this heading"></a></h1>
+<section id="multi-user-handling">
+<h2>Multi-user handling<a class="headerlink" href="#multi-user-handling" title="Link to this heading"></a></h2>
 <p>A single <code class="docutils literal notranslate"><span class="pre">Account</span></code> object can hold more than one user being authenticated. You can authenticate different users and the token backend
 will hold each authentication. When using the library you can use the <code class="docutils literal notranslate"><span class="pre">account.username</span></code> property to get or set the current user.
 If username is not provided, the username will be set automatically to the first authentication found in the token backend. Also,
@@ -111,11 +120,9 @@ the username will be set to the user performing the authentication.</p>
 <span class="c1">#  now every call will use the auth of the user2</span>
 </pre></div>
 </div>
-<p>This is only possible in version 2.1. Before 2.1 you had to instantiate one Account for each user.</p>
+<p>This is only possible in version 2.1. Before 2.1 you had to instantiate one Account for each user.
+Account class represents a specific account you would like to connect</p>
 </section>
-<section id="account">
-<h1>Account<a class="headerlink" href="#account" title="Link to this heading"></a></h1>
-<p>Account class represents a specific account you would like to connect</p>
 <section id="setting-your-account-instance">
 <h2>Setting your Account Instance<a class="headerlink" href="#setting-your-account-instance" title="Link to this heading"></a></h2>
 <section id="connecting-to-api-account">
@@ -230,7 +237,7 @@ the username will be set to the user performing the authentication.</p>
 <span class="n">account</span> <span class="o">=</span> <span class="n">Account</span><span class="p">(</span><span class="n">credentials</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;my_client_id&#39;</span><span class="p">,</span> <span class="s1">&#39;my_client_secret&#39;</span><span class="p">),</span>
                   <span class="n">scopes</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;message_all&#39;</span><span class="p">])</span>
 
-<span class="c1"># Why change everytime, add all at a time :)</span>
+<span class="c1"># Why change every time, add all at a time :)</span>
 <span class="n">account</span> <span class="o">=</span> <span class="n">Account</span><span class="p">(</span><span class="n">credentials</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;my_client_id&#39;</span><span class="p">,</span> <span class="s1">&#39;my_client_secret&#39;</span><span class="p">),</span>
                   <span class="n">scopes</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;message_all&#39;</span><span class="p">,</span> <span class="s1">&#39;message_all_shared&#39;</span><span class="p">,</span> <span class="s1">&#39;address_book_all&#39;</span><span class="p">,</span>
                           <span class="s1">&#39;address_book_all_shared&#39;</span><span class="p">,</span>
@@ -256,7 +263,7 @@ the username will be set to the user performing the authentication.</p>
 <li><dl>
 <dt>You will be redirected out outlook home page, copy the resulting url</dt><dd><div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>If the url is simply <a class="reference external" href="https://outlook.office.com/owa/?realm=blahblah">https://outlook.office.com/owa/?realm=blahblah</a>, and nothing else after that.. then you are currently on new Outlook look, revert back to old look and try the authentication flow again</p>
+<p>If the url is simply <a class="reference external" href="https://outlook.office.com/owa/?realm=blahblah">https://outlook.office.com/owa/?realm=blahblah</a>, and nothing else after that, then you are currently on new Outlook look, revert to old look and try the authentication flow again</p>
 </div>
 </dd>
 </dl>
@@ -296,7 +303,7 @@ the username will be set to the user performing the authentication.</p>
 <span class="c1"># ...</span>
 </pre></div>
 </div>
-<p>It’s also easy to implement a custom Class. Just Inherit from ApiComponent, define the endpoints, and use the connection to make requests. If needed also inherit from Protocol to handle different comunications aspects with the API server.</p>
+<p>It’s also easy to implement a custom Class. Just Inherit from ApiComponent, define the endpoints, and use the connection to make requests. If needed also inherit from Protocol to handle different communications aspects with the API server.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">O365.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">ApiComponent</span>
 
 <span class="k">class</span><span class="w"> </span><span class="nc">CustomClass</span><span class="p">(</span><span class="n">ApiComponent</span><span class="p">):</span>
@@ -313,8 +320,8 @@ the username will be set to the user performing the authentication.</p>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">do_some_stuff</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
-        <span class="c1"># self.build_url just merges the protocol service_url with the enpoint passed as a parameter</span>
-        <span class="c1"># to change the service_url implement your own protocol inherinting from Protocol Class</span>
+        <span class="c1"># self.build_url just merges the protocol service_url with the endpoint passed as a parameter</span>
+        <span class="c1"># to change the service_url implement your own protocol inheriting from Protocol Class</span>
         <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_url</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_endpoints</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;my_url_key&#39;</span><span class="p">))</span>
 
         <span class="n">my_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;param1&#39;</span><span class="p">:</span> <span class="s1">&#39;param1&#39;</span><span class="p">}</span>
@@ -340,7 +347,7 @@ the username will be set to the user performing the authentication.</p>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="connection.html" class="btn btn-neutral float-left" title="Protocols" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="mailbox.html" class="btn btn-neutral float-right" title="Mailbox" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="addressbook.html" class="btn btn-neutral float-right" title="Address Book" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

@@ -8,6 +8,13 @@ Detailed Usage
 
    usage/connection
    usage/account
+   usage/addressbook
+   usage/calendar
+   usage/directory 
+   usage/excel
    usage/mailbox
-   usage/query
+   usage/onedrive
+   usage/planner
    usage/sharepoint
+   usage/tasks 
+   usage/utils

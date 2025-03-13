@@ -322,7 +322,7 @@ To accomplish the authentication you can basically use different approaches. The
 
          result = account.con.request_token(requested_url,
                                              flow=my_saved_flow)
-         # if result is True, then authentication was succesful
+         # if result is True, then authentication was successful
          #  and the auth token is stored in the token backend
          if result:
             return render_template('auth_complete.html')
@@ -330,7 +330,7 @@ To accomplish the authentication you can basically use different approaches. The
 
 3. Other authentication interfaces:
 
-   Finally you can configure any other flow by using ``connection.get_authorization_url`` and ``connection.request_token`` as you want.
+   Finally, you can configure any other flow by using ``connection.get_authorization_url`` and ``connection.request_token`` as you want.
 
 Permissions & Scopes
 ====================
@@ -363,7 +363,7 @@ For example your application can have Calendar.Read, Mail.ReadWrite and Mail.Sen
    account = Account(credentials, scopes=scopes)
    account.authenticate()
 
-   # The later is exactly the same as passing scopes to the authenticate method like so:
+   # The latter is exactly the same as passing scopes to the authenticate method like so:
    # account = Account(credentials)
    # account.authenticate(scopes=scopes)
 
@@ -420,12 +420,12 @@ You can get the same scopes as before using protocols and scope helpers like thi
    account = Account(credentials, scopes=scopes_office)
 
 .. note::
-   When passing scopes at the Account initialization or on the account.authenticate method, the scope helpers are autommatically converted to the protocol flavor. Those are the only places where you can use scope helpers. Any other object using scopes (such as the Connection object) expects scopes that are already set for the protocol.
+   When passing scopes at the Account initialization or on the account.authenticate method, the scope helpers are automatically converted to the protocol flavor. Those are the only places where you can use scope helpers. Any other object using scopes (such as the Connection object) expects scopes that are already set for the protocol.
 
 Token Storage
 =============
 
-When authenticating you will retrieve oauth tokens. If you don't want a one time access you will have to store the token somewhere. O365 makes no assumptions on where to store the token and tries to abstract this from the library usage point of view.
+When authenticating you will retrieve OAuth tokens. If you don't want a one time access you will have to store the token somewhere. O365 makes no assumptions on where to store the token and tries to abstract this from the library usage point of view.
 
 You can choose where and how to store tokens by using the proper Token Backend.
 
@@ -507,7 +507,7 @@ To implement a new TokenBackend:
    * ``save_token``: this should store the ``self.token`` in the desired backend.
    * Optionally you can implement: ``check_token``, ``delete_token`` and ``should_refresh_token``
 
-The ``should_refresh_token`` method is intended to be implemented for environments where multiple Connection instances are running on paralel. This method should check if it's time to refresh the token or not. The chosen backend can store a flag somewhere to answer this question. This can avoid race conditions between different instances trying to refresh the token at once, when only one should make the refresh. The method should return three posible values:
+The ``should_refresh_token`` method is intended to be implemented for environments where multiple Connection instances are running on parallel. This method should check if it's time to refresh the token or not. The chosen backend can store a flag somewhere to answer this question. This can avoid race conditions between different instances trying to refresh the token at once, when only one should make the refresh. The method should return three possible values:
 
 * **True**: then the Connection will refresh the token.
 * **False**: then the Connection will NOT refresh the token.

@@ -432,7 +432,7 @@ The authenticate method will print into the console an url that you will have to
 
    <span class="n">result</span> <span class="o">=</span> <span class="n">account</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">request_token</span><span class="p">(</span><span class="n">requested_url</span><span class="p">,</span>
                                        <span class="n">flow</span><span class="o">=</span><span class="n">my_saved_flow</span><span class="p">)</span>
-   <span class="c1"># if result is True, then authentication was succesful</span>
+   <span class="c1"># if result is True, then authentication was successful</span>
    <span class="c1">#  and the auth token is stored in the token backend</span>
    <span class="k">if</span> <span class="n">result</span><span class="p">:</span>
       <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;auth_complete.html&#39;</span><span class="p">)</span>
@@ -441,7 +441,7 @@ The authenticate method will print into the console an url that you will have to
 </div>
 </li>
 <li><p>Other authentication interfaces:</p>
-<p>Finally you can configure any other flow by using <code class="docutils literal notranslate"><span class="pre">connection.get_authorization_url</span></code> and <code class="docutils literal notranslate"><span class="pre">connection.request_token</span></code> as you want.</p>
+<p>Finally, you can configure any other flow by using <code class="docutils literal notranslate"><span class="pre">connection.get_authorization_url</span></code> and <code class="docutils literal notranslate"><span class="pre">connection.request_token</span></code> as you want.</p>
 </li>
 </ol>
 </section>
@@ -474,7 +474,7 @@ The authenticate method will print into the console an url that you will have to
 <span class="n">account</span> <span class="o">=</span> <span class="n">Account</span><span class="p">(</span><span class="n">credentials</span><span class="p">,</span> <span class="n">scopes</span><span class="o">=</span><span class="n">scopes</span><span class="p">)</span>
 <span class="n">account</span><span class="o">.</span><span class="n">authenticate</span><span class="p">()</span>
 
-<span class="c1"># The later is exactly the same as passing scopes to the authenticate method like so:</span>
+<span class="c1"># The latter is exactly the same as passing scopes to the authenticate method like so:</span>
 <span class="c1"># account = Account(credentials)</span>
 <span class="c1"># account.authenticate(scopes=scopes)</span>
 </pre></div>
@@ -583,13 +583,13 @@ The authenticate method will print into the console an url that you will have to
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>When passing scopes at the Account initialization or on the account.authenticate method, the scope helpers are autommatically converted to the protocol flavor. Those are the only places where you can use scope helpers. Any other object using scopes (such as the Connection object) expects scopes that are already set for the protocol.</p>
+<p>When passing scopes at the Account initialization or on the account.authenticate method, the scope helpers are automatically converted to the protocol flavor. Those are the only places where you can use scope helpers. Any other object using scopes (such as the Connection object) expects scopes that are already set for the protocol.</p>
 </div>
 </section>
 </section>
 <section id="token-storage">
 <h2>Token Storage<a class="headerlink" href="#token-storage" title="Link to this heading"></a></h2>
-<p>When authenticating you will retrieve oauth tokens. If you don’t want a one time access you will have to store the token somewhere. O365 makes no assumptions on where to store the token and tries to abstract this from the library usage point of view.</p>
+<p>When authenticating you will retrieve OAuth tokens. If you don’t want a one time access you will have to store the token somewhere. O365 makes no assumptions on where to store the token and tries to abstract this from the library usage point of view.</p>
 <p>You can choose where and how to store tokens by using the proper Token Backend.</p>
 <div class="admonition caution">
 <p class="admonition-title">Caution</p>
@@ -664,7 +664,7 @@ The authenticate method will print into the console an url that you will have to
 </ul>
 </li>
 </ol>
-<p>The <code class="docutils literal notranslate"><span class="pre">should_refresh_token</span></code> method is intended to be implemented for environments where multiple Connection instances are running on paralel. This method should check if it’s time to refresh the token or not. The chosen backend can store a flag somewhere to answer this question. This can avoid race conditions between different instances trying to refresh the token at once, when only one should make the refresh. The method should return three posible values:</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">should_refresh_token</span></code> method is intended to be implemented for environments where multiple Connection instances are running on parallel. This method should check if it’s time to refresh the token or not. The chosen backend can store a flag somewhere to answer this question. This can avoid race conditions between different instances trying to refresh the token at once, when only one should make the refresh. The method should return three possible values:</p>
 <ul class="simple">
 <li><p><strong>True</strong>: then the Connection will refresh the token.</p></li>
 <li><p><strong>False</strong>: then the Connection will NOT refresh the token.</p></li>
