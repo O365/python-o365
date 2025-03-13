@@ -67,7 +67,7 @@ Authentication
 ==============
 Types
 -----
-You can only authenticate using oauth authentication because Microsoft deprecated basic auth on November 1st 2018.
+You can only authenticate using OAuth authentication because Microsoft deprecated basic auth on November 1st 2018.
 
 .. important::
 
@@ -75,11 +75,11 @@ You can only authenticate using oauth authentication because Microsoft deprecate
 
 There are currently three authentication methods:
 
-* `Authenticate on behalf of a user <https://docs.microsoft.com/en-us/graph/auth-v2-user?context=graph%2Fapi%2F1.0&view=graph-rest-1.0/>`_: Any user will give consent to the app to access its resources. This oauth flow is called authorization code grant flow. This is the default authentication method used by this library.
+* `Authenticate on behalf of a user <https://docs.microsoft.com/en-us/graph/auth-v2-user?context=graph%2Fapi%2F1.0&view=graph-rest-1.0/>`_: Any user will give consent to the app to access its resources. This OAuth flow is called authorization code grant flow. This is the default authentication method used by this library.
 
 * `Authenticate on behalf of a user (public) <https://docs.microsoft.com/en-us/graph/auth-v2-user?context=graph%2Fapi%2F1.0&view=graph-rest-1.0/>`_: Same as the former but for public apps where the client secret can't be secured. Client secret is not required.
 
-* `Authenticate with your own identity <https://docs.microsoft.com/en-us/graph/auth-v2-service?context=graph%2Fapi%2F1.0&view=graph-rest-1.0>`_: This will use your own identity (the app identity). This oauth flow is called client credentials grant flow.
+* `Authenticate with your own identity <https://docs.microsoft.com/en-us/graph/auth-v2-service?context=graph%2Fapi%2F1.0&view=graph-rest-1.0>`_: This will use your own identity (the app identity). This OAuth flow is called client credentials grant flow.
 
 .. note::
 
@@ -87,9 +87,11 @@ There are currently three authentication methods:
 
 When to use one or the other and requirements:
 
+
+
 +----------------------------+---------------------------------------------------------+-----------------------------------------------------------+----------------------------------------------------------+
 | Topic                      | On behalf of a user *(auth_flow_type=='authorization')* | On behalf of a user (public) *(auth_flow_type=='public')* | With your own identity *(auth_flow_type=='credentials')* |
-+----------------------------+---------------------------------------------------------+-----------------------------------------------------------+----------------------------------------------------------+
++============================+=========================================================+===========================================================+==========================================================+
 | **Register the App**       | Required                                                | Required                                                  | Required                                                 |
 +----------------------------+---------------------------------------------------------+-----------------------------------------------------------+----------------------------------------------------------+
 | **Requires Admin Consent** | Only on certain advanced permissions                    | Only on certain advanced permissions                      | Yes, for everything                                      |
@@ -114,7 +116,7 @@ When to use one or the other and requirements:
 | **Tenant ID Required**     | Defaults to "common"                                    | Defaults to "common"                                      | Required (can't be "common")                             |
 +----------------------------+---------------------------------------------------------+-----------------------------------------------------------+----------------------------------------------------------+
 
-*Note: *O365 will automatically refresh the token for you on either authentication method. The refresh token lasts 90 days but it's refreshed on each connection so as long as you connect within 90 days you can have unlimited access.*
+*Note: *O365 will automatically refresh the token for you on either authentication method. The refresh token lasts 90 days, but it's refreshed on each connection so as long as you connect within 90 days you can have unlimited access.*
 
 The Connection Class handles the authentication.
 
@@ -345,7 +347,7 @@ The scopes only matter when using the "on behalf of a user" authentication metho
 .. note::
    You only need the scopes when login as those are kept stored within the token on the token backend.
 
-The user of this library can then request access to one or more of these resources by providing scopes to the oauth provider.
+The user of this library can then request access to one or more of these resources by providing scopes to the OAuth provider.
 
 .. note::
    If you later on change the scopes requested, the current token will be invalid, and you will have to re-authenticate. The user that logins will be asked for consent.
