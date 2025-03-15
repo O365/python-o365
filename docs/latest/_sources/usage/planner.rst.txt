@@ -23,11 +23,8 @@ Assuming an authenticated account and a previously created group, create a Plan 
         owner="group_object_id", title="Test Plan"
     )
 
-Common commands for :code:`planner` include :code:`.create_plan()`, :code:`.get_bucket_by_id()`, :code:`.get_my_tasks()`, :code:`.list_group_plans()`, :code:`.list_group_tasks()`
-and :code:`.delete()`.
-
-Common commands for :code:`plan` include :code:`.create_bucket()`, :code:`.get_details()`, :code:`.list_buckets()`, :code:`.list_tasks()`
-and :code:`.delete()`.
+| Common commands for :code:`planner` include :code:`.create_plan()`, :code:`.get_bucket_by_id()`, :code:`.get_my_tasks()`, :code:`.list_group_plans()`, :code:`.list_group_tasks()` and :code:`.delete()`.
+| Common commands for :code:`plan` include :code:`.create_bucket()`, :code:`.get_details()`, :code:`.list_buckets()`, :code:`.list_tasks()` and :code:`.delete()`.
 
 Then to create a bucket within a plan.
 
