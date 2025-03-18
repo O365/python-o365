@@ -331,10 +331,7 @@ class Account:
     def tasks(self, *, resource: str = ''):
         """ Get an instance to read information from Microsoft ToDo """
 
-        if isinstance(self.protocol, MSOffice365Protocol):
-            from .tasks import ToDo
-        else:
-            from .tasks_graph import ToDo as ToDo
+        from .tasks import ToDo
 
         return ToDo(parent=self, main_resource=resource)
 
