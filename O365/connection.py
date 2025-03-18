@@ -105,7 +105,6 @@ class Protocol:
         self.use_default_casing: bool = True if casing_function is None else False
         self.casing_function: Callable = casing_function or to_camel_case
 
-
         # define any keyword that can be different in this protocol
         # for example, attachments OData type differs between Outlook
         #  rest api and graph: (graph = #microsoft.graph.fileAttachment and
