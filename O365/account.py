@@ -77,7 +77,10 @@ class Account:
             if self.con.load_token_from_backend() is False:
                 return False
 
-        return not self.con.token_backend.token_is_expired(username=self.con.username, refresh_token=True)
+        return (
+                self.con.token_backend.token_is_long_lived(username=self.con.username)
+                or not self.con.token_backend.token_is_expired(username=self.con.username)
+        )
 
     def authenticate(self, *, requested_scopes: Optional[list] = None, redirect_uri: Optional[str] = None,
                      handle_consent: Callable = consent_input_token, **kwargs) -> bool:
@@ -182,11 +185,12 @@ class Account:
         return self.con.username
 
     def get_authenticated_usernames(self) -> list[str]:
-        """ Returns a list of usernames that are authenticated and have a valid access or refresh token. """
+        """ Returns a list of usernames that are authenticated and have a valid access token or a refresh token."""
         usernames = []
+        tb = self.con.token_backend
         for account in self.con.token_backend.get_all_accounts():
             username = account.get('username')
-            if username and not self.con.token_backend.token_is_expired(username=username, refresh_token=True):
+            if username and (tb.token_is_long_lived(username=username) or not tb.token_is_expired(username=username)):
                 usernames.append(username)
 
         return usernames
@@ -331,10 +335,7 @@ class Account:
     def tasks(self, *, resource: str = ''):
         """ Get an instance to read information from Microsoft ToDo """
 
-        if isinstance(self.protocol, MSOffice365Protocol):
-            from .tasks import ToDo
-        else:
-            from .tasks_graph import ToDo as ToDo
+        from .tasks import ToDo
 
         return ToDo(parent=self, main_resource=resource)
 

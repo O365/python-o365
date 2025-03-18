@@ -34,43 +34,46 @@ from .utils import (
 
 log = logging.getLogger(__name__)
 
-O365_API_VERSION = 'v2.0'
-GRAPH_API_VERSION = 'v1.0'
-OAUTH_REDIRECT_URL = 'https://login.microsoftonline.com/common/oauth2/nativeclient'
+O365_API_VERSION = "v2.0"
+GRAPH_API_VERSION = "v1.0"
+OAUTH_REDIRECT_URL = "https://login.microsoftonline.com/common/oauth2/nativeclient"
 
 RETRIES_STATUS_LIST = (
     429,  # Status code for TooManyRequests
-    500, 502, 503, 504  # Server errors
+    500,
+    502,
+    503,
+    504,  # Server errors
 )
 RETRIES_BACKOFF_FACTOR = 0.5
 
 DEFAULT_SCOPES = {
     # wrap any scope in a 1 element tuple to avoid prefixing
-    'basic': ['User.Read'],
-    'mailbox': ['Mail.Read'],
-    'mailbox_shared': ['Mail.Read.Shared'],
+    "basic": ["User.Read"],
+    "mailbox": ["Mail.Read"],
+    "mailbox_shared": ["Mail.Read.Shared"],
     "mailbox_settings": ["MailboxSettings.ReadWrite"],
-    'message_send': ['Mail.Send'],
-    'message_send_shared': ['Mail.Send.Shared'],
-    'message_all': ['Mail.ReadWrite', 'Mail.Send'],
-    'message_all_shared': ['Mail.ReadWrite.Shared', 'Mail.Send.Shared'],
-    'address_book': ['Contacts.Read'],
-    'address_book_shared': ['Contacts.Read.Shared'],
-    'address_book_all': ['Contacts.ReadWrite'],
-    'address_book_all_shared': ['Contacts.ReadWrite.Shared'],
-    'calendar': ['Calendars.Read'],
-    'calendar_shared': ['Calendars.Read.Shared'],
-    'calendar_all': ['Calendars.ReadWrite'],
-    'calendar_shared_all': ['Calendars.ReadWrite.Shared'],
-    'users': ['User.ReadBasic.All'],
-    'onedrive': ['Files.Read.All'],
-    'onedrive_all': ['Files.ReadWrite.All'],
-    'sharepoint': ['Sites.Read.All'],
-    'sharepoint_all': ['Sites.ReadWrite.All'],
-    'settings_all': ['MailboxSettings.ReadWrite'],
-    'tasks': ['Tasks.Read'],
-    'tasks_all': ['Tasks.ReadWrite'],
-    'presence': ['Presence.Read']
+    "message_send": ["Mail.Send"],
+    "message_send_shared": ["Mail.Send.Shared"],
+    "message_all": ["Mail.ReadWrite", "Mail.Send"],
+    "message_all_shared": ["Mail.ReadWrite.Shared", "Mail.Send.Shared"],
+    "address_book": ["Contacts.Read"],
+    "address_book_shared": ["Contacts.Read.Shared"],
+    "address_book_all": ["Contacts.ReadWrite"],
+    "address_book_all_shared": ["Contacts.ReadWrite.Shared"],
+    "calendar": ["Calendars.Read"],
+    "calendar_shared": ["Calendars.Read.Shared"],
+    "calendar_all": ["Calendars.ReadWrite"],
+    "calendar_shared_all": ["Calendars.ReadWrite.Shared"],
+    "users": ["User.ReadBasic.All"],
+    "onedrive": ["Files.Read.All"],
+    "onedrive_all": ["Files.ReadWrite.All"],
+    "sharepoint": ["Sites.Read.All"],
+    "sharepoint_all": ["Sites.ReadWrite.All"],
+    "settings_all": ["MailboxSettings.ReadWrite"],
+    "tasks": ["Tasks.Read"],
+    "tasks_all": ["Tasks.ReadWrite"],
+    "presence": ["Presence.Read"],
 }
 
 MsalClientApplication = Union[PublicClientApplication, ConfidentialClientApplication]
@@ -81,20 +84,25 @@ class TokenExpiredError(HTTPError):
 
 
 class Protocol:
-    """ Base class for all protocols """
+    """Base class for all protocols"""
 
     # Override these in subclass
-    _protocol_url = 'not_defined'  # Main url to request.
-    _oauth_scope_prefix = ''  # Prefix for scopes
+    _protocol_url = "not_defined"  # Main url to request.
+    _oauth_scope_prefix = ""  # Prefix for scopes
     _oauth_scopes = {}  # Dictionary of {scopes_name: [scope1, scope2]}
 
-    def __init__(self, *, protocol_url: Optional[str] = None,
-                 api_version: Optional[str] = None,
-                 default_resource: Optional[str] = None,
-                 casing_function: Optional[Callable] = None,
-                 protocol_scope_prefix: Optional[str] = None,
-                 timezone: Union[Optional[str], Optional[ZoneInfo]] = None, **kwargs):
-        """ Create a new protocol object
+    def __init__(
+        self,
+        *,
+        protocol_url: Optional[str] = None,
+        api_version: Optional[str] = None,
+        default_resource: Optional[str] = None,
+        casing_function: Optional[Callable] = None,
+        protocol_scope_prefix: Optional[str] = None,
+        timezone: Union[Optional[str], Optional[ZoneInfo]] = None,
+        **kwargs,
+    ):
+        """Create a new protocol object
 
         :param protocol_url: the base url used to communicate with the
          server
@@ -109,18 +117,14 @@ class Protocol:
         :raises ValueError: if protocol_url or api_version are not supplied
         """
         if protocol_url is None or api_version is None:
-            raise ValueError(
-                'Must provide valid protocol_url and api_version values')
+            raise ValueError("Must provide valid protocol_url and api_version values")
         self.protocol_url: str = protocol_url or self._protocol_url
-        self.protocol_scope_prefix: str = protocol_scope_prefix or ''
+        self.protocol_scope_prefix: str = protocol_scope_prefix or ""
         self.api_version: str = api_version
-        self.service_url: str = f'{protocol_url}{api_version}/'
+        self.service_url: str = f"{protocol_url}{api_version}/"
         self.default_resource: str = default_resource or ME_RESOURCE
         self.use_default_casing: bool = True if casing_function is None else False
         self.casing_function: Callable = casing_function or to_camel_case
-
-        # get_localzone() from tzlocal will try to get the system local timezone and if not will return UTC
-        self._timezone: ZoneInfo = get_localzone()
 
         # define any keyword that can be different in this protocol
         # for example, attachments OData type differs between Outlook
@@ -130,8 +134,13 @@ class Protocol:
 
         self.max_top_value: int = 500  # Max $top parameter value
 
+        self._timezone = None
+
         if timezone:
             self.timezone = timezone  # property setter will convert this timezone to ZoneInfo if a string is provided
+        else:
+            # get_localzone() from tzlocal will try to get the system local timezone and if not will return UTC
+            self.timezone: ZoneInfo = get_localzone()
 
     @property
     def timezone(self) -> ZoneInfo:
@@ -142,21 +151,24 @@ class Protocol:
         self._update_timezone(timezone)
 
     def _update_timezone(self, timezone: Union[str, ZoneInfo]) -> None:
-        """Sets the timezone. This is not done in the setter as you can't call super from a overriden setter """
+        """Sets the timezone. This is not done in the setter as you can't call super from a overriden setter"""
         if isinstance(timezone, str):
             # convert string to ZoneInfo
             try:
                 timezone = ZoneInfo(timezone)
             except ZoneInfoNotFoundError as e:
-                log.error(f'Timezone {timezone} could not be found.')
+                log.error(f"Timezone {timezone} could not be found.")
                 raise e
         else:
             if not isinstance(timezone, ZoneInfo):
-                raise ValueError('The timezone parameter must be either a string or a valid ZoneInfo instance.')
+                raise ValueError(
+                    "The timezone parameter must be either a string or a valid ZoneInfo instance."
+                )
+        log.debug(f"Timezone set to: {timezone}.")
         self._timezone = timezone
 
     def get_service_keyword(self, keyword: str) -> Optional[str]:
-        """ Returns the data set to the key in the internal data-key dict
+        """Returns the data set to the key in the internal data-key dict
 
         :param keyword: key to get value for
         :return: value of the keyword
@@ -164,7 +176,7 @@ class Protocol:
         return self.keyword_data_store.get(keyword, None)
 
     def convert_case(self, key: str) -> str:
-        """ Returns a key converted with this protocol casing method
+        """Returns a key converted with this protocol casing method
 
         Converts case to send/read from the cloud
 
@@ -182,15 +194,17 @@ class Protocol:
 
     @staticmethod
     def to_api_case(key: str) -> str:
-        """ Converts key to snake_case
+        """Converts key to snake_case
 
         :param key: key to convert into snake_case
         :return: key after case conversion
         """
         return to_snake_case(key)
 
-    def get_scopes_for(self, user_provided_scopes: Optional[Union[list, str, tuple]]) -> list:
-        """ Returns a list of scopes needed for each of the
+    def get_scopes_for(
+        self, user_provided_scopes: Optional[Union[list, str, tuple]]
+    ) -> list:
+        """Returns a list of scopes needed for each of the
         scope_helpers provided, by adding the prefix to them if required
 
         :param user_provided_scopes: a list of scopes or scope helpers
@@ -204,7 +218,9 @@ class Protocol:
             user_provided_scopes = [user_provided_scopes]
 
         if not isinstance(user_provided_scopes, (list, tuple)):
-            raise ValueError("'user_provided_scopes' must be a list or a tuple of strings")
+            raise ValueError(
+                "'user_provided_scopes' must be a list or a tuple of strings"
+            )
 
         scopes = set()
         for app_part in user_provided_scopes:
@@ -214,24 +230,24 @@ class Protocol:
         return list(scopes)
 
     def prefix_scope(self, scope: str) -> str:
-        """ Inserts the protocol scope prefix if required"""
+        """Inserts the protocol scope prefix if required"""
         if self.protocol_scope_prefix:
             if not scope.startswith(self.protocol_scope_prefix):
-                return f'{self.protocol_scope_prefix}{scope}'
+                return f"{self.protocol_scope_prefix}{scope}"
         return scope
 
 
 class MSGraphProtocol(Protocol):
-    """ A Microsoft Graph Protocol Implementation
+    """A Microsoft Graph Protocol Implementation
     https://docs.microsoft.com/en-us/outlook/rest/compare-graph-outlook
     """
 
-    _protocol_url = 'https://graph.microsoft.com/'
-    _oauth_scope_prefix = 'https://graph.microsoft.com/'
+    _protocol_url = "https://graph.microsoft.com/"
+    _oauth_scope_prefix = "https://graph.microsoft.com/"
     _oauth_scopes = DEFAULT_SCOPES
 
-    def __init__(self, api_version='v1.0', default_resource=None, **kwargs):
-        """ Create a new Microsoft Graph protocol object
+    def __init__(self, api_version="v1.0", default_resource=None, **kwargs):
+        """Create a new Microsoft Graph protocol object
 
         _protocol_url = 'https://graph.microsoft.com/'
 
@@ -241,37 +257,47 @@ class MSGraphProtocol(Protocol):
         :param str default_resource: the default resource to use when there is
          nothing explicitly specified during the requests
         """
-        super().__init__(protocol_url=self._protocol_url,
-                         api_version=api_version,
-                         default_resource=default_resource,
-                         casing_function=to_camel_case,
-                         protocol_scope_prefix=self._oauth_scope_prefix,
-                         **kwargs)
+        super().__init__(
+            protocol_url=self._protocol_url,
+            api_version=api_version,
+            default_resource=default_resource,
+            casing_function=to_camel_case,
+            protocol_scope_prefix=self._oauth_scope_prefix,
+            **kwargs,
+        )
 
-        self.keyword_data_store['message_type'] = 'microsoft.graph.message'
-        self.keyword_data_store['event_message_type'] = 'microsoft.graph.eventMessage'
-        self.keyword_data_store['file_attachment_type'] = '#microsoft.graph.fileAttachment'
-        self.keyword_data_store['item_attachment_type'] = '#microsoft.graph.itemAttachment'
-        self.keyword_data_store['prefer_timezone_header'] = f'outlook.timezone="{get_windows_tz(self._timezone)}"'
+        self.keyword_data_store["message_type"] = "microsoft.graph.message"
+        self.keyword_data_store["event_message_type"] = "microsoft.graph.eventMessage"
+        self.keyword_data_store["file_attachment_type"] = (
+            "#microsoft.graph.fileAttachment"
+        )
+        self.keyword_data_store["item_attachment_type"] = (
+            "#microsoft.graph.itemAttachment"
+        )
+        self.keyword_data_store["prefer_timezone_header"] = (
+            f'outlook.timezone="{get_windows_tz(self._timezone)}"'
+        )
         self.max_top_value = 999  # Max $top parameter value
 
     @Protocol.timezone.setter
     def timezone(self, timezone: Union[str, ZoneInfo]) -> None:
         super()._update_timezone(timezone)
-        self.keyword_data_store['prefer_timezone_header'] = f'outlook.timezone="{get_windows_tz(self._timezone)}"'
+        self.keyword_data_store["prefer_timezone_header"] = (
+            f'outlook.timezone="{get_windows_tz(self._timezone)}"'
+        )
 
 
 class MSOffice365Protocol(Protocol):
-    """ A Microsoft Office 365 Protocol Implementation
+    """A Microsoft Office 365 Protocol Implementation
     https://docs.microsoft.com/en-us/outlook/rest/compare-graph-outlook
     """
 
-    _protocol_url = 'https://outlook.office.com/api/'
-    _oauth_scope_prefix = 'https://outlook.office.com/'
+    _protocol_url = "https://outlook.office.com/api/"
+    _oauth_scope_prefix = "https://outlook.office.com/"
     _oauth_scopes = DEFAULT_SCOPES
 
-    def __init__(self, api_version='v2.0', default_resource=None, **kwargs):
-        """ Create a new Office 365 protocol object
+    def __init__(self, api_version="v2.0", default_resource=None, **kwargs):
+        """Create a new Office 365 protocol object
 
         _protocol_url = 'https://outlook.office.com/api/'
 
@@ -281,38 +307,52 @@ class MSOffice365Protocol(Protocol):
         :param str default_resource: the default resource to use when there is
          nothing explicitly specified during the requests
         """
-        super().__init__(protocol_url=self._protocol_url,
-                         api_version=api_version,
-                         default_resource=default_resource,
-                         casing_function=to_pascal_case,
-                         protocol_scope_prefix=self._oauth_scope_prefix,
-                         **kwargs)
+        super().__init__(
+            protocol_url=self._protocol_url,
+            api_version=api_version,
+            default_resource=default_resource,
+            casing_function=to_pascal_case,
+            protocol_scope_prefix=self._oauth_scope_prefix,
+            **kwargs,
+        )
 
-        self.keyword_data_store['message_type'] = 'Microsoft.OutlookServices.Message'
-        self.keyword_data_store['event_message_type'] = 'Microsoft.OutlookServices.EventMessage'
-        self.keyword_data_store['file_attachment_type'] = '#Microsoft.OutlookServices.FileAttachment'
-        self.keyword_data_store['item_attachment_type'] = '#Microsoft.OutlookServices.ItemAttachment'
-        self.keyword_data_store['prefer_timezone_header'] = f'outlook.timezone="{get_windows_tz(self.timezone)}"'
+        self.keyword_data_store["message_type"] = "Microsoft.OutlookServices.Message"
+        self.keyword_data_store["event_message_type"] = (
+            "Microsoft.OutlookServices.EventMessage"
+        )
+        self.keyword_data_store["file_attachment_type"] = (
+            "#Microsoft.OutlookServices.FileAttachment"
+        )
+        self.keyword_data_store["item_attachment_type"] = (
+            "#Microsoft.OutlookServices.ItemAttachment"
+        )
+        self.keyword_data_store["prefer_timezone_header"] = (
+            f'outlook.timezone="{get_windows_tz(self.timezone)}"'
+        )
         self.max_top_value = 999  # Max $top parameter value
 
     @Protocol.timezone.setter
     def timezone(self, timezone: Union[str, ZoneInfo]) -> None:
         super()._update_timezone(timezone)
-        self.keyword_data_store['prefer_timezone_header'] = f'outlook.timezone="{get_windows_tz(self._timezone)}"'
+        self.keyword_data_store["prefer_timezone_header"] = (
+            f'outlook.timezone="{get_windows_tz(self._timezone)}"'
+        )
 
 
 class MSBusinessCentral365Protocol(Protocol):
-    """ A Microsoft Business Central Protocol Implementation
+    """A Microsoft Business Central Protocol Implementation
     https://docs.microsoft.com/en-us/dynamics-nav/api-reference/v1.0/endpoints-apis-for-dynamics
     """
 
-    _protocol_url = 'https://api.businesscentral.dynamics.com/'
-    _oauth_scope_prefix = 'https://api.businesscentral.dynamics.com/'
+    _protocol_url = "https://api.businesscentral.dynamics.com/"
+    _oauth_scope_prefix = "https://api.businesscentral.dynamics.com/"
     _oauth_scopes = DEFAULT_SCOPES
-    _protocol_scope_prefix = 'https://api.businesscentral.dynamics.com/'
+    _protocol_scope_prefix = "https://api.businesscentral.dynamics.com/"
 
-    def __init__(self, api_version='v1.0', default_resource=None, environment=None, **kwargs):
-        """ Create a new Microsoft Graph protocol object
+    def __init__(
+        self, api_version="v1.0", default_resource=None, environment=None, **kwargs
+    ):
+        """Create a new Microsoft Graph protocol object
 
         _protocol_url = 'https://api.businesscentral.dynamics.com/'
 
@@ -327,47 +367,69 @@ class MSBusinessCentral365Protocol(Protocol):
             _environment = "/" + environment
         else:
             _version = "1.0"
-            _environment = ''
+            _environment = ""
 
         self._protocol_url = f"{self._protocol_url}v{_version}{_environment}/api/"
 
-        super().__init__(protocol_url=self._protocol_url,
-                         api_version=api_version,
-                         default_resource=default_resource,
-                         casing_function=to_camel_case,
-                         protocol_scope_prefix=self._protocol_scope_prefix,
-                         **kwargs)
+        super().__init__(
+            protocol_url=self._protocol_url,
+            api_version=api_version,
+            default_resource=default_resource,
+            casing_function=to_camel_case,
+            protocol_scope_prefix=self._protocol_scope_prefix,
+            **kwargs,
+        )
 
-        self.keyword_data_store['message_type'] = 'microsoft.graph.message'
-        self.keyword_data_store['event_message_type'] = 'microsoft.graph.eventMessage'
-        self.keyword_data_store['file_attachment_type'] = '#microsoft.graph.fileAttachment'
-        self.keyword_data_store['item_attachment_type'] = '#microsoft.graph.itemAttachment'
-        self.keyword_data_store['prefer_timezone_header'] = f'outlook.timezone="{get_windows_tz(self.timezone)}"'
+        self.keyword_data_store["message_type"] = "microsoft.graph.message"
+        self.keyword_data_store["event_message_type"] = "microsoft.graph.eventMessage"
+        self.keyword_data_store["file_attachment_type"] = (
+            "#microsoft.graph.fileAttachment"
+        )
+        self.keyword_data_store["item_attachment_type"] = (
+            "#microsoft.graph.itemAttachment"
+        )
+        self.keyword_data_store["prefer_timezone_header"] = (
+            f'outlook.timezone="{get_windows_tz(self.timezone)}"'
+        )
         self.max_top_value = 999  # Max $top parameter value
 
     @Protocol.timezone.setter
     def timezone(self, timezone: Union[str, ZoneInfo]) -> None:
         super()._update_timezone(timezone)
-        self.keyword_data_store['prefer_timezone_header'] = f'outlook.timezone="{get_windows_tz(self._timezone)}"'
+        self.keyword_data_store["prefer_timezone_header"] = (
+            f'outlook.timezone="{get_windows_tz(self._timezone)}"'
+        )
 
 
 class Connection:
-    """ Handles all communication (requests) between the app and the server """
+    """Handles all communication (requests) between the app and the server"""
 
-    _allowed_methods = ['get', 'post', 'put', 'patch', 'delete']
+    _allowed_methods = ["get", "post", "put", "patch", "delete"]
 
-    def __init__(self, credentials: Tuple, *,
-                 proxy_server: Optional[str] = None, proxy_port: Optional[int] = 8080,
-                 proxy_username: Optional[str] = None, proxy_password: Optional[str] = None,
-                 proxy_http_only: bool = False, requests_delay: int = 200, raise_http_errors: bool = True,
-                 request_retries: int = 3, token_backend: Optional[BaseTokenBackend] = None,
-                 tenant_id: str = 'common', auth_flow_type: str = 'authorization',
-                 username: Optional[str] = None, password: Optional[str] = None,
-                 timeout: Optional[int] = None, json_encoder: Optional[json.JSONEncoder] = None,
-                 verify_ssl: bool = True,
-                 default_headers: dict = None,
-                 store_token_after_refresh: bool = True,
-                 **kwargs):
+    def __init__(
+        self,
+        credentials: Tuple,
+        *,
+        proxy_server: Optional[str] = None,
+        proxy_port: Optional[int] = 8080,
+        proxy_username: Optional[str] = None,
+        proxy_password: Optional[str] = None,
+        proxy_http_only: bool = False,
+        requests_delay: int = 200,
+        raise_http_errors: bool = True,
+        request_retries: int = 3,
+        token_backend: Optional[BaseTokenBackend] = None,
+        tenant_id: str = "common",
+        auth_flow_type: str = "authorization",
+        username: Optional[str] = None,
+        password: Optional[str] = None,
+        timeout: Optional[int] = None,
+        json_encoder: Optional[json.JSONEncoder] = None,
+        verify_ssl: bool = True,
+        default_headers: dict = None,
+        store_token_after_refresh: bool = True,
+        **kwargs,
+    ):
         """Creates an API connection object
 
         :param tuple credentials: a tuple of (client_id, client_secret)
@@ -737,11 +799,10 @@ class Connection:
             self.load_token_from_backend()
 
         token = self.token_backend.get_access_token(username=self.username)
-        if token is None:
-            raise RuntimeError("No auth token found. Authentication Flow needed")
 
         session = Session()
-        session.headers.update({"Authorization": f'Bearer {token["secret"]}'})
+        if token is not None:
+            session.headers.update({"Authorization": f'Bearer {token["secret"]}'})
         session.verify = self.verify_ssl
         session.proxies = self.proxy
 
@@ -792,52 +853,63 @@ class Connection:
         if self.session is None:
             self.session = self.get_session(load_token=True)
 
-        if self.token_backend.get_access_token(username=self.username) is None:
-            raise RuntimeError('Access Token not found. You will need to re-authenticate.')
-
         token_refreshed = False
 
-        if (self.token_backend.token_is_long_lived(username=self.username) or
-                self.auth_flow_type == 'credentials'):
-
+        if (
+            self.token_backend.token_is_long_lived(username=self.username)
+            or self.auth_flow_type == "credentials"
+        ):
             should_rt = self.token_backend.should_refresh_token(self)
             if should_rt is True:
                 # The backend has checked that we can refresh the token
-                log.debug('Refreshing access token')
+                log.debug("Refreshing access token")
 
-                # This will set the connection scopes from the scopes set in the stored token
+                # This will set the connection scopes from the scopes set in the stored refresh or access token
                 scopes = self.token_backend.get_token_scopes(
-                    username=self.username,
-                    remove_reserved=True
+                    username=self.username, remove_reserved=True
                 )
 
                 result = self.msal_client.acquire_token_silent_with_error(
                     scopes=scopes,
-                    account=self.msal_client.get_accounts(username=self.username)[0]
+                    account=self.msal_client.get_accounts(username=self.username)[0],
                 )
                 if result is None:
-                    raise RuntimeError('There is no access token to refresh')
-                elif 'error' in result:
-                    raise RuntimeError(f'Refresh token operation failed: {result["error"]}')
-                elif 'access_token' in result:
+                    raise RuntimeError("There is no refresh token to refresh")
+                elif "error" in result:
+                    raise RuntimeError(
+                        f'Refresh token operation failed: {result["error"]}'
+                    )
+                elif "access_token" in result:
                     # refresh done, update authorization header
                     token_refreshed = True
-                    self.session.headers.update({'Authorization': f'Bearer {result["access_token"]}'})
-                    log.debug(f'New oauth token fetched by refresh method for username: {self.username}')
+                    self.session.headers.update(
+                        {"Authorization": f'Bearer {result["access_token"]}'}
+                    )
+                    log.debug(
+                        f"New oauth token fetched by refresh method for username: {self.username}"
+                    )
             elif should_rt is False:
                 # the token was refreshed by another instance and updated into this instance,
                 # so: update the session token and retry the request again
-                access_token = self.token_backend.get_access_token(username=self.username)
+                access_token = self.token_backend.get_access_token(
+                    username=self.username
+                )
                 if access_token:
-                    self.session.headers.update({'Authorization': f'Bearer {access_token["secret"]}'})
+                    self.session.headers.update(
+                        {"Authorization": f'Bearer {access_token["secret"]}'}
+                    )
                 else:
-                    raise RuntimeError("Can't get access token refreshed by another instance.")
+                    raise RuntimeError(
+                        "Can't get access token refreshed by another instance."
+                    )
             else:
                 # the refresh was performed by the token backend.
                 pass
         else:
-            log.error('You can not refresh an access token that has no "refresh_token" available.'
-                      'Include "offline_access" scope when authenticating to get a "refresh_token"')
+            log.error(
+                'You can not refresh an access token that has no "refresh_token" available.'
+                'Include "offline_access" permission to get a "refresh_token"'
+            )
             return False
 
         if token_refreshed and self.store_token_after_refresh:
@@ -845,19 +917,21 @@ class Connection:
         return True
 
     def _check_delay(self) -> None:
-        """ Checks if a delay is needed between requests and sleeps if True """
+        """Checks if a delay is needed between requests and sleeps if True"""
         if self._previous_request_at:
-            dif = round(time.time() - self._previous_request_at,
-                        2) * 1000  # difference in milliseconds
+            dif = (
+                round(time.time() - self._previous_request_at, 2) * 1000
+            )  # difference in milliseconds
             if dif < self.requests_delay:
-                sleep_for = (self.requests_delay - dif)
-                log.debug(f'Sleeping for {sleep_for} milliseconds')
+                sleep_for = self.requests_delay - dif
+                log.debug(f"Sleeping for {sleep_for} milliseconds")
                 time.sleep(sleep_for / 1000)  # sleep needs seconds
         self._previous_request_at = time.time()
 
-    def _internal_request(self, session_obj: Session,
-                          url: str, method: str, **kwargs) -> Response:
-        """ Internal handling of requests. Handles Exceptions.
+    def _internal_request(
+        self, session_obj: Session, url: str, method: str, **kwargs
+    ) -> Response:
+        """Internal handling of requests. Handles Exceptions.
 
         :param session_obj: a requests Session instance.
         :param str url: url to send request to
@@ -868,89 +942,105 @@ class Connection:
         """
         method = method.lower()
         if method not in self._allowed_methods:
-            raise ValueError(f'Method must be one of: {self._allowed_methods}')
+            raise ValueError(f"Method must be one of: {self._allowed_methods}")
 
-        if 'headers' not in kwargs:
-            kwargs['headers'] = {**self.default_headers}
+        if "headers" not in kwargs:
+            kwargs["headers"] = {**self.default_headers}
         else:
             for key, value in self.default_headers.items():
-                if key not in kwargs['headers']:
-                    kwargs['headers'][key] = value
-                elif key == 'Prefer' and key in kwargs['headers']:
-                    kwargs['headers'][key] = f"{kwargs['headers'][key]}, {value}"
+                if key not in kwargs["headers"]:
+                    kwargs["headers"][key] = value
+                elif key == "Prefer" and key in kwargs["headers"]:
+                    kwargs["headers"][key] = f"{kwargs['headers'][key]}, {value}"
 
-        if method == 'get':
-            kwargs.setdefault('allow_redirects', True)
-        elif method in ['post', 'put', 'patch']:
-            if kwargs.get('headers') is not None and kwargs['headers'].get(
-                    'Content-type') is None:
-                kwargs['headers']['Content-type'] = 'application/json'
-            if 'data' in kwargs and kwargs['data'] is not None and kwargs['headers'].get(
-                    'Content-type') == 'application/json':
-                kwargs['data'] = json.dumps(kwargs['data'], cls=self.json_encoder)  # convert to json
+        if method == "get":
+            kwargs.setdefault("allow_redirects", True)
+        elif method in ["post", "put", "patch"]:
+            if (
+                kwargs.get("headers") is not None
+                and kwargs["headers"].get("Content-type") is None
+            ):
+                kwargs["headers"]["Content-type"] = "application/json"
+            if (
+                "data" in kwargs
+                and kwargs["data"] is not None
+                and kwargs["headers"].get("Content-type") == "application/json"
+            ):
+                kwargs["data"] = json.dumps(
+                    kwargs["data"], cls=self.json_encoder
+                )  # convert to json
 
         if self.timeout is not None:
-            kwargs['timeout'] = self.timeout
+            kwargs["timeout"] = self.timeout
 
         self._check_delay()  # sleeps if needed
         try:
-            log.debug(f'Requesting ({method.upper()}) URL: {url}')
-            log.debug(f'Request parameters: {kwargs}')
+            log.debug(f"Requesting ({method.upper()}) URL: {url}")
+            log.debug(f"Request parameters: {kwargs}")
             # auto_retry will occur inside this function call if enabled
             response = session_obj.request(method, url, **kwargs)
 
             response.raise_for_status()  # raise 4XX and 5XX error codes.
-            log.debug(f'Received response ({response.status_code}) from URL {response.url}')
+            log.debug(
+                f"Received response ({response.status_code}) from URL {response.url}"
+            )
             return response
         except (ConnectionError, ProxyError, SSLError, Timeout) as e:
             # We couldn't connect to the target url, raise error
-            log.debug(f'Connection Error calling: {url}.{f"Using proxy {self.proxy}" if self.proxy else ""}')
+            log.debug(
+                f'Connection Error calling: {url}.{f"Using proxy {self.proxy}" if self.proxy else ""}'
+            )
             raise e  # re-raise exception
         except HTTPError as e:
             # Server response with 4XX or 5XX error status codes
             if e.response.status_code == 401 and self._token_expired_flag is False:
                 # This could be a token expired error.
                 if self.token_backend.token_is_expired(username=self.username):
-                    # Token has expired, try to refresh the token and try again on the next loop
+                    # Access token has expired, try to refresh the token and try again on the next loop
                     # By raising custom exception TokenExpiredError we signal oauth_request to fire a
                     # refresh token operation.
-                    log.debug(f'Oauth Token is expired for username: {self.username}')
+                    log.debug(f"Oauth Token is expired for username: {self.username}")
                     self._token_expired_flag = True
-                    raise TokenExpiredError('Oauth Token is expired')
+                    raise TokenExpiredError("Oauth Token is expired")
 
             # try to extract the error message:
             try:
                 error = e.response.json()
-                error_message = error.get('error', {}).get('message', '')
+                error_message = error.get("error", {}).get("message", "")
                 error_code = (
                     error.get("error", {}).get("innerError", {}).get("code", "")
                 )
             except ValueError:
-                error_message = ''
-                error_code = ''
+                error_message = ""
+                error_code = ""
 
             status_code = int(e.response.status_code / 100)
             if status_code == 4:
                 # Client Error
                 # Logged as error. Could be a library error or Api changes
-                log.error(f'Client Error: {e} | Error Message: {error_message} | Error Code: {error_code}')
+                log.error(
+                    f"Client Error: {e} | Error Message: {error_message} | Error Code: {error_code}"
+                )
             else:
                 # Server Error
-                log.debug(f'Server Error: {e}')
+                log.debug(f"Server Error: {e}")
             if self.raise_http_errors:
                 if error_message:
-                    raise HTTPError(f'{e.args[0]} | Error Message: {error_message}', response=e.response) from None
+                    raise HTTPError(
+                        f"{e.args[0]} | Error Message: {error_message}",
+                        response=e.response,
+                    ) from None
                 else:
                     raise e
             else:
                 return e.response
         except RequestException as e:
             # catch any other exception raised by requests
-            log.debug(f'Request Exception: {e}')
+            log.debug(f"Request Exception: {e}")
             raise e
 
     def naive_request(self, url: str, method: str, **kwargs) -> Response:
-        """ Makes a request to url using an without oauth authorization
+        """Makes a request to url using an without oauth authorization
         session, but through a normal session
 
         :param str url: url to send request to
@@ -966,7 +1056,7 @@ class Connection:
         return self._internal_request(self.naive_session, url, method, **kwargs)
 
     def oauth_request(self, url: str, method: str, **kwargs) -> Response:
-        """ Makes a request to url using an oauth session.
+        """Makes a request to url using an oauth session.
         Raises RuntimeError if the session does not have an Authorization header
 
         :param str url: url to send request to
@@ -979,8 +1069,10 @@ class Connection:
         if self.session is None:
             self.session = self.get_session(load_token=True)
         else:
-            if self.session.headers.get('Authorization') is None:
-                raise RuntimeError(f'No auth token found. Authentication Flow needed for user {self.username}')
+            if self.session.headers.get("Authorization") is None:
+                raise RuntimeError(
+                    f"No auth token found. Authentication Flow needed for user {self.username}"
+                )
 
         try:
             return self._internal_request(self.session, url, method, **kwargs)
@@ -995,7 +1087,7 @@ class Connection:
                 self._token_expired_flag = False
 
     def get(self, url: str, params: Optional[dict] = None, **kwargs) -> Response:
-        """ Shorthand for self.oauth_request(url, 'get')
+        """Shorthand for self.oauth_request(url, 'get')
 
         :param str url: url to send get oauth request to
         :param dict params: request parameter to get the service data
@@ -1003,10 +1095,10 @@ class Connection:
         :return: Response of the request
         :rtype: requests.Response
         """
-        return self.oauth_request(url, 'get', params=params, **kwargs)
+        return self.oauth_request(url, "get", params=params, **kwargs)
 
     def post(self, url: str, data: Optional[dict] = None, **kwargs) -> Response:
-        """ Shorthand for self.oauth_request(url, 'post')
+        """Shorthand for self.oauth_request(url, 'post')
 
         :param str url: url to send post oauth request to
         :param dict data: post data to update the service
@@ -1014,10 +1106,10 @@ class Connection:
         :return: Response of the request
         :rtype: requests.Response
         """
-        return self.oauth_request(url, 'post', data=data, **kwargs)
+        return self.oauth_request(url, "post", data=data, **kwargs)
 
     def put(self, url: str, data: Optional[dict] = None, **kwargs) -> Response:
-        """ Shorthand for self.oauth_request(url, 'put')
+        """Shorthand for self.oauth_request(url, 'put')
 
         :param str url: url to send put oauth request to
         :param dict data: put data to update the service
@@ -1025,10 +1117,10 @@ class Connection:
         :return: Response of the request
         :rtype: requests.Response
         """
-        return self.oauth_request(url, 'put', data=data, **kwargs)
+        return self.oauth_request(url, "put", data=data, **kwargs)
 
     def patch(self, url: str, data: Optional[dict] = None, **kwargs) -> Response:
-        """ Shorthand for self.oauth_request(url, 'patch')
+        """Shorthand for self.oauth_request(url, 'patch')
 
         :param str url: url to send patch oauth request to
         :param dict data: patch data to update the service
@@ -1036,17 +1128,17 @@ class Connection:
         :return: Response of the request
         :rtype: requests.Response
         """
-        return self.oauth_request(url, 'patch', data=data, **kwargs)
+        return self.oauth_request(url, "patch", data=data, **kwargs)
 
     def delete(self, url: str, **kwargs) -> Response:
-        """ Shorthand for self.request(url, 'delete')
+        """Shorthand for self.request(url, 'delete')
 
         :param str url: url to send delete oauth request to
         :param kwargs: extra params to send to request api
         :return: Response of the request
         :rtype: requests.Response
         """
-        return self.oauth_request(url, 'delete', **kwargs)
+        return self.oauth_request(url, "delete", **kwargs)
 
     def __del__(self) -> None:
         """
@@ -1055,15 +1147,20 @@ class Connection:
         There is no guarantee that this method will be called by the garbage collection
         But this is not an issue because this connections will be automatically closed.
         """
-        if hasattr(self, 'session') and self.session is not None:
+        if hasattr(self, "session") and self.session is not None:
             self.session.close()
-        if hasattr(self, 'naive_session') and self.naive_session is not None:
+        if hasattr(self, "naive_session") and self.naive_session is not None:
             self.naive_session.close()
 
 
-def oauth_authentication_flow(client_id: str, client_secret: str, scopes: List[str] = None,
-                              protocol: Optional[Protocol] = None, **kwargs) -> bool:
-    """ A helper method to perform the OAuth2 authentication flow.
+def oauth_authentication_flow(
+    client_id: str,
+    client_secret: str,
+    scopes: List[str] = None,
+    protocol: Optional[Protocol] = None,
+    **kwargs,
+) -> bool:
+    """A helper method to perform the OAuth2 authentication flow.
     Authenticate and get the oauth token
 
     :param str client_id: the client_id
@@ -1084,22 +1181,26 @@ def oauth_authentication_flow(client_id: str, client_secret: str, scopes: List[s
 
     con = Connection(credentials, **kwargs)
 
-    consent_url, flow = con.get_authorization_url(requested_scopes=protocol.get_scopes_for(scopes), **kwargs)
+    consent_url, flow = con.get_authorization_url(
+        requested_scopes=protocol.get_scopes_for(scopes), **kwargs
+    )
 
-    print('Visit the following url to give consent:')
+    print("Visit the following url to give consent:")
     print(consent_url)
 
-    token_url = input('Paste the authenticated url here:\n')
+    token_url = input("Paste the authenticated url here:\n")
 
     if token_url:
         result = con.request_token(token_url, flow=flow, **kwargs)
         if result:
-            print('Authentication Flow Completed. Oauth Access Token Stored. '
-                  'You can now use the API.')
+            print(
+                "Authentication Flow Completed. Oauth Access Token Stored. "
+                "You can now use the API."
+            )
         else:
-            print('Something go wrong. Please try again.')
+            print("Something go wrong. Please try again.")
 
         return result
     else:
-        print('Authentication Flow aborted.')
+        print("Authentication Flow aborted.")
         return False
