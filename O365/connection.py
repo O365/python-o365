@@ -113,12 +113,13 @@ class Protocol:
 
         self.max_top_value: int = 500  # Max $top parameter value
 
+        self._timezone = None
+
         if timezone:
-            self._timezone = None
             self.timezone = timezone  # property setter will convert this timezone to ZoneInfo if a string is provided
         else:
             # get_localzone() from tzlocal will try to get the system local timezone and if not will return UTC
-            self._timezone: ZoneInfo = get_localzone()
+            self.timezone: ZoneInfo = get_localzone()
 
     @property
     def timezone(self) -> ZoneInfo:
@@ -140,6 +141,7 @@ class Protocol:
         else:
             if not isinstance(timezone, ZoneInfo):
                 raise ValueError('The timezone parameter must be either a string or a valid ZoneInfo instance.')
+        log.debug(f'Timezone set to: {timezone}.')
         self._timezone = timezone
 
     def get_service_keyword(self, keyword: str) -> Optional[str]:
@@ -659,11 +661,10 @@ class Connection:
             self.load_token_from_backend()
 
         token = self.token_backend.get_access_token(username=self.username)
-        if token is None:
-            raise RuntimeError('No auth token found. Authentication Flow needed')
 
         session = Session()
-        session.headers.update({'Authorization': f'Bearer {token["secret"]}'})
+        if token is not None:
+            session.headers.update({'Authorization': f'Bearer {token["secret"]}'})
         session.verify = self.verify_ssl
         session.proxies = self.proxy
 
@@ -707,9 +708,6 @@ class Connection:
         if self.session is None:
             self.session = self.get_session(load_token=True)
 
-        if self.token_backend.get_access_token(username=self.username) is None:
-            raise RuntimeError('Access Token not found. You will need to re-authenticate.')
-
         token_refreshed = False
 
         if (self.token_backend.token_is_long_lived(username=self.username) or
@@ -720,7 +718,7 @@ class Connection:
                 # The backend has checked that we can refresh the token
                 log.debug('Refreshing access token')
 
-                # This will set the connection scopes from the scopes set in the stored token
+                # This will set the connection scopes from the scopes set in the stored refresh or access token
                 scopes = self.token_backend.get_token_scopes(
                     username=self.username,
                     remove_reserved=True
@@ -731,7 +729,7 @@ class Connection:
                     account=self.msal_client.get_accounts(username=self.username)[0]
                 )
                 if result is None:
-                    raise RuntimeError('There is no access token to refresh')
+                    raise RuntimeError('There is no refresh token to refresh')
                 elif 'error' in result:
                     raise RuntimeError(f'Refresh token operation failed: {result["error"]}')
                 elif 'access_token' in result:
@@ -752,7 +750,7 @@ class Connection:
                 pass
         else:
             log.error('You can not refresh an access token that has no "refresh_token" available.'
-                      'Include "offline_access" scope when authenticating to get a "refresh_token"')
+                      'Include "offline_access" permission to get a "refresh_token"')
             return False
 
         if token_refreshed and self.store_token_after_refresh:
@@ -826,7 +824,7 @@ class Connection:
             if e.response.status_code == 401 and self._token_expired_flag is False:
                 # This could be a token expired error.
                 if self.token_backend.token_is_expired(username=self.username):
-                    # Token has expired, try to refresh the token and try again on the next loop
+                    # Access token has expired, try to refresh the token and try again on the next loop
                     # By raising custom exception TokenExpiredError we signal oauth_request to fire a
                     # refresh token operation.
                     log.debug(f'Oauth Token is expired for username: {self.username}')

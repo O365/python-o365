@@ -33,15 +33,11 @@ class BaseTokenBackend(TokenCache):
     def has_data(self) -> bool:
         return bool(self._cache)
 
-    def token_expiration_datetime(self, *,
-                                  username: Optional[str] = None,
-                                  refresh_token: bool = False
-                                  ) -> Optional[dt.datetime]:
+    def token_expiration_datetime(self, *, username: Optional[str] = None) -> Optional[dt.datetime]:
         """
-        Returns the current token expiration datetime
+        Returns the current access token expiration datetime
         If the refresh token is present, then the expiration datetime is extended by 3 months
         :param str username: The username from which check the tokens
-        :param bool refresh_token: if true will check for the refresh token and return its expiration datetime
         :return dt.datetime or None: The expiration datetime
         """
         access_token = self.get_access_token(username=username)
@@ -54,29 +50,22 @@ class BaseTokenBackend(TokenCache):
             return None
         else:
             expires_on = int(expires_on)
+            return dt.datetime.fromtimestamp(expires_on)
 
-        expiration_datetime = dt.datetime.fromtimestamp(expires_on)
-        if refresh_token is True and self.token_is_long_lived(username=username):
-            # current token is long-lived, add 3 months to the token expiration date
-            expiration_datetime = expiration_datetime + dt.timedelta(days=90)
-
-        return expiration_datetime
-
-    def token_is_expired(self, *, username: Optional[str] = None, refresh_token: bool = False) -> bool:
+    def token_is_expired(self, *, username: Optional[str] = None) -> bool:
         """
-        Checks whether the current token is expired
+        Checks whether the current access token is expired
         :param str username: The username from which check the tokens
-        :param bool refresh_token: if true will check for the refresh token and return its expiration datetime
         :return bool: True if the token is expired, False otherwise
         """
-        token_expiration_datetime = self.token_expiration_datetime(username=username, refresh_token=refresh_token)
+        token_expiration_datetime = self.token_expiration_datetime(username=username)
         if token_expiration_datetime is None:
             return True
         else:
             return dt.datetime.now() > token_expiration_datetime
 
     def token_is_long_lived(self, *, username: Optional[str] = None) -> bool:
-        """ Returns if the token has a refresh token """
+        """ Returns if the token backend has a refresh token """
         return self.get_refresh_token(username=username) is not None
 
     def _get_home_account_id(self, username: str) -> Optional[str]:
@@ -118,7 +107,8 @@ class BaseTokenBackend(TokenCache):
             return None
 
     def get_access_token(self, *, username: Optional[str] = None) -> Optional[dict]:
-        """ Retrieve the stored access token
+        """
+        Retrieve the stored access token
         If username is None, then the first access token will be retrieved
         :param str username: The username from which retrieve the access token
         """
@@ -177,13 +167,13 @@ class BaseTokenBackend(TokenCache):
     def get_token_scopes(self, *, username: Optional[str] = None,
                          remove_reserved: bool = False) -> Optional[list]:
         """
-        Retrieve the scopes the access token has permissions on
+        Retrieve the scopes the token (refresh first then access) has permissions on
         :param str username: The username from which retrieve the refresh token
         :param bool remove_reserved: if True RESERVED_SCOPES will be removed from the list
         """
-        access_token = self.get_access_token(username=username)
-        if access_token:
-            scopes_str = access_token.get('target')
+        token = self.get_refresh_token(username=username) or self.get_access_token(username=username)
+        if token:
+            scopes_str = token.get('target')
             if scopes_str:
                 scopes = scopes_str.split(' ')
                 if remove_reserved:
