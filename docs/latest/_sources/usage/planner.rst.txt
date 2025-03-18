@@ -1,6 +1,6 @@
 Planner
 =======
-Planner enables the creation and maintenance of plans
+Planner enables the creation and maintenance of plans, buckets and tasks
 
 These are the scopes needed to work with the ``Planner`` classes.
 
