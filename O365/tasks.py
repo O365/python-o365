@@ -48,8 +48,6 @@ class Task(ApiComponent):
 
         cloud_data = kwargs.get(self._cloud_data_key, {})
 
-        self.task_id = cloud_data.get("id")
-
         # Choose the main_resource passed in kwargs over parent main_resource
         main_resource = kwargs.pop("main_resource", None) or (
             getattr(parent, "main_resource", None) if parent else None
@@ -63,13 +61,16 @@ class Task(ApiComponent):
         cc = self._cc  # pylint: disable=invalid-name
         # internal to know which properties need to be updated on the server
         self._track_changes = TrackerSet(casing=cc)
+        #: Identifier of the containing folder. |br| **Type:** str
         self.folder_id = kwargs.get("folder_id")
         cloud_data = kwargs.get(self._cloud_data_key, {})
 
+        #: Unique identifier for the task. |br| **Type:** str
         self.task_id = cloud_data.get(cc("id"), None)
         self.__subject = cloud_data.get(cc("title"), kwargs.get("subject", "") or "")
         body = cloud_data.get(cc("body"), {})
         self.__body = body.get(cc("content"), "")
+        #: The type of the content. Possible values are text and html. |br| **Type:** str
         self.body_type = body.get(
             cc("contentType"), "html"
         )  # default to HTML for new messages
@@ -172,7 +173,7 @@ class Task(ApiComponent):
     def created(self):
         """Return Created time of the task.
 
-        :rtype: datetime
+        :type: datetime
         """
         return self.__created
 
@@ -180,7 +181,7 @@ class Task(ApiComponent):
     def modified(self):
         """Return Last modified time of the task.
 
-        :rtype: datetime
+        :type: datetime
         """
         return self.__modified
 
@@ -236,8 +237,8 @@ class Task(ApiComponent):
     def due(self):
         """Due Time of task.
 
-        :getter: get the due time
-        :setter: set the due time
+        :getter: Get the due time
+        :setter: Set the due time
         :type: datetime
         """
         return self.__due
@@ -262,8 +263,8 @@ class Task(ApiComponent):
     def reminder(self):
         """Reminder Time of task.
 
-        :getter: get the reminder time
-        :setter: set the reminder time
+        :getter: Get the reminder time
+        :setter: Set the reminder time
         :type: datetime
         """
         return self.__reminder
@@ -297,8 +298,8 @@ class Task(ApiComponent):
     def status(self):
         """Status of task
 
-        :getter: get status
-        :type: string
+        :getter: Get status
+        :type: str
         """
         return self.__status
 
@@ -306,8 +307,8 @@ class Task(ApiComponent):
     def completed(self):
         """Completed Time of task.
 
-        :getter: get the completed time
-        :setter: set the completed time
+        :getter: Get the completed time
+        :setter: Set the completed time
         :type: datetime
         """
         return self.__completed
@@ -337,7 +338,7 @@ class Task(ApiComponent):
         """Is task completed or not.
 
         :getter: Is completed
-        :setter: set the task to completted
+        :setter: Set the task to completed
         :type: bool
         """
         return self.__is_completed
@@ -463,7 +464,7 @@ class Folder(ApiComponent):
         CONST_GET_TASKS: "/todo/lists/{id}/tasks",
         CONST_GET_TASK: "/todo/lists/{id}/tasks/{ide}",
     }
-    task_constructor = Task
+    task_constructor = Task  #: :meta private:
 
     def __init__(self, *, parent=None, con=None, **kwargs):
         """Representation of a Microsoft To-Do Folder.
@@ -492,8 +493,11 @@ class Folder(ApiComponent):
 
         cloud_data = kwargs.get(self._cloud_data_key, {})
 
+        #: The name of the task list. |br| **Type:** str
         self.name = cloud_data.get(self._cc("displayName"), "")
+        #: The identifier of the task list, unique in the user's mailbox. |br| **Type:** str
         self.folder_id = cloud_data.get(self._cc("id"), None)
+        #: Is the `defaultList`. |br| **Type:** bool
         self.is_default = False
         if cloud_data.get(self._cc("wellknownListName"), "") == "defaultList":
             self.is_default = True
@@ -603,7 +607,7 @@ class Folder(ApiComponent):
 
         :param param: an task_id or a Query instance
         :return: task for the specified info
-        :rtype: Event
+        :rtype: Task
         """
         if param is None:
             return None
@@ -638,7 +642,7 @@ class Folder(ApiComponent):
 
 
 class ToDo(ApiComponent):
-    """A of Microsoft To-Do class for MS Graph API.
+    """A Microsoft To-Do class for MS Graph API.
 
     In order to use the API following permissions are required.
     Delegated (work or school account) - Tasks.Read, Tasks.ReadWrite
@@ -649,8 +653,8 @@ class ToDo(ApiComponent):
         CONST_GET_FOLDER: "/todo/lists/{id}",
     }
 
-    folder_constructor = Folder
-    task_constructor = Task
+    folder_constructor = Folder  #: :meta private:
+    task_constructor = Task  #: :meta private:
 
     def __init__(self, *, parent=None, con=None, **kwargs):
         """Initialise the ToDo object.
@@ -789,18 +793,18 @@ class ToDo(ApiComponent):
         :param int batch: batch size, retrieves items in
          batches allowing to retrieve more items than the limit.
         :return: list of items in this folder
-        :rtype: list[Event] or Pagination
+        :rtype: list[Task] or Pagination
         """
         default_folder = self.get_default_folder()
 
         return default_folder.get_tasks(order_by=order_by, batch=batch)
 
     def new_task(self, subject=None):
-        """Return a new (unsaved) Event object in the default folder.
+        """Return a new (unsaved) Task object in the default folder.
 
         :param str subject: subject text for the new task
         :return: new task
-        :rtype: Event
+        :rtype: Task
         """
         default_folder = self.get_default_folder()
         return default_folder.new_task(subject=subject)
