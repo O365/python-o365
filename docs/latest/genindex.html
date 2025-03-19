@@ -228,6 +228,12 @@
 </li>
         <li><a href="api/sharepoint.html#O365.sharepoint.Site.__init__">(O365.sharepoint.Site method)</a>
 </li>
+        <li><a href="api/tasks.html#O365.tasks.Folder.__init__">(O365.tasks.Folder method)</a>
+</li>
+        <li><a href="api/tasks.html#O365.tasks.Task.__init__">(O365.tasks.Task method)</a>
+</li>
+        <li><a href="api/tasks.html#O365.tasks.ToDo.__init__">(O365.tasks.ToDo method)</a>
+</li>
         <li><a href="api/teams.html#O365.teams.App.__init__">(O365.teams.App method)</a>
 </li>
         <li><a href="api/teams.html#O365.teams.Channel.__init__">(O365.teams.Channel method)</a>
@@ -446,6 +452,8 @@
       <ul>
         <li><a href="api/message.html#O365.message.Message.body">(O365.message.Message property)</a>
 </li>
+        <li><a href="api/tasks.html#O365.tasks.Task.body">(O365.tasks.Task property)</a>
+</li>
       </ul></li>
       <li><a href="api/message.html#O365.message.Message.body_preview">body_preview (O365.message.Message property)</a>
 </li>
@@ -577,15 +585,17 @@
 </li>
       <li><a href="api/excel.html#O365.excel.Table.column_constructor">column_constructor (O365.excel.Table attribute)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/excel.html#O365.excel.Range.column_hidden">column_hidden (O365.excel.Range property)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/excel.html#O365.excel.RangeFormat.column_width">column_width (O365.excel.RangeFormat property)</a>
 </li>
       <li><a href="api/address_book.html#O365.address_book.Contact.company_name">company_name (O365.address_book.Contact property)</a>
 </li>
       <li><a href="api/message.html#O365.message.Flag.Complete">Complete (O365.message.Flag attribute)</a>
+</li>
+      <li><a href="api/tasks.html#O365.tasks.Task.completed">completed (O365.tasks.Task property)</a>
 </li>
       <li><a href="api/message.html#O365.message.MessageFlag.completition_date">completition_date (O365.message.MessageFlag property)</a>
 </li>
@@ -663,6 +673,8 @@
         <li><a href="api/calendar.html#O365.calendar.Event.created">(O365.calendar.Event property)</a>
 </li>
         <li><a href="api/message.html#O365.message.Message.created">(O365.message.Message property)</a>
+</li>
+        <li><a href="api/tasks.html#O365.tasks.Task.created">(O365.tasks.Task property)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -746,6 +758,10 @@
 </li>
         <li><a href="api/sharepoint.html#O365.sharepoint.SharepointListItem.delete">(O365.sharepoint.SharepointListItem method)</a>
 </li>
+        <li><a href="api/tasks.html#O365.tasks.Folder.delete">(O365.tasks.Folder method)</a>
+</li>
+        <li><a href="api/tasks.html#O365.tasks.Task.delete">(O365.tasks.Task method)</a>
+</li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -812,6 +828,8 @@
       <li><a href="api/onedrive.html#O365.drive.DriveItemPermission">DriveItemPermission (class in O365.drive)</a>
 </li>
       <li><a href="api/onedrive.html#O365.drive.DriveItemVersion">DriveItemVersion (class in O365.drive)</a>
+</li>
+      <li><a href="api/tasks.html#O365.tasks.Task.due">due (O365.tasks.Task property)</a>
 </li>
       <li><a href="api/message.html#O365.message.MessageFlag.due_date">due_date (O365.message.MessageFlag property)</a>
 </li>
@@ -890,13 +908,19 @@
       <ul>
         <li><a href="api/mailbox.html#O365.mailbox.Folder">(class in O365.mailbox)</a>
 </li>
+        <li><a href="api/tasks.html#O365.tasks.Folder">(class in O365.tasks)</a>
+</li>
       </ul></li>
       <li><a href="api/mailbox.html#O365.mailbox.MailBox.folder_constructor">folder_constructor (O365.mailbox.MailBox attribute)</a>
+
+      <ul>
+        <li><a href="api/tasks.html#O365.tasks.ToDo.folder_constructor">(O365.tasks.ToDo attribute)</a>
 </li>
-      <li><a href="api/address_book.html#O365.address_book.Contact.folder_id">folder_id (O365.address_book.Contact property)</a>
-</li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/address_book.html#O365.address_book.Contact.folder_id">folder_id (O365.address_book.Contact property)</a>
+</li>
       <li><a href="api/excel.html#O365.excel.RangeFormat.font">font (O365.excel.RangeFormat property)</a>
 </li>
       <li><a href="api/excel.html#O365.excel.Range.formulas">formulas (O365.excel.Range property)</a>
@@ -952,11 +976,15 @@
       <ul>
         <li><a href="api/message.html#O365.message.Message.get_body_soup">(O365.message.Message method)</a>
 </li>
+        <li><a href="api/tasks.html#O365.tasks.Task.get_body_soup">(O365.tasks.Task method)</a>
+</li>
       </ul></li>
       <li><a href="api/calendar.html#O365.calendar.Event.get_body_text">get_body_text() (O365.calendar.Event method)</a>
 
       <ul>
         <li><a href="api/message.html#O365.message.Message.get_body_text">(O365.message.Message method)</a>
+</li>
+        <li><a href="api/tasks.html#O365.tasks.Task.get_body_text">(O365.tasks.Task method)</a>
 </li>
       </ul></li>
       <li><a href="api/excel.html#O365.excel.Range.get_bounding_rect">get_bounding_rect() (O365.excel.Range method)</a>
@@ -1027,6 +1055,8 @@
 </li>
       <li><a href="api/onedrive.html#O365.drive.Storage.get_default_drive">get_default_drive() (O365.drive.Storage method)</a>
 </li>
+      <li><a href="api/tasks.html#O365.tasks.ToDo.get_default_folder">get_default_folder() (O365.tasks.ToDo method)</a>
+</li>
       <li><a href="api/excel.html#O365.excel.WorkbookApplication.get_details">get_details() (O365.excel.WorkbookApplication method)</a>
 
       <ul>
@@ -1071,6 +1101,8 @@
 
       <ul>
         <li><a href="api/mailbox.html#O365.mailbox.Folder.get_folder">(O365.mailbox.Folder method)</a>
+</li>
+        <li><a href="api/tasks.html#O365.tasks.ToDo.get_folder">(O365.tasks.ToDo method)</a>
 </li>
       </ul></li>
       <li><a href="api/address_book.html#O365.address_book.ContactFolder.get_folders">get_folders() (O365.address_book.ContactFolder method)</a>
@@ -1261,8 +1293,16 @@
         <li><a href="api/excel.html#O365.excel.WorkSheet.get_tables">(O365.excel.WorkSheet method)</a>
 </li>
       </ul></li>
+      <li><a href="api/tasks.html#O365.tasks.Folder.get_task">get_task() (O365.tasks.Folder method)</a>
+</li>
       <li><a href="api/planner.html#O365.planner.Planner.get_task_by_id">get_task_by_id() (O365.planner.Planner method)</a>
 </li>
+      <li><a href="api/tasks.html#O365.tasks.Folder.get_tasks">get_tasks() (O365.tasks.Folder method)</a>
+
+      <ul>
+        <li><a href="api/tasks.html#O365.tasks.ToDo.get_tasks">(O365.tasks.ToDo method)</a>
+</li>
+      </ul></li>
       <li><a href="api/onedrive.html#O365.drive.DriveItem.get_thumbnails">get_thumbnails() (O365.drive.DriveItem method)</a>
 </li>
       <li><a href="api/excel.html#O365.excel.Table.get_total_row_range">get_total_row_range() (O365.excel.Table method)</a>
@@ -1362,6 +1402,8 @@
       <ul>
         <li><a href="api/message.html#O365.message.Message.importance">(O365.message.Message property)</a>
 </li>
+        <li><a href="api/tasks.html#O365.tasks.Task.importance">(O365.tasks.Task property)</a>
+</li>
       </ul></li>
       <li><a href="api/utils.html#O365.utils.utils.ImportanceLevel">ImportanceLevel (class in O365.utils.utils)</a>
 </li>
@@ -1387,10 +1429,14 @@
 </li>
       <li><a href="api/account.html#O365.account.Account.is_authenticated">is_authenticated (O365.account.Account property)</a>
 </li>
+      <li><a href="api/message.html#O365.message.MessageFlag.is_completed">is_completed (O365.message.MessageFlag property)</a>
+
+      <ul>
+        <li><a href="api/tasks.html#O365.tasks.Task.is_completed">(O365.tasks.Task property)</a>
+</li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/message.html#O365.message.MessageFlag.is_completed">is_completed (O365.message.MessageFlag property)</a>
-</li>
       <li><a href="api/message.html#O365.message.Message.is_delivery_receipt_requested">is_delivery_receipt_requested (O365.message.Message property)</a>
 </li>
       <li><a href="api/message.html#O365.message.Message.is_draft">is_draft (O365.message.Message property)</a>
@@ -1414,6 +1460,12 @@
       <li><a href="api/message.html#O365.message.Message.is_read_receipt_requested">is_read_receipt_requested (O365.message.Message property)</a>
 </li>
       <li><a href="api/calendar.html#O365.calendar.Event.is_reminder_on">is_reminder_on (O365.calendar.Event property)</a>
+
+      <ul>
+        <li><a href="api/tasks.html#O365.tasks.Task.is_reminder_on">(O365.tasks.Task property)</a>
+</li>
+      </ul></li>
+      <li><a href="api/tasks.html#O365.tasks.Task.is_starred">is_starred (O365.tasks.Task property)</a>
 </li>
       <li><a href="api/excel.html#O365.excel.RangeFormatFont.italic">italic (O365.excel.RangeFormatFont property)</a>
 </li>
@@ -1473,6 +1525,8 @@
 </li>
       <li><a href="api/sharepoint.html#O365.sharepoint.Site.list_document_libraries">list_document_libraries() (O365.sharepoint.Site method)</a>
 </li>
+      <li><a href="api/tasks.html#O365.tasks.ToDo.list_folders">list_folders() (O365.tasks.ToDo method)</a>
+</li>
       <li><a href="api/planner.html#O365.planner.Planner.list_group_plans">list_group_plans() (O365.planner.Planner method)</a>
 </li>
       <li><a href="api/group.html#O365.groups.Groups.list_groups">list_groups() (O365.groups.Groups method)</a>
@@ -1518,6 +1572,10 @@
       <li><a href="api/message.html#O365.message.Message.mark_as_read">mark_as_read() (O365.message.Message method)</a>
 </li>
       <li><a href="api/message.html#O365.message.Message.mark_as_unread">mark_as_unread() (O365.message.Message method)</a>
+</li>
+      <li><a href="api/tasks.html#O365.tasks.Task.mark_completed">mark_completed() (O365.tasks.Task method)</a>
+</li>
+      <li><a href="api/tasks.html#O365.tasks.Task.mark_uncompleted">mark_uncompleted() (O365.tasks.Task method)</a>
 </li>
       <li><a href="api/calendar.html#O365.calendar.CalendarColor.MaxColor">MaxColor (O365.calendar.CalendarColor attribute)</a>
 </li>
@@ -1580,6 +1638,8 @@
 </li>
         <li><a href="api/message.html#O365.message.Message.modified">(O365.message.Message property)</a>
 </li>
+        <li><a href="api/tasks.html#O365.tasks.Task.modified">(O365.tasks.Task property)</a>
+</li>
       </ul></li>
       <li>
     module
@@ -1610,6 +1670,8 @@
         <li><a href="api/planner.html#module-O365.planner">O365.planner</a>
 </li>
         <li><a href="api/sharepoint.html#module-O365.sharepoint">O365.sharepoint</a>
+</li>
+        <li><a href="api/tasks.html#module-O365.tasks">O365.tasks</a>
 </li>
         <li><a href="api/teams.html#module-O365.teams">O365.teams</a>
 </li>
@@ -1682,6 +1744,8 @@
         <li><a href="api/calendar.html#O365.calendar.Schedule.new_event">(O365.calendar.Schedule method)</a>
 </li>
       </ul></li>
+      <li><a href="api/tasks.html#O365.tasks.ToDo.new_folder">new_folder() (O365.tasks.ToDo method)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/account.html#O365.account.Account.new_message">new_message() (O365.account.Account method)</a>
@@ -1698,6 +1762,12 @@
       </ul></li>
       <li><a href="api/utils.html#O365.utils.utils.ApiComponent.new_query">new_query() (O365.utils.utils.ApiComponent method)</a>
 </li>
+      <li><a href="api/tasks.html#O365.tasks.Folder.new_task">new_task() (O365.tasks.Folder method)</a>
+
+      <ul>
+        <li><a href="api/tasks.html#O365.tasks.ToDo.new_task">(O365.tasks.ToDo method)</a>
+</li>
+      </ul></li>
       <li><a href="api/calendar.html#O365.calendar.Event.no_forwarding">no_forwarding (O365.calendar.Event property)</a>
 </li>
       <li><a href="api/mailbox.html#O365.mailbox.ExternalAudience.NONE">NONE (O365.mailbox.ExternalAudience attribute)</a>
@@ -1812,12 +1882,21 @@
 </li>
       </ul></li>
       <li>
+    O365.tasks
+
+      <ul>
+        <li><a href="api/tasks.html#module-O365.tasks">module</a>
+</li>
+      </ul></li>
+      <li>
     O365.teams
 
       <ul>
         <li><a href="api/teams.html#module-O365.teams">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     O365.utils.attachment
 
@@ -1825,8 +1904,6 @@
         <li><a href="api/attachment.html#module-O365.utils.attachment">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     O365.utils.utils
 
@@ -2022,11 +2099,13 @@
 </li>
       <li><a href="api/excel.html#O365.excel.WorkbookSession.refresh_session">refresh_session() (O365.excel.WorkbookSession method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/connection.html#O365.connection.Connection.refresh_token">refresh_token() (O365.connection.Connection method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/calendar.html#O365.calendar.Event.remind_before_minutes">remind_before_minutes (O365.calendar.Event property)</a>
+</li>
+      <li><a href="api/tasks.html#O365.tasks.Task.reminder">reminder (O365.tasks.Task property)</a>
 </li>
       <li><a href="api/calendar.html#O365.calendar.Attendees.remove">remove() (O365.calendar.Attendees method)</a>
 
@@ -2088,6 +2167,8 @@
         <li><a href="api/calendar.html#O365.calendar.Event.save">(O365.calendar.Event method)</a>
 </li>
         <li><a href="api/mailbox.html#O365.mailbox.MailboxSettings.save">(O365.mailbox.MailboxSettings method)</a>
+</li>
+        <li><a href="api/tasks.html#O365.tasks.Task.save">(O365.tasks.Task method)</a>
 </li>
         <li><a href="api/attachment.html#O365.utils.attachment.BaseAttachment.save">(O365.utils.attachment.BaseAttachment method)</a>
 </li>
@@ -2237,6 +2318,8 @@
       <ul>
         <li><a href="api/message.html#O365.message.MessageFlag.status">(O365.message.MessageFlag property)</a>
 </li>
+        <li><a href="api/tasks.html#O365.tasks.Task.status">(O365.tasks.Task property)</a>
+</li>
       </ul></li>
       <li><a href="api/category.html#O365.category.CategoryColor.STEEL">STEEL (O365.category.CategoryColor attribute)</a>
 </li>
@@ -2248,6 +2331,8 @@
 
       <ul>
         <li><a href="api/message.html#O365.message.Message.subject">(O365.message.Message property)</a>
+</li>
+        <li><a href="api/tasks.html#O365.tasks.Task.subject">(O365.tasks.Task property)</a>
 </li>
       </ul></li>
       <li><a href="api/address_book.html#O365.address_book.Contact.surname">surname (O365.address_book.Contact property)</a>
@@ -2275,13 +2360,21 @@
       <li><a href="api/excel.html#O365.excel.TableRow">TableRow (class in O365.excel)</a>
 </li>
       <li><a href="api/planner.html#O365.planner.Task">Task (class in O365.planner)</a>
+
+      <ul>
+        <li><a href="api/tasks.html#O365.tasks.Task">(class in O365.tasks)</a>
 </li>
+      </ul></li>
       <li><a href="api/planner.html#O365.planner.Bucket.task_constructor">task_constructor (O365.planner.Bucket attribute)</a>
 
       <ul>
         <li><a href="api/planner.html#O365.planner.Plan.task_constructor">(O365.planner.Plan attribute)</a>
 </li>
         <li><a href="api/planner.html#O365.planner.Planner.task_constructor">(O365.planner.Planner attribute)</a>
+</li>
+        <li><a href="api/tasks.html#O365.tasks.Folder.task_constructor">(O365.tasks.Folder attribute)</a>
+</li>
+        <li><a href="api/tasks.html#O365.tasks.ToDo.task_constructor">(O365.tasks.ToDo attribute)</a>
 </li>
       </ul></li>
       <li><a href="api/planner.html#O365.planner.Task.task_details_constructor">task_details_constructor (O365.planner.Task attribute)</a>
@@ -2345,6 +2438,8 @@
 </li>
         <li><a href="api/message.html#O365.message.MessageFlag.to_api_data">(O365.message.MessageFlag method)</a>
 </li>
+        <li><a href="api/tasks.html#O365.tasks.Task.to_api_data">(O365.tasks.Task method)</a>
+</li>
         <li><a href="api/attachment.html#O365.utils.attachment.AttachableMixin.to_api_data">(O365.utils.attachment.AttachableMixin method)</a>
 </li>
         <li><a href="api/attachment.html#O365.utils.attachment.BaseAttachment.to_api_data">(O365.utils.attachment.BaseAttachment method)</a>
@@ -2354,6 +2449,8 @@
         <li><a href="api/attachment.html#O365.utils.attachment.UploadSessionRequest.to_api_data">(O365.utils.attachment.UploadSessionRequest method)</a>
 </li>
       </ul></li>
+      <li><a href="api/tasks.html#O365.tasks.ToDo">ToDo (class in O365.tasks)</a>
+</li>
       <li><a href="api/connection.html#O365.connection.TokenExpiredError">TokenExpiredError</a>
 </li>
       <li><a href="api/utils.html#O365.utils.utils.TrackerSet">TrackerSet (class in O365.utils.utils)</a>
@@ -2406,6 +2503,8 @@
         <li><a href="api/planner.html#O365.planner.Task.update">(O365.planner.Task method)</a>
 </li>
         <li><a href="api/planner.html#O365.planner.TaskDetails.update">(O365.planner.TaskDetails method)</a>
+</li>
+        <li><a href="api/tasks.html#O365.tasks.Folder.update">(O365.tasks.Folder method)</a>
 </li>
       </ul></li>
   </ul></td>
