@@ -63,7 +63,13 @@
 <li class="toctree-l4"><a class="reference internal" href="#O365.groups.Group.__init__"><code class="docutils literal notranslate"><span class="pre">Group.__init__()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.groups.Group.get_group_members"><code class="docutils literal notranslate"><span class="pre">Group.get_group_members()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.groups.Group.get_group_owners"><code class="docutils literal notranslate"><span class="pre">Group.get_group_owners()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#O365.groups.Group.member_constructor"><code class="docutils literal notranslate"><span class="pre">Group.member_constructor</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.groups.Group.description"><code class="docutils literal notranslate"><span class="pre">Group.description</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.groups.Group.display_name"><code class="docutils literal notranslate"><span class="pre">Group.display_name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.groups.Group.mail"><code class="docutils literal notranslate"><span class="pre">Group.mail</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.groups.Group.mail_nickname"><code class="docutils literal notranslate"><span class="pre">Group.mail_nickname</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.groups.Group.object_id"><code class="docutils literal notranslate"><span class="pre">Group.object_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.groups.Group.type"><code class="docutils literal notranslate"><span class="pre">Group.type</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.groups.Group.visibility"><code class="docutils literal notranslate"><span class="pre">Group.visibility</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#O365.groups.Groups"><code class="docutils literal notranslate"><span class="pre">Groups</span></code></a><ul>
@@ -71,7 +77,6 @@
 <li class="toctree-l4"><a class="reference internal" href="#O365.groups.Groups.get_group_by_id"><code class="docutils literal notranslate"><span class="pre">Groups.get_group_by_id()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.groups.Groups.get_group_by_mail"><code class="docutils literal notranslate"><span class="pre">Groups.get_group_by_mail()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.groups.Groups.get_user_groups"><code class="docutils literal notranslate"><span class="pre">Groups.get_user_groups()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#O365.groups.Groups.group_constructor"><code class="docutils literal notranslate"><span class="pre">Groups.group_constructor</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.groups.Groups.list_groups"><code class="docutils literal notranslate"><span class="pre">Groups.list_groups()</span></code></a></li>
 </ul>
 </li>
@@ -117,9 +122,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-O365.groups">
-<span id="group"></span><h1>Group<a class="headerlink" href="#module-O365.groups" title="Link to this heading"></a></h1>
-<dl class="py class">
+  <section id="group">
+<h1>Group<a class="headerlink" href="#group" title="Link to this heading"></a></h1>
+<dl class="py class" id="module-O365.groups">
 <dt class="sig sig-object py" id="O365.groups.Group">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.groups.</span></span><span class="sig-name descname"><span class="pre">Group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">con</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/groups.html#Group"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.groups.Group" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">ApiComponent</span></code></a></p>
@@ -162,9 +167,45 @@
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="O365.groups.Group.member_constructor">
-<span class="sig-name descname"><span class="pre">member_constructor</span></span><a class="headerlink" href="#O365.groups.Group.member_constructor" title="Link to this definition"></a></dt>
-<dd><p>alias of <a class="reference internal" href="directory.html#O365.directory.User" title="O365.directory.User"><code class="xref py py-class docutils literal notranslate"><span class="pre">User</span></code></a></p>
+<dt class="sig sig-object py" id="O365.groups.Group.description">
+<span class="sig-name descname"><span class="pre">description</span></span><a class="headerlink" href="#O365.groups.Group.description" title="Link to this definition"></a></dt>
+<dd><p>An optional description for the group. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.groups.Group.display_name">
+<span class="sig-name descname"><span class="pre">display_name</span></span><a class="headerlink" href="#O365.groups.Group.display_name" title="Link to this definition"></a></dt>
+<dd><p>The display name for the group. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.groups.Group.mail">
+<span class="sig-name descname"><span class="pre">mail</span></span><a class="headerlink" href="#O365.groups.Group.mail" title="Link to this definition"></a></dt>
+<dd><p>The SMTP address for the group, for example, “<a class="reference external" href="mailto:serviceadmins&#37;&#52;&#48;contoso&#46;com">serviceadmins<span>&#64;</span>contoso<span>&#46;</span>com</a>”. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.groups.Group.mail_nickname">
+<span class="sig-name descname"><span class="pre">mail_nickname</span></span><a class="headerlink" href="#O365.groups.Group.mail_nickname" title="Link to this definition"></a></dt>
+<dd><p>The mail alias for the group, unique for Microsoft 365 groups in the organization. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.groups.Group.object_id">
+<span class="sig-name descname"><span class="pre">object_id</span></span><a class="headerlink" href="#O365.groups.Group.object_id" title="Link to this definition"></a></dt>
+<dd><p>The unique identifier for the group. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.groups.Group.type">
+<span class="sig-name descname"><span class="pre">type</span></span><a class="headerlink" href="#O365.groups.Group.type" title="Link to this definition"></a></dt>
+<dd><p>The group type. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.groups.Group.visibility">
+<span class="sig-name descname"><span class="pre">visibility</span></span><a class="headerlink" href="#O365.groups.Group.visibility" title="Link to this definition"></a></dt>
+<dd><p>Specifies the group join policy and group content visibility for groups. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
 </dd></dl>
 
 </dd></dl>
@@ -236,17 +277,15 @@ Delegated (work or school account) - Group.Read.All, Group.ReadWrite.All</p>
 </dl>
 </dd></dl>
 
-<dl class="py attribute">
-<dt class="sig sig-object py" id="O365.groups.Groups.group_constructor">
-<span class="sig-name descname"><span class="pre">group_constructor</span></span><a class="headerlink" href="#O365.groups.Groups.group_constructor" title="Link to this definition"></a></dt>
-<dd><p>alias of <a class="reference internal" href="#O365.groups.Group" title="O365.groups.Group"><code class="xref py py-class docutils literal notranslate"><span class="pre">Group</span></code></a></p>
-</dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="O365.groups.Groups.list_groups">
 <span class="sig-name descname"><span class="pre">list_groups</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/groups.html#Groups.list_groups"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.groups.Groups.list_groups" title="Link to this definition"></a></dt>
-<dd><p>Returns list of groups
-:rtype: list[Group]</p>
+<dd><p>Returns list of groups</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[<a class="reference internal" href="#O365.groups.Group" title="O365.groups.Group">Group</a>]</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
