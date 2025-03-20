@@ -64,14 +64,18 @@ class WorkbookSession(ApiComponent):
             main_resource=main_resource,
         )
 
+        #: Whether or not the session changes are persisted. |br| **Type:** bool
         self.persist = persist
 
+        #: The inactivity limit. |br| **Type:** timedelta
         self.inactivity_limit = (
             dt.timedelta(seconds=PERSISTENT_SESSION_INACTIVITY_MAX_AGE)
             if persist
             else dt.timedelta(seconds=NON_PERSISTENT_SESSION_INACTIVITY_MAX_AGE)
         )
+        #: The session id. |br| **Type:** str
         self.session_id = None
+        #: The time of last activity. |br| **Type:** datetime
         self.last_activity = dt.datetime.now()
 
     def __str__(self):
@@ -169,6 +173,7 @@ class RangeFormatFont:
     """A font format applied to a range"""
 
     def __init__(self, parent):
+        #: The parent of the range format font. |br| **Type:** parent
         self.parent = parent
         self._track_changes = TrackerSet(casing=parent._cc)
         self._loaded = False
@@ -233,6 +238,12 @@ class RangeFormatFont:
 
     @property
     def color(self):
+        """The color of the range format font
+
+        :getter: get the color
+        :setter: set the color
+        :type: str
+        """
         if not self._color:
             self._load_data()
         return self._color
@@ -244,6 +255,12 @@ class RangeFormatFont:
 
     @property
     def italic(self):
+        """Is range format font in italics
+
+        :getter: get the italic
+        :setter: set the italic
+        :type: bool
+        """
         if not self._loaded:
             self._load_data()
         return self._italic
@@ -255,6 +272,12 @@ class RangeFormatFont:
 
     @property
     def name(self):
+        """The name of the range format font
+
+        :getter: get the name
+        :setter: set the name
+        :type: str
+        """
         if not self._loaded:
             self._load_data()
         return self._name
@@ -266,6 +289,12 @@ class RangeFormatFont:
 
     @property
     def size(self):
+        """The size of the range format font
+
+        :getter: get the size
+        :setter: set the size
+        :type: int
+        """
         if not self._loaded:
             self._load_data()
         return self._size
@@ -277,6 +306,12 @@ class RangeFormatFont:
 
     @property
     def underline(self):
+        """Is range format font underlined
+
+        :getter: get the underline
+        :setter: set the underline
+        :type: bool
+        """
         if not self._loaded:
             self._load_data()
         return self._underline
@@ -303,7 +338,9 @@ class RangeFormat(ApiComponent):
         if parent and session:
             raise ValueError("Need a parent or a session but not both")
 
+        #: The range of the range format. |br| **Type:** range
         self.range = parent
+        #: The session for the range format. |br| **Type:** str
         self.session = parent.session if parent else session
 
         # Choose the main_resource passed in kwargs over parent main_resource
@@ -343,6 +380,12 @@ class RangeFormat(ApiComponent):
 
     @property
     def column_width(self):
+        """The width of all columns within the range
+
+        :getter: get the column_width
+        :setter: set the column_width
+        :type: float
+        """
         return self._column_width
 
     @column_width.setter
@@ -352,6 +395,14 @@ class RangeFormat(ApiComponent):
 
     @property
     def horizontal_alignment(self):
+        """The horizontal alignment for the specified object.
+        Possible values are: General, Left, Center, Right, Fill, Justify,
+        CenterAcrossSelection, Distributed.
+
+        :getter: get the vertical_alignment
+        :setter: set the vertical_alignment
+        :type: string
+        """
         return self._horizontal_alignment
 
     @horizontal_alignment.setter
@@ -361,6 +412,12 @@ class RangeFormat(ApiComponent):
 
     @property
     def row_height(self):
+        """The height of all rows in the range.
+
+        :getter: get the row_height
+        :setter: set the row_height
+        :type: float
+        """
         return self._row_height
 
     @row_height.setter
@@ -370,6 +427,13 @@ class RangeFormat(ApiComponent):
 
     @property
     def vertical_alignment(self):
+        """The vertical alignment for the specified object.
+        Possible values are: Top, Center, Bottom, Justify, Distributed.
+
+        :getter: get the vertical_alignment
+        :setter: set the vertical_alignment
+        :type: string
+        """
         return self._vertical_alignment
 
     @vertical_alignment.setter
@@ -379,6 +443,12 @@ class RangeFormat(ApiComponent):
 
     @property
     def wrap_text(self):
+        """Indicates whether Excel wraps the text in the object
+
+        :getter: get the wrap_text
+        :setter: set the wrap_text
+        :type: bool
+        """
         return self._wrap_text
 
     @wrap_text.setter
@@ -441,10 +511,22 @@ class RangeFormat(ApiComponent):
 
     @property
     def font(self):
+        """Returns the font object defined on the overall range selected
+
+        :getter: get the font
+        :setter: set the font
+        :type: RangeFormatFont
+        """
         return self._font
 
     @property
     def background_color(self):
+        """The background color of the range
+
+        :getter: get the background_color
+        :setter: set the background_color
+        :type: UnsentSentinel
+        """
         if self._background_color is UnsetSentinel:
             self._load_background_color()
         return self._background_color
@@ -509,7 +591,7 @@ class Range(ApiComponent):
         "get_resized_range": "/resizedRange(deltaRows={}, deltaColumns={})",
         "get_format": "/format",
     }
-    range_format_constructor = RangeFormat
+    range_format_constructor = RangeFormat  #: :meta private:
 
     def __init__(self, parent=None, session=None, **kwargs):
         if parent and session:
@@ -519,6 +601,7 @@ class Range(ApiComponent):
 
         cloud_data = kwargs.get(self._cloud_data_key, {})
 
+        #: The id of the range. |br| **Type:** str
         self.object_id = cloud_data.get("address", None)
 
         # Choose the main_resource passed in kwargs over parent main_resource
@@ -547,21 +630,38 @@ class Range(ApiComponent):
 
         self._track_changes = TrackerSet(casing=self._cc)
 
+        #: Represents the range reference in A1-style.
+        #: Address value contains the Sheet reference
+        #: (for example, Sheet1!A1:B4). |br| **Type:** str
         self.address = cloud_data.get("address", "")
+        #: Represents range reference for the specified range in the language of the user.
+        #:  |br| **Type:** str
         self.address_local = cloud_data.get("addressLocal", "")
+        #: Represents the total number of columns in the range. |br| **Type:** int
         self.column_count = cloud_data.get("columnCount", 0)
+        #: Returns the total number of rows in the range. |br| **Type:** int
         self.row_count = cloud_data.get("rowCount", 0)
+        #: Number of cells in the range. |br| **Type:** int
         self.cell_count = cloud_data.get("cellCount", 0)
         self._column_hidden = cloud_data.get("columnHidden", False)
+        #: Represents the column number of the first cell in the range. Zero-indexed.
+        #: |br| **Type:** int
         self.column_index = cloud_data.get("columnIndex", 0)  # zero indexed
         self._row_hidden = cloud_data.get("rowHidden", False)
+        #: Returns the row number of the first cell in the range. Zero-indexed.
+        #: |br| **Type:** int
         self.row_index = cloud_data.get("rowIndex", 0)  # zero indexed
         self._formulas = cloud_data.get("formulas", [[]])
         self._formulas_local = cloud_data.get("formulasLocal", [[]])
         self._formulas_r1_c1 = cloud_data.get("formulasR1C1", [[]])
+        #: Represents if all cells of the current range are hidden. |br| **Type:** bool
         self.hidden = cloud_data.get("hidden", False)
         self._number_format = cloud_data.get("numberFormat", [[]])
+        #: Text values of the specified range. |br| **Type:** str
         self.text = cloud_data.get("text", [[]])
+        #: Represents the type of data of each cell.
+        #: The possible values are: Unknown, Empty, String,
+        #: Integer, Double, Boolean, Error. |br| **Type:** list[list]
         self.value_types = cloud_data.get("valueTypes", [[]])
         self._values = cloud_data.get("values", [[]])
 
@@ -576,6 +676,12 @@ class Range(ApiComponent):
 
     @property
     def column_hidden(self):
+        """Indicates whether all columns of the current range are hidden.
+
+        :getter: get the column_hidden
+        :setter: set the column_hidden
+        :type: bool
+        """
         return self._column_hidden
 
     @column_hidden.setter
@@ -585,6 +691,12 @@ class Range(ApiComponent):
 
     @property
     def row_hidden(self):
+        """Indicates whether all rows of the current range are hidden.
+
+        :getter: get the row_hidden
+        :setter: set the row_hidden
+        :type: bool
+        """
         return self._row_hidden
 
     @row_hidden.setter
@@ -594,6 +706,12 @@ class Range(ApiComponent):
 
     @property
     def formulas(self):
+        """Represents the formula in A1-style notation.
+
+        :getter: get the formulas
+        :setter: set the formulas
+        :type: any
+        """
         return self._formulas
 
     @formulas.setter
@@ -603,6 +721,14 @@ class Range(ApiComponent):
 
     @property
     def formulas_local(self):
+        """Represents the formula in A1-style notation, in the user's language
+        and number-formatting locale. For example, the English "=SUM(A1, 1.5)"
+        formula would become "=SUMME(A1; 1,5)" in German.
+
+        :getter: get the formulas_local
+        :setter: set the formulas_local
+        :type: list[list]
+        """
         return self._formulas_local
 
     @formulas_local.setter
@@ -612,6 +738,12 @@ class Range(ApiComponent):
 
     @property
     def formulas_r1_c1(self):
+        """Represents the formula in R1C1-style notation.
+
+        :getter: get the formulas_r1_c1
+        :setter: set the formulas_r1_c1
+        :type: list[list]
+        """
         return self._formulas_r1_c1
 
     @formulas_r1_c1.setter
@@ -621,6 +753,12 @@ class Range(ApiComponent):
 
     @property
     def number_format(self):
+        """Represents Excel's number format code for the given cell.
+
+        :getter: get the number_format
+        :setter: set the number_fromat
+        :type: list[list]
+        """
         return self._number_format
 
     @number_format.setter
@@ -630,6 +768,14 @@ class Range(ApiComponent):
 
     @property
     def values(self):
+        """Represents the raw values of the specified range.
+        The data returned can be of type string, number, or a Boolean.
+        Cell that contains an error returns the error string.
+
+        :getter: get the number_format
+        :setter: set the number_fromat
+        :type: list[list]
+        """
         return self._values
 
     @values.setter
@@ -906,7 +1052,7 @@ class NamedRange(ApiComponent):
         "get_range": "/range",
     }
 
-    range_constructor = Range
+    range_constructor = Range  #: :meta private:
 
     def __init__(self, parent=None, session=None, **kwargs):
         if parent and session:
@@ -916,6 +1062,7 @@ class NamedRange(ApiComponent):
 
         cloud_data = kwargs.get(self._cloud_data_key, {})
 
+        #: Id of the named range |br| **Type:** str
         self.object_id = cloud_data.get("name", None)
 
         # Choose the main_resource passed in kwargs over parent main_resource
@@ -930,11 +1077,20 @@ class NamedRange(ApiComponent):
             main_resource=main_resource,
         )
 
+        #: The name of the object. |br| **Type:** str
         self.name = cloud_data.get("name", None)
+        #: The comment associated with this name. |br| **Type:** str
         self.comment = cloud_data.get("comment", "")
+        #: Indicates whether the name is scoped to the workbook or to a specific worksheet.
+        #: |br| **Type:** str
         self.scope = cloud_data.get("scope", "")
+        #: The type of reference is associated with the name.
+        #: Possible values are: String, Integer, Double, Boolean, Range. |br| **Type:** str
         self.data_type = cloud_data.get("type", "")
+        #: The formula that the name is defined to refer to.
+        #: For example, =Sheet14!$B$2:$H$12 and =4.75. |br| **Type:** str
         self.value = cloud_data.get("value", "")
+        #: Indicates whether the object is visible. |br| **Type:** bool
         self.visible = cloud_data.get("visible", True)
 
     def __str__(self):
@@ -988,17 +1144,20 @@ class TableRow(ApiComponent):
         "get_range": "/range",
         "delete": "/delete",
     }
-    range_constructor = Range
+    range_constructor = Range  #: :meta private:
 
     def __init__(self, parent=None, session=None, **kwargs):
         if parent and session:
             raise ValueError("Need a parent or a session but not both")
 
+        #: Parent of the table row. |br| **Type:** parent
         self.table = parent
+        #: Session of table row |br| **Type:** session
         self.session = parent.session if parent else session
 
         cloud_data = kwargs.get(self._cloud_data_key, {})
 
+        #: Id of the Table Row |br| **Type:** str
         self.object_id = cloud_data.get("index", None)
 
         # Choose the main_resource passed in kwargs over parent main_resource
@@ -1014,7 +1173,13 @@ class TableRow(ApiComponent):
             main_resource=main_resource,
         )
 
+        #: The index of the row within the rows collection of the table. Zero-based.
+        #: |br| **Type:** int
         self.index = cloud_data.get("index", 0)  # zero indexed
+        #: The raw values of the specified range.
+        #: The data returned could be of type string, number, or a Boolean.
+        #: Any cell that contain an error will return the error string.
+        #: |br| **Type:** list[list]
         self.values = cloud_data.get("values", [[]])  # json string
 
     def __str__(self):
@@ -1063,17 +1228,20 @@ class TableColumn(ApiComponent):
         "clear_filter": "/filter/clear",
         "apply_filter": "/filter/apply",
     }
-    range_constructor = Range
+    range_constructor = Range  #: :meta private:
 
     def __init__(self, parent=None, session=None, **kwargs):
         if parent and session:
             raise ValueError("Need a parent or a session but not both")
 
+        #: Parent of the table column. |br| **Type:** parent
         self.table = parent
+        #: session of the table column.. |br| **Type:** session
         self.session = parent.session if parent else session
 
         cloud_data = kwargs.get(self._cloud_data_key, {})
 
+        #: Id of the Table Column|br| **Type:** str
         self.object_id = cloud_data.get("id", None)
 
         # Choose the main_resource passed in kwargs over parent main_resource
@@ -1089,8 +1257,14 @@ class TableColumn(ApiComponent):
             main_resource=main_resource,
         )
 
+        #: The name of the table column. |br| **Type:** str
         self.name = cloud_data.get("name", "")
+        #: TThe index of the column within the columns collection of the table. Zero-indexed.
+        #: |br| **Type:** int
         self.index = cloud_data.get("index", 0)  # zero indexed
+        #: Represents the raw values of the specified range.
+        #: The data returned could be of type string, number, or a Boolean.
+        #: Cell that contain an error will return the error string. |br| **Type:** list[list]
         self.values = cloud_data.get("values", [[]])  # json string
 
     def __str__(self):
@@ -1209,19 +1383,22 @@ class Table(ApiComponent):
         "clear_filters": "/clearFilters",
         "reapply_filters": "/reapplyFilters",
     }
-    column_constructor = TableColumn
-    row_constructor = TableRow
-    range_constructor = Range
+    column_constructor = TableColumn  #: :meta private:
+    row_constructor = TableRow  #: :meta private:
+    range_constructor = Range  #: :meta private:
 
     def __init__(self, parent=None, session=None, **kwargs):
         if parent and session:
             raise ValueError("Need a parent or a session but not both")
 
+        #: Parent of the table. |br| **Type:** parent
         self.parent = parent
+        #: Session of the table. |br| **Type:** session
         self.session = parent.session if parent else session
 
         cloud_data = kwargs.get(self._cloud_data_key, {})
 
+        #: The unique identifier for the table in the workbook. |br| **Type:** str
         self.object_id = cloud_data.get("id", None)
 
         # Choose the main_resource passed in kwargs over parent main_resource
@@ -1237,15 +1414,29 @@ class Table(ApiComponent):
             main_resource=main_resource,
         )
 
+        #: The name of the table. |br| **Type:** str
         self.name = cloud_data.get("name", None)
+        #: Indicates whether the header row is visible or not |br| **Type:** bool
         self.show_headers = cloud_data.get("showHeaders", True)
+        #: Indicates whether the total row is visible or not.  |br| **Type:** bool
         self.show_totals = cloud_data.get("showTotals", True)
+        #: A constant value that represents the Table style |br| **Type:** str
         self.style = cloud_data.get("style", None)
+        #: Indicates whether the first column contains special formatting. |br| **Type:** bool
         self.highlight_first_column = cloud_data.get("highlightFirstColumn", False)
+        #: Indicates whether the last column contains special formatting. |br| **Type:** bool
         self.highlight_last_column = cloud_data.get("highlightLastColumn", False)
+        #: Indicates whether the columns show banded formatting in which odd columns
+        #: are highlighted differently from even ones to make reading the table easier.
+        #: |br| **Type:** bool
         self.show_banded_columns = cloud_data.get("showBandedColumns", False)
+        #: The name of the table column. |br| **Type:** str
         self.show_banded_rows = cloud_data.get("showBandedRows", False)
+        #: Indicates whether the rows show banded formatting in which odd rows
+        #: are highlighted differently from even ones to make reading the table easier.
+        #: |br| **Type:** bool
         self.show_filter_button = cloud_data.get("showFilterButton", False)
+        #: A legacy identifier used in older Excel clients.  |br| **Type:** str
         self.legacy_id = cloud_data.get("legacyId", False)
 
     def __str__(self):
@@ -1563,19 +1754,22 @@ class WorkSheet(ApiComponent):
         "get_named_range": "/names/{name}",
     }
 
-    table_constructor = Table
-    range_constructor = Range
-    named_range_constructor = NamedRange
+    table_constructor = Table  #: :meta private:
+    range_constructor = Range  #: :meta private:
+    named_range_constructor = NamedRange  #: :meta private:
 
     def __init__(self, parent=None, session=None, **kwargs):
         if parent and session:
             raise ValueError("Need a parent or a session but not both")
 
+        #: The parent of the worksheet. |br| **Type:** parent
         self.workbook = parent
+        #: Thesession of the worksheet. |br| **Type:** session
         self.session = parent.session if parent else session
 
         cloud_data = kwargs.get(self._cloud_data_key, {})
 
+        #: The unique identifier for the worksheet in the workbook. |br| **Type:** str
         self.object_id = cloud_data.get("id", None)
 
         # Choose the main_resource passed in kwargs over parent main_resource
@@ -1593,8 +1787,12 @@ class WorkSheet(ApiComponent):
             main_resource=main_resource,
         )
 
+        #: The display name of the worksheet. |br| **Type:** str
         self.name = cloud_data.get("name", None)
+        #: The zero-based position of the worksheet within the workbook. |br| **Type:** int
         self.position = cloud_data.get("position", None)
+        #: The visibility of the worksheet.
+        #: The possible values are: Visible, Hidden, VeryHidden. |br| **Type:** str
         self.visibility = cloud_data.get("visibility", None)
 
     def __str__(self):
@@ -1788,6 +1986,7 @@ class WorkbookApplication(ApiComponent):
         if not isinstance(workbook, WorkBook):
             raise ValueError("workbook was not an accepted type: Workbook")
 
+        #: The application parent. |br| **Type:** Workbook
         self.parent = workbook  # Not really needed currently, but saving in case we need it for future functionality
         self.con = workbook.session.con
         main_resource = getattr(workbook, "main_resource", None)
@@ -1815,6 +2014,7 @@ class WorkbookApplication(ApiComponent):
         return response.json()
 
     def run_calculations(self, calculation_type):
+        """Recalculate all currently opened workbooks in Excel."""
         if calculation_type not in ["Recalculate", "Full", "FullRebuild"]:
             raise ValueError(
                 "calculation type must be one of: Recalculate, Full, FullRebuild"
@@ -1847,10 +2047,10 @@ class WorkBook(ApiComponent):
         "add_named_range_f": "/names/addFormulaLocal",
     }
 
-    application_constructor = WorkbookApplication
-    worksheet_constructor = WorkSheet
-    table_constructor = Table
-    named_range_constructor = NamedRange
+    application_constructor = WorkbookApplication  #: :meta private:
+    worksheet_constructor = WorkSheet  #: :meta private:
+    table_constructor = Table  #: :meta private:
+    named_range_constructor = NamedRange  #: :meta private:
 
     def __init__(self, file_item, *, use_session=True, persist=True):
         """Create a workbook representation
@@ -1880,6 +2080,7 @@ class WorkBook(ApiComponent):
         super().__init__(protocol=file_item.protocol, main_resource=main_resource)
 
         persist = persist if use_session is True else True
+        #: The session for the workbook. |br| **Type:** WorkbookSession
         self.session = WorkbookSession(
             parent=file_item, persist=persist, main_resource=main_resource
         )
@@ -1887,7 +2088,9 @@ class WorkBook(ApiComponent):
         if use_session:
             self.session.create_session()
 
+        #: The name of the workbook. |br| **Type:**str**
         self.name = file_item.name
+        #: The id of the workbook. |br| **Type:** str**
         self.object_id = "Workbook:{}".format(
             file_item.object_id
         )  # Mangle the object id

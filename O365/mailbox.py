@@ -30,7 +30,7 @@ class AutoReplyStatus(Enum):
 
 
 class AutomaticRepliesSettings(ApiComponent):
-    """The MailboxSettings."""
+    """The  AutomaticRepliesSettingss."""
 
     def __init__(self, *, parent=None, con=None, **kwargs):
         """Representation of the AutomaticRepliesSettings.
