@@ -59,7 +59,7 @@ class MessageAttachments(BaseAttachments):
         "get_mime": "/messages/{id}/attachments/{ida}/$value",
         "create_upload_session": "/messages/{id}/attachments/createUploadSession",
     }
-    _attachment_constructor = MessageAttachment
+    _attachment_constructor = MessageAttachment  #: :meta private:
 
     def save_as_eml(self, attachment, to_path=None):
         """Saves this message as and EML to the file system
@@ -198,22 +198,47 @@ class MessageFlag(ApiComponent):
 
     @property
     def start_date(self):
+        """The start date of the message flag.
+
+        :getter: get the start_date
+        :type: datetime
+        """
         return self.__start
 
     @property
     def due_date(self):
+        """The due date of the message flag.
+
+        :getter: get the due_date
+        :type: datetime
+        """
         return self.__due_date
 
     @property
     def completition_date(self):
+        """The completion date of the message flag.
+
+        :getter: get the completion_date
+        :type: datetime
+        """
         return self.__completed
 
     @property
     def is_completed(self):
+        """Is the flag completed.
+
+        :getter: get the is_completed status
+        :type: bool
+        """
         return self.__status is Flag.Complete
 
     @property
     def is_flagged(self):
+        """Is item flagged.
+
+        :getter: get the is_flagged status
+        :type: bool
+        """
         return self.__status is Flag.Flagged or self.__status is Flag.Complete
 
     def to_api_data(self):
@@ -237,7 +262,6 @@ class MessageFlag(ApiComponent):
             )
 
         return data
-
 
 class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
     """Management of the process of sending, receiving, reading, and
@@ -293,6 +317,7 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
 
         # internal to know which properties need to be updated on the server
         self._track_changes = TrackerSet(casing=cc)
+        #: Unique identifier for the message. |br| **Type:** str
         self.object_id = cloud_data.get(cc("id"), kwargs.get("object_id", None))
 
         self.__inference_classification = cloud_data.get(
@@ -325,6 +350,7 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         self.__body_preview = cloud_data.get(cc("bodyPreview"), "")
         body = cloud_data.get(cc("body"), {})
         self.__body = body.get(cc("content"), "")
+        #: The body type of the message. |br| **Type:** bodyType
         self.body_type = body.get(
             cc("contentType"), "HTML"
         )  # default to HTML for new messages
@@ -383,14 +409,19 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
 
         # a message is a draft by default
         self.__is_draft = cloud_data.get(cc("isDraft"), kwargs.get("is_draft", True))
+        #: The ID of the conversation the email belongs to. |br| **Type:** str
         self.conversation_id = cloud_data.get(cc("conversationId"), None)
+        #: Indicates the position of the message within the conversation. |br| **Type:** any
         self.conversation_index = cloud_data.get(cc("conversationIndex"), None)
+        #: The unique identifier for the message's parent mailFolder. |br| **Type:** str
         self.folder_id = cloud_data.get(cc("parentFolderId"), None)
 
         flag_data = cloud_data.get(cc("flag"), {})
         self.__flag = MessageFlag(parent=self, flag_data=flag_data)
 
+        #: The message ID in the format specified by RFC2822. |br| **Type:** str
         self.internet_message_id = cloud_data.get(cc("internetMessageId"), "")
+        #: The URL to open the message in Outlook on the web. |br| **Type:** str
         self.web_link = cloud_data.get(cc("webLink"), "")
 
         # Headers only retrieved when selecting 'internetMessageHeaders'
