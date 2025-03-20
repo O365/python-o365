@@ -1,7 +1,7 @@
 Utils
 -----
 
-.. include:: global.rst
+.. include:: ../global.rst
 
 .. automodule:: O365.utils.utils
     :members:
