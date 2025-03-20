@@ -20,7 +20,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Directory" href="directory.html" />
-    <link rel="prev" title="Outlook Category" href="category.html" />
+    <link rel="prev" title="Category" href="category.html" />
     <link href="../_static/css/style.css" rel="stylesheet" type="text/css">
 
 </head>
@@ -52,20 +52,18 @@
 <li class="toctree-l1 current"><a class="reference internal" href="../api.html">O365 API</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="account.html">Account</a></li>
 <li class="toctree-l2"><a class="reference internal" href="address_book.html">Address Book</a></li>
-<li class="toctree-l2"><a class="reference internal" href="attachment.html">Attachment</a></li>
 <li class="toctree-l2"><a class="reference internal" href="calendar.html">Calendar</a></li>
-<li class="toctree-l2"><a class="reference internal" href="category.html">Outlook Category</a></li>
+<li class="toctree-l2"><a class="reference internal" href="category.html">Category</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Connection</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#O365.connection.TokenExpiredError"><code class="docutils literal notranslate"><span class="pre">TokenExpiredError</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#O365.connection.Connection"><code class="docutils literal notranslate"><span class="pre">Connection</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#O365.connection.Connection.__init__"><code class="docutils literal notranslate"><span class="pre">Connection.__init__()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#O365.connection.Connection.auth_flow_type"><code class="docutils literal notranslate"><span class="pre">Connection.auth_flow_type</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.connection.Connection.delete"><code class="docutils literal notranslate"><span class="pre">Connection.delete()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.connection.Connection.get"><code class="docutils literal notranslate"><span class="pre">Connection.get()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.connection.Connection.get_authorization_url"><code class="docutils literal notranslate"><span class="pre">Connection.get_authorization_url()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.connection.Connection.get_naive_session"><code class="docutils literal notranslate"><span class="pre">Connection.get_naive_session()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.connection.Connection.get_session"><code class="docutils literal notranslate"><span class="pre">Connection.get_session()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.connection.Connection.load_token_from_backend"><code class="docutils literal notranslate"><span class="pre">Connection.load_token_from_backend()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#O365.connection.Connection.msal_client"><code class="docutils literal notranslate"><span class="pre">Connection.msal_client</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.connection.Connection.naive_request"><code class="docutils literal notranslate"><span class="pre">Connection.naive_request()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.connection.Connection.oauth_request"><code class="docutils literal notranslate"><span class="pre">Connection.oauth_request()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.connection.Connection.patch"><code class="docutils literal notranslate"><span class="pre">Connection.patch()</span></code></a></li>
@@ -74,35 +72,64 @@
 <li class="toctree-l4"><a class="reference internal" href="#O365.connection.Connection.refresh_token"><code class="docutils literal notranslate"><span class="pre">Connection.refresh_token()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.connection.Connection.request_token"><code class="docutils literal notranslate"><span class="pre">Connection.request_token()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.connection.Connection.set_proxy"><code class="docutils literal notranslate"><span class="pre">Connection.set_proxy()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.connection.Connection.auth"><code class="docutils literal notranslate"><span class="pre">Connection.auth</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.connection.Connection.auth_flow_type"><code class="docutils literal notranslate"><span class="pre">Connection.auth_flow_type</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.connection.Connection.default_headers"><code class="docutils literal notranslate"><span class="pre">Connection.default_headers</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.connection.Connection.json_encoder"><code class="docutils literal notranslate"><span class="pre">Connection.json_encoder</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.connection.Connection.msal_client"><code class="docutils literal notranslate"><span class="pre">Connection.msal_client</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.connection.Connection.naive_session"><code class="docutils literal notranslate"><span class="pre">Connection.naive_session</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.connection.Connection.oauth_redirect_url"><code class="docutils literal notranslate"><span class="pre">Connection.oauth_redirect_url</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.connection.Connection.password"><code class="docutils literal notranslate"><span class="pre">Connection.password</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.connection.Connection.proxy"><code class="docutils literal notranslate"><span class="pre">Connection.proxy</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.connection.Connection.raise_http_errors"><code class="docutils literal notranslate"><span class="pre">Connection.raise_http_errors</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.connection.Connection.request_retries"><code class="docutils literal notranslate"><span class="pre">Connection.request_retries</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.connection.Connection.requests_delay"><code class="docutils literal notranslate"><span class="pre">Connection.requests_delay</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.connection.Connection.session"><code class="docutils literal notranslate"><span class="pre">Connection.session</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.connection.Connection.store_token_after_refresh"><code class="docutils literal notranslate"><span class="pre">Connection.store_token_after_refresh</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.connection.Connection.tenant_id"><code class="docutils literal notranslate"><span class="pre">Connection.tenant_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.connection.Connection.timeout"><code class="docutils literal notranslate"><span class="pre">Connection.timeout</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.connection.Connection.token_backend"><code class="docutils literal notranslate"><span class="pre">Connection.token_backend</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.connection.Connection.username"><code class="docutils literal notranslate"><span class="pre">Connection.username</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.connection.Connection.verify_ssl"><code class="docutils literal notranslate"><span class="pre">Connection.verify_ssl</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#O365.connection.MSBusinessCentral365Protocol"><code class="docutils literal notranslate"><span class="pre">MSBusinessCentral365Protocol</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#O365.connection.MSBusinessCentral365Protocol.__init__"><code class="docutils literal notranslate"><span class="pre">MSBusinessCentral365Protocol.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.connection.MSBusinessCentral365Protocol.max_top_value"><code class="docutils literal notranslate"><span class="pre">MSBusinessCentral365Protocol.max_top_value</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.connection.MSBusinessCentral365Protocol.timezone"><code class="docutils literal notranslate"><span class="pre">MSBusinessCentral365Protocol.timezone</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#O365.connection.MSGraphProtocol"><code class="docutils literal notranslate"><span class="pre">MSGraphProtocol</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#O365.connection.MSGraphProtocol.__init__"><code class="docutils literal notranslate"><span class="pre">MSGraphProtocol.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.connection.MSGraphProtocol.max_top_value"><code class="docutils literal notranslate"><span class="pre">MSGraphProtocol.max_top_value</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.connection.MSGraphProtocol.timezone"><code class="docutils literal notranslate"><span class="pre">MSGraphProtocol.timezone</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#O365.connection.MSOffice365Protocol"><code class="docutils literal notranslate"><span class="pre">MSOffice365Protocol</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#O365.connection.MSOffice365Protocol.__init__"><code class="docutils literal notranslate"><span class="pre">MSOffice365Protocol.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.connection.MSOffice365Protocol.max_top_value"><code class="docutils literal notranslate"><span class="pre">MSOffice365Protocol.max_top_value</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.connection.MSOffice365Protocol.timezone"><code class="docutils literal notranslate"><span class="pre">MSOffice365Protocol.timezone</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#O365.connection.Protocol"><code class="docutils literal notranslate"><span class="pre">Protocol</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#O365.connection.Protocol.to_api_case"><code class="docutils literal notranslate"><span class="pre">Protocol.to_api_case()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.connection.Protocol.__init__"><code class="docutils literal notranslate"><span class="pre">Protocol.__init__()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.connection.Protocol.convert_case"><code class="docutils literal notranslate"><span class="pre">Protocol.convert_case()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.connection.Protocol.get_scopes_for"><code class="docutils literal notranslate"><span class="pre">Protocol.get_scopes_for()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.connection.Protocol.get_service_keyword"><code class="docutils literal notranslate"><span class="pre">Protocol.get_service_keyword()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.connection.Protocol.prefix_scope"><code class="docutils literal notranslate"><span class="pre">Protocol.prefix_scope()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.connection.Protocol.api_version"><code class="docutils literal notranslate"><span class="pre">Protocol.api_version</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.connection.Protocol.casing_function"><code class="docutils literal notranslate"><span class="pre">Protocol.casing_function</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.connection.Protocol.default_resource"><code class="docutils literal notranslate"><span class="pre">Protocol.default_resource</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.connection.Protocol.keyword_data_store"><code class="docutils literal notranslate"><span class="pre">Protocol.keyword_data_store</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.connection.Protocol.max_top_value"><code class="docutils literal notranslate"><span class="pre">Protocol.max_top_value</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.connection.Protocol.protocol_scope_prefix"><code class="docutils literal notranslate"><span class="pre">Protocol.protocol_scope_prefix</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.connection.Protocol.protocol_url"><code class="docutils literal notranslate"><span class="pre">Protocol.protocol_url</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.connection.Protocol.service_url"><code class="docutils literal notranslate"><span class="pre">Protocol.service_url</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.connection.Protocol.timezone"><code class="docutils literal notranslate"><span class="pre">Protocol.timezone</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#O365.connection.Protocol.to_api_case"><code class="docutils literal notranslate"><span class="pre">Protocol.to_api_case()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.connection.Protocol.use_default_casing"><code class="docutils literal notranslate"><span class="pre">Protocol.use_default_casing</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#O365.connection.TokenExpiredError"><code class="docutils literal notranslate"><span class="pre">TokenExpiredError</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#O365.connection.oauth_authentication_flow"><code class="docutils literal notranslate"><span class="pre">oauth_authentication_flow()</span></code></a></li>
 </ul>
 </li>
@@ -141,7 +168,7 @@
             <a href="../_sources/api/connection.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
-        <a href="category.html" class="btn btn-neutral float-left" title="Outlook Category" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="category.html" class="btn btn-neutral float-left" title="Category" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="directory.html" class="btn btn-neutral float-right" title="Directory" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
   </div>
   <hr/>
@@ -149,8 +176,14 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-O365.connection">
-<span id="connection"></span><h1>Connection<a class="headerlink" href="#module-O365.connection" title="Link to this heading"></a></h1>
+  <section id="connection">
+<h1>Connection<a class="headerlink" href="#connection" title="Link to this heading"></a></h1>
+<dl class="py exception" id="module-O365.connection">
+<dt class="sig sig-object py" id="O365.connection.TokenExpiredError">
+<em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.connection.</span></span><span class="sig-name descname"><span class="pre">TokenExpiredError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/connection.html#TokenExpiredError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.connection.TokenExpiredError" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">HTTPError</span></code></p>
+</dd></dl>
+
 <dl class="py class">
 <dt class="sig sig-object py" id="O365.connection.Connection">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.connection.</span></span><span class="sig-name descname"><span class="pre">Connection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">credentials</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tuple</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">proxy_server</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">proxy_port</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">8080</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">proxy_username</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">proxy_password</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">proxy_http_only</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">requests_delay</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">200</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">raise_http_errors</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">request_retries</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">token_backend</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">BaseTokenBackend</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tenant_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'common'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">auth_flow_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'authorization'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">username</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">password</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">json_encoder</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">JSONEncoder</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify_ssl</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_headers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">store_token_after_refresh</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/connection.html#Connection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.connection.Connection" title="Link to this definition"></a></dt>
@@ -217,11 +250,6 @@ data before giving up, as a float, or a tuple (connect timeout, read timeout)</p
 </dd>
 </dl>
 </dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="O365.connection.Connection.auth_flow_type">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">auth_flow_type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#O365.connection.Connection.auth_flow_type" title="Link to this definition"></a></dt>
-<dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="O365.connection.Connection.delete">
@@ -310,12 +338,6 @@ authorization url that the user must approve.</p>
 <dt class="sig sig-object py" id="O365.connection.Connection.load_token_from_backend">
 <span class="sig-name descname"><span class="pre">load_token_from_backend</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/O365/connection.html#Connection.load_token_from_backend"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.connection.Connection.load_token_from_backend" title="Link to this definition"></a></dt>
 <dd><p>Loads the token from the backend and tries to set the self.username if it’s not set</p>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="O365.connection.Connection.msal_client">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">msal_client</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">PublicClientApplication</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ConfidentialClientApplication</span></em><a class="headerlink" href="#O365.connection.Connection.msal_client" title="Link to this definition"></a></dt>
-<dd><p>Returns the msal client or creates it if it’s not already done</p>
 </dd></dl>
 
 <dl class="py method">
@@ -485,12 +507,119 @@ authenticating every time</p></li>
 </dl>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.connection.Connection.auth">
+<span class="sig-name descname"><span class="pre">auth</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Tuple</span></em><a class="headerlink" href="#O365.connection.Connection.auth" title="Link to this definition"></a></dt>
+<dd><p>The credentials for the connection.  <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> tuple</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="O365.connection.Connection.auth_flow_type">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">auth_flow_type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#O365.connection.Connection.auth_flow_type" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.connection.Connection.default_headers">
+<span class="sig-name descname"><span class="pre">default_headers</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span></em><a class="headerlink" href="#O365.connection.Connection.default_headers" title="Link to this definition"></a></dt>
+<dd><p>The default headers.  <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> dict</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.connection.Connection.json_encoder">
+<span class="sig-name descname"><span class="pre">json_encoder</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">JSONEncoder</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#O365.connection.Connection.json_encoder" title="Link to this definition"></a></dt>
+<dd><p>JSONEncoder to use. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> json.JSONEncoder</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="O365.connection.Connection.msal_client">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">msal_client</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">PublicClientApplication</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ConfidentialClientApplication</span></em><a class="headerlink" href="#O365.connection.Connection.msal_client" title="Link to this definition"></a></dt>
+<dd><p>Returns the msal client or creates it if it’s not already done</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.connection.Connection.naive_session">
+<span class="sig-name descname"><span class="pre">naive_session</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Session</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#O365.connection.Connection.naive_session" title="Link to this definition"></a></dt>
+<dd><p>the naive session. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> Session</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.connection.Connection.oauth_redirect_url">
+<span class="sig-name descname"><span class="pre">oauth_redirect_url</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#O365.connection.Connection.oauth_redirect_url" title="Link to this definition"></a></dt>
+<dd><p>The oauth redirect url. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.connection.Connection.password">
+<span class="sig-name descname"><span class="pre">password</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#O365.connection.Connection.password" title="Link to this definition"></a></dt>
+<dd><p>The password for the connection.  <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.connection.Connection.proxy">
+<span class="sig-name descname"><span class="pre">proxy</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span></em><a class="headerlink" href="#O365.connection.Connection.proxy" title="Link to this definition"></a></dt>
+<dd><p>The proxy to use.  <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> dict</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.connection.Connection.raise_http_errors">
+<span class="sig-name descname"><span class="pre">raise_http_errors</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#O365.connection.Connection.raise_http_errors" title="Link to this definition"></a></dt>
+<dd><p>Should http errors be raised. Default true.  <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> bool</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.connection.Connection.request_retries">
+<span class="sig-name descname"><span class="pre">request_retries</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#O365.connection.Connection.request_retries" title="Link to this definition"></a></dt>
+<dd><p>Number of time to retry request. Default 3. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> int</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.connection.Connection.requests_delay">
+<span class="sig-name descname"><span class="pre">requests_delay</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#O365.connection.Connection.requests_delay" title="Link to this definition"></a></dt>
+<dd><p>The delay to put in a request. Default 0.  <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> int</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.connection.Connection.session">
+<span class="sig-name descname"><span class="pre">session</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Session</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#O365.connection.Connection.session" title="Link to this definition"></a></dt>
+<dd><p>The session to use.  <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> Session</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.connection.Connection.store_token_after_refresh">
+<span class="sig-name descname"><span class="pre">store_token_after_refresh</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#O365.connection.Connection.store_token_after_refresh" title="Link to this definition"></a></dt>
+<dd><p>Store token after refresh. Default true.  <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> bool</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.connection.Connection.tenant_id">
+<span class="sig-name descname"><span class="pre">tenant_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#O365.connection.Connection.tenant_id" title="Link to this definition"></a></dt>
+<dd><p>The tenant id.  <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.connection.Connection.timeout">
+<span class="sig-name descname"><span class="pre">timeout</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#O365.connection.Connection.timeout" title="Link to this definition"></a></dt>
+<dd><p>Timeout for the request. Default None. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> int</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.connection.Connection.token_backend">
+<span class="sig-name descname"><span class="pre">token_backend</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">BaseTokenBackend</span></em><a class="headerlink" href="#O365.connection.Connection.token_backend" title="Link to this definition"></a></dt>
+<dd><p>The token backend in use.  <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> BaseTokenbackend</p>
+</dd></dl>
+
 <dl class="py property">
 <dt class="sig sig-object py" id="O365.connection.Connection.username">
 <em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">username</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#O365.connection.Connection.username" title="Link to this definition"></a></dt>
 <dd><p>Returns the username in use
 If username is not set this will try to set the username to the first account found
 from the token_backend.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.connection.Connection.verify_ssl">
+<span class="sig-name descname"><span class="pre">verify_ssl</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#O365.connection.Connection.verify_ssl" title="Link to this definition"></a></dt>
+<dd><p>Whether to verify the ssl cert. Default true. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> bool</p>
 </dd></dl>
 
 </dd></dl>
@@ -516,6 +645,12 @@ nothing explicitly specified during the requests</p></li>
 </ul>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.connection.MSBusinessCentral365Protocol.max_top_value">
+<span class="sig-name descname"><span class="pre">max_top_value</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#O365.connection.MSBusinessCentral365Protocol.max_top_value" title="Link to this definition"></a></dt>
+<dd><p>The max value for ‘top’ (999).  <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
 </dd></dl>
 
 <dl class="py property">
@@ -548,6 +683,12 @@ nothing explicitly specified during the requests</p></li>
 </dl>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.connection.MSGraphProtocol.max_top_value">
+<span class="sig-name descname"><span class="pre">max_top_value</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#O365.connection.MSGraphProtocol.max_top_value" title="Link to this definition"></a></dt>
+<dd><p>The max value for ‘top’ (999).  <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
 <dl class="py property">
 <dt class="sig sig-object py" id="O365.connection.MSGraphProtocol.timezone">
 <em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">timezone</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ZoneInfo</span></em><a class="headerlink" href="#O365.connection.MSGraphProtocol.timezone" title="Link to this definition"></a></dt>
@@ -578,6 +719,12 @@ nothing explicitly specified during the requests</p></li>
 </dl>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.connection.MSOffice365Protocol.max_top_value">
+<span class="sig-name descname"><span class="pre">max_top_value</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#O365.connection.MSOffice365Protocol.max_top_value" title="Link to this definition"></a></dt>
+<dd><p>The max value for ‘top’ (999).  <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
 <dl class="py property">
 <dt class="sig sig-object py" id="O365.connection.MSOffice365Protocol.timezone">
 <em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">timezone</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ZoneInfo</span></em><a class="headerlink" href="#O365.connection.MSOffice365Protocol.timezone" title="Link to this definition"></a></dt>
@@ -590,6 +737,20 @@ nothing explicitly specified during the requests</p></li>
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.connection.</span></span><span class="sig-name descname"><span class="pre">Protocol</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">protocol_url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_version</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_resource</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">casing_function</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">protocol_scope_prefix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timezone</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ZoneInfo</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/connection.html#Protocol"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.connection.Protocol" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Base class for all protocols</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.connection.Protocol.to_api_case">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">to_api_case</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/O365/connection.html#Protocol.to_api_case"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.connection.Protocol.to_api_case" title="Link to this definition"></a></dt>
+<dd><p>Converts key to snake_case</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>key</strong> – key to convert into snake_case</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>key after case conversion</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="O365.connection.Protocol.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">protocol_url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_version</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_resource</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">casing_function</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">protocol_scope_prefix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timezone</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ZoneInfo</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/connection.html#Protocol.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.connection.Protocol.__init__" title="Link to this definition"></a></dt>
@@ -672,31 +833,65 @@ scope_helpers provided, by adding the prefix to them if required</p>
 <dd><p>Inserts the protocol scope prefix if required</p>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.connection.Protocol.api_version">
+<span class="sig-name descname"><span class="pre">api_version</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#O365.connection.Protocol.api_version" title="Link to this definition"></a></dt>
+<dd><p>The api version being used. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.connection.Protocol.casing_function">
+<span class="sig-name descname"><span class="pre">casing_function</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Callable</span></em><a class="headerlink" href="#O365.connection.Protocol.casing_function" title="Link to this definition"></a></dt>
+<dd><p>The casing function being used.   <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> callable</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.connection.Protocol.default_resource">
+<span class="sig-name descname"><span class="pre">default_resource</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#O365.connection.Protocol.default_resource" title="Link to this definition"></a></dt>
+<dd><p>The resource being used. Defaults to ‘me’.   <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.connection.Protocol.keyword_data_store">
+<span class="sig-name descname"><span class="pre">keyword_data_store</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span></em><a class="headerlink" href="#O365.connection.Protocol.keyword_data_store" title="Link to this definition"></a></dt>
+<dd><p>The keyword data store.   <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> dict</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.connection.Protocol.max_top_value">
+<span class="sig-name descname"><span class="pre">max_top_value</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#O365.connection.Protocol.max_top_value" title="Link to this definition"></a></dt>
+<dd><p>The max value for ‘top’ (500).  <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.connection.Protocol.protocol_scope_prefix">
+<span class="sig-name descname"><span class="pre">protocol_scope_prefix</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#O365.connection.Protocol.protocol_scope_prefix" title="Link to this definition"></a></dt>
+<dd><p>The scope prefix for protcol in use. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.connection.Protocol.protocol_url">
+<span class="sig-name descname"><span class="pre">protocol_url</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#O365.connection.Protocol.protocol_url" title="Link to this definition"></a></dt>
+<dd><p>The url for the protcol in use. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.connection.Protocol.service_url">
+<span class="sig-name descname"><span class="pre">service_url</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#O365.connection.Protocol.service_url" title="Link to this definition"></a></dt>
+<dd><p>The full service url.  <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
 <dl class="py property">
 <dt class="sig sig-object py" id="O365.connection.Protocol.timezone">
 <em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">timezone</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ZoneInfo</span></em><a class="headerlink" href="#O365.connection.Protocol.timezone" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="O365.connection.Protocol.to_api_case">
-<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">to_api_case</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/O365/connection.html#Protocol.to_api_case"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.connection.Protocol.to_api_case" title="Link to this definition"></a></dt>
-<dd><p>Converts key to snake_case</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>key</strong> – key to convert into snake_case</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>key after case conversion</p>
-</dd>
-</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.connection.Protocol.use_default_casing">
+<span class="sig-name descname"><span class="pre">use_default_casing</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#O365.connection.Protocol.use_default_casing" title="Link to this definition"></a></dt>
+<dd><p>Indicates if default casing is being used.   <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> bool</p>
 </dd></dl>
 
-</dd></dl>
-
-<dl class="py exception">
-<dt class="sig sig-object py" id="O365.connection.TokenExpiredError">
-<em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.connection.</span></span><span class="sig-name descname"><span class="pre">TokenExpiredError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/connection.html#TokenExpiredError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.connection.TokenExpiredError" title="Link to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">HTTPError</span></code></p>
 </dd></dl>
 
 <dl class="py function">
@@ -732,7 +927,7 @@ connection.get_authorization_url or connection.request_token</p></li>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="category.html" class="btn btn-neutral float-left" title="Outlook Category" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="category.html" class="btn btn-neutral float-left" title="Category" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="directory.html" class="btn btn-neutral float-right" title="Directory" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

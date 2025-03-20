@@ -1,10 +1,10 @@
-Connection
+Attachment
 ----------
 
 .. include:: global.rst
 
-.. automodule:: O365.connection
+.. automodule:: O365.utils.attachment
     :members:
     :undoc-members:
     :show-inheritance:
-    :member-order: groupwise
+    :member-order: groupwise 

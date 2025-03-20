@@ -55,14 +55,11 @@
 <li class="toctree-l4"><a class="reference internal" href="#O365.account.Account.__init__"><code class="docutils literal notranslate"><span class="pre">Account.__init__()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.account.Account.address_book"><code class="docutils literal notranslate"><span class="pre">Account.address_book()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.account.Account.authenticate"><code class="docutils literal notranslate"><span class="pre">Account.authenticate()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#O365.account.Account.connection"><code class="docutils literal notranslate"><span class="pre">Account.connection</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#O365.account.Account.connection_constructor"><code class="docutils literal notranslate"><span class="pre">Account.connection_constructor</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.account.Account.directory"><code class="docutils literal notranslate"><span class="pre">Account.directory()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.account.Account.get_authenticated_usernames"><code class="docutils literal notranslate"><span class="pre">Account.get_authenticated_usernames()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.account.Account.get_authorization_url"><code class="docutils literal notranslate"><span class="pre">Account.get_authorization_url()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.account.Account.get_current_user_data"><code class="docutils literal notranslate"><span class="pre">Account.get_current_user_data()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.account.Account.groups"><code class="docutils literal notranslate"><span class="pre">Account.groups()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#O365.account.Account.is_authenticated"><code class="docutils literal notranslate"><span class="pre">Account.is_authenticated</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.account.Account.mailbox"><code class="docutils literal notranslate"><span class="pre">Account.mailbox()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.account.Account.new_message"><code class="docutils literal notranslate"><span class="pre">Account.new_message()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.account.Account.outlook_categories"><code class="docutils literal notranslate"><span class="pre">Account.outlook_categories()</span></code></a></li>
@@ -73,15 +70,18 @@
 <li class="toctree-l4"><a class="reference internal" href="#O365.account.Account.storage"><code class="docutils literal notranslate"><span class="pre">Account.storage()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.account.Account.tasks"><code class="docutils literal notranslate"><span class="pre">Account.tasks()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.account.Account.teams"><code class="docutils literal notranslate"><span class="pre">Account.teams()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.account.Account.connection"><code class="docutils literal notranslate"><span class="pre">Account.connection</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.account.Account.is_authenticated"><code class="docutils literal notranslate"><span class="pre">Account.is_authenticated</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.account.Account.main_resource"><code class="docutils literal notranslate"><span class="pre">Account.main_resource</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.account.Account.protocol"><code class="docutils literal notranslate"><span class="pre">Account.protocol</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.account.Account.username"><code class="docutils literal notranslate"><span class="pre">Account.username</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="address_book.html">Address Book</a></li>
-<li class="toctree-l2"><a class="reference internal" href="attachment.html">Attachment</a></li>
 <li class="toctree-l2"><a class="reference internal" href="calendar.html">Calendar</a></li>
-<li class="toctree-l2"><a class="reference internal" href="category.html">Outlook Category</a></li>
+<li class="toctree-l2"><a class="reference internal" href="category.html">Category</a></li>
 <li class="toctree-l2"><a class="reference internal" href="connection.html">Connection</a></li>
 <li class="toctree-l2"><a class="reference internal" href="directory.html">Directory</a></li>
 <li class="toctree-l2"><a class="reference internal" href="excel.html">Excel</a></li>
@@ -126,9 +126,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-O365.account">
-<span id="account"></span><h1>Account<a class="headerlink" href="#module-O365.account" title="Link to this heading"></a></h1>
-<dl class="py class">
+  <section id="account">
+<h1>Account<a class="headerlink" href="#account" title="Link to this heading"></a></h1>
+<dl class="py class" id="module-O365.account">
 <dt class="sig sig-object py" id="O365.account.Account">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.account.</span></span><span class="sig-name descname"><span class="pre">Account</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">credentials</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">username</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">protocol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="connection.html#O365.connection.Protocol" title="O365.connection.Protocol"><span class="pre">Protocol</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">main_resource</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/account.html#Account"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.account.Account" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
@@ -197,23 +197,6 @@ Connection.get_authorization_url and Connection.request_token methods</p></li>
 </dl>
 </dd></dl>
 
-<dl class="py property">
-<dt class="sig sig-object py" id="O365.account.Account.connection">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">connection</span></span><a class="headerlink" href="#O365.account.Account.connection" title="Link to this definition"></a></dt>
-<dd><p>Alias for self.con</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>type(self.connection_constructor)</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="O365.account.Account.connection_constructor">
-<span class="sig-name descname"><span class="pre">connection_constructor</span></span><a class="headerlink" href="#O365.account.Account.connection_constructor" title="Link to this definition"></a></dt>
-<dd><p>alias of <a class="reference internal" href="connection.html#O365.connection.Connection" title="O365.connection.Connection"><code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code></a></p>
-</dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="O365.account.Account.directory">
 <span class="sig-name descname"><span class="pre">directory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">resource</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/account.html#Account.directory"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.account.Account.directory" title="Link to this definition"></a></dt>
@@ -255,14 +238,6 @@ authorization url that the user must approve.</p>
 <dt class="sig sig-object py" id="O365.account.Account.groups">
 <span class="sig-name descname"><span class="pre">groups</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">resource</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/account.html#Account.groups"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.account.Account.groups" title="Link to this definition"></a></dt>
 <dd><p>Get an instance to read information from Microsoft Groups</p>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="O365.account.Account.is_authenticated">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_authenticated</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#O365.account.Account.is_authenticated" title="Link to this definition"></a></dt>
-<dd><p>Checks whether the library has the authentication data and that is not expired for the current username.
-This will try to load the token from the backend if not already loaded.
-Return True if authenticated, False otherwise.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -415,6 +390,37 @@ for the specified account resource</p>
 <dt class="sig sig-object py" id="O365.account.Account.teams">
 <span class="sig-name descname"><span class="pre">teams</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">resource</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/account.html#Account.teams"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.account.Account.teams" title="Link to this definition"></a></dt>
 <dd><p>Get an instance to read information from Microsoft Teams</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="O365.account.Account.connection">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">connection</span></span><a class="headerlink" href="#O365.account.Account.connection" title="Link to this definition"></a></dt>
+<dd><p>Alias for self.con</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>type(self.connection_constructor)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="O365.account.Account.is_authenticated">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_authenticated</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#O365.account.Account.is_authenticated" title="Link to this definition"></a></dt>
+<dd><p>Checks whether the library has the authentication data and that is not expired for the current username.
+This will try to load the token from the backend if not already loaded.
+Return True if authenticated, False otherwise.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.account.Account.main_resource">
+<span class="sig-name descname"><span class="pre">main_resource</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#O365.account.Account.main_resource" title="Link to this definition"></a></dt>
+<dd><p>The resource in use for the account. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.account.Account.protocol">
+<span class="sig-name descname"><span class="pre">protocol</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="connection.html#O365.connection.Protocol" title="O365.connection.Protocol"><span class="pre">Protocol</span></a></em><a class="headerlink" href="#O365.account.Account.protocol" title="Link to this definition"></a></dt>
+<dd><p>The protocol to use for the account. Defaults ot MSGraphProtocol. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> Protocol</p>
 </dd></dl>
 
 <dl class="py property">

@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Outlook Category &mdash; O365  documentation</title>
+  <title>Category &mdash; O365  documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
 
@@ -52,12 +52,10 @@
 <li class="toctree-l1 current"><a class="reference internal" href="../api.html">O365 API</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="account.html">Account</a></li>
 <li class="toctree-l2"><a class="reference internal" href="address_book.html">Address Book</a></li>
-<li class="toctree-l2"><a class="reference internal" href="attachment.html">Attachment</a></li>
 <li class="toctree-l2"><a class="reference internal" href="calendar.html">Calendar</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Outlook Category</a><ul>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Category</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#O365.category.Categories"><code class="docutils literal notranslate"><span class="pre">Categories</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#O365.category.Categories.__init__"><code class="docutils literal notranslate"><span class="pre">Categories.__init__()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#O365.category.Categories.category_constructor"><code class="docutils literal notranslate"><span class="pre">Categories.category_constructor</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.category.Categories.create_category"><code class="docutils literal notranslate"><span class="pre">Categories.create_category()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.category.Categories.get_categories"><code class="docutils literal notranslate"><span class="pre">Categories.get_categories()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.category.Categories.get_category"><code class="docutils literal notranslate"><span class="pre">Categories.get_category()</span></code></a></li>
@@ -67,9 +65,13 @@
 <li class="toctree-l4"><a class="reference internal" href="#O365.category.Category.__init__"><code class="docutils literal notranslate"><span class="pre">Category.__init__()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.category.Category.delete"><code class="docutils literal notranslate"><span class="pre">Category.delete()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.category.Category.update_color"><code class="docutils literal notranslate"><span class="pre">Category.update_color()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.category.Category.color"><code class="docutils literal notranslate"><span class="pre">Category.color</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.category.Category.name"><code class="docutils literal notranslate"><span class="pre">Category.name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.category.Category.object_id"><code class="docutils literal notranslate"><span class="pre">Category.object_id</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#O365.category.CategoryColor"><code class="docutils literal notranslate"><span class="pre">CategoryColor</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#O365.category.CategoryColor.get"><code class="docutils literal notranslate"><span class="pre">CategoryColor.get()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.category.CategoryColor.BLACK"><code class="docutils literal notranslate"><span class="pre">CategoryColor.BLACK</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.category.CategoryColor.BLUE"><code class="docutils literal notranslate"><span class="pre">CategoryColor.BLUE</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.category.CategoryColor.BROWN"><code class="docutils literal notranslate"><span class="pre">CategoryColor.BROWN</span></code></a></li>
@@ -95,7 +97,6 @@
 <li class="toctree-l4"><a class="reference internal" href="#O365.category.CategoryColor.STEEL"><code class="docutils literal notranslate"><span class="pre">CategoryColor.STEEL</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.category.CategoryColor.TEAL"><code class="docutils literal notranslate"><span class="pre">CategoryColor.TEAL</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.category.CategoryColor.YELLOW"><code class="docutils literal notranslate"><span class="pre">CategoryColor.YELLOW</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#O365.category.CategoryColor.get"><code class="docutils literal notranslate"><span class="pre">CategoryColor.get()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -131,7 +132,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../api.html">O365 API</a></li>
-      <li class="breadcrumb-item active">Outlook Category</li>
+      <li class="breadcrumb-item active">Category</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/api/category.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -144,12 +145,12 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-O365.category">
-<span id="outlook-category"></span><h1>Outlook Category<a class="headerlink" href="#module-O365.category" title="Link to this heading"></a></h1>
-<dl class="py class">
+  <section id="category">
+<h1>Category<a class="headerlink" href="#category" title="Link to this heading"></a></h1>
+<dl class="py class" id="module-O365.category">
 <dt class="sig sig-object py" id="O365.category.Categories">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.category.</span></span><span class="sig-name descname"><span class="pre">Categories</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">con</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/category.html#Categories"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.category.Categories" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">ApiComponent</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="utils/utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">ApiComponent</span></code></a></p>
 <dl class="py method">
 <dt class="sig sig-object py" id="O365.category.Categories.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">con</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/category.html#Categories.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.category.Categories.__init__" title="Link to this definition"></a></dt>
@@ -166,12 +167,6 @@
 </ul>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="O365.category.Categories.category_constructor">
-<span class="sig-name descname"><span class="pre">category_constructor</span></span><a class="headerlink" href="#O365.category.Categories.category_constructor" title="Link to this definition"></a></dt>
-<dd><p>alias of <a class="reference internal" href="#O365.category.Category" title="O365.category.Category"><code class="xref py py-class docutils literal notranslate"><span class="pre">Category</span></code></a></p>
 </dd></dl>
 
 <dl class="py method">
@@ -209,7 +204,7 @@ If the color is not provided it will be choosed from the pool of unused colors.<
 <dl class="py class">
 <dt class="sig sig-object py" id="O365.category.Category">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.category.</span></span><span class="sig-name descname"><span class="pre">Category</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">con</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/category.html#Category"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.category.Category" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">ApiComponent</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="utils/utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">ApiComponent</span></code></a></p>
 <dl class="py method">
 <dt class="sig sig-object py" id="O365.category.Category.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">con</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/category.html#Category.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.category.Category.__init__" title="Link to this definition"></a></dt>
@@ -242,12 +237,37 @@ It can be used in conjunction with Event, Message, Contact and Post.</p>
 :param None or str or CategoryColor color: the category color</p>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.category.Category.color">
+<span class="sig-name descname"><span class="pre">color</span></span><a class="headerlink" href="#O365.category.Category.color" title="Link to this definition"></a></dt>
+<dd><p>A pre-set color constant that characterizes a category, and that is mapped to one of 25 predefined colors.  <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> categoryColor</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.category.Category.name">
+<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#O365.category.Category.name" title="Link to this definition"></a></dt>
+<dd><p>A unique name that identifies a category in the user’s mailbox.  <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.category.Category.object_id">
+<span class="sig-name descname"><span class="pre">object_id</span></span><a class="headerlink" href="#O365.category.Category.object_id" title="Link to this definition"></a></dt>
+<dd><p>The unique id of the category. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="O365.category.CategoryColor">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.category.</span></span><span class="sig-name descname"><span class="pre">CategoryColor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/category.html#CategoryColor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.category.CategoryColor" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.category.CategoryColor.get">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">color</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/category.html#CategoryColor.get"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.category.CategoryColor.get" title="Link to this definition"></a></dt>
+<dd><p>Gets a color by name or value.
+Raises ValueError if not found whithin the collection of colors.</p>
+</dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="O365.category.CategoryColor.BLACK">
 <span class="sig-name descname"><span class="pre">BLACK</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'preset14'</span></em><a class="headerlink" href="#O365.category.CategoryColor.BLACK" title="Link to this definition"></a></dt>
@@ -372,13 +392,6 @@ It can be used in conjunction with Event, Message, Contact and Post.</p>
 <dt class="sig sig-object py" id="O365.category.CategoryColor.YELLOW">
 <span class="sig-name descname"><span class="pre">YELLOW</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'preset3'</span></em><a class="headerlink" href="#O365.category.CategoryColor.YELLOW" title="Link to this definition"></a></dt>
 <dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="O365.category.CategoryColor.get">
-<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">color</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/category.html#CategoryColor.get"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.category.CategoryColor.get" title="Link to this definition"></a></dt>
-<dd><p>Gets a color by name or value.
-Raises ValueError if not found whithin the collection of colors.</p>
-</dd></dl>
 
 </dd></dl>
 

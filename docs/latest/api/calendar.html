@@ -19,8 +19,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Outlook Category" href="category.html" />
-    <link rel="prev" title="Attachment" href="attachment.html" />
+    <link rel="next" title="Category" href="category.html" />
+    <link rel="prev" title="Address Book" href="address_book.html" />
     <link href="../_static/css/style.css" rel="stylesheet" type="text/css">
 
 </head>
@@ -52,7 +52,6 @@
 <li class="toctree-l1 current"><a class="reference internal" href="../api.html">O365 API</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="account.html">Account</a></li>
 <li class="toctree-l2"><a class="reference internal" href="address_book.html">Address Book</a></li>
-<li class="toctree-l2"><a class="reference internal" href="attachment.html">Attachment</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Calendar</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#O365.calendar.Attendee"><code class="docutils literal notranslate"><span class="pre">Attendee</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#O365.calendar.Attendee.__init__"><code class="docutils literal notranslate"><span class="pre">Attendee.__init__()</span></code></a></li>
@@ -79,12 +78,18 @@
 <li class="toctree-l3"><a class="reference internal" href="#O365.calendar.Calendar"><code class="docutils literal notranslate"><span class="pre">Calendar</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#O365.calendar.Calendar.__init__"><code class="docutils literal notranslate"><span class="pre">Calendar.__init__()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.calendar.Calendar.delete"><code class="docutils literal notranslate"><span class="pre">Calendar.delete()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#O365.calendar.Calendar.event_constructor"><code class="docutils literal notranslate"><span class="pre">Calendar.event_constructor</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.calendar.Calendar.get_event"><code class="docutils literal notranslate"><span class="pre">Calendar.get_event()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.calendar.Calendar.get_events"><code class="docutils literal notranslate"><span class="pre">Calendar.get_events()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.calendar.Calendar.new_event"><code class="docutils literal notranslate"><span class="pre">Calendar.new_event()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#O365.calendar.Calendar.owner"><code class="docutils literal notranslate"><span class="pre">Calendar.owner</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.calendar.Calendar.update"><code class="docutils literal notranslate"><span class="pre">Calendar.update()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.calendar.Calendar.calendar_id"><code class="docutils literal notranslate"><span class="pre">Calendar.calendar_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.calendar.Calendar.can_edit"><code class="docutils literal notranslate"><span class="pre">Calendar.can_edit</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.calendar.Calendar.can_share"><code class="docutils literal notranslate"><span class="pre">Calendar.can_share</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.calendar.Calendar.can_view_private_items"><code class="docutils literal notranslate"><span class="pre">Calendar.can_view_private_items</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.calendar.Calendar.color"><code class="docutils literal notranslate"><span class="pre">Calendar.color</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.calendar.Calendar.hex_color"><code class="docutils literal notranslate"><span class="pre">Calendar.hex_color</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.calendar.Calendar.name"><code class="docutils literal notranslate"><span class="pre">Calendar.name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.calendar.Calendar.owner"><code class="docutils literal notranslate"><span class="pre">Calendar.owner</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#O365.calendar.CalendarColor"><code class="docutils literal notranslate"><span class="pre">CalendarColor</span></code></a><ul>
@@ -108,44 +113,62 @@
 <li class="toctree-l3"><a class="reference internal" href="#O365.calendar.Event"><code class="docutils literal notranslate"><span class="pre">Event</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#O365.calendar.Event.__init__"><code class="docutils literal notranslate"><span class="pre">Event.__init__()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.calendar.Event.accept_event"><code class="docutils literal notranslate"><span class="pre">Event.accept_event()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#O365.calendar.Event.attachments"><code class="docutils literal notranslate"><span class="pre">Event.attachments</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#O365.calendar.Event.attendees"><code class="docutils literal notranslate"><span class="pre">Event.attendees</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#O365.calendar.Event.body"><code class="docutils literal notranslate"><span class="pre">Event.body</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.calendar.Event.cancel_event"><code class="docutils literal notranslate"><span class="pre">Event.cancel_event()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#O365.calendar.Event.categories"><code class="docutils literal notranslate"><span class="pre">Event.categories</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#O365.calendar.Event.created"><code class="docutils literal notranslate"><span class="pre">Event.created</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.calendar.Event.decline_event"><code class="docutils literal notranslate"><span class="pre">Event.decline_event()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.calendar.Event.delete"><code class="docutils literal notranslate"><span class="pre">Event.delete()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#O365.calendar.Event.end"><code class="docutils literal notranslate"><span class="pre">Event.end</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#O365.calendar.Event.event_type"><code class="docutils literal notranslate"><span class="pre">Event.event_type</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.calendar.Event.get_body_soup"><code class="docutils literal notranslate"><span class="pre">Event.get_body_soup()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.calendar.Event.get_body_text"><code class="docutils literal notranslate"><span class="pre">Event.get_body_text()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.calendar.Event.get_occurrences"><code class="docutils literal notranslate"><span class="pre">Event.get_occurrences()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.calendar.Event.save"><code class="docutils literal notranslate"><span class="pre">Event.save()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.calendar.Event.to_api_data"><code class="docutils literal notranslate"><span class="pre">Event.to_api_data()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.calendar.Event.attachments"><code class="docutils literal notranslate"><span class="pre">Event.attachments</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.calendar.Event.attendees"><code class="docutils literal notranslate"><span class="pre">Event.attendees</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.calendar.Event.body"><code class="docutils literal notranslate"><span class="pre">Event.body</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.calendar.Event.body_type"><code class="docutils literal notranslate"><span class="pre">Event.body_type</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.calendar.Event.calendar_id"><code class="docutils literal notranslate"><span class="pre">Event.calendar_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.calendar.Event.categories"><code class="docutils literal notranslate"><span class="pre">Event.categories</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.calendar.Event.created"><code class="docutils literal notranslate"><span class="pre">Event.created</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.calendar.Event.end"><code class="docutils literal notranslate"><span class="pre">Event.end</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.calendar.Event.event_type"><code class="docutils literal notranslate"><span class="pre">Event.event_type</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.calendar.Event.has_attachments"><code class="docutils literal notranslate"><span class="pre">Event.has_attachments</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.calendar.Event.ical_uid"><code class="docutils literal notranslate"><span class="pre">Event.ical_uid</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.calendar.Event.importance"><code class="docutils literal notranslate"><span class="pre">Event.importance</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.calendar.Event.is_all_day"><code class="docutils literal notranslate"><span class="pre">Event.is_all_day</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.calendar.Event.is_cancelled"><code class="docutils literal notranslate"><span class="pre">Event.is_cancelled</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.calendar.Event.is_online_meeting"><code class="docutils literal notranslate"><span class="pre">Event.is_online_meeting</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.calendar.Event.is_organizer"><code class="docutils literal notranslate"><span class="pre">Event.is_organizer</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.calendar.Event.is_reminder_on"><code class="docutils literal notranslate"><span class="pre">Event.is_reminder_on</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.calendar.Event.location"><code class="docutils literal notranslate"><span class="pre">Event.location</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.calendar.Event.locations"><code class="docutils literal notranslate"><span class="pre">Event.locations</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.calendar.Event.modified"><code class="docutils literal notranslate"><span class="pre">Event.modified</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.calendar.Event.no_forwarding"><code class="docutils literal notranslate"><span class="pre">Event.no_forwarding</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.calendar.Event.object_id"><code class="docutils literal notranslate"><span class="pre">Event.object_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.calendar.Event.online_meeting"><code class="docutils literal notranslate"><span class="pre">Event.online_meeting</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.calendar.Event.online_meeting_provider"><code class="docutils literal notranslate"><span class="pre">Event.online_meeting_provider</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.calendar.Event.online_meeting_url"><code class="docutils literal notranslate"><span class="pre">Event.online_meeting_url</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.calendar.Event.organizer"><code class="docutils literal notranslate"><span class="pre">Event.organizer</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.calendar.Event.recurrence"><code class="docutils literal notranslate"><span class="pre">Event.recurrence</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.calendar.Event.remind_before_minutes"><code class="docutils literal notranslate"><span class="pre">Event.remind_before_minutes</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.calendar.Event.response_requested"><code class="docutils literal notranslate"><span class="pre">Event.response_requested</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.calendar.Event.response_status"><code class="docutils literal notranslate"><span class="pre">Event.response_status</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#O365.calendar.Event.save"><code class="docutils literal notranslate"><span class="pre">Event.save()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.calendar.Event.sensitivity"><code class="docutils literal notranslate"><span class="pre">Event.sensitivity</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.calendar.Event.series_master_id"><code class="docutils literal notranslate"><span class="pre">Event.series_master_id</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.calendar.Event.show_as"><code class="docutils literal notranslate"><span class="pre">Event.show_as</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.calendar.Event.start"><code class="docutils literal notranslate"><span class="pre">Event.start</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.calendar.Event.subject"><code class="docutils literal notranslate"><span class="pre">Event.subject</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#O365.calendar.Event.to_api_data"><code class="docutils literal notranslate"><span class="pre">Event.to_api_data()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.calendar.Event.web_link"><code class="docutils literal notranslate"><span class="pre">Event.web_link</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#O365.calendar.EventAttachment"><code class="docutils literal notranslate"><span class="pre">EventAttachment</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#O365.calendar.EventAttachments"><code class="docutils literal notranslate"><span class="pre">EventAttachments</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#O365.calendar.EventRecurrence"><code class="docutils literal notranslate"><span class="pre">EventRecurrence</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#O365.calendar.EventRecurrence.__init__"><code class="docutils literal notranslate"><span class="pre">EventRecurrence.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.calendar.EventRecurrence.set_daily"><code class="docutils literal notranslate"><span class="pre">EventRecurrence.set_daily()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.calendar.EventRecurrence.set_monthly"><code class="docutils literal notranslate"><span class="pre">EventRecurrence.set_monthly()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.calendar.EventRecurrence.set_range"><code class="docutils literal notranslate"><span class="pre">EventRecurrence.set_range()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.calendar.EventRecurrence.set_weekly"><code class="docutils literal notranslate"><span class="pre">EventRecurrence.set_weekly()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.calendar.EventRecurrence.set_yearly"><code class="docutils literal notranslate"><span class="pre">EventRecurrence.set_yearly()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.calendar.EventRecurrence.to_api_data"><code class="docutils literal notranslate"><span class="pre">EventRecurrence.to_api_data()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.calendar.EventRecurrence.day_of_month"><code class="docutils literal notranslate"><span class="pre">EventRecurrence.day_of_month</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.calendar.EventRecurrence.days_of_week"><code class="docutils literal notranslate"><span class="pre">EventRecurrence.days_of_week</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.calendar.EventRecurrence.end_date"><code class="docutils literal notranslate"><span class="pre">EventRecurrence.end_date</span></code></a></li>
@@ -155,13 +178,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#O365.calendar.EventRecurrence.month"><code class="docutils literal notranslate"><span class="pre">EventRecurrence.month</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.calendar.EventRecurrence.occurrences"><code class="docutils literal notranslate"><span class="pre">EventRecurrence.occurrences</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.calendar.EventRecurrence.recurrence_time_zone"><code class="docutils literal notranslate"><span class="pre">EventRecurrence.recurrence_time_zone</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#O365.calendar.EventRecurrence.set_daily"><code class="docutils literal notranslate"><span class="pre">EventRecurrence.set_daily()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#O365.calendar.EventRecurrence.set_monthly"><code class="docutils literal notranslate"><span class="pre">EventRecurrence.set_monthly()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#O365.calendar.EventRecurrence.set_range"><code class="docutils literal notranslate"><span class="pre">EventRecurrence.set_range()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#O365.calendar.EventRecurrence.set_weekly"><code class="docutils literal notranslate"><span class="pre">EventRecurrence.set_weekly()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#O365.calendar.EventRecurrence.set_yearly"><code class="docutils literal notranslate"><span class="pre">EventRecurrence.set_yearly()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.calendar.EventRecurrence.start_date"><code class="docutils literal notranslate"><span class="pre">EventRecurrence.start_date</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#O365.calendar.EventRecurrence.to_api_data"><code class="docutils literal notranslate"><span class="pre">EventRecurrence.to_api_data()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#O365.calendar.EventResponse"><code class="docutils literal notranslate"><span class="pre">EventResponse</span></code></a><ul>
@@ -204,12 +221,12 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#O365.calendar.ResponseStatus"><code class="docutils literal notranslate"><span class="pre">ResponseStatus</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#O365.calendar.ResponseStatus.__init__"><code class="docutils literal notranslate"><span class="pre">ResponseStatus.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.calendar.ResponseStatus.response_time"><code class="docutils literal notranslate"><span class="pre">ResponseStatus.response_time</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.calendar.ResponseStatus.status"><code class="docutils literal notranslate"><span class="pre">ResponseStatus.status</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#O365.calendar.Schedule"><code class="docutils literal notranslate"><span class="pre">Schedule</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#O365.calendar.Schedule.__init__"><code class="docutils literal notranslate"><span class="pre">Schedule.__init__()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#O365.calendar.Schedule.calendar_constructor"><code class="docutils literal notranslate"><span class="pre">Schedule.calendar_constructor</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#O365.calendar.Schedule.event_constructor"><code class="docutils literal notranslate"><span class="pre">Schedule.event_constructor</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.calendar.Schedule.get_availability"><code class="docutils literal notranslate"><span class="pre">Schedule.get_availability()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.calendar.Schedule.get_calendar"><code class="docutils literal notranslate"><span class="pre">Schedule.get_calendar()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.calendar.Schedule.get_default_calendar"><code class="docutils literal notranslate"><span class="pre">Schedule.get_default_calendar()</span></code></a></li>
@@ -221,7 +238,7 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="category.html">Outlook Category</a></li>
+<li class="toctree-l2"><a class="reference internal" href="category.html">Category</a></li>
 <li class="toctree-l2"><a class="reference internal" href="connection.html">Connection</a></li>
 <li class="toctree-l2"><a class="reference internal" href="directory.html">Directory</a></li>
 <li class="toctree-l2"><a class="reference internal" href="excel.html">Excel</a></li>
@@ -258,17 +275,17 @@
             <a href="../_sources/api/calendar.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
-        <a href="attachment.html" class="btn btn-neutral float-left" title="Attachment" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="category.html" class="btn btn-neutral float-right" title="Outlook Category" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="address_book.html" class="btn btn-neutral float-left" title="Address Book" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="category.html" class="btn btn-neutral float-right" title="Category" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
   </div>
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-O365.calendar">
-<span id="calendar"></span><h1>Calendar<a class="headerlink" href="#module-O365.calendar" title="Link to this heading"></a></h1>
-<dl class="py class">
+  <section id="calendar">
+<h1>Calendar<a class="headerlink" href="#calendar" title="Link to this heading"></a></h1>
+<dl class="py class" id="module-O365.calendar">
 <dt class="sig sig-object py" id="O365.calendar.Attendee">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.calendar.</span></span><span class="sig-name descname"><span class="pre">Attendee</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">address</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attendee_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">response_status</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#Attendee"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.calendar.Attendee" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
@@ -357,7 +374,7 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="O365.calendar.AttendeeType">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.calendar.</span></span><span class="sig-name descname"><span class="pre">AttendeeType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#AttendeeType"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.calendar.AttendeeType" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="utils.html#O365.utils.utils.CaseEnum" title="O365.utils.utils.CaseEnum"><code class="xref py py-class docutils literal notranslate"><span class="pre">CaseEnum</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="utils/utils.html#O365.utils.utils.CaseEnum" title="O365.utils.utils.CaseEnum"><code class="xref py py-class docutils literal notranslate"><span class="pre">CaseEnum</span></code></a></p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="O365.calendar.AttendeeType.Optional">
 <span class="sig-name descname"><span class="pre">Optional</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'optional'</span></em><a class="headerlink" href="#O365.calendar.AttendeeType.Optional" title="Link to this definition"></a></dt>
@@ -378,7 +395,7 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="O365.calendar.Attendees">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.calendar.</span></span><span class="sig-name descname"><span class="pre">Attendees</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attendees</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#Attendees"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.calendar.Attendees" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">ApiComponent</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="utils/utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">ApiComponent</span></code></a></p>
 <p>A Collection of Attendees</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="O365.calendar.Attendees.__init__">
@@ -441,7 +458,7 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="O365.calendar.Calendar">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.calendar.</span></span><span class="sig-name descname"><span class="pre">Calendar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">con</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#Calendar"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.calendar.Calendar" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">ApiComponent</span></code></a>, <a class="reference internal" href="utils.html#O365.utils.utils.HandleRecipientsMixin" title="O365.utils.utils.HandleRecipientsMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">HandleRecipientsMixin</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="utils/utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">ApiComponent</span></code></a>, <a class="reference internal" href="utils/utils.html#O365.utils.utils.HandleRecipientsMixin" title="O365.utils.utils.HandleRecipientsMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">HandleRecipientsMixin</span></code></a></p>
 <dl class="py method">
 <dt class="sig sig-object py" id="O365.calendar.Calendar.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">con</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#Calendar.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.calendar.Calendar.__init__" title="Link to this definition"></a></dt>
@@ -474,12 +491,6 @@
 </dl>
 </dd></dl>
 
-<dl class="py attribute">
-<dt class="sig sig-object py" id="O365.calendar.Calendar.event_constructor">
-<span class="sig-name descname"><span class="pre">event_constructor</span></span><a class="headerlink" href="#O365.calendar.Calendar.event_constructor" title="Link to this definition"></a></dt>
-<dd><p>alias of <a class="reference internal" href="#O365.calendar.Event" title="O365.calendar.Event"><code class="xref py py-class docutils literal notranslate"><span class="pre">Event</span></code></a></p>
-</dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="O365.calendar.Calendar.get_event">
 <span class="sig-name descname"><span class="pre">get_event</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">param</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#Calendar.get_event"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.calendar.Calendar.get_event" title="Link to this definition"></a></dt>
@@ -505,8 +516,8 @@
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>limit</strong> (<em>int</em>) – max no. of events to get. Over 999 uses batch.</p></li>
-<li><p><strong>query</strong> (<a class="reference internal" href="utils.html#O365.utils.utils.Query" title="O365.utils.utils.Query"><em>Query</em></a><em> or </em><em>str</em>) – applies a OData filter to the request</p></li>
-<li><p><strong>order_by</strong> (<a class="reference internal" href="utils.html#O365.utils.utils.Query" title="O365.utils.utils.Query"><em>Query</em></a><em> or </em><em>str</em>) – orders the result set based on this condition</p></li>
+<li><p><strong>query</strong> (<a class="reference internal" href="utils/utils.html#O365.utils.utils.Query" title="O365.utils.utils.Query"><em>Query</em></a><em> or </em><em>str</em>) – applies a OData filter to the request</p></li>
+<li><p><strong>order_by</strong> (<a class="reference internal" href="utils/utils.html#O365.utils.utils.Query" title="O365.utils.utils.Query"><em>Query</em></a><em> or </em><em>str</em>) – orders the result set based on this condition</p></li>
 <li><p><strong>batch</strong> (<em>int</em>) – batch size, retrieves items in
 batches allowing to retrieve more items than the limit.</p></li>
 <li><p><strong>download_attachments</strong> – downloads event attachments</p></li>
@@ -517,7 +528,7 @@ batches allowing to retrieve more items than the limit.</p></li>
 <dd class="field-even"><p>list of events in this calendar</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>list[<a class="reference internal" href="#O365.calendar.Event" title="O365.calendar.Event">Event</a>] or <a class="reference internal" href="utils.html#O365.utils.utils.Pagination" title="O365.utils.utils.Pagination">Pagination</a></p>
+<dd class="field-odd"><p>list[<a class="reference internal" href="#O365.calendar.Event" title="O365.calendar.Event">Event</a>] or <a class="reference internal" href="utils/utils.html#O365.utils.utils.Pagination" title="O365.utils.utils.Pagination">Pagination</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -529,17 +540,6 @@ batches allowing to retrieve more items than the limit.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="#O365.calendar.Event" title="O365.calendar.Event">Event</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="O365.calendar.Calendar.owner">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">owner</span></span><a class="headerlink" href="#O365.calendar.Calendar.owner" title="Link to this definition"></a></dt>
-<dd><p>Owner of the calendar</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>str</p>
 </dd>
 </dl>
 </dd></dl>
@@ -558,12 +558,67 @@ batches allowing to retrieve more items than the limit.</p></li>
 </dl>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.calendar.Calendar.calendar_id">
+<span class="sig-name descname"><span class="pre">calendar_id</span></span><a class="headerlink" href="#O365.calendar.Calendar.calendar_id" title="Link to this definition"></a></dt>
+<dd><p>The calendar’s unique identifier. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.calendar.Calendar.can_edit">
+<span class="sig-name descname"><span class="pre">can_edit</span></span><a class="headerlink" href="#O365.calendar.Calendar.can_edit" title="Link to this definition"></a></dt>
+<dd><p>true if the user can write to the calendar, false otherwise. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> bool</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.calendar.Calendar.can_share">
+<span class="sig-name descname"><span class="pre">can_share</span></span><a class="headerlink" href="#O365.calendar.Calendar.can_share" title="Link to this definition"></a></dt>
+<dd><p>true if the user has permission to share the calendar, false otherwise. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> bool</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.calendar.Calendar.can_view_private_items">
+<span class="sig-name descname"><span class="pre">can_view_private_items</span></span><a class="headerlink" href="#O365.calendar.Calendar.can_view_private_items" title="Link to this definition"></a></dt>
+<dd><p>If true, the user can read calendar items that have been marked private, false otherwise. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> bool</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.calendar.Calendar.color">
+<span class="sig-name descname"><span class="pre">color</span></span><a class="headerlink" href="#O365.calendar.Calendar.color" title="Link to this definition"></a></dt>
+<dd><p>Specifies the color theme to distinguish the calendar from other calendars in a UI. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> calendarColor</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.calendar.Calendar.hex_color">
+<span class="sig-name descname"><span class="pre">hex_color</span></span><a class="headerlink" href="#O365.calendar.Calendar.hex_color" title="Link to this definition"></a></dt>
+<dd><p>The calendar color, expressed in a hex color code of three hexadecimal values,
+each ranging from 00 to FF and representing the red, green, or blue components
+of the color in the RGB color space. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.calendar.Calendar.name">
+<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#O365.calendar.Calendar.name" title="Link to this definition"></a></dt>
+<dd><p>The calendar name. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="O365.calendar.Calendar.owner">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">owner</span></span><a class="headerlink" href="#O365.calendar.Calendar.owner" title="Link to this definition"></a></dt>
+<dd><p>Owner of the calendar</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="O365.calendar.CalendarColor">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.calendar.</span></span><span class="sig-name descname"><span class="pre">CalendarColor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#CalendarColor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.calendar.CalendarColor" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="utils.html#O365.utils.utils.CaseEnum" title="O365.utils.utils.CaseEnum"><code class="xref py py-class docutils literal notranslate"><span class="pre">CaseEnum</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="utils/utils.html#O365.utils.utils.CaseEnum" title="O365.utils.utils.CaseEnum"><code class="xref py py-class docutils literal notranslate"><span class="pre">CaseEnum</span></code></a></p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="O365.calendar.CalendarColor.Auto">
 <span class="sig-name descname"><span class="pre">Auto</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'auto'</span></em><a class="headerlink" href="#O365.calendar.CalendarColor.Auto" title="Link to this definition"></a></dt>
@@ -635,7 +690,7 @@ batches allowing to retrieve more items than the limit.</p></li>
 <dl class="py class">
 <dt class="sig sig-object py" id="O365.calendar.Event">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.calendar.</span></span><span class="sig-name descname"><span class="pre">Event</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">con</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#Event"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.calendar.Event" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">ApiComponent</span></code></a>, <a class="reference internal" href="attachment.html#O365.utils.attachment.AttachableMixin" title="O365.utils.attachment.AttachableMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">AttachableMixin</span></code></a>, <a class="reference internal" href="utils.html#O365.utils.utils.HandleRecipientsMixin" title="O365.utils.utils.HandleRecipientsMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">HandleRecipientsMixin</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="utils/utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">ApiComponent</span></code></a>, <a class="reference internal" href="utils/attachment.html#O365.utils.attachment.AttachableMixin" title="O365.utils.attachment.AttachableMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">AttachableMixin</span></code></a>, <a class="reference internal" href="utils/utils.html#O365.utils.utils.HandleRecipientsMixin" title="O365.utils.utils.HandleRecipientsMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">HandleRecipientsMixin</span></code></a></p>
 <p>A Calendar event</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="O365.calendar.Event.__init__">
@@ -644,7 +699,7 @@ batches allowing to retrieve more items than the limit.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>parent</strong> (<a class="reference internal" href="#O365.calendar.Calendar" title="O365.calendar.Calendar"><em>Calendar</em></a><em> or </em><a class="reference internal" href="#O365.calendar.Schedule" title="O365.calendar.Schedule"><em>Schedule</em></a><em> or </em><a class="reference internal" href="utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><em>ApiComponent</em></a>) – parent for this operation</p></li>
+<li><p><strong>parent</strong> (<a class="reference internal" href="#O365.calendar.Calendar" title="O365.calendar.Calendar"><em>Calendar</em></a><em> or </em><a class="reference internal" href="#O365.calendar.Schedule" title="O365.calendar.Schedule"><em>Schedule</em></a><em> or </em><a class="reference internal" href="utils/utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><em>ApiComponent</em></a>) – parent for this operation</p></li>
 <li><p><strong>con</strong> (<a class="reference internal" href="connection.html#O365.connection.Connection" title="O365.connection.Connection"><em>Connection</em></a>) – connection to use if no parent specified</p></li>
 <li><p><strong>protocol</strong> (<a class="reference internal" href="connection.html#O365.connection.Protocol" title="O365.connection.Protocol"><em>Protocol</em></a>) – protocol to use if no parent specified
 (kwargs)</p></li>
@@ -677,6 +732,142 @@ batches allowing to retrieve more items than the limit.</p></li>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.calendar.Event.cancel_event">
+<span class="sig-name descname"><span class="pre">cancel_event</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">comment</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">send_response</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#Event.cancel_event"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.calendar.Event.cancel_event" title="Link to this definition"></a></dt>
+<dd><p>Cancel the event</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>comment</strong> (<em>str</em>) – comment to add</p></li>
+<li><p><strong>send_response</strong> (<em>bool</em>) – whether or not to send response back</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Success / Failure</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.calendar.Event.decline_event">
+<span class="sig-name descname"><span class="pre">decline_event</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">comment</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">send_response</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#Event.decline_event"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.calendar.Event.decline_event" title="Link to this definition"></a></dt>
+<dd><p>Decline the event</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>comment</strong> (<em>str</em>) – comment to add</p></li>
+<li><p><strong>send_response</strong> (<em>bool</em>) – whether or not to send response back</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Success / Failure</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.calendar.Event.delete">
+<span class="sig-name descname"><span class="pre">delete</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#Event.delete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.calendar.Event.delete" title="Link to this definition"></a></dt>
+<dd><p>Deletes a stored event</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Success / Failure</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.calendar.Event.get_body_soup">
+<span class="sig-name descname"><span class="pre">get_body_soup</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#Event.get_body_soup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.calendar.Event.get_body_soup" title="Link to this definition"></a></dt>
+<dd><p>Returns the beautifulsoup4 of the html body</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Html body</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>BeautifulSoup</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.calendar.Event.get_body_text">
+<span class="sig-name descname"><span class="pre">get_body_text</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#Event.get_body_text"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.calendar.Event.get_body_text" title="Link to this definition"></a></dt>
+<dd><p>Parse the body html and returns the body text using bs4</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>body text</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.calendar.Event.get_occurrences">
+<span class="sig-name descname"><span class="pre">get_occurrences</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order_by</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#Event.get_occurrences"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.calendar.Event.get_occurrences" title="Link to this definition"></a></dt>
+<dd><p>Returns all the occurrences of a seriesMaster event for a specified time range.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start</strong> (<em>datetime</em>) – the start of the time range</p></li>
+<li><p><strong>end</strong> (<em>datetime</em>) – the end of the time range</p></li>
+<li><p><strong>limit</strong> (<em>int</em>) – ax no. of events to get. Over 999 uses batch.</p></li>
+<li><p><strong>query</strong> (<a class="reference internal" href="utils/utils.html#O365.utils.utils.Query" title="O365.utils.utils.Query"><em>Query</em></a><em> or </em><em>str</em>) – optional. extra filters or ordes to apply to this query</p></li>
+<li><p><strong>order_by</strong> (<em>str</em>) – orders the result set based on this condition</p></li>
+<li><p><strong>batch</strong> (<em>int</em>) – batch size, retrieves items in
+batches allowing to retrieve more items than the limit.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a list of events</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[<a class="reference internal" href="#O365.calendar.Event" title="O365.calendar.Event">Event</a>] or <a class="reference internal" href="utils/utils.html#O365.utils.utils.Pagination" title="O365.utils.utils.Pagination">Pagination</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.calendar.Event.save">
+<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#Event.save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.calendar.Event.save" title="Link to this definition"></a></dt>
+<dd><p>Create a new event or update an existing one by checking what
+values have changed and update them on the server</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Success / Failure</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.calendar.Event.to_api_data">
+<span class="sig-name descname"><span class="pre">to_api_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">restrict_keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#Event.to_api_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.calendar.Event.to_api_data" title="Link to this definition"></a></dt>
+<dd><p>Returns a dict to communicate with the server</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>restrict_keys</strong> – a set of keys to restrict the returned data to</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict</p>
 </dd>
 </dl>
 </dd></dl>
@@ -720,24 +911,16 @@ batches allowing to retrieve more items than the limit.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="O365.calendar.Event.cancel_event">
-<span class="sig-name descname"><span class="pre">cancel_event</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">comment</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">send_response</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#Event.cancel_event"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.calendar.Event.cancel_event" title="Link to this definition"></a></dt>
-<dd><p>Cancel the event</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>comment</strong> (<em>str</em>) – comment to add</p></li>
-<li><p><strong>send_response</strong> (<em>bool</em>) – whether or not to send response back</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Success / Failure</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>bool</p>
-</dd>
-</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.calendar.Event.body_type">
+<span class="sig-name descname"><span class="pre">body_type</span></span><a class="headerlink" href="#O365.calendar.Event.body_type" title="Link to this definition"></a></dt>
+<dd><p>The type of the content. Possible values are text and html.  <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> bodyType</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.calendar.Event.calendar_id">
+<span class="sig-name descname"><span class="pre">calendar_id</span></span><a class="headerlink" href="#O365.calendar.Event.calendar_id" title="Link to this definition"></a></dt>
+<dd><p>The calendar’s unique identifier. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
 </dd></dl>
 
 <dl class="py property">
@@ -768,40 +951,6 @@ batches allowing to retrieve more items than the limit.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="O365.calendar.Event.decline_event">
-<span class="sig-name descname"><span class="pre">decline_event</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">comment</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">send_response</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#Event.decline_event"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.calendar.Event.decline_event" title="Link to this definition"></a></dt>
-<dd><p>Decline the event</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>comment</strong> (<em>str</em>) – comment to add</p></li>
-<li><p><strong>send_response</strong> (<em>bool</em>) – whether or not to send response back</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Success / Failure</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>bool</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="O365.calendar.Event.delete">
-<span class="sig-name descname"><span class="pre">delete</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#Event.delete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.calendar.Event.delete" title="Link to this definition"></a></dt>
-<dd><p>Deletes a stored event</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Success / Failure</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>bool</p>
-</dd>
-</dl>
-</dd></dl>
-
 <dl class="py property">
 <dt class="sig sig-object py" id="O365.calendar.Event.end">
 <em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">end</span></span><a class="headerlink" href="#O365.calendar.Event.end" title="Link to this definition"></a></dt>
@@ -824,57 +973,16 @@ batches allowing to retrieve more items than the limit.</p></li>
 <em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">event_type</span></span><a class="headerlink" href="#O365.calendar.Event.event_type" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="O365.calendar.Event.get_body_soup">
-<span class="sig-name descname"><span class="pre">get_body_soup</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#Event.get_body_soup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.calendar.Event.get_body_soup" title="Link to this definition"></a></dt>
-<dd><p>Returns the beautifulsoup4 of the html body</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Html body</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>BeautifulSoup</p>
-</dd>
-</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.calendar.Event.has_attachments">
+<span class="sig-name descname"><span class="pre">has_attachments</span></span><a class="headerlink" href="#O365.calendar.Event.has_attachments" title="Link to this definition"></a></dt>
+<dd><p>Set to true if the event has attachments.  <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> bool</p>
 </dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="O365.calendar.Event.get_body_text">
-<span class="sig-name descname"><span class="pre">get_body_text</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#Event.get_body_text"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.calendar.Event.get_body_text" title="Link to this definition"></a></dt>
-<dd><p>Parse the body html and returns the body text using bs4</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>body text</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="O365.calendar.Event.get_occurrences">
-<span class="sig-name descname"><span class="pre">get_occurrences</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order_by</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#Event.get_occurrences"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.calendar.Event.get_occurrences" title="Link to this definition"></a></dt>
-<dd><p>Returns all the occurrences of a seriesMaster event for a specified time range.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>start</strong> (<em>datetime</em>) – the start of the time range</p></li>
-<li><p><strong>end</strong> (<em>datetime</em>) – the end of the time range</p></li>
-<li><p><strong>limit</strong> (<em>int</em>) – ax no. of events to get. Over 999 uses batch.</p></li>
-<li><p><strong>query</strong> (<a class="reference internal" href="utils.html#O365.utils.utils.Query" title="O365.utils.utils.Query"><em>Query</em></a><em> or </em><em>str</em>) – optional. extra filters or ordes to apply to this query</p></li>
-<li><p><strong>order_by</strong> (<em>str</em>) – orders the result set based on this condition</p></li>
-<li><p><strong>batch</strong> (<em>int</em>) – batch size, retrieves items in
-batches allowing to retrieve more items than the limit.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>a list of events</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>list[<a class="reference internal" href="#O365.calendar.Event" title="O365.calendar.Event">Event</a>] or <a class="reference internal" href="utils.html#O365.utils.utils.Pagination" title="O365.utils.utils.Pagination">Pagination</a></p>
-</dd>
-</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.calendar.Event.ical_uid">
+<span class="sig-name descname"><span class="pre">ical_uid</span></span><a class="headerlink" href="#O365.calendar.Event.ical_uid" title="Link to this definition"></a></dt>
+<dd><p>A unique identifier for an event across calendars. This ID is different for each occurrence in a recurring series.  <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
 </dd></dl>
 
 <dl class="py property">
@@ -889,7 +997,7 @@ batches allowing to retrieve more items than the limit.</p></li>
 <dd class="field-even"><p>set the importance of event</p>
 </dd>
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="utils.html#O365.utils.utils.ImportanceLevel" title="O365.utils.utils.ImportanceLevel">ImportanceLevel</a></p>
+<dd class="field-odd"><p><a class="reference internal" href="utils/utils.html#O365.utils.utils.ImportanceLevel" title="O365.utils.utils.ImportanceLevel">ImportanceLevel</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -911,6 +1019,12 @@ batches allowing to retrieve more items than the limit.</p></li>
 </dl>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.calendar.Event.is_cancelled">
+<span class="sig-name descname"><span class="pre">is_cancelled</span></span><a class="headerlink" href="#O365.calendar.Event.is_cancelled" title="Link to this definition"></a></dt>
+<dd><p>Set to true if the event has been cancelled.  <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> bool</p>
+</dd></dl>
+
 <dl class="py property">
 <dt class="sig sig-object py" id="O365.calendar.Event.is_online_meeting">
 <em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_online_meeting</span></span><a class="headerlink" href="#O365.calendar.Event.is_online_meeting" title="Link to this definition"></a></dt>
@@ -926,6 +1040,14 @@ batches allowing to retrieve more items than the limit.</p></li>
 <dd class="field-odd"><p>bool</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.calendar.Event.is_organizer">
+<span class="sig-name descname"><span class="pre">is_organizer</span></span><a class="headerlink" href="#O365.calendar.Event.is_organizer" title="Link to this definition"></a></dt>
+<dd><p>Set to true if the calendar owner (specified by the owner property of the calendar) is the organizer of the event
+(specified by the organizer property of the event). It also applies if a delegate organized the event on behalf of the owner.
+<div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> bool</p>
 </dd></dl>
 
 <dl class="py property">
@@ -962,6 +1084,12 @@ batches allowing to retrieve more items than the limit.</p></li>
 </dl>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.calendar.Event.locations">
+<span class="sig-name descname"><span class="pre">locations</span></span><a class="headerlink" href="#O365.calendar.Event.locations" title="Link to this definition"></a></dt>
+<dd><p>The locations where the event is held or attended from.  <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> list</p>
+</dd></dl>
+
 <dl class="py property">
 <dt class="sig sig-object py" id="O365.calendar.Event.modified">
 <em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">modified</span></span><a class="headerlink" href="#O365.calendar.Event.modified" title="Link to this definition"></a></dt>
@@ -977,6 +1105,18 @@ batches allowing to retrieve more items than the limit.</p></li>
 <dt class="sig sig-object py" id="O365.calendar.Event.no_forwarding">
 <em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">no_forwarding</span></span><a class="headerlink" href="#O365.calendar.Event.no_forwarding" title="Link to this definition"></a></dt>
 <dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.calendar.Event.object_id">
+<span class="sig-name descname"><span class="pre">object_id</span></span><a class="headerlink" href="#O365.calendar.Event.object_id" title="Link to this definition"></a></dt>
+<dd><p>Unique identifier for the event.  <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.calendar.Event.online_meeting">
+<span class="sig-name descname"><span class="pre">online_meeting</span></span><a class="headerlink" href="#O365.calendar.Event.online_meeting" title="Link to this definition"></a></dt>
+<dd><p>Details for an attendee to join the meeting online. The default is null. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> OnlineMeetingInfo</p>
+</dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="O365.calendar.Event.online_meeting_provider">
@@ -995,13 +1135,19 @@ batches allowing to retrieve more items than the limit.</p></li>
 </dl>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.calendar.Event.online_meeting_url">
+<span class="sig-name descname"><span class="pre">online_meeting_url</span></span><a class="headerlink" href="#O365.calendar.Event.online_meeting_url" title="Link to this definition"></a></dt>
+<dd><p>A URL for an online meeting.  <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
 <dl class="py property">
 <dt class="sig sig-object py" id="O365.calendar.Event.organizer">
 <em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">organizer</span></span><a class="headerlink" href="#O365.calendar.Event.organizer" title="Link to this definition"></a></dt>
 <dd><p>Organizer of the meeting event</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="utils.html#O365.utils.utils.Recipient" title="O365.utils.utils.Recipient">Recipient</a></p>
+<dd class="field-odd"><p><a class="reference internal" href="utils/utils.html#O365.utils.utils.Recipient" title="O365.utils.utils.Recipient">Recipient</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1062,21 +1208,6 @@ batches allowing to retrieve more items than the limit.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="O365.calendar.Event.save">
-<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#Event.save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.calendar.Event.save" title="Link to this definition"></a></dt>
-<dd><p>Create a new event or update an existing one by checking what
-values have changed and update them on the server</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Success / Failure</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>bool</p>
-</dd>
-</dl>
-</dd></dl>
-
 <dl class="py property">
 <dt class="sig sig-object py" id="O365.calendar.Event.sensitivity">
 <em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">sensitivity</span></span><a class="headerlink" href="#O365.calendar.Event.sensitivity" title="Link to this definition"></a></dt>
@@ -1092,6 +1223,12 @@ values have changed and update them on the server</p>
 <dd class="field-odd"><p><a class="reference internal" href="#O365.calendar.EventSensitivity" title="O365.calendar.EventSensitivity">EventSensitivity</a></p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.calendar.Event.series_master_id">
+<span class="sig-name descname"><span class="pre">series_master_id</span></span><a class="headerlink" href="#O365.calendar.Event.series_master_id" title="Link to this definition"></a></dt>
+<dd><p>The ID for the recurring series master item, if this event is part of a recurring series. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
 </dd></dl>
 
 <dl class="py property">
@@ -1145,18 +1282,10 @@ values have changed and update them on the server</p>
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="O365.calendar.Event.to_api_data">
-<span class="sig-name descname"><span class="pre">to_api_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">restrict_keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#Event.to_api_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.calendar.Event.to_api_data" title="Link to this definition"></a></dt>
-<dd><p>Returns a dict to communicate with the server</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>restrict_keys</strong> – a set of keys to restrict the returned data to</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>dict</p>
-</dd>
-</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.calendar.Event.web_link">
+<span class="sig-name descname"><span class="pre">web_link</span></span><a class="headerlink" href="#O365.calendar.Event.web_link" title="Link to this definition"></a></dt>
+<dd><p>The URL to open the event in Outlook on the web. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
 </dd></dl>
 
 </dd></dl>
@@ -1164,19 +1293,19 @@ values have changed and update them on the server</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="O365.calendar.EventAttachment">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.calendar.</span></span><span class="sig-name descname"><span class="pre">EventAttachment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attachment</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#EventAttachment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.calendar.EventAttachment" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="attachment.html#O365.utils.attachment.BaseAttachment" title="O365.utils.attachment.BaseAttachment"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseAttachment</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="utils/attachment.html#O365.utils.attachment.BaseAttachment" title="O365.utils.attachment.BaseAttachment"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseAttachment</span></code></a></p>
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="O365.calendar.EventAttachments">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.calendar.</span></span><span class="sig-name descname"><span class="pre">EventAttachments</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attachments</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#EventAttachments"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.calendar.EventAttachments" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="attachment.html#O365.utils.attachment.BaseAttachments" title="O365.utils.attachment.BaseAttachments"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseAttachments</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="utils/attachment.html#O365.utils.attachment.BaseAttachments" title="O365.utils.attachment.BaseAttachments"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseAttachments</span></code></a></p>
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="O365.calendar.EventRecurrence">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.calendar.</span></span><span class="sig-name descname"><span class="pre">EventRecurrence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recurrence</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#EventRecurrence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.calendar.EventRecurrence" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">ApiComponent</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="utils/utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">ApiComponent</span></code></a></p>
 <dl class="py method">
 <dt class="sig sig-object py" id="O365.calendar.EventRecurrence.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recurrence</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#EventRecurrence.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.calendar.EventRecurrence.__init__" title="Link to this definition"></a></dt>
@@ -1187,6 +1316,105 @@ values have changed and update them on the server</p>
 <li><p><strong>event</strong> (<a class="reference internal" href="#O365.calendar.Event" title="O365.calendar.Event"><em>Event</em></a>) – event object</p></li>
 <li><p><strong>recurrence</strong> (<em>dict</em>) – recurrence information</p></li>
 </ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.calendar.EventRecurrence.set_daily">
+<span class="sig-name descname"><span class="pre">set_daily</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interval</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#EventRecurrence.set_daily"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.calendar.EventRecurrence.set_daily" title="Link to this definition"></a></dt>
+<dd><p>Set to repeat every x no. of days</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>interval</strong> (<em>int</em>) – no. of days to repeat at</p></li>
+<li><p><strong>start</strong> (<em>date</em>) – Start date of repetition (kwargs)</p></li>
+<li><p><strong>end</strong> (<em>date</em>) – End date of repetition (kwargs)</p></li>
+<li><p><strong>occurrences</strong> (<em>int</em>) – no of occurrences (kwargs)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.calendar.EventRecurrence.set_monthly">
+<span class="sig-name descname"><span class="pre">set_monthly</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interval</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">day_of_month</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">days_of_week</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#EventRecurrence.set_monthly"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.calendar.EventRecurrence.set_monthly" title="Link to this definition"></a></dt>
+<dd><p>Set to repeat every month on specified days for every x no. of days</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>interval</strong> (<em>int</em>) – no. of days to repeat at</p></li>
+<li><p><strong>day_of_month</strong> (<em>int</em>) – repeat day of a month</p></li>
+<li><p><strong>days_of_week</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – list of days of the week to repeat</p></li>
+<li><p><strong>index</strong> – index</p></li>
+<li><p><strong>start</strong> (<em>date</em>) – Start date of repetition (kwargs)</p></li>
+<li><p><strong>end</strong> (<em>date</em>) – End date of repetition (kwargs)</p></li>
+<li><p><strong>occurrences</strong> (<em>int</em>) – no of occurrences (kwargs)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.calendar.EventRecurrence.set_range">
+<span class="sig-name descname"><span class="pre">set_range</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">occurrences</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#EventRecurrence.set_range"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.calendar.EventRecurrence.set_range" title="Link to this definition"></a></dt>
+<dd><p>Set the range of recurrence</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start</strong> (<em>date</em>) – Start date of repetition</p></li>
+<li><p><strong>end</strong> (<em>date</em>) – End date of repetition</p></li>
+<li><p><strong>occurrences</strong> (<em>int</em>) – no of occurrences</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.calendar.EventRecurrence.set_weekly">
+<span class="sig-name descname"><span class="pre">set_weekly</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interval</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">days_of_week</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">first_day_of_week</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#EventRecurrence.set_weekly"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.calendar.EventRecurrence.set_weekly" title="Link to this definition"></a></dt>
+<dd><p>Set to repeat every week on specified days for every x no. of days</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>interval</strong> (<em>int</em>) – no. of days to repeat at</p></li>
+<li><p><strong>first_day_of_week</strong> (<em>str</em>) – starting day for a week</p></li>
+<li><p><strong>days_of_week</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – list of days of the week to repeat</p></li>
+<li><p><strong>start</strong> (<em>date</em>) – Start date of repetition (kwargs)</p></li>
+<li><p><strong>end</strong> (<em>date</em>) – End date of repetition (kwargs)</p></li>
+<li><p><strong>occurrences</strong> (<em>int</em>) – no of occurrences (kwargs)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.calendar.EventRecurrence.set_yearly">
+<span class="sig-name descname"><span class="pre">set_yearly</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interval</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">month</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">day_of_month</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">days_of_week</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#EventRecurrence.set_yearly"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.calendar.EventRecurrence.set_yearly" title="Link to this definition"></a></dt>
+<dd><p>Set to repeat every month on specified days for every x no. of days</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>interval</strong> (<em>int</em>) – no. of days to repeat at</p></li>
+<li><p><strong>month</strong> (<em>int</em>) – month to repeat</p></li>
+<li><p><strong>day_of_month</strong> (<em>int</em>) – repeat day of a month</p></li>
+<li><p><strong>days_of_week</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – list of days of the week to repeat</p></li>
+<li><p><strong>index</strong> – index</p></li>
+<li><p><strong>start</strong> (<em>date</em>) – Start date of repetition (kwargs)</p></li>
+<li><p><strong>end</strong> (<em>date</em>) – End date of repetition (kwargs)</p></li>
+<li><p><strong>occurrences</strong> (<em>int</em>) – no of occurrences (kwargs)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.calendar.EventRecurrence.to_api_data">
+<span class="sig-name descname"><span class="pre">to_api_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#EventRecurrence.to_api_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.calendar.EventRecurrence.to_api_data" title="Link to this definition"></a></dt>
+<dd><p>Returns a dict to communicate with the server</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1344,94 +1572,6 @@ values have changed and update them on the server</p>
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="O365.calendar.EventRecurrence.set_daily">
-<span class="sig-name descname"><span class="pre">set_daily</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interval</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#EventRecurrence.set_daily"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.calendar.EventRecurrence.set_daily" title="Link to this definition"></a></dt>
-<dd><p>Set to repeat every x no. of days</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>interval</strong> (<em>int</em>) – no. of days to repeat at</p></li>
-<li><p><strong>start</strong> (<em>date</em>) – Start date of repetition (kwargs)</p></li>
-<li><p><strong>end</strong> (<em>date</em>) – End date of repetition (kwargs)</p></li>
-<li><p><strong>occurrences</strong> (<em>int</em>) – no of occurrences (kwargs)</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="O365.calendar.EventRecurrence.set_monthly">
-<span class="sig-name descname"><span class="pre">set_monthly</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interval</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">day_of_month</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">days_of_week</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#EventRecurrence.set_monthly"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.calendar.EventRecurrence.set_monthly" title="Link to this definition"></a></dt>
-<dd><p>Set to repeat every month on specified days for every x no. of days</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>interval</strong> (<em>int</em>) – no. of days to repeat at</p></li>
-<li><p><strong>day_of_month</strong> (<em>int</em>) – repeat day of a month</p></li>
-<li><p><strong>days_of_week</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – list of days of the week to repeat</p></li>
-<li><p><strong>index</strong> – index</p></li>
-<li><p><strong>start</strong> (<em>date</em>) – Start date of repetition (kwargs)</p></li>
-<li><p><strong>end</strong> (<em>date</em>) – End date of repetition (kwargs)</p></li>
-<li><p><strong>occurrences</strong> (<em>int</em>) – no of occurrences (kwargs)</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="O365.calendar.EventRecurrence.set_range">
-<span class="sig-name descname"><span class="pre">set_range</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">occurrences</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#EventRecurrence.set_range"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.calendar.EventRecurrence.set_range" title="Link to this definition"></a></dt>
-<dd><p>Set the range of recurrence</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>start</strong> (<em>date</em>) – Start date of repetition</p></li>
-<li><p><strong>end</strong> (<em>date</em>) – End date of repetition</p></li>
-<li><p><strong>occurrences</strong> (<em>int</em>) – no of occurrences</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="O365.calendar.EventRecurrence.set_weekly">
-<span class="sig-name descname"><span class="pre">set_weekly</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interval</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">days_of_week</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">first_day_of_week</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#EventRecurrence.set_weekly"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.calendar.EventRecurrence.set_weekly" title="Link to this definition"></a></dt>
-<dd><p>Set to repeat every week on specified days for every x no. of days</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>interval</strong> (<em>int</em>) – no. of days to repeat at</p></li>
-<li><p><strong>first_day_of_week</strong> (<em>str</em>) – starting day for a week</p></li>
-<li><p><strong>days_of_week</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – list of days of the week to repeat</p></li>
-<li><p><strong>start</strong> (<em>date</em>) – Start date of repetition (kwargs)</p></li>
-<li><p><strong>end</strong> (<em>date</em>) – End date of repetition (kwargs)</p></li>
-<li><p><strong>occurrences</strong> (<em>int</em>) – no of occurrences (kwargs)</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="O365.calendar.EventRecurrence.set_yearly">
-<span class="sig-name descname"><span class="pre">set_yearly</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interval</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">month</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">day_of_month</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">days_of_week</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#EventRecurrence.set_yearly"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.calendar.EventRecurrence.set_yearly" title="Link to this definition"></a></dt>
-<dd><p>Set to repeat every month on specified days for every x no. of days</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>interval</strong> (<em>int</em>) – no. of days to repeat at</p></li>
-<li><p><strong>month</strong> (<em>int</em>) – month to repeat</p></li>
-<li><p><strong>day_of_month</strong> (<em>int</em>) – repeat day of a month</p></li>
-<li><p><strong>days_of_week</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – list of days of the week to repeat</p></li>
-<li><p><strong>index</strong> – index</p></li>
-<li><p><strong>start</strong> (<em>date</em>) – Start date of repetition (kwargs)</p></li>
-<li><p><strong>end</strong> (<em>date</em>) – End date of repetition (kwargs)</p></li>
-<li><p><strong>occurrences</strong> (<em>int</em>) – no of occurrences (kwargs)</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
 <dl class="py property">
 <dt class="sig sig-object py" id="O365.calendar.EventRecurrence.start_date">
 <em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">start_date</span></span><a class="headerlink" href="#O365.calendar.EventRecurrence.start_date" title="Link to this definition"></a></dt>
@@ -1449,23 +1589,12 @@ values have changed and update them on the server</p>
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="O365.calendar.EventRecurrence.to_api_data">
-<span class="sig-name descname"><span class="pre">to_api_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#EventRecurrence.to_api_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.calendar.EventRecurrence.to_api_data" title="Link to this definition"></a></dt>
-<dd><p>Returns a dict to communicate with the server</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>dict</p>
-</dd>
-</dl>
-</dd></dl>
-
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="O365.calendar.EventResponse">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.calendar.</span></span><span class="sig-name descname"><span class="pre">EventResponse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#EventResponse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.calendar.EventResponse" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="utils.html#O365.utils.utils.CaseEnum" title="O365.utils.utils.CaseEnum"><code class="xref py py-class docutils literal notranslate"><span class="pre">CaseEnum</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="utils/utils.html#O365.utils.utils.CaseEnum" title="O365.utils.utils.CaseEnum"><code class="xref py py-class docutils literal notranslate"><span class="pre">CaseEnum</span></code></a></p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="O365.calendar.EventResponse.Accepted">
 <span class="sig-name descname"><span class="pre">Accepted</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'accepted'</span></em><a class="headerlink" href="#O365.calendar.EventResponse.Accepted" title="Link to this definition"></a></dt>
@@ -1496,7 +1625,7 @@ values have changed and update them on the server</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="O365.calendar.EventSensitivity">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.calendar.</span></span><span class="sig-name descname"><span class="pre">EventSensitivity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#EventSensitivity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.calendar.EventSensitivity" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="utils.html#O365.utils.utils.CaseEnum" title="O365.utils.utils.CaseEnum"><code class="xref py py-class docutils literal notranslate"><span class="pre">CaseEnum</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="utils/utils.html#O365.utils.utils.CaseEnum" title="O365.utils.utils.CaseEnum"><code class="xref py py-class docutils literal notranslate"><span class="pre">CaseEnum</span></code></a></p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="O365.calendar.EventSensitivity.Confidential">
 <span class="sig-name descname"><span class="pre">Confidential</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'confidential'</span></em><a class="headerlink" href="#O365.calendar.EventSensitivity.Confidential" title="Link to this definition"></a></dt>
@@ -1522,7 +1651,7 @@ values have changed and update them on the server</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="O365.calendar.EventShowAs">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.calendar.</span></span><span class="sig-name descname"><span class="pre">EventShowAs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#EventShowAs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.calendar.EventShowAs" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="utils.html#O365.utils.utils.CaseEnum" title="O365.utils.utils.CaseEnum"><code class="xref py py-class docutils literal notranslate"><span class="pre">CaseEnum</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="utils/utils.html#O365.utils.utils.CaseEnum" title="O365.utils.utils.CaseEnum"><code class="xref py py-class docutils literal notranslate"><span class="pre">CaseEnum</span></code></a></p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="O365.calendar.EventShowAs.Busy">
 <span class="sig-name descname"><span class="pre">Busy</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'busy'</span></em><a class="headerlink" href="#O365.calendar.EventShowAs.Busy" title="Link to this definition"></a></dt>
@@ -1558,7 +1687,7 @@ values have changed and update them on the server</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="O365.calendar.EventType">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.calendar.</span></span><span class="sig-name descname"><span class="pre">EventType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#EventType"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.calendar.EventType" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="utils.html#O365.utils.utils.CaseEnum" title="O365.utils.utils.CaseEnum"><code class="xref py py-class docutils literal notranslate"><span class="pre">CaseEnum</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="utils/utils.html#O365.utils.utils.CaseEnum" title="O365.utils.utils.CaseEnum"><code class="xref py py-class docutils literal notranslate"><span class="pre">CaseEnum</span></code></a></p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="O365.calendar.EventType.Exception">
 <span class="sig-name descname"><span class="pre">Exception</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'exception'</span></em><a class="headerlink" href="#O365.calendar.EventType.Exception" title="Link to this definition"></a></dt>
@@ -1584,7 +1713,7 @@ values have changed and update them on the server</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="O365.calendar.OnlineMeetingProviderType">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.calendar.</span></span><span class="sig-name descname"><span class="pre">OnlineMeetingProviderType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#OnlineMeetingProviderType"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.calendar.OnlineMeetingProviderType" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="utils.html#O365.utils.utils.CaseEnum" title="O365.utils.utils.CaseEnum"><code class="xref py py-class docutils literal notranslate"><span class="pre">CaseEnum</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="utils/utils.html#O365.utils.utils.CaseEnum" title="O365.utils.utils.CaseEnum"><code class="xref py py-class docutils literal notranslate"><span class="pre">CaseEnum</span></code></a></p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="O365.calendar.OnlineMeetingProviderType.SkypeForBusiness">
 <span class="sig-name descname"><span class="pre">SkypeForBusiness</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'skype_for_business'</span></em><a class="headerlink" href="#O365.calendar.OnlineMeetingProviderType.SkypeForBusiness" title="Link to this definition"></a></dt>
@@ -1610,7 +1739,7 @@ values have changed and update them on the server</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="O365.calendar.ResponseStatus">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.calendar.</span></span><span class="sig-name descname"><span class="pre">ResponseStatus</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">response_status</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#ResponseStatus"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.calendar.ResponseStatus" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">ApiComponent</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="utils/utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">ApiComponent</span></code></a></p>
 <p>An event response status (status, time)</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="O365.calendar.ResponseStatus.__init__">
@@ -1626,12 +1755,24 @@ values have changed and update them on the server</p>
 </dl>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.calendar.ResponseStatus.response_time">
+<span class="sig-name descname"><span class="pre">response_time</span></span><a class="headerlink" href="#O365.calendar.ResponseStatus.response_time" title="Link to this definition"></a></dt>
+<dd><p>The time the response was received <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> datetime</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.calendar.ResponseStatus.status">
+<span class="sig-name descname"><span class="pre">status</span></span><a class="headerlink" href="#O365.calendar.ResponseStatus.status" title="Link to this definition"></a></dt>
+<dd><p>The status of the response <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="O365.calendar.Schedule">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.calendar.</span></span><span class="sig-name descname"><span class="pre">Schedule</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">con</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#Schedule"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.calendar.Schedule" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">ApiComponent</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="utils/utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">ApiComponent</span></code></a></p>
 <dl class="py method">
 <dt class="sig sig-object py" id="O365.calendar.Schedule.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">con</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#Schedule.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.calendar.Schedule.__init__" title="Link to this definition"></a></dt>
@@ -1648,18 +1789,6 @@ values have changed and update them on the server</p>
 </ul>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="O365.calendar.Schedule.calendar_constructor">
-<span class="sig-name descname"><span class="pre">calendar_constructor</span></span><a class="headerlink" href="#O365.calendar.Schedule.calendar_constructor" title="Link to this definition"></a></dt>
-<dd><p>alias of <a class="reference internal" href="#O365.calendar.Calendar" title="O365.calendar.Calendar"><code class="xref py py-class docutils literal notranslate"><span class="pre">Calendar</span></code></a></p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="O365.calendar.Schedule.event_constructor">
-<span class="sig-name descname"><span class="pre">event_constructor</span></span><a class="headerlink" href="#O365.calendar.Schedule.event_constructor" title="Link to this definition"></a></dt>
-<dd><p>alias of <a class="reference internal" href="#O365.calendar.Event" title="O365.calendar.Event"><code class="xref py py-class docutils literal notranslate"><span class="pre">Event</span></code></a></p>
 </dd></dl>
 
 <dl class="py method">
@@ -1711,8 +1840,8 @@ values have changed and update them on the server</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>limit</strong> (<em>int</em>) – max no. of events to get. Over 999 uses batch.</p></li>
-<li><p><strong>query</strong> (<a class="reference internal" href="utils.html#O365.utils.utils.Query" title="O365.utils.utils.Query"><em>Query</em></a><em> or </em><em>str</em>) – applies a OData filter to the request</p></li>
-<li><p><strong>order_by</strong> (<a class="reference internal" href="utils.html#O365.utils.utils.Query" title="O365.utils.utils.Query"><em>Query</em></a><em> or </em><em>str</em>) – orders the result set based on this condition</p></li>
+<li><p><strong>query</strong> (<a class="reference internal" href="utils/utils.html#O365.utils.utils.Query" title="O365.utils.utils.Query"><em>Query</em></a><em> or </em><em>str</em>) – applies a OData filter to the request</p></li>
+<li><p><strong>order_by</strong> (<a class="reference internal" href="utils/utils.html#O365.utils.utils.Query" title="O365.utils.utils.Query"><em>Query</em></a><em> or </em><em>str</em>) – orders the result set based on this condition</p></li>
 <li><p><strong>batch</strong> (<em>int</em>) – batch size, retrieves items in
 batches allowing to retrieve more items than the limit.</p></li>
 <li><p><strong>download_attachments</strong> (<em>bool</em>) – downloads event attachments</p></li>
@@ -1723,7 +1852,7 @@ batches allowing to retrieve more items than the limit.</p></li>
 <dd class="field-even"><p>list of items in this folder</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>list[<a class="reference internal" href="#O365.calendar.Event" title="O365.calendar.Event">Event</a>] or <a class="reference internal" href="utils.html#O365.utils.utils.Pagination" title="O365.utils.utils.Pagination">Pagination</a></p>
+<dd class="field-odd"><p>list[<a class="reference internal" href="#O365.calendar.Event" title="O365.calendar.Event">Event</a>] or <a class="reference internal" href="utils/utils.html#O365.utils.utils.Pagination" title="O365.utils.utils.Pagination">Pagination</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1740,8 +1869,8 @@ part2-url-conventions/odata-v4.0-errata03-os-part2-url-conventions
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>limit</strong> (<em>int</em>) – max no. of calendars to get. Over 999 uses batch.</p></li>
-<li><p><strong>query</strong> (<a class="reference internal" href="utils.html#O365.utils.utils.Query" title="O365.utils.utils.Query"><em>Query</em></a><em> or </em><em>str</em>) – applies a OData filter to the request</p></li>
-<li><p><strong>order_by</strong> (<a class="reference internal" href="utils.html#O365.utils.utils.Query" title="O365.utils.utils.Query"><em>Query</em></a><em> or </em><em>str</em>) – orders the result set based on this condition</p></li>
+<li><p><strong>query</strong> (<a class="reference internal" href="utils/utils.html#O365.utils.utils.Query" title="O365.utils.utils.Query"><em>Query</em></a><em> or </em><em>str</em>) – applies a OData filter to the request</p></li>
+<li><p><strong>order_by</strong> (<a class="reference internal" href="utils/utils.html#O365.utils.utils.Query" title="O365.utils.utils.Query"><em>Query</em></a><em> or </em><em>str</em>) – orders the result set based on this condition</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -1795,8 +1924,8 @@ part2-url-conventions/odata-v4.0-errata03-os-part2-url-conventions
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="attachment.html" class="btn btn-neutral float-left" title="Attachment" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="category.html" class="btn btn-neutral float-right" title="Outlook Category" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="address_book.html" class="btn btn-neutral float-left" title="Address Book" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="category.html" class="btn btn-neutral float-right" title="Category" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

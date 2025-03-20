@@ -52,9 +52,8 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">O365 API</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="api/account.html">Account</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/address_book.html">Address Book</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/attachment.html">Attachment</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/calendar.html">Calendar</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/category.html">Outlook Category</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/category.html">Category</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/connection.html">Connection</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/directory.html">Directory</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/excel.html">Excel</a></li>
@@ -114,13 +113,6 @@
 <li class="toctree-l2"><a class="reference internal" href="api/address_book.html#O365.address_book.ContactFolder"><code class="docutils literal notranslate"><span class="pre">ContactFolder</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="api/attachment.html">Attachment</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="api/attachment.html#O365.utils.attachment.AttachableMixin"><code class="docutils literal notranslate"><span class="pre">AttachableMixin</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/attachment.html#O365.utils.attachment.BaseAttachment"><code class="docutils literal notranslate"><span class="pre">BaseAttachment</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/attachment.html#O365.utils.attachment.BaseAttachments"><code class="docutils literal notranslate"><span class="pre">BaseAttachments</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/attachment.html#O365.utils.attachment.UploadSessionRequest"><code class="docutils literal notranslate"><span class="pre">UploadSessionRequest</span></code></a></li>
-</ul>
-</li>
 <li class="toctree-l1"><a class="reference internal" href="api/calendar.html">Calendar</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="api/calendar.html#O365.calendar.Attendee"><code class="docutils literal notranslate"><span class="pre">Attendee</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/calendar.html#O365.calendar.AttendeeType"><code class="docutils literal notranslate"><span class="pre">AttendeeType</span></code></a></li>
@@ -141,19 +133,19 @@
 <li class="toctree-l2"><a class="reference internal" href="api/calendar.html#O365.calendar.Schedule"><code class="docutils literal notranslate"><span class="pre">Schedule</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="api/category.html">Outlook Category</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="api/category.html">Category</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="api/category.html#O365.category.Categories"><code class="docutils literal notranslate"><span class="pre">Categories</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/category.html#O365.category.Category"><code class="docutils literal notranslate"><span class="pre">Category</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/category.html#O365.category.CategoryColor"><code class="docutils literal notranslate"><span class="pre">CategoryColor</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="api/connection.html">Connection</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/connection.html#O365.connection.TokenExpiredError"><code class="docutils literal notranslate"><span class="pre">TokenExpiredError</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/connection.html#O365.connection.Connection"><code class="docutils literal notranslate"><span class="pre">Connection</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/connection.html#O365.connection.MSBusinessCentral365Protocol"><code class="docutils literal notranslate"><span class="pre">MSBusinessCentral365Protocol</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/connection.html#O365.connection.MSGraphProtocol"><code class="docutils literal notranslate"><span class="pre">MSGraphProtocol</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/connection.html#O365.connection.MSOffice365Protocol"><code class="docutils literal notranslate"><span class="pre">MSOffice365Protocol</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/connection.html#O365.connection.Protocol"><code class="docutils literal notranslate"><span class="pre">Protocol</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/connection.html#O365.connection.TokenExpiredError"><code class="docutils literal notranslate"><span class="pre">TokenExpiredError</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/connection.html#O365.connection.oauth_authentication_flow"><code class="docutils literal notranslate"><span class="pre">oauth_authentication_flow()</span></code></a></li>
 </ul>
 </li>
@@ -255,18 +247,8 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="api/utils.html">Utils</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="api/utils.html#O365.utils.utils.ApiComponent"><code class="docutils literal notranslate"><span class="pre">ApiComponent</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/utils.html#O365.utils.utils.CaseEnum"><code class="docutils literal notranslate"><span class="pre">CaseEnum</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/utils.html#O365.utils.utils.ChainOperator"><code class="docutils literal notranslate"><span class="pre">ChainOperator</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/utils.html#O365.utils.utils.HandleRecipientsMixin"><code class="docutils literal notranslate"><span class="pre">HandleRecipientsMixin</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/utils.html#O365.utils.utils.ImportanceLevel"><code class="docutils literal notranslate"><span class="pre">ImportanceLevel</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/utils.html#O365.utils.utils.OneDriveWellKnowFolderNames"><code class="docutils literal notranslate"><span class="pre">OneDriveWellKnowFolderNames</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/utils.html#O365.utils.utils.OutlookWellKnowFolderNames"><code class="docutils literal notranslate"><span class="pre">OutlookWellKnowFolderNames</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/utils.html#O365.utils.utils.Pagination"><code class="docutils literal notranslate"><span class="pre">Pagination</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/utils.html#O365.utils.utils.Query"><code class="docutils literal notranslate"><span class="pre">Query</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/utils.html#O365.utils.utils.Recipient"><code class="docutils literal notranslate"><span class="pre">Recipient</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/utils.html#O365.utils.utils.Recipients"><code class="docutils literal notranslate"><span class="pre">Recipients</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/utils.html#O365.utils.utils.TrackerSet"><code class="docutils literal notranslate"><span class="pre">TrackerSet</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/utils/attachment.html">Attachment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/utils/utils.html">Utils</a></li>
 </ul>
 </li>
 </ul>

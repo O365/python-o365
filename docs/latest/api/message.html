@@ -52,9 +52,8 @@
 <li class="toctree-l1 current"><a class="reference internal" href="../api.html">O365 API</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="account.html">Account</a></li>
 <li class="toctree-l2"><a class="reference internal" href="address_book.html">Address Book</a></li>
-<li class="toctree-l2"><a class="reference internal" href="attachment.html">Attachment</a></li>
 <li class="toctree-l2"><a class="reference internal" href="calendar.html">Calendar</a></li>
-<li class="toctree-l2"><a class="reference internal" href="category.html">Outlook Category</a></li>
+<li class="toctree-l2"><a class="reference internal" href="category.html">Category</a></li>
 <li class="toctree-l2"><a class="reference internal" href="connection.html">Connection</a></li>
 <li class="toctree-l2"><a class="reference internal" href="directory.html">Directory</a></li>
 <li class="toctree-l2"><a class="reference internal" href="excel.html">Excel</a></li>
@@ -195,7 +194,7 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="O365.message.Flag">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.message.</span></span><span class="sig-name descname"><span class="pre">Flag</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Flag"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.message.Flag" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="utils.html#O365.utils.utils.CaseEnum" title="O365.utils.utils.CaseEnum"><code class="xref py py-class docutils literal notranslate"><span class="pre">CaseEnum</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="utils/utils.html#O365.utils.utils.CaseEnum" title="O365.utils.utils.CaseEnum"><code class="xref py py-class docutils literal notranslate"><span class="pre">CaseEnum</span></code></a></p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="O365.message.Flag.Complete">
 <span class="sig-name descname"><span class="pre">Complete</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'complete'</span></em><a class="headerlink" href="#O365.message.Flag.Complete" title="Link to this definition"></a></dt>
@@ -216,7 +215,7 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="O365.message.MeetingMessageType">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.message.</span></span><span class="sig-name descname"><span class="pre">MeetingMessageType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#MeetingMessageType"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.message.MeetingMessageType" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="utils.html#O365.utils.utils.CaseEnum" title="O365.utils.utils.CaseEnum"><code class="xref py py-class docutils literal notranslate"><span class="pre">CaseEnum</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="utils/utils.html#O365.utils.utils.CaseEnum" title="O365.utils.utils.CaseEnum"><code class="xref py py-class docutils literal notranslate"><span class="pre">CaseEnum</span></code></a></p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="O365.message.MeetingMessageType.MeetingAccepted">
 <span class="sig-name descname"><span class="pre">MeetingAccepted</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'meeting_accepted'</span></em><a class="headerlink" href="#O365.message.MeetingMessageType.MeetingAccepted" title="Link to this definition"></a></dt>
@@ -247,7 +246,7 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="O365.message.Message">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.message.</span></span><span class="sig-name descname"><span class="pre">Message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">con</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Message"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.message.Message" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">ApiComponent</span></code></a>, <a class="reference internal" href="attachment.html#O365.utils.attachment.AttachableMixin" title="O365.utils.attachment.AttachableMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">AttachableMixin</span></code></a>, <a class="reference internal" href="utils.html#O365.utils.utils.HandleRecipientsMixin" title="O365.utils.utils.HandleRecipientsMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">HandleRecipientsMixin</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="utils/utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">ApiComponent</span></code></a>, <a class="reference internal" href="utils/attachment.html#O365.utils.attachment.AttachableMixin" title="O365.utils.attachment.AttachableMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">AttachableMixin</span></code></a>, <a class="reference internal" href="utils/utils.html#O365.utils.utils.HandleRecipientsMixin" title="O365.utils.utils.HandleRecipientsMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">HandleRecipientsMixin</span></code></a></p>
 <p>Management of the process of sending, receiving, reading, and
 editing emails.</p>
 <dl class="py method">
@@ -460,7 +459,7 @@ copy this message to</p>
 <dd class="field-even"><p>Set a different importance level</p>
 </dd>
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>str or <a class="reference internal" href="utils.html#O365.utils.utils.ImportanceLevel" title="O365.utils.utils.ImportanceLevel">ImportanceLevel</a></p>
+<dd class="field-odd"><p>str or <a class="reference internal" href="utils/utils.html#O365.utils.utils.ImportanceLevel" title="O365.utils.utils.ImportanceLevel">ImportanceLevel</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -721,7 +720,7 @@ sent folder</p>
 <dd class="field-even"><p>Update the from address with new value</p>
 </dd>
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>str or <a class="reference internal" href="utils.html#O365.utils.utils.Recipient" title="O365.utils.utils.Recipient">Recipient</a></p>
+<dd class="field-odd"><p>str or <a class="reference internal" href="utils/utils.html#O365.utils.utils.Recipient" title="O365.utils.utils.Recipient">Recipient</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -799,13 +798,13 @@ data to</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="O365.message.MessageAttachment">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.message.</span></span><span class="sig-name descname"><span class="pre">MessageAttachment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attachment</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#MessageAttachment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.message.MessageAttachment" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="attachment.html#O365.utils.attachment.BaseAttachment" title="O365.utils.attachment.BaseAttachment"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseAttachment</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="utils/attachment.html#O365.utils.attachment.BaseAttachment" title="O365.utils.attachment.BaseAttachment"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseAttachment</span></code></a></p>
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="O365.message.MessageAttachments">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.message.</span></span><span class="sig-name descname"><span class="pre">MessageAttachments</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attachments</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#MessageAttachments"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.message.MessageAttachments" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="attachment.html#O365.utils.attachment.BaseAttachments" title="O365.utils.attachment.BaseAttachments"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseAttachments</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="utils/attachment.html#O365.utils.attachment.BaseAttachments" title="O365.utils.attachment.BaseAttachments"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseAttachments</span></code></a></p>
 <dl class="py method">
 <dt class="sig sig-object py" id="O365.message.MessageAttachments.get_mime_content">
 <span class="sig-name descname"><span class="pre">get_mime_content</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attachment</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#MessageAttachments.get_mime_content"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.message.MessageAttachments.get_mime_content" title="Link to this definition"></a></dt>
@@ -825,7 +824,7 @@ data to</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="O365.message.MessageFlag">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.message.</span></span><span class="sig-name descname"><span class="pre">MessageFlag</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flag_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#MessageFlag"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.message.MessageFlag" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">ApiComponent</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="utils/utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">ApiComponent</span></code></a></p>
 <p>A flag on a message</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="O365.message.MessageFlag.__init__">
