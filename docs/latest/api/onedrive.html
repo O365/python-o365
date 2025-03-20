@@ -65,6 +65,12 @@
 <li class="toctree-l4"><a class="reference internal" href="#O365.drive.CopyOperation.__init__"><code class="docutils literal notranslate"><span class="pre">CopyOperation.__init__()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.drive.CopyOperation.check_status"><code class="docutils literal notranslate"><span class="pre">CopyOperation.check_status()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.drive.CopyOperation.get_item"><code class="docutils literal notranslate"><span class="pre">CopyOperation.get_item()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.CopyOperation.completion_percentage"><code class="docutils literal notranslate"><span class="pre">CopyOperation.completion_percentage</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.CopyOperation.item_id"><code class="docutils literal notranslate"><span class="pre">CopyOperation.item_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.CopyOperation.monitor_url"><code class="docutils literal notranslate"><span class="pre">CopyOperation.monitor_url</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.CopyOperation.parent"><code class="docutils literal notranslate"><span class="pre">CopyOperation.parent</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.CopyOperation.status"><code class="docutils literal notranslate"><span class="pre">CopyOperation.status</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.CopyOperation.target"><code class="docutils literal notranslate"><span class="pre">CopyOperation.target</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#O365.drive.DownloadableMixin"><code class="docutils literal notranslate"><span class="pre">DownloadableMixin</span></code></a><ul>
@@ -83,6 +89,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#O365.drive.Drive.get_special_folder"><code class="docutils literal notranslate"><span class="pre">Drive.get_special_folder()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.drive.Drive.refresh"><code class="docutils literal notranslate"><span class="pre">Drive.refresh()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.drive.Drive.search"><code class="docutils literal notranslate"><span class="pre">Drive.search()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.Drive.parent"><code class="docutils literal notranslate"><span class="pre">Drive.parent</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#O365.drive.DriveItem"><code class="docutils literal notranslate"><span class="pre">DriveItem</span></code></a><ul>
@@ -95,31 +102,68 @@
 <li class="toctree-l4"><a class="reference internal" href="#O365.drive.DriveItem.get_thumbnails"><code class="docutils literal notranslate"><span class="pre">DriveItem.get_thumbnails()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.drive.DriveItem.get_version"><code class="docutils literal notranslate"><span class="pre">DriveItem.get_version()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.drive.DriveItem.get_versions"><code class="docutils literal notranslate"><span class="pre">DriveItem.get_versions()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#O365.drive.DriveItem.is_file"><code class="docutils literal notranslate"><span class="pre">DriveItem.is_file</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#O365.drive.DriveItem.is_folder"><code class="docutils literal notranslate"><span class="pre">DriveItem.is_folder</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#O365.drive.DriveItem.is_image"><code class="docutils literal notranslate"><span class="pre">DriveItem.is_image</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#O365.drive.DriveItem.is_photo"><code class="docutils literal notranslate"><span class="pre">DriveItem.is_photo</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.drive.DriveItem.move"><code class="docutils literal notranslate"><span class="pre">DriveItem.move()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.drive.DriveItem.share_with_invite"><code class="docutils literal notranslate"><span class="pre">DriveItem.share_with_invite()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.drive.DriveItem.share_with_link"><code class="docutils literal notranslate"><span class="pre">DriveItem.share_with_link()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.drive.DriveItem.update"><code class="docutils literal notranslate"><span class="pre">DriveItem.update()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.DriveItem.created"><code class="docutils literal notranslate"><span class="pre">DriveItem.created</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.DriveItem.created_by"><code class="docutils literal notranslate"><span class="pre">DriveItem.created_by</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.DriveItem.description"><code class="docutils literal notranslate"><span class="pre">DriveItem.description</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.DriveItem.drive"><code class="docutils literal notranslate"><span class="pre">DriveItem.drive</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.DriveItem.drive_id"><code class="docutils literal notranslate"><span class="pre">DriveItem.drive_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.DriveItem.is_file"><code class="docutils literal notranslate"><span class="pre">DriveItem.is_file</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.DriveItem.is_folder"><code class="docutils literal notranslate"><span class="pre">DriveItem.is_folder</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.DriveItem.is_image"><code class="docutils literal notranslate"><span class="pre">DriveItem.is_image</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.DriveItem.is_photo"><code class="docutils literal notranslate"><span class="pre">DriveItem.is_photo</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.DriveItem.modified"><code class="docutils literal notranslate"><span class="pre">DriveItem.modified</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.DriveItem.modified_by"><code class="docutils literal notranslate"><span class="pre">DriveItem.modified_by</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.DriveItem.name"><code class="docutils literal notranslate"><span class="pre">DriveItem.name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.DriveItem.object_id"><code class="docutils literal notranslate"><span class="pre">DriveItem.object_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.DriveItem.parent_id"><code class="docutils literal notranslate"><span class="pre">DriveItem.parent_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.DriveItem.parent_path"><code class="docutils literal notranslate"><span class="pre">DriveItem.parent_path</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.DriveItem.remote_item"><code class="docutils literal notranslate"><span class="pre">DriveItem.remote_item</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.DriveItem.shared"><code class="docutils literal notranslate"><span class="pre">DriveItem.shared</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.DriveItem.size"><code class="docutils literal notranslate"><span class="pre">DriveItem.size</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.DriveItem.thumbnails"><code class="docutils literal notranslate"><span class="pre">DriveItem.thumbnails</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.DriveItem.web_url"><code class="docutils literal notranslate"><span class="pre">DriveItem.web_url</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#O365.drive.DriveItemPermission"><code class="docutils literal notranslate"><span class="pre">DriveItemPermission</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#O365.drive.DriveItemPermission.__init__"><code class="docutils literal notranslate"><span class="pre">DriveItemPermission.__init__()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.drive.DriveItemPermission.delete"><code class="docutils literal notranslate"><span class="pre">DriveItemPermission.delete()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.drive.DriveItemPermission.update_roles"><code class="docutils literal notranslate"><span class="pre">DriveItemPermission.update_roles()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.DriveItemPermission.driveitem_id"><code class="docutils literal notranslate"><span class="pre">DriveItemPermission.driveitem_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.DriveItemPermission.granted_to"><code class="docutils literal notranslate"><span class="pre">DriveItemPermission.granted_to</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.DriveItemPermission.inherited_from"><code class="docutils literal notranslate"><span class="pre">DriveItemPermission.inherited_from</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.DriveItemPermission.invited_by"><code class="docutils literal notranslate"><span class="pre">DriveItemPermission.invited_by</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.DriveItemPermission.object_id"><code class="docutils literal notranslate"><span class="pre">DriveItemPermission.object_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.DriveItemPermission.permission_type"><code class="docutils literal notranslate"><span class="pre">DriveItemPermission.permission_type</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.DriveItemPermission.require_sign_in"><code class="docutils literal notranslate"><span class="pre">DriveItemPermission.require_sign_in</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.DriveItemPermission.roles"><code class="docutils literal notranslate"><span class="pre">DriveItemPermission.roles</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.DriveItemPermission.share_email"><code class="docutils literal notranslate"><span class="pre">DriveItemPermission.share_email</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.DriveItemPermission.share_id"><code class="docutils literal notranslate"><span class="pre">DriveItemPermission.share_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.DriveItemPermission.share_link"><code class="docutils literal notranslate"><span class="pre">DriveItemPermission.share_link</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.DriveItemPermission.share_scope"><code class="docutils literal notranslate"><span class="pre">DriveItemPermission.share_scope</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.DriveItemPermission.share_type"><code class="docutils literal notranslate"><span class="pre">DriveItemPermission.share_type</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#O365.drive.DriveItemVersion"><code class="docutils literal notranslate"><span class="pre">DriveItemVersion</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#O365.drive.DriveItemVersion.__init__"><code class="docutils literal notranslate"><span class="pre">DriveItemVersion.__init__()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.drive.DriveItemVersion.download"><code class="docutils literal notranslate"><span class="pre">DriveItemVersion.download()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.drive.DriveItemVersion.restore"><code class="docutils literal notranslate"><span class="pre">DriveItemVersion.restore()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.DriveItemVersion.driveitem_id"><code class="docutils literal notranslate"><span class="pre">DriveItemVersion.driveitem_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.DriveItemVersion.modified"><code class="docutils literal notranslate"><span class="pre">DriveItemVersion.modified</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.DriveItemVersion.modified_by"><code class="docutils literal notranslate"><span class="pre">DriveItemVersion.modified_by</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.DriveItemVersion.name"><code class="docutils literal notranslate"><span class="pre">DriveItemVersion.name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.DriveItemVersion.object_id"><code class="docutils literal notranslate"><span class="pre">DriveItemVersion.object_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.DriveItemVersion.size"><code class="docutils literal notranslate"><span class="pre">DriveItemVersion.size</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#O365.drive.File"><code class="docutils literal notranslate"><span class="pre">File</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#O365.drive.File.__init__"><code class="docutils literal notranslate"><span class="pre">File.__init__()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.drive.File.extension"><code class="docutils literal notranslate"><span class="pre">File.extension</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.File.hashes"><code class="docutils literal notranslate"><span class="pre">File.hashes</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.File.mime_type"><code class="docutils literal notranslate"><span class="pre">File.mime_type</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#O365.drive.Folder"><code class="docutils literal notranslate"><span class="pre">Folder</span></code></a><ul>
@@ -130,20 +174,31 @@
 <li class="toctree-l4"><a class="reference internal" href="#O365.drive.Folder.get_items"><code class="docutils literal notranslate"><span class="pre">Folder.get_items()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.drive.Folder.search"><code class="docutils literal notranslate"><span class="pre">Folder.search()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.drive.Folder.upload_file"><code class="docutils literal notranslate"><span class="pre">Folder.upload_file()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.Folder.child_count"><code class="docutils literal notranslate"><span class="pre">Folder.child_count</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.Folder.special_folder"><code class="docutils literal notranslate"><span class="pre">Folder.special_folder</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#O365.drive.Image"><code class="docutils literal notranslate"><span class="pre">Image</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#O365.drive.Image.__init__"><code class="docutils literal notranslate"><span class="pre">Image.__init__()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.drive.Image.dimensions"><code class="docutils literal notranslate"><span class="pre">Image.dimensions</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.Image.height"><code class="docutils literal notranslate"><span class="pre">Image.height</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.Image.width"><code class="docutils literal notranslate"><span class="pre">Image.width</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#O365.drive.Photo"><code class="docutils literal notranslate"><span class="pre">Photo</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#O365.drive.Photo.__init__"><code class="docutils literal notranslate"><span class="pre">Photo.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.Photo.camera_make"><code class="docutils literal notranslate"><span class="pre">Photo.camera_make</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.Photo.camera_model"><code class="docutils literal notranslate"><span class="pre">Photo.camera_model</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.Photo.exposure_denominator"><code class="docutils literal notranslate"><span class="pre">Photo.exposure_denominator</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.Photo.exposure_numerator"><code class="docutils literal notranslate"><span class="pre">Photo.exposure_numerator</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.Photo.fnumber"><code class="docutils literal notranslate"><span class="pre">Photo.fnumber</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.Photo.focal_length"><code class="docutils literal notranslate"><span class="pre">Photo.focal_length</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.Photo.iso"><code class="docutils literal notranslate"><span class="pre">Photo.iso</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.Photo.taken_datetime"><code class="docutils literal notranslate"><span class="pre">Photo.taken_datetime</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#O365.drive.Storage"><code class="docutils literal notranslate"><span class="pre">Storage</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#O365.drive.Storage.__init__"><code class="docutils literal notranslate"><span class="pre">Storage.__init__()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#O365.drive.Storage.drive_constructor"><code class="docutils literal notranslate"><span class="pre">Storage.drive_constructor</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.drive.Storage.get_default_drive"><code class="docutils literal notranslate"><span class="pre">Storage.get_default_drive()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.drive.Storage.get_drive"><code class="docutils literal notranslate"><span class="pre">Storage.get_drive()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.drive.Storage.get_drives"><code class="docutils literal notranslate"><span class="pre">Storage.get_drives()</span></code></a></li>
@@ -188,9 +243,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-O365.drive">
-<span id="one-drive"></span><h1>One Drive<a class="headerlink" href="#module-O365.drive" title="Link to this heading"></a></h1>
-<dl class="py class">
+  <section id="one-drive">
+<h1>One Drive<a class="headerlink" href="#one-drive" title="Link to this heading"></a></h1>
+<dl class="py class" id="module-O365.drive">
 <dt class="sig sig-object py" id="O365.drive.CopyOperation">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.drive.</span></span><span class="sig-name descname"><span class="pre">CopyOperation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">con</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#CopyOperation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.drive.CopyOperation" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="utils/utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">ApiComponent</span></code></a></p>
@@ -245,6 +300,42 @@ Note Connection ‘requests_delay’ also apply.</p>
 <dd class="field-even"><p><a class="reference internal" href="#O365.drive.DriveItem" title="O365.drive.DriveItem">DriveItem</a></p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.drive.CopyOperation.completion_percentage">
+<span class="sig-name descname"><span class="pre">completion_percentage</span></span><a class="headerlink" href="#O365.drive.CopyOperation.completion_percentage" title="Link to this definition"></a></dt>
+<dd><p>Percentage complete of the copy operation. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> float</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.drive.CopyOperation.item_id">
+<span class="sig-name descname"><span class="pre">item_id</span></span><a class="headerlink" href="#O365.drive.CopyOperation.item_id" title="Link to this definition"></a></dt>
+<dd><p>item_id of the copy operation. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.drive.CopyOperation.monitor_url">
+<span class="sig-name descname"><span class="pre">monitor_url</span></span><a class="headerlink" href="#O365.drive.CopyOperation.monitor_url" title="Link to this definition"></a></dt>
+<dd><p>Monitor url of the copy operation. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.drive.CopyOperation.parent">
+<span class="sig-name descname"><span class="pre">parent</span></span><a class="headerlink" href="#O365.drive.CopyOperation.parent" title="Link to this definition"></a></dt>
+<dd><p>Parent drive of the copy operation. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> Drive</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.drive.CopyOperation.status">
+<span class="sig-name descname"><span class="pre">status</span></span><a class="headerlink" href="#O365.drive.CopyOperation.status" title="Link to this definition"></a></dt>
+<dd><p>Status of the copy operation. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.drive.CopyOperation.target">
+<span class="sig-name descname"><span class="pre">target</span></span><a class="headerlink" href="#O365.drive.CopyOperation.target" title="Link to this definition"></a></dt>
+<dd><p>Target drive of the copy operation. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> Drive</p>
 </dd></dl>
 
 </dd></dl>
@@ -498,6 +589,12 @@ batches allowing to retrieve more items than the limit.</p></li>
 </dl>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.drive.Drive.parent">
+<span class="sig-name descname"><span class="pre">parent</span></span><a class="headerlink" href="#O365.drive.Drive.parent" title="Link to this definition"></a></dt>
+<dd><p>The parent of the Drive. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> Drive</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
@@ -642,30 +739,6 @@ Custom 300x400 px: “c300x400”, Crop: “c300x400_Crop”</p>
 </dl>
 </dd></dl>
 
-<dl class="py property">
-<dt class="sig sig-object py" id="O365.drive.DriveItem.is_file">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_file</span></span><a class="headerlink" href="#O365.drive.DriveItem.is_file" title="Link to this definition"></a></dt>
-<dd><p>Returns if this DriveItem is a File</p>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="O365.drive.DriveItem.is_folder">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_folder</span></span><a class="headerlink" href="#O365.drive.DriveItem.is_folder" title="Link to this definition"></a></dt>
-<dd><p>Returns if this DriveItem is a Folder</p>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="O365.drive.DriveItem.is_image">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_image</span></span><a class="headerlink" href="#O365.drive.DriveItem.is_image" title="Link to this definition"></a></dt>
-<dd><p>Returns if this DriveItem is a Image</p>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="O365.drive.DriveItem.is_photo">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_photo</span></span><a class="headerlink" href="#O365.drive.DriveItem.is_photo" title="Link to this definition"></a></dt>
-<dd><p>Returns if this DriveItem is a Photo</p>
-</dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="O365.drive.DriveItem.move">
 <span class="sig-name descname"><span class="pre">move</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#DriveItem.move"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.drive.DriveItem.move" title="Link to this definition"></a></dt>
@@ -754,6 +827,129 @@ only name and description are allowed at the moment.</p>
 </dl>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.drive.DriveItem.created">
+<span class="sig-name descname"><span class="pre">created</span></span><a class="headerlink" href="#O365.drive.DriveItem.created" title="Link to this definition"></a></dt>
+<dd><p>Date and time of item creation. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> datetime</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.drive.DriveItem.created_by">
+<span class="sig-name descname"><span class="pre">created_by</span></span><a class="headerlink" href="#O365.drive.DriveItem.created_by" title="Link to this definition"></a></dt>
+<dd><p>Identity of the user, device, and application which created the item. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> Contact</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.drive.DriveItem.description">
+<span class="sig-name descname"><span class="pre">description</span></span><a class="headerlink" href="#O365.drive.DriveItem.description" title="Link to this definition"></a></dt>
+<dd><p>Provides a user-visible description of the item. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.drive.DriveItem.drive">
+<span class="sig-name descname"><span class="pre">drive</span></span><a class="headerlink" href="#O365.drive.DriveItem.drive" title="Link to this definition"></a></dt>
+<dd><p>The drive <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> Drive</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.drive.DriveItem.drive_id">
+<span class="sig-name descname"><span class="pre">drive_id</span></span><a class="headerlink" href="#O365.drive.DriveItem.drive_id" title="Link to this definition"></a></dt>
+<dd><p>Identifier of the drive instance that contains the item. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="O365.drive.DriveItem.is_file">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_file</span></span><a class="headerlink" href="#O365.drive.DriveItem.is_file" title="Link to this definition"></a></dt>
+<dd><p>Returns if this DriveItem is a File</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="O365.drive.DriveItem.is_folder">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_folder</span></span><a class="headerlink" href="#O365.drive.DriveItem.is_folder" title="Link to this definition"></a></dt>
+<dd><p>Returns if this DriveItem is a Folder</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="O365.drive.DriveItem.is_image">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_image</span></span><a class="headerlink" href="#O365.drive.DriveItem.is_image" title="Link to this definition"></a></dt>
+<dd><p>Returns if this DriveItem is a Image</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="O365.drive.DriveItem.is_photo">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_photo</span></span><a class="headerlink" href="#O365.drive.DriveItem.is_photo" title="Link to this definition"></a></dt>
+<dd><p>Returns if this DriveItem is a Photo</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.drive.DriveItem.modified">
+<span class="sig-name descname"><span class="pre">modified</span></span><a class="headerlink" href="#O365.drive.DriveItem.modified" title="Link to this definition"></a></dt>
+<dd><p>Date and time the item was last modified. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> datetime</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.drive.DriveItem.modified_by">
+<span class="sig-name descname"><span class="pre">modified_by</span></span><a class="headerlink" href="#O365.drive.DriveItem.modified_by" title="Link to this definition"></a></dt>
+<dd><p>Identity of the user, device, and application which last modified the item
+<div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> Contact</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.drive.DriveItem.name">
+<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#O365.drive.DriveItem.name" title="Link to this definition"></a></dt>
+<dd><p>The name of the item (filename and extension). <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.drive.DriveItem.object_id">
+<span class="sig-name descname"><span class="pre">object_id</span></span><a class="headerlink" href="#O365.drive.DriveItem.object_id" title="Link to this definition"></a></dt>
+<dd><p>The unique identifier of the item within the Drive. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.drive.DriveItem.parent_id">
+<span class="sig-name descname"><span class="pre">parent_id</span></span><a class="headerlink" href="#O365.drive.DriveItem.parent_id" title="Link to this definition"></a></dt>
+<dd><p>The id of the parent. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.drive.DriveItem.parent_path">
+<span class="sig-name descname"><span class="pre">parent_path</span></span><a class="headerlink" href="#O365.drive.DriveItem.parent_path" title="Link to this definition"></a></dt>
+<dd><p>Path that can be used to navigate to the item. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.drive.DriveItem.remote_item">
+<span class="sig-name descname"><span class="pre">remote_item</span></span><a class="headerlink" href="#O365.drive.DriveItem.remote_item" title="Link to this definition"></a></dt>
+<dd><p>Remote item data, if the item is shared from a drive other than the one being accessed.
+<div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> remoteItem</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.drive.DriveItem.shared">
+<span class="sig-name descname"><span class="pre">shared</span></span><a class="headerlink" href="#O365.drive.DriveItem.shared" title="Link to this definition"></a></dt>
+<dd><p>Indicates that the item has been shared with others and
+provides information about the shared state of the item. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.drive.DriveItem.size">
+<span class="sig-name descname"><span class="pre">size</span></span><a class="headerlink" href="#O365.drive.DriveItem.size" title="Link to this definition"></a></dt>
+<dd><p>Size of the item in bytes. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> int</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.drive.DriveItem.thumbnails">
+<span class="sig-name descname"><span class="pre">thumbnails</span></span><a class="headerlink" href="#O365.drive.DriveItem.thumbnails" title="Link to this definition"></a></dt>
+<dd><p>The thumbnails. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> any</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.drive.DriveItem.web_url">
+<span class="sig-name descname"><span class="pre">web_url</span></span><a class="headerlink" href="#O365.drive.DriveItem.web_url" title="Link to this definition"></a></dt>
+<dd><p>URL that displays the resource in the browser.  <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
@@ -806,6 +1002,87 @@ inherited can be deleted.</p>
 <dd class="field-even"><p>bool</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.drive.DriveItemPermission.driveitem_id">
+<span class="sig-name descname"><span class="pre">driveitem_id</span></span><a class="headerlink" href="#O365.drive.DriveItemPermission.driveitem_id" title="Link to this definition"></a></dt>
+<dd><p>The unique identifier of the item within the Drive. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.drive.DriveItemPermission.granted_to">
+<span class="sig-name descname"><span class="pre">granted_to</span></span><a class="headerlink" href="#O365.drive.DriveItemPermission.granted_to" title="Link to this definition"></a></dt>
+<dd><p>For user type permissions, the details of the users and applications
+for this permission. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> IdentitySet</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.drive.DriveItemPermission.inherited_from">
+<span class="sig-name descname"><span class="pre">inherited_from</span></span><a class="headerlink" href="#O365.drive.DriveItemPermission.inherited_from" title="Link to this definition"></a></dt>
+<dd><p>Provides a reference to the ancestor of the current permission,
+if it’s inherited from an ancestor. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> ItemReference</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.drive.DriveItemPermission.invited_by">
+<span class="sig-name descname"><span class="pre">invited_by</span></span><a class="headerlink" href="#O365.drive.DriveItemPermission.invited_by" title="Link to this definition"></a></dt>
+<dd><p>The invited by user. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.drive.DriveItemPermission.object_id">
+<span class="sig-name descname"><span class="pre">object_id</span></span><a class="headerlink" href="#O365.drive.DriveItemPermission.object_id" title="Link to this definition"></a></dt>
+<dd><p>The unique identifier of the permission among all permissions on the item. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.drive.DriveItemPermission.permission_type">
+<span class="sig-name descname"><span class="pre">permission_type</span></span><a class="headerlink" href="#O365.drive.DriveItemPermission.permission_type" title="Link to this definition"></a></dt>
+<dd><p>The permission type. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.drive.DriveItemPermission.require_sign_in">
+<span class="sig-name descname"><span class="pre">require_sign_in</span></span><a class="headerlink" href="#O365.drive.DriveItemPermission.require_sign_in" title="Link to this definition"></a></dt>
+<dd><p>Is sign in required. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> bool</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.drive.DriveItemPermission.roles">
+<span class="sig-name descname"><span class="pre">roles</span></span><a class="headerlink" href="#O365.drive.DriveItemPermission.roles" title="Link to this definition"></a></dt>
+<dd><p>The type of permission, for example, read. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> list[str]</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.drive.DriveItemPermission.share_email">
+<span class="sig-name descname"><span class="pre">share_email</span></span><a class="headerlink" href="#O365.drive.DriveItemPermission.share_email" title="Link to this definition"></a></dt>
+<dd><p>The share email. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.drive.DriveItemPermission.share_id">
+<span class="sig-name descname"><span class="pre">share_id</span></span><a class="headerlink" href="#O365.drive.DriveItemPermission.share_id" title="Link to this definition"></a></dt>
+<dd><p>A unique token that can be used to access this shared item via the shares API
+<div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.drive.DriveItemPermission.share_link">
+<span class="sig-name descname"><span class="pre">share_link</span></span><a class="headerlink" href="#O365.drive.DriveItemPermission.share_link" title="Link to this definition"></a></dt>
+<dd><p>The share link. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.drive.DriveItemPermission.share_scope">
+<span class="sig-name descname"><span class="pre">share_scope</span></span><a class="headerlink" href="#O365.drive.DriveItemPermission.share_scope" title="Link to this definition"></a></dt>
+<dd><p>The share scope. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.drive.DriveItemPermission.share_type">
+<span class="sig-name descname"><span class="pre">share_type</span></span><a class="headerlink" href="#O365.drive.DriveItemPermission.share_type" title="Link to this definition"></a></dt>
+<dd><p>The share type. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
 </dd></dl>
 
 </dd></dl>
@@ -863,6 +1140,43 @@ You can not restore the current version (last one).</p>
 </dl>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.drive.DriveItemVersion.driveitem_id">
+<span class="sig-name descname"><span class="pre">driveitem_id</span></span><a class="headerlink" href="#O365.drive.DriveItemVersion.driveitem_id" title="Link to this definition"></a></dt>
+<dd><p>The unique identifier of the item within the Drive. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.drive.DriveItemVersion.modified">
+<span class="sig-name descname"><span class="pre">modified</span></span><a class="headerlink" href="#O365.drive.DriveItemVersion.modified" title="Link to this definition"></a></dt>
+<dd><p>Date and time the version was last modified. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> datetime</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.drive.DriveItemVersion.modified_by">
+<span class="sig-name descname"><span class="pre">modified_by</span></span><a class="headerlink" href="#O365.drive.DriveItemVersion.modified_by" title="Link to this definition"></a></dt>
+<dd><p>Identity of the user which last modified the version. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> Contact</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.drive.DriveItemVersion.name">
+<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#O365.drive.DriveItemVersion.name" title="Link to this definition"></a></dt>
+<dd><p>The name (ID) of the version. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.drive.DriveItemVersion.object_id">
+<span class="sig-name descname"><span class="pre">object_id</span></span><a class="headerlink" href="#O365.drive.DriveItemVersion.object_id" title="Link to this definition"></a></dt>
+<dd><p>The ID of the version. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.drive.DriveItemVersion.size">
+<span class="sig-name descname"><span class="pre">size</span></span><a class="headerlink" href="#O365.drive.DriveItemVersion.size" title="Link to this definition"></a></dt>
+<dd><p>Indicates the size of the content stream for this version of the item.
+<div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> int</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
@@ -891,7 +1205,28 @@ You can not restore the current version (last one).</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="O365.drive.File.extension">
 <em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">extension</span></span><a class="headerlink" href="#O365.drive.File.extension" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>The suffix of the file name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
+<dd class="field-odd"><p>get the suffix</p>
+</dd>
+<dt class="field-even">Type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.drive.File.hashes">
+<span class="sig-name descname"><span class="pre">hashes</span></span><a class="headerlink" href="#O365.drive.File.hashes" title="Link to this definition"></a></dt>
+<dd><p>Hashes of the file’s binary content, if available. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> Hashes</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.drive.File.mime_type">
+<span class="sig-name descname"><span class="pre">mime_type</span></span><a class="headerlink" href="#O365.drive.File.mime_type" title="Link to this definition"></a></dt>
+<dd><p>The MIME type for the file. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -1053,6 +1388,18 @@ None to use default (overwrite). Options: fail | replace | rename</p></li>
 </dl>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.drive.Folder.child_count">
+<span class="sig-name descname"><span class="pre">child_count</span></span><a class="headerlink" href="#O365.drive.Folder.child_count" title="Link to this definition"></a></dt>
+<dd><p>Number of children contained immediately within this container. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> int</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.drive.Folder.special_folder">
+<span class="sig-name descname"><span class="pre">special_folder</span></span><a class="headerlink" href="#O365.drive.Folder.special_folder" title="Link to this definition"></a></dt>
+<dd><p>The unique identifier for this item in the /drive/special collection. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
@@ -1092,6 +1439,18 @@ None to use default (overwrite). Options: fail | replace | rename</p></li>
 </dl>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.drive.Image.height">
+<span class="sig-name descname"><span class="pre">height</span></span><a class="headerlink" href="#O365.drive.Image.height" title="Link to this definition"></a></dt>
+<dd><p>Height of the image, in pixels. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> int</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.drive.Image.width">
+<span class="sig-name descname"><span class="pre">width</span></span><a class="headerlink" href="#O365.drive.Image.width" title="Link to this definition"></a></dt>
+<dd><p>Width of the image, in pixels. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> int</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
@@ -1117,6 +1476,54 @@ None to use default (overwrite). Options: fail | replace | rename</p></li>
 </dl>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.drive.Photo.camera_make">
+<span class="sig-name descname"><span class="pre">camera_make</span></span><a class="headerlink" href="#O365.drive.Photo.camera_make" title="Link to this definition"></a></dt>
+<dd><p>Camera manufacturer. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.drive.Photo.camera_model">
+<span class="sig-name descname"><span class="pre">camera_model</span></span><a class="headerlink" href="#O365.drive.Photo.camera_model" title="Link to this definition"></a></dt>
+<dd><p>Camera model. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.drive.Photo.exposure_denominator">
+<span class="sig-name descname"><span class="pre">exposure_denominator</span></span><a class="headerlink" href="#O365.drive.Photo.exposure_denominator" title="Link to this definition"></a></dt>
+<dd><p>The denominator for the exposure time fraction from the camera. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> float</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.drive.Photo.exposure_numerator">
+<span class="sig-name descname"><span class="pre">exposure_numerator</span></span><a class="headerlink" href="#O365.drive.Photo.exposure_numerator" title="Link to this definition"></a></dt>
+<dd><p>The numerator for the exposure time fraction from the camera. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> float</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.drive.Photo.fnumber">
+<span class="sig-name descname"><span class="pre">fnumber</span></span><a class="headerlink" href="#O365.drive.Photo.fnumber" title="Link to this definition"></a></dt>
+<dd><p>The F-stop value from the camera <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> float</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.drive.Photo.focal_length">
+<span class="sig-name descname"><span class="pre">focal_length</span></span><a class="headerlink" href="#O365.drive.Photo.focal_length" title="Link to this definition"></a></dt>
+<dd><p>The focal length from the camera. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> float</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.drive.Photo.iso">
+<span class="sig-name descname"><span class="pre">iso</span></span><a class="headerlink" href="#O365.drive.Photo.iso" title="Link to this definition"></a></dt>
+<dd><p>The ISO value from the camera. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> int</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.drive.Photo.taken_datetime">
+<span class="sig-name descname"><span class="pre">taken_datetime</span></span><a class="headerlink" href="#O365.drive.Photo.taken_datetime" title="Link to this definition"></a></dt>
+<dd><p>Represents the date and time the photo was taken. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> datetime</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
@@ -1140,12 +1547,6 @@ None to use default (overwrite). Options: fail | replace | rename</p></li>
 </ul>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="O365.drive.Storage.drive_constructor">
-<span class="sig-name descname"><span class="pre">drive_constructor</span></span><a class="headerlink" href="#O365.drive.Storage.drive_constructor" title="Link to this definition"></a></dt>
-<dd><p>alias of <a class="reference internal" href="#O365.drive.Drive" title="O365.drive.Drive"><code class="xref py py-class docutils literal notranslate"><span class="pre">Drive</span></code></a></p>
 </dd></dl>
 
 <dl class="py method">
