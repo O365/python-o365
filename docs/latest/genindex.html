@@ -418,7 +418,7 @@
 </li>
       <li><a href="api/mailbox.html#O365.mailbox.AutomaticRepliesSettings">AutomaticRepliesSettings (class in O365.mailbox)</a>
 </li>
-      <li><a href="api/mailbox.html#O365.mailbox.MailboxSettings.autoreply_constructor">autoreply_constructor (O365.mailbox.MailboxSettings attribute)</a>
+      <li><a href="api/mailbox.html#O365.mailbox.MailboxSettings.automaticrepliessettings">automaticrepliessettings (O365.mailbox.MailboxSettings attribute)</a>
 </li>
       <li><a href="api/mailbox.html#O365.mailbox.AutoReplyStatus">AutoReplyStatus (class in O365.mailbox)</a>
 </li>
@@ -487,6 +487,8 @@
       <li><a href="api/calendar.html#O365.calendar.Event.body_type">body_type (O365.calendar.Event attribute)</a>
 
       <ul>
+        <li><a href="api/message.html#O365.message.Message.body_type">(O365.message.Message attribute)</a>
+</li>
         <li><a href="api/tasks.html#O365.tasks.Task.body_type">(O365.tasks.Task attribute)</a>
 </li>
       </ul></li>
@@ -600,6 +602,8 @@
 </li>
       <li><a href="api/onedrive.html#O365.drive.CopyOperation.check_status">check_status() (O365.drive.CopyOperation method)</a>
 </li>
+      <li><a href="api/mailbox.html#O365.mailbox.Folder.child_folders_count">child_folders_count (O365.mailbox.Folder attribute)</a>
+</li>
       <li><a href="api/directory.html#O365.directory.User.city">city (O365.directory.User attribute)</a>
 </li>
       <li><a href="api/calendar.html#O365.calendar.Attendees.clear">clear() (O365.calendar.Attendees method)</a>
@@ -687,6 +691,10 @@
       <li><a href="api/utils/attachment.html#O365.utils.attachment.BaseAttachment.content">content (O365.utils.attachment.BaseAttachment attribute)</a>
 </li>
       <li><a href="api/utils/attachment.html#O365.utils.attachment.BaseAttachment.content_id">content_id (O365.utils.attachment.BaseAttachment attribute)</a>
+</li>
+      <li><a href="api/message.html#O365.message.Message.conversation_id">conversation_id (O365.message.Message attribute)</a>
+</li>
+      <li><a href="api/message.html#O365.message.Message.conversation_index">conversation_index (O365.message.Message attribute)</a>
 </li>
       <li><a href="api/utils/utils.html#O365.utils.utils.OutlookWellKnowFolderNames.CONVERSATIONHISTORY">CONVERSATIONHISTORY (O365.utils.utils.OutlookWellKnowFolderNames attribute)</a>
 </li>
@@ -968,6 +976,8 @@
 </li>
       <li><a href="api/mailbox.html#O365.mailbox.AutomaticRepliesSettings.external_audience">external_audience (O365.mailbox.AutomaticRepliesSettings property)</a>
 </li>
+      <li><a href="api/mailbox.html#O365.mailbox.AutomaticRepliesSettings.external_reply_message">external_reply_message (O365.mailbox.AutomaticRepliesSettings attribute)</a>
+</li>
       <li><a href="api/mailbox.html#O365.mailbox.ExternalAudience">ExternalAudience (class in O365.mailbox)</a>
 </li>
   </ul></td>
@@ -998,12 +1008,14 @@
         <li><a href="api/tasks.html#O365.tasks.Folder">(class in O365.tasks)</a>
 </li>
       </ul></li>
-      <li><a href="api/mailbox.html#O365.mailbox.MailBox.folder_constructor">folder_constructor (O365.mailbox.MailBox attribute)</a>
-</li>
       <li><a href="api/address_book.html#O365.address_book.BaseContactFolder.folder_id">folder_id (O365.address_book.BaseContactFolder attribute)</a>
 
       <ul>
         <li><a href="api/address_book.html#O365.address_book.Contact.folder_id">(O365.address_book.Contact property)</a>
+</li>
+        <li><a href="api/mailbox.html#O365.mailbox.Folder.folder_id">(O365.mailbox.Folder attribute)</a>
+</li>
+        <li><a href="api/message.html#O365.message.Message.folder_id">(O365.message.Message attribute)</a>
 </li>
         <li><a href="api/tasks.html#O365.tasks.Folder.folder_id">(O365.tasks.Folder attribute)</a>
 </li>
@@ -1540,16 +1552,20 @@
 </li>
       <li><a href="api/directory.html#O365.directory.User.interests">interests (O365.directory.User attribute)</a>
 </li>
+      <li><a href="api/mailbox.html#O365.mailbox.AutomaticRepliesSettings.internal_reply_message">internal_reply_message (O365.mailbox.AutomaticRepliesSettings attribute)</a>
+</li>
+      <li><a href="api/message.html#O365.message.Message.internet_message_id">internet_message_id (O365.message.Message attribute)</a>
+</li>
       <li><a href="api/calendar.html#O365.calendar.EventRecurrence.interval">interval (O365.calendar.EventRecurrence property)</a>
 </li>
       <li><a href="api/excel.html#O365.excel.WorkBook.invoke_function">invoke_function() (O365.excel.WorkBook method)</a>
 </li>
       <li><a href="api/calendar.html#O365.calendar.Event.is_all_day">is_all_day (O365.calendar.Event property)</a>
 </li>
-      <li><a href="api/account.html#O365.account.Account.is_authenticated">is_authenticated (O365.account.Account property)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/account.html#O365.account.Account.is_authenticated">is_authenticated (O365.account.Account property)</a>
+</li>
       <li><a href="api/calendar.html#O365.calendar.Event.is_cancelled">is_cancelled (O365.calendar.Event attribute)</a>
 </li>
       <li><a href="api/message.html#O365.message.MessageFlag.is_completed">is_completed (O365.message.MessageFlag property)</a>
@@ -1732,8 +1748,6 @@
 </li>
       <li><a href="api/directory.html#O365.directory.User.mailbox_settings">mailbox_settings (O365.directory.User attribute)</a>
 </li>
-      <li><a href="api/mailbox.html#O365.mailbox.MailBox.mailbox_settings_constructor">mailbox_settings_constructor (O365.mailbox.MailBox attribute)</a>
-</li>
       <li><a href="api/mailbox.html#O365.mailbox.MailboxSettings">MailboxSettings (class in O365.mailbox)</a>
 </li>
       <li><a href="api/address_book.html#O365.address_book.Contact.main_email">main_email (O365.address_book.Contact property)</a>
@@ -1780,11 +1794,9 @@
 </li>
       <li><a href="api/message.html#O365.message.Message">Message (class in O365.message)</a>
 </li>
-      <li><a href="api/mailbox.html#O365.mailbox.Folder.message_constructor">message_constructor (O365.mailbox.Folder attribute)</a>
+      <li><a href="api/teams.html#O365.teams.Channel.message_constructor">message_constructor (O365.teams.Channel attribute)</a>
 
       <ul>
-        <li><a href="api/teams.html#O365.teams.Channel.message_constructor">(O365.teams.Channel attribute)</a>
-</li>
         <li><a href="api/teams.html#O365.teams.ChannelMessage.message_constructor">(O365.teams.ChannelMessage attribute)</a>
 </li>
         <li><a href="api/teams.html#O365.teams.Chat.message_constructor">(O365.teams.Chat attribute)</a>
@@ -1794,10 +1806,10 @@
 </li>
       <li><a href="api/message.html#O365.message.MessageAttachment">MessageAttachment (class in O365.message)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/message.html#O365.message.MessageAttachments">MessageAttachments (class in O365.message)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/message.html#O365.message.MessageFlag">MessageFlag (class in O365.message)</a>
 </li>
       <li><a href="api/address_book.html#O365.address_book.Contact.mobile_phone">mobile_phone (O365.address_book.Contact property)</a>
@@ -1913,6 +1925,8 @@
         <li><a href="api/excel.html#O365.excel.WorkBook.name">(O365.excel.WorkBook attribute)</a>
 </li>
         <li><a href="api/excel.html#O365.excel.WorkSheet.name">(O365.excel.WorkSheet attribute)</a>
+</li>
+        <li><a href="api/mailbox.html#O365.mailbox.Folder.name">(O365.mailbox.Folder attribute)</a>
 </li>
         <li><a href="api/tasks.html#O365.tasks.Folder.name">(O365.tasks.Folder attribute)</a>
 </li>
@@ -2133,6 +2147,8 @@
 </li>
         <li><a href="api/group.html#O365.groups.Group.object_id">(O365.groups.Group attribute)</a>
 </li>
+        <li><a href="api/message.html#O365.message.Message.object_id">(O365.message.Message attribute)</a>
+</li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -2217,9 +2233,15 @@
 </li>
         <li><a href="api/excel.html#O365.excel.WorkbookApplication.parent">(O365.excel.WorkbookApplication attribute)</a>
 </li>
+        <li><a href="api/mailbox.html#O365.mailbox.Folder.parent">(O365.mailbox.Folder attribute)</a>
+</li>
       </ul></li>
       <li><a href="api/address_book.html#O365.address_book.BaseContactFolder.parent_id">parent_id (O365.address_book.BaseContactFolder attribute)</a>
+
+      <ul>
+        <li><a href="api/mailbox.html#O365.mailbox.Folder.parent_id">(O365.mailbox.Folder attribute)</a>
 </li>
+      </ul></li>
       <li><a href="api/connection.html#O365.connection.Connection.password">password (O365.connection.Connection attribute)</a>
 </li>
       <li><a href="api/directory.html#O365.directory.User.password_policies">password_policies (O365.directory.User attribute)</a>
@@ -2258,14 +2280,14 @@
 </li>
       <li><a href="api/excel.html#O365.excel.WorkSheet.position">position (O365.excel.WorkSheet attribute)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/connection.html#O365.connection.Connection.post">post() (O365.connection.Connection method)</a>
 
       <ul>
         <li><a href="api/excel.html#O365.excel.WorkbookSession.post">(O365.excel.WorkbookSession method)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/directory.html#O365.directory.User.postal_code">postal_code (O365.directory.User attribute)</a>
 </li>
       <li><a href="api/directory.html#O365.directory.User.preferred_data_location">preferred_data_location (O365.directory.User attribute)</a>
@@ -2427,7 +2449,11 @@
       <li><a href="api/onedrive.html#O365.drive.DriveItemVersion.restore">restore() (O365.drive.DriveItemVersion method)</a>
 </li>
       <li><a href="api/address_book.html#O365.address_book.BaseContactFolder.root">root (O365.address_book.BaseContactFolder attribute)</a>
+
+      <ul>
+        <li><a href="api/mailbox.html#O365.mailbox.Folder.root">(O365.mailbox.Folder attribute)</a>
 </li>
+      </ul></li>
       <li><a href="api/excel.html#O365.excel.Range.row_count">row_count (O365.excel.Range attribute)</a>
 </li>
       <li><a href="api/excel.html#O365.excel.RangeFormat.row_height">row_height (O365.excel.RangeFormat property)</a>
@@ -2751,6 +2777,8 @@
 </li>
         <li><a href="api/connection.html#O365.connection.Protocol.timezone">(O365.connection.Protocol property)</a>
 </li>
+        <li><a href="api/mailbox.html#O365.mailbox.MailboxSettings.timezone">(O365.mailbox.MailboxSettings attribute)</a>
+</li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -2798,6 +2826,8 @@
 </li>
       <li><a href="api/connection.html#O365.connection.TokenExpiredError">TokenExpiredError</a>
 </li>
+      <li><a href="api/mailbox.html#O365.mailbox.Folder.total_items_count">total_items_count (O365.mailbox.Folder attribute)</a>
+</li>
       <li><a href="api/utils/utils.html#O365.utils.utils.TrackerSet">TrackerSet (class in O365.utils.utils)</a>
 </li>
       <li><a href="api/directory.html#O365.directory.User.type">type (O365.directory.User attribute)</a>
@@ -2825,6 +2855,8 @@
 </li>
       </ul></li>
       <li><a href="api/excel.html#O365.excel.Range.unmerge">unmerge() (O365.excel.Range method)</a>
+</li>
+      <li><a href="api/mailbox.html#O365.mailbox.Folder.unread_items_count">unread_items_count (O365.mailbox.Folder attribute)</a>
 </li>
       <li><a href="api/calendar.html#O365.calendar.Calendar.update">update() (O365.calendar.Calendar method)</a>
 
@@ -2877,6 +2909,8 @@
 </li>
       </ul></li>
       <li><a href="api/onedrive.html#O365.drive.DriveItemPermission.update_roles">update_roles() (O365.drive.DriveItemPermission method)</a>
+</li>
+      <li><a href="api/mailbox.html#O365.mailbox.Folder.updated_at">updated_at (O365.mailbox.Folder attribute)</a>
 </li>
       <li><a href="api/onedrive.html#O365.drive.Folder.upload_file">upload_file() (O365.drive.Folder method)</a>
 </li>
@@ -2937,7 +2971,11 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/calendar.html#O365.calendar.Event.web_link">web_link (O365.calendar.Event attribute)</a>
+
+      <ul>
+        <li><a href="api/message.html#O365.message.Message.web_link">(O365.message.Message attribute)</a>
 </li>
+      </ul></li>
       <li><a href="api/excel.html#O365.excel.WorkBook">WorkBook (class in O365.excel)</a>
 </li>
       <li><a href="api/excel.html#O365.excel.WorkSheet.workbook">workbook (O365.excel.WorkSheet attribute)</a>
@@ -2949,6 +2987,8 @@
       <li><a href="api/excel.html#O365.excel.WorkbookSession">WorkbookSession (class in O365.excel)</a>
 </li>
       <li><a href="api/calendar.html#O365.calendar.EventShowAs.WorkingElsewhere">WorkingElsewhere (O365.calendar.EventShowAs attribute)</a>
+</li>
+      <li><a href="api/mailbox.html#O365.mailbox.MailboxSettings.workinghours">workinghours (O365.mailbox.MailboxSettings attribute)</a>
 </li>
       <li><a href="api/excel.html#O365.excel.WorkSheet">WorkSheet (class in O365.excel)</a>
 </li>
