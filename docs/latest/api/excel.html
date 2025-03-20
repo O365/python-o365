@@ -60,15 +60,26 @@
 <li class="toctree-l3"><a class="reference internal" href="#O365.excel.FunctionException"><code class="docutils literal notranslate"><span class="pre">FunctionException</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#O365.excel.NamedRange"><code class="docutils literal notranslate"><span class="pre">NamedRange</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.NamedRange.__init__"><code class="docutils literal notranslate"><span class="pre">NamedRange.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.excel.NamedRange.comment"><code class="docutils literal notranslate"><span class="pre">NamedRange.comment</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.excel.NamedRange.data_type"><code class="docutils literal notranslate"><span class="pre">NamedRange.data_type</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.NamedRange.get_range"><code class="docutils literal notranslate"><span class="pre">NamedRange.get_range()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#O365.excel.NamedRange.range_constructor"><code class="docutils literal notranslate"><span class="pre">NamedRange.range_constructor</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.excel.NamedRange.name"><code class="docutils literal notranslate"><span class="pre">NamedRange.name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.excel.NamedRange.object_id"><code class="docutils literal notranslate"><span class="pre">NamedRange.object_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.excel.NamedRange.scope"><code class="docutils literal notranslate"><span class="pre">NamedRange.scope</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.NamedRange.update"><code class="docutils literal notranslate"><span class="pre">NamedRange.update()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.excel.NamedRange.value"><code class="docutils literal notranslate"><span class="pre">NamedRange.value</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.excel.NamedRange.visible"><code class="docutils literal notranslate"><span class="pre">NamedRange.visible</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#O365.excel.Range"><code class="docutils literal notranslate"><span class="pre">Range</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.Range.__init__"><code class="docutils literal notranslate"><span class="pre">Range.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.excel.Range.address"><code class="docutils literal notranslate"><span class="pre">Range.address</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.excel.Range.address_local"><code class="docutils literal notranslate"><span class="pre">Range.address_local</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.excel.Range.cell_count"><code class="docutils literal notranslate"><span class="pre">Range.cell_count</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.Range.clear"><code class="docutils literal notranslate"><span class="pre">Range.clear()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.excel.Range.column_count"><code class="docutils literal notranslate"><span class="pre">Range.column_count</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.Range.column_hidden"><code class="docutils literal notranslate"><span class="pre">Range.column_hidden</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.excel.Range.column_index"><code class="docutils literal notranslate"><span class="pre">Range.column_index</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.Range.delete"><code class="docutils literal notranslate"><span class="pre">Range.delete()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.Range.formulas"><code class="docutils literal notranslate"><span class="pre">Range.formulas</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.Range.formulas_local"><code class="docutils literal notranslate"><span class="pre">Range.formulas_local</span></code></a></li>
@@ -91,14 +102,19 @@
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.Range.get_rows_below"><code class="docutils literal notranslate"><span class="pre">Range.get_rows_below()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.Range.get_used_range"><code class="docutils literal notranslate"><span class="pre">Range.get_used_range()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.Range.get_worksheet"><code class="docutils literal notranslate"><span class="pre">Range.get_worksheet()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.excel.Range.hidden"><code class="docutils literal notranslate"><span class="pre">Range.hidden</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.Range.insert_range"><code class="docutils literal notranslate"><span class="pre">Range.insert_range()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.Range.merge"><code class="docutils literal notranslate"><span class="pre">Range.merge()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.Range.number_format"><code class="docutils literal notranslate"><span class="pre">Range.number_format</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#O365.excel.Range.range_format_constructor"><code class="docutils literal notranslate"><span class="pre">Range.range_format_constructor</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.excel.Range.object_id"><code class="docutils literal notranslate"><span class="pre">Range.object_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.excel.Range.row_count"><code class="docutils literal notranslate"><span class="pre">Range.row_count</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.Range.row_hidden"><code class="docutils literal notranslate"><span class="pre">Range.row_hidden</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.excel.Range.row_index"><code class="docutils literal notranslate"><span class="pre">Range.row_index</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.excel.Range.text"><code class="docutils literal notranslate"><span class="pre">Range.text</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.Range.to_api_data"><code class="docutils literal notranslate"><span class="pre">Range.to_api_data()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.Range.unmerge"><code class="docutils literal notranslate"><span class="pre">Range.unmerge()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.Range.update"><code class="docutils literal notranslate"><span class="pre">Range.update()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.excel.Range.value_types"><code class="docutils literal notranslate"><span class="pre">Range.value_types</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.Range.values"><code class="docutils literal notranslate"><span class="pre">Range.values</span></code></a></li>
 </ul>
 </li>
@@ -110,7 +126,9 @@
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.RangeFormat.column_width"><code class="docutils literal notranslate"><span class="pre">RangeFormat.column_width</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.RangeFormat.font"><code class="docutils literal notranslate"><span class="pre">RangeFormat.font</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.RangeFormat.horizontal_alignment"><code class="docutils literal notranslate"><span class="pre">RangeFormat.horizontal_alignment</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.excel.RangeFormat.range"><code class="docutils literal notranslate"><span class="pre">RangeFormat.range</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.RangeFormat.row_height"><code class="docutils literal notranslate"><span class="pre">RangeFormat.row_height</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.excel.RangeFormat.session"><code class="docutils literal notranslate"><span class="pre">RangeFormat.session</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.RangeFormat.set_borders"><code class="docutils literal notranslate"><span class="pre">RangeFormat.set_borders()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.RangeFormat.to_api_data"><code class="docutils literal notranslate"><span class="pre">RangeFormat.to_api_data()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.RangeFormat.update"><code class="docutils literal notranslate"><span class="pre">RangeFormat.update()</span></code></a></li>
@@ -124,6 +142,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.RangeFormatFont.color"><code class="docutils literal notranslate"><span class="pre">RangeFormatFont.color</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.RangeFormatFont.italic"><code class="docutils literal notranslate"><span class="pre">RangeFormatFont.italic</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.RangeFormatFont.name"><code class="docutils literal notranslate"><span class="pre">RangeFormatFont.name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.excel.RangeFormatFont.parent"><code class="docutils literal notranslate"><span class="pre">RangeFormatFont.parent</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.RangeFormatFont.size"><code class="docutils literal notranslate"><span class="pre">RangeFormatFont.size</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.RangeFormatFont.to_api_data"><code class="docutils literal notranslate"><span class="pre">RangeFormatFont.to_api_data()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.RangeFormatFont.underline"><code class="docutils literal notranslate"><span class="pre">RangeFormatFont.underline</span></code></a></li>
@@ -134,7 +153,6 @@
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.Table.add_column"><code class="docutils literal notranslate"><span class="pre">Table.add_column()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.Table.add_rows"><code class="docutils literal notranslate"><span class="pre">Table.add_rows()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.Table.clear_filters"><code class="docutils literal notranslate"><span class="pre">Table.clear_filters()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#O365.excel.Table.column_constructor"><code class="docutils literal notranslate"><span class="pre">Table.column_constructor</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.Table.convert_to_range"><code class="docutils literal notranslate"><span class="pre">Table.convert_to_range()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.Table.delete"><code class="docutils literal notranslate"><span class="pre">Table.delete()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.Table.delete_column"><code class="docutils literal notranslate"><span class="pre">Table.delete_column()</span></code></a></li>
@@ -150,9 +168,20 @@
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.Table.get_rows"><code class="docutils literal notranslate"><span class="pre">Table.get_rows()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.Table.get_total_row_range"><code class="docutils literal notranslate"><span class="pre">Table.get_total_row_range()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.Table.get_worksheet"><code class="docutils literal notranslate"><span class="pre">Table.get_worksheet()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#O365.excel.Table.range_constructor"><code class="docutils literal notranslate"><span class="pre">Table.range_constructor</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.excel.Table.highlight_first_column"><code class="docutils literal notranslate"><span class="pre">Table.highlight_first_column</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.excel.Table.highlight_last_column"><code class="docutils literal notranslate"><span class="pre">Table.highlight_last_column</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.excel.Table.legacy_id"><code class="docutils literal notranslate"><span class="pre">Table.legacy_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.excel.Table.name"><code class="docutils literal notranslate"><span class="pre">Table.name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.excel.Table.object_id"><code class="docutils literal notranslate"><span class="pre">Table.object_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.excel.Table.parent"><code class="docutils literal notranslate"><span class="pre">Table.parent</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.Table.reapply_filters"><code class="docutils literal notranslate"><span class="pre">Table.reapply_filters()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#O365.excel.Table.row_constructor"><code class="docutils literal notranslate"><span class="pre">Table.row_constructor</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.excel.Table.session"><code class="docutils literal notranslate"><span class="pre">Table.session</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.excel.Table.show_banded_columns"><code class="docutils literal notranslate"><span class="pre">Table.show_banded_columns</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.excel.Table.show_banded_rows"><code class="docutils literal notranslate"><span class="pre">Table.show_banded_rows</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.excel.Table.show_filter_button"><code class="docutils literal notranslate"><span class="pre">Table.show_filter_button</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.excel.Table.show_headers"><code class="docutils literal notranslate"><span class="pre">Table.show_headers</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.excel.Table.show_totals"><code class="docutils literal notranslate"><span class="pre">Table.show_totals</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.excel.Table.style"><code class="docutils literal notranslate"><span class="pre">Table.style</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.Table.update"><code class="docutils literal notranslate"><span class="pre">Table.update()</span></code></a></li>
 </ul>
 </li>
@@ -166,23 +195,31 @@
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.TableColumn.get_header_row_range"><code class="docutils literal notranslate"><span class="pre">TableColumn.get_header_row_range()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.TableColumn.get_range"><code class="docutils literal notranslate"><span class="pre">TableColumn.get_range()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.TableColumn.get_total_row_range"><code class="docutils literal notranslate"><span class="pre">TableColumn.get_total_row_range()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#O365.excel.TableColumn.range_constructor"><code class="docutils literal notranslate"><span class="pre">TableColumn.range_constructor</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.excel.TableColumn.index"><code class="docutils literal notranslate"><span class="pre">TableColumn.index</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.excel.TableColumn.name"><code class="docutils literal notranslate"><span class="pre">TableColumn.name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.excel.TableColumn.object_id"><code class="docutils literal notranslate"><span class="pre">TableColumn.object_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.excel.TableColumn.session"><code class="docutils literal notranslate"><span class="pre">TableColumn.session</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.excel.TableColumn.table"><code class="docutils literal notranslate"><span class="pre">TableColumn.table</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.TableColumn.update"><code class="docutils literal notranslate"><span class="pre">TableColumn.update()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.excel.TableColumn.values"><code class="docutils literal notranslate"><span class="pre">TableColumn.values</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#O365.excel.TableRow"><code class="docutils literal notranslate"><span class="pre">TableRow</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.TableRow.__init__"><code class="docutils literal notranslate"><span class="pre">TableRow.__init__()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.TableRow.delete"><code class="docutils literal notranslate"><span class="pre">TableRow.delete()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.TableRow.get_range"><code class="docutils literal notranslate"><span class="pre">TableRow.get_range()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#O365.excel.TableRow.range_constructor"><code class="docutils literal notranslate"><span class="pre">TableRow.range_constructor</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.excel.TableRow.index"><code class="docutils literal notranslate"><span class="pre">TableRow.index</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.excel.TableRow.object_id"><code class="docutils literal notranslate"><span class="pre">TableRow.object_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.excel.TableRow.session"><code class="docutils literal notranslate"><span class="pre">TableRow.session</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.excel.TableRow.table"><code class="docutils literal notranslate"><span class="pre">TableRow.table</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.TableRow.update"><code class="docutils literal notranslate"><span class="pre">TableRow.update()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.excel.TableRow.values"><code class="docutils literal notranslate"><span class="pre">TableRow.values</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#O365.excel.WorkBook"><code class="docutils literal notranslate"><span class="pre">WorkBook</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.WorkBook.__init__"><code class="docutils literal notranslate"><span class="pre">WorkBook.__init__()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.WorkBook.add_named_range"><code class="docutils literal notranslate"><span class="pre">WorkBook.add_named_range()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.WorkBook.add_worksheet"><code class="docutils literal notranslate"><span class="pre">WorkBook.add_worksheet()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#O365.excel.WorkBook.application_constructor"><code class="docutils literal notranslate"><span class="pre">WorkBook.application_constructor</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.WorkBook.delete_worksheet"><code class="docutils literal notranslate"><span class="pre">WorkBook.delete_worksheet()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.WorkBook.get_named_range"><code class="docutils literal notranslate"><span class="pre">WorkBook.get_named_range()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.WorkBook.get_named_ranges"><code class="docutils literal notranslate"><span class="pre">WorkBook.get_named_ranges()</span></code></a></li>
@@ -192,9 +229,9 @@
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.WorkBook.get_worksheet"><code class="docutils literal notranslate"><span class="pre">WorkBook.get_worksheet()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.WorkBook.get_worksheets"><code class="docutils literal notranslate"><span class="pre">WorkBook.get_worksheets()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.WorkBook.invoke_function"><code class="docutils literal notranslate"><span class="pre">WorkBook.invoke_function()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#O365.excel.WorkBook.named_range_constructor"><code class="docutils literal notranslate"><span class="pre">WorkBook.named_range_constructor</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#O365.excel.WorkBook.table_constructor"><code class="docutils literal notranslate"><span class="pre">WorkBook.table_constructor</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#O365.excel.WorkBook.worksheet_constructor"><code class="docutils literal notranslate"><span class="pre">WorkBook.worksheet_constructor</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.excel.WorkBook.name"><code class="docutils literal notranslate"><span class="pre">WorkBook.name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.excel.WorkBook.object_id"><code class="docutils literal notranslate"><span class="pre">WorkBook.object_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.excel.WorkBook.session"><code class="docutils literal notranslate"><span class="pre">WorkBook.session</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#O365.excel.WorkSheet"><code class="docutils literal notranslate"><span class="pre">WorkSheet</span></code></a><ul>
@@ -208,16 +245,20 @@
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.WorkSheet.get_table"><code class="docutils literal notranslate"><span class="pre">WorkSheet.get_table()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.WorkSheet.get_tables"><code class="docutils literal notranslate"><span class="pre">WorkSheet.get_tables()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.WorkSheet.get_used_range"><code class="docutils literal notranslate"><span class="pre">WorkSheet.get_used_range()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#O365.excel.WorkSheet.named_range_constructor"><code class="docutils literal notranslate"><span class="pre">WorkSheet.named_range_constructor</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#O365.excel.WorkSheet.range_constructor"><code class="docutils literal notranslate"><span class="pre">WorkSheet.range_constructor</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.excel.WorkSheet.name"><code class="docutils literal notranslate"><span class="pre">WorkSheet.name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.excel.WorkSheet.object_id"><code class="docutils literal notranslate"><span class="pre">WorkSheet.object_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.excel.WorkSheet.position"><code class="docutils literal notranslate"><span class="pre">WorkSheet.position</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.WorkSheet.remove_sheet_name_from_address"><code class="docutils literal notranslate"><span class="pre">WorkSheet.remove_sheet_name_from_address()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#O365.excel.WorkSheet.table_constructor"><code class="docutils literal notranslate"><span class="pre">WorkSheet.table_constructor</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.excel.WorkSheet.session"><code class="docutils literal notranslate"><span class="pre">WorkSheet.session</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.WorkSheet.update"><code class="docutils literal notranslate"><span class="pre">WorkSheet.update()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.excel.WorkSheet.visibility"><code class="docutils literal notranslate"><span class="pre">WorkSheet.visibility</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.excel.WorkSheet.workbook"><code class="docutils literal notranslate"><span class="pre">WorkSheet.workbook</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#O365.excel.WorkbookApplication"><code class="docutils literal notranslate"><span class="pre">WorkbookApplication</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.WorkbookApplication.__init__"><code class="docutils literal notranslate"><span class="pre">WorkbookApplication.__init__()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.WorkbookApplication.get_details"><code class="docutils literal notranslate"><span class="pre">WorkbookApplication.get_details()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.excel.WorkbookApplication.parent"><code class="docutils literal notranslate"><span class="pre">WorkbookApplication.parent</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.WorkbookApplication.run_calculations"><code class="docutils literal notranslate"><span class="pre">WorkbookApplication.run_calculations()</span></code></a></li>
 </ul>
 </li>
@@ -227,11 +268,15 @@
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.WorkbookSession.create_session"><code class="docutils literal notranslate"><span class="pre">WorkbookSession.create_session()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.WorkbookSession.delete"><code class="docutils literal notranslate"><span class="pre">WorkbookSession.delete()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.WorkbookSession.get"><code class="docutils literal notranslate"><span class="pre">WorkbookSession.get()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.excel.WorkbookSession.inactivity_limit"><code class="docutils literal notranslate"><span class="pre">WorkbookSession.inactivity_limit</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.excel.WorkbookSession.last_activity"><code class="docutils literal notranslate"><span class="pre">WorkbookSession.last_activity</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.WorkbookSession.patch"><code class="docutils literal notranslate"><span class="pre">WorkbookSession.patch()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.excel.WorkbookSession.persist"><code class="docutils literal notranslate"><span class="pre">WorkbookSession.persist</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.WorkbookSession.post"><code class="docutils literal notranslate"><span class="pre">WorkbookSession.post()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.WorkbookSession.prepare_request"><code class="docutils literal notranslate"><span class="pre">WorkbookSession.prepare_request()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.WorkbookSession.put"><code class="docutils literal notranslate"><span class="pre">WorkbookSession.put()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.WorkbookSession.refresh_session"><code class="docutils literal notranslate"><span class="pre">WorkbookSession.refresh_session()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.excel.WorkbookSession.session_id"><code class="docutils literal notranslate"><span class="pre">WorkbookSession.session_id</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -277,22 +322,20 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-O365.excel">
-<span id="excel"></span><h1>Excel<a class="headerlink" href="#module-O365.excel" title="Link to this heading"></a></h1>
-<p>2019-04-15
+  <section id="excel">
+<h1>Excel<a class="headerlink" href="#excel" title="Link to this heading"></a></h1>
+<p id="module-O365.excel">2019-04-15
 Note: Support for workbooks stored in OneDrive Consumer platform is still not available.
 At this time, only the files stored in business platform is supported by Excel REST APIs.</p>
 <dl class="py exception">
 <dt class="sig sig-object py" id="O365.excel.FunctionException">
 <em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.excel.</span></span><span class="sig-name descname"><span class="pre">FunctionException</span></span><a class="reference internal" href="../_modules/O365/excel.html#FunctionException"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.excel.FunctionException" title="Link to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
-</dd></dl>
+<dd></dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="O365.excel.NamedRange">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.excel.</span></span><span class="sig-name descname"><span class="pre">NamedRange</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/excel.html#NamedRange"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.excel.NamedRange" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="utils/utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">ApiComponent</span></code></a></p>
-<p>Represents a defined name for a range of cells or value</p>
+<dd><p>Represents a defined name for a range of cells or value</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="O365.excel.NamedRange.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/excel.html#NamedRange.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.excel.NamedRange.__init__" title="Link to this definition"></a></dt>
@@ -309,6 +352,19 @@ communications</p></li>
 </dl>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.excel.NamedRange.comment">
+<span class="sig-name descname"><span class="pre">comment</span></span><a class="headerlink" href="#O365.excel.NamedRange.comment" title="Link to this definition"></a></dt>
+<dd><p>The comment associated with this name. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.excel.NamedRange.data_type">
+<span class="sig-name descname"><span class="pre">data_type</span></span><a class="headerlink" href="#O365.excel.NamedRange.data_type" title="Link to this definition"></a></dt>
+<dd><p>The type of reference is associated with the name.
+Possible values are: String, Integer, Double, Boolean, Range. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="O365.excel.NamedRange.get_range">
 <span class="sig-name descname"><span class="pre">get_range</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/excel.html#NamedRange.get_range"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.excel.NamedRange.get_range" title="Link to this definition"></a></dt>
@@ -316,9 +372,22 @@ communications</p></li>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="O365.excel.NamedRange.range_constructor">
-<span class="sig-name descname"><span class="pre">range_constructor</span></span><a class="headerlink" href="#O365.excel.NamedRange.range_constructor" title="Link to this definition"></a></dt>
-<dd><p>alias of <a class="reference internal" href="#O365.excel.Range" title="O365.excel.Range"><code class="xref py py-class docutils literal notranslate"><span class="pre">Range</span></code></a></p>
+<dt class="sig sig-object py" id="O365.excel.NamedRange.name">
+<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#O365.excel.NamedRange.name" title="Link to this definition"></a></dt>
+<dd><p>The name of the object. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.excel.NamedRange.object_id">
+<span class="sig-name descname"><span class="pre">object_id</span></span><a class="headerlink" href="#O365.excel.NamedRange.object_id" title="Link to this definition"></a></dt>
+<dd><p>Id of the named range <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.excel.NamedRange.scope">
+<span class="sig-name descname"><span class="pre">scope</span></span><a class="headerlink" href="#O365.excel.NamedRange.scope" title="Link to this definition"></a></dt>
+<dd><p>Indicates whether the name is scoped to the workbook or to a specific worksheet.
+<div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
 </dd></dl>
 
 <dl class="py method">
@@ -330,13 +399,25 @@ communications</p></li>
 :return: Success or Failure</p>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.excel.NamedRange.value">
+<span class="sig-name descname"><span class="pre">value</span></span><a class="headerlink" href="#O365.excel.NamedRange.value" title="Link to this definition"></a></dt>
+<dd><p>The formula that the name is defined to refer to.
+For example, =Sheet14!$B$2:$H$12 and =4.75. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.excel.NamedRange.visible">
+<span class="sig-name descname"><span class="pre">visible</span></span><a class="headerlink" href="#O365.excel.NamedRange.visible" title="Link to this definition"></a></dt>
+<dd><p>Indicates whether the object is visible. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> bool</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="O365.excel.Range">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.excel.</span></span><span class="sig-name descname"><span class="pre">Range</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/excel.html#Range"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.excel.Range" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="utils/utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">ApiComponent</span></code></a></p>
-<p>An Excel Range</p>
+<dd><p>An Excel Range</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="O365.excel.Range.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/excel.html#Range.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.excel.Range.__init__" title="Link to this definition"></a></dt>
@@ -353,6 +434,27 @@ communications</p></li>
 </dl>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.excel.Range.address">
+<span class="sig-name descname"><span class="pre">address</span></span><a class="headerlink" href="#O365.excel.Range.address" title="Link to this definition"></a></dt>
+<dd><p>Represents the range reference in A1-style.
+Address value contains the Sheet reference
+(for example, Sheet1!A1:B4). <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.excel.Range.address_local">
+<span class="sig-name descname"><span class="pre">address_local</span></span><a class="headerlink" href="#O365.excel.Range.address_local" title="Link to this definition"></a></dt>
+<dd><p>Represents range reference for the specified range in the language of the user.
+<div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.excel.Range.cell_count">
+<span class="sig-name descname"><span class="pre">cell_count</span></span><a class="headerlink" href="#O365.excel.Range.cell_count" title="Link to this definition"></a></dt>
+<dd><p>Number of cells in the range. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> int</p>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="O365.excel.Range.clear">
 <span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">apply_to</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'all'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/excel.html#Range.clear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.excel.Range.clear" title="Link to this definition"></a></dt>
@@ -365,10 +467,35 @@ The possible values are: all, formats, contents.</p>
 </dl>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.excel.Range.column_count">
+<span class="sig-name descname"><span class="pre">column_count</span></span><a class="headerlink" href="#O365.excel.Range.column_count" title="Link to this definition"></a></dt>
+<dd><p>Represents the total number of columns in the range. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> int</p>
+</dd></dl>
+
 <dl class="py property">
 <dt class="sig sig-object py" id="O365.excel.Range.column_hidden">
 <em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">column_hidden</span></span><a class="headerlink" href="#O365.excel.Range.column_hidden" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Indicates whether all columns of the current range are hidden.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
+<dd class="field-odd"><p>get the column_hidden</p>
+</dd>
+<dt class="field-even">Setter<span class="colon">:</span></dt>
+<dd class="field-even"><p>set the column_hidden</p>
+</dd>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.excel.Range.column_index">
+<span class="sig-name descname"><span class="pre">column_index</span></span><a class="headerlink" href="#O365.excel.Range.column_index" title="Link to this definition"></a></dt>
+<dd><p>Represents the column number of the first cell in the range. Zero-indexed.
+<div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> int</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="O365.excel.Range.delete">
@@ -385,17 +512,55 @@ The possible values are: up, left.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="O365.excel.Range.formulas">
 <em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">formulas</span></span><a class="headerlink" href="#O365.excel.Range.formulas" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Represents the formula in A1-style notation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
+<dd class="field-odd"><p>get the formulas</p>
+</dd>
+<dt class="field-even">Setter<span class="colon">:</span></dt>
+<dd class="field-even"><p>set the formulas</p>
+</dd>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>any</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="O365.excel.Range.formulas_local">
 <em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">formulas_local</span></span><a class="headerlink" href="#O365.excel.Range.formulas_local" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Represents the formula in A1-style notation, in the user’s language
+and number-formatting locale. For example, the English “=SUM(A1, 1.5)”
+formula would become “=SUMME(A1; 1,5)” in German.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
+<dd class="field-odd"><p>get the formulas_local</p>
+</dd>
+<dt class="field-even">Setter<span class="colon">:</span></dt>
+<dd class="field-even"><p>set the formulas_local</p>
+</dd>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[list]</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="O365.excel.Range.formulas_r1_c1">
 <em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">formulas_r1_c1</span></span><a class="headerlink" href="#O365.excel.Range.formulas_r1_c1" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Represents the formula in R1C1-style notation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
+<dd class="field-odd"><p>get the formulas_r1_c1</p>
+</dd>
+<dt class="field-even">Setter<span class="colon">:</span></dt>
+<dd class="field-even"><p>set the formulas_r1_c1</p>
+</dd>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[list]</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="O365.excel.Range.get_bounding_rect">
@@ -582,6 +747,12 @@ Considers only cells with values as used cells (ignores formatting).</p>
 <dd><p>Returns this range worksheet</p>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.excel.Range.hidden">
+<span class="sig-name descname"><span class="pre">hidden</span></span><a class="headerlink" href="#O365.excel.Range.hidden" title="Link to this definition"></a></dt>
+<dd><p>Represents if all cells of the current range are hidden. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> bool</p>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="O365.excel.Range.insert_range">
 <span class="sig-name descname"><span class="pre">insert_range</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shift</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/excel.html#Range.insert_range"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.excel.Range.insert_range" title="Link to this definition"></a></dt>
@@ -612,18 +783,61 @@ specified range as separate merged cells.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="O365.excel.Range.number_format">
 <em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">number_format</span></span><a class="headerlink" href="#O365.excel.Range.number_format" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Represents Excel’s number format code for the given cell.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
+<dd class="field-odd"><p>get the number_format</p>
+</dd>
+<dt class="field-even">Setter<span class="colon">:</span></dt>
+<dd class="field-even"><p>set the number_fromat</p>
+</dd>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[list]</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="O365.excel.Range.range_format_constructor">
-<span class="sig-name descname"><span class="pre">range_format_constructor</span></span><a class="headerlink" href="#O365.excel.Range.range_format_constructor" title="Link to this definition"></a></dt>
-<dd><p>alias of <a class="reference internal" href="#O365.excel.RangeFormat" title="O365.excel.RangeFormat"><code class="xref py py-class docutils literal notranslate"><span class="pre">RangeFormat</span></code></a></p>
+<dt class="sig sig-object py" id="O365.excel.Range.object_id">
+<span class="sig-name descname"><span class="pre">object_id</span></span><a class="headerlink" href="#O365.excel.Range.object_id" title="Link to this definition"></a></dt>
+<dd><p>The id of the range. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.excel.Range.row_count">
+<span class="sig-name descname"><span class="pre">row_count</span></span><a class="headerlink" href="#O365.excel.Range.row_count" title="Link to this definition"></a></dt>
+<dd><p>Returns the total number of rows in the range. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> int</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="O365.excel.Range.row_hidden">
 <em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">row_hidden</span></span><a class="headerlink" href="#O365.excel.Range.row_hidden" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Indicates whether all rows of the current range are hidden.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
+<dd class="field-odd"><p>get the row_hidden</p>
+</dd>
+<dt class="field-even">Setter<span class="colon">:</span></dt>
+<dd class="field-even"><p>set the row_hidden</p>
+</dd>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.excel.Range.row_index">
+<span class="sig-name descname"><span class="pre">row_index</span></span><a class="headerlink" href="#O365.excel.Range.row_index" title="Link to this definition"></a></dt>
+<dd><p>Returns the row number of the first cell in the range. Zero-indexed.
+<div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> int</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.excel.Range.text">
+<span class="sig-name descname"><span class="pre">text</span></span><a class="headerlink" href="#O365.excel.Range.text" title="Link to this definition"></a></dt>
+<dd><p>Text values of the specified range. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="O365.excel.Range.to_api_data">
@@ -651,18 +865,39 @@ specified range as separate merged cells.</p>
 <dd><p>Update this range</p>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.excel.Range.value_types">
+<span class="sig-name descname"><span class="pre">value_types</span></span><a class="headerlink" href="#O365.excel.Range.value_types" title="Link to this definition"></a></dt>
+<dd><p>Represents the type of data of each cell.
+The possible values are: Unknown, Empty, String,
+Integer, Double, Boolean, Error. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> list[list]</p>
+</dd></dl>
+
 <dl class="py property">
 <dt class="sig sig-object py" id="O365.excel.Range.values">
 <em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">values</span></span><a class="headerlink" href="#O365.excel.Range.values" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Represents the raw values of the specified range.
+The data returned can be of type string, number, or a Boolean.
+Cell that contains an error returns the error string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
+<dd class="field-odd"><p>get the number_format</p>
+</dd>
+<dt class="field-even">Setter<span class="colon">:</span></dt>
+<dd class="field-even"><p>set the number_fromat</p>
+</dd>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[list]</p>
+</dd>
+</dl>
+</dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="O365.excel.RangeFormat">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.excel.</span></span><span class="sig-name descname"><span class="pre">RangeFormat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/excel.html#RangeFormat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.excel.RangeFormat" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="utils/utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">ApiComponent</span></code></a></p>
-<p>A format applied to a range</p>
+<dd><p>A format applied to a range</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="O365.excel.RangeFormat.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/excel.html#RangeFormat.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.excel.RangeFormat.__init__" title="Link to this definition"></a></dt>
@@ -696,27 +931,101 @@ to achieve the best fit, based on the current data in the rows</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="O365.excel.RangeFormat.background_color">
 <em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">background_color</span></span><a class="headerlink" href="#O365.excel.RangeFormat.background_color" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>The background color of the range</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
+<dd class="field-odd"><p>get the background_color</p>
+</dd>
+<dt class="field-even">Setter<span class="colon">:</span></dt>
+<dd class="field-even"><p>set the background_color</p>
+</dd>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>UnsentSentinel</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="O365.excel.RangeFormat.column_width">
 <em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">column_width</span></span><a class="headerlink" href="#O365.excel.RangeFormat.column_width" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>The width of all columns within the range</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
+<dd class="field-odd"><p>get the column_width</p>
+</dd>
+<dt class="field-even">Setter<span class="colon">:</span></dt>
+<dd class="field-even"><p>set the column_width</p>
+</dd>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="O365.excel.RangeFormat.font">
 <em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">font</span></span><a class="headerlink" href="#O365.excel.RangeFormat.font" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Returns the font object defined on the overall range selected</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
+<dd class="field-odd"><p>get the font</p>
+</dd>
+<dt class="field-even">Setter<span class="colon">:</span></dt>
+<dd class="field-even"><p>set the font</p>
+</dd>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#O365.excel.RangeFormatFont" title="O365.excel.RangeFormatFont">RangeFormatFont</a></p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="O365.excel.RangeFormat.horizontal_alignment">
 <em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">horizontal_alignment</span></span><a class="headerlink" href="#O365.excel.RangeFormat.horizontal_alignment" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>The horizontal alignment for the specified object.
+Possible values are: General, Left, Center, Right, Fill, Justify,
+CenterAcrossSelection, Distributed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
+<dd class="field-odd"><p>get the vertical_alignment</p>
+</dd>
+<dt class="field-even">Setter<span class="colon">:</span></dt>
+<dd class="field-even"><p>set the vertical_alignment</p>
+</dd>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.excel.RangeFormat.range">
+<span class="sig-name descname"><span class="pre">range</span></span><a class="headerlink" href="#O365.excel.RangeFormat.range" title="Link to this definition"></a></dt>
+<dd><p>The range of the range format. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> range</p>
+</dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="O365.excel.RangeFormat.row_height">
 <em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">row_height</span></span><a class="headerlink" href="#O365.excel.RangeFormat.row_height" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>The height of all rows in the range.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
+<dd class="field-odd"><p>get the row_height</p>
+</dd>
+<dt class="field-even">Setter<span class="colon">:</span></dt>
+<dd class="field-even"><p>set the row_height</p>
+</dd>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.excel.RangeFormat.session">
+<span class="sig-name descname"><span class="pre">session</span></span><a class="headerlink" href="#O365.excel.RangeFormat.session" title="Link to this definition"></a></dt>
+<dd><p>The session for the range format. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="O365.excel.RangeFormat.set_borders">
@@ -747,20 +1056,44 @@ to achieve the best fit, based on the current data in the rows</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="O365.excel.RangeFormat.vertical_alignment">
 <em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">vertical_alignment</span></span><a class="headerlink" href="#O365.excel.RangeFormat.vertical_alignment" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>The vertical alignment for the specified object.
+Possible values are: Top, Center, Bottom, Justify, Distributed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
+<dd class="field-odd"><p>get the vertical_alignment</p>
+</dd>
+<dt class="field-even">Setter<span class="colon">:</span></dt>
+<dd class="field-even"><p>set the vertical_alignment</p>
+</dd>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="O365.excel.RangeFormat.wrap_text">
 <em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">wrap_text</span></span><a class="headerlink" href="#O365.excel.RangeFormat.wrap_text" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Indicates whether Excel wraps the text in the object</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
+<dd class="field-odd"><p>get the wrap_text</p>
+</dd>
+<dt class="field-even">Setter<span class="colon">:</span></dt>
+<dd class="field-even"><p>set the wrap_text</p>
+</dd>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="O365.excel.RangeFormatFont">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.excel.</span></span><span class="sig-name descname"><span class="pre">RangeFormatFont</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/excel.html#RangeFormatFont"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.excel.RangeFormatFont" title="Link to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>A font format applied to a range</p>
+<dd><p>A font format applied to a range</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="O365.excel.RangeFormatFont.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/excel.html#RangeFormatFont.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.excel.RangeFormatFont.__init__" title="Link to this definition"></a></dt>
@@ -774,22 +1107,76 @@ to achieve the best fit, based on the current data in the rows</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="O365.excel.RangeFormatFont.color">
 <em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">color</span></span><a class="headerlink" href="#O365.excel.RangeFormatFont.color" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>The color of the range format font</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
+<dd class="field-odd"><p>get the color</p>
+</dd>
+<dt class="field-even">Setter<span class="colon">:</span></dt>
+<dd class="field-even"><p>set the color</p>
+</dd>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="O365.excel.RangeFormatFont.italic">
 <em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">italic</span></span><a class="headerlink" href="#O365.excel.RangeFormatFont.italic" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Is range format font in italics</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
+<dd class="field-odd"><p>get the italic</p>
+</dd>
+<dt class="field-even">Setter<span class="colon">:</span></dt>
+<dd class="field-even"><p>set the italic</p>
+</dd>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="O365.excel.RangeFormatFont.name">
 <em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#O365.excel.RangeFormatFont.name" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>The name of the range format font</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
+<dd class="field-odd"><p>get the name</p>
+</dd>
+<dt class="field-even">Setter<span class="colon">:</span></dt>
+<dd class="field-even"><p>set the name</p>
+</dd>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.excel.RangeFormatFont.parent">
+<span class="sig-name descname"><span class="pre">parent</span></span><a class="headerlink" href="#O365.excel.RangeFormatFont.parent" title="Link to this definition"></a></dt>
+<dd><p>The parent of the range format font. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> parent</p>
+</dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="O365.excel.RangeFormatFont.size">
 <em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">size</span></span><a class="headerlink" href="#O365.excel.RangeFormatFont.size" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>The size of the range format font</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
+<dd class="field-odd"><p>get the size</p>
+</dd>
+<dt class="field-even">Setter<span class="colon">:</span></dt>
+<dd class="field-even"><p>set the size</p>
+</dd>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="O365.excel.RangeFormatFont.to_api_data">
@@ -808,15 +1195,26 @@ to achieve the best fit, based on the current data in the rows</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="O365.excel.RangeFormatFont.underline">
 <em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">underline</span></span><a class="headerlink" href="#O365.excel.RangeFormatFont.underline" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Is range format font underlined</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
+<dd class="field-odd"><p>get the underline</p>
+</dd>
+<dt class="field-even">Setter<span class="colon">:</span></dt>
+<dd class="field-even"><p>set the underline</p>
+</dd>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="O365.excel.Table">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.excel.</span></span><span class="sig-name descname"><span class="pre">Table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/excel.html#Table"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.excel.Table" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="utils/utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">ApiComponent</span></code></a></p>
-<p>An Excel Table</p>
+<dd><p>An Excel Table</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="O365.excel.Table.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/excel.html#Table.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.excel.Table.__init__" title="Link to this definition"></a></dt>
@@ -869,12 +1267,6 @@ If null, the addition happens at the end.</p></li>
 <dt class="sig sig-object py" id="O365.excel.Table.clear_filters">
 <span class="sig-name descname"><span class="pre">clear_filters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/excel.html#Table.clear_filters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.excel.Table.clear_filters" title="Link to this definition"></a></dt>
 <dd><p>Clears all the filters currently applied on the table.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="O365.excel.Table.column_constructor">
-<span class="sig-name descname"><span class="pre">column_constructor</span></span><a class="headerlink" href="#O365.excel.Table.column_constructor" title="Link to this definition"></a></dt>
-<dd><p>alias of <a class="reference internal" href="#O365.excel.TableColumn" title="O365.excel.TableColumn"><code class="xref py py-class docutils literal notranslate"><span class="pre">TableColumn</span></code></a></p>
 </dd></dl>
 
 <dl class="py method">
@@ -981,9 +1373,39 @@ If null, the addition happens at the end.</p></li>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="O365.excel.Table.range_constructor">
-<span class="sig-name descname"><span class="pre">range_constructor</span></span><a class="headerlink" href="#O365.excel.Table.range_constructor" title="Link to this definition"></a></dt>
-<dd><p>alias of <a class="reference internal" href="#O365.excel.Range" title="O365.excel.Range"><code class="xref py py-class docutils literal notranslate"><span class="pre">Range</span></code></a></p>
+<dt class="sig sig-object py" id="O365.excel.Table.highlight_first_column">
+<span class="sig-name descname"><span class="pre">highlight_first_column</span></span><a class="headerlink" href="#O365.excel.Table.highlight_first_column" title="Link to this definition"></a></dt>
+<dd><p>Indicates whether the first column contains special formatting. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> bool</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.excel.Table.highlight_last_column">
+<span class="sig-name descname"><span class="pre">highlight_last_column</span></span><a class="headerlink" href="#O365.excel.Table.highlight_last_column" title="Link to this definition"></a></dt>
+<dd><p>Indicates whether the last column contains special formatting. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> bool</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.excel.Table.legacy_id">
+<span class="sig-name descname"><span class="pre">legacy_id</span></span><a class="headerlink" href="#O365.excel.Table.legacy_id" title="Link to this definition"></a></dt>
+<dd><p>A legacy identifier used in older Excel clients.  <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.excel.Table.name">
+<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#O365.excel.Table.name" title="Link to this definition"></a></dt>
+<dd><p>The name of the table. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.excel.Table.object_id">
+<span class="sig-name descname"><span class="pre">object_id</span></span><a class="headerlink" href="#O365.excel.Table.object_id" title="Link to this definition"></a></dt>
+<dd><p>The unique identifier for the table in the workbook. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.excel.Table.parent">
+<span class="sig-name descname"><span class="pre">parent</span></span><a class="headerlink" href="#O365.excel.Table.parent" title="Link to this definition"></a></dt>
+<dd><p>Parent of the table. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> parent</p>
 </dd></dl>
 
 <dl class="py method">
@@ -993,9 +1415,49 @@ If null, the addition happens at the end.</p></li>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="O365.excel.Table.row_constructor">
-<span class="sig-name descname"><span class="pre">row_constructor</span></span><a class="headerlink" href="#O365.excel.Table.row_constructor" title="Link to this definition"></a></dt>
-<dd><p>alias of <a class="reference internal" href="#O365.excel.TableRow" title="O365.excel.TableRow"><code class="xref py py-class docutils literal notranslate"><span class="pre">TableRow</span></code></a></p>
+<dt class="sig sig-object py" id="O365.excel.Table.session">
+<span class="sig-name descname"><span class="pre">session</span></span><a class="headerlink" href="#O365.excel.Table.session" title="Link to this definition"></a></dt>
+<dd><p>Session of the table. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> session</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.excel.Table.show_banded_columns">
+<span class="sig-name descname"><span class="pre">show_banded_columns</span></span><a class="headerlink" href="#O365.excel.Table.show_banded_columns" title="Link to this definition"></a></dt>
+<dd><p>Indicates whether the columns show banded formatting in which odd columns
+are highlighted differently from even ones to make reading the table easier.
+<div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> bool</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.excel.Table.show_banded_rows">
+<span class="sig-name descname"><span class="pre">show_banded_rows</span></span><a class="headerlink" href="#O365.excel.Table.show_banded_rows" title="Link to this definition"></a></dt>
+<dd><p>The name of the table column. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.excel.Table.show_filter_button">
+<span class="sig-name descname"><span class="pre">show_filter_button</span></span><a class="headerlink" href="#O365.excel.Table.show_filter_button" title="Link to this definition"></a></dt>
+<dd><p>Indicates whether the rows show banded formatting in which odd rows
+are highlighted differently from even ones to make reading the table easier.
+<div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> bool</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.excel.Table.show_headers">
+<span class="sig-name descname"><span class="pre">show_headers</span></span><a class="headerlink" href="#O365.excel.Table.show_headers" title="Link to this definition"></a></dt>
+<dd><p>Indicates whether the header row is visible or not <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> bool</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.excel.Table.show_totals">
+<span class="sig-name descname"><span class="pre">show_totals</span></span><a class="headerlink" href="#O365.excel.Table.show_totals" title="Link to this definition"></a></dt>
+<dd><p>Indicates whether the total row is visible or not.  <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> bool</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.excel.Table.style">
+<span class="sig-name descname"><span class="pre">style</span></span><a class="headerlink" href="#O365.excel.Table.style" title="Link to this definition"></a></dt>
+<dd><p>A constant value that represents the Table style <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1014,8 +1476,7 @@ If null, the addition happens at the end.</p></li>
 <dl class="py class">
 <dt class="sig sig-object py" id="O365.excel.TableColumn">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.excel.</span></span><span class="sig-name descname"><span class="pre">TableColumn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/excel.html#TableColumn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.excel.TableColumn" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="utils/utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">ApiComponent</span></code></a></p>
-<p>An Excel Table Column</p>
+<dd><p>An Excel Table Column</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="O365.excel.TableColumn.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/excel.html#TableColumn.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.excel.TableColumn.__init__" title="Link to this definition"></a></dt>
@@ -1099,9 +1560,34 @@ communications</p></li>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="O365.excel.TableColumn.range_constructor">
-<span class="sig-name descname"><span class="pre">range_constructor</span></span><a class="headerlink" href="#O365.excel.TableColumn.range_constructor" title="Link to this definition"></a></dt>
-<dd><p>alias of <a class="reference internal" href="#O365.excel.Range" title="O365.excel.Range"><code class="xref py py-class docutils literal notranslate"><span class="pre">Range</span></code></a></p>
+<dt class="sig sig-object py" id="O365.excel.TableColumn.index">
+<span class="sig-name descname"><span class="pre">index</span></span><a class="headerlink" href="#O365.excel.TableColumn.index" title="Link to this definition"></a></dt>
+<dd><p>TThe index of the column within the columns collection of the table. Zero-indexed.
+<div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> int</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.excel.TableColumn.name">
+<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#O365.excel.TableColumn.name" title="Link to this definition"></a></dt>
+<dd><p>The name of the table column. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.excel.TableColumn.object_id">
+<span class="sig-name descname"><span class="pre">object_id</span></span><a class="headerlink" href="#O365.excel.TableColumn.object_id" title="Link to this definition"></a></dt>
+<dd><p>Id of the Table Column|br| <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.excel.TableColumn.session">
+<span class="sig-name descname"><span class="pre">session</span></span><a class="headerlink" href="#O365.excel.TableColumn.session" title="Link to this definition"></a></dt>
+<dd><p>session of the table column.. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> session</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.excel.TableColumn.table">
+<span class="sig-name descname"><span class="pre">table</span></span><a class="headerlink" href="#O365.excel.TableColumn.table" title="Link to this definition"></a></dt>
+<dd><p>Parent of the table column. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> parent</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1111,13 +1597,20 @@ communications</p></li>
 :param values: values to update</p>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.excel.TableColumn.values">
+<span class="sig-name descname"><span class="pre">values</span></span><a class="headerlink" href="#O365.excel.TableColumn.values" title="Link to this definition"></a></dt>
+<dd><p>Represents the raw values of the specified range.
+The data returned could be of type string, number, or a Boolean.
+Cell that contain an error will return the error string. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> list[list]</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="O365.excel.TableRow">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.excel.</span></span><span class="sig-name descname"><span class="pre">TableRow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/excel.html#TableRow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.excel.TableRow" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="utils/utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">ApiComponent</span></code></a></p>
-<p>An Excel Table Row</p>
+<dd><p>An Excel Table Row</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="O365.excel.TableRow.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/excel.html#TableRow.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.excel.TableRow.__init__" title="Link to this definition"></a></dt>
@@ -1147,9 +1640,28 @@ communications</p></li>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="O365.excel.TableRow.range_constructor">
-<span class="sig-name descname"><span class="pre">range_constructor</span></span><a class="headerlink" href="#O365.excel.TableRow.range_constructor" title="Link to this definition"></a></dt>
-<dd><p>alias of <a class="reference internal" href="#O365.excel.Range" title="O365.excel.Range"><code class="xref py py-class docutils literal notranslate"><span class="pre">Range</span></code></a></p>
+<dt class="sig sig-object py" id="O365.excel.TableRow.index">
+<span class="sig-name descname"><span class="pre">index</span></span><a class="headerlink" href="#O365.excel.TableRow.index" title="Link to this definition"></a></dt>
+<dd><p>The index of the row within the rows collection of the table. Zero-based.
+<div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> int</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.excel.TableRow.object_id">
+<span class="sig-name descname"><span class="pre">object_id</span></span><a class="headerlink" href="#O365.excel.TableRow.object_id" title="Link to this definition"></a></dt>
+<dd><p>Id of the Table Row <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.excel.TableRow.session">
+<span class="sig-name descname"><span class="pre">session</span></span><a class="headerlink" href="#O365.excel.TableRow.session" title="Link to this definition"></a></dt>
+<dd><p>Session of table row <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> session</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.excel.TableRow.table">
+<span class="sig-name descname"><span class="pre">table</span></span><a class="headerlink" href="#O365.excel.TableRow.table" title="Link to this definition"></a></dt>
+<dd><p>Parent of the table row. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> parent</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1158,13 +1670,21 @@ communications</p></li>
 <dd><p>Updates this row</p>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.excel.TableRow.values">
+<span class="sig-name descname"><span class="pre">values</span></span><a class="headerlink" href="#O365.excel.TableRow.values" title="Link to this definition"></a></dt>
+<dd><p>The raw values of the specified range.
+The data returned could be of type string, number, or a Boolean.
+Any cell that contain an error will return the error string.
+<div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> list[list]</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="O365.excel.WorkBook">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.excel.</span></span><span class="sig-name descname"><span class="pre">WorkBook</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_item</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">persist</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/excel.html#WorkBook"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.excel.WorkBook" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="utils/utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">ApiComponent</span></code></a></p>
-<dl class="py method">
+<dd><dl class="py method">
 <dt class="sig sig-object py" id="O365.excel.WorkBook.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_item</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">persist</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/excel.html#WorkBook.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.excel.WorkBook.__init__" title="Link to this definition"></a></dt>
 <dd><p>Create a workbook representation</p>
@@ -1194,12 +1714,6 @@ communications</p></li>
 <dt class="sig sig-object py" id="O365.excel.WorkBook.add_worksheet">
 <span class="sig-name descname"><span class="pre">add_worksheet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/excel.html#WorkBook.add_worksheet"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.excel.WorkBook.add_worksheet" title="Link to this definition"></a></dt>
 <dd><p>Adds a new worksheet</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="O365.excel.WorkBook.application_constructor">
-<span class="sig-name descname"><span class="pre">application_constructor</span></span><a class="headerlink" href="#O365.excel.WorkBook.application_constructor" title="Link to this definition"></a></dt>
-<dd><p>alias of <a class="reference internal" href="#O365.excel.WorkbookApplication" title="O365.excel.WorkbookApplication"><code class="xref py py-class docutils literal notranslate"><span class="pre">WorkbookApplication</span></code></a></p>
 </dd></dl>
 
 <dl class="py method">
@@ -1258,21 +1772,21 @@ communications</p></li>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="O365.excel.WorkBook.named_range_constructor">
-<span class="sig-name descname"><span class="pre">named_range_constructor</span></span><a class="headerlink" href="#O365.excel.WorkBook.named_range_constructor" title="Link to this definition"></a></dt>
-<dd><p>alias of <a class="reference internal" href="#O365.excel.NamedRange" title="O365.excel.NamedRange"><code class="xref py py-class docutils literal notranslate"><span class="pre">NamedRange</span></code></a></p>
+<dt class="sig sig-object py" id="O365.excel.WorkBook.name">
+<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#O365.excel.WorkBook.name" title="Link to this definition"></a></dt>
+<dd><p>The name of the workbook. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:**str</strong></p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="O365.excel.WorkBook.table_constructor">
-<span class="sig-name descname"><span class="pre">table_constructor</span></span><a class="headerlink" href="#O365.excel.WorkBook.table_constructor" title="Link to this definition"></a></dt>
-<dd><p>alias of <a class="reference internal" href="#O365.excel.Table" title="O365.excel.Table"><code class="xref py py-class docutils literal notranslate"><span class="pre">Table</span></code></a></p>
+<dt class="sig sig-object py" id="O365.excel.WorkBook.object_id">
+<span class="sig-name descname"><span class="pre">object_id</span></span><a class="headerlink" href="#O365.excel.WorkBook.object_id" title="Link to this definition"></a></dt>
+<dd><p>The id of the workbook. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str**</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="O365.excel.WorkBook.worksheet_constructor">
-<span class="sig-name descname"><span class="pre">worksheet_constructor</span></span><a class="headerlink" href="#O365.excel.WorkBook.worksheet_constructor" title="Link to this definition"></a></dt>
-<dd><p>alias of <a class="reference internal" href="#O365.excel.WorkSheet" title="O365.excel.WorkSheet"><code class="xref py py-class docutils literal notranslate"><span class="pre">WorkSheet</span></code></a></p>
+<dt class="sig sig-object py" id="O365.excel.WorkBook.session">
+<span class="sig-name descname"><span class="pre">session</span></span><a class="headerlink" href="#O365.excel.WorkBook.session" title="Link to this definition"></a></dt>
+<dd><p>The session for the workbook. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> WorkbookSession</p>
 </dd></dl>
 
 </dd></dl>
@@ -1280,8 +1794,7 @@ communications</p></li>
 <dl class="py class">
 <dt class="sig sig-object py" id="O365.excel.WorkSheet">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.excel.</span></span><span class="sig-name descname"><span class="pre">WorkSheet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/excel.html#WorkSheet"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.excel.WorkSheet" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="utils/utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">ApiComponent</span></code></a></p>
-<p>An Excel WorkSheet</p>
+<dd><p>An Excel WorkSheet</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="O365.excel.WorkSheet.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/excel.html#WorkSheet.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.excel.WorkSheet.__init__" title="Link to this definition"></a></dt>
@@ -1375,15 +1888,21 @@ Considers only cells with values as used cells (ignores formatting).</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="O365.excel.WorkSheet.named_range_constructor">
-<span class="sig-name descname"><span class="pre">named_range_constructor</span></span><a class="headerlink" href="#O365.excel.WorkSheet.named_range_constructor" title="Link to this definition"></a></dt>
-<dd><p>alias of <a class="reference internal" href="#O365.excel.NamedRange" title="O365.excel.NamedRange"><code class="xref py py-class docutils literal notranslate"><span class="pre">NamedRange</span></code></a></p>
+<dt class="sig sig-object py" id="O365.excel.WorkSheet.name">
+<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#O365.excel.WorkSheet.name" title="Link to this definition"></a></dt>
+<dd><p>The display name of the worksheet. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="O365.excel.WorkSheet.range_constructor">
-<span class="sig-name descname"><span class="pre">range_constructor</span></span><a class="headerlink" href="#O365.excel.WorkSheet.range_constructor" title="Link to this definition"></a></dt>
-<dd><p>alias of <a class="reference internal" href="#O365.excel.Range" title="O365.excel.Range"><code class="xref py py-class docutils literal notranslate"><span class="pre">Range</span></code></a></p>
+<dt class="sig sig-object py" id="O365.excel.WorkSheet.object_id">
+<span class="sig-name descname"><span class="pre">object_id</span></span><a class="headerlink" href="#O365.excel.WorkSheet.object_id" title="Link to this definition"></a></dt>
+<dd><p>The unique identifier for the worksheet in the workbook. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.excel.WorkSheet.position">
+<span class="sig-name descname"><span class="pre">position</span></span><a class="headerlink" href="#O365.excel.WorkSheet.position" title="Link to this definition"></a></dt>
+<dd><p>The zero-based position of the worksheet within the workbook. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> int</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1393,9 +1912,9 @@ Considers only cells with values as used cells (ignores formatting).</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="O365.excel.WorkSheet.table_constructor">
-<span class="sig-name descname"><span class="pre">table_constructor</span></span><a class="headerlink" href="#O365.excel.WorkSheet.table_constructor" title="Link to this definition"></a></dt>
-<dd><p>alias of <a class="reference internal" href="#O365.excel.Table" title="O365.excel.Table"><code class="xref py py-class docutils literal notranslate"><span class="pre">Table</span></code></a></p>
+<dt class="sig sig-object py" id="O365.excel.WorkSheet.session">
+<span class="sig-name descname"><span class="pre">session</span></span><a class="headerlink" href="#O365.excel.WorkSheet.session" title="Link to this definition"></a></dt>
+<dd><p>Thesession of the worksheet. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> session</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1404,13 +1923,25 @@ Considers only cells with values as used cells (ignores formatting).</p>
 <dd><p>Changes the name, position or visibility of this worksheet</p>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.excel.WorkSheet.visibility">
+<span class="sig-name descname"><span class="pre">visibility</span></span><a class="headerlink" href="#O365.excel.WorkSheet.visibility" title="Link to this definition"></a></dt>
+<dd><p>The visibility of the worksheet.
+The possible values are: Visible, Hidden, VeryHidden. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.excel.WorkSheet.workbook">
+<span class="sig-name descname"><span class="pre">workbook</span></span><a class="headerlink" href="#O365.excel.WorkSheet.workbook" title="Link to this definition"></a></dt>
+<dd><p>The parent of the worksheet. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> parent</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="O365.excel.WorkbookApplication">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.excel.</span></span><span class="sig-name descname"><span class="pre">WorkbookApplication</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">workbook</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/excel.html#WorkbookApplication"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.excel.WorkbookApplication" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="utils/utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">ApiComponent</span></code></a></p>
-<dl class="py method">
+<dd><dl class="py method">
 <dt class="sig sig-object py" id="O365.excel.WorkbookApplication.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">workbook</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/excel.html#WorkbookApplication.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.excel.WorkbookApplication.__init__" title="Link to this definition"></a></dt>
 <dd><p>Create A WorkbookApplication representation</p>
@@ -1427,18 +1958,24 @@ Considers only cells with values as used cells (ignores formatting).</p>
 <dd><p>Gets workbookApplication</p>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.excel.WorkbookApplication.parent">
+<span class="sig-name descname"><span class="pre">parent</span></span><a class="headerlink" href="#O365.excel.WorkbookApplication.parent" title="Link to this definition"></a></dt>
+<dd><p>The application parent. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> Workbook</p>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="O365.excel.WorkbookApplication.run_calculations">
 <span class="sig-name descname"><span class="pre">run_calculations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">calculation_type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/excel.html#WorkbookApplication.run_calculations"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.excel.WorkbookApplication.run_calculations" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Recalculate all currently opened workbooks in Excel.</p>
+</dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="O365.excel.WorkbookSession">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.excel.</span></span><span class="sig-name descname"><span class="pre">WorkbookSession</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">con</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">persist</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/excel.html#WorkbookSession"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.excel.WorkbookSession" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="utils/utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">ApiComponent</span></code></a></p>
-<p>See <a class="reference external" href="https://docs.microsoft.com/en-us/graph/api/resources/excel?view=graph-rest-1.0#sessions-and-persistence">https://docs.microsoft.com/en-us/graph/api/resources/excel?view=graph-rest-1.0#sessions-and-persistence</a></p>
+<dd><p>See <a class="reference external" href="https://docs.microsoft.com/en-us/graph/api/resources/excel?view=graph-rest-1.0#sessions-and-persistence">https://docs.microsoft.com/en-us/graph/api/resources/excel?view=graph-rest-1.0#sessions-and-persistence</a></p>
 <dl class="py method">
 <dt class="sig sig-object py" id="O365.excel.WorkbookSession.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">con</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">persist</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/excel.html#WorkbookSession.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.excel.WorkbookSession.__init__" title="Link to this definition"></a></dt>
@@ -1476,10 +2013,28 @@ Considers only cells with values as used cells (ignores formatting).</p>
 <span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/excel.html#WorkbookSession.get"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.excel.WorkbookSession.get" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.excel.WorkbookSession.inactivity_limit">
+<span class="sig-name descname"><span class="pre">inactivity_limit</span></span><a class="headerlink" href="#O365.excel.WorkbookSession.inactivity_limit" title="Link to this definition"></a></dt>
+<dd><p>The inactivity limit. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> timedelta</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.excel.WorkbookSession.last_activity">
+<span class="sig-name descname"><span class="pre">last_activity</span></span><a class="headerlink" href="#O365.excel.WorkbookSession.last_activity" title="Link to this definition"></a></dt>
+<dd><p>The time of last activity. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> datetime</p>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="O365.excel.WorkbookSession.patch">
 <span class="sig-name descname"><span class="pre">patch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/excel.html#WorkbookSession.patch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.excel.WorkbookSession.patch" title="Link to this definition"></a></dt>
 <dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.excel.WorkbookSession.persist">
+<span class="sig-name descname"><span class="pre">persist</span></span><a class="headerlink" href="#O365.excel.WorkbookSession.persist" title="Link to this definition"></a></dt>
+<dd><p>Whether or not the session changes are persisted. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> bool</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="O365.excel.WorkbookSession.post">
@@ -1502,6 +2057,12 @@ checks if the session is expired.</p>
 <dt class="sig sig-object py" id="O365.excel.WorkbookSession.refresh_session">
 <span class="sig-name descname"><span class="pre">refresh_session</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/excel.html#WorkbookSession.refresh_session"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.excel.WorkbookSession.refresh_session" title="Link to this definition"></a></dt>
 <dd><p>Refresh the current session id</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.excel.WorkbookSession.session_id">
+<span class="sig-name descname"><span class="pre">session_id</span></span><a class="headerlink" href="#O365.excel.WorkbookSession.session_id" title="Link to this definition"></a></dt>
+<dd><p>The session id. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
 </dd></dl>
 
 </dd></dl>
