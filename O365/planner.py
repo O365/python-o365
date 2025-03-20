@@ -29,6 +29,7 @@ class TaskDetails(ApiComponent):
 
         cloud_data = kwargs.get(self._cloud_data_key, {})
 
+        #:  ID of the task details. |br| **Type:** str
         self.object_id = cloud_data.get("id")
 
         # Choose the main_resource passed in kwargs over parent main_resource
@@ -43,9 +44,16 @@ class TaskDetails(ApiComponent):
             main_resource=main_resource,
         )
 
+        #:  Description of the task. |br| **Type:** str
         self.description = cloud_data.get(self._cc("description"), "")
+        #:  The collection of references on the task. |br| **Type:** any
         self.references = cloud_data.get(self._cc("references"), "")
+        #:  The collection of checklist items on the task. |br| **Type:** any
         self.checklist = cloud_data.get(self._cc("checklist"), "")
+        #:  This sets the type of preview that shows up on the task.
+        #: The possible values are: automatic, noPreview, checklist, description, reference.
+        #: When set to automatic the displayed preview is chosen by the app viewing the task.
+        #: |br| **Type:** str
         self.preview_type = cloud_data.get(self._cc("previewType"), "")
         self._etag = cloud_data.get("@odata.etag", "")
 
@@ -189,6 +197,7 @@ class PlanDetails(ApiComponent):
 
         cloud_data = kwargs.get(self._cloud_data_key, {})
 
+        #:  The unique identifier for the plan details. |br| **Type:** str
         self.object_id = cloud_data.get("id")
 
         # Choose the main_resource passed in kwargs over parent main_resource
@@ -203,7 +212,10 @@ class PlanDetails(ApiComponent):
             main_resource=main_resource,
         )
 
+        #:  Set of user IDs that this plan is shared with. |br| **Type:** any
         self.shared_with = cloud_data.get(self._cc("sharedWith"), "")
+        #:  An object that specifies the descriptions of the 25 categories
+        #: that can be associated with tasks in the plan. |br| **Type:** any
         self.category_descriptions = cloud_data.get(
             self._cc("categoryDescriptions"), ""
         )
@@ -270,7 +282,7 @@ class Task(ApiComponent):
         "task": "/planner/tasks/{id}",
     }
 
-    task_details_constructor = TaskDetails
+    task_details_constructor = TaskDetails  #: :meta private:
 
     def __init__(self, *, parent=None, con=None, **kwargs):
         """A Microsoft planner task
@@ -289,6 +301,7 @@ class Task(ApiComponent):
 
         cloud_data = kwargs.get(self._cloud_data_key, {})
 
+        #:  ID of the task. |br| **Type:** str
         self.object_id = cloud_data.get("id")
 
         # Choose the main_resource passed in kwargs over parent main_resource
@@ -303,39 +316,63 @@ class Task(ApiComponent):
             main_resource=main_resource,
         )
 
+        #:  Plan ID to which the task belongs. |br| **Type:** str
         self.plan_id = cloud_data.get("planId")
+        #:  Bucket ID to which the task belongs. |br| **Type:** str
         self.bucket_id = cloud_data.get("bucketId")
+        #:  Title of the task. |br| **Type:** str
         self.title = cloud_data.get(self._cc("title"), "")
+        #:  Priority of the task. |br| **Type:** int
         self.priority = cloud_data.get(self._cc("priority"), "")
+        #:  The set of assignees the task is assigned to. |br| **Type:** plannerAssignments
         self.assignments = cloud_data.get(self._cc("assignments"), "")
+        #:  Hint used to order items of this type in a list view. |br| **Type:** str
         self.order_hint = cloud_data.get(self._cc("orderHint"), "")
+        #:  Hint used to order items of this type in a list view. |br| **Type:** str
         self.assignee_priority = cloud_data.get(self._cc("assigneePriority"), "")
+        #:  Percentage of task completion. |br| **Type:** int
         self.percent_complete = cloud_data.get(self._cc("percentComplete"), "")
+        #:  Value is true if the details object of the task has a
+        #: nonempty description and false otherwise. |br| **Type:** bool
         self.has_description = cloud_data.get(self._cc("hasDescription"), "")
         created = cloud_data.get(self._cc("createdDateTime"), None)
         due_date_time = cloud_data.get(self._cc("dueDateTime"), None)
         start_date_time = cloud_data.get(self._cc("startDateTime"), None)
         completed_date = cloud_data.get(self._cc("completedDateTime"), None)
         local_tz = self.protocol.timezone
+        #:  Date and time at which the task starts. |br| **Type:** datetime
         self.start_date_time = (
             parse(start_date_time).astimezone(local_tz) if start_date_time else None
         )
+        #:  Date and time at which the task is created. |br| **Type:** datetime
         self.created_date = parse(created).astimezone(local_tz) if created else None
+        #:  Date and time at which the task is due.  |br| **Type:** datetime
         self.due_date_time = (
             parse(due_date_time).astimezone(local_tz) if due_date_time else None
         )
+        #:  Date and time at which the 'percentComplete' of the task is set to '100'.
+        #: |br| **Type:** datetime
         self.completed_date = (
             parse(completed_date).astimezone(local_tz) if completed_date else None
         )
+        #:  his sets the type of preview that shows up on the task.
+        #: The possible values are: automatic, noPreview, checklist, description, reference.
+        #: |br| **Type:** str
         self.preview_type = cloud_data.get(self._cc("previewType"), None)
+        #:  Number of external references that exist on the task. |br| **Type:** int
         self.reference_count = cloud_data.get(self._cc("referenceCount"), None)
+        #:  Number of checklist items that are present on the task. |br| **Type:** int
         self.checklist_item_count = cloud_data.get(self._cc("checklistItemCount"), None)
+        #:  Number of checklist items with value set to false, representing incomplete items.
+        #: |br| **Type:** int
         self.active_checklist_item_count = cloud_data.get(
             self._cc("activeChecklistItemCount"), None
         )
+        #:  Thread ID of the conversation on the task.  |br| **Type:** str
         self.conversation_thread_id = cloud_data.get(
             self._cc("conversationThreadId"), None
         )
+        #:  The categories to which the task has been applied. |br| **Type:** plannerAppliedCategories
         self.applied_categories = cloud_data.get(self._cc("appliedCategories"), None)
         self._etag = cloud_data.get("@odata.etag", "")
 
@@ -467,7 +504,7 @@ class Bucket(ApiComponent):
         "create_task": "/planner/tasks",
         "bucket": "/planner/buckets/{id}",
     }
-    task_constructor = Task
+    task_constructor = Task  #: :meta private:
 
     def __init__(self, *, parent=None, con=None, **kwargs):
         """A Microsoft O365 bucket
@@ -487,6 +524,7 @@ class Bucket(ApiComponent):
 
         cloud_data = kwargs.get(self._cloud_data_key, {})
 
+        #: ID of the bucket. |br| **Type:** str
         self.object_id = cloud_data.get("id")
 
         # Choose the main_resource passed in kwargs over parent main_resource
@@ -501,8 +539,11 @@ class Bucket(ApiComponent):
             main_resource=main_resource,
         )
 
+        #: Name of the bucket. |br| **Type:** str
         self.name = cloud_data.get(self._cc("name"), "")
+        #: Hint used to order items of this type in a list view. |br| **Type:** str
         self.order_hint = cloud_data.get(self._cc("orderHint"), "")
+        #: Plan ID to which the bucket belongs. |br| **Type:** str
         self.plan_id = cloud_data.get(self._cc("planId"), "")
         self._etag = cloud_data.get("@odata.etag", "")
 
@@ -705,9 +746,9 @@ class Plan(ApiComponent):
         "create_bucket": "/planner/buckets",
     }
 
-    bucket_constructor = Bucket
-    task_constructor = Task
-    plan_details_constructor = PlanDetails
+    bucket_constructor = Bucket  #: :meta private:
+    task_constructor = Task  #: :meta private:
+    plan_details_constructor = PlanDetails  #: :meta private:
 
     def __init__(self, *, parent=None, con=None, **kwargs):
         """A Microsoft O365 plan
@@ -727,6 +768,7 @@ class Plan(ApiComponent):
 
         cloud_data = kwargs.get(self._cloud_data_key, {})
 
+        #: ID of the plan. |br| **Type:** str
         self.object_id = cloud_data.get("id")
 
         # Choose the main_resource passed in kwargs over parent main_resource
@@ -741,9 +783,12 @@ class Plan(ApiComponent):
             main_resource=main_resource,
         )
 
+        #: Date and time at which the plan is created. |br| **Type:** datetime
         self.created_date_time = cloud_data.get(self._cc("createdDateTime"), "")
         container = cloud_data.get(self._cc("container"), {})
+        #: The identifier of the resource that contains the plan. |br| **Type:** str
         self.group_id = container.get(self._cc("containerId"), "")
+        #: Title of the plan. |br| **Type:** str
         self.title = cloud_data.get(self._cc("title"), "")
         self._etag = cloud_data.get("@odata.etag", "")
 
@@ -942,9 +987,9 @@ class Planner(ApiComponent):
         "list_group_plans": "/groups/{group_id}/planner/plans",
         "create_plan": "/planner/plans",
     }
-    plan_constructor = Plan
-    bucket_constructor = Bucket
-    task_constructor = Task
+    plan_constructor = Plan  #: :meta private:
+    bucket_constructor = Bucket  #: :meta private:
+    task_constructor = Task  #: :meta private:
 
     def __init__(self, *, parent=None, con=None, **kwargs):
         """A Planner object
