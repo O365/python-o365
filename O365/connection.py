@@ -118,22 +118,32 @@ class Protocol:
         """
         if protocol_url is None or api_version is None:
             raise ValueError("Must provide valid protocol_url and api_version values")
+        #: The url for the protcol in use. |br| **Type:** str
         self.protocol_url: str = protocol_url or self._protocol_url
+        #: The scope prefix for protcol in use. |br| **Type:** str
         self.protocol_scope_prefix: str = protocol_scope_prefix or ""
+        #: The api version being used. |br| **Type:** str
         self.api_version: str = api_version
+        #: The full service url.  |br| **Type:** str
         self.service_url: str = f"{protocol_url}{api_version}/"
+        #: The resource being used. Defaults to 'me'.   |br| **Type:** str
         self.default_resource: str = default_resource or ME_RESOURCE
+        #: Indicates if default casing is being used.   |br| **Type:** bool
         self.use_default_casing: bool = True if casing_function is None else False
+        #: The casing function being used.   |br| **Type:** callable
         self.casing_function: Callable = casing_function or to_camel_case
 
         # define any keyword that can be different in this protocol
         # for example, attachments OData type differs between Outlook
         #  rest api and graph: (graph = #microsoft.graph.fileAttachment and
         #  outlook = #Microsoft.OutlookServices.FileAttachment')
+        #: The keyword data store.   |br| **Type:** dict
         self.keyword_data_store: dict = {}
 
+        #: The max value for 'top' (500).  |br| **Type:** str
         self.max_top_value: int = 500  # Max $top parameter value
 
+        #: The in use timezone.   |br| **Type:** str
         self._timezone = None
 
         if timezone:
@@ -277,6 +287,7 @@ class MSGraphProtocol(Protocol):
         self.keyword_data_store["prefer_timezone_header"] = (
             f'outlook.timezone="{get_windows_tz(self._timezone)}"'
         )
+        #: The max value for 'top' (999).  |br| **Type:** str
         self.max_top_value = 999  # Max $top parameter value
 
     @Protocol.timezone.setter
@@ -329,6 +340,7 @@ class MSOffice365Protocol(Protocol):
         self.keyword_data_store["prefer_timezone_header"] = (
             f'outlook.timezone="{get_windows_tz(self.timezone)}"'
         )
+        #: The max value for 'top' (999).  |br| **Type:** str
         self.max_top_value = 999  # Max $top parameter value
 
     @Protocol.timezone.setter
@@ -391,6 +403,7 @@ class MSBusinessCentral365Protocol(Protocol):
         self.keyword_data_store["prefer_timezone_header"] = (
             f'outlook.timezone="{get_windows_tz(self.timezone)}"'
         )
+        #: The max value for 'top' (999).  |br| **Type:** str
         self.max_top_value = 999  # Max $top parameter value
 
     @Protocol.timezone.setter
@@ -506,10 +519,14 @@ class Connection:
                 'When using the "credentials" or "password" auth_flow, the "tenant_id" must be set'
             )
 
+        #: The credentials for the connection.  |br| **Type:** tuple
         self.auth: Tuple = credentials
+        #: The tenant id.  |br| **Type:** str
         self.tenant_id: str = tenant_id
 
+        #: The default headers.  |br| **Type:** dict
         self.default_headers: Dict = default_headers or dict()
+        #: Store token after refresh. Default true.  |br| **Type:** bool
         self.store_token_after_refresh: bool = store_token_after_refresh
 
         token_backend = token_backend or FileSystemTokenBackend(**kwargs)
@@ -517,27 +534,39 @@ class Connection:
             raise ValueError(
                 '"token_backend" must be an instance of a subclass of BaseTokenBackend'
             )
+        #: The token backend in use.  |br| **Type:** BaseTokenbackend
         self.token_backend: BaseTokenBackend = token_backend
+        #: The session to use.  |br| **Type:** Session
         self.session: Optional[Session] = None
 
+        #: The password for the connection.  |br| **Type:** str
         self.password: Optional[str] = password
 
         self._username: Optional[str] = None
         self.username: Optional[str] = username  # validate input
 
+        #: The proxy to use.  |br| **Type:** dict
         self.proxy: Dict = {}
         self.set_proxy(
             proxy_server, proxy_port, proxy_username, proxy_password, proxy_http_only
         )
 
+        #: The delay to put in a request. Default 0.  |br| **Type:** int
         self.requests_delay: int = requests_delay or 0
+        #: The time of the previous request.  |br| **Type:** float
         self._previous_request_at: Optional[float] = None  # store previous request time
+        #: Should http errors be raised. Default true.  |br| **Type:** bool
         self.raise_http_errors: bool = raise_http_errors
+        #: Number of time to retry request. Default 3. |br| **Type:** int
         self.request_retries: int = request_retries
+        #: Timeout for the request. Default None. |br| **Type:** int
         self.timeout: int = timeout
+        #: Whether to verify the ssl cert. Default true. |br| **Type:** bool
         self.verify_ssl: bool = verify_ssl
+        #: JSONEncoder to use. |br| **Type:** json.JSONEncoder
         self.json_encoder: Optional[json.JSONEncoder] = json_encoder
 
+        #: the naive session. |br| **Type:** Session
         self.naive_session: Optional[Session] = (
             None  # lazy loaded: holds a requests Session object
         )
@@ -546,6 +575,7 @@ class Connection:
             None  # store the msal client
         )
         self._msal_authority: str = f"https://login.microsoftonline.com/{tenant_id}"
+        #: The oauth redirect url. |br| **Type:** str
         self.oauth_redirect_url: str = (
             "https://login.microsoftonline.com/common/oauth2/nativeclient"
         )
@@ -556,6 +586,7 @@ class Connection:
         # of a 401 http error we will first try to refresh the token, set this flag to True and then
         # re-run the request. If the 401 goes away we will then set this flag to false. If it keeps the
         # 401 then we will raise the error.
+        #: Indicates if the token has expired. |br| **Type:** bool
         self._token_expired_flag: bool = False
 
     @property

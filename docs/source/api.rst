@@ -8,7 +8,6 @@ O365 API
 
    api/account
    api/address_book
-   api/attachment
    api/calendar
    api/category
    api/connection
