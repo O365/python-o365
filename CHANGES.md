@@ -2,6 +2,10 @@
 
 Almost every release features a lot of bugfixes but those are not listed here.
 
+## Version 2.1.1 (2025-03-20)
+- Tasks: support unsetting tasks due and reminder (Thanks @RogerSelwyn)
+- Removed Office 365 tasks file (api was deprecated on november 2024)
+
 ## Version 2.1.0 (2025-02-11)
 
 > [!IMPORTANT]
