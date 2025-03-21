@@ -1,460 +1,463 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Account &mdash; O365  documentation</title>
-  
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
 
   
-  
-  
-  
-
-  
-
-  
-  
-    
-
-  
-
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Address Book" href="address_book.html" />
-    <link rel="prev" title="O365 API" href="../api.html" /> 
-
-  
-  <script src="../_static/js/modernizr.min.js"></script>
+    <link rel="prev" title="O365 API" href="../api.html" />
+    <link href="../_static/css/style.css" rel="stylesheet" type="text/css">
 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
-          
+        <div class="wy-side-nav-search" >
 
           
-            <a href="../index.html" class="icon icon-home"> O365
           
-
-          
+          <a href="../index.html">
+            
           </a>
-
-          
-            
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p class="caption"><span class="caption-text">Contents:</span></p>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../usage.html">Detailed Usage</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../api.html">O365 API</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Account</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Account</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#O365.account.Account"><code class="docutils literal notranslate"><span class="pre">Account</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#O365.account.Account.__init__"><code class="docutils literal notranslate"><span class="pre">Account.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.account.Account.address_book"><code class="docutils literal notranslate"><span class="pre">Account.address_book()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.account.Account.authenticate"><code class="docutils literal notranslate"><span class="pre">Account.authenticate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.account.Account.directory"><code class="docutils literal notranslate"><span class="pre">Account.directory()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.account.Account.get_authenticated_usernames"><code class="docutils literal notranslate"><span class="pre">Account.get_authenticated_usernames()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.account.Account.get_authorization_url"><code class="docutils literal notranslate"><span class="pre">Account.get_authorization_url()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.account.Account.get_current_user_data"><code class="docutils literal notranslate"><span class="pre">Account.get_current_user_data()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.account.Account.groups"><code class="docutils literal notranslate"><span class="pre">Account.groups()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.account.Account.mailbox"><code class="docutils literal notranslate"><span class="pre">Account.mailbox()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.account.Account.new_message"><code class="docutils literal notranslate"><span class="pre">Account.new_message()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.account.Account.outlook_categories"><code class="docutils literal notranslate"><span class="pre">Account.outlook_categories()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.account.Account.planner"><code class="docutils literal notranslate"><span class="pre">Account.planner()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.account.Account.request_token"><code class="docutils literal notranslate"><span class="pre">Account.request_token()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.account.Account.schedule"><code class="docutils literal notranslate"><span class="pre">Account.schedule()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.account.Account.sharepoint"><code class="docutils literal notranslate"><span class="pre">Account.sharepoint()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.account.Account.storage"><code class="docutils literal notranslate"><span class="pre">Account.storage()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.account.Account.tasks"><code class="docutils literal notranslate"><span class="pre">Account.tasks()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.account.Account.teams"><code class="docutils literal notranslate"><span class="pre">Account.teams()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.account.Account.connection"><code class="docutils literal notranslate"><span class="pre">Account.connection</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.account.Account.is_authenticated"><code class="docutils literal notranslate"><span class="pre">Account.is_authenticated</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.account.Account.main_resource"><code class="docutils literal notranslate"><span class="pre">Account.main_resource</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.account.Account.protocol"><code class="docutils literal notranslate"><span class="pre">Account.protocol</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.account.Account.username"><code class="docutils literal notranslate"><span class="pre">Account.username</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="address_book.html">Address Book</a></li>
-<li class="toctree-l2"><a class="reference internal" href="attachment.html">Attachment</a></li>
 <li class="toctree-l2"><a class="reference internal" href="calendar.html">Calendar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="category.html">Category</a></li>
 <li class="toctree-l2"><a class="reference internal" href="connection.html">Connection</a></li>
-<li class="toctree-l2"><a class="reference internal" href="drive.html">One Drive</a></li>
+<li class="toctree-l2"><a class="reference internal" href="directory.html">Directory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="excel.html">Excel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group.html">Group</a></li>
 <li class="toctree-l2"><a class="reference internal" href="mailbox.html">Mailbox</a></li>
 <li class="toctree-l2"><a class="reference internal" href="message.html">Message</a></li>
+<li class="toctree-l2"><a class="reference internal" href="onedrive.html">One Drive</a></li>
+<li class="toctree-l2"><a class="reference internal" href="planner.html">Planner</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sharepoint.html">Sharepoint</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tasks.html">Tasks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="teams.html">Teams</a></li>
 <li class="toctree-l2"><a class="reference internal" href="utils.html">Utils</a></li>
 </ul>
 </li>
 </ul>
 
-            
-          
         </div>
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">O365</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="../index.html">Docs</a> &raquo;</li>
-        
-          <li><a href="../api.html">O365 API</a> &raquo;</li>
-        
-      <li>Account</li>
-    
-    
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../api.html">O365 API</a></li>
+      <li class="breadcrumb-item active">Account</li>
       <li class="wy-breadcrumbs-aside">
-        
-            
             <a href="../_sources/api/account.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
-  </ul>
-
-  
-  <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
-      
-        <a href="address_book.html" class="btn btn-neutral float-right" title="Address Book" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="../api.html" class="btn btn-neutral" title="O365 API" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="../api.html" class="btn btn-neutral float-left" title="O365 API" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="address_book.html" class="btn btn-neutral float-right" title="Address Book" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
   </div>
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <div class="section" id="module-O365.account">
-<span id="account"></span><h1>Account<a class="headerlink" href="#module-O365.account" title="Permalink to this headline">¶</a></h1>
-<dl class="py class">
-<dt id="O365.account.Account">
-<em class="property">class </em><code class="sig-prename descclassname">O365.account.</code><code class="sig-name descname">Account</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">credentials</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">protocol</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">main_resource</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/account.html#Account"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.account.Account" title="Permalink to this definition">¶</a></dt>
+             
+  <section id="account">
+<h1>Account<a class="headerlink" href="#account" title="Link to this heading"></a></h1>
+<dl class="py class" id="module-O365.account">
+<dt class="sig sig-object py" id="O365.account.Account">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.account.</span></span><span class="sig-name descname"><span class="pre">Account</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">credentials</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">username</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">protocol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="connection.html#O365.connection.Protocol" title="O365.connection.Protocol"><span class="pre">Protocol</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">main_resource</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/account.html#Account"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.account.Account" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="py method">
-<dt id="O365.account.Account.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">credentials</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">protocol</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">main_resource</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/account.html#Account.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.account.Account.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Creates an object which is used to access resources related to the
-specified credentials</p>
+<dt class="sig sig-object py" id="O365.account.Account.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">credentials</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">username</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">protocol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="connection.html#O365.connection.Protocol" title="O365.connection.Protocol"><span class="pre">Protocol</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">main_resource</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/account.html#Account.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.account.Account.__init__" title="Link to this definition"></a></dt>
+<dd><p>Creates an object which is used to access resources related to the specified credentials.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>credentials</strong> (<em>tuple</em>) – a tuple containing the client_id
-and client_secret</p></li>
-<li><p><strong>protocol</strong> (<a class="reference internal" href="connection.html#O365.connection.Protocol" title="O365.connection.Protocol"><em>Protocol</em></a>) – the protocol to be used in this account</p></li>
-<li><p><strong>main_resource</strong> (<em>str</em>) – the resource to be used by this account
-(‘me’ or ‘users’, etc.)</p></li>
+<li><p><strong>credentials</strong> – a tuple containing the client_id and client_secret</p></li>
+<li><p><strong>username</strong> – the username to be used by this account</p></li>
+<li><p><strong>protocol</strong> – the protocol to be used in this account</p></li>
+<li><p><strong>main_resource</strong> – the resource to be used by this account (‘me’ or ‘users’, etc.)</p></li>
 <li><p><strong>kwargs</strong> – any extra args to be passed to the Connection instance</p></li>
 </ul>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>ValueError</strong> – if an invalid protocol is passed</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.account.Account.address_book">
-<code class="sig-name descname">address_book</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">resource</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">address_book</span><span class="o">=</span><span class="default_value">'personal'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/account.html#Account.address_book"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.account.Account.address_book" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.account.Account.address_book">
+<span class="sig-name descname"><span class="pre">address_book</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">resource</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">address_book</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'personal'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/account.html#Account.address_book"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.account.Account.address_book" title="Link to this definition"></a></dt>
 <dd><p>Get an instance to the specified address book for the
 specified account resource</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>resource</strong> (<em>str</em>) – Custom resource to be used in this address book
+<li><p><strong>resource</strong> – Custom resource to be used in this address book
 (Defaults to parent main_resource)</p></li>
-<li><p><strong>address_book</strong> (<em>str</em>) – Choose from ‘Personal’ or ‘Directory’</p></li>
+<li><p><strong>address_book</strong> – Choose from ‘Personal’ or ‘Directory’</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>a representation of the specified address book</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="address_book.html#O365.address_book.AddressBook" title="O365.address_book.AddressBook">AddressBook</a> or GlobalAddressList</p>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>RuntimeError</strong> – if invalid address_book is specified</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.account.Account.authenticate">
-<code class="sig-name descname">authenticate</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">scopes</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/account.html#Account.authenticate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.account.Account.authenticate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Performs the oauth authentication flow using the console resulting in a stored token.
-It uses the credentials passed on instantiation</p>
+<dt class="sig sig-object py" id="O365.account.Account.authenticate">
+<span class="sig-name descname"><span class="pre">authenticate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">requested_scopes:</span> <span class="pre">list</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">redirect_uri:</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">handle_consent:</span> <span class="pre">~typing.Callable</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">consent_input_token&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/O365/account.html#Account.authenticate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.account.Account.authenticate" title="Link to this definition"></a></dt>
+<dd><p>Performs the console authentication flow resulting in a stored token.
+It uses the credentials passed on instantiation.
+Returns True if succeeded otherwise False.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>or None scopes</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – list of protocol user scopes to be converted
-by the protocol or scope helpers</p></li>
+<li><p><strong>requested_scopes</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – list of protocol user scopes to be converted
+by the protocol or scope helpers or raw scopes</p></li>
+<li><p><strong>redirect_uri</strong> (<em>str</em>) – redirect url configured in registered app</p></li>
+<li><p><strong>handle_consent</strong> – a function to handle the consent process by default just input for the token url</p></li>
 <li><p><strong>kwargs</strong> – other configurations to be passed to the
 Connection.get_authorization_url and Connection.request_token methods</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Success / Failure</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>bool</p>
-</dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.account.Account.connection">
-<em class="property">property </em><code class="sig-name descname">connection</code><a class="headerlink" href="#O365.account.Account.connection" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for self.con</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>type(self.connection_constructor)</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt id="O365.account.Account.connection_constructor">
-<code class="sig-name descname">connection_constructor</code><a class="headerlink" href="#O365.account.Account.connection_constructor" title="Permalink to this definition">¶</a></dt>
-<dd><p>alias of <a class="reference internal" href="connection.html#O365.connection.Connection" title="O365.connection.Connection"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.connection.Connection</span></code></a></p>
-</dd></dl>
-
-<dl class="py method">
-<dt id="O365.account.Account.directory">
-<code class="sig-name descname">directory</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">resource</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/account.html#Account.directory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.account.Account.directory" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.account.Account.directory">
+<span class="sig-name descname"><span class="pre">directory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">resource</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/account.html#Account.directory"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.account.Account.directory" title="Link to this definition"></a></dt>
 <dd><p>Returns the active directory instance</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.account.Account.get_current_user">
-<code class="sig-name descname">get_current_user</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/account.html#Account.get_current_user"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.account.Account.get_current_user" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the current user</p>
+<dt class="sig sig-object py" id="O365.account.Account.get_authenticated_usernames">
+<span class="sig-name descname"><span class="pre">get_authenticated_usernames</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/O365/account.html#Account.get_authenticated_usernames"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.account.Account.get_authenticated_usernames" title="Link to this definition"></a></dt>
+<dd><p>Returns a list of usernames that are authenticated and have a valid access token or a refresh token.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.account.Account.is_authenticated">
-<em class="property">property </em><code class="sig-name descname">is_authenticated</code><a class="headerlink" href="#O365.account.Account.is_authenticated" title="Permalink to this definition">¶</a></dt>
-<dd><p>Checks whether the library has the authentication and that is not expired
-:return: True if authenticated, False otherwise</p>
+<dt class="sig sig-object py" id="O365.account.Account.get_authorization_url">
+<span class="sig-name descname"><span class="pre">get_authorization_url</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">requested_scopes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">redirect_uri</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/O365/account.html#Account.get_authorization_url"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.account.Account.get_authorization_url" title="Link to this definition"></a></dt>
+<dd><p>Initializes the oauth authorization flow, getting the
+authorization url that the user must approve.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>requested_scopes</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – list of scopes to request access for</p></li>
+<li><p><strong>redirect_uri</strong> (<em>str</em>) – redirect url configured in registered app</p></li>
+<li><p><strong>kwargs</strong> – allow to pass unused params in conjunction with Connection</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>authorization url and the flow dict</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.account.Account.mailbox">
-<code class="sig-name descname">mailbox</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">resource</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/account.html#Account.mailbox"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.account.Account.mailbox" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.account.Account.get_current_user_data">
+<span class="sig-name descname"><span class="pre">get_current_user_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/account.html#Account.get_current_user_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.account.Account.get_current_user_data" title="Link to this definition"></a></dt>
+<dd><p>Returns the current user data from the active directory</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.account.Account.groups">
+<span class="sig-name descname"><span class="pre">groups</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">resource</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/account.html#Account.groups"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.account.Account.groups" title="Link to this definition"></a></dt>
+<dd><p>Get an instance to read information from Microsoft Groups</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.account.Account.mailbox">
+<span class="sig-name descname"><span class="pre">mailbox</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">resource</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/account.html#Account.mailbox"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.account.Account.mailbox" title="Link to this definition"></a></dt>
 <dd><p>Get an instance to the mailbox for the specified account resource</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>resource</strong> (<em>str</em>) – Custom resource to be used in this mailbox
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>resource</strong> – Custom resource to be used in this mailbox
 (Defaults to parent main_resource)</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>a representation of account mailbox</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="mailbox.html#O365.mailbox.MailBox" title="O365.mailbox.MailBox">O365.mailbox.MailBox</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.account.Account.new_message">
-<code class="sig-name descname">new_message</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">resource</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/account.html#Account.new_message"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.account.Account.new_message" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.account.Account.new_message">
+<span class="sig-name descname"><span class="pre">new_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">resource</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/account.html#Account.new_message"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.account.Account.new_message" title="Link to this definition"></a></dt>
 <dd><p>Creates a new message to be sent or stored</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>resource</strong> (<em>str</em>) – Custom resource to be used in this message
 (Defaults to parent main_resource)</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>New empty message</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="message.html#O365.message.Message" title="O365.message.Message">Message</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.account.Account.outlook_categories">
-<code class="sig-name descname">outlook_categories</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">resource</span><span class="o">=</span><span class="default_value">''</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/account.html#Account.outlook_categories"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.account.Account.outlook_categories" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.account.Account.outlook_categories">
+<span class="sig-name descname"><span class="pre">outlook_categories</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">resource</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/account.html#Account.outlook_categories"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.account.Account.outlook_categories" title="Link to this definition"></a></dt>
 <dd><p>Returns a Categories object to handle the available Outlook Categories</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.account.Account.planner">
-<code class="sig-name descname">planner</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">resource</span><span class="o">=</span><span class="default_value">''</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/account.html#Account.planner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.account.Account.planner" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.account.Account.planner">
+<span class="sig-name descname"><span class="pre">planner</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">resource</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/account.html#Account.planner"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.account.Account.planner" title="Link to this definition"></a></dt>
 <dd><p>Get an instance to read information from Microsoft planner</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.account.Account.schedule">
-<code class="sig-name descname">schedule</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">resource</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/account.html#Account.schedule"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.account.Account.schedule" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.account.Account.request_token">
+<span class="sig-name descname"><span class="pre">request_token</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">authorization_url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">flow</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">requested_scopes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">store_token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/O365/account.html#Account.request_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.account.Account.request_token" title="Link to this definition"></a></dt>
+<dd><p>Authenticates for the specified url and gets the oauth token data. Saves the
+token in the backend if store_token is True. This will replace any other tokens stored
+for the same username and scopes requested.
+If the token data is successfully requested, then this method will try to set the username if
+not previously set.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>authorization_url</strong> (<em>str</em><em> or </em><em>None</em>) – url given by the authorization flow or None if it’s client credentials</p></li>
+<li><p><strong>flow</strong> (<em>dict</em>) – dict object holding the data used in get_authorization_url</p></li>
+<li><p><strong>requested_scopes</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – list of scopes to request access for</p></li>
+<li><p><strong>store_token</strong> (<em>bool</em>) – True to store the token in the token backend,
+so you don’t have to keep opening the auth link and
+authenticating every time</p></li>
+<li><p><strong>kwargs</strong> – allow to pass unused params in conjunction with Connection</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Success/Failure</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.account.Account.schedule">
+<span class="sig-name descname"><span class="pre">schedule</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">resource</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/account.html#Account.schedule"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.account.Account.schedule" title="Link to this definition"></a></dt>
 <dd><p>Get an instance to work with calendar events for the
 specified account resource</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>resource</strong> (<em>str</em>) – Custom resource to be used in this schedule object
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>resource</strong> – Custom resource to be used in this schedule object
 (Defaults to parent main_resource)</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>a representation of calendar events</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="calendar.html#O365.calendar.Schedule" title="O365.calendar.Schedule">Schedule</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.account.Account.sharepoint">
-<code class="sig-name descname">sharepoint</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">resource</span><span class="o">=</span><span class="default_value">''</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/account.html#Account.sharepoint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.account.Account.sharepoint" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.account.Account.sharepoint">
+<span class="sig-name descname"><span class="pre">sharepoint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">resource</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/account.html#Account.sharepoint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.account.Account.sharepoint" title="Link to this definition"></a></dt>
 <dd><p>Get an instance to read information from Sharepoint sites for the
 specified account resource</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>resource</strong> (<em>str</em>) – Custom resource to be used in this sharepoint
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>resource</strong> – Custom resource to be used in this sharepoint
 object (Defaults to parent main_resource)</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>a representation of Sharepoint Sites</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="sharepoint.html#O365.sharepoint.Sharepoint" title="O365.sharepoint.Sharepoint">Sharepoint</a></p>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>RuntimeError</strong> – if protocol doesn’t support the feature</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.account.Account.storage">
-<code class="sig-name descname">storage</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">resource</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/account.html#Account.storage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.account.Account.storage" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.account.Account.storage">
+<span class="sig-name descname"><span class="pre">storage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">resource</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/account.html#Account.storage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.account.Account.storage" title="Link to this definition"></a></dt>
 <dd><p>Get an instance to handle file storage (OneDrive / Sharepoint)
 for the specified account resource</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>resource</strong> (<em>str</em>) – Custom resource to be used in this drive object
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>resource</strong> – Custom resource to be used in this drive object
 (Defaults to parent main_resource)</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>a representation of OneDrive File Storage</p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="drive.html#O365.drive.Storage" title="O365.drive.Storage">Storage</a></p>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="onedrive.html#O365.drive.Storage" title="O365.drive.Storage">Storage</a></p>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>RuntimeError</strong> – if protocol doesn’t support the feature</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.account.Account.teams">
-<code class="sig-name descname">teams</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">resource</span><span class="o">=</span><span class="default_value">''</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/account.html#Account.teams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.account.Account.teams" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.account.Account.tasks">
+<span class="sig-name descname"><span class="pre">tasks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">resource</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/account.html#Account.tasks"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.account.Account.tasks" title="Link to this definition"></a></dt>
+<dd><p>Get an instance to read information from Microsoft ToDo</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.account.Account.teams">
+<span class="sig-name descname"><span class="pre">teams</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">resource</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/account.html#Account.teams"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.account.Account.teams" title="Link to this definition"></a></dt>
 <dd><p>Get an instance to read information from Microsoft Teams</p>
 </dd></dl>
 
+<dl class="py property">
+<dt class="sig sig-object py" id="O365.account.Account.connection">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">connection</span></span><a class="headerlink" href="#O365.account.Account.connection" title="Link to this definition"></a></dt>
+<dd><p>Alias for self.con</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>type(self.connection_constructor)</p>
+</dd>
+</dl>
 </dd></dl>
 
-</div>
+<dl class="py property">
+<dt class="sig sig-object py" id="O365.account.Account.is_authenticated">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_authenticated</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#O365.account.Account.is_authenticated" title="Link to this definition"></a></dt>
+<dd><p>Checks whether the library has the authentication data and that is not expired for the current username.
+This will try to load the token from the backend if not already loaded.
+Return True if authenticated, False otherwise.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.account.Account.main_resource">
+<span class="sig-name descname"><span class="pre">main_resource</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#O365.account.Account.main_resource" title="Link to this definition"></a></dt>
+<dd><p>The resource in use for the account. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.account.Account.protocol">
+<span class="sig-name descname"><span class="pre">protocol</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="connection.html#O365.connection.Protocol" title="O365.connection.Protocol"><span class="pre">Protocol</span></a></em><a class="headerlink" href="#O365.account.Account.protocol" title="Link to this definition"></a></dt>
+<dd><p>The protocol to use for the account. Defaults ot MSGraphProtocol. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> Protocol</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="O365.account.Account.username">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">username</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#O365.account.Account.username" title="Link to this definition"></a></dt>
+<dd><p>Returns the username in use for the account</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
 
 
            </div>
-           
           </div>
-          <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="address_book.html" class="btn btn-neutral float-right" title="Address Book" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="../api.html" class="btn btn-neutral" title="O365 API" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../api.html" class="btn btn-neutral float-left" title="O365 API" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="address_book.html" class="btn btn-neutral float-right" title="Address Book" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &copy; Copyright 2018, Narcolapser
-
-    </p>
+    <p>&#169; Copyright 2025, alejcas.</p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
-
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-
-  
-
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script src="../_static/language_data.js"></script>
-    
-
-  
-
-  <script type="text/javascript" src="../_static/js/theme.js"></script>
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });

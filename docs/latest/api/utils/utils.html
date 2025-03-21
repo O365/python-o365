@@ -1,0 +1,1314 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Utils &mdash; O365  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="prev" title="Attachment" href="attachment.html" />
+    <link href="../../_static/css/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage.html">Detailed Usage</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../api.html">O365 API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../account.html">Account</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../address_book.html">Address Book</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../calendar.html">Calendar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../category.html">Category</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../connection.html">Connection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../directory.html">Directory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../excel.html">Excel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../group.html">Group</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mailbox.html">Mailbox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../message.html">Message</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../onedrive.html">One Drive</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../planner.html">Planner</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../sharepoint.html">Sharepoint</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tasks.html">Tasks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../teams.html">Teams</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../utils.html">Utils</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="attachment.html">Attachment</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Utils</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#O365.utils.utils.ApiComponent"><code class="docutils literal notranslate"><span class="pre">ApiComponent</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.utils.utils.CaseEnum"><code class="docutils literal notranslate"><span class="pre">CaseEnum</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.utils.utils.ChainOperator"><code class="docutils literal notranslate"><span class="pre">ChainOperator</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.utils.utils.HandleRecipientsMixin"><code class="docutils literal notranslate"><span class="pre">HandleRecipientsMixin</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.utils.utils.ImportanceLevel"><code class="docutils literal notranslate"><span class="pre">ImportanceLevel</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.utils.utils.OneDriveWellKnowFolderNames"><code class="docutils literal notranslate"><span class="pre">OneDriveWellKnowFolderNames</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.utils.utils.OutlookWellKnowFolderNames"><code class="docutils literal notranslate"><span class="pre">OutlookWellKnowFolderNames</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.utils.utils.Pagination"><code class="docutils literal notranslate"><span class="pre">Pagination</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.utils.utils.Query"><code class="docutils literal notranslate"><span class="pre">Query</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.utils.utils.Recipient"><code class="docutils literal notranslate"><span class="pre">Recipient</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.utils.utils.Recipients"><code class="docutils literal notranslate"><span class="pre">Recipients</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.utils.utils.TrackerSet"><code class="docutils literal notranslate"><span class="pre">TrackerSet</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">O365</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../api.html">O365 API</a></li>
+          <li class="breadcrumb-item"><a href="../utils.html">Utils</a></li>
+      <li class="breadcrumb-item active">Utils</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/api/utils/utils.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="attachment.html" class="btn btn-neutral float-left" title="Attachment" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="utils">
+<h1>Utils<a class="headerlink" href="#utils" title="Link to this heading"></a></h1>
+<dl class="py class" id="module-O365.utils.utils">
+<dt class="sig sig-object py" id="O365.utils.utils.ApiComponent">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.utils.utils.</span></span><span class="sig-name descname"><span class="pre">ApiComponent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">protocol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">main_resource</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/utils.html#ApiComponent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.utils.ApiComponent" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Base class for all object interactions with the Cloud Service API</p>
+<p>Exposes common access methods to the api protocol within all Api objects</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.utils.ApiComponent.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">protocol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">main_resource</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/utils.html#ApiComponent.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.utils.ApiComponent.__init__" title="Link to this definition"></a></dt>
+<dd><p>Object initialization</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>protocol</strong> (<a class="reference internal" href="../connection.html#O365.connection.Protocol" title="O365.connection.Protocol"><em>Protocol</em></a>) – A protocol class or instance to be used with
+this connection</p></li>
+<li><p><strong>main_resource</strong> (<em>str</em>) – main_resource to be used in these API
+communications</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.utils.ApiComponent.build_base_url">
+<span class="sig-name descname"><span class="pre">build_base_url</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">resource</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/utils.html#ApiComponent.build_base_url"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.utils.ApiComponent.build_base_url" title="Link to this definition"></a></dt>
+<dd><p>Builds the base url of this ApiComponent
+:param str resource: the resource to build the base url</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.utils.ApiComponent.build_url">
+<span class="sig-name descname"><span class="pre">build_url</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">endpoint</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/utils.html#ApiComponent.build_url"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.utils.ApiComponent.build_url" title="Link to this definition"></a></dt>
+<dd><p>Returns a url for a given endpoint using the protocol
+service url</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>endpoint</strong> (<em>str</em>) – endpoint to build the url for</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>final url</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.utils.ApiComponent.new_query">
+<span class="sig-name descname"><span class="pre">new_query</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attribute</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/utils.html#ApiComponent.new_query"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.utils.ApiComponent.new_query" title="Link to this definition"></a></dt>
+<dd><p>Create a new query to filter results</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>attribute</strong> (<em>str</em>) – attribute to apply the query for</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>new Query</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#O365.utils.utils.Query" title="O365.utils.utils.Query">Query</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.utils.ApiComponent.q">
+<span class="sig-name descname"><span class="pre">q</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attribute</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#O365.utils.utils.ApiComponent.q" title="Link to this definition"></a></dt>
+<dd><p>Create a new query to filter results</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>attribute</strong> (<em>str</em>) – attribute to apply the query for</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>new Query</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#O365.utils.utils.Query" title="O365.utils.utils.Query">Query</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.utils.ApiComponent.set_base_url">
+<span class="sig-name descname"><span class="pre">set_base_url</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">resource</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/utils.html#ApiComponent.set_base_url"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.utils.ApiComponent.set_base_url" title="Link to this definition"></a></dt>
+<dd><p>Sets the base urls for this ApiComponent
+:param str resource: the resource to build the base url</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.utils.utils.ApiComponent.main_resource">
+<span class="sig-name descname"><span class="pre">main_resource</span></span><a class="headerlink" href="#O365.utils.utils.ApiComponent.main_resource" title="Link to this definition"></a></dt>
+<dd><p>The main resource for the components. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="O365.utils.utils.CaseEnum">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.utils.utils.</span></span><span class="sig-name descname"><span class="pre">CaseEnum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">new_class_name</span></span></em>, <em class="sig-param"><span class="positional-only-separator o"><abbr title="Positional-only parameter separator (PEP 570)"><span class="pre">/</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">names</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">module</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qualname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boundary</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/utils.html#CaseEnum"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.utils.CaseEnum" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<p>A Enum that converts the value to a snake_case casing</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.utils.CaseEnum.from_value">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/utils.html#CaseEnum.from_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.utils.CaseEnum.from_value" title="Link to this definition"></a></dt>
+<dd><p>Gets a member by a snaked-case provided value</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="O365.utils.utils.ChainOperator">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.utils.utils.</span></span><span class="sig-name descname"><span class="pre">ChainOperator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/utils.html#ChainOperator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.utils.ChainOperator" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.utils.utils.ChainOperator.AND">
+<span class="sig-name descname"><span class="pre">AND</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'and'</span></em><a class="headerlink" href="#O365.utils.utils.ChainOperator.AND" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.utils.utils.ChainOperator.OR">
+<span class="sig-name descname"><span class="pre">OR</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'or'</span></em><a class="headerlink" href="#O365.utils.utils.ChainOperator.OR" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="O365.utils.utils.HandleRecipientsMixin">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.utils.utils.</span></span><span class="sig-name descname"><span class="pre">HandleRecipientsMixin</span></span><a class="reference internal" href="../../_modules/O365/utils/utils.html#HandleRecipientsMixin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.utils.HandleRecipientsMixin" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="O365.utils.utils.ImportanceLevel">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.utils.utils.</span></span><span class="sig-name descname"><span class="pre">ImportanceLevel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/utils.html#ImportanceLevel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.utils.ImportanceLevel" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#O365.utils.utils.CaseEnum" title="O365.utils.utils.CaseEnum"><code class="xref py py-class docutils literal notranslate"><span class="pre">CaseEnum</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.utils.utils.ImportanceLevel.High">
+<span class="sig-name descname"><span class="pre">High</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'high'</span></em><a class="headerlink" href="#O365.utils.utils.ImportanceLevel.High" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.utils.utils.ImportanceLevel.Low">
+<span class="sig-name descname"><span class="pre">Low</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'low'</span></em><a class="headerlink" href="#O365.utils.utils.ImportanceLevel.Low" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.utils.utils.ImportanceLevel.Normal">
+<span class="sig-name descname"><span class="pre">Normal</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'normal'</span></em><a class="headerlink" href="#O365.utils.utils.ImportanceLevel.Normal" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="O365.utils.utils.OneDriveWellKnowFolderNames">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.utils.utils.</span></span><span class="sig-name descname"><span class="pre">OneDriveWellKnowFolderNames</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/utils.html#OneDriveWellKnowFolderNames"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.utils.OneDriveWellKnowFolderNames" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.utils.utils.OneDriveWellKnowFolderNames.APP_ROOT">
+<span class="sig-name descname"><span class="pre">APP_ROOT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'approot'</span></em><a class="headerlink" href="#O365.utils.utils.OneDriveWellKnowFolderNames.APP_ROOT" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.utils.utils.OneDriveWellKnowFolderNames.ATTACHMENTS">
+<span class="sig-name descname"><span class="pre">ATTACHMENTS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'attachments'</span></em><a class="headerlink" href="#O365.utils.utils.OneDriveWellKnowFolderNames.ATTACHMENTS" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.utils.utils.OneDriveWellKnowFolderNames.CAMERA_ROLL">
+<span class="sig-name descname"><span class="pre">CAMERA_ROLL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'cameraroll'</span></em><a class="headerlink" href="#O365.utils.utils.OneDriveWellKnowFolderNames.CAMERA_ROLL" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.utils.utils.OneDriveWellKnowFolderNames.DOCUMENTS">
+<span class="sig-name descname"><span class="pre">DOCUMENTS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'documents'</span></em><a class="headerlink" href="#O365.utils.utils.OneDriveWellKnowFolderNames.DOCUMENTS" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.utils.utils.OneDriveWellKnowFolderNames.MUSIC">
+<span class="sig-name descname"><span class="pre">MUSIC</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'music'</span></em><a class="headerlink" href="#O365.utils.utils.OneDriveWellKnowFolderNames.MUSIC" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.utils.utils.OneDriveWellKnowFolderNames.PHOTOS">
+<span class="sig-name descname"><span class="pre">PHOTOS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'photos'</span></em><a class="headerlink" href="#O365.utils.utils.OneDriveWellKnowFolderNames.PHOTOS" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="O365.utils.utils.OutlookWellKnowFolderNames">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.utils.utils.</span></span><span class="sig-name descname"><span class="pre">OutlookWellKnowFolderNames</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/utils.html#OutlookWellKnowFolderNames"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.utils.OutlookWellKnowFolderNames" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.utils.utils.OutlookWellKnowFolderNames.ARCHIVE">
+<span class="sig-name descname"><span class="pre">ARCHIVE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Archive'</span></em><a class="headerlink" href="#O365.utils.utils.OutlookWellKnowFolderNames.ARCHIVE" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.utils.utils.OutlookWellKnowFolderNames.CLUTTER">
+<span class="sig-name descname"><span class="pre">CLUTTER</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'clutter'</span></em><a class="headerlink" href="#O365.utils.utils.OutlookWellKnowFolderNames.CLUTTER" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.utils.utils.OutlookWellKnowFolderNames.CONFLICTS">
+<span class="sig-name descname"><span class="pre">CONFLICTS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'conflicts'</span></em><a class="headerlink" href="#O365.utils.utils.OutlookWellKnowFolderNames.CONFLICTS" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.utils.utils.OutlookWellKnowFolderNames.CONVERSATIONHISTORY">
+<span class="sig-name descname"><span class="pre">CONVERSATIONHISTORY</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'conversationhistory'</span></em><a class="headerlink" href="#O365.utils.utils.OutlookWellKnowFolderNames.CONVERSATIONHISTORY" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.utils.utils.OutlookWellKnowFolderNames.DELETED">
+<span class="sig-name descname"><span class="pre">DELETED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'DeletedItems'</span></em><a class="headerlink" href="#O365.utils.utils.OutlookWellKnowFolderNames.DELETED" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.utils.utils.OutlookWellKnowFolderNames.DRAFTS">
+<span class="sig-name descname"><span class="pre">DRAFTS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Drafts'</span></em><a class="headerlink" href="#O365.utils.utils.OutlookWellKnowFolderNames.DRAFTS" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.utils.utils.OutlookWellKnowFolderNames.INBOX">
+<span class="sig-name descname"><span class="pre">INBOX</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Inbox'</span></em><a class="headerlink" href="#O365.utils.utils.OutlookWellKnowFolderNames.INBOX" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.utils.utils.OutlookWellKnowFolderNames.JUNK">
+<span class="sig-name descname"><span class="pre">JUNK</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'JunkEmail'</span></em><a class="headerlink" href="#O365.utils.utils.OutlookWellKnowFolderNames.JUNK" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.utils.utils.OutlookWellKnowFolderNames.LOCALFAILURES">
+<span class="sig-name descname"><span class="pre">LOCALFAILURES</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'localfailures'</span></em><a class="headerlink" href="#O365.utils.utils.OutlookWellKnowFolderNames.LOCALFAILURES" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.utils.utils.OutlookWellKnowFolderNames.OUTBOX">
+<span class="sig-name descname"><span class="pre">OUTBOX</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Outbox'</span></em><a class="headerlink" href="#O365.utils.utils.OutlookWellKnowFolderNames.OUTBOX" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.utils.utils.OutlookWellKnowFolderNames.RECOVERABLEITEMSDELETIONS">
+<span class="sig-name descname"><span class="pre">RECOVERABLEITEMSDELETIONS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'recoverableitemsdeletions'</span></em><a class="headerlink" href="#O365.utils.utils.OutlookWellKnowFolderNames.RECOVERABLEITEMSDELETIONS" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.utils.utils.OutlookWellKnowFolderNames.SCHEDULED">
+<span class="sig-name descname"><span class="pre">SCHEDULED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'scheduled'</span></em><a class="headerlink" href="#O365.utils.utils.OutlookWellKnowFolderNames.SCHEDULED" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.utils.utils.OutlookWellKnowFolderNames.SEARCHFOLDERS">
+<span class="sig-name descname"><span class="pre">SEARCHFOLDERS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'searchfolders'</span></em><a class="headerlink" href="#O365.utils.utils.OutlookWellKnowFolderNames.SEARCHFOLDERS" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.utils.utils.OutlookWellKnowFolderNames.SENT">
+<span class="sig-name descname"><span class="pre">SENT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'SentItems'</span></em><a class="headerlink" href="#O365.utils.utils.OutlookWellKnowFolderNames.SENT" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.utils.utils.OutlookWellKnowFolderNames.SERVERFAILURES">
+<span class="sig-name descname"><span class="pre">SERVERFAILURES</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'serverfailures'</span></em><a class="headerlink" href="#O365.utils.utils.OutlookWellKnowFolderNames.SERVERFAILURES" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.utils.utils.OutlookWellKnowFolderNames.SYNCISSUES">
+<span class="sig-name descname"><span class="pre">SYNCISSUES</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'syncissues'</span></em><a class="headerlink" href="#O365.utils.utils.OutlookWellKnowFolderNames.SYNCISSUES" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="O365.utils.utils.Pagination">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.utils.utils.</span></span><span class="sig-name descname"><span class="pre">Pagination</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">constructor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">next_link</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/utils.html#Pagination"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.utils.Pagination" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">ApiComponent</span></code></a></p>
+<p>Utility class that allows batching requests to the server</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.utils.Pagination.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">constructor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">next_link</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/utils.html#Pagination.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.utils.Pagination.__init__" title="Link to this definition"></a></dt>
+<dd><p>Returns an iterator that returns data until it’s exhausted.
+Then will request more data (same amount as the original request)
+to the server until this data is exhausted as well.
+Stops when no more data exists or limit is reached.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>parent</strong> – the parent class. Must implement attributes:
+con, api_version, main_resource</p></li>
+<li><p><strong>data</strong> – the start data to be return</p></li>
+<li><p><strong>constructor</strong> – the data constructor for the next batch.
+It can be a function.</p></li>
+<li><p><strong>next_link</strong> (<em>str</em>) – the link to request more data to</p></li>
+<li><p><strong>limit</strong> (<em>int</em>) – when to stop retrieving more data</p></li>
+<li><p><strong>kwargs</strong> – any extra key-word arguments to pass to the
+constructor.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.utils.utils.Pagination.constructor">
+<span class="sig-name descname"><span class="pre">constructor</span></span><a class="headerlink" href="#O365.utils.utils.Pagination.constructor" title="Link to this definition"></a></dt>
+<dd><p>The constructor. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> any</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.utils.utils.Pagination.data_count">
+<span class="sig-name descname"><span class="pre">data_count</span></span><a class="headerlink" href="#O365.utils.utils.Pagination.data_count" title="Link to this definition"></a></dt>
+<dd><p>Data count. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> int</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.utils.utils.Pagination.extra_args">
+<span class="sig-name descname"><span class="pre">extra_args</span></span><a class="headerlink" href="#O365.utils.utils.Pagination.extra_args" title="Link to this definition"></a></dt>
+<dd><p>Extra args. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> dict</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.utils.utils.Pagination.limit">
+<span class="sig-name descname"><span class="pre">limit</span></span><a class="headerlink" href="#O365.utils.utils.Pagination.limit" title="Link to this definition"></a></dt>
+<dd><p>The limit of when to stop. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> int</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.utils.utils.Pagination.next_link">
+<span class="sig-name descname"><span class="pre">next_link</span></span><a class="headerlink" href="#O365.utils.utils.Pagination.next_link" title="Link to this definition"></a></dt>
+<dd><p>The next link for the pagination. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.utils.utils.Pagination.parent">
+<span class="sig-name descname"><span class="pre">parent</span></span><a class="headerlink" href="#O365.utils.utils.Pagination.parent" title="Link to this definition"></a></dt>
+<dd><p>The parent. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> any</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.utils.utils.Pagination.state">
+<span class="sig-name descname"><span class="pre">state</span></span><a class="headerlink" href="#O365.utils.utils.Pagination.state" title="Link to this definition"></a></dt>
+<dd><p>State. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> int</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.utils.utils.Pagination.total_count">
+<span class="sig-name descname"><span class="pre">total_count</span></span><a class="headerlink" href="#O365.utils.utils.Pagination.total_count" title="Link to this definition"></a></dt>
+<dd><p>Total count. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> int</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="O365.utils.utils.Query">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.utils.utils.</span></span><span class="sig-name descname"><span class="pre">Query</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attribute</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">protocol</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/utils.html#Query"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.utils.Query" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Helper to conform OData filters</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.utils.Query.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attribute</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">protocol</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/utils.html#Query.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.utils.Query.__init__" title="Link to this definition"></a></dt>
+<dd><p>Build a query to apply OData filters
+<a class="reference external" href="https://docs.microsoft.com/en-us/graph/query-parameters">https://docs.microsoft.com/en-us/graph/query-parameters</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>attribute</strong> (<em>str</em>) – attribute to apply the query for</p></li>
+<li><p><strong>protocol</strong> (<a class="reference internal" href="../connection.html#O365.connection.Protocol" title="O365.connection.Protocol"><em>Protocol</em></a>) – protocol to use for connecting</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.utils.Query.all">
+<span class="sig-name descname"><span class="pre">all</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">collection</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">word</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attribute</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">operation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">negation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/utils.html#Query.all"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.utils.Query.all" title="Link to this definition"></a></dt>
+<dd><p>Performs a filter with the OData ‘all’ keyword on the collection</p>
+<p>For example:
+q.any(collection=’email_addresses’, attribute=’address’,
+operation=’eq’, <a class="reference external" href="mailto:word='george&#37;&#52;&#48;best&#46;com">word=’george<span>&#64;</span>best<span>&#46;</span>com</a>’)</p>
+<p>will transform to a filter such as:</p>
+<p>emailAddresses/all(a:a/address eq ‘george&#64;best.com’)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>collection</strong> (<em>str</em>) – the collection to apply the any keyword on</p></li>
+<li><p><strong>word</strong> (<em>str</em>) – the word to check</p></li>
+<li><p><strong>attribute</strong> (<em>str</em>) – the attribute of the collection to check</p></li>
+<li><p><strong>func</strong> (<em>str</em>) – the logical function to apply to the attribute
+inside the collection</p></li>
+<li><p><strong>operation</strong> (<em>str</em>) – the logical operation to apply to the
+attribute inside the collection</p></li>
+<li><p><strong>negation</strong> (<em>bool</em>) – negate the funcion or operation inside the iterable</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#O365.utils.utils.Query" title="O365.utils.utils.Query">Query</a></p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method is part of fluent api and can be chained</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.utils.Query.any">
+<span class="sig-name descname"><span class="pre">any</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">collection</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">word</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attribute</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">operation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">negation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/utils.html#Query.any"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.utils.Query.any" title="Link to this definition"></a></dt>
+<dd><p>Performs a filter with the OData ‘any’ keyword on the collection</p>
+<p>For example:
+q.any(collection=’email_addresses’, attribute=’address’,
+operation=’eq’, <a class="reference external" href="mailto:word='george&#37;&#52;&#48;best&#46;com">word=’george<span>&#64;</span>best<span>&#46;</span>com</a>’)</p>
+<p>will transform to a filter such as:</p>
+<p>emailAddresses/any(a:a/address eq ‘george&#64;best.com’)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>collection</strong> (<em>str</em>) – the collection to apply the any keyword on</p></li>
+<li><p><strong>word</strong> (<em>str</em>) – the word to check</p></li>
+<li><p><strong>attribute</strong> (<em>str</em>) – the attribute of the collection to check</p></li>
+<li><p><strong>func</strong> (<em>str</em>) – the logical function to apply to the attribute
+inside the collection</p></li>
+<li><p><strong>operation</strong> (<em>str</em>) – the logical operation to apply to the
+attribute inside the collection</p></li>
+<li><p><strong>negation</strong> (<em>bool</em>) – negates the funcion or operation inside the iterable</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#O365.utils.utils.Query" title="O365.utils.utils.Query">Query</a></p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method is part of fluent api and can be chained</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.utils.Query.as_params">
+<span class="sig-name descname"><span class="pre">as_params</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/utils.html#Query.as_params"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.utils.Query.as_params" title="Link to this definition"></a></dt>
+<dd><p>Returns the filters, orders, select, expands and search as query parameters</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.utils.Query.chain">
+<span class="sig-name descname"><span class="pre">chain</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">operation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">ChainOperator.AND</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/utils.html#Query.chain"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.utils.Query.chain" title="Link to this definition"></a></dt>
+<dd><p>Start a chain operation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>operation</strong> (<a class="reference internal" href="#O365.utils.utils.ChainOperator" title="O365.utils.utils.ChainOperator"><em>ChainOperator</em></a><em>, </em><em>str</em>) – how to combine with a new one</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#O365.utils.utils.Query" title="O365.utils.utils.Query">Query</a></p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method is part of fluent api and can be chained</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.utils.Query.clear">
+<span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/utils.html#Query.clear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.utils.Query.clear" title="Link to this definition"></a></dt>
+<dd><p>Clear everything</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#O365.utils.utils.Query" title="O365.utils.utils.Query">Query</a></p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method is part of fluent api and can be chained</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.utils.Query.clear_filters">
+<span class="sig-name descname"><span class="pre">clear_filters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/utils.html#Query.clear_filters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.utils.Query.clear_filters" title="Link to this definition"></a></dt>
+<dd><p>Clear filters</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.utils.Query.clear_order">
+<span class="sig-name descname"><span class="pre">clear_order</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/utils.html#Query.clear_order"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.utils.Query.clear_order" title="Link to this definition"></a></dt>
+<dd><p>Clears any order commands</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.utils.Query.close_group">
+<span class="sig-name descname"><span class="pre">close_group</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/utils.html#Query.close_group"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.utils.Query.close_group" title="Link to this definition"></a></dt>
+<dd><p>Closes a grouping for previous filters</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.utils.Query.contains">
+<span class="sig-name descname"><span class="pre">contains</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">word</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/utils.html#Query.contains"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.utils.Query.contains" title="Link to this definition"></a></dt>
+<dd><p>Adds a contains word check</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>word</strong> (<em>str</em>) – word to check</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#O365.utils.utils.Query" title="O365.utils.utils.Query">Query</a></p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method is part of fluent api and can be chained</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.utils.Query.endswith">
+<span class="sig-name descname"><span class="pre">endswith</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">word</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/utils.html#Query.endswith"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.utils.Query.endswith" title="Link to this definition"></a></dt>
+<dd><p>Adds a endswith word check</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>word</strong> (<em>str</em>) – word to check</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#O365.utils.utils.Query" title="O365.utils.utils.Query">Query</a></p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method is part of fluent api and can be chained</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.utils.Query.equals">
+<span class="sig-name descname"><span class="pre">equals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">word</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/utils.html#Query.equals"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.utils.Query.equals" title="Link to this definition"></a></dt>
+<dd><p>Add an equals check</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>word</strong> – word to compare with</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#O365.utils.utils.Query" title="O365.utils.utils.Query">Query</a></p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method is part of fluent api and can be chained</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.utils.Query.expand">
+<span class="sig-name descname"><span class="pre">expand</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">relationships</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/utils.html#Query.expand"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.utils.Query.expand" title="Link to this definition"></a></dt>
+<dd><p>Adds the relationships (e.g. “event” or “attachments”)
+that should be expanded with the $expand parameter
+Important: The ApiComponent using this should know how to handle this relationships.</p>
+<blockquote>
+<div><p>eg: Message knows how to handle attachments, and event (if it’s an EventMessage)</p>
+</div></blockquote>
+<p>Important: When using expand on multi-value relationships a max of 20 items will be returned.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>relationships</strong> (<em>str</em>) – the relationships tuple to expand.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#O365.utils.utils.Query" title="O365.utils.utils.Query">Query</a></p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method is part of fluent api and can be chained</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.utils.Query.function">
+<span class="sig-name descname"><span class="pre">function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">function_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">word</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/utils.html#Query.function"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.utils.Query.function" title="Link to this definition"></a></dt>
+<dd><p>Apply a function on given word</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>function_name</strong> (<em>str</em>) – function to apply</p></li>
+<li><p><strong>word</strong> (<em>str</em>) – word to apply function on</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#O365.utils.utils.Query" title="O365.utils.utils.Query">Query</a></p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method is part of fluent api and can be chained</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.utils.Query.get_expands">
+<span class="sig-name descname"><span class="pre">get_expands</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/utils.html#Query.get_expands"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.utils.Query.get_expands" title="Link to this definition"></a></dt>
+<dd><p>Returns the result expand clause</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str or None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.utils.Query.get_filters">
+<span class="sig-name descname"><span class="pre">get_filters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/utils.html#Query.get_filters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.utils.Query.get_filters" title="Link to this definition"></a></dt>
+<dd><p>Returns the result filters</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str or None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.utils.Query.get_order">
+<span class="sig-name descname"><span class="pre">get_order</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/utils.html#Query.get_order"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.utils.Query.get_order" title="Link to this definition"></a></dt>
+<dd><p>Returns the result order by clauses</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str or None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.utils.Query.get_selects">
+<span class="sig-name descname"><span class="pre">get_selects</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/utils.html#Query.get_selects"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.utils.Query.get_selects" title="Link to this definition"></a></dt>
+<dd><p>Returns the result select clause</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str or None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.utils.Query.greater">
+<span class="sig-name descname"><span class="pre">greater</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">word</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/utils.html#Query.greater"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.utils.Query.greater" title="Link to this definition"></a></dt>
+<dd><p>Add a greater than check</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>word</strong> – word to compare with</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#O365.utils.utils.Query" title="O365.utils.utils.Query">Query</a></p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method is part of fluent api and can be chained</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.utils.Query.greater_equal">
+<span class="sig-name descname"><span class="pre">greater_equal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">word</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/utils.html#Query.greater_equal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.utils.Query.greater_equal" title="Link to this definition"></a></dt>
+<dd><p>Add a greater than or equal to check</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>word</strong> – word to compare with</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#O365.utils.utils.Query" title="O365.utils.utils.Query">Query</a></p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method is part of fluent api and can be chained</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.utils.Query.iterable">
+<span class="sig-name descname"><span class="pre">iterable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iterable_name</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">collection</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">word</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attribute</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">operation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">negation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/utils.html#Query.iterable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.utils.Query.iterable" title="Link to this definition"></a></dt>
+<dd><p>Performs a filter with the OData ‘iterable_name’ keyword
+on the collection</p>
+<p>For example:
+q.iterable(‘any’, collection=’email_addresses’, attribute=’address’,
+operation=’eq’, <a class="reference external" href="mailto:word='george&#37;&#52;&#48;best&#46;com">word=’george<span>&#64;</span>best<span>&#46;</span>com</a>’)</p>
+<p>will transform to a filter such as:
+emailAddresses/any(a:a/address eq ‘george&#64;best.com’)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>iterable_name</strong> (<em>str</em>) – the OData name of the iterable</p></li>
+<li><p><strong>collection</strong> (<em>str</em>) – the collection to apply the any keyword on</p></li>
+<li><p><strong>word</strong> (<em>str</em>) – the word to check</p></li>
+<li><p><strong>attribute</strong> (<em>str</em>) – the attribute of the collection to check</p></li>
+<li><p><strong>func</strong> (<em>str</em>) – the logical function to apply to the attribute inside
+the collection</p></li>
+<li><p><strong>operation</strong> (<em>str</em>) – the logical operation to apply to the attribute
+inside the collection</p></li>
+<li><p><strong>negation</strong> (<em>bool</em>) – negate the funcion or operation inside the iterable</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#O365.utils.utils.Query" title="O365.utils.utils.Query">Query</a></p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method is part of fluent api and can be chained</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.utils.Query.less">
+<span class="sig-name descname"><span class="pre">less</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">word</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/utils.html#Query.less"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.utils.Query.less" title="Link to this definition"></a></dt>
+<dd><p>Add a less than check</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>word</strong> – word to compare with</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#O365.utils.utils.Query" title="O365.utils.utils.Query">Query</a></p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method is part of fluent api and can be chained</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.utils.Query.less_equal">
+<span class="sig-name descname"><span class="pre">less_equal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">word</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/utils.html#Query.less_equal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.utils.Query.less_equal" title="Link to this definition"></a></dt>
+<dd><p>Add a less than or equal to check</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>word</strong> – word to compare with</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#O365.utils.utils.Query" title="O365.utils.utils.Query">Query</a></p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method is part of fluent api and can be chained</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.utils.Query.logical_operator">
+<span class="sig-name descname"><span class="pre">logical_operator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">operation</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">word</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/utils.html#Query.logical_operator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.utils.Query.logical_operator" title="Link to this definition"></a></dt>
+<dd><p>Apply a logical operator</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>operation</strong> (<em>str</em>) – how to combine with a new one</p></li>
+<li><p><strong>word</strong> – other parameter for the operation
+(a = b) would be like a.logical_operator(‘eq’, ‘b’)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#O365.utils.utils.Query" title="O365.utils.utils.Query">Query</a></p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method is part of fluent api and can be chained</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.utils.Query.negate">
+<span class="sig-name descname"><span class="pre">negate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/utils.html#Query.negate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.utils.Query.negate" title="Link to this definition"></a></dt>
+<dd><p>Apply a not operator</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#O365.utils.utils.Query" title="O365.utils.utils.Query">Query</a></p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method is part of fluent api and can be chained</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.utils.Query.new">
+<span class="sig-name descname"><span class="pre">new</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attribute</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">operation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">ChainOperator.AND</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/utils.html#Query.new"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.utils.Query.new" title="Link to this definition"></a></dt>
+<dd><p>Combine with a new query</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>attribute</strong> (<em>str</em>) – attribute of new query</p></li>
+<li><p><strong>operation</strong> (<a class="reference internal" href="#O365.utils.utils.ChainOperator" title="O365.utils.utils.ChainOperator"><em>ChainOperator</em></a>) – operation to combine to new query</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#O365.utils.utils.Query" title="O365.utils.utils.Query">Query</a></p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method is part of fluent api and can be chained</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.utils.Query.on_attribute">
+<span class="sig-name descname"><span class="pre">on_attribute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attribute</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/utils.html#Query.on_attribute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.utils.Query.on_attribute" title="Link to this definition"></a></dt>
+<dd><p>Apply query on attribute, to be used along with chain()</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>attribute</strong> (<em>str</em>) – attribute name</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#O365.utils.utils.Query" title="O365.utils.utils.Query">Query</a></p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method is part of fluent api and can be chained</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.utils.Query.on_list_field">
+<span class="sig-name descname"><span class="pre">on_list_field</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/utils.html#Query.on_list_field"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.utils.Query.on_list_field" title="Link to this definition"></a></dt>
+<dd><p>Apply query on a list field, to be used along with chain()</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>field</strong> (<em>str</em>) – field name (note: name is case sensitive)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#O365.utils.utils.Query" title="O365.utils.utils.Query">Query</a></p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method is part of fluent api and can be chained</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.utils.Query.open_group">
+<span class="sig-name descname"><span class="pre">open_group</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/utils.html#Query.open_group"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.utils.Query.open_group" title="Link to this definition"></a></dt>
+<dd><p>Applies a precedence grouping in the next filters</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.utils.Query.order_by">
+<span class="sig-name descname"><span class="pre">order_by</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attribute</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">ascending</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/utils.html#Query.order_by"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.utils.Query.order_by" title="Link to this definition"></a></dt>
+<dd><p>Applies a order_by clause</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>attribute</strong> (<em>str</em>) – attribute to apply on</p></li>
+<li><p><strong>ascending</strong> (<em>bool</em>) – should it apply ascending order or descending</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#O365.utils.utils.Query" title="O365.utils.utils.Query">Query</a></p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method is part of fluent api and can be chained</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.utils.Query.remove_filter">
+<span class="sig-name descname"><span class="pre">remove_filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filter_attr</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/utils.html#Query.remove_filter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.utils.Query.remove_filter" title="Link to this definition"></a></dt>
+<dd><p>Removes a filter given the attribute name</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.utils.Query.search">
+<span class="sig-name descname"><span class="pre">search</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/utils.html#Query.search"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.utils.Query.search" title="Link to this definition"></a></dt>
+<dd><p>Perform a search.
+Not from graph docs:</p>
+<blockquote>
+<div><p>You can currently search only message and person collections.
+A $search request returns up to 250 results.
+You cannot use $filter or $orderby in a search request.</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>text</strong> (<em>str</em>) – the text to search</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>the Query instance</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method is part of fluent api and can be chained</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.utils.Query.select">
+<span class="sig-name descname"><span class="pre">select</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">attributes</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/utils.html#Query.select"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.utils.Query.select" title="Link to this definition"></a></dt>
+<dd><p>Adds the attribute to the $select parameter</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>attributes</strong> (<em>str</em>) – the attributes tuple to select.
+If empty, the on_attribute previously set is added.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#O365.utils.utils.Query" title="O365.utils.utils.Query">Query</a></p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method is part of fluent api and can be chained</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.utils.Query.startswith">
+<span class="sig-name descname"><span class="pre">startswith</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">word</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/utils.html#Query.startswith"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.utils.Query.startswith" title="Link to this definition"></a></dt>
+<dd><p>Adds a startswith word check</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>word</strong> (<em>str</em>) – word to check</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#O365.utils.utils.Query" title="O365.utils.utils.Query">Query</a></p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method is part of fluent api and can be chained</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.utils.Query.unequal">
+<span class="sig-name descname"><span class="pre">unequal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">word</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/utils.html#Query.unequal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.utils.Query.unequal" title="Link to this definition"></a></dt>
+<dd><p>Add an unequals check</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>word</strong> – word to compare with</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#O365.utils.utils.Query" title="O365.utils.utils.Query">Query</a></p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method is part of fluent api and can be chained</p>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="O365.utils.utils.Query.has_expands">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">has_expands</span></span><a class="headerlink" href="#O365.utils.utils.Query.has_expands" title="Link to this definition"></a></dt>
+<dd><p>Whether the query has relationships that should be expanded or not</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="O365.utils.utils.Query.has_filters">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">has_filters</span></span><a class="headerlink" href="#O365.utils.utils.Query.has_filters" title="Link to this definition"></a></dt>
+<dd><p>Whether the query has filters or not</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="O365.utils.utils.Query.has_order">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">has_order</span></span><a class="headerlink" href="#O365.utils.utils.Query.has_order" title="Link to this definition"></a></dt>
+<dd><p>Whether the query has order_by or not</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="O365.utils.utils.Query.has_selects">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">has_selects</span></span><a class="headerlink" href="#O365.utils.utils.Query.has_selects" title="Link to this definition"></a></dt>
+<dd><p>Whether the query has select filters or not</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.utils.utils.Query.protocol">
+<span class="sig-name descname"><span class="pre">protocol</span></span><a class="headerlink" href="#O365.utils.utils.Query.protocol" title="Link to this definition"></a></dt>
+<dd><p>Protocol to use. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> protocol</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="O365.utils.utils.Recipient">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.utils.utils.</span></span><span class="sig-name descname"><span class="pre">Recipient</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">address</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/utils.html#Recipient"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.utils.Recipient" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A single Recipient</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.utils.Recipient.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">address</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/utils.html#Recipient.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.utils.Recipient.__init__" title="Link to this definition"></a></dt>
+<dd><p>Create a recipient with provided information</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>address</strong> (<em>str</em>) – email address of the recipient</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – name of the recipient</p></li>
+<li><p><strong>parent</strong> (<a class="reference internal" href="#O365.utils.utils.HandleRecipientsMixin" title="O365.utils.utils.HandleRecipientsMixin"><em>HandleRecipientsMixin</em></a>) – parent recipients handler</p></li>
+<li><p><strong>field</strong> (<em>str</em>) – name of the field to update back</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="O365.utils.utils.Recipient.address">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">address</span></span><a class="headerlink" href="#O365.utils.utils.Recipient.address" title="Link to this definition"></a></dt>
+<dd><p>Email address of the recipient</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Get the email address</p>
+</dd>
+<dt class="field-even">Setter<span class="colon">:</span></dt>
+<dd class="field-even"><p>Set and update the email address</p>
+</dd>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="O365.utils.utils.Recipient.name">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#O365.utils.utils.Recipient.name" title="Link to this definition"></a></dt>
+<dd><p>Name of the recipient</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Get the name</p>
+</dd>
+<dt class="field-even">Setter<span class="colon">:</span></dt>
+<dd class="field-even"><p>Set and update the name</p>
+</dd>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="O365.utils.utils.Recipients">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.utils.utils.</span></span><span class="sig-name descname"><span class="pre">Recipients</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">recipients</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/utils.html#Recipients"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.utils.Recipients" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A Sequence of Recipients</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.utils.Recipients.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">recipients</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/utils.html#Recipients.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.utils.Recipients.__init__" title="Link to this definition"></a></dt>
+<dd><p>Recipients must be a list of either address strings or
+tuples (name, address) or dictionary elements</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>recipients</strong> (<em>list</em><em>[</em><em>str</em><em>] or </em><em>list</em><em>[</em><em>tuple</em><em>] or </em><em>list</em><em>[</em><em>dict</em><em>]
+or </em><em>list</em><em>[</em><a class="reference internal" href="#O365.utils.utils.Recipient" title="O365.utils.utils.Recipient"><em>Recipient</em></a><em>]</em>) – list of either address strings or
+tuples (name, address) or dictionary elements</p></li>
+<li><p><strong>parent</strong> (<a class="reference internal" href="#O365.utils.utils.HandleRecipientsMixin" title="O365.utils.utils.HandleRecipientsMixin"><em>HandleRecipientsMixin</em></a>) – parent recipients handler</p></li>
+<li><p><strong>field</strong> (<em>str</em>) – name of the field to update back</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.utils.Recipients.add">
+<span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">recipients</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/utils.html#Recipients.add"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.utils.Recipients.add" title="Link to this definition"></a></dt>
+<dd><p>Add the supplied recipients to the exiting list</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>recipients</strong> (<em>list</em><em>[</em><em>str</em><em>] or </em><em>list</em><em>[</em><em>tuple</em><em>] or </em><em>list</em><em>[</em><em>dict</em><em>]</em>) – list of either address strings or
+tuples (name, address) or dictionary elements</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.utils.Recipients.clear">
+<span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/utils.html#Recipients.clear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.utils.Recipients.clear" title="Link to this definition"></a></dt>
+<dd><p>Clear the list of recipients</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.utils.Recipients.get_first_recipient_with_address">
+<span class="sig-name descname"><span class="pre">get_first_recipient_with_address</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/utils.html#Recipients.get_first_recipient_with_address"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.utils.Recipients.get_first_recipient_with_address" title="Link to this definition"></a></dt>
+<dd><p>Returns the first recipient found with a non blank address</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>First Recipient</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#O365.utils.utils.Recipient" title="O365.utils.utils.Recipient">Recipient</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.utils.Recipients.remove">
+<span class="sig-name descname"><span class="pre">remove</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">address</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/utils.html#Recipients.remove"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.utils.Recipients.remove" title="Link to this definition"></a></dt>
+<dd><p>Remove an address or multiple addresses</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>address</strong> (<em>str</em><em> or </em><em>list</em><em>[</em><em>str</em><em>]</em>) – list of addresses to remove</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="O365.utils.utils.TrackerSet">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.utils.utils.</span></span><span class="sig-name descname"><span class="pre">TrackerSet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">casing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/utils.html#TrackerSet"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.utils.TrackerSet" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">set</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.utils.TrackerSet.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">casing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/utils.html#TrackerSet.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.utils.TrackerSet.__init__" title="Link to this definition"></a></dt>
+<dd><p>A Custom Set that changes the casing of it’s keys</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>casing</strong> (<em>func</em>) – a function to convert into specified case</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.utils.TrackerSet.add">
+<span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/utils.html#TrackerSet.add"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.utils.TrackerSet.add" title="Link to this definition"></a></dt>
+<dd><p>Add an element to a set.</p>
+<p>This has no effect if the element is already present.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.utils.TrackerSet.remove">
+<span class="sig-name descname"><span class="pre">remove</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/utils.html#TrackerSet.remove"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.utils.TrackerSet.remove" title="Link to this definition"></a></dt>
+<dd><p>Remove an element from a set; it must be a member.</p>
+<p>If the element is not a member, raise a KeyError.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="attachment.html" class="btn btn-neutral float-left" title="Attachment" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, alejcas.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

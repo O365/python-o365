@@ -79,3 +79,6 @@ venv/
 # O365 specific
 o365_token\.txt
 local_tests/
+
+# Mac Specifoc
+.DS_Store

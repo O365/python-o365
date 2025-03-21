@@ -1,7 +1,7 @@
 import base64
 import logging
-from pathlib import Path
 from io import BytesIO
+from pathlib import Path
 
 from .utils import ApiComponent
 
@@ -105,14 +105,23 @@ class BaseAttachment(ApiComponent):
                           getattr(parent, 'main_resource', None))
 
         super().__init__(**kwargs)
+        #: The attachment's file name. |br| **Type:** str
         self.name = None
+        #: The attachment's type. Default 'file' |br| **Type:** str
         self.attachment_type = 'file'
+        #: The attachment's id. Default 'file' |br| **Type:** str
         self.attachment_id = None
+        #: The attachment's content id Default 'file'. |br| **Type:** str
         self.content_id = None
+        #: true if the attachment is an inline attachment; otherwise, false. |br| **Type:** bool
         self.is_inline = False
+        #: Path to the attachment if on disk |br| **Type:** Path
         self.attachment = None
+        #: Content of the attachment |br| **Type:** any
         self.content = None
+        #: Indicates if the attachment is stored on disk. |br| **Type:** bool
         self.on_disk = False
+        #: Indicates if the attachment is stored on cloud. |br| **Type:** bool
         self.on_cloud = kwargs.get('on_cloud', False)
         self.size = None
 
@@ -292,7 +301,7 @@ class BaseAttachments(ApiComponent):
         'attachments': '/messages/{id}/attachments',
         'attachment': '/messages/{id}/attachments/{ida}'
     }
-    _attachment_constructor = BaseAttachment
+    _attachment_constructor = BaseAttachment  #: :meta private:
 
     def __init__(self, parent, attachments=None):
         """ Attachments must be a list of path strings or dictionary elements

@@ -1,296 +1,360 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Mailbox &mdash; O365  documentation</title>
-  
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
 
   
-  
-  
-  
-
-  
-
-  
-  
-    
-
-  
-
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Sharepoint" href="sharepoint.html" />
-    <link rel="prev" title="Account" href="account.html" /> 
-
-  
-  <script src="../_static/js/modernizr.min.js"></script>
+    <link rel="next" title="OneDrive" href="onedrive.html" />
+    <link rel="prev" title="Group" href="group.html" />
+    <link href="../_static/css/style.css" rel="stylesheet" type="text/css">
 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
-          
+        <div class="wy-side-nav-search" >
 
           
-            <a href="../index.html" class="icon icon-home"> O365
           
-
-          
+          <a href="../index.html">
+            
           </a>
-
-          
-            
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p class="caption"><span class="caption-text">Contents:</span></p>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../usage.html">Detailed Usage</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="connection.html">Resources</a></li>
-<li class="toctree-l2"><a class="reference internal" href="connection.html#protocols">Protocols</a></li>
+<li class="toctree-l2"><a class="reference internal" href="connection.html">Protocols</a></li>
+<li class="toctree-l2"><a class="reference internal" href="connection.html#resources">Resources</a></li>
 <li class="toctree-l2"><a class="reference internal" href="account.html">Account</a></li>
+<li class="toctree-l2"><a class="reference internal" href="account.html#account-class-and-modularity">Account Class and Modularity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="addressbook.html">Address Book</a></li>
+<li class="toctree-l2"><a class="reference internal" href="calendar.html">Calendar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="directory.html">Directory and Users</a></li>
+<li class="toctree-l2"><a class="reference internal" href="excel.html">Excel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group.html">Group</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Mailbox</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#accessing-various-folders">Accessing Various Folders</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#get-single-folder">Get Single Folder</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#get-child-folders">Get Child Folders</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mailbox-and-messages">Mailbox and Messages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#email-folder">Email Folder</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#message">Message</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mailbox-settings">Mailbox Settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#outlook-categories">Outlook Categories</a></li>
 </ul>
 </li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="onedrive.html">OneDrive</a></li>
+<li class="toctree-l2"><a class="reference internal" href="planner.html">Planner</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sharepoint.html">Sharepoint</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tasks.html">Tasks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="teams.html">Teams</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html">Utils</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../api.html">O365 API</a></li>
 </ul>
 
-            
-          
         </div>
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">O365</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="../index.html">Docs</a> &raquo;</li>
-        
-          <li><a href="../usage.html">Detailed Usage</a> &raquo;</li>
-        
-      <li>Mailbox</li>
-    
-    
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../usage.html">Detailed Usage</a></li>
+      <li class="breadcrumb-item active">Mailbox</li>
       <li class="wy-breadcrumbs-aside">
-        
-            
             <a href="../_sources/usage/mailbox.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
-  </ul>
-
-  
-  <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
-      
-        <a href="sharepoint.html" class="btn btn-neutral float-right" title="Sharepoint" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="account.html" class="btn btn-neutral" title="Account" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="group.html" class="btn btn-neutral float-left" title="Group" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="onedrive.html" class="btn btn-neutral float-right" title="OneDrive" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
   </div>
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <div class="section" id="mailbox">
-<h1>Mailbox<a class="headerlink" href="#mailbox" title="Permalink to this headline">¶</a></h1>
-<p>Check <a class="reference internal" href="account.html#accessing-services"><span class="std std-ref">Accessing Services</span></a> section for knowing how to get Mailbox instance</p>
-<div class="section" id="accessing-various-folders">
-<h2>Accessing Various Folders<a class="headerlink" href="#accessing-various-folders" title="Permalink to this headline">¶</a></h2>
-<p><cite>get_folder()</cite> and <cite>get_folders()</cite> are useful to fetch folders that are available under the current instance</p>
-<div class="section" id="get-single-folder">
-<h3>Get Single Folder<a class="headerlink" href="#get-single-folder" title="Permalink to this headline">¶</a></h3>
-<p><strong>Using Name</strong></p>
-<p>Using name to get a folder will only search the folders directly under the current folder or root</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># By Name - Will only find direct child folder</span>
-<span class="n">mail_folder</span> <span class="o">=</span> <span class="n">mailbox</span><span class="o">.</span><span class="n">get_folder</span><span class="p">(</span><span class="n">folder_name</span><span class="o">=</span><span class="s1">&#39;Todo&#39;</span><span class="p">)</span>
+             
+  <section id="mailbox">
+<h1>Mailbox<a class="headerlink" href="#mailbox" title="Link to this heading"></a></h1>
+<p>Mailbox groups the functionality of both the messages and the email folders.</p>
+<p>These are the scopes needed to work with the <code class="docutils literal notranslate"><span class="pre">MailBox</span></code> and <code class="docutils literal notranslate"><span class="pre">Message</span></code> classes.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Raw Scope</p></th>
+<th class="head"><p>Included in Scope Helper</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Mail.Read</p></td>
+<td><p>mailbox</p></td>
+<td><p>To only read my mailbox</p></td>
+</tr>
+<tr class="row-odd"><td><p>Mail.Read.Shared</p></td>
+<td><p>mailbox_shared</p></td>
+<td><p>To only read another user / shared mailboxes</p></td>
+</tr>
+<tr class="row-even"><td><p>Mail.Send</p></td>
+<td><p>message_send, message_all</p></td>
+<td><p>To only send message</p></td>
+</tr>
+<tr class="row-odd"><td><p>Mail.Send.Shared</p></td>
+<td><p>message_send_shared, message_all_shared</p></td>
+<td><p>To only send message as another user / shared mailbox</p></td>
+</tr>
+<tr class="row-even"><td><p>Mail.ReadWrite</p></td>
+<td><p>message_all</p></td>
+<td><p>To read and save messages in my mailbox</p></td>
+</tr>
+<tr class="row-odd"><td><p>MailboxSettings.ReadWrite</p></td>
+<td><p>mailbox_settings</p></td>
+<td><p>To read and write user mailbox settings</p></td>
+</tr>
+</tbody>
+</table>
+<section id="mailbox-and-messages">
+<h2>Mailbox and Messages<a class="headerlink" href="#mailbox-and-messages" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">mailbox</span> <span class="o">=</span> <span class="n">account</span><span class="o">.</span><span class="n">mailbox</span><span class="p">()</span>
 
-<span class="c1"># By Name - If Todo folder is under Inbox folder</span>
-<span class="n">mail_folder</span> <span class="o">=</span> <span class="p">(</span><span class="n">mailbox</span><span class="o">.</span><span class="n">get_folder</span><span class="p">(</span><span class="n">folder_name</span><span class="o">=</span><span class="s1">&#39;Inbox&#39;</span><span class="p">)</span>
-                      <span class="o">.</span><span class="n">get_folder</span><span class="p">(</span><span class="n">folder_name</span><span class="o">=</span><span class="s1">&#39;Todo&#39;</span><span class="p">))</span>
+<span class="n">inbox</span> <span class="o">=</span> <span class="n">mailbox</span><span class="o">.</span><span class="n">inbox_folder</span><span class="p">()</span>
+
+<span class="k">for</span> <span class="n">message</span> <span class="ow">in</span> <span class="n">inbox</span><span class="o">.</span><span class="n">get_messages</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+
+<span class="n">sent_folder</span> <span class="o">=</span> <span class="n">mailbox</span><span class="o">.</span><span class="n">sent_folder</span><span class="p">()</span>
+
+<span class="k">for</span> <span class="n">message</span> <span class="ow">in</span> <span class="n">sent_folder</span><span class="o">.</span><span class="n">get_messages</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+
+<span class="n">m</span> <span class="o">=</span> <span class="n">mailbox</span><span class="o">.</span><span class="n">new_message</span><span class="p">()</span>
+
+<span class="n">m</span><span class="o">.</span><span class="n">to</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s1">&#39;to_example@example.com&#39;</span><span class="p">)</span>
+<span class="n">m</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="s1">&#39;George Best quote: In 1969 I gave up women and alcohol - it was the worst 20 minutes of my life.&#39;</span>
+<span class="n">m</span><span class="o">.</span><span class="n">save_draft</span><span class="p">()</span>
 </pre></div>
 </div>
-<p><strong>Using ID</strong></p>
-<p>As opposed to getting folder by name, using the id you can fetch folder from any child</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Assuming we are getting folder Todo under Inbox</span>
-<span class="n">mail_folder</span> <span class="o">=</span> <span class="n">mailbox</span><span class="o">.</span><span class="n">get_folder</span><span class="p">(</span><span class="n">folder_id</span><span class="o">=</span><span class="s1">&#39;some_id_you_may_have_obtained&#39;</span><span class="p">)</span>
+</section>
+<section id="email-folder">
+<h2>Email Folder<a class="headerlink" href="#email-folder" title="Link to this heading"></a></h2>
+<p>Represents a Folder within your email mailbox.</p>
+<p>You can get any folder in your mailbox by requesting child folders or filtering by name.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">mailbox</span> <span class="o">=</span> <span class="n">account</span><span class="o">.</span><span class="n">mailbox</span><span class="p">()</span>
+
+<span class="n">archive</span> <span class="o">=</span> <span class="n">mailbox</span><span class="o">.</span><span class="n">get_folder</span><span class="p">(</span><span class="n">folder_name</span><span class="o">=</span><span class="s1">&#39;archive&#39;</span><span class="p">)</span>  <span class="c1"># get a folder with &#39;archive&#39; name</span>
+
+<span class="n">child_folders</span> <span class="o">=</span> <span class="n">archive</span><span class="o">.</span><span class="n">get_folders</span><span class="p">(</span><span class="mi">25</span><span class="p">)</span> <span class="c1"># get at most 25 child folders of &#39;archive&#39; folder</span>
+
+<span class="k">for</span> <span class="n">folder</span> <span class="ow">in</span> <span class="n">child_folders</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">folder</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">folder</span><span class="o">.</span><span class="n">parent_id</span><span class="p">)</span>
+
+<span class="n">new_folder</span> <span class="o">=</span> <span class="n">archive</span><span class="o">.</span><span class="n">create_child_folder</span><span class="p">(</span><span class="s1">&#39;George Best Quotes&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><strong>Well Known Folders</strong></p>
-<p>There are few well know folders like <strong>Inbox</strong>, <strong>Drafts</strong>, etc..
-As they are generally used we have added functions to quickly access them</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Inbox</span>
-<span class="n">mail_folder</span> <span class="o">=</span> <span class="n">mailbox</span><span class="o">.</span><span class="n">inbox_folder</span><span class="p">()</span>
-
-<span class="c1"># DeletedItems</span>
-<span class="n">mail_folder</span> <span class="o">=</span> <span class="n">mailbox</span><span class="o">.</span><span class="n">deleted_folder</span><span class="p">()</span>
-
-<span class="c1"># Drafts</span>
-<span class="n">mail_folder</span> <span class="o">=</span> <span class="n">mailbox</span><span class="o">.</span><span class="n">drafts_folder</span><span class="p">()</span>
-
-<span class="c1"># Junk</span>
-<span class="n">mail_folder</span> <span class="o">=</span> <span class="n">mailbox</span><span class="o">.</span><span class="n">junk_folder</span><span class="p">()</span>
-
-<span class="c1"># Outbox</span>
-<span class="n">mail_folder</span> <span class="o">=</span> <span class="n">mailbox</span><span class="o">.</span><span class="n">outbox_folder</span><span class="p">()</span>
+</section>
+<section id="message">
+<h2>Message<a class="headerlink" href="#message" title="Link to this heading"></a></h2>
+<p><strong>An email object with all its data and methods</strong></p>
+<p>Creating a draft message is as easy as this:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">message</span> <span class="o">=</span> <span class="n">mailbox</span><span class="o">.</span><span class="n">new_message</span><span class="p">()</span>
+<span class="n">message</span><span class="o">.</span><span class="n">to</span><span class="o">.</span><span class="n">add</span><span class="p">([</span><span class="s1">&#39;example1@example.com&#39;</span><span class="p">,</span> <span class="s1">&#39;example2@example.com&#39;</span><span class="p">])</span>
+<span class="n">message</span><span class="o">.</span><span class="n">sender</span><span class="o">.</span><span class="n">address</span> <span class="o">=</span> <span class="s1">&#39;my_shared_account@example.com&#39;</span>  <span class="c1"># changing the from address</span>
+<span class="n">message</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="s1">&#39;George Best quote: I might go to Alcoholics Anonymous, but I think it would be difficult for me to remain anonymous&#39;</span>
+<span class="n">message</span><span class="o">.</span><span class="n">attachments</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s1">&#39;george_best_quotes.txt&#39;</span><span class="p">)</span>
+<span class="n">message</span><span class="o">.</span><span class="n">save_draft</span><span class="p">()</span>  <span class="c1"># save the message on the cloud as a draft in the drafts folder</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="get-child-folders">
-<h3>Get Child Folders<a class="headerlink" href="#get-child-folders" title="Permalink to this headline">¶</a></h3>
-<p><strong>All or Some Child Folders</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># All child folders under root</span>
-<span class="n">mail_folders</span> <span class="o">=</span> <span class="n">mailbox</span><span class="o">.</span><span class="n">get_folders</span><span class="p">()</span>
+<p><strong>Working with saved emails is also easy</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">query</span> <span class="o">=</span> <span class="n">mailbox</span><span class="o">.</span><span class="n">new_query</span><span class="p">()</span><span class="o">.</span><span class="n">on_attribute</span><span class="p">(</span><span class="s1">&#39;subject&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="s1">&#39;george best&#39;</span><span class="p">)</span>  <span class="c1"># see Query object in Utils</span>
+<span class="n">messages</span> <span class="o">=</span> <span class="n">mailbox</span><span class="o">.</span><span class="n">get_messages</span><span class="p">(</span><span class="n">limit</span><span class="o">=</span><span class="mi">25</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="n">query</span><span class="p">)</span>
 
-<span class="c1"># All child folders under Inbox</span>
-<span class="n">mail_folders</span> <span class="o">=</span> <span class="n">mailbox</span><span class="o">.</span><span class="n">inbox_folder</span><span class="p">()</span><span class="o">.</span><span class="n">get_folders</span><span class="p">()</span>
+<span class="n">message</span> <span class="o">=</span> <span class="n">messages</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># get the first one</span>
 
-<span class="c1"># Limit the number or results, will get the top x results</span>
-<span class="n">mail_folders</span> <span class="o">=</span> <span class="n">mailbox</span><span class="o">.</span><span class="n">get_folders</span><span class="p">(</span><span class="n">limit</span><span class="o">=</span><span class="mi">7</span><span class="p">)</span>
+<span class="n">message</span><span class="o">.</span><span class="n">mark_as_read</span><span class="p">()</span>
+<span class="n">reply_msg</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">reply</span><span class="p">()</span>
+
+<span class="k">if</span> <span class="s1">&#39;example@example.com&#39;</span> <span class="ow">in</span> <span class="n">reply_msg</span><span class="o">.</span><span class="n">to</span><span class="p">:</span>  <span class="c1"># magic methods implemented</span>
+    <span class="n">reply_msg</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="s1">&#39;George Best quote: I spent a lot of money on booze, birds and fast cars. The rest I just squandered.&#39;</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">reply_msg</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="s1">&#39;George Best quote: I used to go missing a lot... Miss Canada, Miss United Kingdom, Miss World.&#39;</span>
+
+<span class="n">reply_msg</span><span class="o">.</span><span class="n">send</span><span class="p">()</span>
 </pre></div>
 </div>
-<p><strong>Filter the results</strong></p>
-<p>Query is a class available, that lets you filter results</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># All child folders whose name startswith &#39;Top&#39;</span>
-<span class="n">mail_folders</span> <span class="o">=</span> <span class="n">mailbox</span><span class="o">.</span><span class="n">get_folders</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="n">mailbox</span><span class="o">.</span><span class="n">new_query</span><span class="p">(</span><span class="s1">&#39;displayName&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;Top&#39;</span><span class="p">))</span>
+<p><strong>Sending Inline Images</strong></p>
+<p>You can send inline images by doing this:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ...</span>
+<span class="n">msg</span> <span class="o">=</span> <span class="n">account</span><span class="o">.</span><span class="n">new_message</span><span class="p">()</span>
+<span class="n">msg</span><span class="o">.</span><span class="n">to</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s1">&#39;george@best.com&#39;</span><span class="p">)</span>
+<span class="n">msg</span><span class="o">.</span><span class="n">attachments</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s1">&#39;my_image.png&#39;</span><span class="p">)</span>
+<span class="n">att</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">attachments</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># get the attachment object</span>
+
+<span class="c1"># this is super important for this to work.</span>
+<span class="n">att</span><span class="o">.</span><span class="n">is_inline</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">att</span><span class="o">.</span><span class="n">content_id</span> <span class="o">=</span> <span class="s1">&#39;image.png&#39;</span>
+
+<span class="c1"># notice we insert an image tag with source to: &quot;cid:{content_id}&quot;</span>
+<span class="n">body</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">    &lt;html&gt;</span>
+<span class="s2">        &lt;body&gt;</span>
+<span class="s2">            &lt;strong&gt;There should be an image here:&lt;/strong&gt;</span>
+<span class="s2">            &lt;p&gt;</span>
+<span class="s2">                &lt;img src=&quot;cid:image.png&quot;&gt;</span>
+<span class="s2">            &lt;/p&gt;</span>
+<span class="s2">        &lt;/body&gt;</span>
+<span class="s2">    &lt;/html&gt;</span>
+<span class="s2">    &quot;&quot;&quot;</span>
+<span class="n">msg</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="n">body</span>
+<span class="n">msg</span><span class="o">.</span><span class="n">send</span><span class="p">()</span>
 </pre></div>
 </div>
+<p><strong>Retrieving Message Headers</strong></p>
+<p>You can retrieve message headers by doing this:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ...</span>
+<span class="n">mb</span> <span class="o">=</span> <span class="n">account</span><span class="o">.</span><span class="n">mailbox</span><span class="p">()</span>
+<span class="n">msg</span> <span class="o">=</span> <span class="n">mb</span><span class="o">.</span><span class="n">get_message</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="n">mb</span><span class="o">.</span><span class="n">q</span><span class="p">()</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s1">&#39;internet_message_headers&#39;</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">message_headers</span><span class="p">)</span>  <span class="c1"># returns a list of dicts.</span>
+</pre></div>
 </div>
+<p>Note that only message headers and other properties added to the select statement will be present.</p>
+<p><strong>Saving as EML</strong></p>
+<p>Messages and attached messages can be saved as <code class="docutils literal notranslate"><span class="pre">*.eml</span></code>.</p>
+<p>Save message as “eml”:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">msg</span><span class="o">.</span><span class="n">save_as_eml</span><span class="p">(</span><span class="n">to_path</span><span class="o">=</span><span class="n">Path</span><span class="p">(</span><span class="s1">&#39;my_saved_email.eml&#39;</span><span class="p">))</span>
+</pre></div>
 </div>
+<p><strong>Save attached message as “eml”</strong></p>
+<p>Careful: there’s no way to identify that an attachment is in fact a message. You can only check if the attachment.attachment_type == ‘item’. if is of type “item” then it can be a message (or an event, etc…). You will have to determine this yourself.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">msg_attachment</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">attachments</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># the first attachment is attachment.attachment_type == &#39;item&#39; and I know it&#39;s a message.</span>
+<span class="n">msg</span><span class="o">.</span><span class="n">attachments</span><span class="o">.</span><span class="n">save_as_eml</span><span class="p">(</span><span class="n">msg_attachment</span><span class="p">,</span> <span class="n">to_path</span><span class="o">=</span><span class="n">Path</span><span class="p">(</span><span class="s1">&#39;my_saved_email.eml&#39;</span><span class="p">))</span>
+</pre></div>
 </div>
+</section>
+<section id="mailbox-settings">
+<h2>Mailbox Settings<a class="headerlink" href="#mailbox-settings" title="Link to this heading"></a></h2>
+<p>The mailbox settings and associated methods.</p>
+<p>Retrieve and update mailbox auto reply settings:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">O365.mailbox</span><span class="w"> </span><span class="kn">import</span> <span class="n">AutoReplyStatus</span><span class="p">,</span> <span class="n">ExternalAudience</span>
+
+<span class="n">mailboxsettings</span> <span class="o">=</span> <span class="n">mailbox</span><span class="o">.</span><span class="n">get_settings</span><span class="p">()</span>
+<span class="n">ars</span> <span class="o">=</span> <span class="n">mailboxsettings</span><span class="o">.</span><span class="n">automaticrepliessettings</span>
+
+<span class="n">ars</span><span class="o">.</span><span class="n">scheduled_startdatetime</span> <span class="o">=</span> <span class="n">start</span> <span class="c1"># Sets the start date/time</span>
+<span class="n">ars</span><span class="o">.</span><span class="n">scheduled_enddatetime</span> <span class="o">=</span> <span class="n">end</span> <span class="c1"># Sets the end date/time</span>
+<span class="n">ars</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">AutoReplyStatus</span><span class="o">.</span><span class="n">SCHEDULED</span> <span class="c1"># DISABLED/SCHEDULED/ALWAYSENABLED - Uses start/end date/time if scheduled.</span>
+<span class="n">ars</span><span class="o">.</span><span class="n">external_audience</span> <span class="o">=</span> <span class="n">ExternalAudience</span><span class="o">.</span><span class="n">NONE</span> <span class="c1"># NONE/CONTACTSONLY/ALL</span>
+<span class="n">ars</span><span class="o">.</span><span class="n">internal_reply_message</span> <span class="o">=</span> <span class="s2">&quot;ARS Internal&quot;</span> <span class="c1"># Internal message</span>
+<span class="n">ars</span><span class="o">.</span><span class="n">external_reply_message</span> <span class="o">=</span> <span class="s2">&quot;ARS External&quot;</span> <span class="c1"># External message</span>
+<span class="n">mailboxsettings</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+<span class="n">Alternatively</span> <span class="n">to</span> <span class="n">enable</span> <span class="ow">and</span> <span class="n">disable</span>
+
+<span class="n">mailboxsettings</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+
+<span class="n">mailbox</span><span class="o">.</span><span class="n">set_automatic_reply</span><span class="p">(</span>
+    <span class="s2">&quot;Internal&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;External&quot;</span><span class="p">,</span>
+    <span class="n">scheduled_start_date_time</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="c1"># Status will be &#39;scheduled&#39; if start/end supplied, otherwise &#39;alwaysEnabled&#39;</span>
+    <span class="n">scheduled_end_date_time</span><span class="o">=</span><span class="n">end</span><span class="p">,</span>
+    <span class="n">externalAudience</span><span class="o">=</span><span class="n">ExternalAudience</span><span class="o">.</span><span class="n">NONE</span><span class="p">,</span> <span class="c1"># Defaults to ALL</span>
+<span class="p">)</span>
+<span class="n">mailbox</span><span class="o">.</span><span class="n">set_disable_reply</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="outlook-categories">
+<h2>Outlook Categories<a class="headerlink" href="#outlook-categories" title="Link to this heading"></a></h2>
+<p>You can retrieve, update, create and delete outlook categories. These categories can be used to categorize Messages, Events and Contacts.</p>
+<p>These are the scopes needed to work with the SharePoint and Site classes.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Raw Scope</p></th>
+<th class="head"><p>Included in Scope Helper</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>MailboxSettings.Read</p></td>
+<td><p>—</p></td>
+<td><p>To only read outlook settings</p></td>
+</tr>
+<tr class="row-odd"><td><p>MailboxSettings.ReadWrite</p></td>
+<td><p>settings_all</p></td>
+<td><p>To read and write outlook settings</p></td>
+</tr>
+</tbody>
+</table>
+<p>Example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">O365.category</span><span class="w"> </span><span class="kn">import</span> <span class="n">CategoryColor</span>
+
+<span class="n">oc</span> <span class="o">=</span> <span class="n">account</span><span class="o">.</span><span class="n">outlook_categories</span><span class="p">()</span>
+<span class="n">categories</span> <span class="o">=</span> <span class="n">oc</span><span class="o">.</span><span class="n">get_categories</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">category</span> <span class="ow">in</span> <span class="n">categories</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">category</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">category</span><span class="o">.</span><span class="n">color</span><span class="p">)</span>
+
+<span class="n">my_category</span> <span class="o">=</span> <span class="n">oc</span><span class="o">.</span><span class="n">create_category</span><span class="p">(</span><span class="s1">&#39;Important Category&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">CategoryColor</span><span class="o">.</span><span class="n">RED</span><span class="p">)</span>
+<span class="n">my_category</span><span class="o">.</span><span class="n">update_color</span><span class="p">(</span><span class="n">CategoryColor</span><span class="o">.</span><span class="n">DARKGREEN</span><span class="p">)</span>
+
+<span class="n">my_category</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>  <span class="c1"># oops!</span>
+</pre></div>
+</div>
+</section>
+</section>
 
 
            </div>
-           
           </div>
-          <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="sharepoint.html" class="btn btn-neutral float-right" title="Sharepoint" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="account.html" class="btn btn-neutral" title="Account" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="group.html" class="btn btn-neutral float-left" title="Group" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="onedrive.html" class="btn btn-neutral float-right" title="OneDrive" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &copy; Copyright 2018, Narcolapser
-
-    </p>
+    <p>&#169; Copyright 2025, alejcas.</p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
-
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-
-  
-
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script src="../_static/language_data.js"></script>
-    
-
-  
-
-  <script type="text/javascript" src="../_static/js/theme.js"></script>
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });

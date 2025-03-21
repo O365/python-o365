@@ -1,0 +1,252 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Address Book &mdash; O365  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Calendar" href="calendar.html" />
+    <link rel="prev" title="Account" href="account.html" />
+    <link href="../_static/css/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html">
+            
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../usage.html">Detailed Usage</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="connection.html">Protocols</a></li>
+<li class="toctree-l2"><a class="reference internal" href="connection.html#resources">Resources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="account.html">Account</a></li>
+<li class="toctree-l2"><a class="reference internal" href="account.html#account-class-and-modularity">Account Class and Modularity</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Address Book</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#contact-folders">Contact Folders</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#global-address-list">Global Address List</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="calendar.html">Calendar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="directory.html">Directory and Users</a></li>
+<li class="toctree-l2"><a class="reference internal" href="excel.html">Excel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group.html">Group</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mailbox.html">Mailbox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="onedrive.html">OneDrive</a></li>
+<li class="toctree-l2"><a class="reference internal" href="planner.html">Planner</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sharepoint.html">Sharepoint</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tasks.html">Tasks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="teams.html">Teams</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html">Utils</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">O365 API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">O365</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../usage.html">Detailed Usage</a></li>
+      <li class="breadcrumb-item active">Address Book</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/usage/addressbook.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="account.html" class="btn btn-neutral float-left" title="Account" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="calendar.html" class="btn btn-neutral float-right" title="Calendar" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="address-book">
+<h1>Address Book<a class="headerlink" href="#address-book" title="Link to this heading"></a></h1>
+<p>AddressBook groups the functionality of both the Contact Folders and Contacts. Outlook Distribution Groups are not supported (By the Microsoft API’s).</p>
+<p>These are the scopes needed to work with the <code class="docutils literal notranslate"><span class="pre">AddressBook</span></code> and <code class="docutils literal notranslate"><span class="pre">Contact</span></code> classes.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Raw Scope</p></th>
+<th class="head"><p>Included in Scope Helper</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Contacts.Read</p></td>
+<td><p>address_book</p></td>
+<td><p>To only read my personal contacts</p></td>
+</tr>
+<tr class="row-odd"><td><p>Contacts.Read.Shared</p></td>
+<td><p>address_book_shared</p></td>
+<td><p>To only read another user / shared mailbox contacts</p></td>
+</tr>
+<tr class="row-even"><td><p>Contacts.ReadWrite</p></td>
+<td><p>address_book_all</p></td>
+<td><p>To read and save personal contacts</p></td>
+</tr>
+<tr class="row-odd"><td><p>Contacts.ReadWrite.Shared</p></td>
+<td><p>address_book_all_shared</p></td>
+<td><p>To read and save contacts from another user / shared mailbox</p></td>
+</tr>
+<tr class="row-even"><td><p>User.ReadBasic.All</p></td>
+<td><p>users</p></td>
+<td><p>To only read basic properties from users of my organization (User.Read.All requires administrator consent).</p></td>
+</tr>
+</tbody>
+</table>
+<section id="contact-folders">
+<h2>Contact Folders<a class="headerlink" href="#contact-folders" title="Link to this heading"></a></h2>
+<p>Represents a Folder within your Contacts Section in Office 365. AddressBook class represents the parent folder (it’s a folder itself).</p>
+<p>You can get any folder in your address book by requesting child folders or filtering by name.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">address_book</span> <span class="o">=</span> <span class="n">account</span><span class="o">.</span><span class="n">address_book</span><span class="p">()</span>
+
+<span class="n">contacts</span> <span class="o">=</span> <span class="n">address_book</span><span class="o">.</span><span class="n">get_contacts</span><span class="p">(</span><span class="n">limit</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>  <span class="c1"># get all the contacts in the Personal Contacts root folder</span>
+
+<span class="n">work_contacts_folder</span> <span class="o">=</span> <span class="n">address_book</span><span class="o">.</span><span class="n">get_folder</span><span class="p">(</span><span class="n">folder_name</span><span class="o">=</span><span class="s1">&#39;Work Contacts&#39;</span><span class="p">)</span>  <span class="c1"># get a folder with &#39;Work Contacts&#39; name</span>
+
+<span class="n">message_to_all_contats_in_folder</span> <span class="o">=</span> <span class="n">work_contacts_folder</span><span class="o">.</span><span class="n">new_message</span><span class="p">()</span>  <span class="c1"># creates a draft message with all the contacts as recipients</span>
+
+<span class="n">message_to_all_contats_in_folder</span><span class="o">.</span><span class="n">subject</span> <span class="o">=</span> <span class="s1">&#39;Hallo!&#39;</span>
+<span class="n">message_to_all_contats_in_folder</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">George Best quote:</span>
+
+<span class="s2">If you&#39;d given me the choice of going out and beating four men and smashing a goal in</span>
+<span class="s2">from thirty yards against Liverpool or going to bed with Miss World,</span>
+<span class="s2">it would have been a difficult choice. Luckily, I had both.</span>
+<span class="s2">&quot;&quot;&quot;</span>
+<span class="n">message_to_all_contats_in_folder</span><span class="o">.</span><span class="n">send</span><span class="p">()</span>
+
+<span class="c1"># querying folders is easy:</span>
+<span class="n">child_folders</span> <span class="o">=</span> <span class="n">address_book</span><span class="o">.</span><span class="n">get_folders</span><span class="p">(</span><span class="mi">25</span><span class="p">)</span> <span class="c1"># get at most 25 child folders</span>
+
+<span class="k">for</span> <span class="n">folder</span> <span class="ow">in</span> <span class="n">child_folders</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">folder</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">folder</span><span class="o">.</span><span class="n">parent_id</span><span class="p">)</span>
+
+<span class="c1"># creating a contact folder:</span>
+<span class="n">address_book</span><span class="o">.</span><span class="n">create_child_folder</span><span class="p">(</span><span class="s1">&#39;new folder&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="global-address-list">
+<span id="id1"></span><h2>Global Address List<a class="headerlink" href="#global-address-list" title="Link to this heading"></a></h2>
+<p>MS Graph API has no concept such as the Outlook Global Address List.
+However you can use the <a class="reference external" href="https://developer.microsoft.com/en-us/graph/docs/api-reference/v1.0/resources/users">Users API</a> to access all the users within your organization.</p>
+<p>Without admin consent you can only access a few properties of each user such as name and email and little more. You can search by name or retrieve a contact specifying the complete email.</p>
+<ul class="simple">
+<li><p>Basic Permission needed is Users.ReadBasic.All (limit info)</p></li>
+<li><p>Full Permission is Users.Read.All but needs admin consent.</p></li>
+</ul>
+<p>To search the Global Address List (Users API):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">global_address_list</span> <span class="o">=</span> <span class="n">account</span><span class="o">.</span><span class="n">directory</span><span class="p">()</span>
+
+<span class="c1"># for backwards compatibility only this also works and returns a Directory object:</span>
+<span class="c1"># global_address_list = account.address_book(address_book=&#39;gal&#39;)</span>
+
+<span class="c1"># start a new query:</span>
+<span class="n">q</span> <span class="o">=</span> <span class="n">global_address_list</span><span class="o">.</span><span class="n">new_query</span><span class="p">(</span><span class="s1">&#39;display_name&#39;</span><span class="p">)</span>
+<span class="n">q</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;George Best&#39;</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">user</span> <span class="ow">in</span> <span class="n">global_address_list</span><span class="o">.</span><span class="n">get_users</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="n">q</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>To retrieve a contact by their email:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">contact</span> <span class="o">=</span> <span class="n">global_address_list</span><span class="o">.</span><span class="n">get_user</span><span class="p">(</span><span class="s1">&#39;example@example.com&#39;</span><span class="p">)</span>
+<span class="n">Contacts</span>
+
+<span class="n">Everything</span> <span class="n">returned</span> <span class="kn">from</span><span class="w"> </span><span class="nn">an</span> <span class="n">AddressBook</span> <span class="n">instance</span> <span class="ow">is</span> <span class="n">a</span> <span class="n">Contact</span> <span class="n">instance</span><span class="o">.</span> <span class="n">Contacts</span> <span class="n">have</span> <span class="nb">all</span> <span class="n">the</span> <span class="n">information</span> <span class="n">stored</span> <span class="k">as</span> <span class="n">attributes</span>
+
+<span class="n">Creating</span> <span class="n">a</span> <span class="n">contact</span> <span class="kn">from</span><span class="w"> </span><span class="nn">an</span> <span class="n">AddressBook</span><span class="p">:</span>
+
+<span class="n">new_contact</span> <span class="o">=</span> <span class="n">address_book</span><span class="o">.</span><span class="n">new_contact</span><span class="p">()</span>
+
+<span class="n">new_contact</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;George Best&#39;</span>
+<span class="n">new_contact</span><span class="o">.</span><span class="n">job_title</span> <span class="o">=</span> <span class="s1">&#39;football player&#39;</span>
+<span class="n">new_contact</span><span class="o">.</span><span class="n">emails</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s1">&#39;george@best.com&#39;</span><span class="p">)</span>
+
+<span class="n">new_contact</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>  <span class="c1"># saved on the cloud</span>
+
+<span class="n">message</span> <span class="o">=</span> <span class="n">new_contact</span><span class="o">.</span><span class="n">new_message</span><span class="p">()</span>  <span class="c1">#  Bonus: send a message to this contact</span>
+
+<span class="c1"># ...</span>
+
+<span class="n">new_contact</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>  <span class="c1"># Bonus: deleted from the cloud</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="account.html" class="btn btn-neutral float-left" title="Account" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="calendar.html" class="btn btn-neutral float-right" title="Calendar" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, alejcas.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

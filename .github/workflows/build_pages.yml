@@ -1,0 +1,48 @@
+name: Pages Build
+
+on:
+    push:
+      branches: [ "master" ]
+jobs:
+  pages_build:
+    name: Build Pages
+    runs-on: "ubuntu-latest"
+    steps:
+      - name: "Checkout the repository"
+        uses: actions/checkout@v4
+
+      - name: "Set up Python"
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: "Install requirements"
+        run: python3 -m pip install -r requirements-pages.txt
+        
+      - name: "Build pages"
+        run: sphinx-build -b html -c ./docs/source/ ./docs/source/ ./docs/latest/ 
+
+      - name: "Pull any updates"
+        shell: bash
+        run: git pull
+
+      - name: "Check for changes"
+        shell: bash
+        run: git status
+
+      - name: "Stage changed files"
+        shell: bash
+        run: git add ./docs/latest
+
+      - name: "Commit changed files"
+        shell: bash
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git commit -m "Update the docs" || true
+
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}

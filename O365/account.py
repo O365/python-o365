@@ -1,12 +1,12 @@
-from typing import Type, Tuple, Optional, Callable, List
 import warnings
+from typing import Callable, List, Optional, Tuple, Type
 
-from .connection import Connection, Protocol, MSGraphProtocol, MSOffice365Protocol
+from .connection import Connection, MSGraphProtocol, Protocol
 from .utils import ME_RESOURCE, consent_input_token
 
 
 class Account:
-    connection_constructor: Type = Connection
+    connection_constructor: Type = Connection  #: :meta private:
 
     def __init__(self, credentials: Tuple[str, str], *,
                  username: Optional[str] = None,
@@ -25,6 +25,7 @@ class Account:
         protocol = protocol or MSGraphProtocol  # Defaults to Graph protocol
         if isinstance(protocol, type):
             protocol = protocol(default_resource=main_resource, **kwargs)
+        #: The protocol to use for the account. Defaults ot MSGraphProtocol. |br| **Type:** Protocol
         self.protocol: Protocol = protocol
 
         if not isinstance(self.protocol, Protocol):
@@ -57,6 +58,7 @@ class Account:
         kwargs['username'] = username
 
         self.con = self.connection_constructor(credentials, **kwargs)
+        #: The resource in use for the account. |br| **Type:** str
         self.main_resource: str = main_resource or self.protocol.default_resource
 
     def __repr__(self):
@@ -269,7 +271,7 @@ class Account:
 
     def directory(self, resource: Optional[str] = None):
         """ Returns the active directory instance"""
-        from .directory import Directory, USERS_RESOURCE
+        from .directory import USERS_RESOURCE, Directory
 
         return Directory(parent=self, main_resource=resource or USERS_RESOURCE)
 

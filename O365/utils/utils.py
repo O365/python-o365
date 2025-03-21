@@ -2,14 +2,14 @@ import datetime as dt
 import logging
 from collections import OrderedDict
 from enum import Enum
-from typing import Union, Dict
-from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
+from typing import Dict, Union
 
 from dateutil.parser import parse
+from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 from .casing import to_snake_case
-from .windows_tz import get_iana_tz, get_windows_tz
 from .decorators import fluent
+from .windows_tz import get_iana_tz, get_windows_tz
 
 ME_RESOURCE = 'me'
 USERS_RESOURCE = 'users'
@@ -341,6 +341,7 @@ class ApiComponent:
         if self.protocol is None:
             raise ValueError('Protocol not provided to Api Component')
         mr, bu = self.build_base_url(main_resource)
+        #: The main resource for the components. |br| **Type:** str
         self.main_resource = mr
         self._base_url = bu
 
@@ -505,7 +506,7 @@ class Pagination(ApiComponent):
 
     def __init__(self, *, parent=None, data=None, constructor=None,
                  next_link=None, limit=None, **kwargs):
-        """ Returns an iterator that returns data until it's exhausted.
+        """Returns an iterator that returns data until it's exhausted.
         Then will request more data (same amount as the original request)
         to the server until this data is exhausted as well.
         Stops when no more data exists or limit is reached.
@@ -518,7 +519,7 @@ class Pagination(ApiComponent):
         :param str next_link: the link to request more data to
         :param int limit: when to stop retrieving more data
         :param kwargs: any extra key-word arguments to pass to the
-         construtctor.
+         constructor.
         """
         if parent is None:
             raise ValueError('Parent must be another Api Component')
@@ -526,21 +527,30 @@ class Pagination(ApiComponent):
         super().__init__(protocol=parent.protocol,
                          main_resource=parent.main_resource)
 
+        #: The parent. |br| **Type:** any
         self.parent = parent
         self.con = parent.con
+        #: The constructor. |br| **Type:** any
         self.constructor = constructor
+        #: The next link for the pagination. |br| **Type:** str
         self.next_link = next_link
+        #: The limit of when to stop. |br| **Type:** int
         self.limit = limit
+        #: The start data. |br| **Type:** any
         self.data = data = list(data) if data else []
 
         data_count = len(data)
         if limit and limit < data_count:
+            #: Data count. |br| **Type:** int
             self.data_count = limit
+            #: Total count. |br| **Type:** int
             self.total_count = limit
         else:
             self.data_count = data_count
             self.total_count = data_count
+        #: State. |br| **Type:** int
         self.state = 0
+        #: Extra args. |br| **Type:** dict
         self.extra_args = kwargs
 
     def __str__(self):
@@ -634,6 +644,7 @@ class Query:
         :param str attribute: attribute to apply the query for
         :param Protocol protocol: protocol to use for connecting
         """
+        #: Protocol to use. |br| **Type:** protocol
         self.protocol = protocol() if isinstance(protocol, type) else protocol
         self._attribute = None
         self._chain = None
@@ -683,18 +694,24 @@ class Query:
 
     @fluent
     def expand(self, *relationships):
-        """ Adds the relationships (e.g. "event" or "attachments")
+        """
+        Adds the relationships (e.g. "event" or "attachments")
         that should be expanded with the $expand parameter
         Important: The ApiComponent using this should know how to handle this relationships.
-            eg: Message knows how to handle attachments, and event (if it's an EventMessage).
+
+            eg: Message knows how to handle attachments, and event (if it's an EventMessage)
+
         Important: When using expand on multi-value relationships a max of 20 items will be returned.
+
         :param str relationships: the relationships tuple to expand.
         :rtype: Query
         """
 
         for relationship in relationships:
-            if relationship == 'event':
-                relationship = '{}/event'.format(self.protocol.get_service_keyword('event_message_type'))
+            if relationship == "event":
+                relationship = "{}/event".format(
+                    self.protocol.get_service_keyword("event_message_type")
+                )
             self._expands.add(relationship)
 
         return self
@@ -704,9 +721,11 @@ class Query:
         """
         Perform a search.
         Not from graph docs:
+
          You can currently search only message and person collections.
          A $search request returns up to 250 results.
          You cannot use $filter or $orderby in a search request.
+
         :param str text: the text to search
         :return: the Query instance
         """

@@ -30,7 +30,7 @@ class AutoReplyStatus(Enum):
 
 
 class AutomaticRepliesSettings(ApiComponent):
-    """The MailboxSettings."""
+    """The  AutomaticRepliesSettingss."""
 
     def __init__(self, *, parent=None, con=None, **kwargs):
         """Representation of the AutomaticRepliesSettings.
@@ -61,9 +61,13 @@ class AutomaticRepliesSettings(ApiComponent):
         self.__external_audience = ExternalAudience(
             cloud_data.get(self._cc("externalAudience"), "")
         )
+        #: The automatic reply to send to the specified external audience,
+        #: if Status is AlwaysEnabled or Scheduled. |br| **Type:** str
         self.external_reply_message = cloud_data.get(
             self._cc("externalReplyMessage"), ""
         )
+        #: The automatic reply to send to the audience internal to the signed-in user's
+        #: organization, if Status is AlwaysEnabled or Scheduled. |br| **Type:** str
         self.internal_reply_message = cloud_data.get(
             self._cc("internalReplyMessage"), ""
         )
@@ -172,7 +176,7 @@ class MailboxSettings(ApiComponent):
     _endpoints = {
         "settings": "/mailboxSettings",
     }
-    autoreply_constructor = AutomaticRepliesSettings
+    autoreply_constructor = AutomaticRepliesSettings  #: :meta private:
 
     def __init__(self, *, parent=None, con=None, **kwargs):
         """Representation of the MailboxSettings.
@@ -201,11 +205,17 @@ class MailboxSettings(ApiComponent):
 
         cloud_data = kwargs.get(self._cloud_data_key, {})
         autorepliessettings = cloud_data.get("automaticRepliesSetting")
+        #: Configuration settings to automatically notify the sender of
+        #: an incoming email with a message from the signed-in user.
+        #: |br| **Type:** AutomaticRepliesSettings
         self.automaticrepliessettings = self.autoreply_constructor(
             parent=self, **{self._cloud_data_key: autorepliessettings}
         )
-        self.timezone = cloud_data.get("timeZone") 
-        self.workinghours = cloud_data.get("workingHours") 
+        #: The default time zone for the user's mailbox. |br| **Type:** str
+        self.timezone = cloud_data.get("timeZone")
+        #: The days of the week and hours in a specific time zone
+        #: that the user works. |br| **Type:** workingHours
+        self.workinghours = cloud_data.get("workingHours")
 
     def __str__(self):
         """Representation of the MailboxSetting via the Graph api as a string."""
@@ -254,7 +264,7 @@ class Folder(ApiComponent):
         "move_folder": "/mailFolders/{id}/move",
         "message": "/messages/{id}",
     }
-    message_constructor = Message
+    message_constructor = Message  #: :meta private:
 
     def __init__(self, *, parent=None, con=None, **kwargs):
         """Create an instance to represent the specified folder in given
@@ -273,9 +283,11 @@ class Folder(ApiComponent):
         if parent and con:
             raise ValueError("Need a parent or a connection but not both")
         self.con = parent.con if parent else con
+        #: The parent of the folder. |br| **Type:** str
         self.parent = parent if isinstance(parent, Folder) else None
 
         # This folder has no parents if root = True.
+        #: Root folder. |br| **Type:** bool
         self.root = kwargs.pop("root", False)
 
         # Choose the main_resource passed in kwargs over parent main_resource
@@ -291,18 +303,27 @@ class Folder(ApiComponent):
         cloud_data = kwargs.get(self._cloud_data_key, {})
 
         # Fallback to manual folder if nothing available on cloud data
+        #: The mailFolder's display name. |br| **Type:** str
         self.name = cloud_data.get(self._cc("displayName"), kwargs.get("name", ""))
         if self.root is False:
             # Fallback to manual folder if nothing available on cloud data
+            #: The mailFolder's unique identifier. |br| **Type:** str
             self.folder_id = cloud_data.get(
                 self._cc("id"), kwargs.get("folder_id", None)
             )
+            #: The unique identifier for the mailFolder's parent mailFolder. |br| **Type:** str
             self.parent_id = cloud_data.get(self._cc("parentFolderId"), None)
+            #: The number of immediate child mailFolders in the current mailFolder.
+            #: |br| **Type:** int
             self.child_folders_count = cloud_data.get(self._cc("childFolderCount"), 0)
+            #: The number of items in the mailFolder marked as unread. |br| **Type:** int
             self.unread_items_count = cloud_data.get(self._cc("unreadItemCount"), 0)
+            #: The number of items in the mailFolder. |br| **Type:** int
             self.total_items_count = cloud_data.get(self._cc("totalItemCount"), 0)
+            #: Last time data updated |br| **Type:** datetime
             self.updated_at = dt.datetime.now()
         else:
+            #: The mailFolder's unique identifier. |br| **Type:** str
             self.folder_id = "root"
 
     def __str__(self):
@@ -374,8 +395,10 @@ class Folder(ApiComponent):
             return folders
 
     def get_message(self, object_id=None, query=None, *, download_attachments=False):
-        """Get one message from the query result.
-         A shortcut to get_messages with limit=1
+        """
+        Get one message from the query result.
+        A shortcut to get_messages with limit=1
+
         :param object_id: the message id to be retrieved.
         :param query: applies a filter to the request such as
          "displayName eq 'HelloFolder'"
@@ -384,6 +407,7 @@ class Folder(ApiComponent):
         :return: one Message
         :rtype: Message or None
         """
+
         if object_id is None and query is None:
             raise ValueError("Must provide object id or query.")
 
@@ -783,8 +807,10 @@ class Folder(ApiComponent):
 
 
 class MailBox(Folder):
-    folder_constructor = Folder
-    mailbox_settings_constructor = MailboxSettings
+    """The mailbox folder."""
+
+    folder_constructor = Folder  #: :meta private:
+    mailbox_settings_constructor = MailboxSettings  #: :meta private:
 
     def __init__(self, *, parent=None, con=None, **kwargs):
         super().__init__(parent=parent, con=con, root=True, **kwargs)

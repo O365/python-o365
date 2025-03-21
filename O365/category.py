@@ -53,9 +53,7 @@ class Category(ApiComponent):
     }
 
     def __init__(self, *, parent=None, con=None, **kwargs):
-        """
-        Represents a category by which a user can group Outlook
-         items such as messages and events.
+        """Represents a category by which a user can group Outlook items such as messages and events.
         It can be used in conjunction with Event, Message, Contact and Post.
 
         :param parent: parent object
@@ -65,6 +63,7 @@ class Category(ApiComponent):
          (kwargs)
         :param str main_resource: use this resource instead of parent resource
          (kwargs)
+
         """
 
         if parent and con:
@@ -81,9 +80,12 @@ class Category(ApiComponent):
 
         cloud_data = kwargs.get(self._cloud_data_key, {})
 
+        #: The unique id of the category. |br| **Type:** str
         self.object_id = cloud_data.get('id')
+        #: A unique name that identifies a category in the user's mailbox.  |br| **Type:** str
         self.name = cloud_data.get(self._cc('displayName'))
         color = cloud_data.get(self._cc('color'))
+        #: A pre-set color constant that characterizes a category, and that is mapped to one of 25 predefined colors.  |br| **Type:** categoryColor
         self.color = CategoryColor(color) if color else None
 
     def __str__(self):
@@ -124,7 +126,7 @@ class Categories(ApiComponent):
         'get': '/outlook/masterCategories/{id}',
     }
 
-    category_constructor = Category
+    category_constructor = Category  #: :meta private:
 
     def __init__(self, *, parent=None, con=None, **kwargs):
         """ Object to retrive categories

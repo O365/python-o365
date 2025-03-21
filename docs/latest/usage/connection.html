@@ -1,297 +1,209 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <title>Resources &mdash; O365  documentation</title>
-  
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Protocols &mdash; O365  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
 
   
-  
-  
-  
-
-  
-
-  
-  
-    
-
-  
-
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Account" href="account.html" />
-    <link rel="prev" title="Detailed Usage" href="../usage.html" /> 
-
-  
-  <script src="../_static/js/modernizr.min.js"></script>
+    <link rel="prev" title="Detailed Usage" href="../usage.html" />
+    <link href="../_static/css/style.css" rel="stylesheet" type="text/css">
 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
-          
+        <div class="wy-side-nav-search" >
 
           
-            <a href="../index.html" class="icon icon-home"> O365
           
-
-          
+          <a href="../index.html">
+            
           </a>
-
-          
-            
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p class="caption"><span class="caption-text">Contents:</span></p>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../usage.html">Detailed Usage</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Resources</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#protocols">Protocols</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#choosing-between-graph-vs-office365-api">Choosing between Graph vs Office365 API</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#initialing-protocol">Initialing Protocol</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#utilizing-a-protocol-instance">Utilizing a Protocol Instance</a></li>
-</ul>
-</li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Protocols</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#resources">Resources</a></li>
 <li class="toctree-l2"><a class="reference internal" href="account.html">Account</a></li>
+<li class="toctree-l2"><a class="reference internal" href="account.html#account-class-and-modularity">Account Class and Modularity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="addressbook.html">Address Book</a></li>
+<li class="toctree-l2"><a class="reference internal" href="calendar.html">Calendar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="directory.html">Directory and Users</a></li>
+<li class="toctree-l2"><a class="reference internal" href="excel.html">Excel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group.html">Group</a></li>
 <li class="toctree-l2"><a class="reference internal" href="mailbox.html">Mailbox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="onedrive.html">OneDrive</a></li>
+<li class="toctree-l2"><a class="reference internal" href="planner.html">Planner</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sharepoint.html">Sharepoint</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tasks.html">Tasks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="teams.html">Teams</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html">Utils</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../api.html">O365 API</a></li>
 </ul>
 
-            
-          
         </div>
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">O365</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="../index.html">Docs</a> &raquo;</li>
-        
-          <li><a href="../usage.html">Detailed Usage</a> &raquo;</li>
-        
-      <li>Resources</li>
-    
-    
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../usage.html">Detailed Usage</a></li>
+      <li class="breadcrumb-item active">Protocols</li>
       <li class="wy-breadcrumbs-aside">
-        
-            
             <a href="../_sources/usage/connection.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
-  </ul>
-
-  
-  <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
-      
-        <a href="account.html" class="btn btn-neutral float-right" title="Account" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="../usage.html" class="btn btn-neutral" title="Detailed Usage" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="../usage.html" class="btn btn-neutral float-left" title="Detailed Usage" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="account.html" class="btn btn-neutral float-right" title="Account" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
   </div>
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <div class="section" id="resources">
-<h1>Resources<a class="headerlink" href="#resources" title="Permalink to this headline">¶</a></h1>
-<p>Each API endpoint requires a resource. This usually defines the owner of the data.</p>
-<p>Usually you will work with the default ‘ME’ resuorce, but you can also use one of the following:</p>
+             
+  <section id="protocols">
+<h1>Protocols<a class="headerlink" href="#protocols" title="Link to this heading"></a></h1>
+<p>Protocols handles the aspects of communications between different APIs. This project uses the Microsoft Graph APIs. But, you can use many other Microsoft APIs as long as you implement the protocol needed.</p>
+<p>You can use:</p>
 <ul class="simple">
-<li><p><strong>‘me’</strong>: the user which has given consent. the default for every protocol.</p></li>
-<li><p><strong>‘user:user&#64;domain.com’</strong>: a shared mailbox or a user account for which you have permissions. If you don’t provide ‘user:’ will be inferred anyways.</p></li>
-<li><p><strong>‘sharepoint:sharepoint-site-id’</strong>: a sharepoint site id.</p></li>
-<li><p><strong>‘group:group-site-id’</strong>: a office365 group id.</p></li>
+<li><p>MSGraphProtocol to use the <a class="reference external" href="https://developer.microsoft.com/en-us/graph/docs/concepts/overview">Microsoft Graph API</a></p></li>
 </ul>
-<p><strong>ME</strong> is the default resource used everywhere in this library. But you can change this behaviour by providing it to Protocol constructor.</p>
-<p>This can be done however at any point (Protocol / Account / Mailbox / Message ..). Examples can be found in their respective documentation pages</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">O365</span><span class="w"> </span><span class="kn">import</span> <span class="n">Account</span>
+
+<span class="n">credentials</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;client_id&#39;</span><span class="p">,</span> <span class="s1">&#39;client_secret&#39;</span><span class="p">)</span>
+
+<span class="n">account</span> <span class="o">=</span> <span class="n">Account</span><span class="p">(</span><span class="n">credentials</span><span class="p">,</span> <span class="n">auth_flow_type</span><span class="o">=</span><span class="s1">&#39;credentials&#39;</span><span class="p">,</span> <span class="n">tenant_id</span><span class="o">=</span><span class="s1">&#39;my_tenant_id&#39;</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">account</span><span class="o">.</span><span class="n">authenticate</span><span class="p">():</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Authenticated!&#39;</span><span class="p">)</span>
+<span class="n">mailbox</span> <span class="o">=</span> <span class="n">account</span><span class="o">.</span><span class="n">mailbox</span><span class="p">(</span><span class="s1">&#39;sender_email@my_domain.com&#39;</span><span class="p">)</span>
+<span class="n">m</span> <span class="o">=</span> <span class="n">mailbox</span><span class="o">.</span><span class="n">new_message</span><span class="p">()</span>
+<span class="n">m</span><span class="o">.</span><span class="n">to</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s1">&#39;to_example@example.com&#39;</span><span class="p">)</span>
+<span class="n">m</span><span class="o">.</span><span class="n">subject</span> <span class="o">=</span> <span class="s1">&#39;Testing!&#39;</span>
+<span class="n">m</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="s2">&quot;George Best quote: I&#39;ve stopped drinking, but only while I&#39;m asleep.&quot;</span>
+<span class="n">m</span><span class="o">.</span><span class="n">save_message</span><span class="p">()</span>
+<span class="n">m</span><span class="o">.</span><span class="n">attachment</span><span class="o">.</span><span class="n">add</span> <span class="o">=</span> <span class="s1">&#39;filename.txt&#39;</span>
+<span class="n">m</span><span class="o">.</span><span class="n">send</span><span class="p">()</span>
+</pre></div>
 </div>
-<div class="section" id="protocols">
-<h1>Protocols<a class="headerlink" href="#protocols" title="Permalink to this headline">¶</a></h1>
-<p>A protocol is just an interface to specify various options related to an API set,
-like base url, word case used for request and response attributes etc..</p>
-<p>This project has two different set of API’s inbuilt (Office 365 APIs or Microsoft Graph APIs)</p>
-<p>But, you can use many other Microsoft APIs as long as you implement the protocol needed.</p>
-<p>You can use one or the other:</p>
-<ul class="simple">
-<li><p><strong>MSGraphProtocol</strong> to use the <a class="reference external" href="https://developer.microsoft.com/en-us/graph/docs/concepts/overview">Microsoft Graph API</a></p></li>
-<li><p><strong>MSOffice365Protocol</strong> to use the <a class="reference external" href="https://msdn.microsoft.com/en-us/office/office365/api/api-catalog">Office 365 API</a></p></li>
-</ul>
-<div class="section" id="choosing-between-graph-vs-office365-api">
-<h2>Choosing between Graph vs Office365 API<a class="headerlink" href="#choosing-between-graph-vs-office365-api" title="Permalink to this headline">¶</a></h2>
-<p>Reasons to use <strong>MSGraphProtocol</strong>:</p>
-<ul class="simple">
-<li><p>It is the recommended Protocol by Microsoft.</p></li>
-<li><p>It can access more resources over Office 365 (for example OneDrive)</p></li>
-</ul>
-<p>Reasons to use <strong>MSOffice365Protocol</strong>:</p>
-<ul class="simple">
-<li><p>It can send emails with attachments up to 150 MB. MSGraph only allows 4MB on each request.</p></li>
-</ul>
-<p>For more details, check <a class="reference external" href="https://docs.microsoft.com/en-us/outlook/rest/compare-graph-outlook">Graph vs Outlook API</a></p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The default protocol used by the <strong>Account</strong> Class is <strong>MSGraphProtocol</strong>.</p>
-</div>
-<p>You can implement your own protocols by inheriting from <strong>Protocol</strong> to communicate with other Microsoft APIs.</p>
-</div>
-<div class="section" id="initialing-protocol">
-<h2>Initialing Protocol<a class="headerlink" href="#initialing-protocol" title="Permalink to this headline">¶</a></h2>
-<p><strong>Using Graph Beta API</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">O365</span> <span class="kn">import</span> <span class="n">MSGraphProtocol</span>
+<p>The default protocol used by the <code class="docutils literal notranslate"><span class="pre">Account</span></code> Class is <code class="docutils literal notranslate"><span class="pre">MSGraphProtocol</span></code>.</p>
+<p>You can implement your own protocols by inheriting from Protocol to communicate with other Microsoft APIs.</p>
+<p>You can instantiate and use protocols like this:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">O365</span><span class="w"> </span><span class="kn">import</span> <span class="n">Account</span><span class="p">,</span> <span class="n">MSGraphProtocol</span>  <span class="c1"># same as from O365.connection import MSGraphProtocol</span>
+
+<span class="c1"># ...</span>
 
 <span class="c1"># try the api version beta of the Microsoft Graph endpoint.</span>
 <span class="n">protocol</span> <span class="o">=</span> <span class="n">MSGraphProtocol</span><span class="p">(</span><span class="n">api_version</span><span class="o">=</span><span class="s1">&#39;beta&#39;</span><span class="p">)</span>  <span class="c1"># MSGraphProtocol defaults to v1.0 api version</span>
+<span class="n">account</span> <span class="o">=</span> <span class="n">Account</span><span class="p">(</span><span class="n">credentials</span><span class="p">,</span> <span class="n">protocol</span><span class="o">=</span><span class="n">protocol</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><strong>Using Shared User Account</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">O365</span> <span class="kn">import</span> <span class="n">MSGraphProtocol</span>
-
+</section>
+<section id="resources">
+<h1>Resources<a class="headerlink" href="#resources" title="Link to this heading"></a></h1>
+<p>Each API endpoint requires a resource. This usually defines the owner of the data. Every protocol defaults to resource ‘ME’. ‘ME’ is the user which has given consent, but you can change this behaviour by providing a different default resource to the protocol constructor.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>When using the “with your own identity” authentication method the resource ‘ME’ is overwritten to be blank as the authentication method already states that you are login with your own identity.</p>
+</div>
+<p>For example when accessing a shared mailbox:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ...</span>
+<span class="n">account</span> <span class="o">=</span> <span class="n">Account</span><span class="p">(</span><span class="n">credentials</span><span class="o">=</span><span class="n">my_credentials</span><span class="p">,</span> <span class="n">main_resource</span><span class="o">=</span><span class="s1">&#39;shared_mailbox@example.com&#39;</span><span class="p">)</span>
+<span class="c1"># Any instance created using account will inherit the resource defined for account.</span>
+</pre></div>
+</div>
+<p>This can be done however at any point. For example at the protocol level:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ...</span>
 <span class="n">protocol</span> <span class="o">=</span> <span class="n">MSGraphProtocol</span><span class="p">(</span><span class="n">default_resource</span><span class="o">=</span><span class="s1">&#39;shared_mailbox@example.com&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="utilizing-a-protocol-instance">
-<h2>Utilizing a Protocol Instance<a class="headerlink" href="#utilizing-a-protocol-instance" title="Permalink to this headline">¶</a></h2>
-<p>Protocol itself does not do anything job, it has to be plugged into this library api using Account class</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">O365</span> <span class="kn">import</span> <span class="n">Account</span><span class="p">,</span> <span class="n">MSGraphProtocol</span>
 
-<span class="n">my_protocol</span> <span class="o">=</span> <span class="n">MSGraphProtocol</span><span class="p">(</span><span class="s1">&#39;beta&#39;</span><span class="p">,</span> <span class="s1">&#39;shared_mailbox@example.com&#39;</span><span class="p">)</span>
-<span class="n">account</span> <span class="o">=</span> <span class="n">Account</span><span class="p">(</span><span class="n">credential</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;&lt;client_id&gt;&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;client_secret&gt;&#39;</span><span class="p">,</span> <span class="n">protocol</span><span class="o">=</span><span class="n">my_protocol</span><span class="p">))</span>
+<span class="n">account</span> <span class="o">=</span> <span class="n">Account</span><span class="p">(</span><span class="n">credentials</span><span class="o">=</span><span class="n">my_credentials</span><span class="p">,</span> <span class="n">protocol</span><span class="o">=</span><span class="n">protocol</span><span class="p">)</span>
+
+<span class="c1"># now account is accessing the shared_mailbox@example.com in every api call.</span>
+<span class="n">shared_mailbox_messages</span> <span class="o">=</span> <span class="n">account</span><span class="o">.</span><span class="n">mailbox</span><span class="p">()</span><span class="o">.</span><span class="n">get_messages</span><span class="p">()</span>
 </pre></div>
 </div>
+<p>Instead of defining the resource used at the account or protocol level, you can provide it per use case as follows:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ...</span>
+<span class="n">account</span> <span class="o">=</span> <span class="n">Account</span><span class="p">(</span><span class="n">credentials</span><span class="o">=</span><span class="n">my_credentials</span><span class="p">)</span>  <span class="c1"># account defaults to &#39;ME&#39; resource</span>
+
+<span class="n">mailbox</span> <span class="o">=</span> <span class="n">account</span><span class="o">.</span><span class="n">mailbox</span><span class="p">(</span><span class="s1">&#39;shared_mailbox@example.com&#39;</span><span class="p">)</span>  <span class="c1"># mailbox is using &#39;shared_mailbox@example.com&#39; resource instead of &#39;ME&#39;</span>
+
+<span class="c1"># or:</span>
+
+<span class="n">message</span> <span class="o">=</span> <span class="n">Message</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="n">account</span><span class="p">,</span> <span class="n">main_resource</span><span class="o">=</span><span class="s1">&#39;shared_mailbox@example.com&#39;</span><span class="p">)</span>  <span class="c1"># message is using &#39;shared_mailbox@example.com&#39; resource</span>
+</pre></div>
 </div>
-</div>
+<p>Usually you will work with the default ‘ME’ resource, but you can also use one of the following:</p>
+<ul class="simple">
+<li><p>‘me’: the user which has given consent. The default for every protocol. Overwritten when using “with your own identity” authentication method (Only available on the authorization auth_flow_type).</p></li>
+<li><p>‘user:user&#64;domain.com’: a shared mailbox or a user account for which you have permissions. If you don’t provide ‘user:’ it will be inferred anyway.</p></li>
+<li><p>‘site:sharepoint-site-id’: a Sharepoint site id.</p></li>
+<li><p>‘group:group-site-id’: an Office 365 group id.</p></li>
+</ul>
+<p>By setting the resource prefix (such as ‘user:’ or ‘group:’) you help the library understand the type of resource. You can also pass it like <a class="reference external" href="mailto:'users/example&#37;&#52;&#48;exampl&#46;com">‘users/example<span>&#64;</span>exampl<span>&#46;</span>com</a>’. The same applies to the other resource prefixes.</p>
+</section>
 
 
            </div>
-           
           </div>
-          <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="account.html" class="btn btn-neutral float-right" title="Account" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="../usage.html" class="btn btn-neutral" title="Detailed Usage" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../usage.html" class="btn btn-neutral float-left" title="Detailed Usage" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="account.html" class="btn btn-neutral float-right" title="Account" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &copy; Copyright 2018, Narcolapser
-
-    </p>
+    <p>&#169; Copyright 2025, alejcas.</p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
-
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-
-  
-
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script src="../_static/language_data.js"></script>
-    
-
-  
-
-  <script type="text/javascript" src="../_static/js/theme.js"></script>
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });

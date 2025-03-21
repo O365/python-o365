@@ -1,19 +1,26 @@
 import calendar
 import datetime as dt
 import logging
-from zoneinfo import ZoneInfo
 
 # noinspection PyPep8Naming
 from bs4 import BeautifulSoup as bs
 from dateutil.parser import parse
+from zoneinfo import ZoneInfo
 
-from .utils import CaseEnum
-from .utils import HandleRecipientsMixin
-from .utils import AttachableMixin, ImportanceLevel, TrackerSet
-from .utils import BaseAttachments, BaseAttachment
-from .utils import Pagination, NEXT_LINK_KEYWORD, ApiComponent
-from .utils.windows_tz import get_windows_tz
 from .category import Category
+from .utils import (
+    NEXT_LINK_KEYWORD,
+    ApiComponent,
+    AttachableMixin,
+    BaseAttachment,
+    BaseAttachments,
+    CaseEnum,
+    HandleRecipientsMixin,
+    ImportanceLevel,
+    Pagination,
+    TrackerSet,
+)
+from .utils.windows_tz import get_windows_tz
 
 log = logging.getLogger(__name__)
 
@@ -541,9 +548,11 @@ class ResponseStatus(ApiComponent):
         """
         super().__init__(protocol=parent.protocol,
                          main_resource=parent.main_resource)
+        #: The status of the response |br| **Type:** str
         self.status = response_status.get(self._cc('response'), 'none')
         self.status = None if self.status == 'none' else EventResponse.from_value(self.status)
         if self.status:
+            #: The time the response was received |br| **Type:** datetime
             self.response_time = response_status.get(self._cc('time'), None)
             if self.response_time == '0001-01-01T00:00:00Z':
                 # consider there's no response time
@@ -853,15 +862,18 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         cc = self._cc  # alias
         # internal to know which properties need to be updated on the server
         self._track_changes = TrackerSet(casing=cc)
+        #: The calendar's unique identifier. |br| **Type:** str
         self.calendar_id = kwargs.get('calendar_id', None)
         download_attachments = kwargs.get('download_attachments')
         cloud_data = kwargs.get(self._cloud_data_key, {})
 
+        #: Unique identifier for the event.  |br| **Type:** str
         self.object_id = cloud_data.get(cc('id'), None)
         self.__subject = cloud_data.get(cc('subject'),
                                         kwargs.get('subject', '') or '')
         body = cloud_data.get(cc('body'), {})
         self.__body = body.get(cc('content'), '')
+        #: The type of the content. Possible values are text and html.  |br| **Type:** bodyType
         self.body_type = body.get(cc('contentType'),
                                   'HTML')  # default to HTML for new messages
 
@@ -886,23 +898,32 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         end_obj = cloud_data.get(cc('end'), {})
         self.__end = self._parse_date_time_time_zone(end_obj, self.__is_all_day)
 
+        #: Set to true if the event has attachments.  |br| **Type:** bool
         self.has_attachments = cloud_data.get(cc('hasAttachments'), False)
         self.__attachments = EventAttachments(parent=self, attachments=[])
         if self.has_attachments and download_attachments:
             self.attachments.download_attachments()
         self.__categories = cloud_data.get(cc('categories'), [])
+        #: A unique identifier for an event across calendars. This ID is different for each occurrence in a recurring series.  |br| **Type:** str
         self.ical_uid = cloud_data.get(cc('iCalUId'), None)
         self.__importance = ImportanceLevel.from_value(
             cloud_data.get(cc('importance'), 'normal') or 'normal')
+        #: Set to true if the event has been cancelled.  |br| **Type:** bool
         self.is_cancelled = cloud_data.get(cc('isCancelled'), False)
+        #: Set to true if the calendar owner (specified by the owner property of the calendar) is the organizer of the event
+        #: (specified by the organizer property of the event). It also applies if a delegate organized the event on behalf of the owner.
+        #: |br| **Type:** bool
         self.is_organizer = cloud_data.get(cc('isOrganizer'), True)
         self.__location = cloud_data.get(cc('location'), {})
+        #: The locations where the event is held or attended from.  |br| **Type:** list
         self.locations = cloud_data.get(cc('locations'), [])  # TODO
 
+        #: A URL for an online meeting.  |br| **Type:** str
         self.online_meeting_url = cloud_data.get(cc('onlineMeetingUrl'), None)
         self.__is_online_meeting = cloud_data.get(cc('isOnlineMeeting'), False)
         self.__online_meeting_provider = OnlineMeetingProviderType.from_value(
             cloud_data.get(cc('onlineMeetingProvider'), 'teamsForBusiness'))
+        #: Details for an attendee to join the meeting online. The default is null. |br| **Type:** OnlineMeetingInfo
         self.online_meeting = cloud_data.get(cc('onlineMeeting'), None)
         if not self.online_meeting_url and self.is_online_meeting:
             self.online_meeting_url = self.online_meeting.get(cc('joinUrl'), None) \
@@ -923,10 +944,12 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
                                                     cc('responseStatus'), {}))
         self.__sensitivity = EventSensitivity.from_value(
             cloud_data.get(cc('sensitivity'), 'normal'))
+        #: The ID for the recurring series master item, if this event is part of a recurring series. |br| **Type:** str
         self.series_master_id = cloud_data.get(cc('seriesMasterId'), None)
         self.__show_as = EventShowAs.from_value(cloud_data.get(cc('showAs'), 'busy'))
         self.__event_type = EventType.from_value(cloud_data.get(cc('type'), 'singleInstance'))
         self.__no_forwarding = False
+        #: The URL to open the event in Outlook on the web. |br| **Type:** str
         self.web_link = cloud_data.get(cc('webLink'), None)
 
     def __str__(self):
@@ -1359,6 +1382,7 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
     def get_occurrences(self, start, end, *, limit=None, query=None, order_by=None, batch=None):
         """
         Returns all the occurrences of a seriesMaster event for a specified time range.
+
         :type start: datetime
         :param start: the start of the time range
         :type end: datetime
@@ -1608,7 +1632,7 @@ class Calendar(ApiComponent, HandleRecipientsMixin):
         'default_events_view': '/calendar/calendarView',
         'get_event': '/calendars/{id}/events/{ide}',
     }
-    event_constructor = Event
+    event_constructor = Event  #: :meta private:
 
     def __init__(self, *, parent=None, con=None, **kwargs):
         """ Create a Calendar Representation
@@ -1635,22 +1659,31 @@ class Calendar(ApiComponent, HandleRecipientsMixin):
 
         cloud_data = kwargs.get(self._cloud_data_key, {})
 
+        #: The calendar name. |br| **Type:** str
         self.name = cloud_data.get(self._cc('name'), '')
+        #: The calendar's unique identifier. |br| **Type:** str
         self.calendar_id = cloud_data.get(self._cc('id'), None)
         self.__owner = self._recipient_from_cloud(
             cloud_data.get(self._cc('owner'), {}), field='owner')
         color = cloud_data.get(self._cc('color'), 'auto')
         try:
+            #: Specifies the color theme to distinguish the calendar from other calendars in a UI. |br| **Type:** calendarColor
             self.color = CalendarColor.from_value(color)
         except:
             self.color = CalendarColor.from_value('auto')
+        #: true if the user can write to the calendar, false otherwise. |br| **Type:** bool
         self.can_edit = cloud_data.get(self._cc('canEdit'), False)
+        #: true if the user has permission to share the calendar, false otherwise. |br| **Type:** bool
         self.can_share = cloud_data.get(self._cc('canShare'), False)
+        #: If true, the user can read calendar items that have been marked private, false otherwise. |br| **Type:** bool
         self.can_view_private_items = cloud_data.get(
             self._cc('canViewPrivateItems'), False)
 
         # Hex color only returns a value when a custom calandar is set
         # Hex color is read-only, cannot be used to set calendar's color
+        #: The calendar color, expressed in a hex color code of three hexadecimal values,
+        #: each ranging from 00 to FF and representing the red, green, or blue components
+        #: of the color in the RGB color space. |br| **Type:** str
         self.hex_color = cloud_data.get(self._cc('hexColor'), None)
 
     def __str__(self):
@@ -1871,8 +1904,8 @@ class Schedule(ApiComponent):
         'get_availability': '/calendar/getSchedule',
     }
 
-    calendar_constructor = Calendar
-    event_constructor = Event
+    calendar_constructor = Calendar  #: :meta private:
+    event_constructor = Event  #: :meta private:
 
     def __init__(self, *, parent=None, con=None, **kwargs):
         """ Create a wrapper around calendars and events

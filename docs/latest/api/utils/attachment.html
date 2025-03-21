@@ -1,0 +1,435 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Attachment &mdash; O365  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Utils" href="utils.html" />
+    <link rel="prev" title="Utils" href="../utils.html" />
+    <link href="../../_static/css/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage.html">Detailed Usage</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../api.html">O365 API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../account.html">Account</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../address_book.html">Address Book</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../calendar.html">Calendar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../category.html">Category</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../connection.html">Connection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../directory.html">Directory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../excel.html">Excel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../group.html">Group</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mailbox.html">Mailbox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../message.html">Message</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../onedrive.html">One Drive</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../planner.html">Planner</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../sharepoint.html">Sharepoint</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tasks.html">Tasks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../teams.html">Teams</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../utils.html">Utils</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Attachment</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#O365.utils.attachment.AttachableMixin"><code class="docutils literal notranslate"><span class="pre">AttachableMixin</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.utils.attachment.BaseAttachment"><code class="docutils literal notranslate"><span class="pre">BaseAttachment</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.utils.attachment.BaseAttachments"><code class="docutils literal notranslate"><span class="pre">BaseAttachments</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.utils.attachment.UploadSessionRequest"><code class="docutils literal notranslate"><span class="pre">UploadSessionRequest</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="utils.html">Utils</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">O365</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../api.html">O365 API</a></li>
+          <li class="breadcrumb-item"><a href="../utils.html">Utils</a></li>
+      <li class="breadcrumb-item active">Attachment</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/api/utils/attachment.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="../utils.html" class="btn btn-neutral float-left" title="Utils" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="utils.html" class="btn btn-neutral float-right" title="Utils" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="attachment">
+<h1>Attachment<a class="headerlink" href="#attachment" title="Link to this heading"></a></h1>
+<dl class="py class" id="module-O365.utils.attachment">
+<dt class="sig sig-object py" id="O365.utils.attachment.AttachableMixin">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.utils.attachment.</span></span><span class="sig-name descname"><span class="pre">AttachableMixin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attachment_name_property</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attachment_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/attachment.html#AttachableMixin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.attachment.AttachableMixin" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.attachment.AttachableMixin.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attachment_name_property</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attachment_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/attachment.html#AttachableMixin.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.attachment.AttachableMixin.__init__" title="Link to this definition"></a></dt>
+<dd><p>Defines the functionality for an object to be attachable.
+Any object that inherits from this class will be attachable
+(if the underlying api allows that)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.attachment.AttachableMixin.to_api_data">
+<span class="sig-name descname"><span class="pre">to_api_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/attachment.html#AttachableMixin.to_api_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.attachment.AttachableMixin.to_api_data" title="Link to this definition"></a></dt>
+<dd><p>Returns a dict to communicate with the server</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="O365.utils.attachment.AttachableMixin.attachment_name">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">attachment_name</span></span><a class="headerlink" href="#O365.utils.attachment.AttachableMixin.attachment_name" title="Link to this definition"></a></dt>
+<dd><p>Name of the attachment</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
+<dd class="field-odd"><p>get attachment name</p>
+</dd>
+<dt class="field-even">Setter<span class="colon">:</span></dt>
+<dd class="field-even"><p>set new name for the attachment</p>
+</dd>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="O365.utils.attachment.AttachableMixin.attachment_type">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">attachment_type</span></span><a class="headerlink" href="#O365.utils.attachment.AttachableMixin.attachment_type" title="Link to this definition"></a></dt>
+<dd><p>Type of attachment</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="O365.utils.attachment.BaseAttachment">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.utils.attachment.</span></span><span class="sig-name descname"><span class="pre">BaseAttachment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attachment</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/attachment.html#BaseAttachment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.attachment.BaseAttachment" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">ApiComponent</span></code></a></p>
+<p>BaseAttachment class is the base object for dealing with attachments</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.attachment.BaseAttachment.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attachment</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/attachment.html#BaseAttachment.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.attachment.BaseAttachment.__init__" title="Link to this definition"></a></dt>
+<dd><p>Creates a new attachment, optionally from existing cloud data</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>attachment</strong> (<em>dict</em><em> or </em><em>str</em><em> or </em><em>Path</em><em> or </em><em>list</em><em>[</em><em>str</em><em>] or </em><a class="reference internal" href="#O365.utils.attachment.AttachableMixin" title="O365.utils.attachment.AttachableMixin"><em>AttachableMixin</em></a>) – attachment data (dict = cloud data,
+other = user data)</p></li>
+<li><p><strong>parent</strong> (<a class="reference internal" href="#O365.utils.attachment.BaseAttachments" title="O365.utils.attachment.BaseAttachments"><em>BaseAttachments</em></a>) – the parent Attachments</p></li>
+<li><p><strong>protocol</strong> (<a class="reference internal" href="../connection.html#O365.connection.Protocol" title="O365.connection.Protocol"><em>Protocol</em></a>) – protocol to use if no parent specified
+(kwargs)</p></li>
+<li><p><strong>main_resource</strong> (<em>str</em>) – use this resource instead of parent resource
+(kwargs)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.attachment.BaseAttachment.attach">
+<span class="sig-name descname"><span class="pre">attach</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">api_object</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_cloud</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/attachment.html#BaseAttachment.attach"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.attachment.BaseAttachment.attach" title="Link to this definition"></a></dt>
+<dd><p>Attach this attachment to an existing api_object. This
+BaseAttachment object must be an orphan BaseAttachment created for the
+sole purpose of attach it to something and therefore run this method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>api_object</strong> – object to attach to</p></li>
+<li><p><strong>on_cloud</strong> – if the attachment is on cloud or not</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Success / Failure</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.attachment.BaseAttachment.save">
+<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">location</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">custom_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/attachment.html#BaseAttachment.save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.attachment.BaseAttachment.save" title="Link to this definition"></a></dt>
+<dd><p>Save the attachment locally to disk</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>location</strong> (<em>str</em>) – path string to where the file is to be saved.</p></li>
+<li><p><strong>custom_name</strong> (<em>str</em>) – a custom name to be saved as</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Success / Failure</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.attachment.BaseAttachment.to_api_data">
+<span class="sig-name descname"><span class="pre">to_api_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/attachment.html#BaseAttachment.to_api_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.attachment.BaseAttachment.to_api_data" title="Link to this definition"></a></dt>
+<dd><p>Returns a dict to communicate with the server</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.utils.attachment.BaseAttachment.attachment">
+<span class="sig-name descname"><span class="pre">attachment</span></span><a class="headerlink" href="#O365.utils.attachment.BaseAttachment.attachment" title="Link to this definition"></a></dt>
+<dd><p>Path to the attachment if on disk <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> Path</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.utils.attachment.BaseAttachment.attachment_id">
+<span class="sig-name descname"><span class="pre">attachment_id</span></span><a class="headerlink" href="#O365.utils.attachment.BaseAttachment.attachment_id" title="Link to this definition"></a></dt>
+<dd><p>The attachment’s id. Default ‘file’ <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.utils.attachment.BaseAttachment.attachment_type">
+<span class="sig-name descname"><span class="pre">attachment_type</span></span><a class="headerlink" href="#O365.utils.attachment.BaseAttachment.attachment_type" title="Link to this definition"></a></dt>
+<dd><p>The attachment’s type. Default ‘file’ <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.utils.attachment.BaseAttachment.content">
+<span class="sig-name descname"><span class="pre">content</span></span><a class="headerlink" href="#O365.utils.attachment.BaseAttachment.content" title="Link to this definition"></a></dt>
+<dd><p>Content of the attachment <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> any</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.utils.attachment.BaseAttachment.content_id">
+<span class="sig-name descname"><span class="pre">content_id</span></span><a class="headerlink" href="#O365.utils.attachment.BaseAttachment.content_id" title="Link to this definition"></a></dt>
+<dd><p>The attachment’s content id Default ‘file’. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.utils.attachment.BaseAttachment.is_inline">
+<span class="sig-name descname"><span class="pre">is_inline</span></span><a class="headerlink" href="#O365.utils.attachment.BaseAttachment.is_inline" title="Link to this definition"></a></dt>
+<dd><p>true if the attachment is an inline attachment; otherwise, false. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> bool</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.utils.attachment.BaseAttachment.name">
+<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#O365.utils.attachment.BaseAttachment.name" title="Link to this definition"></a></dt>
+<dd><p>The attachment’s file name. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.utils.attachment.BaseAttachment.on_cloud">
+<span class="sig-name descname"><span class="pre">on_cloud</span></span><a class="headerlink" href="#O365.utils.attachment.BaseAttachment.on_cloud" title="Link to this definition"></a></dt>
+<dd><p>Indicates if the attachment is stored on cloud. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> bool</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.utils.attachment.BaseAttachment.on_disk">
+<span class="sig-name descname"><span class="pre">on_disk</span></span><a class="headerlink" href="#O365.utils.attachment.BaseAttachment.on_disk" title="Link to this definition"></a></dt>
+<dd><p>Indicates if the attachment is stored on disk. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> bool</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="O365.utils.attachment.BaseAttachments">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.utils.attachment.</span></span><span class="sig-name descname"><span class="pre">BaseAttachments</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attachments</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/attachment.html#BaseAttachments"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.attachment.BaseAttachments" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">ApiComponent</span></code></a></p>
+<p>A Collection of BaseAttachments</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.attachment.BaseAttachments.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attachments</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/attachment.html#BaseAttachments.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.attachment.BaseAttachments.__init__" title="Link to this definition"></a></dt>
+<dd><p>Attachments must be a list of path strings or dictionary elements</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>parent</strong> (<a class="reference internal" href="../account.html#O365.account.Account" title="O365.account.Account"><em>Account</em></a>) – parent object</p></li>
+<li><p><strong>attachments</strong> (<em>list</em><em>[</em><em>str</em><em>] or </em><em>list</em><em>[</em><em>Path</em><em>] or </em><em>str</em><em> or </em><em>Path</em><em> or </em><em>dict</em>) – list of attachments</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.attachment.BaseAttachments.add">
+<span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attachments</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/attachment.html#BaseAttachments.add"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.attachment.BaseAttachments.add" title="Link to this definition"></a></dt>
+<dd><p>Add more attachments</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>attachments</strong> (<em>list</em><em>[</em><em>str</em><em>] or </em><em>list</em><em>[</em><em>Path</em><em>] or </em><em>str</em><em> or </em><em>Path</em><em> or </em><em>dict</em>) – list of attachments</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.attachment.BaseAttachments.clear">
+<span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/attachment.html#BaseAttachments.clear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.attachment.BaseAttachments.clear" title="Link to this definition"></a></dt>
+<dd><p>Clear the attachments</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.attachment.BaseAttachments.download_attachments">
+<span class="sig-name descname"><span class="pre">download_attachments</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/attachment.html#BaseAttachments.download_attachments"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.attachment.BaseAttachments.download_attachments" title="Link to this definition"></a></dt>
+<dd><p>Downloads this message attachments into memory.
+Need a call to ‘attachment.save’ to save them on disk.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Success / Failure</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.attachment.BaseAttachments.remove">
+<span class="sig-name descname"><span class="pre">remove</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attachments</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/attachment.html#BaseAttachments.remove"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.attachment.BaseAttachments.remove" title="Link to this definition"></a></dt>
+<dd><p>Remove the specified attachments</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>attachments</strong> (<em>list</em><em>[</em><em>str</em><em>] or </em><em>list</em><em>[</em><em>Path</em><em>] or </em><em>str</em><em> or </em><em>Path</em><em> or </em><em>dict</em>) – list of attachments</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.attachment.BaseAttachments.to_api_data">
+<span class="sig-name descname"><span class="pre">to_api_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/attachment.html#BaseAttachments.to_api_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.attachment.BaseAttachments.to_api_data" title="Link to this definition"></a></dt>
+<dd><p>Returns a dict to communicate with the server</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="O365.utils.attachment.UploadSessionRequest">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.utils.attachment.</span></span><span class="sig-name descname"><span class="pre">UploadSessionRequest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attachment</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/attachment.html#UploadSessionRequest"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.attachment.UploadSessionRequest" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">ApiComponent</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.attachment.UploadSessionRequest.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attachment</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/attachment.html#UploadSessionRequest.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.attachment.UploadSessionRequest.__init__" title="Link to this definition"></a></dt>
+<dd><p>Object initialization</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>protocol</strong> (<a class="reference internal" href="../connection.html#O365.connection.Protocol" title="O365.connection.Protocol"><em>Protocol</em></a>) – A protocol class or instance to be used with
+this connection</p></li>
+<li><p><strong>main_resource</strong> (<em>str</em>) – main_resource to be used in these API
+communications</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.attachment.UploadSessionRequest.to_api_data">
+<span class="sig-name descname"><span class="pre">to_api_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/attachment.html#UploadSessionRequest.to_api_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.attachment.UploadSessionRequest.to_api_data" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../utils.html" class="btn btn-neutral float-left" title="Utils" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="utils.html" class="btn btn-neutral float-right" title="Utils" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, alejcas.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

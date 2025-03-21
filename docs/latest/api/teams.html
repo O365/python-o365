@@ -1,0 +1,1129 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Teams &mdash; O365  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Utils" href="utils.html" />
+    <link rel="prev" title="Tasks" href="tasks.html" />
+    <link href="../_static/css/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html">
+            
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage.html">Detailed Usage</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">O365 API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="account.html">Account</a></li>
+<li class="toctree-l2"><a class="reference internal" href="address_book.html">Address Book</a></li>
+<li class="toctree-l2"><a class="reference internal" href="calendar.html">Calendar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="category.html">Category</a></li>
+<li class="toctree-l2"><a class="reference internal" href="connection.html">Connection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="directory.html">Directory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="excel.html">Excel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group.html">Group</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mailbox.html">Mailbox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="message.html">Message</a></li>
+<li class="toctree-l2"><a class="reference internal" href="onedrive.html">One Drive</a></li>
+<li class="toctree-l2"><a class="reference internal" href="planner.html">Planner</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sharepoint.html">Sharepoint</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tasks.html">Tasks</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Teams</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#O365.teams.Activity"><code class="docutils literal notranslate"><span class="pre">Activity</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.Activity.AVAILABLE"><code class="docutils literal notranslate"><span class="pre">Activity.AVAILABLE</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.Activity.AWAY"><code class="docutils literal notranslate"><span class="pre">Activity.AWAY</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.Activity.INACALL"><code class="docutils literal notranslate"><span class="pre">Activity.INACALL</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.Activity.INACONFERENCECALL"><code class="docutils literal notranslate"><span class="pre">Activity.INACONFERENCECALL</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.Activity.PRESENTING"><code class="docutils literal notranslate"><span class="pre">Activity.PRESENTING</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#O365.teams.App"><code class="docutils literal notranslate"><span class="pre">App</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.App.__init__"><code class="docutils literal notranslate"><span class="pre">App.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.App.app_definition"><code class="docutils literal notranslate"><span class="pre">App.app_definition</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.App.object_id"><code class="docutils literal notranslate"><span class="pre">App.object_id</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#O365.teams.Availability"><code class="docutils literal notranslate"><span class="pre">Availability</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.Availability.AVAILABLE"><code class="docutils literal notranslate"><span class="pre">Availability.AVAILABLE</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.Availability.AWAY"><code class="docutils literal notranslate"><span class="pre">Availability.AWAY</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.Availability.BUSY"><code class="docutils literal notranslate"><span class="pre">Availability.BUSY</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.Availability.DONOTDISTURB"><code class="docutils literal notranslate"><span class="pre">Availability.DONOTDISTURB</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#O365.teams.Channel"><code class="docutils literal notranslate"><span class="pre">Channel</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.Channel.__init__"><code class="docutils literal notranslate"><span class="pre">Channel.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.Channel.get_message"><code class="docutils literal notranslate"><span class="pre">Channel.get_message()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.Channel.get_messages"><code class="docutils literal notranslate"><span class="pre">Channel.get_messages()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.Channel.send_message"><code class="docutils literal notranslate"><span class="pre">Channel.send_message()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.Channel.description"><code class="docutils literal notranslate"><span class="pre">Channel.description</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.Channel.display_name"><code class="docutils literal notranslate"><span class="pre">Channel.display_name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.Channel.email"><code class="docutils literal notranslate"><span class="pre">Channel.email</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.Channel.object_id"><code class="docutils literal notranslate"><span class="pre">Channel.object_id</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#O365.teams.ChannelMessage"><code class="docutils literal notranslate"><span class="pre">ChannelMessage</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.ChannelMessage.__init__"><code class="docutils literal notranslate"><span class="pre">ChannelMessage.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.ChannelMessage.get_replies"><code class="docutils literal notranslate"><span class="pre">ChannelMessage.get_replies()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.ChannelMessage.get_reply"><code class="docutils literal notranslate"><span class="pre">ChannelMessage.get_reply()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.ChannelMessage.send_reply"><code class="docutils literal notranslate"><span class="pre">ChannelMessage.send_reply()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.ChannelMessage.channel_id"><code class="docutils literal notranslate"><span class="pre">ChannelMessage.channel_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.ChannelMessage.team_id"><code class="docutils literal notranslate"><span class="pre">ChannelMessage.team_id</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#O365.teams.Chat"><code class="docutils literal notranslate"><span class="pre">Chat</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.Chat.__init__"><code class="docutils literal notranslate"><span class="pre">Chat.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.Chat.get_member"><code class="docutils literal notranslate"><span class="pre">Chat.get_member()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.Chat.get_members"><code class="docutils literal notranslate"><span class="pre">Chat.get_members()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.Chat.get_message"><code class="docutils literal notranslate"><span class="pre">Chat.get_message()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.Chat.get_messages"><code class="docutils literal notranslate"><span class="pre">Chat.get_messages()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.Chat.send_message"><code class="docutils literal notranslate"><span class="pre">Chat.send_message()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.Chat.chat_type"><code class="docutils literal notranslate"><span class="pre">Chat.chat_type</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.Chat.created_date"><code class="docutils literal notranslate"><span class="pre">Chat.created_date</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.Chat.last_update_date"><code class="docutils literal notranslate"><span class="pre">Chat.last_update_date</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.Chat.object_id"><code class="docutils literal notranslate"><span class="pre">Chat.object_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.Chat.topic"><code class="docutils literal notranslate"><span class="pre">Chat.topic</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.Chat.web_url"><code class="docutils literal notranslate"><span class="pre">Chat.web_url</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#O365.teams.ChatMessage"><code class="docutils literal notranslate"><span class="pre">ChatMessage</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.ChatMessage.__init__"><code class="docutils literal notranslate"><span class="pre">ChatMessage.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.ChatMessage.channel_identity"><code class="docutils literal notranslate"><span class="pre">ChatMessage.channel_identity</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.ChatMessage.chat_id"><code class="docutils literal notranslate"><span class="pre">ChatMessage.chat_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.ChatMessage.content"><code class="docutils literal notranslate"><span class="pre">ChatMessage.content</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.ChatMessage.content_type"><code class="docutils literal notranslate"><span class="pre">ChatMessage.content_type</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.ChatMessage.created_date"><code class="docutils literal notranslate"><span class="pre">ChatMessage.created_date</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.ChatMessage.deleted_date"><code class="docutils literal notranslate"><span class="pre">ChatMessage.deleted_date</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.ChatMessage.from_display_name"><code class="docutils literal notranslate"><span class="pre">ChatMessage.from_display_name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.ChatMessage.from_id"><code class="docutils literal notranslate"><span class="pre">ChatMessage.from_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.ChatMessage.from_type"><code class="docutils literal notranslate"><span class="pre">ChatMessage.from_type</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.ChatMessage.importance"><code class="docutils literal notranslate"><span class="pre">ChatMessage.importance</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.ChatMessage.last_edited_date"><code class="docutils literal notranslate"><span class="pre">ChatMessage.last_edited_date</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.ChatMessage.last_modified_date"><code class="docutils literal notranslate"><span class="pre">ChatMessage.last_modified_date</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.ChatMessage.message_type"><code class="docutils literal notranslate"><span class="pre">ChatMessage.message_type</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.ChatMessage.object_id"><code class="docutils literal notranslate"><span class="pre">ChatMessage.object_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.ChatMessage.reply_to_id"><code class="docutils literal notranslate"><span class="pre">ChatMessage.reply_to_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.ChatMessage.subject"><code class="docutils literal notranslate"><span class="pre">ChatMessage.subject</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.ChatMessage.summary"><code class="docutils literal notranslate"><span class="pre">ChatMessage.summary</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.ChatMessage.web_url"><code class="docutils literal notranslate"><span class="pre">ChatMessage.web_url</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#O365.teams.ConversationMember"><code class="docutils literal notranslate"><span class="pre">ConversationMember</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.ConversationMember.__init__"><code class="docutils literal notranslate"><span class="pre">ConversationMember.__init__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#O365.teams.PreferredActivity"><code class="docutils literal notranslate"><span class="pre">PreferredActivity</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.PreferredActivity.AVAILABLE"><code class="docutils literal notranslate"><span class="pre">PreferredActivity.AVAILABLE</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.PreferredActivity.AWAY"><code class="docutils literal notranslate"><span class="pre">PreferredActivity.AWAY</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.PreferredActivity.BERIGHTBACK"><code class="docutils literal notranslate"><span class="pre">PreferredActivity.BERIGHTBACK</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.PreferredActivity.BUSY"><code class="docutils literal notranslate"><span class="pre">PreferredActivity.BUSY</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.PreferredActivity.DONOTDISTURB"><code class="docutils literal notranslate"><span class="pre">PreferredActivity.DONOTDISTURB</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.PreferredActivity.OFFWORK"><code class="docutils literal notranslate"><span class="pre">PreferredActivity.OFFWORK</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#O365.teams.PreferredAvailability"><code class="docutils literal notranslate"><span class="pre">PreferredAvailability</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.PreferredAvailability.AVAILABLE"><code class="docutils literal notranslate"><span class="pre">PreferredAvailability.AVAILABLE</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.PreferredAvailability.AWAY"><code class="docutils literal notranslate"><span class="pre">PreferredAvailability.AWAY</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.PreferredAvailability.BERIGHTBACK"><code class="docutils literal notranslate"><span class="pre">PreferredAvailability.BERIGHTBACK</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.PreferredAvailability.BUSY"><code class="docutils literal notranslate"><span class="pre">PreferredAvailability.BUSY</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.PreferredAvailability.DONOTDISTURB"><code class="docutils literal notranslate"><span class="pre">PreferredAvailability.DONOTDISTURB</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.PreferredAvailability.OFFLINE"><code class="docutils literal notranslate"><span class="pre">PreferredAvailability.OFFLINE</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#O365.teams.Presence"><code class="docutils literal notranslate"><span class="pre">Presence</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.Presence.__init__"><code class="docutils literal notranslate"><span class="pre">Presence.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.Presence.activity"><code class="docutils literal notranslate"><span class="pre">Presence.activity</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.Presence.availability"><code class="docutils literal notranslate"><span class="pre">Presence.availability</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.Presence.object_id"><code class="docutils literal notranslate"><span class="pre">Presence.object_id</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#O365.teams.Team"><code class="docutils literal notranslate"><span class="pre">Team</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.Team.__init__"><code class="docutils literal notranslate"><span class="pre">Team.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.Team.get_channel"><code class="docutils literal notranslate"><span class="pre">Team.get_channel()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.Team.get_channels"><code class="docutils literal notranslate"><span class="pre">Team.get_channels()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.Team.description"><code class="docutils literal notranslate"><span class="pre">Team.description</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.Team.display_name"><code class="docutils literal notranslate"><span class="pre">Team.display_name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.Team.is_archived"><code class="docutils literal notranslate"><span class="pre">Team.is_archived</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.Team.object_id"><code class="docutils literal notranslate"><span class="pre">Team.object_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.Team.web_url"><code class="docutils literal notranslate"><span class="pre">Team.web_url</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#O365.teams.Teams"><code class="docutils literal notranslate"><span class="pre">Teams</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.Teams.__init__"><code class="docutils literal notranslate"><span class="pre">Teams.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.Teams.create_channel"><code class="docutils literal notranslate"><span class="pre">Teams.create_channel()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.Teams.get_apps_in_team"><code class="docutils literal notranslate"><span class="pre">Teams.get_apps_in_team()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.Teams.get_channel"><code class="docutils literal notranslate"><span class="pre">Teams.get_channel()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.Teams.get_channels"><code class="docutils literal notranslate"><span class="pre">Teams.get_channels()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.Teams.get_my_chats"><code class="docutils literal notranslate"><span class="pre">Teams.get_my_chats()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.Teams.get_my_presence"><code class="docutils literal notranslate"><span class="pre">Teams.get_my_presence()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.Teams.get_my_teams"><code class="docutils literal notranslate"><span class="pre">Teams.get_my_teams()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.Teams.get_user_presence"><code class="docutils literal notranslate"><span class="pre">Teams.get_user_presence()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.Teams.set_my_presence"><code class="docutils literal notranslate"><span class="pre">Teams.set_my_presence()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.teams.Teams.set_my_user_preferred_presence"><code class="docutils literal notranslate"><span class="pre">Teams.set_my_user_preferred_presence()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html">Utils</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">O365</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../api.html">O365 API</a></li>
+      <li class="breadcrumb-item active">Teams</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/api/teams.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="tasks.html" class="btn btn-neutral float-left" title="Tasks" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="utils.html" class="btn btn-neutral float-right" title="Utils" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="teams">
+<h1>Teams<a class="headerlink" href="#teams" title="Link to this heading"></a></h1>
+<dl class="py class" id="module-O365.teams">
+<dt class="sig sig-object py" id="O365.teams.Activity">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.teams.</span></span><span class="sig-name descname"><span class="pre">Activity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/teams.html#Activity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.teams.Activity" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<p>Valid values for Activity.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.teams.Activity.AVAILABLE">
+<span class="sig-name descname"><span class="pre">AVAILABLE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Available'</span></em><a class="headerlink" href="#O365.teams.Activity.AVAILABLE" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.teams.Activity.AWAY">
+<span class="sig-name descname"><span class="pre">AWAY</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Away'</span></em><a class="headerlink" href="#O365.teams.Activity.AWAY" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.teams.Activity.INACALL">
+<span class="sig-name descname"><span class="pre">INACALL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'InACall'</span></em><a class="headerlink" href="#O365.teams.Activity.INACALL" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.teams.Activity.INACONFERENCECALL">
+<span class="sig-name descname"><span class="pre">INACONFERENCECALL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'InAConferenceCall'</span></em><a class="headerlink" href="#O365.teams.Activity.INACONFERENCECALL" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.teams.Activity.PRESENTING">
+<span class="sig-name descname"><span class="pre">PRESENTING</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Presenting'</span></em><a class="headerlink" href="#O365.teams.Activity.PRESENTING" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="O365.teams.App">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.teams.</span></span><span class="sig-name descname"><span class="pre">App</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">con</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/teams.html#App"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.teams.App" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="utils/utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">ApiComponent</span></code></a></p>
+<p>A Microsoft Teams app</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.teams.App.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">con</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/teams.html#App.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.teams.App.__init__" title="Link to this definition"></a></dt>
+<dd><p>A Microsoft Teams app</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>parent</strong> (<a class="reference internal" href="#O365.teams.Teams" title="O365.teams.Teams"><em>Teams</em></a>) – parent object</p></li>
+<li><p><strong>con</strong> (<a class="reference internal" href="connection.html#O365.connection.Connection" title="O365.connection.Connection"><em>Connection</em></a>) – connection to use if no parent specified</p></li>
+<li><p><strong>protocol</strong> (<a class="reference internal" href="connection.html#O365.connection.Protocol" title="O365.connection.Protocol"><em>Protocol</em></a>) – protocol to use if no parent specified
+(kwargs)</p></li>
+<li><p><strong>main_resource</strong> (<em>str</em>) – use this resource instead of parent resource
+(kwargs)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.teams.App.app_definition">
+<span class="sig-name descname"><span class="pre">app_definition</span></span><a class="headerlink" href="#O365.teams.App.app_definition" title="Link to this definition"></a></dt>
+<dd><p>The details for each version of the app. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> list[teamsAppDefinition]</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.teams.App.object_id">
+<span class="sig-name descname"><span class="pre">object_id</span></span><a class="headerlink" href="#O365.teams.App.object_id" title="Link to this definition"></a></dt>
+<dd><p>The app ID generated for the catalog is different from the developer-provided
+ID found within the Microsoft Teams zip app package. The externalId value is
+empty for apps with a distributionMethod type of store. When apps are
+published to the global store, the id of the app matches the id in the app manifest.
+<div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="O365.teams.Availability">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.teams.</span></span><span class="sig-name descname"><span class="pre">Availability</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/teams.html#Availability"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.teams.Availability" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<p>Valid values for Availability.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.teams.Availability.AVAILABLE">
+<span class="sig-name descname"><span class="pre">AVAILABLE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Available'</span></em><a class="headerlink" href="#O365.teams.Availability.AVAILABLE" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.teams.Availability.AWAY">
+<span class="sig-name descname"><span class="pre">AWAY</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Away'</span></em><a class="headerlink" href="#O365.teams.Availability.AWAY" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.teams.Availability.BUSY">
+<span class="sig-name descname"><span class="pre">BUSY</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Busy'</span></em><a class="headerlink" href="#O365.teams.Availability.BUSY" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.teams.Availability.DONOTDISTURB">
+<span class="sig-name descname"><span class="pre">DONOTDISTURB</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'DoNotDisturb'</span></em><a class="headerlink" href="#O365.teams.Availability.DONOTDISTURB" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="O365.teams.Channel">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.teams.</span></span><span class="sig-name descname"><span class="pre">Channel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">con</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/teams.html#Channel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.teams.Channel" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="utils/utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">ApiComponent</span></code></a></p>
+<p>A Microsoft Teams channel</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.teams.Channel.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">con</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/teams.html#Channel.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.teams.Channel.__init__" title="Link to this definition"></a></dt>
+<dd><p>A Microsoft Teams channel</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>parent</strong> (<a class="reference internal" href="#O365.teams.Teams" title="O365.teams.Teams"><em>Teams</em></a><em> or </em><a class="reference internal" href="#O365.teams.Team" title="O365.teams.Team"><em>Team</em></a>) – parent object</p></li>
+<li><p><strong>con</strong> (<a class="reference internal" href="connection.html#O365.connection.Connection" title="O365.connection.Connection"><em>Connection</em></a>) – connection to use if no parent specified</p></li>
+<li><p><strong>protocol</strong> (<a class="reference internal" href="connection.html#O365.connection.Protocol" title="O365.connection.Protocol"><em>Protocol</em></a>) – protocol to use if no parent specified
+(kwargs)</p></li>
+<li><p><strong>main_resource</strong> (<em>str</em>) – use this resource instead of parent resource
+(kwargs)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.teams.Channel.get_message">
+<span class="sig-name descname"><span class="pre">get_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/teams.html#Channel.get_message"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.teams.Channel.get_message" title="Link to this definition"></a></dt>
+<dd><p>Returns a specified channel chat messages
+:param message_id: number of messages to retrieve
+:type message_id: int or str
+:rtype: ChannelMessage</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.teams.Channel.get_messages">
+<span class="sig-name descname"><span class="pre">get_messages</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/teams.html#Channel.get_messages"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.teams.Channel.get_messages" title="Link to this definition"></a></dt>
+<dd><p>Returns a list of channel chat messages
+:param int limit: number of messages to retrieve
+:param int batch: number of messages to be in each data set
+:rtype: list[ChannelMessage] or Pagination of ChannelMessage</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.teams.Channel.send_message">
+<span class="sig-name descname"><span class="pre">send_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">content</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">content_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'text'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/teams.html#Channel.send_message"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.teams.Channel.send_message" title="Link to this definition"></a></dt>
+<dd><p>Sends a message to the channel
+:param content: str of text, str of html, or dict representation of json body
+:type content: str or dict
+:param str content_type: ‘text’ to render the content as text or ‘html’ to render the content as html
+:rtype: ChannelMessage</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.teams.Channel.description">
+<span class="sig-name descname"><span class="pre">description</span></span><a class="headerlink" href="#O365.teams.Channel.description" title="Link to this definition"></a></dt>
+<dd><p>Optional textual description for the channel. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.teams.Channel.display_name">
+<span class="sig-name descname"><span class="pre">display_name</span></span><a class="headerlink" href="#O365.teams.Channel.display_name" title="Link to this definition"></a></dt>
+<dd><p>Channel name as it will appear to the user in Microsoft Teams.
+<div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.teams.Channel.email">
+<span class="sig-name descname"><span class="pre">email</span></span><a class="headerlink" href="#O365.teams.Channel.email" title="Link to this definition"></a></dt>
+<dd><p>The email address for sending messages to the channel. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.teams.Channel.object_id">
+<span class="sig-name descname"><span class="pre">object_id</span></span><a class="headerlink" href="#O365.teams.Channel.object_id" title="Link to this definition"></a></dt>
+<dd><p>The channel’s unique identifier. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="O365.teams.ChannelMessage">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.teams.</span></span><span class="sig-name descname"><span class="pre">ChannelMessage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/teams.html#ChannelMessage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.teams.ChannelMessage" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#O365.teams.ChatMessage" title="O365.teams.ChatMessage"><code class="xref py py-class docutils literal notranslate"><span class="pre">ChatMessage</span></code></a></p>
+<p>A Microsoft Teams chat message that is the start of a channel thread</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.teams.ChannelMessage.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/teams.html#ChannelMessage.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.teams.ChannelMessage.__init__" title="Link to this definition"></a></dt>
+<dd><p>A Microsoft Teams chat message that is the start of a channel thread</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.teams.ChannelMessage.get_replies">
+<span class="sig-name descname"><span class="pre">get_replies</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/teams.html#ChannelMessage.get_replies"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.teams.ChannelMessage.get_replies" title="Link to this definition"></a></dt>
+<dd><p>Returns a list of replies to the channel chat message
+:param int limit: number of replies to retrieve
+:param int batch: number of replies to be in each data set
+:rtype: list or Pagination</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.teams.ChannelMessage.get_reply">
+<span class="sig-name descname"><span class="pre">get_reply</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/teams.html#ChannelMessage.get_reply"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.teams.ChannelMessage.get_reply" title="Link to this definition"></a></dt>
+<dd><p>Returns a specified reply to the channel chat message
+:param message_id: the message_id of the reply to retrieve
+:type message_id: str or int
+:rtype: ChatMessage</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.teams.ChannelMessage.send_reply">
+<span class="sig-name descname"><span class="pre">send_reply</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">content</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">content_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'text'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/teams.html#ChannelMessage.send_reply"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.teams.ChannelMessage.send_reply" title="Link to this definition"></a></dt>
+<dd><p>Sends a reply to the channel chat message
+:param content: str of text, str of html, or dict representation of json body
+:type content: str or dict
+:param str content_type: ‘text’ to render the content as text or ‘html’ to render the content as html</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.teams.ChannelMessage.channel_id">
+<span class="sig-name descname"><span class="pre">channel_id</span></span><a class="headerlink" href="#O365.teams.ChannelMessage.channel_id" title="Link to this definition"></a></dt>
+<dd><p>The identity of the team in which the message was posted. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.teams.ChannelMessage.team_id">
+<span class="sig-name descname"><span class="pre">team_id</span></span><a class="headerlink" href="#O365.teams.ChannelMessage.team_id" title="Link to this definition"></a></dt>
+<dd><p>The identity of the channel in which the message was posted. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="O365.teams.Chat">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.teams.</span></span><span class="sig-name descname"><span class="pre">Chat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">con</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/teams.html#Chat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.teams.Chat" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="utils/utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">ApiComponent</span></code></a></p>
+<p>A Microsoft Teams chat</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.teams.Chat.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">con</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/teams.html#Chat.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.teams.Chat.__init__" title="Link to this definition"></a></dt>
+<dd><p>A Microsoft Teams chat
+:param parent: parent object
+:type parent: Teams
+:param Connection con: connection to use if no parent specified
+:param Protocol protocol: protocol to use if no parent specified (kwargs)
+:param str main_resource: use this resource instead of parent resource (kwargs)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.teams.Chat.get_member">
+<span class="sig-name descname"><span class="pre">get_member</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">membership_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/teams.html#Chat.get_member"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.teams.Chat.get_member" title="Link to this definition"></a></dt>
+<dd><p>Returns a specified conversation member
+:param str membership_id: membership_id of member to retrieve
+:rtype: ConversationMember</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.teams.Chat.get_members">
+<span class="sig-name descname"><span class="pre">get_members</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/teams.html#Chat.get_members"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.teams.Chat.get_members" title="Link to this definition"></a></dt>
+<dd><p>Returns a list of conversation members
+:rtype: list[ConversationMember]</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.teams.Chat.get_message">
+<span class="sig-name descname"><span class="pre">get_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/teams.html#Chat.get_message"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.teams.Chat.get_message" title="Link to this definition"></a></dt>
+<dd><p>Returns a specified message from the chat
+:param message_id: the message_id of the message to receive
+:type message_id: str or int
+:rtype: ChatMessage</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.teams.Chat.get_messages">
+<span class="sig-name descname"><span class="pre">get_messages</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/teams.html#Chat.get_messages"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.teams.Chat.get_messages" title="Link to this definition"></a></dt>
+<dd><p>Returns a list of chat messages from the chat
+:param int limit: number of replies to retrieve
+:param int batch: number of replies to be in each data set
+:rtype: list[ChatMessage] or Pagination of ChatMessage</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.teams.Chat.send_message">
+<span class="sig-name descname"><span class="pre">send_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">content</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">content_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'text'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/teams.html#Chat.send_message"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.teams.Chat.send_message" title="Link to this definition"></a></dt>
+<dd><p>Sends a message to the chat
+:param content: str of text, str of html, or dict representation of json body
+:type content: str or dict
+:param str content_type: ‘text’ to render the content as text or ‘html’ to render the content as html
+:rtype: ChatMessage</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.teams.Chat.chat_type">
+<span class="sig-name descname"><span class="pre">chat_type</span></span><a class="headerlink" href="#O365.teams.Chat.chat_type" title="Link to this definition"></a></dt>
+<dd><p>Specifies the type of chat.
+Possible values are: group, oneOnOne, meeting, unknownFutureValue.
+<div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> chatType</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.teams.Chat.created_date">
+<span class="sig-name descname"><span class="pre">created_date</span></span><a class="headerlink" href="#O365.teams.Chat.created_date" title="Link to this definition"></a></dt>
+<dd><p>Date and time at which the chat was created. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> datetime</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.teams.Chat.last_update_date">
+<span class="sig-name descname"><span class="pre">last_update_date</span></span><a class="headerlink" href="#O365.teams.Chat.last_update_date" title="Link to this definition"></a></dt>
+<dd><p>Date and time at which the chat was renamed or
+the list of members was last changed. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> datetime</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.teams.Chat.object_id">
+<span class="sig-name descname"><span class="pre">object_id</span></span><a class="headerlink" href="#O365.teams.Chat.object_id" title="Link to this definition"></a></dt>
+<dd><p>The chat’s unique identifier. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.teams.Chat.topic">
+<span class="sig-name descname"><span class="pre">topic</span></span><a class="headerlink" href="#O365.teams.Chat.topic" title="Link to this definition"></a></dt>
+<dd><p>Subject or topic for the chat. Only available for group chats.
+<div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.teams.Chat.web_url">
+<span class="sig-name descname"><span class="pre">web_url</span></span><a class="headerlink" href="#O365.teams.Chat.web_url" title="Link to this definition"></a></dt>
+<dd><p>The URL for the chat in Microsoft Teams. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="O365.teams.ChatMessage">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.teams.</span></span><span class="sig-name descname"><span class="pre">ChatMessage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">con</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/teams.html#ChatMessage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.teams.ChatMessage" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="utils/utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">ApiComponent</span></code></a></p>
+<p>A Microsoft Teams chat message</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.teams.ChatMessage.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">con</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/teams.html#ChatMessage.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.teams.ChatMessage.__init__" title="Link to this definition"></a></dt>
+<dd><p>A Microsoft Teams chat message
+:param parent: parent object
+:type parent: Channel, Chat, or ChannelMessage
+:param Connection con: connection to use if no parent specified
+:param Protocol protocol: protocol to use if no parent specified (kwargs)
+:param str main_resource: use this resource instead of parent resource (kwargs)</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.teams.ChatMessage.channel_identity">
+<span class="sig-name descname"><span class="pre">channel_identity</span></span><a class="headerlink" href="#O365.teams.ChatMessage.channel_identity" title="Link to this definition"></a></dt>
+<dd><p>If the message was sent in a channel, represents identity of the channel.
+<div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> channelIdentity</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.teams.ChatMessage.chat_id">
+<span class="sig-name descname"><span class="pre">chat_id</span></span><a class="headerlink" href="#O365.teams.ChatMessage.chat_id" title="Link to this definition"></a></dt>
+<dd><p>If the message was sent in a chat, represents the identity of the chat.
+<div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.teams.ChatMessage.content">
+<span class="sig-name descname"><span class="pre">content</span></span><a class="headerlink" href="#O365.teams.ChatMessage.content" title="Link to this definition"></a></dt>
+<dd><p>The content of the item. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.teams.ChatMessage.content_type">
+<span class="sig-name descname"><span class="pre">content_type</span></span><a class="headerlink" href="#O365.teams.ChatMessage.content_type" title="Link to this definition"></a></dt>
+<dd><p>The type of the content. Possible values are text and html.
+<div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> bodyType</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.teams.ChatMessage.created_date">
+<span class="sig-name descname"><span class="pre">created_date</span></span><a class="headerlink" href="#O365.teams.ChatMessage.created_date" title="Link to this definition"></a></dt>
+<dd><p>Timestamp of when the chat message was created. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> datetime</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.teams.ChatMessage.deleted_date">
+<span class="sig-name descname"><span class="pre">deleted_date</span></span><a class="headerlink" href="#O365.teams.ChatMessage.deleted_date" title="Link to this definition"></a></dt>
+<dd><p>Timestamp at which the chat message was deleted, or null if not deleted.
+<div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> datetime</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.teams.ChatMessage.from_display_name">
+<span class="sig-name descname"><span class="pre">from_display_name</span></span><a class="headerlink" href="#O365.teams.ChatMessage.from_display_name" title="Link to this definition"></a></dt>
+<dd><p>Name of the user or application message was sent from.
+<div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.teams.ChatMessage.from_id">
+<span class="sig-name descname"><span class="pre">from_id</span></span><a class="headerlink" href="#O365.teams.ChatMessage.from_id" title="Link to this definition"></a></dt>
+<dd><p>Id of the user or application message was sent from.
+<div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.teams.ChatMessage.from_type">
+<span class="sig-name descname"><span class="pre">from_type</span></span><a class="headerlink" href="#O365.teams.ChatMessage.from_type" title="Link to this definition"></a></dt>
+<dd><p>Type of the user or application message was sent from.
+<div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> any</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.teams.ChatMessage.importance">
+<span class="sig-name descname"><span class="pre">importance</span></span><a class="headerlink" href="#O365.teams.ChatMessage.importance" title="Link to this definition"></a></dt>
+<dd><p>The importance of the chat message. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.teams.ChatMessage.last_edited_date">
+<span class="sig-name descname"><span class="pre">last_edited_date</span></span><a class="headerlink" href="#O365.teams.ChatMessage.last_edited_date" title="Link to this definition"></a></dt>
+<dd><p>Timestamp when edits to the chat message were made.
+Triggers an “Edited” flag in the Teams UI. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> datetime</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.teams.ChatMessage.last_modified_date">
+<span class="sig-name descname"><span class="pre">last_modified_date</span></span><a class="headerlink" href="#O365.teams.ChatMessage.last_modified_date" title="Link to this definition"></a></dt>
+<dd><p>Timestamp when the chat message is created (initial setting)
+or modified, including when a reaction is added or removed.
+<div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> datetime</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.teams.ChatMessage.message_type">
+<span class="sig-name descname"><span class="pre">message_type</span></span><a class="headerlink" href="#O365.teams.ChatMessage.message_type" title="Link to this definition"></a></dt>
+<dd><p>The type of chat message. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> chatMessageType</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.teams.ChatMessage.object_id">
+<span class="sig-name descname"><span class="pre">object_id</span></span><a class="headerlink" href="#O365.teams.ChatMessage.object_id" title="Link to this definition"></a></dt>
+<dd><p>Unique ID of the message. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.teams.ChatMessage.reply_to_id">
+<span class="sig-name descname"><span class="pre">reply_to_id</span></span><a class="headerlink" href="#O365.teams.ChatMessage.reply_to_id" title="Link to this definition"></a></dt>
+<dd><p>ID of the parent chat message or root chat message of the thread.
+<div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.teams.ChatMessage.subject">
+<span class="sig-name descname"><span class="pre">subject</span></span><a class="headerlink" href="#O365.teams.ChatMessage.subject" title="Link to this definition"></a></dt>
+<dd><p>The subject of the chat message, in plaintext. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.teams.ChatMessage.summary">
+<span class="sig-name descname"><span class="pre">summary</span></span><a class="headerlink" href="#O365.teams.ChatMessage.summary" title="Link to this definition"></a></dt>
+<dd><p>Summary text of the chat message that could be used for
+push notifications and summary views or fall back views. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.teams.ChatMessage.web_url">
+<span class="sig-name descname"><span class="pre">web_url</span></span><a class="headerlink" href="#O365.teams.ChatMessage.web_url" title="Link to this definition"></a></dt>
+<dd><p>Link to the message in Microsoft Teams. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="O365.teams.ConversationMember">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.teams.</span></span><span class="sig-name descname"><span class="pre">ConversationMember</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">con</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/teams.html#ConversationMember"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.teams.ConversationMember" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="utils/utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">ApiComponent</span></code></a></p>
+<p>A Microsoft Teams conversation member</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.teams.ConversationMember.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">con</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/teams.html#ConversationMember.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.teams.ConversationMember.__init__" title="Link to this definition"></a></dt>
+<dd><p>A Microsoft Teams conversation member
+:param parent: parent object
+:type parent: Chat
+:param Connection con: connection to use if no parent specified
+:param Protocol protocol: protocol to use if no parent specified (kwargs)
+:param str main_resource: use this resource instead of parent resource (kwargs)</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="O365.teams.PreferredActivity">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.teams.</span></span><span class="sig-name descname"><span class="pre">PreferredActivity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/teams.html#PreferredActivity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.teams.PreferredActivity" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<p>Valid values for Activity.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.teams.PreferredActivity.AVAILABLE">
+<span class="sig-name descname"><span class="pre">AVAILABLE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Available'</span></em><a class="headerlink" href="#O365.teams.PreferredActivity.AVAILABLE" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.teams.PreferredActivity.AWAY">
+<span class="sig-name descname"><span class="pre">AWAY</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Away'</span></em><a class="headerlink" href="#O365.teams.PreferredActivity.AWAY" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.teams.PreferredActivity.BERIGHTBACK">
+<span class="sig-name descname"><span class="pre">BERIGHTBACK</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'BeRightBack'</span></em><a class="headerlink" href="#O365.teams.PreferredActivity.BERIGHTBACK" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.teams.PreferredActivity.BUSY">
+<span class="sig-name descname"><span class="pre">BUSY</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Busy'</span></em><a class="headerlink" href="#O365.teams.PreferredActivity.BUSY" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.teams.PreferredActivity.DONOTDISTURB">
+<span class="sig-name descname"><span class="pre">DONOTDISTURB</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'DoNotDisturb'</span></em><a class="headerlink" href="#O365.teams.PreferredActivity.DONOTDISTURB" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.teams.PreferredActivity.OFFWORK">
+<span class="sig-name descname"><span class="pre">OFFWORK</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'OffWork'</span></em><a class="headerlink" href="#O365.teams.PreferredActivity.OFFWORK" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="O365.teams.PreferredAvailability">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.teams.</span></span><span class="sig-name descname"><span class="pre">PreferredAvailability</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/teams.html#PreferredAvailability"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.teams.PreferredAvailability" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<p>Valid values for Availability.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.teams.PreferredAvailability.AVAILABLE">
+<span class="sig-name descname"><span class="pre">AVAILABLE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Available'</span></em><a class="headerlink" href="#O365.teams.PreferredAvailability.AVAILABLE" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.teams.PreferredAvailability.AWAY">
+<span class="sig-name descname"><span class="pre">AWAY</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Away'</span></em><a class="headerlink" href="#O365.teams.PreferredAvailability.AWAY" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.teams.PreferredAvailability.BERIGHTBACK">
+<span class="sig-name descname"><span class="pre">BERIGHTBACK</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'BeRightBack'</span></em><a class="headerlink" href="#O365.teams.PreferredAvailability.BERIGHTBACK" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.teams.PreferredAvailability.BUSY">
+<span class="sig-name descname"><span class="pre">BUSY</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Busy'</span></em><a class="headerlink" href="#O365.teams.PreferredAvailability.BUSY" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.teams.PreferredAvailability.DONOTDISTURB">
+<span class="sig-name descname"><span class="pre">DONOTDISTURB</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'DoNotDisturb'</span></em><a class="headerlink" href="#O365.teams.PreferredAvailability.DONOTDISTURB" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.teams.PreferredAvailability.OFFLINE">
+<span class="sig-name descname"><span class="pre">OFFLINE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Offline'</span></em><a class="headerlink" href="#O365.teams.PreferredAvailability.OFFLINE" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="O365.teams.Presence">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.teams.</span></span><span class="sig-name descname"><span class="pre">Presence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">con</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/teams.html#Presence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.teams.Presence" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="utils/utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">ApiComponent</span></code></a></p>
+<p>Microsoft Teams Presence</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.teams.Presence.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">con</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/teams.html#Presence.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.teams.Presence.__init__" title="Link to this definition"></a></dt>
+<dd><p>Microsoft Teams Presence</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>parent</strong> (<a class="reference internal" href="#O365.teams.Teams" title="O365.teams.Teams"><em>Teams</em></a>) – parent object</p></li>
+<li><p><strong>con</strong> (<a class="reference internal" href="connection.html#O365.connection.Connection" title="O365.connection.Connection"><em>Connection</em></a>) – connection to use if no parent specified</p></li>
+<li><p><strong>protocol</strong> (<a class="reference internal" href="connection.html#O365.connection.Protocol" title="O365.connection.Protocol"><em>Protocol</em></a>) – protocol to use if no parent specified
+(kwargs)</p></li>
+<li><p><strong>main_resource</strong> (<em>str</em>) – use this resource instead of parent resource
+(kwargs)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.teams.Presence.activity">
+<span class="sig-name descname"><span class="pre">activity</span></span><a class="headerlink" href="#O365.teams.Presence.activity" title="Link to this definition"></a></dt>
+<dd><p>The supplemental information to a user’s availability.
+Possible values are Available, Away, BeRightBack, Busy, DoNotDisturb,
+InACall, InAConferenceCall, Inactive, InAMeeting, Offline, OffWork,
+OutOfOffice, PresenceUnknown, Presenting, UrgentInterruptionsOnly.
+<div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> list[str]</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.teams.Presence.availability">
+<span class="sig-name descname"><span class="pre">availability</span></span><a class="headerlink" href="#O365.teams.Presence.availability" title="Link to this definition"></a></dt>
+<dd><p>The base presence information for a user.
+Possible values are Available, AvailableIdle, Away, BeRightBack,
+Busy, BusyIdle, DoNotDisturb, Offline, PresenceUnknown
+<div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> list[str]</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.teams.Presence.object_id">
+<span class="sig-name descname"><span class="pre">object_id</span></span><a class="headerlink" href="#O365.teams.Presence.object_id" title="Link to this definition"></a></dt>
+<dd><p>The unique identifier for the user. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="O365.teams.Team">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.teams.</span></span><span class="sig-name descname"><span class="pre">Team</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">con</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/teams.html#Team"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.teams.Team" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="utils/utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">ApiComponent</span></code></a></p>
+<p>A Microsoft Teams team</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.teams.Team.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">con</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/teams.html#Team.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.teams.Team.__init__" title="Link to this definition"></a></dt>
+<dd><p>A Microsoft Teams team</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>parent</strong> (<a class="reference internal" href="#O365.teams.Teams" title="O365.teams.Teams"><em>Teams</em></a>) – parent object</p></li>
+<li><p><strong>con</strong> (<a class="reference internal" href="connection.html#O365.connection.Connection" title="O365.connection.Connection"><em>Connection</em></a>) – connection to use if no parent specified</p></li>
+<li><p><strong>protocol</strong> (<a class="reference internal" href="connection.html#O365.connection.Protocol" title="O365.connection.Protocol"><em>Protocol</em></a>) – protocol to use if no parent specified
+(kwargs)</p></li>
+<li><p><strong>main_resource</strong> (<em>str</em>) – use this resource instead of parent resource
+(kwargs)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.teams.Team.get_channel">
+<span class="sig-name descname"><span class="pre">get_channel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">channel_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/teams.html#Team.get_channel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.teams.Team.get_channel" title="Link to this definition"></a></dt>
+<dd><p>Returns a channel of the team</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>channel_id</strong> – the team_id of the channel to be retrieved.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#O365.teams.Channel" title="O365.teams.Channel">Channel</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.teams.Team.get_channels">
+<span class="sig-name descname"><span class="pre">get_channels</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/teams.html#Team.get_channels"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.teams.Team.get_channels" title="Link to this definition"></a></dt>
+<dd><p>Returns a list of channels the team</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[<a class="reference internal" href="#O365.teams.Channel" title="O365.teams.Channel">Channel</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.teams.Team.description">
+<span class="sig-name descname"><span class="pre">description</span></span><a class="headerlink" href="#O365.teams.Team.description" title="Link to this definition"></a></dt>
+<dd><p>An optional description for the team. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.teams.Team.display_name">
+<span class="sig-name descname"><span class="pre">display_name</span></span><a class="headerlink" href="#O365.teams.Team.display_name" title="Link to this definition"></a></dt>
+<dd><p>The name of the team. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.teams.Team.is_archived">
+<span class="sig-name descname"><span class="pre">is_archived</span></span><a class="headerlink" href="#O365.teams.Team.is_archived" title="Link to this definition"></a></dt>
+<dd><p>Whether this team is in read-only mode. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> bool</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.teams.Team.object_id">
+<span class="sig-name descname"><span class="pre">object_id</span></span><a class="headerlink" href="#O365.teams.Team.object_id" title="Link to this definition"></a></dt>
+<dd><p>The unique identifier of the team. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.teams.Team.web_url">
+<span class="sig-name descname"><span class="pre">web_url</span></span><a class="headerlink" href="#O365.teams.Team.web_url" title="Link to this definition"></a></dt>
+<dd><p>A hyperlink that goes to the team in the Microsoft Teams client.
+<div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="O365.teams.Teams">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.teams.</span></span><span class="sig-name descname"><span class="pre">Teams</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">con</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/teams.html#Teams"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.teams.Teams" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="utils/utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">ApiComponent</span></code></a></p>
+<p>A Microsoft Teams class</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.teams.Teams.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">con</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/teams.html#Teams.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.teams.Teams.__init__" title="Link to this definition"></a></dt>
+<dd><p>A Teams object</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>parent</strong> (<a class="reference internal" href="account.html#O365.account.Account" title="O365.account.Account"><em>Account</em></a>) – parent object</p></li>
+<li><p><strong>con</strong> (<a class="reference internal" href="connection.html#O365.connection.Connection" title="O365.connection.Connection"><em>Connection</em></a>) – connection to use if no parent specified</p></li>
+<li><p><strong>protocol</strong> (<a class="reference internal" href="connection.html#O365.connection.Protocol" title="O365.connection.Protocol"><em>Protocol</em></a>) – protocol to use if no parent specified
+(kwargs)</p></li>
+<li><p><strong>main_resource</strong> (<em>str</em>) – use this resource instead of parent resource
+(kwargs)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.teams.Teams.create_channel">
+<span class="sig-name descname"><span class="pre">create_channel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">team_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">display_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/teams.html#Teams.create_channel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.teams.Teams.create_channel" title="Link to this definition"></a></dt>
+<dd><p>Creates a channel within a specified team</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>team_id</strong> – the team_id where the channel is created.</p></li>
+<li><p><strong>display_name</strong> – the channel display name.</p></li>
+<li><p><strong>description</strong> – the channel description.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#O365.teams.Channel" title="O365.teams.Channel">Channel</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.teams.Teams.get_apps_in_team">
+<span class="sig-name descname"><span class="pre">get_apps_in_team</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">team_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/teams.html#Teams.get_apps_in_team"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.teams.Teams.get_apps_in_team" title="Link to this definition"></a></dt>
+<dd><p>Returns a list of apps of a specified team</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>team_id</strong> – the team_id of the team to get the apps of.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>list[<a class="reference internal" href="#O365.teams.App" title="O365.teams.App">App</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.teams.Teams.get_channel">
+<span class="sig-name descname"><span class="pre">get_channel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">team_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/teams.html#Teams.get_channel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.teams.Teams.get_channel" title="Link to this definition"></a></dt>
+<dd><p>Returns the channel info for a given channel</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>team_id</strong> – the team_id of the channel.</p></li>
+<li><p><strong>channel_id</strong> – the channel_id of the channel.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>list[<a class="reference internal" href="#O365.teams.Channel" title="O365.teams.Channel">Channel</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.teams.Teams.get_channels">
+<span class="sig-name descname"><span class="pre">get_channels</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">team_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/teams.html#Teams.get_channels"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.teams.Teams.get_channels" title="Link to this definition"></a></dt>
+<dd><p>Returns a list of channels of a specified team</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>team_id</strong> – the team_id of the channel to be retrieved.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>list[<a class="reference internal" href="#O365.teams.Channel" title="O365.teams.Channel">Channel</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.teams.Teams.get_my_chats">
+<span class="sig-name descname"><span class="pre">get_my_chats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/teams.html#Teams.get_my_chats"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.teams.Teams.get_my_chats" title="Link to this definition"></a></dt>
+<dd><p>Returns a list of chats that I am in
+:param int limit: number of chats to retrieve
+:param int batch: number of chats to be in each data set
+:rtype: list[ChatMessage] or Pagination of Chat</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.teams.Teams.get_my_presence">
+<span class="sig-name descname"><span class="pre">get_my_presence</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/teams.html#Teams.get_my_presence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.teams.Teams.get_my_presence" title="Link to this definition"></a></dt>
+<dd><p>Returns my availability and activity</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#O365.teams.Presence" title="O365.teams.Presence">Presence</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.teams.Teams.get_my_teams">
+<span class="sig-name descname"><span class="pre">get_my_teams</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/teams.html#Teams.get_my_teams"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.teams.Teams.get_my_teams" title="Link to this definition"></a></dt>
+<dd><p>Returns a list of teams that I am in</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[<a class="reference internal" href="#O365.teams.Team" title="O365.teams.Team">Team</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.teams.Teams.get_user_presence">
+<span class="sig-name descname"><span class="pre">get_user_presence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">email</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/teams.html#Teams.get_user_presence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.teams.Teams.get_user_presence" title="Link to this definition"></a></dt>
+<dd><p>Returns specific user availability and activity</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#O365.teams.Presence" title="O365.teams.Presence">Presence</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.teams.Teams.set_my_presence">
+<span class="sig-name descname"><span class="pre">set_my_presence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">availability</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#O365.teams.Availability" title="O365.teams.Availability"><span class="pre">Availability</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">activity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#O365.teams.Activity" title="O365.teams.Activity"><span class="pre">Activity</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">expiration_duration</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/teams.html#Teams.set_my_presence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.teams.Teams.set_my_presence" title="Link to this definition"></a></dt>
+<dd><p>Sets my presence status</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>session_id</strong> – the session/capplication id.</p></li>
+<li><p><strong>availability</strong> – the availability.</p></li>
+<li><p><strong>activity</strong> – the activity.</p></li>
+<li><p><strong>activity</strong> – the expiration_duration when status will be unset.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#O365.teams.Presence" title="O365.teams.Presence">Presence</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.teams.Teams.set_my_user_preferred_presence">
+<span class="sig-name descname"><span class="pre">set_my_user_preferred_presence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">availability</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#O365.teams.PreferredAvailability" title="O365.teams.PreferredAvailability"><span class="pre">PreferredAvailability</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">activity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#O365.teams.PreferredActivity" title="O365.teams.PreferredActivity"><span class="pre">PreferredActivity</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">expiration_duration</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/teams.html#Teams.set_my_user_preferred_presence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.teams.Teams.set_my_user_preferred_presence" title="Link to this definition"></a></dt>
+<dd><p>Sets my user preferred presence status</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>availability</strong> – the availability.</p></li>
+<li><p><strong>activity</strong> – the activity.</p></li>
+<li><p><strong>activity</strong> – the expiration_duration when status will be unset.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#O365.teams.Presence" title="O365.teams.Presence">Presence</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="tasks.html" class="btn btn-neutral float-left" title="Tasks" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="utils.html" class="btn btn-neutral float-right" title="Utils" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, alejcas.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

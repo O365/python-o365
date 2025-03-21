@@ -1,90 +1,58 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Account &mdash; O365  documentation</title>
-  
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
 
   
-  
-  
-  
-
-  
-
-  
-  
-    
-
-  
-
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Mailbox" href="mailbox.html" />
-    <link rel="prev" title="Resources" href="connection.html" /> 
-
-  
-  <script src="../_static/js/modernizr.min.js"></script>
+    <link rel="next" title="Address Book" href="addressbook.html" />
+    <link rel="prev" title="Protocols" href="connection.html" />
+    <link href="../_static/css/style.css" rel="stylesheet" type="text/css">
 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
-          
+        <div class="wy-side-nav-search" >
 
           
-            <a href="../index.html" class="icon icon-home"> O365
           
-
-          
+          <a href="../index.html">
+            
           </a>
-
-          
-            
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p class="caption"><span class="caption-text">Contents:</span></p>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../usage.html">Detailed Usage</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="connection.html">Resources</a></li>
-<li class="toctree-l2"><a class="reference internal" href="connection.html#protocols">Protocols</a></li>
+<li class="toctree-l2"><a class="reference internal" href="connection.html">Protocols</a></li>
+<li class="toctree-l2"><a class="reference internal" href="connection.html#resources">Resources</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Account</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#multi-user-handling">Multi-user handling</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#setting-your-account-instance">Setting your Account Instance</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#connecting-to-api-account">Connecting to API Account</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#setting-proxy">Setting Proxy</a></li>
@@ -93,104 +61,84 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#authenticating-your-account">Authenticating your Account</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#accessing-services">Accessing Services</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#account-class-and-modularity">Account Class and Modularity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="addressbook.html">Address Book</a></li>
+<li class="toctree-l2"><a class="reference internal" href="calendar.html">Calendar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="directory.html">Directory and Users</a></li>
+<li class="toctree-l2"><a class="reference internal" href="excel.html">Excel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group.html">Group</a></li>
 <li class="toctree-l2"><a class="reference internal" href="mailbox.html">Mailbox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="onedrive.html">OneDrive</a></li>
+<li class="toctree-l2"><a class="reference internal" href="planner.html">Planner</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sharepoint.html">Sharepoint</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tasks.html">Tasks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="teams.html">Teams</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html">Utils</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../api.html">O365 API</a></li>
 </ul>
 
-            
-          
         </div>
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">O365</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="../index.html">Docs</a> &raquo;</li>
-        
-          <li><a href="../usage.html">Detailed Usage</a> &raquo;</li>
-        
-      <li>Account</li>
-    
-    
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../usage.html">Detailed Usage</a></li>
+      <li class="breadcrumb-item active">Account</li>
       <li class="wy-breadcrumbs-aside">
-        
-            
             <a href="../_sources/usage/account.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
-  </ul>
-
-  
-  <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
-      
-        <a href="mailbox.html" class="btn btn-neutral float-right" title="Mailbox" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="connection.html" class="btn btn-neutral" title="Resources" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="connection.html" class="btn btn-neutral float-left" title="Protocols" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="addressbook.html" class="btn btn-neutral float-right" title="Address Book" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
   </div>
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <div class="section" id="account">
-<h1>Account<a class="headerlink" href="#account" title="Permalink to this headline">¶</a></h1>
-<p>Account class represents a specific account you would like to connect</p>
-<div class="section" id="setting-your-account-instance">
-<h2>Setting your Account Instance<a class="headerlink" href="#setting-your-account-instance" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="connecting-to-api-account">
-<h3>Connecting to API Account<a class="headerlink" href="#connecting-to-api-account" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">O365</span> <span class="kn">import</span> <span class="n">Account</span>
+             
+  <section id="account">
+<h1>Account<a class="headerlink" href="#account" title="Link to this heading"></a></h1>
+<section id="multi-user-handling">
+<h2>Multi-user handling<a class="headerlink" href="#multi-user-handling" title="Link to this heading"></a></h2>
+<p>A single <code class="docutils literal notranslate"><span class="pre">Account</span></code> object can hold more than one user being authenticated. You can authenticate different users and the token backend
+will hold each authentication. When using the library you can use the <code class="docutils literal notranslate"><span class="pre">account.username</span></code> property to get or set the current user.
+If username is not provided, the username will be set automatically to the first authentication found in the token backend. Also,
+whenever you perform a new call to request_token (manually or through a call to <code class="docutils literal notranslate"><span class="pre">account.authenticate</span></code>),
+the username will be set to the user performing the authentication.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">account</span><span class="o">.</span><span class="n">username</span> <span class="o">=</span> <span class="s1">&#39;user1@domain.com&#39;</span>
+<span class="c1">#  issue some calls to retrieve data using the auth of the user1</span>
+<span class="n">account</span><span class="o">.</span><span class="n">username</span> <span class="o">=</span> <span class="s1">&#39;user2@domain.com&#39;</span>
+<span class="c1">#  now every call will use the auth of the user2</span>
+</pre></div>
+</div>
+<p>This is only possible in version 2.1. Before 2.1 you had to instantiate one Account for each user.
+Account class represents a specific account you would like to connect</p>
+</section>
+<section id="setting-your-account-instance">
+<h2>Setting your Account Instance<a class="headerlink" href="#setting-your-account-instance" title="Link to this heading"></a></h2>
+<section id="connecting-to-api-account">
+<h3>Connecting to API Account<a class="headerlink" href="#connecting-to-api-account" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">O365</span><span class="w"> </span><span class="kn">import</span> <span class="n">Account</span>
 
 <span class="n">account</span> <span class="o">=</span> <span class="n">Account</span><span class="p">(</span><span class="n">credentials</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;my_client_id&#39;</span><span class="p">,</span> <span class="s1">&#39;my_client_secret&#39;</span><span class="p">))</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="setting-proxy">
-<h3>Setting Proxy<a class="headerlink" href="#setting-proxy" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="setting-proxy">
+<h3>Setting Proxy<a class="headerlink" href="#setting-proxy" title="Link to this heading"></a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Option 1</span>
 <span class="n">account</span> <span class="o">=</span> <span class="n">Account</span><span class="p">(</span><span class="n">credentials</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;my_client_id&#39;</span><span class="p">,</span> <span class="s1">&#39;my_client_secret&#39;</span><span class="p">),</span>
                   <span class="n">proxy_server</span><span class="o">=</span><span class="s1">&#39;myserver.com&#39;</span><span class="p">,</span> <span class="n">proxy_port</span><span class="o">=</span><span class="mi">8080</span><span class="p">,</span>
@@ -201,27 +149,22 @@
 <span class="n">account</span><span class="o">.</span><span class="n">connection</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;myserver.com&#39;</span><span class="p">,</span><span class="mi">8080</span><span class="p">,</span><span class="s1">&#39;username&#39;</span><span class="p">,</span> <span class="s1">&#39;password&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="using-different-resource">
-<h3>Using Different Resource<a class="headerlink" href="#using-different-resource" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">O365</span> <span class="kn">import</span> <span class="n">Account</span>
+</section>
+<section id="using-different-resource">
+<h3>Using Different Resource<a class="headerlink" href="#using-different-resource" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">O365</span><span class="w"> </span><span class="kn">import</span> <span class="n">Account</span>
 
 <span class="n">account</span> <span class="o">=</span> <span class="n">Account</span><span class="p">(</span><span class="n">credentials</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;my_client_id&#39;</span><span class="p">,</span> <span class="s1">&#39;my_client_secret&#39;</span><span class="p">),</span> <span class="n">main_resource</span><span class="o">=</span><span class="s1">&#39;shared_mail@example.com&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="setting-scopes">
-<h3>Setting Scopes<a class="headerlink" href="#setting-scopes" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="setting-scopes">
+<h3>Setting Scopes<a class="headerlink" href="#setting-scopes" title="Link to this heading"></a></h3>
 <ul>
 <li><p>You can set a list of scopes that your like to use, a huge list is available on <a class="reference external" href="https://developer.microsoft.com/en-us/graph/docs/concepts/permissions_reference">Microsoft Documentation</a></p></li>
 <li><p>We have built a custom list make this scopes easier</p>
 <blockquote>
 <div><table class="docutils align-default">
-<colgroup>
-<col style="width: 23%" />
-<col style="width: 31%" />
-<col style="width: 46%" />
-</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Short Scope Name</p></th>
 <th class="head"><p>Description</p></th>
@@ -298,33 +241,33 @@
 <span class="n">account</span> <span class="o">=</span> <span class="n">Account</span><span class="p">(</span><span class="n">credentials</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;my_client_id&#39;</span><span class="p">,</span> <span class="s1">&#39;my_client_secret&#39;</span><span class="p">),</span>
                   <span class="n">scopes</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;message_all&#39;</span><span class="p">])</span>
 
-<span class="c1"># Why change everytime, add all at a time :)</span>
+<span class="c1"># Why change every time, add all at a time :)</span>
 <span class="n">account</span> <span class="o">=</span> <span class="n">Account</span><span class="p">(</span><span class="n">credentials</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;my_client_id&#39;</span><span class="p">,</span> <span class="s1">&#39;my_client_secret&#39;</span><span class="p">),</span>
                   <span class="n">scopes</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;message_all&#39;</span><span class="p">,</span> <span class="s1">&#39;message_all_shared&#39;</span><span class="p">,</span> <span class="s1">&#39;address_book_all&#39;</span><span class="p">,</span>
                           <span class="s1">&#39;address_book_all_shared&#39;</span><span class="p">,</span>
                           <span class="s1">&#39;calendar&#39;</span><span class="p">,</span> <span class="s1">&#39;users&#39;</span><span class="p">,</span> <span class="s1">&#39;onedrive&#39;</span><span class="p">,</span> <span class="s1">&#39;sharepoint_dl&#39;</span><span class="p">])</span>
 </pre></div>
 </div>
-</div>
-</div>
-<div class="section" id="authenticating-your-account">
-<h2>Authenticating your Account<a class="headerlink" href="#authenticating-your-account" title="Permalink to this headline">¶</a></h2>
+</section>
+</section>
+<section id="authenticating-your-account">
+<h2>Authenticating your Account<a class="headerlink" href="#authenticating-your-account" title="Link to this heading"></a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">account</span> <span class="o">=</span> <span class="n">Account</span><span class="p">(</span><span class="n">credentials</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;my_client_id&#39;</span><span class="p">,</span> <span class="s1">&#39;my_client_secret&#39;</span><span class="p">))</span>
 <span class="n">account</span><span class="o">.</span><span class="n">authenticate</span><span class="p">()</span>
 </pre></div>
 </div>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>The call to authenticate is only required when u haven’t authenticate before. If you already did the token file would have been saved</p>
+<p>The call to authenticate is only required when you haven’t authenticated before. If you already did the token file would have been saved</p>
 </div>
-<p>The authenticate() method forces a authentication flow, which prints out a url</p>
+<p>The authenticate() method forces an authentication flow, which prints out a url</p>
 <ol class="arabic">
 <li><p>Open the printed url</p></li>
 <li><p>Give consent(approve) to the application</p></li>
 <li><dl>
 <dt>You will be redirected out outlook home page, copy the resulting url</dt><dd><div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>If the url is simply <a class="reference external" href="https://outlook.office.com/owa/?realm=blahblah">https://outlook.office.com/owa/?realm=blahblah</a>, and nothing else after that.. then you are currently on new Outlook look, revert back to old look and try the authentication flow again</p>
+<p>If the url is simply <a class="reference external" href="https://outlook.office.com/owa/?realm=blahblah">https://outlook.office.com/owa/?realm=blahblah</a>, and nothing else after that, then you are currently on new Outlook look, revert to old look and try the authentication flow again</p>
 </div>
 </dd>
 </dl>
@@ -332,125 +275,102 @@
 <li><p>Paste the resulting URL into the python console.</p></li>
 <li><p>That’s it, you don’t need this hassle again unless you want to add more scopes than you approved for</p></li>
 </ol>
-</div>
-<div class="section" id="accessing-services">
-<span id="id1"></span><h2>Accessing Services<a class="headerlink" href="#accessing-services" title="Permalink to this headline">¶</a></h2>
-<p>Below are the currently supported services</p>
-<ul>
-<li><dl>
-<dt>Mailbox - Read, Reply or send new mails to others</dt><dd><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Access Mailbox</span>
+</section>
+</section>
+<section id="account-class-and-modularity">
+<h1>Account Class and Modularity<a class="headerlink" href="#account-class-and-modularity" title="Link to this heading"></a></h1>
+<p>Usually you will only need to work with the <code class="docutils literal notranslate"><span class="pre">Account</span></code> Class. This is a wrapper around all functionality.</p>
+<p>But you can also work only with the pieces you want.</p>
+<p>For example, instead of:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">O365</span><span class="w"> </span><span class="kn">import</span> <span class="n">Account</span>
+
+<span class="n">account</span> <span class="o">=</span> <span class="n">Account</span><span class="p">((</span><span class="s1">&#39;client_id&#39;</span><span class="p">,</span> <span class="s1">&#39;client_secret&#39;</span><span class="p">))</span>
+<span class="n">message</span> <span class="o">=</span> <span class="n">account</span><span class="o">.</span><span class="n">new_message</span><span class="p">()</span>
+<span class="c1"># ...</span>
 <span class="n">mailbox</span> <span class="o">=</span> <span class="n">account</span><span class="o">.</span><span class="n">mailbox</span><span class="p">()</span>
-
-<span class="c1"># Access mailbox of another resource</span>
-<span class="n">mailbox</span> <span class="o">=</span> <span class="n">account</span><span class="o">.</span><span class="n">mailbox</span><span class="p">(</span><span class="n">resource</span><span class="o">=</span><span class="s1">&#39;someone@example.com&#39;</span><span class="p">)</span>
+<span class="c1"># ...</span>
 </pre></div>
 </div>
-</dd>
-</dl>
-</li>
-<li><dl>
-<dt>Address Book - Read or add new contacts to your address book</dt><dd><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Access personal address book</span>
-<span class="n">contacts</span> <span class="o">=</span> <span class="n">account</span><span class="o">.</span><span class="n">address_book</span><span class="p">()</span>
+<p>You can work only with the required pieces:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">O365</span><span class="w"> </span><span class="kn">import</span> <span class="n">Connection</span><span class="p">,</span> <span class="n">MSGraphProtocol</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">O365.message</span><span class="w"> </span><span class="kn">import</span> <span class="n">Message</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">O365.mailbox</span><span class="w"> </span><span class="kn">import</span> <span class="n">MailBox</span>
 
-<span class="c1"># Access personal address book of another resource</span>
-<span class="n">contacts</span> <span class="o">=</span> <span class="n">account</span><span class="o">.</span><span class="n">mailbox</span><span class="p">(</span><span class="n">resource</span><span class="o">=</span><span class="s1">&#39;someone@example.com&#39;</span><span class="p">)</span>
+<span class="n">protocol</span> <span class="o">=</span> <span class="n">MSGraphProtocol</span><span class="p">()</span>
+<span class="n">scopes</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;...&#39;</span><span class="p">]</span>
+<span class="n">con</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">((</span><span class="s1">&#39;client_id&#39;</span><span class="p">,</span> <span class="s1">&#39;client_secret&#39;</span><span class="p">),</span> <span class="n">scopes</span><span class="o">=</span><span class="n">scopes</span><span class="p">)</span>
 
-<span class="c1"># Access global shared server address book (Global Address List)</span>
-<span class="n">contacts</span> <span class="o">=</span> <span class="n">account</span><span class="o">.</span><span class="n">mailbox</span><span class="p">(</span><span class="n">address_book</span><span class="o">=</span><span class="s1">&#39;gal&#39;</span><span class="p">)</span>
+<span class="n">message</span> <span class="o">=</span> <span class="n">Message</span><span class="p">(</span><span class="n">con</span><span class="o">=</span><span class="n">con</span><span class="p">,</span> <span class="n">protocol</span><span class="o">=</span><span class="n">protocol</span><span class="p">)</span>
+<span class="c1"># ...</span>
+<span class="n">mailbox</span> <span class="o">=</span> <span class="n">MailBox</span><span class="p">(</span><span class="n">con</span><span class="o">=</span><span class="n">con</span><span class="p">,</span> <span class="n">protocol</span><span class="o">=</span><span class="n">protocol</span><span class="p">)</span>
+<span class="n">message2</span> <span class="o">=</span> <span class="n">Message</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="n">mailbox</span><span class="p">)</span>  <span class="c1"># message will inherit the connection and protocol from mailbox when using parent.</span>
+<span class="c1"># ...</span>
 </pre></div>
 </div>
-</dd>
-</dl>
-</li>
-<li><dl>
-<dt>Calendar Scheduler - Read or add new events to your calendar</dt><dd><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Access scheduler</span>
-<span class="n">scheduler</span> <span class="o">=</span> <span class="n">account</span><span class="o">.</span><span class="n">schedule</span><span class="p">()</span>
+<p>It’s also easy to implement a custom Class. Just Inherit from ApiComponent, define the endpoints, and use the connection to make requests. If needed also inherit from Protocol to handle different communications aspects with the API server.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">O365.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">ApiComponent</span>
 
-<span class="c1"># Access scheduler of another resource</span>
-<span class="n">scheduler</span> <span class="o">=</span> <span class="n">account</span><span class="o">.</span><span class="n">schedule</span><span class="p">(</span><span class="n">resource</span><span class="o">=</span><span class="s1">&#39;someone@example.com&#39;</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">CustomClass</span><span class="p">(</span><span class="n">ApiComponent</span><span class="p">):</span>
+    <span class="n">_endpoints</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;my_url_key&#39;</span><span class="p">:</span> <span class="s1">&#39;/customendpoint&#39;</span><span class="p">}</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">con</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="c1"># connection is only needed if you want to communicate with the api provider</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">con</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">con</span> <span class="k">if</span> <span class="n">parent</span> <span class="k">else</span> <span class="n">con</span>
+        <span class="n">protocol</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">protocol</span> <span class="k">if</span> <span class="n">parent</span> <span class="k">else</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;protocol&#39;</span><span class="p">)</span>
+        <span class="n">main_resource</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">main_resource</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">protocol</span><span class="o">=</span><span class="n">protocol</span><span class="p">,</span> <span class="n">main_resource</span><span class="o">=</span><span class="n">main_resource</span><span class="p">)</span>
+        <span class="c1"># ...</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">do_some_stuff</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="c1"># self.build_url just merges the protocol service_url with the endpoint passed as a parameter</span>
+        <span class="c1"># to change the service_url implement your own protocol inheriting from Protocol Class</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_url</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_endpoints</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;my_url_key&#39;</span><span class="p">))</span>
+
+        <span class="n">my_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;param1&#39;</span><span class="p">:</span> <span class="s1">&#39;param1&#39;</span><span class="p">}</span>
+
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">my_params</span><span class="p">)</span>  <span class="c1"># note the use of the connection here.</span>
+
+        <span class="c1"># handle response and return to the user...</span>
+
+<span class="c1"># the use it as follows:</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">O365</span><span class="w"> </span><span class="kn">import</span> <span class="n">Connection</span><span class="p">,</span> <span class="n">MSGraphProtocol</span>
+
+<span class="n">protocol</span> <span class="o">=</span> <span class="n">MSGraphProtocol</span><span class="p">()</span>  <span class="c1"># or maybe a user defined protocol</span>
+<span class="n">con</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">((</span><span class="s1">&#39;client_id&#39;</span><span class="p">,</span> <span class="s1">&#39;client_secret&#39;</span><span class="p">),</span> <span class="n">scopes</span><span class="o">=</span><span class="n">protocol</span><span class="o">.</span><span class="n">get_scopes_for</span><span class="p">([</span><span class="s1">&#39;...&#39;</span><span class="p">]))</span>
+<span class="n">custom_class</span> <span class="o">=</span> <span class="n">CustomClass</span><span class="p">(</span><span class="n">con</span><span class="o">=</span><span class="n">con</span><span class="p">,</span> <span class="n">protocol</span><span class="o">=</span><span class="n">protocol</span><span class="p">)</span>
+
+<span class="n">custom_class</span><span class="o">.</span><span class="n">do_some_stuff</span><span class="p">()</span>
 </pre></div>
 </div>
-</dd>
-</dl>
-</li>
-<li><dl>
-<dt>One Drive or Sharepoint Storage - Manipulate and Organize your Storage Drives</dt><dd><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Access storage</span>
-<span class="n">storage</span> <span class="o">=</span> <span class="n">account</span><span class="o">.</span><span class="n">storage</span><span class="p">()</span>
-
-<span class="c1"># Access storage of another resource</span>
-<span class="n">storage</span> <span class="o">=</span> <span class="n">account</span><span class="o">.</span><span class="n">storage</span><span class="p">(</span><span class="n">resource</span><span class="o">=</span><span class="s1">&#39;someone@example.com&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-</dd>
-</dl>
-</li>
-<li><dl>
-<dt>Sharepoint Sites - Read and access items in your sharepoint sites</dt><dd><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Access sharepoint</span>
-<span class="n">sharepoint</span> <span class="o">=</span> <span class="n">account</span><span class="o">.</span><span class="n">sharepoint</span><span class="p">()</span>
-
-<span class="c1"># Access sharepoint of another resource</span>
-<span class="n">sharepoint</span> <span class="o">=</span> <span class="n">account</span><span class="o">.</span><span class="n">sharepoint</span><span class="p">(</span><span class="n">resource</span><span class="o">=</span><span class="s1">&#39;someone@example.com&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-</dd>
-</dl>
-</li>
-</ul>
-</div>
-</div>
+<span class="target" id="accessing-services"></span></section>
 
 
            </div>
-           
           </div>
-          <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="mailbox.html" class="btn btn-neutral float-right" title="Mailbox" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="connection.html" class="btn btn-neutral" title="Resources" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="connection.html" class="btn btn-neutral float-left" title="Protocols" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="addressbook.html" class="btn btn-neutral float-right" title="Address Book" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &copy; Copyright 2018, Narcolapser
-
-    </p>
+    <p>&#169; Copyright 2025, alejcas.</p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
-
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-
-  
-
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script src="../_static/language_data.js"></script>
-    
-
-  
-
-  <script type="text/javascript" src="../_static/js/theme.js"></script>
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });

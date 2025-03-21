@@ -8,11 +8,17 @@ O365 API
 
    api/account
    api/address_book
-   api/attachment
    api/calendar
+   api/category
    api/connection
-   api/drive
+   api/directory
+   api/excel
+   api/group
    api/mailbox
    api/message
+   api/onedrive
+   api/planner
    api/sharepoint
+   api/tasks
+   api/teams
    api/utils

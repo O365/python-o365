@@ -2,9 +2,9 @@ import logging
 
 from dateutil.parser import parse
 
-from .utils import ApiComponent, TrackerSet, NEXT_LINK_KEYWORD, Pagination
 from .address_book import Contact
 from .drive import Storage
+from .utils import NEXT_LINK_KEYWORD, ApiComponent, Pagination, TrackerSet
 
 log = logging.getLogger(__name__)
 
@@ -27,20 +27,33 @@ class SharepointListColumn(ApiComponent):
 
         cloud_data = kwargs.get(self._cloud_data_key, {})
 
+        #: The unique identifier for the column. |br| **Type:** str
         self.object_id = cloud_data.get('id')
+        #:For site columns, the name of the group this column belongs to. |br| **Type:** str
         self.column_group = cloud_data.get(self._cc('columnGroup'), None)
+        #: The user-facing description of the column. |br| **Type:** str
         self.description = cloud_data.get(self._cc('description'), None)
+        #: he user-facing name of the column. |br| **Type:** str
         self.display_name = cloud_data.get(self._cc('displayName'), None)
+        #: If true, no two list items may have the same value for this column. |br| **Type:** bool
         self.enforce_unique_values = cloud_data.get(self._cc('enforceUniqueValues'), None)
+        #: Specifies whether the column is displayed in the user interface. |br| **Type:** bool
         self.hidden = cloud_data.get(self._cc('hidden'), None)
+        #: Specifies whether the column values can be used for sorting and searching.
+        #: |br| **Type:** bool
         self.indexed = cloud_data.get(self._cc('indexed'), None)
+        #: The API-facing name of the column as it appears in the fields on a listItem.
+        #: |br| **Type:** str
         self.internal_name = cloud_data.get(self._cc('name'), None)
+        #: Specifies whether the column values can be modified. |br| **Type:** bool
         self.read_only = cloud_data.get(self._cc('readOnly'), None)
+        #: Specifies whether the column value isn't optional. |br| **Type:** bool
         self.required = cloud_data.get(self._cc('required'), None)
 
         # identify the sharepoint column type and set it
         # Graph api doesn't return the type for managed metadata and link column
         if cloud_data.get(self._cc('text'), None) is not None:
+            #: Field type of the column. |br| **Type:** str
             self.field_type = 'text'
         elif cloud_data.get(self._cc('choice'), None) is not None:
             self.field_type = 'choice'
@@ -99,24 +112,32 @@ class SharepointListItem(ApiComponent):
         cloud_data = kwargs.get(self._cloud_data_key, {})
 
         self._track_changes = TrackerSet(casing=self._cc)
+        #: The unique identifier of the item. |br| **Type:** str
         self.object_id = cloud_data.get('id')
         created = cloud_data.get(self._cc('createdDateTime'), None)
         modified = cloud_data.get(self._cc('lastModifiedDateTime'), None)
         local_tz = self.protocol.timezone
+        #: The date and time the item was created. |br| **Type:** datetime
         self.created = parse(created).astimezone(local_tz) if created else None
+        #: The date and time the item was last modified. |br| **Type:** datetime
         self.modified = parse(modified).astimezone(local_tz) if modified else None
 
         created_by = cloud_data.get(self._cc('createdBy'), {}).get('user', None)
+        #: Identity of the creator of this item. |br| **Type:** contact
         self.created_by = Contact(con=self.con, protocol=self.protocol,
                                   **{self._cloud_data_key: created_by}) if created_by else None
         modified_by = cloud_data.get(self._cc('lastModifiedBy'), {}).get('user', None)
+        #: Identity of the last modifier of this item. |br| **Type:** Contact
         self.modified_by = Contact(con=self.con, protocol=self.protocol,
                                    **{self._cloud_data_key: modified_by}) if modified_by else None
 
+        #: URL that displays the item in the browser. |br| **Type:** str
         self.web_url = cloud_data.get(self._cc('webUrl'), None)
 
+        #: The ID of the content type. |br| **Type:** str
         self.content_type_id = cloud_data.get(self._cc('contentType'), {}).get('id', None)
 
+        #: The fields of the item. |br| **Type:** any
         self.fields = cloud_data.get(self._cc('fields'), None)
 
     def __repr__(self):
@@ -187,8 +208,8 @@ class SharepointList(ApiComponent):
         'get_item_by_id': '/items/{item_id}',
         'get_list_columns': '/columns'
     }
-    list_item_constructor = SharepointListItem
-    list_column_constructor = SharepointListColumn
+    list_item_constructor = SharepointListItem  #: :meta private:
+    list_column_constructor = SharepointListColumn  #: :meta private:
 
     def __init__(self, *, parent=None, con=None, **kwargs):
         """ A Sharepoint site List
@@ -207,6 +228,7 @@ class SharepointList(ApiComponent):
 
         cloud_data = kwargs.get(self._cloud_data_key, {})
 
+        #: The ID of the content type. |br| **Type:** str
         self.object_id = cloud_data.get('id')
 
         # Choose the main_resource passed in kwargs over parent main_resource
@@ -221,38 +243,55 @@ class SharepointList(ApiComponent):
             protocol=parent.protocol if parent else kwargs.get('protocol'),
             main_resource=main_resource)
 
+        #: The name of the item. |br| **Type:** str
         self.name = cloud_data.get(self._cc('name'), '')
+        #: The displayable title of the list. |br| **Type:** str
         self.display_name = cloud_data.get(self._cc('displayName'), '')
         if not self.name:
             self.name = self.display_name
+        #: The descriptive text for the item.  |br| **Type:** str
         self.description = cloud_data.get(self._cc('description'), '')
+        #: URL that displays the item in the browser. |br| **Type:** str
         self.web_url = cloud_data.get(self._cc('webUrl'))
 
         created = cloud_data.get(self._cc('createdDateTime'), None)
         modified = cloud_data.get(self._cc('lastModifiedDateTime'), None)
         local_tz = self.protocol.timezone
+        #: The date and time when the item was created. |br| **Type:** datetime
         self.created = parse(created).astimezone(local_tz) if created else None
+        #: The date and time when the item was last modified. |br| **Type:** datetime
         self.modified = parse(modified).astimezone(
             local_tz) if modified else None
 
         created_by = cloud_data.get(self._cc('createdBy'), {}).get('user', None)
+        #: Identity of the creator of this item. |br| **Type:** Contact
         self.created_by = (Contact(con=self.con, protocol=self.protocol,
                                    **{self._cloud_data_key: created_by})
                            if created_by else None)
         modified_by = cloud_data.get(self._cc('lastModifiedBy'), {}).get('user',
                                                                          None)
+        #: Identity of the last modifier of this item. |br| **Type:** Contact
         self.modified_by = (Contact(con=self.con, protocol=self.protocol,
                                     **{self._cloud_data_key: modified_by})
                             if modified_by else None)
 
         # list info
         lst_info = cloud_data.get('list', {})
+        #: If true, indicates that content types are enabled for this list. |br| **Type:** bool
         self.content_types_enabled = lst_info.get(
             self._cc('contentTypesEnabled'), False)
+        #: If true, indicates that the list isn't normally visible in the SharePoint
+        #: user experience.
+        #: |br| **Type:** bool
         self.hidden = lst_info.get(self._cc('hidden'), False)
+        #: An enumerated value that represents the base list template used in creating
+        #: the list. Possible values include documentLibrary, genericList, task,
+        #: survey, announcements, contacts, and more.
+        #: |br| **Type:** str
         self.template = lst_info.get(self._cc('template'), False)
 
         # Crosswalk between display name of user defined columns to internal name
+        #: Column names |br| **Type:** dict
         self.column_name_cw = {col.display_name: col.internal_name for
                                col in self.get_list_columns() if not col.read_only}
 
@@ -275,7 +314,8 @@ class SharepointList(ApiComponent):
                 return 'fields(select=' + result.rstrip(',') + ')'
             
     def get_items(self, limit=None, *, query=None, order_by=None, batch=None, expand_fields=None):
-        """ Returns a collection of Sharepoint Items
+        """Returns a collection of Sharepoint Items
+
         :param int limit: max no. of items to get. Over 999 uses batch.
         :param query: applies a filter to the request.
         :type query: Query or str
@@ -285,7 +325,7 @@ class SharepointList(ApiComponent):
          batches allowing to retrieve more items than the limit.
         :param expand_fields: specify user-defined fields to return,
          True will return all fields
-        :type expand_fields: list or bool         
+        :type expand_fields: list or bool
         :return: list of Sharepoint Items
         :rtype: list[SharepointListItem] or Pagination
         """
@@ -327,11 +367,12 @@ class SharepointList(ApiComponent):
             return items
 
     def get_item_by_id(self, item_id, expand_fields=None):
-        """ Returns a sharepoint list item based on id
+        """Returns a sharepoint list item based on id
+
         :param int item_id: item id to search for
         :param expand_fields: specify user-defined fields to return,
          True will return all fields
-        :type expand_fields: list or bool         
+        :type expand_fields: list or bool
         :return: Sharepoint Item
         :rtype: SharepointListItem
         """
@@ -406,7 +447,7 @@ class Site(ApiComponent):
         'get_lists': '/lists',
         'get_list_by_name': '/lists/{display_name}'
     }
-    list_constructor = SharepointList
+    list_constructor = SharepointList  #: :meta private:
 
     def __init__(self, *, parent=None, con=None, **kwargs):
         """ A Sharepoint site List
@@ -425,6 +466,7 @@ class Site(ApiComponent):
 
         cloud_data = kwargs.get(self._cloud_data_key, {})
 
+        #: The unique identifier of the item. |br| **Type:** str
         self.object_id = cloud_data.get('id')
 
         # Choose the main_resource passed in kwargs over parent main_resource
@@ -440,23 +482,31 @@ class Site(ApiComponent):
             protocol=parent.protocol if parent else kwargs.get('protocol'),
             main_resource=main_resource)
 
+        #: Indicates if this is the root site. |br| **Type:** bool
         self.root = 'root' in cloud_data  # True or False
         # Fallback to manual site
+        #: The name/title of the item. |br| **Type:** str
         self.name = cloud_data.get(self._cc('name'), kwargs.get('name', ''))
+        #: The full title for the site. |br| **Type:** str
         self.display_name = cloud_data.get(self._cc('displayName'), '')
         if not self.name:
             self.name = self.display_name
+        #: The descriptive text for the site. |br| **Type:** str
         self.description = cloud_data.get(self._cc('description'), '')
+        #: URL that displays the item in the browser. |br| **Type:** str
         self.web_url = cloud_data.get(self._cc('webUrl'))
 
         created = cloud_data.get(self._cc('createdDateTime'), None)
         modified = cloud_data.get(self._cc('lastModifiedDateTime'), None)
         local_tz = self.protocol.timezone
+        #: The date and time the item was created. |br| **Type:** datetime
         self.created = parse(created).astimezone(local_tz) if created else None
+        #: The date and time the item was last modified. |br| **Type:** datttime
         self.modified = parse(modified).astimezone(
             local_tz) if modified else None
 
         # site storage to access Drives and DriveItems
+        #: The storage for the site. |br| **Type:** Storage
         self.site_storage = Storage(parent=self,
                                     main_resource='/sites/{id}'.format(
                                         id=self.object_id))
@@ -570,7 +620,7 @@ class Sharepoint(ApiComponent):
         'get_site': '/sites/{id}',
         'search': '/sites?search={keyword}'
     }
-    site_constructor = Site
+    site_constructor = Site  #: :meta private:
 
     def __init__(self, *, parent=None, con=None, **kwargs):
         """ A Sharepoint site List

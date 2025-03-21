@@ -1,188 +1,198 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Sharepoint &mdash; O365  documentation</title>
-  
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
 
   
-  
-  
-  
-
-  
-
-  
-  
-    
-
-  
-
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Utils" href="utils.html" />
-    <link rel="prev" title="Message" href="message.html" /> 
-
-  
-  <script src="../_static/js/modernizr.min.js"></script>
+    <link rel="next" title="Tasks" href="tasks.html" />
+    <link rel="prev" title="Planner" href="planner.html" />
+    <link href="../_static/css/style.css" rel="stylesheet" type="text/css">
 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
-          
+        <div class="wy-side-nav-search" >
 
           
-            <a href="../index.html" class="icon icon-home"> O365
           
-
-          
+          <a href="../index.html">
+            
           </a>
-
-          
-            
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p class="caption"><span class="caption-text">Contents:</span></p>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../usage.html">Detailed Usage</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../api.html">O365 API</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="account.html">Account</a></li>
 <li class="toctree-l2"><a class="reference internal" href="address_book.html">Address Book</a></li>
-<li class="toctree-l2"><a class="reference internal" href="attachment.html">Attachment</a></li>
 <li class="toctree-l2"><a class="reference internal" href="calendar.html">Calendar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="category.html">Category</a></li>
 <li class="toctree-l2"><a class="reference internal" href="connection.html">Connection</a></li>
-<li class="toctree-l2"><a class="reference internal" href="drive.html">One Drive</a></li>
+<li class="toctree-l2"><a class="reference internal" href="directory.html">Directory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="excel.html">Excel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group.html">Group</a></li>
 <li class="toctree-l2"><a class="reference internal" href="mailbox.html">Mailbox</a></li>
 <li class="toctree-l2"><a class="reference internal" href="message.html">Message</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Sharepoint</a></li>
+<li class="toctree-l2"><a class="reference internal" href="onedrive.html">One Drive</a></li>
+<li class="toctree-l2"><a class="reference internal" href="planner.html">Planner</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Sharepoint</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#O365.sharepoint.Sharepoint"><code class="docutils literal notranslate"><span class="pre">Sharepoint</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#O365.sharepoint.Sharepoint.__init__"><code class="docutils literal notranslate"><span class="pre">Sharepoint.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.sharepoint.Sharepoint.get_root_site"><code class="docutils literal notranslate"><span class="pre">Sharepoint.get_root_site()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.sharepoint.Sharepoint.get_site"><code class="docutils literal notranslate"><span class="pre">Sharepoint.get_site()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.sharepoint.Sharepoint.search_site"><code class="docutils literal notranslate"><span class="pre">Sharepoint.search_site()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#O365.sharepoint.SharepointList"><code class="docutils literal notranslate"><span class="pre">SharepointList</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#O365.sharepoint.SharepointList.__init__"><code class="docutils literal notranslate"><span class="pre">SharepointList.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.sharepoint.SharepointList.build_field_filter"><code class="docutils literal notranslate"><span class="pre">SharepointList.build_field_filter()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.sharepoint.SharepointList.create_list_item"><code class="docutils literal notranslate"><span class="pre">SharepointList.create_list_item()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.sharepoint.SharepointList.delete_list_item"><code class="docutils literal notranslate"><span class="pre">SharepointList.delete_list_item()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.sharepoint.SharepointList.get_item_by_id"><code class="docutils literal notranslate"><span class="pre">SharepointList.get_item_by_id()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.sharepoint.SharepointList.get_items"><code class="docutils literal notranslate"><span class="pre">SharepointList.get_items()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.sharepoint.SharepointList.get_list_columns"><code class="docutils literal notranslate"><span class="pre">SharepointList.get_list_columns()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.sharepoint.SharepointList.column_name_cw"><code class="docutils literal notranslate"><span class="pre">SharepointList.column_name_cw</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.sharepoint.SharepointList.content_types_enabled"><code class="docutils literal notranslate"><span class="pre">SharepointList.content_types_enabled</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.sharepoint.SharepointList.created"><code class="docutils literal notranslate"><span class="pre">SharepointList.created</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.sharepoint.SharepointList.created_by"><code class="docutils literal notranslate"><span class="pre">SharepointList.created_by</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.sharepoint.SharepointList.description"><code class="docutils literal notranslate"><span class="pre">SharepointList.description</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.sharepoint.SharepointList.display_name"><code class="docutils literal notranslate"><span class="pre">SharepointList.display_name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.sharepoint.SharepointList.hidden"><code class="docutils literal notranslate"><span class="pre">SharepointList.hidden</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.sharepoint.SharepointList.modified"><code class="docutils literal notranslate"><span class="pre">SharepointList.modified</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.sharepoint.SharepointList.modified_by"><code class="docutils literal notranslate"><span class="pre">SharepointList.modified_by</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.sharepoint.SharepointList.name"><code class="docutils literal notranslate"><span class="pre">SharepointList.name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.sharepoint.SharepointList.object_id"><code class="docutils literal notranslate"><span class="pre">SharepointList.object_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.sharepoint.SharepointList.template"><code class="docutils literal notranslate"><span class="pre">SharepointList.template</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.sharepoint.SharepointList.web_url"><code class="docutils literal notranslate"><span class="pre">SharepointList.web_url</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#O365.sharepoint.SharepointListColumn"><code class="docutils literal notranslate"><span class="pre">SharepointListColumn</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#O365.sharepoint.SharepointListColumn.__init__"><code class="docutils literal notranslate"><span class="pre">SharepointListColumn.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.sharepoint.SharepointListColumn.column_group"><code class="docutils literal notranslate"><span class="pre">SharepointListColumn.column_group</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.sharepoint.SharepointListColumn.description"><code class="docutils literal notranslate"><span class="pre">SharepointListColumn.description</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.sharepoint.SharepointListColumn.display_name"><code class="docutils literal notranslate"><span class="pre">SharepointListColumn.display_name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.sharepoint.SharepointListColumn.enforce_unique_values"><code class="docutils literal notranslate"><span class="pre">SharepointListColumn.enforce_unique_values</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.sharepoint.SharepointListColumn.field_type"><code class="docutils literal notranslate"><span class="pre">SharepointListColumn.field_type</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.sharepoint.SharepointListColumn.hidden"><code class="docutils literal notranslate"><span class="pre">SharepointListColumn.hidden</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.sharepoint.SharepointListColumn.indexed"><code class="docutils literal notranslate"><span class="pre">SharepointListColumn.indexed</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.sharepoint.SharepointListColumn.internal_name"><code class="docutils literal notranslate"><span class="pre">SharepointListColumn.internal_name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.sharepoint.SharepointListColumn.object_id"><code class="docutils literal notranslate"><span class="pre">SharepointListColumn.object_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.sharepoint.SharepointListColumn.read_only"><code class="docutils literal notranslate"><span class="pre">SharepointListColumn.read_only</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.sharepoint.SharepointListColumn.required"><code class="docutils literal notranslate"><span class="pre">SharepointListColumn.required</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#O365.sharepoint.SharepointListItem"><code class="docutils literal notranslate"><span class="pre">SharepointListItem</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#O365.sharepoint.SharepointListItem.__init__"><code class="docutils literal notranslate"><span class="pre">SharepointListItem.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.sharepoint.SharepointListItem.delete"><code class="docutils literal notranslate"><span class="pre">SharepointListItem.delete()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.sharepoint.SharepointListItem.save_updates"><code class="docutils literal notranslate"><span class="pre">SharepointListItem.save_updates()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.sharepoint.SharepointListItem.update_fields"><code class="docutils literal notranslate"><span class="pre">SharepointListItem.update_fields()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.sharepoint.SharepointListItem.content_type_id"><code class="docutils literal notranslate"><span class="pre">SharepointListItem.content_type_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.sharepoint.SharepointListItem.created"><code class="docutils literal notranslate"><span class="pre">SharepointListItem.created</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.sharepoint.SharepointListItem.created_by"><code class="docutils literal notranslate"><span class="pre">SharepointListItem.created_by</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.sharepoint.SharepointListItem.fields"><code class="docutils literal notranslate"><span class="pre">SharepointListItem.fields</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.sharepoint.SharepointListItem.modified"><code class="docutils literal notranslate"><span class="pre">SharepointListItem.modified</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.sharepoint.SharepointListItem.modified_by"><code class="docutils literal notranslate"><span class="pre">SharepointListItem.modified_by</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.sharepoint.SharepointListItem.object_id"><code class="docutils literal notranslate"><span class="pre">SharepointListItem.object_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.sharepoint.SharepointListItem.web_url"><code class="docutils literal notranslate"><span class="pre">SharepointListItem.web_url</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#O365.sharepoint.Site"><code class="docutils literal notranslate"><span class="pre">Site</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#O365.sharepoint.Site.__init__"><code class="docutils literal notranslate"><span class="pre">Site.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.sharepoint.Site.create_list"><code class="docutils literal notranslate"><span class="pre">Site.create_list()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.sharepoint.Site.get_default_document_library"><code class="docutils literal notranslate"><span class="pre">Site.get_default_document_library()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.sharepoint.Site.get_document_library"><code class="docutils literal notranslate"><span class="pre">Site.get_document_library()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.sharepoint.Site.get_list_by_name"><code class="docutils literal notranslate"><span class="pre">Site.get_list_by_name()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.sharepoint.Site.get_lists"><code class="docutils literal notranslate"><span class="pre">Site.get_lists()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.sharepoint.Site.get_subsites"><code class="docutils literal notranslate"><span class="pre">Site.get_subsites()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.sharepoint.Site.list_document_libraries"><code class="docutils literal notranslate"><span class="pre">Site.list_document_libraries()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.sharepoint.Site.created"><code class="docutils literal notranslate"><span class="pre">Site.created</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.sharepoint.Site.description"><code class="docutils literal notranslate"><span class="pre">Site.description</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.sharepoint.Site.display_name"><code class="docutils literal notranslate"><span class="pre">Site.display_name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.sharepoint.Site.modified"><code class="docutils literal notranslate"><span class="pre">Site.modified</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.sharepoint.Site.name"><code class="docutils literal notranslate"><span class="pre">Site.name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.sharepoint.Site.object_id"><code class="docutils literal notranslate"><span class="pre">Site.object_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.sharepoint.Site.root"><code class="docutils literal notranslate"><span class="pre">Site.root</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.sharepoint.Site.site_storage"><code class="docutils literal notranslate"><span class="pre">Site.site_storage</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.sharepoint.Site.web_url"><code class="docutils literal notranslate"><span class="pre">Site.web_url</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tasks.html">Tasks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="teams.html">Teams</a></li>
 <li class="toctree-l2"><a class="reference internal" href="utils.html">Utils</a></li>
 </ul>
 </li>
 </ul>
 
-            
-          
         </div>
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">O365</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="../index.html">Docs</a> &raquo;</li>
-        
-          <li><a href="../api.html">O365 API</a> &raquo;</li>
-        
-      <li>Sharepoint</li>
-    
-    
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../api.html">O365 API</a></li>
+      <li class="breadcrumb-item active">Sharepoint</li>
       <li class="wy-breadcrumbs-aside">
-        
-            
             <a href="../_sources/api/sharepoint.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
-  </ul>
-
-  
-  <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
-      
-        <a href="utils.html" class="btn btn-neutral float-right" title="Utils" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="message.html" class="btn btn-neutral" title="Message" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="planner.html" class="btn btn-neutral float-left" title="Planner" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tasks.html" class="btn btn-neutral float-right" title="Tasks" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
   </div>
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <div class="section" id="module-O365.sharepoint">
-<span id="sharepoint"></span><h1>Sharepoint<a class="headerlink" href="#module-O365.sharepoint" title="Permalink to this headline">¶</a></h1>
-<dl class="py class">
-<dt id="O365.sharepoint.Sharepoint">
-<em class="property">class </em><code class="sig-prename descclassname">O365.sharepoint.</code><code class="sig-name descname">Sharepoint</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">con</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/sharepoint.html#Sharepoint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.sharepoint.Sharepoint" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.utils.utils.ApiComponent</span></code></a></p>
+             
+  <section id="sharepoint">
+<h1>Sharepoint<a class="headerlink" href="#sharepoint" title="Link to this heading"></a></h1>
+<dl class="py class" id="module-O365.sharepoint">
+<dt class="sig sig-object py" id="O365.sharepoint.Sharepoint">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.sharepoint.</span></span><span class="sig-name descname"><span class="pre">Sharepoint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">con</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/sharepoint.html#Sharepoint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.sharepoint.Sharepoint" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="utils/utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">ApiComponent</span></code></a></p>
 <p>A Sharepoint parent class to group functionality</p>
 <dl class="py method">
-<dt id="O365.sharepoint.Sharepoint.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">con</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/sharepoint.html#Sharepoint.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.sharepoint.Sharepoint.__init__" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.sharepoint.Sharepoint.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">con</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/sharepoint.html#Sharepoint.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.sharepoint.Sharepoint.__init__" title="Link to this definition"></a></dt>
 <dd><p>A Sharepoint site List</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>parent</strong> (<a class="reference internal" href="account.html#O365.account.Account" title="O365.account.Account"><em>Account</em></a>) – parent object</p></li>
 <li><p><strong>con</strong> (<a class="reference internal" href="connection.html#O365.connection.Connection" title="O365.connection.Connection"><em>Connection</em></a>) – connection to use if no parent specified</p></li>
@@ -196,22 +206,22 @@
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.sharepoint.Sharepoint.get_root_site">
-<code class="sig-name descname">get_root_site</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/sharepoint.html#Sharepoint.get_root_site"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.sharepoint.Sharepoint.get_root_site" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.sharepoint.Sharepoint.get_root_site">
+<span class="sig-name descname"><span class="pre">get_root_site</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/sharepoint.html#Sharepoint.get_root_site"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.sharepoint.Sharepoint.get_root_site" title="Link to this definition"></a></dt>
 <dd><p>Returns the root site</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="#O365.sharepoint.Site" title="O365.sharepoint.Site">Site</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.sharepoint.Sharepoint.get_site">
-<code class="sig-name descname">get_site</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/sharepoint.html#Sharepoint.get_site"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.sharepoint.Sharepoint.get_site" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.sharepoint.Sharepoint.get_site">
+<span class="sig-name descname"><span class="pre">get_site</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/sharepoint.html#Sharepoint.get_site"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.sharepoint.Sharepoint.get_site" title="Link to this definition"></a></dt>
 <dd><p>Returns a sharepoint site</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>args</strong> – <p>It accepts multiple ways of retrieving a site:</p>
 <p>get_site(host_name): the host_name: host_name ej.
 ‘contoso.sharepoint.com’ or ‘root’</p>
@@ -223,44 +233,38 @@ sharepoint.com’, path_to_site: a url path (with a leading slash)</p>
 host_name ej. ‘contoso.sharepoint.com’</p>
 </p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="#O365.sharepoint.Site" title="O365.sharepoint.Site">Site</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.sharepoint.Sharepoint.search_site">
-<code class="sig-name descname">search_site</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">keyword</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/sharepoint.html#Sharepoint.search_site"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.sharepoint.Sharepoint.search_site" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.sharepoint.Sharepoint.search_site">
+<span class="sig-name descname"><span class="pre">search_site</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keyword</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/sharepoint.html#Sharepoint.search_site"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.sharepoint.Sharepoint.search_site" title="Link to this definition"></a></dt>
 <dd><p>Search a sharepoint host for sites with the provided keyword</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>keyword</strong> – a keyword to search sites</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>list[<a class="reference internal" href="#O365.sharepoint.Site" title="O365.sharepoint.Site">Site</a>]</p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="py attribute">
-<dt id="O365.sharepoint.Sharepoint.site_constructor">
-<code class="sig-name descname">site_constructor</code><a class="headerlink" href="#O365.sharepoint.Sharepoint.site_constructor" title="Permalink to this definition">¶</a></dt>
-<dd><p>alias of <a class="reference internal" href="#O365.sharepoint.Site" title="O365.sharepoint.Site"><code class="xref py py-class docutils literal notranslate"><span class="pre">Site</span></code></a></p>
-</dd></dl>
-
 </dd></dl>
 
 <dl class="py class">
-<dt id="O365.sharepoint.SharepointList">
-<em class="property">class </em><code class="sig-prename descclassname">O365.sharepoint.</code><code class="sig-name descname">SharepointList</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">con</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/sharepoint.html#SharepointList"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.sharepoint.SharepointList" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.utils.utils.ApiComponent</span></code></a></p>
+<dt class="sig sig-object py" id="O365.sharepoint.SharepointList">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.sharepoint.</span></span><span class="sig-name descname"><span class="pre">SharepointList</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">con</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/sharepoint.html#SharepointList"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.sharepoint.SharepointList" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="utils/utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">ApiComponent</span></code></a></p>
 <dl class="py method">
-<dt id="O365.sharepoint.SharepointList.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">con</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/sharepoint.html#SharepointList.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.sharepoint.SharepointList.__init__" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.sharepoint.SharepointList.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">con</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/sharepoint.html#SharepointList.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.sharepoint.SharepointList.__init__" title="Link to this definition"></a></dt>
 <dd><p>A Sharepoint site List</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>parent</strong> (<a class="reference internal" href="#O365.sharepoint.Site" title="O365.sharepoint.Site"><em>Site</em></a>) – parent object</p></li>
 <li><p><strong>con</strong> (<a class="reference internal" href="connection.html#O365.connection.Connection" title="O365.connection.Connection"><em>Connection</em></a>) – connection to use if no parent specified</p></li>
@@ -274,90 +278,183 @@ host_name ej. ‘contoso.sharepoint.com’</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.sharepoint.SharepointList.create_list_item">
-<code class="sig-name descname">create_list_item</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">new_data</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/sharepoint.html#SharepointList.create_list_item"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.sharepoint.SharepointList.create_list_item" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.sharepoint.SharepointList.build_field_filter">
+<span class="sig-name descname"><span class="pre">build_field_filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">expand_fields</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/sharepoint.html#SharepointList.build_field_filter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.sharepoint.SharepointList.build_field_filter" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.sharepoint.SharepointList.create_list_item">
+<span class="sig-name descname"><span class="pre">create_list_item</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">new_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/sharepoint.html#SharepointList.create_list_item"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.sharepoint.SharepointList.create_list_item" title="Link to this definition"></a></dt>
 <dd><p>Create new list item</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>new_data</strong> – dictionary of {‘col_name’: col_value}</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="#O365.sharepoint.SharepointListItem" title="O365.sharepoint.SharepointListItem">SharepointListItem</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.sharepoint.SharepointList.delete_list_item">
-<code class="sig-name descname">delete_list_item</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">item_id</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/sharepoint.html#SharepointList.delete_list_item"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.sharepoint.SharepointList.delete_list_item" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.sharepoint.SharepointList.delete_list_item">
+<span class="sig-name descname"><span class="pre">delete_list_item</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/sharepoint.html#SharepointList.delete_list_item"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.sharepoint.SharepointList.delete_list_item" title="Link to this definition"></a></dt>
 <dd><p>Delete an existing list item</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>item_id</strong> – Id of the item to be delted</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.sharepoint.SharepointList.get_item_by_id">
-<code class="sig-name descname">get_item_by_id</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">item_id</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/sharepoint.html#SharepointList.get_item_by_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.sharepoint.SharepointList.get_item_by_id" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.sharepoint.SharepointList.get_item_by_id">
+<span class="sig-name descname"><span class="pre">get_item_by_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expand_fields</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/sharepoint.html#SharepointList.get_item_by_id"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.sharepoint.SharepointList.get_item_by_id" title="Link to this definition"></a></dt>
 <dd><p>Returns a sharepoint list item based on id</p>
-</dd></dl>
-
-<dl class="py method">
-<dt id="O365.sharepoint.SharepointList.get_items">
-<code class="sig-name descname">get_items</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">limit</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">query</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">order_by</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">batch</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/sharepoint.html#SharepointList.get_items"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.sharepoint.SharepointList.get_items" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a collection of Sharepoint Items
-:param int limit: max no. of items to get. Over 999 uses batch.
-:param query: applies a filter to the request.
-:type query: Query or str
-:param order_by: orders the result set based on this condition
-:type order_by: Query or str
-:param int batch: batch size, retrieves items in</p>
-<blockquote>
-<div><p>batches allowing to retrieve more items than the limit.</p>
-</div></blockquote>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>list of Sharepoint Items</p>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>item_id</strong> (<em>int</em>) – item id to search for</p></li>
+<li><p><strong>expand_fields</strong> (<em>list</em><em> or </em><em>bool</em>) – specify user-defined fields to return,
+True will return all fields</p></li>
+</ul>
 </dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>list[<a class="reference internal" href="#O365.sharepoint.SharepointListItem" title="O365.sharepoint.SharepointListItem">SharepointListItem</a>] or <a class="reference internal" href="utils.html#O365.utils.utils.Pagination" title="O365.utils.utils.Pagination">Pagination</a></p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Sharepoint Item</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#O365.sharepoint.SharepointListItem" title="O365.sharepoint.SharepointListItem">SharepointListItem</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.sharepoint.SharepointList.get_list_columns">
-<code class="sig-name descname">get_list_columns</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/sharepoint.html#SharepointList.get_list_columns"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.sharepoint.SharepointList.get_list_columns" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.sharepoint.SharepointList.get_items">
+<span class="sig-name descname"><span class="pre">get_items</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order_by</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expand_fields</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/sharepoint.html#SharepointList.get_items"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.sharepoint.SharepointList.get_items" title="Link to this definition"></a></dt>
+<dd><p>Returns a collection of Sharepoint Items</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>limit</strong> (<em>int</em>) – max no. of items to get. Over 999 uses batch.</p></li>
+<li><p><strong>query</strong> (<a class="reference internal" href="utils/utils.html#O365.utils.utils.Query" title="O365.utils.utils.Query"><em>Query</em></a><em> or </em><em>str</em>) – applies a filter to the request.</p></li>
+<li><p><strong>order_by</strong> (<a class="reference internal" href="utils/utils.html#O365.utils.utils.Query" title="O365.utils.utils.Query"><em>Query</em></a><em> or </em><em>str</em>) – orders the result set based on this condition</p></li>
+<li><p><strong>batch</strong> (<em>int</em>) – batch size, retrieves items in
+batches allowing to retrieve more items than the limit.</p></li>
+<li><p><strong>expand_fields</strong> (<em>list</em><em> or </em><em>bool</em>) – specify user-defined fields to return,
+True will return all fields</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>list of Sharepoint Items</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[<a class="reference internal" href="#O365.sharepoint.SharepointListItem" title="O365.sharepoint.SharepointListItem">SharepointListItem</a>] or <a class="reference internal" href="utils/utils.html#O365.utils.utils.Pagination" title="O365.utils.utils.Pagination">Pagination</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.sharepoint.SharepointList.get_list_columns">
+<span class="sig-name descname"><span class="pre">get_list_columns</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/sharepoint.html#SharepointList.get_list_columns"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.sharepoint.SharepointList.get_list_columns" title="Link to this definition"></a></dt>
 <dd><p>Returns the sharepoint list columns</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="O365.sharepoint.SharepointList.list_column_constructor">
-<code class="sig-name descname">list_column_constructor</code><a class="headerlink" href="#O365.sharepoint.SharepointList.list_column_constructor" title="Permalink to this definition">¶</a></dt>
-<dd><p>alias of <a class="reference internal" href="#O365.sharepoint.SharepointListColumn" title="O365.sharepoint.SharepointListColumn"><code class="xref py py-class docutils literal notranslate"><span class="pre">SharepointListColumn</span></code></a></p>
+<dt class="sig sig-object py" id="O365.sharepoint.SharepointList.column_name_cw">
+<span class="sig-name descname"><span class="pre">column_name_cw</span></span><a class="headerlink" href="#O365.sharepoint.SharepointList.column_name_cw" title="Link to this definition"></a></dt>
+<dd><p>Column names <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> dict</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="O365.sharepoint.SharepointList.list_item_constructor">
-<code class="sig-name descname">list_item_constructor</code><a class="headerlink" href="#O365.sharepoint.SharepointList.list_item_constructor" title="Permalink to this definition">¶</a></dt>
-<dd><p>alias of <a class="reference internal" href="#O365.sharepoint.SharepointListItem" title="O365.sharepoint.SharepointListItem"><code class="xref py py-class docutils literal notranslate"><span class="pre">SharepointListItem</span></code></a></p>
+<dt class="sig sig-object py" id="O365.sharepoint.SharepointList.content_types_enabled">
+<span class="sig-name descname"><span class="pre">content_types_enabled</span></span><a class="headerlink" href="#O365.sharepoint.SharepointList.content_types_enabled" title="Link to this definition"></a></dt>
+<dd><p>If true, indicates that content types are enabled for this list. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> bool</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.sharepoint.SharepointList.created">
+<span class="sig-name descname"><span class="pre">created</span></span><a class="headerlink" href="#O365.sharepoint.SharepointList.created" title="Link to this definition"></a></dt>
+<dd><p>The date and time when the item was created. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> datetime</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.sharepoint.SharepointList.created_by">
+<span class="sig-name descname"><span class="pre">created_by</span></span><a class="headerlink" href="#O365.sharepoint.SharepointList.created_by" title="Link to this definition"></a></dt>
+<dd><p>Identity of the creator of this item. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> Contact</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.sharepoint.SharepointList.description">
+<span class="sig-name descname"><span class="pre">description</span></span><a class="headerlink" href="#O365.sharepoint.SharepointList.description" title="Link to this definition"></a></dt>
+<dd><p>The descriptive text for the item.  <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.sharepoint.SharepointList.display_name">
+<span class="sig-name descname"><span class="pre">display_name</span></span><a class="headerlink" href="#O365.sharepoint.SharepointList.display_name" title="Link to this definition"></a></dt>
+<dd><p>The displayable title of the list. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.sharepoint.SharepointList.hidden">
+<span class="sig-name descname"><span class="pre">hidden</span></span><a class="headerlink" href="#O365.sharepoint.SharepointList.hidden" title="Link to this definition"></a></dt>
+<dd><p>If true, indicates that the list isn’t normally visible in the SharePoint
+user experience.
+<div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> bool</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.sharepoint.SharepointList.modified">
+<span class="sig-name descname"><span class="pre">modified</span></span><a class="headerlink" href="#O365.sharepoint.SharepointList.modified" title="Link to this definition"></a></dt>
+<dd><p>The date and time when the item was last modified. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> datetime</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.sharepoint.SharepointList.modified_by">
+<span class="sig-name descname"><span class="pre">modified_by</span></span><a class="headerlink" href="#O365.sharepoint.SharepointList.modified_by" title="Link to this definition"></a></dt>
+<dd><p>Identity of the last modifier of this item. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> Contact</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.sharepoint.SharepointList.name">
+<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#O365.sharepoint.SharepointList.name" title="Link to this definition"></a></dt>
+<dd><p>The name of the item. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.sharepoint.SharepointList.object_id">
+<span class="sig-name descname"><span class="pre">object_id</span></span><a class="headerlink" href="#O365.sharepoint.SharepointList.object_id" title="Link to this definition"></a></dt>
+<dd><p>The ID of the content type. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.sharepoint.SharepointList.template">
+<span class="sig-name descname"><span class="pre">template</span></span><a class="headerlink" href="#O365.sharepoint.SharepointList.template" title="Link to this definition"></a></dt>
+<dd><p>An enumerated value that represents the base list template used in creating
+the list. Possible values include documentLibrary, genericList, task,
+survey, announcements, contacts, and more.
+<div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.sharepoint.SharepointList.web_url">
+<span class="sig-name descname"><span class="pre">web_url</span></span><a class="headerlink" href="#O365.sharepoint.SharepointList.web_url" title="Link to this definition"></a></dt>
+<dd><p>URL that displays the item in the browser. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
-<dt id="O365.sharepoint.SharepointListColumn">
-<em class="property">class </em><code class="sig-prename descclassname">O365.sharepoint.</code><code class="sig-name descname">SharepointListColumn</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">con</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/sharepoint.html#SharepointListColumn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.sharepoint.SharepointListColumn" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.utils.utils.ApiComponent</span></code></a></p>
+<dt class="sig sig-object py" id="O365.sharepoint.SharepointListColumn">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.sharepoint.</span></span><span class="sig-name descname"><span class="pre">SharepointListColumn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">con</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/sharepoint.html#SharepointListColumn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.sharepoint.SharepointListColumn" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="utils/utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">ApiComponent</span></code></a></p>
 <p>A Sharepoint List column within a SharepointList</p>
 <dl class="py method">
-<dt id="O365.sharepoint.SharepointListColumn.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">con</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/sharepoint.html#SharepointListColumn.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.sharepoint.SharepointListColumn.__init__" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.sharepoint.SharepointListColumn.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">con</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/sharepoint.html#SharepointListColumn.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.sharepoint.SharepointListColumn.__init__" title="Link to this definition"></a></dt>
 <dd><p>Object initialization</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>protocol</strong> (<a class="reference internal" href="connection.html#O365.connection.Protocol" title="O365.connection.Protocol"><em>Protocol</em></a>) – A protocol class or instance to be used with
 this connection</p></li>
@@ -368,18 +465,86 @@ communications</p></li>
 </dl>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.sharepoint.SharepointListColumn.column_group">
+<span class="sig-name descname"><span class="pre">column_group</span></span><a class="headerlink" href="#O365.sharepoint.SharepointListColumn.column_group" title="Link to this definition"></a></dt>
+<dd><p>For site columns, the name of the group this column belongs to. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.sharepoint.SharepointListColumn.description">
+<span class="sig-name descname"><span class="pre">description</span></span><a class="headerlink" href="#O365.sharepoint.SharepointListColumn.description" title="Link to this definition"></a></dt>
+<dd><p>The user-facing description of the column. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.sharepoint.SharepointListColumn.display_name">
+<span class="sig-name descname"><span class="pre">display_name</span></span><a class="headerlink" href="#O365.sharepoint.SharepointListColumn.display_name" title="Link to this definition"></a></dt>
+<dd><p>he user-facing name of the column. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.sharepoint.SharepointListColumn.enforce_unique_values">
+<span class="sig-name descname"><span class="pre">enforce_unique_values</span></span><a class="headerlink" href="#O365.sharepoint.SharepointListColumn.enforce_unique_values" title="Link to this definition"></a></dt>
+<dd><p>If true, no two list items may have the same value for this column. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> bool</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.sharepoint.SharepointListColumn.field_type">
+<span class="sig-name descname"><span class="pre">field_type</span></span><a class="headerlink" href="#O365.sharepoint.SharepointListColumn.field_type" title="Link to this definition"></a></dt>
+<dd><p>Field type of the column. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.sharepoint.SharepointListColumn.hidden">
+<span class="sig-name descname"><span class="pre">hidden</span></span><a class="headerlink" href="#O365.sharepoint.SharepointListColumn.hidden" title="Link to this definition"></a></dt>
+<dd><p>Specifies whether the column is displayed in the user interface. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> bool</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.sharepoint.SharepointListColumn.indexed">
+<span class="sig-name descname"><span class="pre">indexed</span></span><a class="headerlink" href="#O365.sharepoint.SharepointListColumn.indexed" title="Link to this definition"></a></dt>
+<dd><p>Specifies whether the column values can be used for sorting and searching.
+<div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> bool</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.sharepoint.SharepointListColumn.internal_name">
+<span class="sig-name descname"><span class="pre">internal_name</span></span><a class="headerlink" href="#O365.sharepoint.SharepointListColumn.internal_name" title="Link to this definition"></a></dt>
+<dd><p>The API-facing name of the column as it appears in the fields on a listItem.
+<div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.sharepoint.SharepointListColumn.object_id">
+<span class="sig-name descname"><span class="pre">object_id</span></span><a class="headerlink" href="#O365.sharepoint.SharepointListColumn.object_id" title="Link to this definition"></a></dt>
+<dd><p>The unique identifier for the column. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.sharepoint.SharepointListColumn.read_only">
+<span class="sig-name descname"><span class="pre">read_only</span></span><a class="headerlink" href="#O365.sharepoint.SharepointListColumn.read_only" title="Link to this definition"></a></dt>
+<dd><p>Specifies whether the column values can be modified. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> bool</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.sharepoint.SharepointListColumn.required">
+<span class="sig-name descname"><span class="pre">required</span></span><a class="headerlink" href="#O365.sharepoint.SharepointListColumn.required" title="Link to this definition"></a></dt>
+<dd><p>Specifies whether the column value isn’t optional. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> bool</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
-<dt id="O365.sharepoint.SharepointListItem">
-<em class="property">class </em><code class="sig-prename descclassname">O365.sharepoint.</code><code class="sig-name descname">SharepointListItem</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">con</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/sharepoint.html#SharepointListItem"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.sharepoint.SharepointListItem" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.utils.utils.ApiComponent</span></code></a></p>
+<dt class="sig sig-object py" id="O365.sharepoint.SharepointListItem">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.sharepoint.</span></span><span class="sig-name descname"><span class="pre">SharepointListItem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">con</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/sharepoint.html#SharepointListItem"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.sharepoint.SharepointListItem" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="utils/utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">ApiComponent</span></code></a></p>
 <dl class="py method">
-<dt id="O365.sharepoint.SharepointListItem.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">con</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/sharepoint.html#SharepointListItem.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.sharepoint.SharepointListItem.__init__" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.sharepoint.SharepointListItem.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">con</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/sharepoint.html#SharepointListItem.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.sharepoint.SharepointListItem.__init__" title="Link to this definition"></a></dt>
 <dd><p>A Sharepoint ListItem within a SharepointList</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>parent</strong> (<a class="reference internal" href="#O365.sharepoint.SharepointList" title="O365.sharepoint.SharepointList"><em>SharepointList</em></a>) – parent object</p></li>
 <li><p><strong>con</strong> (<a class="reference internal" href="connection.html#O365.connection.Connection" title="O365.connection.Connection"><em>Connection</em></a>) – connection to use if no parent specified</p></li>
@@ -393,40 +558,88 @@ communications</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.sharepoint.SharepointListItem.delete">
-<code class="sig-name descname">delete</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/sharepoint.html#SharepointListItem.delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.sharepoint.SharepointListItem.delete" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.sharepoint.SharepointListItem.delete">
+<span class="sig-name descname"><span class="pre">delete</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/sharepoint.html#SharepointListItem.delete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.sharepoint.SharepointListItem.delete" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt id="O365.sharepoint.SharepointListItem.save_updates">
-<code class="sig-name descname">save_updates</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/sharepoint.html#SharepointListItem.save_updates"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.sharepoint.SharepointListItem.save_updates" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.sharepoint.SharepointListItem.save_updates">
+<span class="sig-name descname"><span class="pre">save_updates</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/sharepoint.html#SharepointListItem.save_updates"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.sharepoint.SharepointListItem.save_updates" title="Link to this definition"></a></dt>
 <dd><p>Save the updated fields to the cloud</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.sharepoint.SharepointListItem.update_fields">
-<code class="sig-name descname">update_fields</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">updates</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/sharepoint.html#SharepointListItem.update_fields"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.sharepoint.SharepointListItem.update_fields" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.sharepoint.SharepointListItem.update_fields">
+<span class="sig-name descname"><span class="pre">update_fields</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">updates</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/sharepoint.html#SharepointListItem.update_fields"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.sharepoint.SharepointListItem.update_fields" title="Link to this definition"></a></dt>
 <dd><p>Update the value for a field(s) in the listitem</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>update</strong> – A dict of {‘field name’: newvalue}</p>
 </dd>
 </dl>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.sharepoint.SharepointListItem.content_type_id">
+<span class="sig-name descname"><span class="pre">content_type_id</span></span><a class="headerlink" href="#O365.sharepoint.SharepointListItem.content_type_id" title="Link to this definition"></a></dt>
+<dd><p>The ID of the content type. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.sharepoint.SharepointListItem.created">
+<span class="sig-name descname"><span class="pre">created</span></span><a class="headerlink" href="#O365.sharepoint.SharepointListItem.created" title="Link to this definition"></a></dt>
+<dd><p>The date and time the item was created. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> datetime</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.sharepoint.SharepointListItem.created_by">
+<span class="sig-name descname"><span class="pre">created_by</span></span><a class="headerlink" href="#O365.sharepoint.SharepointListItem.created_by" title="Link to this definition"></a></dt>
+<dd><p>Identity of the creator of this item. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> contact</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.sharepoint.SharepointListItem.fields">
+<span class="sig-name descname"><span class="pre">fields</span></span><a class="headerlink" href="#O365.sharepoint.SharepointListItem.fields" title="Link to this definition"></a></dt>
+<dd><p>The fields of the item. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> any</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.sharepoint.SharepointListItem.modified">
+<span class="sig-name descname"><span class="pre">modified</span></span><a class="headerlink" href="#O365.sharepoint.SharepointListItem.modified" title="Link to this definition"></a></dt>
+<dd><p>The date and time the item was last modified. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> datetime</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.sharepoint.SharepointListItem.modified_by">
+<span class="sig-name descname"><span class="pre">modified_by</span></span><a class="headerlink" href="#O365.sharepoint.SharepointListItem.modified_by" title="Link to this definition"></a></dt>
+<dd><p>Identity of the last modifier of this item. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> Contact</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.sharepoint.SharepointListItem.object_id">
+<span class="sig-name descname"><span class="pre">object_id</span></span><a class="headerlink" href="#O365.sharepoint.SharepointListItem.object_id" title="Link to this definition"></a></dt>
+<dd><p>The unique identifier of the item. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.sharepoint.SharepointListItem.web_url">
+<span class="sig-name descname"><span class="pre">web_url</span></span><a class="headerlink" href="#O365.sharepoint.SharepointListItem.web_url" title="Link to this definition"></a></dt>
+<dd><p>URL that displays the item in the browser. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
-<dt id="O365.sharepoint.Site">
-<em class="property">class </em><code class="sig-prename descclassname">O365.sharepoint.</code><code class="sig-name descname">Site</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">con</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/sharepoint.html#Site"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.sharepoint.Site" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.utils.utils.ApiComponent</span></code></a></p>
+<dt class="sig sig-object py" id="O365.sharepoint.Site">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.sharepoint.</span></span><span class="sig-name descname"><span class="pre">Site</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">con</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/sharepoint.html#Site"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.sharepoint.Site" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="utils/utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">ApiComponent</span></code></a></p>
 <p>A Sharepoint Site</p>
 <dl class="py method">
-<dt id="O365.sharepoint.Site.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">con</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/sharepoint.html#Site.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.sharepoint.Site.__init__" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.sharepoint.Site.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">con</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/sharepoint.html#Site.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.sharepoint.Site.__init__" title="Link to this definition"></a></dt>
 <dd><p>A Sharepoint site List</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>parent</strong> (<a class="reference internal" href="#O365.sharepoint.Sharepoint" title="O365.sharepoint.Sharepoint"><em>Sharepoint</em></a>) – parent object</p></li>
 <li><p><strong>con</strong> (<a class="reference internal" href="connection.html#O365.connection.Connection" title="O365.connection.Connection"><em>Connection</em></a>) – connection to use if no parent specified</p></li>
@@ -440,8 +653,8 @@ communications</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.sharepoint.Site.create_list">
-<code class="sig-name descname">create_list</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">list_data</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/sharepoint.html#Site.create_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.sharepoint.Site.create_list" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.sharepoint.Site.create_list">
+<span class="sig-name descname"><span class="pre">create_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">list_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/sharepoint.html#Site.create_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.sharepoint.Site.create_list" title="Link to this definition"></a></dt>
 <dd><p>Creates a SharePoint list.
 :param list_data: Dict representation of list.
 :type list_data: Dict
@@ -449,133 +662,154 @@ communications</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.sharepoint.Site.get_default_document_library">
-<code class="sig-name descname">get_default_document_library</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">request_drive</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/sharepoint.html#Site.get_default_document_library"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.sharepoint.Site.get_default_document_library" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.sharepoint.Site.get_default_document_library">
+<span class="sig-name descname"><span class="pre">get_default_document_library</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request_drive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/sharepoint.html#Site.get_default_document_library"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.sharepoint.Site.get_default_document_library" title="Link to this definition"></a></dt>
 <dd><p>Returns the default document library of this site (Drive instance)</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>request_drive</strong> – True will make an api call to retrieve
 the drive data</p>
 </dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference internal" href="drive.html#O365.drive.Drive" title="O365.drive.Drive">Drive</a></p>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="onedrive.html#O365.drive.Drive" title="O365.drive.Drive">Drive</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.sharepoint.Site.get_document_library">
-<code class="sig-name descname">get_document_library</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">drive_id</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/sharepoint.html#Site.get_document_library"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.sharepoint.Site.get_document_library" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.sharepoint.Site.get_document_library">
+<span class="sig-name descname"><span class="pre">get_document_library</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">drive_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/sharepoint.html#Site.get_document_library"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.sharepoint.Site.get_document_library" title="Link to this definition"></a></dt>
 <dd><p>Returns a Document Library (a Drive instance)</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>drive_id</strong> – the drive_id to be retrieved.</p>
 </dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference internal" href="drive.html#O365.drive.Drive" title="O365.drive.Drive">Drive</a></p>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="onedrive.html#O365.drive.Drive" title="O365.drive.Drive">Drive</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.sharepoint.Site.get_list_by_name">
-<code class="sig-name descname">get_list_by_name</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">display_name</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/sharepoint.html#Site.get_list_by_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.sharepoint.Site.get_list_by_name" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.sharepoint.Site.get_list_by_name">
+<span class="sig-name descname"><span class="pre">get_list_by_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">display_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/sharepoint.html#Site.get_list_by_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.sharepoint.Site.get_list_by_name" title="Link to this definition"></a></dt>
 <dd><p>Returns a sharepoint list based on the display name of the list</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.sharepoint.Site.get_lists">
-<code class="sig-name descname">get_lists</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/sharepoint.html#Site.get_lists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.sharepoint.Site.get_lists" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.sharepoint.Site.get_lists">
+<span class="sig-name descname"><span class="pre">get_lists</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/sharepoint.html#Site.get_lists"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.sharepoint.Site.get_lists" title="Link to this definition"></a></dt>
 <dd><p>Returns a collection of lists within this site</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>list[<a class="reference internal" href="#O365.sharepoint.SharepointList" title="O365.sharepoint.SharepointList">SharepointList</a>]</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.sharepoint.Site.get_subsites">
-<code class="sig-name descname">get_subsites</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/sharepoint.html#Site.get_subsites"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.sharepoint.Site.get_subsites" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.sharepoint.Site.get_subsites">
+<span class="sig-name descname"><span class="pre">get_subsites</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/sharepoint.html#Site.get_subsites"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.sharepoint.Site.get_subsites" title="Link to this definition"></a></dt>
 <dd><p>Returns a list of subsites defined for this site</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>list[<a class="reference internal" href="#O365.sharepoint.Site" title="O365.sharepoint.Site">Site</a>]</p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="py attribute">
-<dt id="O365.sharepoint.Site.list_constructor">
-<code class="sig-name descname">list_constructor</code><a class="headerlink" href="#O365.sharepoint.Site.list_constructor" title="Permalink to this definition">¶</a></dt>
-<dd><p>alias of <a class="reference internal" href="#O365.sharepoint.SharepointList" title="O365.sharepoint.SharepointList"><code class="xref py py-class docutils literal notranslate"><span class="pre">SharepointList</span></code></a></p>
-</dd></dl>
-
 <dl class="py method">
-<dt id="O365.sharepoint.Site.list_document_libraries">
-<code class="sig-name descname">list_document_libraries</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/sharepoint.html#Site.list_document_libraries"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.sharepoint.Site.list_document_libraries" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.sharepoint.Site.list_document_libraries">
+<span class="sig-name descname"><span class="pre">list_document_libraries</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/sharepoint.html#Site.list_document_libraries"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.sharepoint.Site.list_document_libraries" title="Link to this definition"></a></dt>
 <dd><p>Returns a collection of document libraries for this site
 (a collection of Drive instances)
 :return: list of items in this folder
 :rtype: list[Drive] or Pagination</p>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.sharepoint.Site.created">
+<span class="sig-name descname"><span class="pre">created</span></span><a class="headerlink" href="#O365.sharepoint.Site.created" title="Link to this definition"></a></dt>
+<dd><p>The date and time the item was created. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> datetime</p>
 </dd></dl>
 
-</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.sharepoint.Site.description">
+<span class="sig-name descname"><span class="pre">description</span></span><a class="headerlink" href="#O365.sharepoint.Site.description" title="Link to this definition"></a></dt>
+<dd><p>The descriptive text for the site. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.sharepoint.Site.display_name">
+<span class="sig-name descname"><span class="pre">display_name</span></span><a class="headerlink" href="#O365.sharepoint.Site.display_name" title="Link to this definition"></a></dt>
+<dd><p>The full title for the site. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.sharepoint.Site.modified">
+<span class="sig-name descname"><span class="pre">modified</span></span><a class="headerlink" href="#O365.sharepoint.Site.modified" title="Link to this definition"></a></dt>
+<dd><p>The date and time the item was last modified. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> datttime</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.sharepoint.Site.name">
+<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#O365.sharepoint.Site.name" title="Link to this definition"></a></dt>
+<dd><p>The name/title of the item. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.sharepoint.Site.object_id">
+<span class="sig-name descname"><span class="pre">object_id</span></span><a class="headerlink" href="#O365.sharepoint.Site.object_id" title="Link to this definition"></a></dt>
+<dd><p>The unique identifier of the item. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.sharepoint.Site.root">
+<span class="sig-name descname"><span class="pre">root</span></span><a class="headerlink" href="#O365.sharepoint.Site.root" title="Link to this definition"></a></dt>
+<dd><p>Indicates if this is the root site. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> bool</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.sharepoint.Site.site_storage">
+<span class="sig-name descname"><span class="pre">site_storage</span></span><a class="headerlink" href="#O365.sharepoint.Site.site_storage" title="Link to this definition"></a></dt>
+<dd><p>The storage for the site. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> Storage</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.sharepoint.Site.web_url">
+<span class="sig-name descname"><span class="pre">web_url</span></span><a class="headerlink" href="#O365.sharepoint.Site.web_url" title="Link to this definition"></a></dt>
+<dd><p>URL that displays the item in the browser. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
 
 
            </div>
-           
           </div>
-          <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="utils.html" class="btn btn-neutral float-right" title="Utils" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="message.html" class="btn btn-neutral" title="Message" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="planner.html" class="btn btn-neutral float-left" title="Planner" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tasks.html" class="btn btn-neutral float-right" title="Tasks" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &copy; Copyright 2018, Narcolapser
-
-    </p>
+    <p>&#169; Copyright 2025, alejcas.</p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
-
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-
-  
-
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script src="../_static/language_data.js"></script>
-    
-
-  
-
-  <script type="text/javascript" src="../_static/js/theme.js"></script>
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });

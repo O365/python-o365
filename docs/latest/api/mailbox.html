@@ -1,189 +1,349 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Mailbox &mdash; O365  documentation</title>
-  
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
 
   
-  
-  
-  
-
-  
-
-  
-  
-    
-
-  
-
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Message" href="message.html" />
-    <link rel="prev" title="One Drive" href="drive.html" /> 
-
-  
-  <script src="../_static/js/modernizr.min.js"></script>
+    <link rel="prev" title="Group" href="group.html" />
+    <link href="../_static/css/style.css" rel="stylesheet" type="text/css">
 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
-          
+        <div class="wy-side-nav-search" >
 
           
-            <a href="../index.html" class="icon icon-home"> O365
           
-
-          
+          <a href="../index.html">
+            
           </a>
-
-          
-            
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p class="caption"><span class="caption-text">Contents:</span></p>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../usage.html">Detailed Usage</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../api.html">O365 API</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="account.html">Account</a></li>
 <li class="toctree-l2"><a class="reference internal" href="address_book.html">Address Book</a></li>
-<li class="toctree-l2"><a class="reference internal" href="attachment.html">Attachment</a></li>
 <li class="toctree-l2"><a class="reference internal" href="calendar.html">Calendar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="category.html">Category</a></li>
 <li class="toctree-l2"><a class="reference internal" href="connection.html">Connection</a></li>
-<li class="toctree-l2"><a class="reference internal" href="drive.html">One Drive</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Mailbox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="directory.html">Directory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="excel.html">Excel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group.html">Group</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Mailbox</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#O365.mailbox.AutoReplyStatus"><code class="docutils literal notranslate"><span class="pre">AutoReplyStatus</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#O365.mailbox.AutoReplyStatus.ALWAYSENABLED"><code class="docutils literal notranslate"><span class="pre">AutoReplyStatus.ALWAYSENABLED</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.mailbox.AutoReplyStatus.DISABLED"><code class="docutils literal notranslate"><span class="pre">AutoReplyStatus.DISABLED</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.mailbox.AutoReplyStatus.SCHEDULED"><code class="docutils literal notranslate"><span class="pre">AutoReplyStatus.SCHEDULED</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#O365.mailbox.AutomaticRepliesSettings"><code class="docutils literal notranslate"><span class="pre">AutomaticRepliesSettings</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#O365.mailbox.AutomaticRepliesSettings.__init__"><code class="docutils literal notranslate"><span class="pre">AutomaticRepliesSettings.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.mailbox.AutomaticRepliesSettings.external_audience"><code class="docutils literal notranslate"><span class="pre">AutomaticRepliesSettings.external_audience</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.mailbox.AutomaticRepliesSettings.external_reply_message"><code class="docutils literal notranslate"><span class="pre">AutomaticRepliesSettings.external_reply_message</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.mailbox.AutomaticRepliesSettings.internal_reply_message"><code class="docutils literal notranslate"><span class="pre">AutomaticRepliesSettings.internal_reply_message</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.mailbox.AutomaticRepliesSettings.scheduled_enddatetime"><code class="docutils literal notranslate"><span class="pre">AutomaticRepliesSettings.scheduled_enddatetime</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.mailbox.AutomaticRepliesSettings.scheduled_startdatetime"><code class="docutils literal notranslate"><span class="pre">AutomaticRepliesSettings.scheduled_startdatetime</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.mailbox.AutomaticRepliesSettings.status"><code class="docutils literal notranslate"><span class="pre">AutomaticRepliesSettings.status</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#O365.mailbox.ExternalAudience"><code class="docutils literal notranslate"><span class="pre">ExternalAudience</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#O365.mailbox.ExternalAudience.ALL"><code class="docutils literal notranslate"><span class="pre">ExternalAudience.ALL</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.mailbox.ExternalAudience.CONTACTSONLY"><code class="docutils literal notranslate"><span class="pre">ExternalAudience.CONTACTSONLY</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.mailbox.ExternalAudience.NONE"><code class="docutils literal notranslate"><span class="pre">ExternalAudience.NONE</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#O365.mailbox.Folder"><code class="docutils literal notranslate"><span class="pre">Folder</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#O365.mailbox.Folder.__init__"><code class="docutils literal notranslate"><span class="pre">Folder.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.mailbox.Folder.copy_folder"><code class="docutils literal notranslate"><span class="pre">Folder.copy_folder()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.mailbox.Folder.create_child_folder"><code class="docutils literal notranslate"><span class="pre">Folder.create_child_folder()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.mailbox.Folder.delete"><code class="docutils literal notranslate"><span class="pre">Folder.delete()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.mailbox.Folder.delete_message"><code class="docutils literal notranslate"><span class="pre">Folder.delete_message()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.mailbox.Folder.get_folder"><code class="docutils literal notranslate"><span class="pre">Folder.get_folder()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.mailbox.Folder.get_folders"><code class="docutils literal notranslate"><span class="pre">Folder.get_folders()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.mailbox.Folder.get_message"><code class="docutils literal notranslate"><span class="pre">Folder.get_message()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.mailbox.Folder.get_messages"><code class="docutils literal notranslate"><span class="pre">Folder.get_messages()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.mailbox.Folder.get_parent_folder"><code class="docutils literal notranslate"><span class="pre">Folder.get_parent_folder()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.mailbox.Folder.move_folder"><code class="docutils literal notranslate"><span class="pre">Folder.move_folder()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.mailbox.Folder.new_message"><code class="docutils literal notranslate"><span class="pre">Folder.new_message()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.mailbox.Folder.refresh_folder"><code class="docutils literal notranslate"><span class="pre">Folder.refresh_folder()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.mailbox.Folder.update_folder_name"><code class="docutils literal notranslate"><span class="pre">Folder.update_folder_name()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.mailbox.Folder.child_folders_count"><code class="docutils literal notranslate"><span class="pre">Folder.child_folders_count</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.mailbox.Folder.folder_id"><code class="docutils literal notranslate"><span class="pre">Folder.folder_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.mailbox.Folder.name"><code class="docutils literal notranslate"><span class="pre">Folder.name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.mailbox.Folder.parent"><code class="docutils literal notranslate"><span class="pre">Folder.parent</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.mailbox.Folder.parent_id"><code class="docutils literal notranslate"><span class="pre">Folder.parent_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.mailbox.Folder.root"><code class="docutils literal notranslate"><span class="pre">Folder.root</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.mailbox.Folder.total_items_count"><code class="docutils literal notranslate"><span class="pre">Folder.total_items_count</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.mailbox.Folder.unread_items_count"><code class="docutils literal notranslate"><span class="pre">Folder.unread_items_count</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.mailbox.Folder.updated_at"><code class="docutils literal notranslate"><span class="pre">Folder.updated_at</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#O365.mailbox.MailBox"><code class="docutils literal notranslate"><span class="pre">MailBox</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#O365.mailbox.MailBox.__init__"><code class="docutils literal notranslate"><span class="pre">MailBox.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.mailbox.MailBox.archive_folder"><code class="docutils literal notranslate"><span class="pre">MailBox.archive_folder()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.mailbox.MailBox.clutter_folder"><code class="docutils literal notranslate"><span class="pre">MailBox.clutter_folder()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.mailbox.MailBox.conflicts_folder"><code class="docutils literal notranslate"><span class="pre">MailBox.conflicts_folder()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.mailbox.MailBox.conversationhistory_folder"><code class="docutils literal notranslate"><span class="pre">MailBox.conversationhistory_folder()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.mailbox.MailBox.deleted_folder"><code class="docutils literal notranslate"><span class="pre">MailBox.deleted_folder()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.mailbox.MailBox.drafts_folder"><code class="docutils literal notranslate"><span class="pre">MailBox.drafts_folder()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.mailbox.MailBox.get_settings"><code class="docutils literal notranslate"><span class="pre">MailBox.get_settings()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.mailbox.MailBox.inbox_folder"><code class="docutils literal notranslate"><span class="pre">MailBox.inbox_folder()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.mailbox.MailBox.junk_folder"><code class="docutils literal notranslate"><span class="pre">MailBox.junk_folder()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.mailbox.MailBox.localfailures_folder"><code class="docutils literal notranslate"><span class="pre">MailBox.localfailures_folder()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.mailbox.MailBox.outbox_folder"><code class="docutils literal notranslate"><span class="pre">MailBox.outbox_folder()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.mailbox.MailBox.recoverableitemsdeletions_folder"><code class="docutils literal notranslate"><span class="pre">MailBox.recoverableitemsdeletions_folder()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.mailbox.MailBox.scheduled_folder"><code class="docutils literal notranslate"><span class="pre">MailBox.scheduled_folder()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.mailbox.MailBox.searchfolders_folder"><code class="docutils literal notranslate"><span class="pre">MailBox.searchfolders_folder()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.mailbox.MailBox.sent_folder"><code class="docutils literal notranslate"><span class="pre">MailBox.sent_folder()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.mailbox.MailBox.serverfailures_folder"><code class="docutils literal notranslate"><span class="pre">MailBox.serverfailures_folder()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.mailbox.MailBox.set_automatic_reply"><code class="docutils literal notranslate"><span class="pre">MailBox.set_automatic_reply()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.mailbox.MailBox.set_disable_reply"><code class="docutils literal notranslate"><span class="pre">MailBox.set_disable_reply()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.mailbox.MailBox.syncissues_folder"><code class="docutils literal notranslate"><span class="pre">MailBox.syncissues_folder()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#O365.mailbox.MailboxSettings"><code class="docutils literal notranslate"><span class="pre">MailboxSettings</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#O365.mailbox.MailboxSettings.__init__"><code class="docutils literal notranslate"><span class="pre">MailboxSettings.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.mailbox.MailboxSettings.save"><code class="docutils literal notranslate"><span class="pre">MailboxSettings.save()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.mailbox.MailboxSettings.automaticrepliessettings"><code class="docutils literal notranslate"><span class="pre">MailboxSettings.automaticrepliessettings</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.mailbox.MailboxSettings.timezone"><code class="docutils literal notranslate"><span class="pre">MailboxSettings.timezone</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.mailbox.MailboxSettings.workinghours"><code class="docutils literal notranslate"><span class="pre">MailboxSettings.workinghours</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="message.html">Message</a></li>
+<li class="toctree-l2"><a class="reference internal" href="onedrive.html">One Drive</a></li>
+<li class="toctree-l2"><a class="reference internal" href="planner.html">Planner</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sharepoint.html">Sharepoint</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tasks.html">Tasks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="teams.html">Teams</a></li>
 <li class="toctree-l2"><a class="reference internal" href="utils.html">Utils</a></li>
 </ul>
 </li>
 </ul>
 
-            
-          
         </div>
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">O365</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="../index.html">Docs</a> &raquo;</li>
-        
-          <li><a href="../api.html">O365 API</a> &raquo;</li>
-        
-      <li>Mailbox</li>
-    
-    
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../api.html">O365 API</a></li>
+      <li class="breadcrumb-item active">Mailbox</li>
       <li class="wy-breadcrumbs-aside">
-        
-            
             <a href="../_sources/api/mailbox.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
-  </ul>
-
-  
-  <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
-      
-        <a href="message.html" class="btn btn-neutral float-right" title="Message" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="drive.html" class="btn btn-neutral" title="One Drive" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="group.html" class="btn btn-neutral float-left" title="Group" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="message.html" class="btn btn-neutral float-right" title="Message" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
   </div>
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <div class="section" id="module-O365.mailbox">
-<span id="mailbox"></span><h1>Mailbox<a class="headerlink" href="#module-O365.mailbox" title="Permalink to this headline">¶</a></h1>
+             
+  <section id="mailbox">
+<h1>Mailbox<a class="headerlink" href="#mailbox" title="Link to this heading"></a></h1>
+<dl class="py class" id="module-O365.mailbox">
+<dt class="sig sig-object py" id="O365.mailbox.AutoReplyStatus">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.mailbox.</span></span><span class="sig-name descname"><span class="pre">AutoReplyStatus</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#AutoReplyStatus"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.mailbox.AutoReplyStatus" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<p>Valid values for status.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.mailbox.AutoReplyStatus.ALWAYSENABLED">
+<span class="sig-name descname"><span class="pre">ALWAYSENABLED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'alwaysEnabled'</span></em><a class="headerlink" href="#O365.mailbox.AutoReplyStatus.ALWAYSENABLED" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.mailbox.AutoReplyStatus.DISABLED">
+<span class="sig-name descname"><span class="pre">DISABLED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'disabled'</span></em><a class="headerlink" href="#O365.mailbox.AutoReplyStatus.DISABLED" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.mailbox.AutoReplyStatus.SCHEDULED">
+<span class="sig-name descname"><span class="pre">SCHEDULED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'scheduled'</span></em><a class="headerlink" href="#O365.mailbox.AutoReplyStatus.SCHEDULED" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 <dl class="py class">
-<dt id="O365.mailbox.Folder">
-<em class="property">class </em><code class="sig-prename descclassname">O365.mailbox.</code><code class="sig-name descname">Folder</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">con</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#Folder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.mailbox.Folder" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.utils.utils.ApiComponent</span></code></a></p>
-<p>A Mail Folder representation</p>
+<dt class="sig sig-object py" id="O365.mailbox.AutomaticRepliesSettings">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.mailbox.</span></span><span class="sig-name descname"><span class="pre">AutomaticRepliesSettings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">con</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#AutomaticRepliesSettings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.mailbox.AutomaticRepliesSettings" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="utils/utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">ApiComponent</span></code></a></p>
+<p>The  AutomaticRepliesSettingss.</p>
 <dl class="py method">
-<dt id="O365.mailbox.Folder.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">con</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#Folder.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.mailbox.Folder.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create an instance to represent the specified folder un given
+<dt class="sig sig-object py" id="O365.mailbox.AutomaticRepliesSettings.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">con</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#AutomaticRepliesSettings.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.mailbox.AutomaticRepliesSettings.__init__" title="Link to this definition"></a></dt>
+<dd><p>Representation of the AutomaticRepliesSettings.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>parent</strong> (<em>Mailbox</em>) – parent object</p></li>
+<li><p><strong>con</strong> (<a class="reference internal" href="connection.html#O365.connection.Connection" title="O365.connection.Connection"><em>Connection</em></a>) – connection to use if no parent specified</p></li>
+<li><p><strong>protocol</strong> (<a class="reference internal" href="connection.html#O365.connection.Protocol" title="O365.connection.Protocol"><em>Protocol</em></a>) – protocol to use if no parent specified
+(kwargs)</p></li>
+<li><p><strong>main_resource</strong> (<em>str</em>) – use this resource instead of parent resource
+(kwargs)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="O365.mailbox.AutomaticRepliesSettings.external_audience">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">external_audience</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#O365.mailbox.ExternalAudience" title="O365.mailbox.ExternalAudience"><span class="pre">ExternalAudience</span></a></em><a class="headerlink" href="#O365.mailbox.AutomaticRepliesSettings.external_audience" title="Link to this definition"></a></dt>
+<dd><p>External Audience of auto reply.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
+<dd class="field-odd"><p>get the external audience of auto reply</p>
+</dd>
+<dt class="field-even">Setter<span class="colon">:</span></dt>
+<dd class="field-even"><p>set the external audience of auto reply</p>
+</dd>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>autoreplystatus</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.mailbox.AutomaticRepliesSettings.external_reply_message">
+<span class="sig-name descname"><span class="pre">external_reply_message</span></span><a class="headerlink" href="#O365.mailbox.AutomaticRepliesSettings.external_reply_message" title="Link to this definition"></a></dt>
+<dd><p>The automatic reply to send to the specified external audience,
+if Status is AlwaysEnabled or Scheduled. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.mailbox.AutomaticRepliesSettings.internal_reply_message">
+<span class="sig-name descname"><span class="pre">internal_reply_message</span></span><a class="headerlink" href="#O365.mailbox.AutomaticRepliesSettings.internal_reply_message" title="Link to this definition"></a></dt>
+<dd><p>The automatic reply to send to the audience internal to the signed-in user’s
+organization, if Status is AlwaysEnabled or Scheduled. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="O365.mailbox.AutomaticRepliesSettings.scheduled_enddatetime">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">scheduled_enddatetime</span></span><a class="headerlink" href="#O365.mailbox.AutomaticRepliesSettings.scheduled_enddatetime" title="Link to this definition"></a></dt>
+<dd><p>Scheduled End Time of auto reply.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
+<dd class="field-odd"><p>get the scheduled_enddatetime time</p>
+</dd>
+<dt class="field-even">Setter<span class="colon">:</span></dt>
+<dd class="field-even"><p>set the reminder time</p>
+</dd>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>datetime</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="O365.mailbox.AutomaticRepliesSettings.scheduled_startdatetime">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">scheduled_startdatetime</span></span><a class="headerlink" href="#O365.mailbox.AutomaticRepliesSettings.scheduled_startdatetime" title="Link to this definition"></a></dt>
+<dd><p>Scheduled Start Time of auto reply.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
+<dd class="field-odd"><p>get the scheduled_startdatetime time</p>
+</dd>
+<dt class="field-even">Setter<span class="colon">:</span></dt>
+<dd class="field-even"><p>set the scheduled_startdatetime time</p>
+</dd>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>datetime</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="O365.mailbox.AutomaticRepliesSettings.status">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">status</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#O365.mailbox.AutoReplyStatus" title="O365.mailbox.AutoReplyStatus"><span class="pre">AutoReplyStatus</span></a></em><a class="headerlink" href="#O365.mailbox.AutomaticRepliesSettings.status" title="Link to this definition"></a></dt>
+<dd><p>Status of auto reply.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
+<dd class="field-odd"><p>get the status of auto reply</p>
+</dd>
+<dt class="field-even">Setter<span class="colon">:</span></dt>
+<dd class="field-even"><p>set the status of auto reply</p>
+</dd>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>autoreplystatus</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="O365.mailbox.ExternalAudience">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.mailbox.</span></span><span class="sig-name descname"><span class="pre">ExternalAudience</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#ExternalAudience"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.mailbox.ExternalAudience" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<p>Valid values for externalAudience.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.mailbox.ExternalAudience.ALL">
+<span class="sig-name descname"><span class="pre">ALL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'all'</span></em><a class="headerlink" href="#O365.mailbox.ExternalAudience.ALL" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.mailbox.ExternalAudience.CONTACTSONLY">
+<span class="sig-name descname"><span class="pre">CONTACTSONLY</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'contactsOnly'</span></em><a class="headerlink" href="#O365.mailbox.ExternalAudience.CONTACTSONLY" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.mailbox.ExternalAudience.NONE">
+<span class="sig-name descname"><span class="pre">NONE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'none'</span></em><a class="headerlink" href="#O365.mailbox.ExternalAudience.NONE" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="O365.mailbox.Folder">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.mailbox.</span></span><span class="sig-name descname"><span class="pre">Folder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">con</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#Folder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.mailbox.Folder" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="utils/utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">ApiComponent</span></code></a></p>
+<p>A Mail Folder representation.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.mailbox.Folder.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">con</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#Folder.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.mailbox.Folder.__init__" title="Link to this definition"></a></dt>
+<dd><p>Create an instance to represent the specified folder in given
 parent folder</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>parent</strong> (<a class="reference internal" href="#O365.mailbox.Folder" title="O365.mailbox.Folder"><em>mailbox.Folder</em></a><em> or </em><a class="reference internal" href="account.html#O365.account.Account" title="O365.account.Account"><em>Account</em></a>) – parent folder/account for this folder</p></li>
 <li><p><strong>con</strong> (<a class="reference internal" href="connection.html#O365.connection.Connection" title="O365.connection.Connection"><em>Connection</em></a>) – connection to use if no parent specified</p></li>
@@ -199,76 +359,76 @@ parent folder</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.mailbox.Folder.copy_folder">
-<code class="sig-name descname">copy_folder</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">to_folder</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#Folder.copy_folder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.mailbox.Folder.copy_folder" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.mailbox.Folder.copy_folder">
+<span class="sig-name descname"><span class="pre">copy_folder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">to_folder</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#Folder.copy_folder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.mailbox.Folder.copy_folder" title="Link to this definition"></a></dt>
 <dd><p>Copy this folder and it’s contents to into another folder</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>to_folder</strong> (<a class="reference internal" href="#O365.mailbox.Folder" title="O365.mailbox.Folder"><em>mailbox.Folder</em></a><em> or </em><em>str</em>) – the destination Folder/folder_id to copy into</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The new folder after copying</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="#O365.mailbox.Folder" title="O365.mailbox.Folder">mailbox.Folder</a> or None</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.mailbox.Folder.create_child_folder">
-<code class="sig-name descname">create_child_folder</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">folder_name</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#Folder.create_child_folder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.mailbox.Folder.create_child_folder" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.mailbox.Folder.create_child_folder">
+<span class="sig-name descname"><span class="pre">create_child_folder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">folder_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#Folder.create_child_folder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.mailbox.Folder.create_child_folder" title="Link to this definition"></a></dt>
 <dd><p>Creates a new child folder under this folder</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>folder_name</strong> (<em>str</em>) – name of the folder to add</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>newly created folder</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="#O365.mailbox.Folder" title="O365.mailbox.Folder">mailbox.Folder</a> or None</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.mailbox.Folder.delete">
-<code class="sig-name descname">delete</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#Folder.delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.mailbox.Folder.delete" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.mailbox.Folder.delete">
+<span class="sig-name descname"><span class="pre">delete</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#Folder.delete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.mailbox.Folder.delete" title="Link to this definition"></a></dt>
 <dd><p>Deletes this folder</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Deleted or Not</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>bool</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.mailbox.Folder.delete_message">
-<code class="sig-name descname">delete_message</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">message</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#Folder.delete_message"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.mailbox.Folder.delete_message" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.mailbox.Folder.delete_message">
+<span class="sig-name descname"><span class="pre">delete_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#Folder.delete_message"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.mailbox.Folder.delete_message" title="Link to this definition"></a></dt>
 <dd><p>Deletes a stored message</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>message</strong> (<a class="reference internal" href="message.html#O365.message.Message" title="O365.message.Message"><em>Message</em></a><em> or </em><em>str</em>) – message/message_id to delete</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Success / Failure</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>bool</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.mailbox.Folder.get_folder">
-<code class="sig-name descname">get_folder</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">folder_id</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">folder_name</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#Folder.get_folder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.mailbox.Folder.get_folder" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.mailbox.Folder.get_folder">
+<span class="sig-name descname"><span class="pre">get_folder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">folder_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">folder_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#Folder.get_folder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.mailbox.Folder.get_folder" title="Link to this definition"></a></dt>
 <dd><p>Get a folder by it’s id or name</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>folder_id</strong> (<em>str</em>) – the folder_id to be retrieved.
 Can be any folder Id (child or not)</p></li>
@@ -276,197 +436,245 @@ Can be any folder Id (child or not)</p></li>
 Must be a child of this folder.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>a single folder</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="#O365.mailbox.Folder" title="O365.mailbox.Folder">mailbox.Folder</a> or None</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.mailbox.Folder.get_folders">
-<code class="sig-name descname">get_folders</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">limit</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">query</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">order_by</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">batch</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#Folder.get_folders"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.mailbox.Folder.get_folders" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a list of child folders matching the query</p>
+<dt class="sig sig-object py" id="O365.mailbox.Folder.get_folders">
+<span class="sig-name descname"><span class="pre">get_folders</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order_by</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#Folder.get_folders"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.mailbox.Folder.get_folders" title="Link to this definition"></a></dt>
+<dd><p>Return a list of child folders matching the query.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>limit</strong> (<em>int</em>) – max no. of folders to get. Over 999 uses batch.</p></li>
-<li><p><strong>query</strong> (<a class="reference internal" href="utils.html#O365.utils.utils.Query" title="O365.utils.utils.Query"><em>Query</em></a><em> or </em><em>str</em>) – applies a filter to the request such as
+<li><p><strong>query</strong> (<a class="reference internal" href="utils/utils.html#O365.utils.utils.Query" title="O365.utils.utils.Query"><em>Query</em></a><em> or </em><em>str</em>) – applies a filter to the request such as
 “displayName eq ‘HelloFolder’”</p></li>
-<li><p><strong>order_by</strong> (<a class="reference internal" href="utils.html#O365.utils.utils.Query" title="O365.utils.utils.Query"><em>Query</em></a><em> or </em><em>str</em>) – orders the result set based on this condition</p></li>
+<li><p><strong>order_by</strong> (<a class="reference internal" href="utils/utils.html#O365.utils.utils.Query" title="O365.utils.utils.Query"><em>Query</em></a><em> or </em><em>str</em>) – orders the result set based on this condition</p></li>
 <li><p><strong>batch</strong> (<em>int</em>) – batch size, retrieves items in
 batches allowing to retrieve more items than the limit.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>list of folders</p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>list[<a class="reference internal" href="#O365.mailbox.Folder" title="O365.mailbox.Folder">mailbox.Folder</a>] or <a class="reference internal" href="utils.html#O365.utils.utils.Pagination" title="O365.utils.utils.Pagination">Pagination</a></p>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[<a class="reference internal" href="#O365.mailbox.Folder" title="O365.mailbox.Folder">mailbox.Folder</a>] or <a class="reference internal" href="utils/utils.html#O365.utils.utils.Pagination" title="O365.utils.utils.Pagination">Pagination</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.mailbox.Folder.get_message">
-<code class="sig-name descname">get_message</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">object_id</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">query</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">download_attachments</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#Folder.get_message"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.mailbox.Folder.get_message" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="simple">
-<dt>Get one message from the query result.</dt><dd><p>A shortcut to get_messages with limit=1</p>
-</dd>
-</dl>
+<dt class="sig sig-object py" id="O365.mailbox.Folder.get_message">
+<span class="sig-name descname"><span class="pre">get_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">object_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">download_attachments</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#Folder.get_message"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.mailbox.Folder.get_message" title="Link to this definition"></a></dt>
+<dd><p>Get one message from the query result.
+A shortcut to get_messages with limit=1</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>object_id</strong> – the message id to be retrieved.</p></li>
-<li><p><strong>query</strong> (<a class="reference internal" href="utils.html#O365.utils.utils.Query" title="O365.utils.utils.Query"><em>Query</em></a><em> or </em><em>str</em>) – applies a filter to the request such as
+<li><p><strong>query</strong> (<a class="reference internal" href="utils/utils.html#O365.utils.utils.Query" title="O365.utils.utils.Query"><em>Query</em></a><em> or </em><em>str</em>) – applies a filter to the request such as
 “displayName eq ‘HelloFolder’”</p></li>
 <li><p><strong>download_attachments</strong> (<em>bool</em>) – whether or not to download attachments</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>one Message</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="message.html#O365.message.Message" title="O365.message.Message">Message</a> or None</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.mailbox.Folder.get_messages">
-<code class="sig-name descname">get_messages</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">limit</span><span class="o">=</span><span class="default_value">25</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">query</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">order_by</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">batch</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">download_attachments</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#Folder.get_messages"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.mailbox.Folder.get_messages" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.mailbox.Folder.get_messages">
+<span class="sig-name descname"><span class="pre">get_messages</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">25</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order_by</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">download_attachments</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#Folder.get_messages"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.mailbox.Folder.get_messages" title="Link to this definition"></a></dt>
 <dd><p>Downloads messages from this folder</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>limit</strong> (<em>int</em>) – limits the result set. Over 999 uses batch.</p></li>
-<li><p><strong>query</strong> (<a class="reference internal" href="utils.html#O365.utils.utils.Query" title="O365.utils.utils.Query"><em>Query</em></a><em> or </em><em>str</em>) – applies a filter to the request such as
+<li><p><strong>query</strong> (<a class="reference internal" href="utils/utils.html#O365.utils.utils.Query" title="O365.utils.utils.Query"><em>Query</em></a><em> or </em><em>str</em>) – applies a filter to the request such as
 “displayName eq ‘HelloFolder’”</p></li>
-<li><p><strong>order_by</strong> (<a class="reference internal" href="utils.html#O365.utils.utils.Query" title="O365.utils.utils.Query"><em>Query</em></a><em> or </em><em>str</em>) – orders the result set based on this condition</p></li>
+<li><p><strong>order_by</strong> (<a class="reference internal" href="utils/utils.html#O365.utils.utils.Query" title="O365.utils.utils.Query"><em>Query</em></a><em> or </em><em>str</em>) – orders the result set based on this condition</p></li>
 <li><p><strong>batch</strong> (<em>int</em>) – batch size, retrieves items in
 batches allowing to retrieve more items than the limit.</p></li>
 <li><p><strong>download_attachments</strong> (<em>bool</em>) – whether or not to download attachments</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>list of messages</p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>list[<a class="reference internal" href="message.html#O365.message.Message" title="O365.message.Message">Message</a>] or <a class="reference internal" href="utils.html#O365.utils.utils.Pagination" title="O365.utils.utils.Pagination">Pagination</a></p>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[<a class="reference internal" href="message.html#O365.message.Message" title="O365.message.Message">Message</a>] or <a class="reference internal" href="utils/utils.html#O365.utils.utils.Pagination" title="O365.utils.utils.Pagination">Pagination</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.mailbox.Folder.get_parent_folder">
-<code class="sig-name descname">get_parent_folder</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#Folder.get_parent_folder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.mailbox.Folder.get_parent_folder" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.mailbox.Folder.get_parent_folder">
+<span class="sig-name descname"><span class="pre">get_parent_folder</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#Folder.get_parent_folder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.mailbox.Folder.get_parent_folder" title="Link to this definition"></a></dt>
 <dd><p>Get the parent folder from attribute self.parent or
 getting it from the cloud</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Parent Folder</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="#O365.mailbox.Folder" title="O365.mailbox.Folder">mailbox.Folder</a> or None</p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="py attribute">
-<dt id="O365.mailbox.Folder.message_constructor">
-<code class="sig-name descname">message_constructor</code><a class="headerlink" href="#O365.mailbox.Folder.message_constructor" title="Permalink to this definition">¶</a></dt>
-<dd><p>alias of <a class="reference internal" href="message.html#O365.message.Message" title="O365.message.Message"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.message.Message</span></code></a></p>
-</dd></dl>
-
 <dl class="py method">
-<dt id="O365.mailbox.Folder.move_folder">
-<code class="sig-name descname">move_folder</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">to_folder</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">update_parent_if_changed</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#Folder.move_folder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.mailbox.Folder.move_folder" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.mailbox.Folder.move_folder">
+<span class="sig-name descname"><span class="pre">move_folder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">to_folder</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">update_parent_if_changed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#Folder.move_folder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.mailbox.Folder.move_folder" title="Link to this definition"></a></dt>
 <dd><p>Move this folder to another folder</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>to_folder</strong> (<a class="reference internal" href="#O365.mailbox.Folder" title="O365.mailbox.Folder"><em>mailbox.Folder</em></a><em> or </em><em>str</em>) – the destination Folder/folder_id to move into</p></li>
 <li><p><strong>update_parent_if_changed</strong> (<em>bool</em>) – updates self.parent with the
 new parent Folder if changed</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The new folder after copying</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="#O365.mailbox.Folder" title="O365.mailbox.Folder">mailbox.Folder</a> or None</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.mailbox.Folder.new_message">
-<code class="sig-name descname">new_message</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#Folder.new_message"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.mailbox.Folder.new_message" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.mailbox.Folder.new_message">
+<span class="sig-name descname"><span class="pre">new_message</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#Folder.new_message"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.mailbox.Folder.new_message" title="Link to this definition"></a></dt>
 <dd><p>Creates a new draft message under this folder</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>new Message</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="message.html#O365.message.Message" title="O365.message.Message">Message</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.mailbox.Folder.refresh_folder">
-<code class="sig-name descname">refresh_folder</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">update_parent_if_changed</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#Folder.refresh_folder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.mailbox.Folder.refresh_folder" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.mailbox.Folder.refresh_folder">
+<span class="sig-name descname"><span class="pre">refresh_folder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">update_parent_if_changed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#Folder.refresh_folder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.mailbox.Folder.refresh_folder" title="Link to this definition"></a></dt>
 <dd><p>Re-download folder data
 Inbox Folder will be unable to download its own data (no folder_id)</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>update_parent_if_changed</strong> (<em>bool</em>) – updates self.parent with new
 parent Folder if changed</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Refreshed or Not</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>bool</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.mailbox.Folder.update_folder_name">
-<code class="sig-name descname">update_folder_name</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">update_folder_data</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#Folder.update_folder_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.mailbox.Folder.update_folder_name" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.mailbox.Folder.update_folder_name">
+<span class="sig-name descname"><span class="pre">update_folder_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">update_folder_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#Folder.update_folder_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.mailbox.Folder.update_folder_name" title="Link to this definition"></a></dt>
 <dd><p>Change this folder name</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>name</strong> (<em>str</em>) – new name to change to</p></li>
 <li><p><strong>update_folder_data</strong> (<em>bool</em>) – whether or not to re-fetch the data</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Updated or Not</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>bool</p>
 </dd>
 </dl>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.mailbox.Folder.child_folders_count">
+<span class="sig-name descname"><span class="pre">child_folders_count</span></span><a class="headerlink" href="#O365.mailbox.Folder.child_folders_count" title="Link to this definition"></a></dt>
+<dd><p>The number of immediate child mailFolders in the current mailFolder.
+<div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> int</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.mailbox.Folder.folder_id">
+<span class="sig-name descname"><span class="pre">folder_id</span></span><a class="headerlink" href="#O365.mailbox.Folder.folder_id" title="Link to this definition"></a></dt>
+<dd><p>The mailFolder’s unique identifier. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.mailbox.Folder.name">
+<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#O365.mailbox.Folder.name" title="Link to this definition"></a></dt>
+<dd><p>The mailFolder’s display name. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.mailbox.Folder.parent">
+<span class="sig-name descname"><span class="pre">parent</span></span><a class="headerlink" href="#O365.mailbox.Folder.parent" title="Link to this definition"></a></dt>
+<dd><p>The parent of the folder. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.mailbox.Folder.parent_id">
+<span class="sig-name descname"><span class="pre">parent_id</span></span><a class="headerlink" href="#O365.mailbox.Folder.parent_id" title="Link to this definition"></a></dt>
+<dd><p>The unique identifier for the mailFolder’s parent mailFolder. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.mailbox.Folder.root">
+<span class="sig-name descname"><span class="pre">root</span></span><a class="headerlink" href="#O365.mailbox.Folder.root" title="Link to this definition"></a></dt>
+<dd><p>Root folder. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> bool</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.mailbox.Folder.total_items_count">
+<span class="sig-name descname"><span class="pre">total_items_count</span></span><a class="headerlink" href="#O365.mailbox.Folder.total_items_count" title="Link to this definition"></a></dt>
+<dd><p>The number of items in the mailFolder. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> int</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.mailbox.Folder.unread_items_count">
+<span class="sig-name descname"><span class="pre">unread_items_count</span></span><a class="headerlink" href="#O365.mailbox.Folder.unread_items_count" title="Link to this definition"></a></dt>
+<dd><p>The number of items in the mailFolder marked as unread. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> int</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.mailbox.Folder.updated_at">
+<span class="sig-name descname"><span class="pre">updated_at</span></span><a class="headerlink" href="#O365.mailbox.Folder.updated_at" title="Link to this definition"></a></dt>
+<dd><p>Last time data updated <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> datetime</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
-<dt id="O365.mailbox.MailBox">
-<em class="property">class </em><code class="sig-prename descclassname">O365.mailbox.</code><code class="sig-name descname">MailBox</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">con</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#MailBox"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.mailbox.MailBox" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#O365.mailbox.Folder" title="O365.mailbox.Folder"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.mailbox.Folder</span></code></a></p>
+<dt class="sig sig-object py" id="O365.mailbox.MailBox">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.mailbox.</span></span><span class="sig-name descname"><span class="pre">MailBox</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">con</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#MailBox"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.mailbox.MailBox" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#O365.mailbox.Folder" title="O365.mailbox.Folder"><code class="xref py py-class docutils literal notranslate"><span class="pre">Folder</span></code></a></p>
+<p>The mailbox folder.</p>
 <dl class="py method">
-<dt id="O365.mailbox.MailBox.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">con</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#MailBox.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.mailbox.MailBox.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create an instance to represent the specified folder un given
+<dt class="sig sig-object py" id="O365.mailbox.MailBox.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">con</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#MailBox.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.mailbox.MailBox.__init__" title="Link to this definition"></a></dt>
+<dd><p>Create an instance to represent the specified folder in given
 parent folder</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>parent</strong> (<a class="reference internal" href="#O365.mailbox.Folder" title="O365.mailbox.Folder"><em>mailbox.Folder</em></a><em> or </em><a class="reference internal" href="account.html#O365.account.Account" title="O365.account.Account"><em>Account</em></a>) – parent folder/account for this folder</p></li>
 <li><p><strong>con</strong> (<a class="reference internal" href="connection.html#O365.connection.Connection" title="O365.connection.Connection"><em>Connection</em></a>) – connection to use if no parent specified</p></li>
@@ -482,144 +690,326 @@ parent folder</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.mailbox.MailBox.archive_folder">
-<code class="sig-name descname">archive_folder</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#MailBox.archive_folder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.mailbox.MailBox.archive_folder" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.mailbox.MailBox.archive_folder">
+<span class="sig-name descname"><span class="pre">archive_folder</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#MailBox.archive_folder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.mailbox.MailBox.archive_folder" title="Link to this definition"></a></dt>
 <dd><p>Shortcut to get Archive Folder instance</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="#O365.mailbox.Folder" title="O365.mailbox.Folder">mailbox.Folder</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.mailbox.MailBox.deleted_folder">
-<code class="sig-name descname">deleted_folder</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#MailBox.deleted_folder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.mailbox.MailBox.deleted_folder" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.mailbox.MailBox.clutter_folder">
+<span class="sig-name descname"><span class="pre">clutter_folder</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#MailBox.clutter_folder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.mailbox.MailBox.clutter_folder" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Shortcut to get Clutter Folder instance</dt><dd><p>The clutter folder low-priority messages are moved to when using the Clutter feature.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#O365.mailbox.Folder" title="O365.mailbox.Folder">mailbox.Folder</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.mailbox.MailBox.conflicts_folder">
+<span class="sig-name descname"><span class="pre">conflicts_folder</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#MailBox.conflicts_folder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.mailbox.MailBox.conflicts_folder" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Shortcut to get Conflicts Folder instance</dt><dd><p>The folder that contains conflicting items in the mailbox.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#O365.mailbox.Folder" title="O365.mailbox.Folder">mailbox.Folder</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.mailbox.MailBox.conversationhistory_folder">
+<span class="sig-name descname"><span class="pre">conversationhistory_folder</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#MailBox.conversationhistory_folder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.mailbox.MailBox.conversationhistory_folder" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Shortcut to get Conversation History Folder instance</dt><dd><p>The folder where Skype saves IM conversations (if Skype is configured to do so).</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#O365.mailbox.Folder" title="O365.mailbox.Folder">mailbox.Folder</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.mailbox.MailBox.deleted_folder">
+<span class="sig-name descname"><span class="pre">deleted_folder</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#MailBox.deleted_folder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.mailbox.MailBox.deleted_folder" title="Link to this definition"></a></dt>
 <dd><p>Shortcut to get DeletedItems Folder instance</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="#O365.mailbox.Folder" title="O365.mailbox.Folder">mailbox.Folder</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.mailbox.MailBox.drafts_folder">
-<code class="sig-name descname">drafts_folder</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#MailBox.drafts_folder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.mailbox.MailBox.drafts_folder" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.mailbox.MailBox.drafts_folder">
+<span class="sig-name descname"><span class="pre">drafts_folder</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#MailBox.drafts_folder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.mailbox.MailBox.drafts_folder" title="Link to this definition"></a></dt>
 <dd><p>Shortcut to get Drafts Folder instance</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="#O365.mailbox.Folder" title="O365.mailbox.Folder">mailbox.Folder</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.mailbox.MailBox.get_settings">
+<span class="sig-name descname"><span class="pre">get_settings</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#MailBox.get_settings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.mailbox.MailBox.get_settings" title="Link to this definition"></a></dt>
+<dd><p>Return the MailboxSettings.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>mailboxsettings</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.mailbox.MailBox.inbox_folder">
+<span class="sig-name descname"><span class="pre">inbox_folder</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#MailBox.inbox_folder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.mailbox.MailBox.inbox_folder" title="Link to this definition"></a></dt>
+<dd><p>Shortcut to get Inbox Folder instance</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#O365.mailbox.Folder" title="O365.mailbox.Folder">mailbox.Folder</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.mailbox.MailBox.junk_folder">
+<span class="sig-name descname"><span class="pre">junk_folder</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#MailBox.junk_folder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.mailbox.MailBox.junk_folder" title="Link to this definition"></a></dt>
+<dd><p>Shortcut to get Junk Folder instance</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#O365.mailbox.Folder" title="O365.mailbox.Folder">mailbox.Folder</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.mailbox.MailBox.localfailures_folder">
+<span class="sig-name descname"><span class="pre">localfailures_folder</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#MailBox.localfailures_folder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.mailbox.MailBox.localfailures_folder" title="Link to this definition"></a></dt>
+<dd><p>Shortcut to get Local Failure Folder instance
+The folder that contains items that exist on the local client but could not be uploaded to the server.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#O365.mailbox.Folder" title="O365.mailbox.Folder">mailbox.Folder</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.mailbox.MailBox.outbox_folder">
+<span class="sig-name descname"><span class="pre">outbox_folder</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#MailBox.outbox_folder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.mailbox.MailBox.outbox_folder" title="Link to this definition"></a></dt>
+<dd><p>Shortcut to get Outbox Folder instance</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#O365.mailbox.Folder" title="O365.mailbox.Folder">mailbox.Folder</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.mailbox.MailBox.recoverableitemsdeletions_folder">
+<span class="sig-name descname"><span class="pre">recoverableitemsdeletions_folder</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#MailBox.recoverableitemsdeletions_folder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.mailbox.MailBox.recoverableitemsdeletions_folder" title="Link to this definition"></a></dt>
+<dd><p>Shortcut to get Recoverable Items Deletions (Purges) Folder instance
+The folder that contains soft-deleted items: deleted either from the Deleted Items folder, or by pressing shift+delete in Outlook. 
+This folder is not visible in any Outlook email client, 
+but end users can interact with it through the Recover Deleted Items from Server feature in Outlook or Outlook on the web.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#O365.mailbox.Folder" title="O365.mailbox.Folder">mailbox.Folder</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.mailbox.MailBox.scheduled_folder">
+<span class="sig-name descname"><span class="pre">scheduled_folder</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#MailBox.scheduled_folder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.mailbox.MailBox.scheduled_folder" title="Link to this definition"></a></dt>
+<dd><p>Shortcut to get Scheduled Folder instance
+The folder that contains messages that are scheduled to reappear in the inbox using the Schedule feature in Outlook for iOS.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#O365.mailbox.Folder" title="O365.mailbox.Folder">mailbox.Folder</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.mailbox.MailBox.searchfolders_folder">
+<span class="sig-name descname"><span class="pre">searchfolders_folder</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#MailBox.searchfolders_folder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.mailbox.MailBox.searchfolders_folder" title="Link to this definition"></a></dt>
+<dd><p>Shortcut to get Search Folders Folder instance
+The parent folder for all search folders defined in the user’s mailbox.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#O365.mailbox.Folder" title="O365.mailbox.Folder">mailbox.Folder</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.mailbox.MailBox.sent_folder">
+<span class="sig-name descname"><span class="pre">sent_folder</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#MailBox.sent_folder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.mailbox.MailBox.sent_folder" title="Link to this definition"></a></dt>
+<dd><p>Shortcut to get SentItems Folder instance</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#O365.mailbox.Folder" title="O365.mailbox.Folder">mailbox.Folder</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.mailbox.MailBox.serverfailures_folder">
+<span class="sig-name descname"><span class="pre">serverfailures_folder</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#MailBox.serverfailures_folder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.mailbox.MailBox.serverfailures_folder" title="Link to this definition"></a></dt>
+<dd><p>Shortcut to get Server Failures Folder instance
+The folder that contains items that exist on the server but could not be synchronized to the local client.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#O365.mailbox.Folder" title="O365.mailbox.Folder">mailbox.Folder</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.mailbox.MailBox.set_automatic_reply">
+<span class="sig-name descname"><span class="pre">set_automatic_reply</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">internal_text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">external_text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scheduled_start_date_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">datetime</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scheduled_end_date_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">datetime</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">externalAudience</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#O365.mailbox.ExternalAudience" title="O365.mailbox.ExternalAudience"><span class="pre">ExternalAudience</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">ExternalAudience.ALL</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#MailBox.set_automatic_reply"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.mailbox.MailBox.set_automatic_reply" title="Link to this definition"></a></dt>
+<dd><p>Set an automatic reply for the mailbox.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Success / Failure</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.mailbox.MailBox.set_disable_reply">
+<span class="sig-name descname"><span class="pre">set_disable_reply</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#MailBox.set_disable_reply"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.mailbox.MailBox.set_disable_reply" title="Link to this definition"></a></dt>
+<dd><p>Disable the automatic reply for the mailbox.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Success / Failure</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.mailbox.MailBox.syncissues_folder">
+<span class="sig-name descname"><span class="pre">syncissues_folder</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#MailBox.syncissues_folder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.mailbox.MailBox.syncissues_folder" title="Link to this definition"></a></dt>
+<dd><p>Shortcut to get Sync Issues Folder instance
+The folder that contains synchronization logs created by Outlook.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#O365.mailbox.Folder" title="O365.mailbox.Folder">mailbox.Folder</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="O365.mailbox.MailboxSettings">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.mailbox.</span></span><span class="sig-name descname"><span class="pre">MailboxSettings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">con</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#MailboxSettings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.mailbox.MailboxSettings" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="utils/utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">ApiComponent</span></code></a></p>
+<p>The MailboxSettings.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.mailbox.MailboxSettings.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">con</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#MailboxSettings.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.mailbox.MailboxSettings.__init__" title="Link to this definition"></a></dt>
+<dd><p>Representation of the MailboxSettings.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>parent</strong> (<em>Mailbox</em>) – parent object</p></li>
+<li><p><strong>con</strong> (<a class="reference internal" href="connection.html#O365.connection.Connection" title="O365.connection.Connection"><em>Connection</em></a>) – connection to use if no parent specified</p></li>
+<li><p><strong>protocol</strong> (<a class="reference internal" href="connection.html#O365.connection.Protocol" title="O365.connection.Protocol"><em>Protocol</em></a>) – protocol to use if no parent specified
+(kwargs)</p></li>
+<li><p><strong>main_resource</strong> (<em>str</em>) – use this resource instead of parent resource
+(kwargs)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.mailbox.MailboxSettings.save">
+<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#MailboxSettings.save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.mailbox.MailboxSettings.save" title="Link to this definition"></a></dt>
+<dd><p>Save the MailboxSettings.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Success / Failure</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>bool</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="O365.mailbox.MailBox.folder_constructor">
-<code class="sig-name descname">folder_constructor</code><a class="headerlink" href="#O365.mailbox.MailBox.folder_constructor" title="Permalink to this definition">¶</a></dt>
-<dd><p>alias of <a class="reference internal" href="#O365.mailbox.Folder" title="O365.mailbox.Folder"><code class="xref py py-class docutils literal notranslate"><span class="pre">Folder</span></code></a></p>
+<dt class="sig sig-object py" id="O365.mailbox.MailboxSettings.automaticrepliessettings">
+<span class="sig-name descname"><span class="pre">automaticrepliessettings</span></span><a class="headerlink" href="#O365.mailbox.MailboxSettings.automaticrepliessettings" title="Link to this definition"></a></dt>
+<dd><p>Configuration settings to automatically notify the sender of
+an incoming email with a message from the signed-in user.
+<div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> AutomaticRepliesSettings</p>
 </dd></dl>
 
-<dl class="py method">
-<dt id="O365.mailbox.MailBox.inbox_folder">
-<code class="sig-name descname">inbox_folder</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#MailBox.inbox_folder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.mailbox.MailBox.inbox_folder" title="Permalink to this definition">¶</a></dt>
-<dd><p>Shortcut to get Inbox Folder instance</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#O365.mailbox.Folder" title="O365.mailbox.Folder">mailbox.Folder</a></p>
-</dd>
-</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.mailbox.MailboxSettings.timezone">
+<span class="sig-name descname"><span class="pre">timezone</span></span><a class="headerlink" href="#O365.mailbox.MailboxSettings.timezone" title="Link to this definition"></a></dt>
+<dd><p>The default time zone for the user’s mailbox. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
 </dd></dl>
 
-<dl class="py method">
-<dt id="O365.mailbox.MailBox.junk_folder">
-<code class="sig-name descname">junk_folder</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#MailBox.junk_folder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.mailbox.MailBox.junk_folder" title="Permalink to this definition">¶</a></dt>
-<dd><p>Shortcut to get Junk Folder instance</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#O365.mailbox.Folder" title="O365.mailbox.Folder">mailbox.Folder</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="O365.mailbox.MailBox.outbox_folder">
-<code class="sig-name descname">outbox_folder</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#MailBox.outbox_folder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.mailbox.MailBox.outbox_folder" title="Permalink to this definition">¶</a></dt>
-<dd><p>Shortcut to get Outbox Folder instance</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#O365.mailbox.Folder" title="O365.mailbox.Folder">mailbox.Folder</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="O365.mailbox.MailBox.sent_folder">
-<code class="sig-name descname">sent_folder</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/mailbox.html#MailBox.sent_folder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.mailbox.MailBox.sent_folder" title="Permalink to this definition">¶</a></dt>
-<dd><p>Shortcut to get SentItems Folder instance</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#O365.mailbox.Folder" title="O365.mailbox.Folder">mailbox.Folder</a></p>
-</dd>
-</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.mailbox.MailboxSettings.workinghours">
+<span class="sig-name descname"><span class="pre">workinghours</span></span><a class="headerlink" href="#O365.mailbox.MailboxSettings.workinghours" title="Link to this definition"></a></dt>
+<dd><p>The days of the week and hours in a specific time zone
+that the user works. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> workingHours</p>
 </dd></dl>
 
 </dd></dl>
 
-</div>
+</section>
 
 
            </div>
-           
           </div>
-          <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="message.html" class="btn btn-neutral float-right" title="Message" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="drive.html" class="btn btn-neutral" title="One Drive" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="group.html" class="btn btn-neutral float-left" title="Group" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="message.html" class="btn btn-neutral float-right" title="Message" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &copy; Copyright 2018, Narcolapser
-
-    </p>
+    <p>&#169; Copyright 2025, alejcas.</p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
-
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-
-  
-
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script src="../_static/language_data.js"></script>
-    
-
-  
-
-  <script type="text/javascript" src="../_static/js/theme.js"></script>
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });

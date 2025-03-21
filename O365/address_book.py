@@ -4,12 +4,16 @@ import logging
 from dateutil.parser import parse
 from requests.exceptions import HTTPError
 
-from .utils import Recipients
-from .utils import AttachableMixin, TrackerSet
-from .utils import Pagination, NEXT_LINK_KEYWORD, ApiComponent
-from .message import Message, RecipientType
 from .category import Category
-
+from .message import Message, RecipientType
+from .utils import (
+    NEXT_LINK_KEYWORD,
+    ApiComponent,
+    AttachableMixin,
+    Pagination,
+    Recipients,
+    TrackerSet,
+)
 
 log = logging.getLogger(__name__)
 
@@ -25,7 +29,7 @@ class Contact(ApiComponent, AttachableMixin):
         'photo_size': '/contacts/{id}/photos/{size}/$value',
     }
 
-    message_constructor = Message
+    message_constructor = Message  #: :meta private:
 
     def __init__(self, *, parent=None, con=None, **kwargs):
         """ Create a contact API component
@@ -56,6 +60,7 @@ class Contact(ApiComponent, AttachableMixin):
         # internal to know which properties need to be updated on the server
         self._track_changes = TrackerSet(casing=cc)
 
+        #: The contact's unique identifier. |br| **Type:** str
         self.object_id = cloud_data.get(cc('id'), None)
         self.__created = cloud_data.get(cc('createdDateTime'), None)
         self.__modified = cloud_data.get(cc('lastModifiedDateTime'), None)
@@ -457,7 +462,7 @@ class Contact(ApiComponent, AttachableMixin):
 
     @property
     def folder_id(self):
-        """ ID of the folder
+        """ID of the containing folder
 
         :rtype: str
         """
@@ -594,7 +599,8 @@ class Contact(ApiComponent, AttachableMixin):
         return new_message
 
     def get_profile_photo(self, size=None):
-        """ Returns this contact profile photo
+        """Returns this contact profile photo
+
         :param str size: 48x48, 64x64, 96x96, 120x120, 240x240,
          360x360, 432x432, 504x504, and 648x648
         """
@@ -636,8 +642,8 @@ class BaseContactFolder(ApiComponent):
         'child_folders': '/contactFolders/{id}/childFolders'
     }
 
-    contact_constructor = Contact
-    message_constructor = Message
+    contact_constructor = Contact  #: :meta private:
+    message_constructor = Message  #: :meta private:
 
     def __init__(self, *, parent=None, con=None, **kwargs):
         """ Create a contact folder component
@@ -663,17 +669,21 @@ class BaseContactFolder(ApiComponent):
             main_resource=main_resource)
 
         # This folder has no parents if root = True.
+        #: Indicates if this is the root folder. |br| **Type:** bool
         self.root = kwargs.pop('root', False)
 
         cloud_data = kwargs.get(self._cloud_data_key, {})
 
         # Fallback to manual folder if nothing available on cloud data
+        #: The folder's display name. |br| **Type:** str
         self.name = cloud_data.get(self._cc('displayName'),
                                    kwargs.get('name',
                                               ''))
         # TODO: Most of above code is same as mailbox.Folder __init__
 
+        #: Unique identifier of the contact folder. |br| **Type:** str
         self.folder_id = cloud_data.get(self._cc('id'), None)
+        #: The ID of the folder's parent folder. |br| **Type:** str
         self.parent_id = cloud_data.get(self._cc('parentFolderId'), None)
 
     def __str__(self):

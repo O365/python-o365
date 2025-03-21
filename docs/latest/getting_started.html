@@ -1,265 +1,700 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" data-content_root="./">
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Getting Started &mdash; O365  documentation</title>
-  
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
 
   
-  
-  
-  
-
-  
-
-  
-  
-    
-
-  
-
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Detailed Usage" href="usage.html" />
-    <link rel="prev" title="Welcome to O365’s documentation!" href="index.html" /> 
-
-  
-  <script src="_static/js/modernizr.min.js"></script>
+    <link rel="prev" title="Overview" href="overview.html" />
+    <link href="_static/css/style.css" rel="stylesheet" type="text/css">
 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
-          
+        <div class="wy-side-nav-search" >
 
           
-            <a href="index.html" class="icon icon-home"> O365
           
-
-          
+          <a href="index.html">
+            
           </a>
-
-          
-            
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p class="caption"><span class="caption-text">Contents:</span></p>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Getting Started</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#oauth-setup-pre-requisite">OAuth Setup (Pre Requisite)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#stable-version-pypi">Stable Version (PyPI)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#latest-development-version-github">Latest Development Version (GitHub)</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#basic-usage">Basic Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#authentication">Authentication</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#types">Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#oauth-setup-prerequisite">OAuth Setup (Prerequisite)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#examples">Examples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#different-interfaces">Different interfaces</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#permissions-scopes">Permissions &amp; Scopes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#permissions">Permissions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#scopes">Scopes</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#token-storage">Token Storage</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="usage.html">Detailed Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">O365 API</a></li>
 </ul>
 
-            
-          
         </div>
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">O365</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="index.html">Docs</a> &raquo;</li>
-        
-      <li>Getting Started</li>
-    
-    
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Getting Started</li>
       <li class="wy-breadcrumbs-aside">
-        
-            
             <a href="_sources/getting_started.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
-  </ul>
-
-  
-  <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
-      
-        <a href="usage.html" class="btn btn-neutral float-right" title="Detailed Usage" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="index.html" class="btn btn-neutral" title="Welcome to O365’s documentation!" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="overview.html" class="btn btn-neutral float-left" title="Overview" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="usage.html" class="btn btn-neutral float-right" title="Detailed Usage" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
   </div>
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <div class="section" id="getting-started">
-<h1>Getting Started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="installation">
-<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
-<ul>
-<li><dl>
-<dt>Stable Version from Pypi</dt><dd><p><a class="reference external" href="https://pypi.org">https://pypi.org</a> has the latest stable package.</p>
-<p>For installing the package using pip, run <code class="code docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">o365</span></code></p>
-</dd>
-</dl>
-</li>
-<li><dl>
-<dt>Latest Development Version from Github</dt><dd><p>Github has the latest development version, which may have more features but could be unstable.
-So <strong>Use as own risk</strong></p>
-<p>For installing code from github, run <code class="code docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">git+https://github.com/O365/python-o365.git</span></code></p>
-</dd>
-</dl>
-</li>
-</ul>
+             
+  <section id="getting-started">
+<h1>Getting Started<a class="headerlink" href="#getting-started" title="Link to this heading"></a></h1>
+<section id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h2>
+<section id="stable-version-pypi">
+<h3>Stable Version (PyPI)<a class="headerlink" href="#stable-version-pypi" title="Link to this heading"></a></h3>
+<p>The latest stable package is hosted on <a class="reference external" href="https://pypi.org">PyPI</a>.</p>
+<p>To install using pip, run:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">pip install o365</span>
+</pre></div>
 </div>
-<div class="section" id="oauth-setup-pre-requisite">
-<h2>OAuth Setup (Pre Requisite)<a class="headerlink" href="#oauth-setup-pre-requisite" title="Permalink to this headline">¶</a></h2>
-<p>You will need to register your application at <a class="reference external" href="https://apps.dev.microsoft.com/">Microsoft Apps</a>. Steps below</p>
+<p>Requirements: &gt;= Python 3.9</p>
+<p>Project dependencies installed by pip:</p>
+<ul class="simple">
+<li><p>requests</p></li>
+<li><p>msal</p></li>
+<li><p>beatifulsoup4</p></li>
+<li><p>python-dateutil</p></li>
+<li><p>tzlocal</p></li>
+<li><p>tzdata</p></li>
+</ul>
+</section>
+<section id="latest-development-version-github">
+<h3>Latest Development Version (GitHub)<a class="headerlink" href="#latest-development-version-github" title="Link to this heading"></a></h3>
+<p>The latest development version is available on <a class="reference external" href="https://github.com/O365/python-o365">GitHub</a>.
+This version may include new features but could be unstable. <strong>Use at your own risk</strong>.</p>
+<p>To install from GitHub, run:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">pip install git+https://github.com/O365/python-o365.git</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="basic-usage">
+<h2>Basic Usage<a class="headerlink" href="#basic-usage" title="Link to this heading"></a></h2>
+<p>The first step to be able to work with this library is to register an application and retrieve the auth token. See <a class="reference internal" href="#authentication"><span class="std std-ref">Authentication</span></a>.</p>
+<p>With the access token retrieved and stored you will be able to perform api calls to the service.</p>
+<p>A common pattern to check for authentication and use the library is this one:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">scopes</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;my_required_scopes&#39;</span><span class="p">]</span>  <span class="c1"># you can use scope helpers here (see Permissions and Scopes section)</span>
+
+<span class="n">account</span> <span class="o">=</span> <span class="n">Account</span><span class="p">(</span><span class="n">credentials</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="ow">not</span> <span class="n">account</span><span class="o">.</span><span class="n">is_authenticated</span><span class="p">:</span>  <span class="c1"># will check if there is a token and has not expired</span>
+   <span class="c1"># ask for a login using console based authentication. See Authentication for other flows</span>
+   <span class="k">if</span> <span class="n">account</span><span class="o">.</span><span class="n">authenticate</span><span class="p">(</span><span class="n">scopes</span><span class="o">=</span><span class="n">scopes</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+      <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Authentication Failed&#39;</span><span class="p">)</span>
+
+<span class="c1"># now we are authenticated</span>
+<span class="c1"># use the library from now on</span>
+
+<span class="c1"># ...</span>
+</pre></div>
+</div>
+</section>
+<section id="authentication">
+<span id="id1"></span><h2>Authentication<a class="headerlink" href="#authentication" title="Link to this heading"></a></h2>
+<section id="types">
+<h3>Types<a class="headerlink" href="#types" title="Link to this heading"></a></h3>
+<p>You can only authenticate using OAuth authentication because Microsoft deprecated basic auth on November 1st 2018.</p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>With version 2.1 old access tokens will not work and the library will require a new authentication flow to get new access and refresh tokens.</p>
+</div>
+<p>There are currently three authentication methods:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://docs.microsoft.com/en-us/graph/auth-v2-user?context=graph%2Fapi%2F1.0&amp;view=graph-rest-1.0/">Authenticate on behalf of a user</a>: Any user will give consent to the app to access its resources. This OAuth flow is called authorization code grant flow. This is the default authentication method used by this library.</p></li>
+<li><p><a class="reference external" href="https://docs.microsoft.com/en-us/graph/auth-v2-user?context=graph%2Fapi%2F1.0&amp;view=graph-rest-1.0/">Authenticate on behalf of a user (public)</a>: Same as the former but for public apps where the client secret can’t be secured. Client secret is not required.</p></li>
+<li><p><a class="reference external" href="https://docs.microsoft.com/en-us/graph/auth-v2-service?context=graph%2Fapi%2F1.0&amp;view=graph-rest-1.0">Authenticate with your own identity</a>: This will use your own identity (the app identity). This OAuth flow is called client credentials grant flow.</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>‘Authenticate with your own identity’ is not an allowed method for Microsoft Personal accounts.</p>
+</div>
+<p>When to use one or the other and requirements:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Topic</p></th>
+<th class="head"><p>On behalf of a user <em>(auth_flow_type==’authorization’)</em></p></th>
+<th class="head"><p>On behalf of a user (public) <em>(auth_flow_type==’public’)</em></p></th>
+<th class="head"><p>With your own identity <em>(auth_flow_type==’credentials’)</em></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Register the App</strong></p></td>
+<td><p>Required</p></td>
+<td><p>Required</p></td>
+<td><p>Required</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Requires Admin Consent</strong></p></td>
+<td><p>Only on certain advanced permissions</p></td>
+<td><p>Only on certain advanced permissions</p></td>
+<td><p>Yes, for everything</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>App Permission Type</strong></p></td>
+<td><p>Delegated Permissions (on behalf of the user)</p></td>
+<td><p>Delegated Permissions (on behalf of the user)</p></td>
+<td><p>Application Permissions</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Auth requirements</strong></p></td>
+<td><p>Client Id, Client Secret, Authorization Code</p></td>
+<td><p>Client Id, Authorization Code</p></td>
+<td><p>Client Id, Client Secret</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Authentication</strong></p></td>
+<td><p>2 step authentication with user consent</p></td>
+<td><p>2 step authentication with user consent</p></td>
+<td><p>1 step authentication</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Auth Scopes</strong></p></td>
+<td><p>Required</p></td>
+<td><p>Required</p></td>
+<td><p>None</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Token Expiration</strong></p></td>
+<td><p>60 Minutes without refresh token or 90 days*</p></td>
+<td><p>60 Minutes without refresh token or 90 days*</p></td>
+<td><p>60 Minutes*</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Login Expiration</strong></p></td>
+<td><p>Unlimited if there is a refresh token and as long as a
+refresh is done within the 90 days</p></td>
+<td><p>Unlimited if there is a refresh token and as long as a
+refresh is done within the 90 days</p></td>
+<td><p>Unlimited</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Resources</strong></p></td>
+<td><p>Access the user resources, and any shared resources</p></td>
+<td><p>Access the user resources, and any shared resources</p></td>
+<td><p>All Azure AD users the app has access to</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Microsoft Account Type</strong></p></td>
+<td><p>Any</p></td>
+<td><p>Any</p></td>
+<td><p>Not Allowed for Personal Accounts</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Tenant ID Required</strong></p></td>
+<td><p>Defaults to “common”</p></td>
+<td><p>Defaults to “common”</p></td>
+<td><p>Required (can’t be “common”)</p></td>
+</tr>
+</tbody>
+</table>
+<p><em>Note: *O365 will automatically refresh the token for you on either authentication method. The refresh token lasts 90 days, but it’s refreshed on each connection so as long as you connect within 90 days you can have unlimited access.</em></p>
+<p>The Connection Class handles the authentication.</p>
+<p>With auth_flow_type ‘credentials’ you can authenticate using a certificate based authentication by just passing the client_secret like so:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">client_secret</span> <span class="o">=</span> <span class="p">{</span>
+   <span class="s2">&quot;thumbprint&quot;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">thumbprint</span> <span class="n">of</span> <span class="n">cert</span> <span class="n">file</span><span class="o">&gt;</span><span class="p">,</span>
+   <span class="s2">&quot;private_key&quot;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">private</span> <span class="n">key</span> <span class="kn">from</span><span class="w"> </span><span class="nn">the</span> <span class="n">private_key_file</span><span class="o">&gt;</span>
+<span class="p">}</span>
+<span class="n">credentials</span> <span class="o">=</span> <span class="n">client_id</span><span class="p">,</span> <span class="n">client_secret</span>
+<span class="n">account</span> <span class="o">=</span> <span class="n">Account</span><span class="p">(</span><span class="n">credentials</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="oauth-setup-prerequisite">
+<h3>OAuth Setup (Prerequisite)<a class="headerlink" href="#oauth-setup-prerequisite" title="Link to this heading"></a></h3>
+<p>Before you can use python-o365, you must register your application in the
+<a class="reference external" href="https://entra.microsoft.com/">Microsoft Entra Admin Center</a>. Follow the steps below:</p>
 <ol class="arabic simple">
-<li><p>Login to <a class="reference external" href="https://apps.dev.microsoft.com/">https://apps.dev.microsoft.com/</a></p></li>
-<li><p>Create an app, note your app id (<strong>client_id</strong>)</p></li>
-<li><p>Generate a new password (<strong>client_secret</strong>) under <strong>Application Secrets</strong> section</p></li>
-<li><p>Under the <strong>Platform</strong> section, add a new Web platform and set “<a class="reference external" href="https://outlook.office365.com/owa/">https://outlook.office365.com/owa/</a>” as the redirect URL</p></li>
-<li><dl class="simple">
-<dt>Under “Microsoft Graph Permissions” section, Add the below delegated permission (or based on what scopes you plan to use)</dt><dd><ol class="arabic simple">
-<li><p>email</p></li>
+<li><p><strong>Log in to the Microsoft Entra Admin Center</strong></p>
+<ul class="simple">
+<li><p>Visit <a class="reference external" href="https://entra.microsoft.com/">https://entra.microsoft.com/</a> and sign in.</p></li>
+</ul>
+</li>
+<li><p><strong>Create a new application and note its App (client) ID</strong></p>
+<ul class="simple">
+<li><p>In the left navigation bar, select <strong>Applications</strong> &gt; <strong>App registrations</strong>.</p></li>
+<li><p>Click <strong>+ New registration</strong>.</p></li>
+<li><p>Provide a <strong>Name</strong> for the application and keep all defaults.</p></li>
+<li><p>From the <strong>Overview</strong> of your new application, copy the (client_id) <strong>Application (client) ID</strong> for later reference.</p></li>
+</ul>
+</li>
+<li><p><strong>Generate a new password (client_secret)</strong></p>
+<ul class="simple">
+<li><p>In the <strong>Overview</strong> window, select <strong>Certificates &amp; secrets</strong>.</p></li>
+<li><p>Click <strong>New client secret</strong>.</p></li>
+<li><p>In the <strong>Add a client secret</strong> window, provide a Description and Expiration, then click <strong>Add</strong>.</p></li>
+<li><p>Save the (client_secret) <strong>Value</strong> for later reference.</p></li>
+</ul>
+</li>
+<li><p><strong>Add redirect URIs</strong></p>
+<ul class="simple">
+<li><p>In the <strong>Overview</strong> window, click <strong>Add a redirect URI</strong>.</p></li>
+<li><p>Click <strong>+ Add a platform</strong>, then select <strong>Web</strong>.</p></li>
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">https://login.microsoftonline.com/common/oauth2/nativeclient</span></code> as the redirect URI.</p></li>
+<li><p>Click <strong>Save</strong>.</p></li>
+</ul>
+</li>
+<li><p><strong>Add required permissions</strong></p>
+<ul class="simple">
+<li><p>In the left navigation bar, select <strong>API permissions</strong>.</p></li>
+<li><p>Click <strong>+ Add a permission</strong>.</p></li>
+<li><p>Under <strong>Microsoft Graph</strong>, select <strong>Delegated permissions</strong>.</p></li>
+<li><p>Add the delegated permissions you plan to use (for example):</p>
+<ul>
+<li><p>Mail.Read</p></li>
 <li><p>Mail.ReadWrite</p></li>
 <li><p>Mail.Send</p></li>
 <li><p>User.Read</p></li>
-</ol>
-</dd>
-</dl>
+<li><p>User.ReadBasic.All</p></li>
+<li><p>offline_access</p></li>
+</ul>
 </li>
-<li><p>Note the <strong>client_id</strong> and <strong>client_secret</strong> as they will be using for establishing the connection through the api</p></li>
+<li><p>Click <strong>Add permissions</strong>.</p></li>
+</ul>
+</li>
 </ol>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>The offline_access permission is required for the refresh token to work.</p>
 </div>
-<div class="section" id="basic-usage">
-<h2>Basic Usage<a class="headerlink" href="#basic-usage" title="Permalink to this headline">¶</a></h2>
-<p>Work in progress</p>
+</section>
+<section id="examples">
+<h3>Examples<a class="headerlink" href="#examples" title="Link to this heading"></a></h3>
+<p>Then you need to log in for the first time to get the access token that will grant access to the user resources.</p>
+<p>To authenticate (login) you can use <a class="reference internal" href="#different-interfaces"><span class="std std-ref">Different interfaces</span></a>. On the following examples we will be using the Console Based Interface, but you can use any of them.</p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>In case you can’t secure the client secret you can use the auth flow type ‘public’ which only requires the client id.</p>
 </div>
+<ul>
+<li><p>When authenticating on behalf of a user:</p>
+<ol class="arabic">
+<li><p>Instantiate an <cite>Account</cite> object with the credentials (client id and client secret).</p></li>
+<li><p>Call <cite>account.authenticate</cite> and pass the scopes you want (the ones you previously added on the app registration portal).</p>
+<p>&gt; Note: when using the “on behalf of a user” authentication, you can pass the scopes to either the <cite>Account</cite> init or to the authenticate method. Either way is correct.</p>
+<p>You can pass “protocol scopes” (like: “<a class="reference external" href="https://graph.microsoft.com/Calendars.ReadWrite">https://graph.microsoft.com/Calendars.ReadWrite</a>”) to the method or use “[scope helpers](<a class="reference external" href="https://github.com/O365/python-o365/blob/master/O365/connection.py#L34">https://github.com/O365/python-o365/blob/master/O365/connection.py#L34</a>)” like (“message_all”).
+If you pass protocol scopes, then the <cite>account</cite> instance must be initialized with the same protocol used by the scopes. By using scope helpers you can abstract the protocol from the scopes and let this library work for you.
+Finally, you can mix and match “protocol scopes” with “scope helpers”.
+Go to the [procotol section](#protocols) to know more about them.</p>
+<p>For Example (following the previous permissions added):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">O365</span><span class="w"> </span><span class="kn">import</span> <span class="n">Account</span>
+<span class="n">credentials</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;my_client_id&#39;</span><span class="p">,</span> <span class="s1">&#39;my_client_secret&#39;</span><span class="p">)</span>
+
+<span class="c1"># the default protocol will be Microsoft Graph</span>
+<span class="c1"># the default authentication method will be &quot;on behalf of a user&quot;</span>
+
+<span class="n">account</span> <span class="o">=</span> <span class="n">Account</span><span class="p">(</span><span class="n">credentials</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">account</span><span class="o">.</span><span class="n">authenticate</span><span class="p">(</span><span class="n">scopes</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;basic&#39;</span><span class="p">,</span> <span class="s1">&#39;message_all&#39;</span><span class="p">]):</span>
+   <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Authenticated!&#39;</span><span class="p">)</span>
+
+<span class="c1"># &#39;basic&#39; adds: &#39;https://graph.microsoft.com/User.Read&#39;</span>
+<span class="c1"># &#39;message_all&#39; adds: &#39;https://graph.microsoft.com/Mail.ReadWrite&#39; and &#39;https://graph.microsoft.com/Mail.Send&#39;</span>
+</pre></div>
 </div>
+<p>When using the “on behalf of the user” authentication method, this method call will print an url that the user must visit to give consent to the app on the required permissions.</p>
+<p>The user must then visit this url and give consent to the application. When consent is given, the page will rediret to: “<a class="reference external" href="https://login.microsoftonline.com/common/oauth2/nativeclient">https://login.microsoftonline.com/common/oauth2/nativeclient</a>” by default (you can change this) with an url query param called ‘code’.</p>
+<p>Then the user must copy the resulting page url and paste it back on the console.
+The method will then return True if the login attempt was succesful.</p>
+</li>
+</ol>
+</li>
+<li><p>When authenticating with your own identity:</p>
+<ol class="arabic simple">
+<li><p>Instantiate an <cite>Account</cite> object with the credentials (client id and client secret), specifying the parameter <cite>auth_flow_type</cite> to <em>“credentials”</em>. You also need to provide a ‘tenant_id’. You don’t need to specify any scopes.</p></li>
+<li><p>Call <cite>account.authenticate</cite>. This call will request a token for you and store it in the backend. No user interaction is needed. The method will store the token in the backend and return True if the authentication succeeded.</p></li>
+</ol>
+<blockquote>
+<div><p>For Example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">O365</span><span class="w"> </span><span class="kn">import</span> <span class="n">Account</span>
+
+<span class="n">credentials</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;my_client_id&#39;</span><span class="p">,</span> <span class="s1">&#39;my_client_secret&#39;</span><span class="p">)</span>
+
+<span class="c1"># the default protocol will be Microsoft Graph</span>
+
+<span class="n">account</span> <span class="o">=</span> <span class="n">Account</span><span class="p">(</span><span class="n">credentials</span><span class="p">,</span> <span class="n">auth_flow_type</span><span class="o">=</span><span class="s1">&#39;credentials&#39;</span><span class="p">,</span> <span class="n">tenant_id</span><span class="o">=</span><span class="s1">&#39;my-tenant-id&#39;</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">account</span><span class="o">.</span><span class="n">authenticate</span><span class="p">():</span>
+   <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Authenticated!&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+</ul>
+<p>At this point you will have an access token stored that will provide valid credentials when using the api.</p>
+<p>The access token only lasts <strong>60 minutes</strong>, but the app will automatically request new access tokens if you added the ‘offline access’ permission.</p>
+<p>When using the “on behalf of a user” authentication method this is accomplished through the refresh tokens (if and only if you added the “offline_access” permission), but note that a refresh token only lasts for 90 days. So you must use it before, or you will need to request a new access token again (no new consent needed by the user, just a login). If your application needs to work for more than 90 days without user interaction and without interacting with the API, then you must implement a periodic call to Connection.refresh_token before the 90 days have passed.</p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>Take care: the access (and refresh) token must remain protected from unauthorized users.</p>
+</div>
+</section>
+<section id="different-interfaces">
+<span id="id2"></span><h3>Different interfaces<a class="headerlink" href="#different-interfaces" title="Link to this heading"></a></h3>
+<p>To accomplish the authentication you can basically use different approaches. The following apply to the “on behalf of a user” authentication method as this is 2-step authentication flow. For the “with your own identity” authentication method, you can just use account.authenticate as it’s not going to require a console input.</p>
+<ol class="arabic">
+<li><p>Console based authentication interface:</p>
+<p>You can authenticate using a console. The best way to achieve this is by using the authenticate method of the Account class.</p>
+<p>account = Account(credentials)
+account.authenticate(scopes=[‘basic’, ‘message_all’])
+The authenticate method will print into the console an url that you will have to visit to achieve authentication. Then after visiting the link and authenticate you will have to paste back the resulting url into the console. The method will return True and print a message if it was succesful.</p>
+<p><strong>Tip:</strong> When using macOS the console is limited to 1024 characters. If your url has multiple scopes it can exceed this limit. To solve this. Just import readline at the top of your script.</p>
+</li>
+<li><p>Web app based authentication interface:</p>
+<p>You can authenticate your users in a web environment by following these steps:</p>
+<ol class="lowerroman simple">
+<li><p>First ensure you are using an appropiate TokenBackend to store the auth tokens (See Token storage below).</p></li>
+<li><p>From a handler redirect the user to the Microsoft login url. Provide a callback. Store the flow dictionary.</p></li>
+<li><p>From the callback handler complete the authentication with the flow dict and other data.</p></li>
+</ol>
+<p>The following example is done using Flask.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">flask</span><span class="w"> </span><span class="kn">import</span> <span class="n">request</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">O365</span><span class="w"> </span><span class="kn">import</span> <span class="n">Account</span>
+
+
+<span class="nd">@route</span><span class="p">(</span><span class="s1">&#39;/stepone&#39;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">auth_step_one</span><span class="p">():</span>
+   <span class="c1"># callback = absolute url to auth_step_two_callback() page, https://domain.tld/steptwo</span>
+   <span class="n">callback</span> <span class="o">=</span> <span class="n">url_for</span><span class="p">(</span><span class="s1">&#39;auth_step_two_callback&#39;</span><span class="p">,</span> <span class="n">_external</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># Flask example</span>
+
+   <span class="n">account</span> <span class="o">=</span> <span class="n">Account</span><span class="p">(</span><span class="n">credentials</span><span class="p">)</span>
+   <span class="n">url</span><span class="p">,</span> <span class="n">flow</span> <span class="o">=</span> <span class="n">account</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">get_authorization_url</span><span class="p">(</span><span class="n">requested_scopes</span><span class="o">=</span><span class="n">my_scopes</span><span class="p">,</span>
+                                                   <span class="n">redirect_uri</span><span class="o">=</span><span class="n">callback</span><span class="p">)</span>
+
+   <span class="n">flow_as_string</span> <span class="o">=</span> <span class="n">serialize</span><span class="p">(</span><span class="n">flow</span><span class="p">)</span>  <span class="c1"># convert the dict into a string using json for example</span>
+   <span class="c1"># the flow must be saved somewhere as it will be needed later</span>
+   <span class="n">my_db</span><span class="o">.</span><span class="n">store_flow</span><span class="p">(</span><span class="n">flow_as_string</span><span class="p">)</span> <span class="c1"># example...</span>
+
+   <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+
+<span class="nd">@route</span><span class="p">(</span><span class="s1">&#39;/steptwo&#39;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">auth_step_two_callback</span><span class="p">():</span>
+   <span class="n">account</span> <span class="o">=</span> <span class="n">Account</span><span class="p">(</span><span class="n">credentials</span><span class="p">)</span>
+
+   <span class="c1"># retrieve the state saved in auth_step_one</span>
+   <span class="n">my_saved_flow_str</span> <span class="o">=</span> <span class="n">my_db</span><span class="o">.</span><span class="n">get_flow</span><span class="p">()</span>  <span class="c1"># example...</span>
+   <span class="n">my_saved_flow</span> <span class="o">=</span> <span class="n">deserialize</span><span class="p">(</span><span class="n">my_saved_flow_str</span><span class="p">)</span>  <span class="c1"># convert from a string to a dict using json for example.</span>
+
+   <span class="c1"># rebuild the redirect_uri used in auth_step_one</span>
+   <span class="n">callback</span> <span class="o">=</span> <span class="s1">&#39;my absolute url to auth_step_two_callback&#39;</span>
+
+   <span class="c1"># get the request URL of the page which will include additional auth information</span>
+   <span class="c1"># Example request: /steptwo?code=abc123&amp;state=xyz456</span>
+   <span class="n">requested_url</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">url</span>  <span class="c1"># uses Flask&#39;s request() method</span>
+
+   <span class="n">result</span> <span class="o">=</span> <span class="n">account</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">request_token</span><span class="p">(</span><span class="n">requested_url</span><span class="p">,</span>
+                                       <span class="n">flow</span><span class="o">=</span><span class="n">my_saved_flow</span><span class="p">)</span>
+   <span class="c1"># if result is True, then authentication was successful</span>
+   <span class="c1">#  and the auth token is stored in the token backend</span>
+   <span class="k">if</span> <span class="n">result</span><span class="p">:</span>
+      <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;auth_complete.html&#39;</span><span class="p">)</span>
+   <span class="c1"># else ....</span>
+</pre></div>
+</div>
+</li>
+<li><p>Other authentication interfaces:</p>
+<p>Finally, you can configure any other flow by using <code class="docutils literal notranslate"><span class="pre">connection.get_authorization_url</span></code> and <code class="docutils literal notranslate"><span class="pre">connection.request_token</span></code> as you want.</p>
+</li>
+</ol>
+</section>
+</section>
+<section id="permissions-scopes">
+<h2>Permissions &amp; Scopes<a class="headerlink" href="#permissions-scopes" title="Link to this heading"></a></h2>
+<section id="permissions">
+<h3>Permissions<a class="headerlink" href="#permissions" title="Link to this heading"></a></h3>
+<p>When using oauth, you create an application and allow some resources to be accessed and used by its users. These resources are managed with permissions. These can either be delegated (on behalf of a user) or application permissions. The former are used when the authentication method is “on behalf of a user”. Some of these require administrator consent. The latter when using the “with your own identity” authentication method. All of these require administrator consent.</p>
+</section>
+<section id="scopes">
+<h3>Scopes<a class="headerlink" href="#scopes" title="Link to this heading"></a></h3>
+<p>The scopes only matter when using the “on behalf of a user” authentication method.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You only need the scopes when login as those are kept stored within the token on the token backend.</p>
+</div>
+<p>The user of this library can then request access to one or more of these resources by providing scopes to the OAuth provider.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you later on change the scopes requested, the current token will be invalid, and you will have to re-authenticate. The user that logins will be asked for consent.</p>
+</div>
+<p>For example your application can have Calendar.Read, Mail.ReadWrite and Mail.Send permissions, but the application can request access only to the Mail.ReadWrite and Mail.Send permission. This is done by providing scopes to the Account instance or account.authenticate method like so:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">O365</span><span class="w"> </span><span class="kn">import</span> <span class="n">Account</span>
+
+<span class="n">credentials</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;client_id&#39;</span><span class="p">,</span> <span class="s1">&#39;client_secret&#39;</span><span class="p">)</span>
+
+<span class="n">scopes</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Mail.ReadWrite&#39;</span><span class="p">,</span> <span class="s1">&#39;Mail.Send&#39;</span><span class="p">]</span>
+
+<span class="n">account</span> <span class="o">=</span> <span class="n">Account</span><span class="p">(</span><span class="n">credentials</span><span class="p">,</span> <span class="n">scopes</span><span class="o">=</span><span class="n">scopes</span><span class="p">)</span>
+<span class="n">account</span><span class="o">.</span><span class="n">authenticate</span><span class="p">()</span>
+
+<span class="c1"># The latter is exactly the same as passing scopes to the authenticate method like so:</span>
+<span class="c1"># account = Account(credentials)</span>
+<span class="c1"># account.authenticate(scopes=scopes)</span>
+</pre></div>
+</div>
+<p>Scope implementation depends on the protocol used. So by using protocol data you can automatically set the scopes needed. This is implemented by using ‘scope helpers’. Those are little helpers that group scope functionality and abstract the protocol used.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Scope Helper</p></th>
+<th class="head"><p>Scopes included</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>basic</p></td>
+<td><p>‘User.Read’</p></td>
+</tr>
+<tr class="row-odd"><td><p>mailbox</p></td>
+<td><p>‘Mail.Read’</p></td>
+</tr>
+<tr class="row-even"><td><p>mailbox_shared</p></td>
+<td><p>‘Mail.Read.Shared’</p></td>
+</tr>
+<tr class="row-odd"><td><p>mailbox_settings</p></td>
+<td><p>‘MailboxSettings.ReadWrite’</p></td>
+</tr>
+<tr class="row-even"><td><p>message_send</p></td>
+<td><p>‘Mail.Send’</p></td>
+</tr>
+<tr class="row-odd"><td><p>message_send_shared</p></td>
+<td><p>‘Mail.Send.Shared’</p></td>
+</tr>
+<tr class="row-even"><td><p>message_all</p></td>
+<td><p>‘Mail.ReadWrite’ and ‘Mail.Send’</p></td>
+</tr>
+<tr class="row-odd"><td><p>message_all_shared</p></td>
+<td><p>‘Mail.ReadWrite.Shared’ and ‘Mail.Send.Shared’</p></td>
+</tr>
+<tr class="row-even"><td><p>address_book</p></td>
+<td><p>‘Contacts.Read’</p></td>
+</tr>
+<tr class="row-odd"><td><p>address_book_shared</p></td>
+<td><p>‘Contacts.Read.Shared’</p></td>
+</tr>
+<tr class="row-even"><td><p>address_book_all</p></td>
+<td><p>‘Contacts.ReadWrite’</p></td>
+</tr>
+<tr class="row-odd"><td><p>address_book_all_shared</p></td>
+<td><p>‘Contacts.ReadWrite.Shared’</p></td>
+</tr>
+<tr class="row-even"><td><p>calendar</p></td>
+<td><p>‘Calendars.Read’</p></td>
+</tr>
+<tr class="row-odd"><td><p>calendar_shared</p></td>
+<td><p>‘Calendars.Read.Shared’</p></td>
+</tr>
+<tr class="row-even"><td><p>calendar_all</p></td>
+<td><p>‘Calendars.ReadWrite’</p></td>
+</tr>
+<tr class="row-odd"><td><p>calendar_shared_all</p></td>
+<td><p>‘Calendars.ReadWrite.Shared’</p></td>
+</tr>
+<tr class="row-even"><td><p>users</p></td>
+<td><p>‘User.ReadBasic.All’</p></td>
+</tr>
+<tr class="row-odd"><td><p>onedrive</p></td>
+<td><p>‘Files.Read.All’</p></td>
+</tr>
+<tr class="row-even"><td><p>onedrive_all</p></td>
+<td><p>‘Files.ReadWrite.All’</p></td>
+</tr>
+<tr class="row-odd"><td><p>sharepoint</p></td>
+<td><p>‘Sites.Read.All’</p></td>
+</tr>
+<tr class="row-even"><td><p>sharepoint_dl</p></td>
+<td><p>‘Sites.ReadWrite.All’</p></td>
+</tr>
+<tr class="row-odd"><td><p>settings_all</p></td>
+<td><p>‘MailboxSettings.ReadWrite’</p></td>
+</tr>
+<tr class="row-even"><td><p>tasks</p></td>
+<td><p>‘Tasks.Read’</p></td>
+</tr>
+<tr class="row-odd"><td><p>tasks_all</p></td>
+<td><p>‘Tasks.ReadWrite’</p></td>
+</tr>
+<tr class="row-even"><td><p>presence</p></td>
+<td><p>‘Presence.Read’</p></td>
+</tr>
+</tbody>
+</table>
+<p>You can get the same scopes as before using protocols and scope helpers like this:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">protocol_graph</span> <span class="o">=</span> <span class="n">MSGraphProtocol</span><span class="p">()</span>
+
+<span class="n">scopes_graph</span> <span class="o">=</span> <span class="n">protocol</span><span class="o">.</span><span class="n">get_scopes_for</span><span class="p">(</span><span class="s1">&#39;message all&#39;</span><span class="p">)</span>
+<span class="c1"># scopes here are: [&#39;https://graph.microsoft.com/Mail.ReadWrite&#39;, &#39;https://graph.microsoft.com/Mail.Send&#39;]</span>
+
+<span class="n">account</span> <span class="o">=</span> <span class="n">Account</span><span class="p">(</span><span class="n">credentials</span><span class="p">,</span> <span class="n">scopes</span><span class="o">=</span><span class="n">scopes_graph</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>When passing scopes at the Account initialization or on the account.authenticate method, the scope helpers are automatically converted to the protocol flavour. Those are the only places where you can use scope helpers. Any other object using scopes (such as the Connection object) expects scopes that are already set for the protocol.</p>
+</div>
+</section>
+</section>
+<section id="token-storage">
+<h2>Token Storage<a class="headerlink" href="#token-storage" title="Link to this heading"></a></h2>
+<p>When authenticating you will retrieve OAuth tokens. If you don’t want a one time access you will have to store the token somewhere. O365 makes no assumptions on where to store the token and tries to abstract this from the library usage point of view.</p>
+<p>You can choose where and how to store tokens by using the proper Token Backend.</p>
+<div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p><strong>The access (and refresh) token must remain protected from unauthorized users.</strong> You can plug in a “cryptography_manager” (object that can call encrypt and decrypt) into TokenBackends “cryptography_manager” attribute.</p>
+</div>
+<p>The library will call (at different stages) the token backend methods to load and save the token.</p>
+<p>Methods that load tokens:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">account.is_authenticated</span></code> property will try to load the token if is not already loaded.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">connection.get_session</span></code>: this method is called when there isn’t a request session set.</p></li>
+</ul>
+<p>Methods that stores tokens:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">connection.request_token</span></code>: by default will store the token, but you can set store_token=False to avoid it.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">connection.refresh_token</span></code>: by default will store the token. To avoid it change <code class="docutils literal notranslate"><span class="pre">connection.store_token_after_refresh</span></code> to False. This however it’s a global setting (that only affects the <code class="docutils literal notranslate"><span class="pre">refresh_token</span></code> method). If you only want the next refresh operation to not store the token you will have to set it back to True afterward.</p></li>
+</ul>
+<p>To store the token you will have to provide a properly configured TokenBackend.</p>
+<p>There are a few <code class="docutils literal notranslate"><span class="pre">TokenBackend</span></code> classes implemented (and you can easily implement more like a CookieBackend, RedisBackend, etc.):</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">FileSystemTokenBackend</span></code> (Default backend): Stores and retrieves tokens from the file system. Tokens are stored as text files.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">MemoryTokenBackend</span></code>: Stores the tokens in memory. Basically load_token and save_token does nothing.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">EnvTokenBackend</span></code>: Stores and retrieves tokens from environment variables.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">FirestoreTokenBackend</span></code>: Stores and retrieves tokens from a Google Firestore Datastore. Tokens are stored as documents within a collection.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">AWSS3Backend</span></code>: Stores and retrieves tokens from an AWS S3 bucket. Tokens are stored as a file within a S3 bucket.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">AWSSecretsBackend</span></code>: Stores and retrieves tokens from an AWS Secrets Management vault.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">BitwardenSecretsManagerBackend</span></code>: Stores and retrieves tokens from Bitwarden Secrets Manager.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">DjangoTokenBackend</span></code>: Stores and retrieves tokens using a Django model.</p></li>
+</ul>
+<p>For example using the FileSystem Token Backend:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">O365</span><span class="w"> </span><span class="kn">import</span> <span class="n">Account</span><span class="p">,</span> <span class="n">FileSystemTokenBackend</span>
+
+<span class="n">credentials</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="s1">&#39;secret&#39;</span><span class="p">)</span>
+
+<span class="c1"># this will store the token under: &quot;my_project_folder/my_folder/my_token.txt&quot;.</span>
+<span class="c1"># you can pass strings to token_path or Path instances from pathlib</span>
+<span class="n">token_backend</span> <span class="o">=</span> <span class="n">FileSystemTokenBackend</span><span class="p">(</span><span class="n">token_path</span><span class="o">=</span><span class="s1">&#39;my_folder&#39;</span><span class="p">,</span> <span class="n">token_filename</span><span class="o">=</span><span class="s1">&#39;my_token.txt&#39;</span><span class="p">)</span>
+<span class="n">account</span> <span class="o">=</span> <span class="n">Account</span><span class="p">(</span><span class="n">credentials</span><span class="p">,</span> <span class="n">token_backend</span><span class="o">=</span><span class="n">token_backend</span><span class="p">)</span>
+
+<span class="c1"># This account instance tokens will be stored on the token_backend configured before.</span>
+<span class="c1"># You don&#39;t have to do anything more</span>
+<span class="c1"># ...</span>
+</pre></div>
+</div>
+<p>And now using the same example using FirestoreTokenBackend:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">O365</span><span class="w"> </span><span class="kn">import</span> <span class="n">Account</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">O365.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">FirestoreBackend</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">google.cloud</span><span class="w"> </span><span class="kn">import</span> <span class="n">firestore</span>
+
+<span class="n">credentials</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="s1">&#39;secret&#39;</span><span class="p">)</span>
+
+<span class="c1"># this will store the token on firestore under the tokens collection on the defined doc_id.</span>
+<span class="c1"># you can pass strings to token_path or Path instances from pathlib</span>
+<span class="n">user_id</span> <span class="o">=</span> <span class="s1">&#39;whatever the user id is&#39;</span>  <span class="c1"># used to create the token document id</span>
+<span class="n">document_id</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;token_</span><span class="si">{</span><span class="n">user_id</span><span class="si">}</span><span class="s2">&quot;</span>  <span class="c1"># used to uniquely store this token</span>
+<span class="n">token_backend</span> <span class="o">=</span> <span class="n">FirestoreBackend</span><span class="p">(</span><span class="n">client</span><span class="o">=</span><span class="n">firestore</span><span class="o">.</span><span class="n">Client</span><span class="p">(),</span> <span class="n">collection</span><span class="o">=</span><span class="s1">&#39;tokens&#39;</span><span class="p">,</span> <span class="n">doc_id</span><span class="o">=</span><span class="n">document_id</span><span class="p">)</span>
+<span class="n">account</span> <span class="o">=</span> <span class="n">Account</span><span class="p">(</span><span class="n">credentials</span><span class="p">,</span> <span class="n">token_backend</span><span class="o">=</span><span class="n">token_backend</span><span class="p">)</span>
+
+<span class="c1"># This account instance tokens will be stored on the token_backend configured before.</span>
+<span class="c1"># You don&#39;t have to do anything more</span>
+<span class="c1"># ...</span>
+</pre></div>
+</div>
+<p>To implement a new TokenBackend:</p>
+<ol class="arabic simple">
+<li><p>Subclass <code class="docutils literal notranslate"><span class="pre">BaseTokenBackend</span></code></p></li>
+<li><p>Implement the following methods:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">__init__</span></code> (don’t forget to call <code class="docutils literal notranslate"><span class="pre">super().__init__</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">load_token</span></code>: this should load the token from the desired backend and return a <code class="docutils literal notranslate"><span class="pre">Token</span></code> instance or None</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">save_token</span></code>: this should store the <code class="docutils literal notranslate"><span class="pre">self.token</span></code> in the desired backend.</p></li>
+<li><p>Optionally you can implement: <code class="docutils literal notranslate"><span class="pre">check_token</span></code>, <code class="docutils literal notranslate"><span class="pre">delete_token</span></code> and <code class="docutils literal notranslate"><span class="pre">should_refresh_token</span></code></p></li>
+</ul>
+</li>
+</ol>
+<p>The <code class="docutils literal notranslate"><span class="pre">should_refresh_token</span></code> method is intended to be implemented for environments where multiple Connection instances are running on parallel. This method should check if it’s time to refresh the token or not. The chosen backend can store a flag somewhere to answer this question. This can avoid race conditions between different instances trying to refresh the token at once, when only one should make the refresh. The method should return three possible values:</p>
+<ul class="simple">
+<li><p><strong>True</strong>: then the Connection will refresh the token.</p></li>
+<li><p><strong>False</strong>: then the Connection will NOT refresh the token.</p></li>
+<li><p>None: then this method already executed the refresh and therefore the Connection does not have to.</p></li>
+</ul>
+<p>By default, this always returns True as it’s assuming there is are no parallel connections running at once.</p>
+<p>There are two examples of this method in the examples folder <a class="reference external" href="https://github.com/O365/python-o365/blob/master/examples/token_backends.py">here</a>.</p>
+</section>
+</section>
 
 
            </div>
-           
           </div>
-          <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="usage.html" class="btn btn-neutral float-right" title="Detailed Usage" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="index.html" class="btn btn-neutral" title="Welcome to O365’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="overview.html" class="btn btn-neutral float-left" title="Overview" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="usage.html" class="btn btn-neutral float-right" title="Detailed Usage" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &copy; Copyright 2018, Narcolapser
-
-    </p>
+    <p>&#169; Copyright 2025, alejcas.</p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
-
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-
-  
-
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
-    
-
-  
-
-  <script type="text/javascript" src="_static/js/theme.js"></script>
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });

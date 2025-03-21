@@ -1,60 +1,68 @@
 import datetime as dt
 import logging
 from enum import Enum
+from pathlib import Path
 
 # noinspection PyPep8Naming
 from bs4 import BeautifulSoup as bs
 from dateutil.parser import parse
-from pathlib import Path
 
-from .utils import OutlookWellKnowFolderNames, ApiComponent, \
-    BaseAttachments, BaseAttachment, AttachableMixin, ImportanceLevel, \
-    TrackerSet, Recipient, HandleRecipientsMixin, CaseEnum
 from .calendar import Event
 from .category import Category
+from .utils import (
+    ApiComponent,
+    AttachableMixin,
+    BaseAttachment,
+    BaseAttachments,
+    CaseEnum,
+    HandleRecipientsMixin,
+    ImportanceLevel,
+    OutlookWellKnowFolderNames,
+    Recipient,
+    TrackerSet,
+)
 
 log = logging.getLogger(__name__)
 
 
 class RecipientType(Enum):
-    TO = 'to'
-    CC = 'cc'
-    BCC = 'bcc'
+    TO = "to"
+    CC = "cc"
+    BCC = "bcc"
 
 
 class MeetingMessageType(CaseEnum):
-    MeetingRequest = 'meetingRequest'
-    MeetingCancelled = 'meetingCancelled'
-    MeetingAccepted = 'meetingAccepted'
-    MeetingTentativelyAccepted = 'meetingTentativelyAccepted'
-    MeetingDeclined = 'meetingDeclined'
+    MeetingRequest = "meetingRequest"
+    MeetingCancelled = "meetingCancelled"
+    MeetingAccepted = "meetingAccepted"
+    MeetingTentativelyAccepted = "meetingTentativelyAccepted"
+    MeetingDeclined = "meetingDeclined"
 
 
 class Flag(CaseEnum):
-    NotFlagged = 'notFlagged'
-    Complete = 'complete'
-    Flagged = 'flagged'
+    NotFlagged = "notFlagged"
+    Complete = "complete"
+    Flagged = "flagged"
 
 
 class MessageAttachment(BaseAttachment):
     _endpoints = {
-        'attach': '/messages/{id}/attachments',
-        'attachment': '/messages/{id}/attachments/{ida}',
+        "attach": "/messages/{id}/attachments",
+        "attachment": "/messages/{id}/attachments/{ida}",
     }
 
 
 class MessageAttachments(BaseAttachments):
     _endpoints = {
-        'attachments': '/messages/{id}/attachments',
-        'attachment': '/messages/{id}/attachments/{ida}',
-        'get_mime': '/messages/{id}/attachments/{ida}/$value',
-        'create_upload_session': '/messages/{id}/attachments/createUploadSession'
-
+        "attachments": "/messages/{id}/attachments",
+        "attachment": "/messages/{id}/attachments/{ida}",
+        "get_mime": "/messages/{id}/attachments/{ida}/$value",
+        "create_upload_session": "/messages/{id}/attachments/createUploadSession",
     }
-    _attachment_constructor = MessageAttachment
+    _attachment_constructor = MessageAttachment  #: :meta private:
 
     def save_as_eml(self, attachment, to_path=None):
-        """ Saves this message as and EML to the file system
+        """Saves this message as and EML to the file system
         :param MessageAttachment attachment: the MessageAttachment to store as eml.
         :param Path or str to_path: the path where to store this file
         """
@@ -63,29 +71,41 @@ class MessageAttachments(BaseAttachments):
             return False
 
         if to_path is None:
-            to_path = Path('message_eml.eml')
+            to_path = Path("message_eml.eml")
         else:
             if not isinstance(to_path, Path):
                 to_path = Path(to_path)
 
         if not to_path.suffix:
-            to_path = to_path.with_suffix('.eml')
+            to_path = to_path.with_suffix(".eml")
 
-        with to_path.open('wb') as file_obj:
+        with to_path.open("wb") as file_obj:
             file_obj.write(mime_content)
             return True
-    
+
     def get_mime_content(self, attachment):
-        """ Returns the MIME contents of this attachment """   
-        if not attachment or not isinstance(attachment, MessageAttachment) \
-                or attachment.attachment_id is None or attachment.attachment_type != 'item':
-            raise ValueError('Must provide a saved "item" attachment of type MessageAttachment')
-        
+        """Returns the MIME contents of this attachment"""
+        if (
+            not attachment
+            or not isinstance(attachment, MessageAttachment)
+            or attachment.attachment_id is None
+            or attachment.attachment_type != "item"
+        ):
+            raise ValueError(
+                'Must provide a saved "item" attachment of type MessageAttachment'
+            )
+
         msg_id = self._parent.object_id
         if msg_id is None:
-            raise RuntimeError('Attempting to get the mime contents of an unsaved message')
+            raise RuntimeError(
+                "Attempting to get the mime contents of an unsaved message"
+            )
 
-        url = self.build_url(self._endpoints.get('get_mime').format(id=msg_id, ida=attachment.attachment_id))
+        url = self.build_url(
+            self._endpoints.get("get_mime").format(
+                id=msg_id, ida=attachment.attachment_id
+            )
+        )
 
         response = self._parent.con.get(url)
 
@@ -96,30 +116,31 @@ class MessageAttachments(BaseAttachments):
 
 
 class MessageFlag(ApiComponent):
-    """ A flag on a message """
+    """A flag on a message"""
 
     def __init__(self, parent, flag_data):
-        """ An flag on a message
+        """An flag on a message
         Not available on Outlook Rest Api v2 (only in beta)
 
         :param parent: parent of this
         :type parent: Message
         :param dict flag_data: flag data from cloud
         """
-        super().__init__(protocol=parent.protocol,
-                         main_resource=parent.main_resource)
+        super().__init__(protocol=parent.protocol, main_resource=parent.main_resource)
 
         self.__message = parent
 
-        self.__status = Flag.from_value(flag_data.get(self._cc('flagStatus'), 'notFlagged'))
+        self.__status = Flag.from_value(
+            flag_data.get(self._cc("flagStatus"), "notFlagged")
+        )
 
-        start_obj = flag_data.get(self._cc('startDateTime'), {})
+        start_obj = flag_data.get(self._cc("startDateTime"), {})
         self.__start = self._parse_date_time_time_zone(start_obj)
 
-        due_date_obj = flag_data.get(self._cc('dueDateTime'), {})
+        due_date_obj = flag_data.get(self._cc("dueDateTime"), {})
         self.__due_date = self._parse_date_time_time_zone(due_date_obj)
 
-        completed_date_obj = flag_data.get(self._cc('completedDateTime'), {})
+        completed_date_obj = flag_data.get(self._cc("completedDateTime"), {})
         self.__completed = self._parse_date_time_time_zone(completed_date_obj)
 
     def __repr__(self):
@@ -132,16 +153,16 @@ class MessageFlag(ApiComponent):
         return self.is_flagged
 
     def _track_changes(self):
-        """ Update the track_changes on the message to reflect a
-        needed update on this field """
-        self.__message._track_changes.add('flag')
+        """Update the track_changes on the message to reflect a
+        needed update on this field"""
+        self.__message._track_changes.add("flag")
 
     @property
     def status(self):
         return self.__status
 
     def set_flagged(self, *, start_date=None, due_date=None):
-        """ Sets this message as flagged
+        """Sets this message as flagged
         :param start_date: the start datetime of the followUp
         :param due_date: the due datetime of the followUp
         """
@@ -157,7 +178,7 @@ class MessageFlag(ApiComponent):
         self._track_changes()
 
     def set_completed(self, *, completition_date=None):
-        """ Sets this message flag as completed
+        """Sets this message flag as completed
         :param completition_date: the datetime this followUp was completed
         """
         self.__status = Flag.Complete
@@ -168,7 +189,7 @@ class MessageFlag(ApiComponent):
         self._track_changes()
 
     def delete_flag(self):
-        """ Sets this message as un flagged """
+        """Sets this message as un flagged"""
         self.__status = Flag.NotFlagged
         self.__start = None
         self.__due_date = None
@@ -177,61 +198,91 @@ class MessageFlag(ApiComponent):
 
     @property
     def start_date(self):
+        """The start date of the message flag.
+
+        :getter: get the start_date
+        :type: datetime
+        """
         return self.__start
 
     @property
     def due_date(self):
+        """The due date of the message flag.
+
+        :getter: get the due_date
+        :type: datetime
+        """
         return self.__due_date
 
     @property
     def completition_date(self):
+        """The completion date of the message flag.
+
+        :getter: get the completion_date
+        :type: datetime
+        """
         return self.__completed
 
     @property
     def is_completed(self):
+        """Is the flag completed.
+
+        :getter: get the is_completed status
+        :type: bool
+        """
         return self.__status is Flag.Complete
 
     @property
     def is_flagged(self):
+        """Is item flagged.
+
+        :getter: get the is_flagged status
+        :type: bool
+        """
         return self.__status is Flag.Flagged or self.__status is Flag.Complete
 
     def to_api_data(self):
-        """ Returns this data as a dict to be sent to the server """
-        data = {
-            self._cc('flagStatus'): self._cc(self.__status.value)
-        }
+        """Returns this data as a dict to be sent to the server"""
+        data = {self._cc("flagStatus"): self._cc(self.__status.value)}
         if self.__status is Flag.Flagged:
-            data[self._cc('startDateTime')] = self._build_date_time_time_zone(
-                self.__start) if self.__start is not None else None
-            data[self._cc('dueDateTime')] = self._build_date_time_time_zone(
-                self.__due_date) if self.__due_date is not None else None
+            data[self._cc("startDateTime")] = (
+                self._build_date_time_time_zone(self.__start)
+                if self.__start is not None
+                else None
+            )
+            data[self._cc("dueDateTime")] = (
+                self._build_date_time_time_zone(self.__due_date)
+                if self.__due_date is not None
+                else None
+            )
 
         if self.__status is Flag.Complete:
-            data[self._cc('completedDateTime')] = self._build_date_time_time_zone(self.__completed)
+            data[self._cc("completedDateTime")] = self._build_date_time_time_zone(
+                self.__completed
+            )
 
         return data
 
-
 class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
-    """ Management of the process of sending, receiving, reading, and
-    editing emails. """
+    """Management of the process of sending, receiving, reading, and
+    editing emails."""
 
     _endpoints = {
-        'create_draft': '/messages',
-        'create_draft_folder': '/mailFolders/{id}/messages',
-        'send_mail': '/sendMail',
-        'send_draft': '/messages/{id}/send',
-        'get_message': '/messages/{id}',
-        'move_message': '/messages/{id}/move',
-        'copy_message': '/messages/{id}/copy',
-        'create_reply': '/messages/{id}/createReply',
-        'create_reply_all': '/messages/{id}/createReplyAll',
-        'forward_message': '/messages/{id}/createForward',
-        'get_mime': '/messages/{id}/$value',
+        "create_draft": "/messages",
+        "create_draft_folder": "/mailFolders/{id}/messages",
+        "send_mail": "/sendMail",
+        "send_draft": "/messages/{id}/send",
+        "get_message": "/messages/{id}",
+        "move_message": "/messages/{id}/move",
+        "copy_message": "/messages/{id}/copy",
+        "create_reply": "/messages/{id}/createReply",
+        "create_reply_all": "/messages/{id}/createReplyAll",
+        "forward_message": "/messages/{id}/createForward",
+        "get_mime": "/messages/{id}/$value",
     }
 
     def __init__(self, *, parent=None, con=None, **kwargs):
-        """ Makes a new message wrapper for sending and receiving messages.
+        """Makes a new message wrapper for sending and receiving messages.
 
         :param parent: parent folder/account to create the message in
         :type parent: mailbox.Folder or Account
@@ -244,116 +295,150 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
          download attachments (kwargs)
         """
         if parent and con:
-            raise ValueError('Need a parent or a connection but not both')
+            raise ValueError("Need a parent or a connection but not both")
         self.con = parent.con if parent else con
 
         # Choose the main_resource passed in kwargs over parent main_resource
-        main_resource = kwargs.pop('main_resource', None) or (
-            getattr(parent, 'main_resource', None) if parent else None)
+        main_resource = kwargs.pop("main_resource", None) or (
+            getattr(parent, "main_resource", None) if parent else None
+        )
 
         super().__init__(
-            protocol=parent.protocol if parent else kwargs.get('protocol'),
+            protocol=parent.protocol if parent else kwargs.get("protocol"),
             main_resource=main_resource,
-            attachment_name_property='subject', attachment_type='message_type')
+            attachment_name_property="subject",
+            attachment_type="message_type",
+        )
 
-        download_attachments = kwargs.get('download_attachments')
+        download_attachments = kwargs.get("download_attachments")
 
         cloud_data = kwargs.get(self._cloud_data_key, {})
         cc = self._cc  # alias to shorten the code
 
         # internal to know which properties need to be updated on the server
         self._track_changes = TrackerSet(casing=cc)
-        self.object_id = cloud_data.get(cc('id'), kwargs.get('object_id', None))
+        #: Unique identifier for the message. |br| **Type:** str
+        self.object_id = cloud_data.get(cc("id"), kwargs.get("object_id", None))
 
-        self.__inference_classification = cloud_data.get(cc('inferenceClassification'), None)
+        self.__inference_classification = cloud_data.get(
+            cc("inferenceClassification"), None
+        )
 
-        self.__created = cloud_data.get(cc('createdDateTime'), None)
-        self.__modified = cloud_data.get(cc('lastModifiedDateTime'), None)
-        self.__received = cloud_data.get(cc('receivedDateTime'), None)
-        self.__sent = cloud_data.get(cc('sentDateTime'), None)
+        self.__created = cloud_data.get(cc("createdDateTime"), None)
+        self.__modified = cloud_data.get(cc("lastModifiedDateTime"), None)
+        self.__received = cloud_data.get(cc("receivedDateTime"), None)
+        self.__sent = cloud_data.get(cc("sentDateTime"), None)
 
         local_tz = self.protocol.timezone
-        self.__created = parse(self.__created).astimezone(
-            local_tz) if self.__created else None
-        self.__modified = parse(self.__modified).astimezone(
-            local_tz) if self.__modified else None
-        self.__received = parse(self.__received).astimezone(
-            local_tz) if self.__received else None
-        self.__sent = parse(self.__sent).astimezone(
-            local_tz) if self.__sent else None
+        self.__created = (
+            parse(self.__created).astimezone(local_tz) if self.__created else None
+        )
+        self.__modified = (
+            parse(self.__modified).astimezone(local_tz) if self.__modified else None
+        )
+        self.__received = (
+            parse(self.__received).astimezone(local_tz) if self.__received else None
+        )
+        self.__sent = parse(self.__sent).astimezone(local_tz) if self.__sent else None
 
         self.__attachments = MessageAttachments(parent=self, attachments=[])
-        self.__attachments.add({self._cloud_data_key: cloud_data.get(cc('attachments'), [])})
-        self.__has_attachments = cloud_data.get(cc('hasAttachments'), False)
-        self.__subject = cloud_data.get(cc('subject'), '')
-        self.__body_preview = cloud_data.get(cc('bodyPreview'), '')
-        body = cloud_data.get(cc('body'), {})
-        self.__body = body.get(cc('content'), '')
-        self.body_type = body.get(cc('contentType'), 'HTML')  # default to HTML for new messages
+        self.__attachments.add(
+            {self._cloud_data_key: cloud_data.get(cc("attachments"), [])}
+        )
+        self.__has_attachments = cloud_data.get(cc("hasAttachments"), False)
+        self.__subject = cloud_data.get(cc("subject"), "")
+        self.__body_preview = cloud_data.get(cc("bodyPreview"), "")
+        body = cloud_data.get(cc("body"), {})
+        self.__body = body.get(cc("content"), "")
+        #: The body type of the message. |br| **Type:** bodyType
+        self.body_type = body.get(
+            cc("contentType"), "HTML"
+        )  # default to HTML for new messages
 
-        unique_body = cloud_data.get(cc('uniqueBody'), {})
-        self.__unique_body = unique_body.get(cc('content'), '')
-        self.unique_body_type = unique_body.get(cc('contentType'), 'HTML')  # default to HTML for new messages
+        unique_body = cloud_data.get(cc("uniqueBody"), {})
+        self.__unique_body = unique_body.get(cc("content"), "")
+        self.unique_body_type = unique_body.get(
+            cc("contentType"), "HTML"
+        )  # default to HTML for new messages
 
         if download_attachments and self.has_attachments:
             self.attachments.download_attachments()
 
         self.__sender = self._recipient_from_cloud(
-            cloud_data.get(cc('from'), None), field=cc('from'))
+            cloud_data.get(cc("from"), None), field=cc("from")
+        )
         self.__to = self._recipients_from_cloud(
-            cloud_data.get(cc('toRecipients'), []), field=cc('toRecipients'))
+            cloud_data.get(cc("toRecipients"), []), field=cc("toRecipients")
+        )
         self.__cc = self._recipients_from_cloud(
-            cloud_data.get(cc('ccRecipients'), []), field=cc('ccRecipients'))
+            cloud_data.get(cc("ccRecipients"), []), field=cc("ccRecipients")
+        )
         self.__bcc = self._recipients_from_cloud(
-            cloud_data.get(cc('bccRecipients'), []), field=cc('bccRecipients'))
+            cloud_data.get(cc("bccRecipients"), []), field=cc("bccRecipients")
+        )
         self.__reply_to = self._recipients_from_cloud(
-            cloud_data.get(cc('replyTo'), []), field=cc('replyTo'))
-        self.__categories = cloud_data.get(cc('categories'), [])
+            cloud_data.get(cc("replyTo"), []), field=cc("replyTo")
+        )
+        self.__categories = cloud_data.get(cc("categories"), [])
 
-        self.__importance = ImportanceLevel.from_value(cloud_data.get(cc('importance'), 'normal') or 'normal')
-        self.__is_read = cloud_data.get(cc('isRead'), None)
+        self.__importance = ImportanceLevel.from_value(
+            cloud_data.get(cc("importance"), "normal") or "normal"
+        )
+        self.__is_read = cloud_data.get(cc("isRead"), None)
 
-        self.__is_read_receipt_requested = cloud_data.get(cc('isReadReceiptRequested'), False)
-        self.__is_delivery_receipt_requested = cloud_data.get(cc('isDeliveryReceiptRequested'), False)
-        
-        self.__single_value_extended_properties = cloud_data.get(cc('singleValueExtendedProperties'), [])
+        self.__is_read_receipt_requested = cloud_data.get(
+            cc("isReadReceiptRequested"), False
+        )
+        self.__is_delivery_receipt_requested = cloud_data.get(
+            cc("isDeliveryReceiptRequested"), False
+        )
+
+        self.__single_value_extended_properties = cloud_data.get(
+            cc("singleValueExtendedProperties"), []
+        )
 
         # if this message is an EventMessage:
-        meeting_mt = cloud_data.get(cc('meetingMessageType'), 'none')
+        meeting_mt = cloud_data.get(cc("meetingMessageType"), "none")
 
         # hack to avoid typo in EventMessage between Api v1.0 and beta:
-        meeting_mt = meeting_mt.replace('Tenatively', 'Tentatively')
+        meeting_mt = meeting_mt.replace("Tenatively", "Tentatively")
 
-        self.__meeting_message_type = MeetingMessageType.from_value(meeting_mt) if meeting_mt != 'none' else None
+        self.__meeting_message_type = (
+            MeetingMessageType.from_value(meeting_mt) if meeting_mt != "none" else None
+        )
 
         # a message is a draft by default
-        self.__is_draft = cloud_data.get(cc('isDraft'), kwargs.get('is_draft',
-                                                                   True))
-        self.conversation_id = cloud_data.get(cc('conversationId'), None)
-        self.conversation_index = cloud_data.get(cc('conversationIndex'), None)
-        self.folder_id = cloud_data.get(cc('parentFolderId'), None)
+        self.__is_draft = cloud_data.get(cc("isDraft"), kwargs.get("is_draft", True))
+        #: The ID of the conversation the email belongs to. |br| **Type:** str
+        self.conversation_id = cloud_data.get(cc("conversationId"), None)
+        #: Indicates the position of the message within the conversation. |br| **Type:** any
+        self.conversation_index = cloud_data.get(cc("conversationIndex"), None)
+        #: The unique identifier for the message's parent mailFolder. |br| **Type:** str
+        self.folder_id = cloud_data.get(cc("parentFolderId"), None)
 
-        flag_data = cloud_data.get(cc('flag'), {})
+        flag_data = cloud_data.get(cc("flag"), {})
         self.__flag = MessageFlag(parent=self, flag_data=flag_data)
 
-        self.internet_message_id = cloud_data.get(cc('internetMessageId'), '')
-        self.web_link = cloud_data.get(cc('webLink'), '')
+        #: The message ID in the format specified by RFC2822. |br| **Type:** str
+        self.internet_message_id = cloud_data.get(cc("internetMessageId"), "")
+        #: The URL to open the message in Outlook on the web. |br| **Type:** str
+        self.web_link = cloud_data.get(cc("webLink"), "")
 
         # Headers only retrieved when selecting 'internetMessageHeaders'
-        self.__message_headers = cloud_data.get(cc('internetMessageHeaders'), [])
+        self.__message_headers = cloud_data.get(cc("internetMessageHeaders"), [])
 
     def __str__(self):
         return self.__repr__()
 
     def __repr__(self):
-        return 'Subject: {}'.format(self.subject)
+        return "Subject: {}".format(self.subject)
 
     def __eq__(self, other):
         return self.object_id == other.object_id
 
     @property
     def is_read(self):
-        """ Check if the message is read or not
+        """Check if the message is read or not
 
         :getter: Get the status of message read
         :setter: Mark the message as read
@@ -364,23 +449,26 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
     @is_read.setter
     def is_read(self, value):
         self.__is_read = value
-        self._track_changes.add('isRead')
+        self._track_changes.add("isRead")
 
     @property
     def has_attachments(self):
-        """ Check if the message contains attachments
+        """Check if the message contains attachments
 
         :type: bool
         """
-        if self.__has_attachments is False and self.body_type.upper() == 'HTML':
+        if self.__has_attachments is False and self.body_type.upper() == "HTML":
             # test for inline attachments (Azure responds with hasAttachments=False when there are only inline attachments):
-            if any(img.get('src', '').startswith('cid:') for img in self.get_body_soup().find_all('img')):
+            if any(
+                img.get("src", "").startswith("cid:")
+                for img in self.get_body_soup().find_all("img")
+            ):
                 self.__has_attachments = True
         return self.__has_attachments
 
     @property
     def is_draft(self):
-        """ Check if the message is marked as draft
+        """Check if the message is marked as draft
 
         :type: bool
         """
@@ -388,7 +476,7 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
 
     @property
     def subject(self):
-        """ Subject of the email message
+        """Subject of the email message
 
         :getter: Get the current subject
         :setter: Assign a new subject
@@ -399,16 +487,16 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
     @subject.setter
     def subject(self, value):
         self.__subject = value
-        self._track_changes.add('subject')
+        self._track_changes.add("subject")
 
     @property
     def body_preview(self):
-        """ Returns the body preview """
+        """Returns the body preview"""
         return self.__body_preview
 
     @property
     def body(self):
-        """ Body of the email message
+        """Body of the email message
 
         :getter: Get body text of current message
         :setter: set html body of the message
@@ -418,60 +506,62 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
 
     @property
     def inference_classification(self):
-        """ Message is focused or not"""
+        """Message is focused or not"""
         return self.__inference_classification
 
     @body.setter
     def body(self, value):
         if self.__body:
             if not value:
-                self.__body = ''
-            elif self.body_type == 'html':
-                soup = bs(self.__body, 'html.parser')
-                soup.body.insert(0, bs(value, 'html.parser'))
+                self.__body = ""
+            elif self.body_type == "html":
+                soup = bs(self.__body, "html.parser")
+                soup.body.insert(0, bs(value, "html.parser"))
                 self.__body = str(soup)
             else:
-                self.__body = ''.join((value, '\n', self.__body))
+                self.__body = "".join((value, "\n", self.__body))
         else:
             self.__body = value
-        self._track_changes.add('body')
+        self._track_changes.add("body")
 
     @property
     def unique_body(self):
-        """ The unique body of this message
+        """The unique body of this message
+
             Requires a select to retrieve it.
+
         :rtype: str
         """
         return self.__unique_body
 
     @property
     def created(self):
-        """ Created time of the message """
+        """Created time of the message"""
         return self.__created
 
     @property
     def modified(self):
-        """ Message last modified time """
+        """Message last modified time"""
         return self.__modified
 
     @property
     def received(self):
-        """ Message received time"""
+        """Message received time"""
         return self.__received
 
     @property
     def sent(self):
-        """ Message sent time"""
+        """Message sent time"""
         return self.__sent
 
     @property
     def attachments(self):
-        """ List of attachments """
+        """List of attachments"""
         return self.__attachments
 
     @property
     def sender(self):
-        """ Sender of the message
+        """Sender of the message
 
         :getter: Get the current sender
         :setter: Update the from address with new value
@@ -481,43 +571,42 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
 
     @sender.setter
     def sender(self, value):
-        """ sender is a property to force to be always a Recipient class """
+        """sender is a property to force to be always a Recipient class"""
         if isinstance(value, Recipient):
             if value._parent is None:
                 value._parent = self
-                value._field = 'from'
+                value._field = "from"
             self.__sender = value
         elif isinstance(value, str):
             self.__sender.address = value
-            self.__sender.name = ''
+            self.__sender.name = ""
         else:
-            raise ValueError(
-                'sender must be an address string or a Recipient object')
-        self._track_changes.add('from')
+            raise ValueError("sender must be an address string or a Recipient object")
+        self._track_changes.add("from")
 
     @property
     def to(self):
-        """ 'TO' list of recipients """
+        """'TO' list of recipients"""
         return self.__to
 
     @property
     def cc(self):
-        """ 'CC' list of recipients """
+        """'CC' list of recipients"""
         return self.__cc
 
     @property
     def bcc(self):
-        """ 'BCC' list of recipients """
+        """'BCC' list of recipients"""
         return self.__bcc
 
     @property
     def reply_to(self):
-        """ Reply to address """
+        """Reply to address"""
         return self.__reply_to
 
     @property
     def categories(self):
-        """ Categories of this message
+        """Categories of this message
 
         :getter: Current list of categories
         :setter: Set new categories for the message
@@ -539,21 +628,21 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         elif isinstance(value, Category):
             self.__categories = [value.name]
         else:
-            raise ValueError('categories must be a list')
-        self._track_changes.add('categories')
+            raise ValueError("categories must be a list")
+        self._track_changes.add("categories")
 
     def add_category(self, category):
-        """ Adds a category to this message current categories list """
+        """Adds a category to this message current categories list"""
 
         if isinstance(category, Category):
             self.__categories.append(category.name)
         else:
             self.__categories.append(category)
-        self._track_changes.add('categories')
+        self._track_changes.add("categories")
 
     @property
     def importance(self):
-        """ Importance of the message
+        """Importance of the message
 
         :getter: Get the current priority of the message
         :setter: Set a different importance level
@@ -563,13 +652,16 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
 
     @importance.setter
     def importance(self, value):
-        self.__importance = (value if isinstance(value, ImportanceLevel)
-                             else ImportanceLevel.from_value(value))
-        self._track_changes.add('importance')
+        self.__importance = (
+            value
+            if isinstance(value, ImportanceLevel)
+            else ImportanceLevel.from_value(value)
+        )
+        self._track_changes.add("importance")
 
     @property
     def is_read_receipt_requested(self):
-        """ if the read receipt is requested for this message
+        """if the read receipt is requested for this message
 
         :getter: Current state of isReadReceiptRequested
         :setter: Set isReadReceiptRequested for the message
@@ -580,11 +672,11 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
     @is_read_receipt_requested.setter
     def is_read_receipt_requested(self, value):
         self.__is_read_receipt_requested = bool(value)
-        self._track_changes.add('isReadReceiptRequested')
+        self._track_changes.add("isReadReceiptRequested")
 
     @property
     def is_delivery_receipt_requested(self):
-        """ if the delivery receipt is requested for this message
+        """if the delivery receipt is requested for this message
 
         :getter: Current state of isDeliveryReceiptRequested
         :setter: Set isDeliveryReceiptRequested for the message
@@ -595,37 +687,39 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
     @is_delivery_receipt_requested.setter
     def is_delivery_receipt_requested(self, value):
         self.__is_delivery_receipt_requested = bool(value)
-        self._track_changes.add('isDeliveryReceiptRequested')
+        self._track_changes.add("isDeliveryReceiptRequested")
 
     @property
     def meeting_message_type(self):
-        """ If this message is a EventMessage, returns the
+        """If this message is a EventMessage, returns the
         meeting type: meetingRequest, meetingCancelled, meetingAccepted,
-            meetingTentativelyAccepted, meetingDeclined
+        meetingTentativelyAccepted, meetingDeclined
         """
         return self.__meeting_message_type
 
     @property
     def is_event_message(self):
-        """ Returns if this message is of type EventMessage
+        """Returns if this message is of type EventMessage
         and therefore can return the related event.
         """
         return self.__meeting_message_type is not None
 
     @property
     def flag(self):
-        """ The Message Flag instance """
+        """The Message Flag instance"""
         return self.__flag
-    
+
     @property
     def single_value_extended_properties(self):
-        """ singleValueExtendedProperties """
+        """singleValueExtendedProperties"""
         return self.__single_value_extended_properties
 
     @property
     def message_headers(self):
-        """ Custom message headers
+        """Custom message headers
+
             List of internetMessageHeaders, see definition: https://learn.microsoft.com/en-us/graph/api/resources/internetmessageheader?view=graph-rest-1.0
+
         :type: list[dict[str, str]]
         """
 
@@ -940,12 +1034,14 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         return self.__class__(parent=self, **{self._cloud_data_key: message})
 
     def save_message(self):
-        """ Saves changes to a message.
+        """Saves changes to a message.
         If the message is a new or saved draft it will call 'save_draft' otherwise
         this will save only properties of a message that are draft-independent such as:
+
             - is_read
             - category
             - flag
+
         :return: Success / Failure
         :rtype: bool
         """

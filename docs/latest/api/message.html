@@ -1,243 +1,267 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Message &mdash; O365  documentation</title>
-  
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
 
   
-  
-  
-  
-
-  
-
-  
-  
-    
-
-  
-
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Sharepoint" href="sharepoint.html" />
-    <link rel="prev" title="Mailbox" href="mailbox.html" /> 
-
-  
-  <script src="../_static/js/modernizr.min.js"></script>
+    <link rel="next" title="One Drive" href="onedrive.html" />
+    <link rel="prev" title="Mailbox" href="mailbox.html" />
+    <link href="../_static/css/style.css" rel="stylesheet" type="text/css">
 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
-          
+        <div class="wy-side-nav-search" >
 
           
-            <a href="../index.html" class="icon icon-home"> O365
           
-
-          
+          <a href="../index.html">
+            
           </a>
-
-          
-            
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p class="caption"><span class="caption-text">Contents:</span></p>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../usage.html">Detailed Usage</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../api.html">O365 API</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="account.html">Account</a></li>
 <li class="toctree-l2"><a class="reference internal" href="address_book.html">Address Book</a></li>
-<li class="toctree-l2"><a class="reference internal" href="attachment.html">Attachment</a></li>
 <li class="toctree-l2"><a class="reference internal" href="calendar.html">Calendar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="category.html">Category</a></li>
 <li class="toctree-l2"><a class="reference internal" href="connection.html">Connection</a></li>
-<li class="toctree-l2"><a class="reference internal" href="drive.html">One Drive</a></li>
+<li class="toctree-l2"><a class="reference internal" href="directory.html">Directory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="excel.html">Excel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group.html">Group</a></li>
 <li class="toctree-l2"><a class="reference internal" href="mailbox.html">Mailbox</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Message</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Message</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#O365.message.Flag"><code class="docutils literal notranslate"><span class="pre">Flag</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#O365.message.Flag.Complete"><code class="docutils literal notranslate"><span class="pre">Flag.Complete</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.message.Flag.Flagged"><code class="docutils literal notranslate"><span class="pre">Flag.Flagged</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.message.Flag.NotFlagged"><code class="docutils literal notranslate"><span class="pre">Flag.NotFlagged</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#O365.message.MeetingMessageType"><code class="docutils literal notranslate"><span class="pre">MeetingMessageType</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#O365.message.MeetingMessageType.MeetingAccepted"><code class="docutils literal notranslate"><span class="pre">MeetingMessageType.MeetingAccepted</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.message.MeetingMessageType.MeetingCancelled"><code class="docutils literal notranslate"><span class="pre">MeetingMessageType.MeetingCancelled</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.message.MeetingMessageType.MeetingDeclined"><code class="docutils literal notranslate"><span class="pre">MeetingMessageType.MeetingDeclined</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.message.MeetingMessageType.MeetingRequest"><code class="docutils literal notranslate"><span class="pre">MeetingMessageType.MeetingRequest</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.message.MeetingMessageType.MeetingTentativelyAccepted"><code class="docutils literal notranslate"><span class="pre">MeetingMessageType.MeetingTentativelyAccepted</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#O365.message.Message"><code class="docutils literal notranslate"><span class="pre">Message</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#O365.message.Message.__init__"><code class="docutils literal notranslate"><span class="pre">Message.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.message.Message.add_category"><code class="docutils literal notranslate"><span class="pre">Message.add_category()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.message.Message.add_message_header"><code class="docutils literal notranslate"><span class="pre">Message.add_message_header()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.message.Message.copy"><code class="docutils literal notranslate"><span class="pre">Message.copy()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.message.Message.delete"><code class="docutils literal notranslate"><span class="pre">Message.delete()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.message.Message.forward"><code class="docutils literal notranslate"><span class="pre">Message.forward()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.message.Message.get_body_soup"><code class="docutils literal notranslate"><span class="pre">Message.get_body_soup()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.message.Message.get_body_text"><code class="docutils literal notranslate"><span class="pre">Message.get_body_text()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.message.Message.get_event"><code class="docutils literal notranslate"><span class="pre">Message.get_event()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.message.Message.get_mime_content"><code class="docutils literal notranslate"><span class="pre">Message.get_mime_content()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.message.Message.mark_as_read"><code class="docutils literal notranslate"><span class="pre">Message.mark_as_read()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.message.Message.mark_as_unread"><code class="docutils literal notranslate"><span class="pre">Message.mark_as_unread()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.message.Message.move"><code class="docutils literal notranslate"><span class="pre">Message.move()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.message.Message.reply"><code class="docutils literal notranslate"><span class="pre">Message.reply()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.message.Message.save_as_eml"><code class="docutils literal notranslate"><span class="pre">Message.save_as_eml()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.message.Message.save_draft"><code class="docutils literal notranslate"><span class="pre">Message.save_draft()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.message.Message.save_message"><code class="docutils literal notranslate"><span class="pre">Message.save_message()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.message.Message.send"><code class="docutils literal notranslate"><span class="pre">Message.send()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.message.Message.to_api_data"><code class="docutils literal notranslate"><span class="pre">Message.to_api_data()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.message.Message.attachments"><code class="docutils literal notranslate"><span class="pre">Message.attachments</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.message.Message.bcc"><code class="docutils literal notranslate"><span class="pre">Message.bcc</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.message.Message.body"><code class="docutils literal notranslate"><span class="pre">Message.body</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.message.Message.body_preview"><code class="docutils literal notranslate"><span class="pre">Message.body_preview</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.message.Message.body_type"><code class="docutils literal notranslate"><span class="pre">Message.body_type</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.message.Message.categories"><code class="docutils literal notranslate"><span class="pre">Message.categories</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.message.Message.cc"><code class="docutils literal notranslate"><span class="pre">Message.cc</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.message.Message.conversation_id"><code class="docutils literal notranslate"><span class="pre">Message.conversation_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.message.Message.conversation_index"><code class="docutils literal notranslate"><span class="pre">Message.conversation_index</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.message.Message.created"><code class="docutils literal notranslate"><span class="pre">Message.created</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.message.Message.flag"><code class="docutils literal notranslate"><span class="pre">Message.flag</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.message.Message.folder_id"><code class="docutils literal notranslate"><span class="pre">Message.folder_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.message.Message.has_attachments"><code class="docutils literal notranslate"><span class="pre">Message.has_attachments</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.message.Message.importance"><code class="docutils literal notranslate"><span class="pre">Message.importance</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.message.Message.inference_classification"><code class="docutils literal notranslate"><span class="pre">Message.inference_classification</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.message.Message.internet_message_id"><code class="docutils literal notranslate"><span class="pre">Message.internet_message_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.message.Message.is_delivery_receipt_requested"><code class="docutils literal notranslate"><span class="pre">Message.is_delivery_receipt_requested</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.message.Message.is_draft"><code class="docutils literal notranslate"><span class="pre">Message.is_draft</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.message.Message.is_event_message"><code class="docutils literal notranslate"><span class="pre">Message.is_event_message</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.message.Message.is_read"><code class="docutils literal notranslate"><span class="pre">Message.is_read</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.message.Message.is_read_receipt_requested"><code class="docutils literal notranslate"><span class="pre">Message.is_read_receipt_requested</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.message.Message.meeting_message_type"><code class="docutils literal notranslate"><span class="pre">Message.meeting_message_type</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.message.Message.message_headers"><code class="docutils literal notranslate"><span class="pre">Message.message_headers</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.message.Message.modified"><code class="docutils literal notranslate"><span class="pre">Message.modified</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.message.Message.object_id"><code class="docutils literal notranslate"><span class="pre">Message.object_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.message.Message.received"><code class="docutils literal notranslate"><span class="pre">Message.received</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.message.Message.reply_to"><code class="docutils literal notranslate"><span class="pre">Message.reply_to</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.message.Message.sender"><code class="docutils literal notranslate"><span class="pre">Message.sender</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.message.Message.sent"><code class="docutils literal notranslate"><span class="pre">Message.sent</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.message.Message.single_value_extended_properties"><code class="docutils literal notranslate"><span class="pre">Message.single_value_extended_properties</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.message.Message.subject"><code class="docutils literal notranslate"><span class="pre">Message.subject</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.message.Message.to"><code class="docutils literal notranslate"><span class="pre">Message.to</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.message.Message.unique_body"><code class="docutils literal notranslate"><span class="pre">Message.unique_body</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.message.Message.web_link"><code class="docutils literal notranslate"><span class="pre">Message.web_link</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#O365.message.MessageAttachment"><code class="docutils literal notranslate"><span class="pre">MessageAttachment</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#O365.message.MessageAttachments"><code class="docutils literal notranslate"><span class="pre">MessageAttachments</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#O365.message.MessageAttachments.get_mime_content"><code class="docutils literal notranslate"><span class="pre">MessageAttachments.get_mime_content()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.message.MessageAttachments.save_as_eml"><code class="docutils literal notranslate"><span class="pre">MessageAttachments.save_as_eml()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#O365.message.MessageFlag"><code class="docutils literal notranslate"><span class="pre">MessageFlag</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#O365.message.MessageFlag.__init__"><code class="docutils literal notranslate"><span class="pre">MessageFlag.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.message.MessageFlag.delete_flag"><code class="docutils literal notranslate"><span class="pre">MessageFlag.delete_flag()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.message.MessageFlag.set_completed"><code class="docutils literal notranslate"><span class="pre">MessageFlag.set_completed()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.message.MessageFlag.set_flagged"><code class="docutils literal notranslate"><span class="pre">MessageFlag.set_flagged()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.message.MessageFlag.to_api_data"><code class="docutils literal notranslate"><span class="pre">MessageFlag.to_api_data()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.message.MessageFlag.completition_date"><code class="docutils literal notranslate"><span class="pre">MessageFlag.completition_date</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.message.MessageFlag.due_date"><code class="docutils literal notranslate"><span class="pre">MessageFlag.due_date</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.message.MessageFlag.is_completed"><code class="docutils literal notranslate"><span class="pre">MessageFlag.is_completed</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.message.MessageFlag.is_flagged"><code class="docutils literal notranslate"><span class="pre">MessageFlag.is_flagged</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.message.MessageFlag.start_date"><code class="docutils literal notranslate"><span class="pre">MessageFlag.start_date</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.message.MessageFlag.status"><code class="docutils literal notranslate"><span class="pre">MessageFlag.status</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#O365.message.RecipientType"><code class="docutils literal notranslate"><span class="pre">RecipientType</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#O365.message.RecipientType.BCC"><code class="docutils literal notranslate"><span class="pre">RecipientType.BCC</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.message.RecipientType.CC"><code class="docutils literal notranslate"><span class="pre">RecipientType.CC</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.message.RecipientType.TO"><code class="docutils literal notranslate"><span class="pre">RecipientType.TO</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="onedrive.html">One Drive</a></li>
+<li class="toctree-l2"><a class="reference internal" href="planner.html">Planner</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sharepoint.html">Sharepoint</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tasks.html">Tasks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="teams.html">Teams</a></li>
 <li class="toctree-l2"><a class="reference internal" href="utils.html">Utils</a></li>
 </ul>
 </li>
 </ul>
 
-            
-          
         </div>
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">O365</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="../index.html">Docs</a> &raquo;</li>
-        
-          <li><a href="../api.html">O365 API</a> &raquo;</li>
-        
-      <li>Message</li>
-    
-    
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../api.html">O365 API</a></li>
+      <li class="breadcrumb-item active">Message</li>
       <li class="wy-breadcrumbs-aside">
-        
-            
             <a href="../_sources/api/message.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
-  </ul>
-
-  
-  <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
-      
-        <a href="sharepoint.html" class="btn btn-neutral float-right" title="Sharepoint" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="mailbox.html" class="btn btn-neutral" title="Mailbox" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="mailbox.html" class="btn btn-neutral float-left" title="Mailbox" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="onedrive.html" class="btn btn-neutral float-right" title="One Drive" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
   </div>
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <div class="section" id="module-O365.message">
-<span id="message"></span><h1>Message<a class="headerlink" href="#module-O365.message" title="Permalink to this headline">¶</a></h1>
-<dl class="py class">
-<dt id="O365.message.Flag">
-<em class="property">class </em><code class="sig-prename descclassname">O365.message.</code><code class="sig-name descname">Flag</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Flag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.Flag" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="utils.html#O365.utils.utils.CaseEnum" title="O365.utils.utils.CaseEnum"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.utils.utils.CaseEnum</span></code></a></p>
-<p>An enumeration.</p>
+             
+  <section id="message">
+<h1>Message<a class="headerlink" href="#message" title="Link to this heading"></a></h1>
+<dl class="py class" id="module-O365.message">
+<dt class="sig sig-object py" id="O365.message.Flag">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.message.</span></span><span class="sig-name descname"><span class="pre">Flag</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Flag"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.message.Flag" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="utils/utils.html#O365.utils.utils.CaseEnum" title="O365.utils.utils.CaseEnum"><code class="xref py py-class docutils literal notranslate"><span class="pre">CaseEnum</span></code></a></p>
 <dl class="py attribute">
-<dt id="O365.message.Flag.Complete">
-<code class="sig-name descname">Complete</code><em class="property"> = 'complete'</em><a class="headerlink" href="#O365.message.Flag.Complete" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.message.Flag.Complete">
+<span class="sig-name descname"><span class="pre">Complete</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'complete'</span></em><a class="headerlink" href="#O365.message.Flag.Complete" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt id="O365.message.Flag.Flagged">
-<code class="sig-name descname">Flagged</code><em class="property"> = 'flagged'</em><a class="headerlink" href="#O365.message.Flag.Flagged" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.message.Flag.Flagged">
+<span class="sig-name descname"><span class="pre">Flagged</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'flagged'</span></em><a class="headerlink" href="#O365.message.Flag.Flagged" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt id="O365.message.Flag.NotFlagged">
-<code class="sig-name descname">NotFlagged</code><em class="property"> = 'not_flagged'</em><a class="headerlink" href="#O365.message.Flag.NotFlagged" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt id="O365.message.MeetingMessageType">
-<em class="property">class </em><code class="sig-prename descclassname">O365.message.</code><code class="sig-name descname">MeetingMessageType</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#MeetingMessageType"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.MeetingMessageType" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="utils.html#O365.utils.utils.CaseEnum" title="O365.utils.utils.CaseEnum"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.utils.utils.CaseEnum</span></code></a></p>
-<p>An enumeration.</p>
-<dl class="py attribute">
-<dt id="O365.message.MeetingMessageType.MeetingAccepted">
-<code class="sig-name descname">MeetingAccepted</code><em class="property"> = 'meeting_accepted'</em><a class="headerlink" href="#O365.message.MeetingMessageType.MeetingAccepted" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt id="O365.message.MeetingMessageType.MeetingCancelled">
-<code class="sig-name descname">MeetingCancelled</code><em class="property"> = 'meeting_cancelled'</em><a class="headerlink" href="#O365.message.MeetingMessageType.MeetingCancelled" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt id="O365.message.MeetingMessageType.MeetingDeclined">
-<code class="sig-name descname">MeetingDeclined</code><em class="property"> = 'meeting_declined'</em><a class="headerlink" href="#O365.message.MeetingMessageType.MeetingDeclined" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt id="O365.message.MeetingMessageType.MeetingRequest">
-<code class="sig-name descname">MeetingRequest</code><em class="property"> = 'meeting_request'</em><a class="headerlink" href="#O365.message.MeetingMessageType.MeetingRequest" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt id="O365.message.MeetingMessageType.MeetingTentativelyAccepted">
-<code class="sig-name descname">MeetingTentativelyAccepted</code><em class="property"> = 'meeting_tentatively_accepted'</em><a class="headerlink" href="#O365.message.MeetingMessageType.MeetingTentativelyAccepted" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.message.Flag.NotFlagged">
+<span class="sig-name descname"><span class="pre">NotFlagged</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'not_flagged'</span></em><a class="headerlink" href="#O365.message.Flag.NotFlagged" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
-<dt id="O365.message.Message">
-<em class="property">class </em><code class="sig-prename descclassname">O365.message.</code><code class="sig-name descname">Message</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">con</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Message"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.Message" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.utils.utils.ApiComponent</span></code></a>, <a class="reference internal" href="attachment.html#O365.utils.attachment.AttachableMixin" title="O365.utils.attachment.AttachableMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.utils.attachment.AttachableMixin</span></code></a>, <a class="reference internal" href="utils.html#O365.utils.utils.HandleRecipientsMixin" title="O365.utils.utils.HandleRecipientsMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.utils.utils.HandleRecipientsMixin</span></code></a></p>
+<dt class="sig sig-object py" id="O365.message.MeetingMessageType">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.message.</span></span><span class="sig-name descname"><span class="pre">MeetingMessageType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#MeetingMessageType"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.message.MeetingMessageType" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="utils/utils.html#O365.utils.utils.CaseEnum" title="O365.utils.utils.CaseEnum"><code class="xref py py-class docutils literal notranslate"><span class="pre">CaseEnum</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.message.MeetingMessageType.MeetingAccepted">
+<span class="sig-name descname"><span class="pre">MeetingAccepted</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'meeting_accepted'</span></em><a class="headerlink" href="#O365.message.MeetingMessageType.MeetingAccepted" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.message.MeetingMessageType.MeetingCancelled">
+<span class="sig-name descname"><span class="pre">MeetingCancelled</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'meeting_cancelled'</span></em><a class="headerlink" href="#O365.message.MeetingMessageType.MeetingCancelled" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.message.MeetingMessageType.MeetingDeclined">
+<span class="sig-name descname"><span class="pre">MeetingDeclined</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'meeting_declined'</span></em><a class="headerlink" href="#O365.message.MeetingMessageType.MeetingDeclined" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.message.MeetingMessageType.MeetingRequest">
+<span class="sig-name descname"><span class="pre">MeetingRequest</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'meeting_request'</span></em><a class="headerlink" href="#O365.message.MeetingMessageType.MeetingRequest" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.message.MeetingMessageType.MeetingTentativelyAccepted">
+<span class="sig-name descname"><span class="pre">MeetingTentativelyAccepted</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'meeting_tentatively_accepted'</span></em><a class="headerlink" href="#O365.message.MeetingMessageType.MeetingTentativelyAccepted" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="O365.message.Message">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.message.</span></span><span class="sig-name descname"><span class="pre">Message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">con</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Message"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.message.Message" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="utils/utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">ApiComponent</span></code></a>, <a class="reference internal" href="utils/attachment.html#O365.utils.attachment.AttachableMixin" title="O365.utils.attachment.AttachableMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">AttachableMixin</span></code></a>, <a class="reference internal" href="utils/utils.html#O365.utils.utils.HandleRecipientsMixin" title="O365.utils.utils.HandleRecipientsMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">HandleRecipientsMixin</span></code></a></p>
 <p>Management of the process of sending, receiving, reading, and
 editing emails.</p>
 <dl class="py method">
-<dt id="O365.message.Message.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">con</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Message.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.Message.__init__" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.message.Message.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">con</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Message.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.message.Message.__init__" title="Link to this definition"></a></dt>
 <dd><p>Makes a new message wrapper for sending and receiving messages.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>parent</strong> (<a class="reference internal" href="mailbox.html#O365.mailbox.Folder" title="O365.mailbox.Folder"><em>mailbox.Folder</em></a><em> or </em><a class="reference internal" href="account.html#O365.account.Account" title="O365.account.Account"><em>Account</em></a>) – parent folder/account to create the message in</p></li>
 <li><p><strong>con</strong> (<a class="reference internal" href="connection.html#O365.connection.Connection" title="O365.connection.Connection"><em>Connection</em></a>) – connection to use if no parent specified</p></li>
@@ -253,372 +277,193 @@ download attachments (kwargs)</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.message.Message.add_category">
-<code class="sig-name descname">add_category</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">category</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Message.add_category"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.Message.add_category" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.message.Message.add_category">
+<span class="sig-name descname"><span class="pre">add_category</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">category</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Message.add_category"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.message.Message.add_category" title="Link to this definition"></a></dt>
 <dd><p>Adds a category to this message current categories list</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.message.Message.attachments">
-<em class="property">property </em><code class="sig-name descname">attachments</code><a class="headerlink" href="#O365.message.Message.attachments" title="Permalink to this definition">¶</a></dt>
-<dd><p>List of attachments</p>
-</dd></dl>
+<dt class="sig sig-object py" id="O365.message.Message.add_message_header">
+<span class="sig-name descname"><span class="pre">add_message_header</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Message.add_message_header"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.message.Message.add_message_header" title="Link to this definition"></a></dt>
+<dd></dd></dl>
 
 <dl class="py method">
-<dt id="O365.message.Message.bcc">
-<em class="property">property </em><code class="sig-name descname">bcc</code><a class="headerlink" href="#O365.message.Message.bcc" title="Permalink to this definition">¶</a></dt>
-<dd><p>‘BCC’ list of recipients</p>
-</dd></dl>
-
-<dl class="py method">
-<dt id="O365.message.Message.body">
-<em class="property">property </em><code class="sig-name descname">body</code><a class="headerlink" href="#O365.message.Message.body" title="Permalink to this definition">¶</a></dt>
-<dd><p>Body of the email message</p>
-<dl class="field-list simple">
-<dt class="field-odd">Getter</dt>
-<dd class="field-odd"><p>Get body text of current message</p>
-</dd>
-<dt class="field-even">Setter</dt>
-<dd class="field-even"><p>set html body of the message</p>
-</dd>
-<dt class="field-odd">Type</dt>
-<dd class="field-odd"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="O365.message.Message.body_preview">
-<em class="property">property </em><code class="sig-name descname">body_preview</code><a class="headerlink" href="#O365.message.Message.body_preview" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the body preview</p>
-</dd></dl>
-
-<dl class="py method">
-<dt id="O365.message.Message.categories">
-<em class="property">property </em><code class="sig-name descname">categories</code><a class="headerlink" href="#O365.message.Message.categories" title="Permalink to this definition">¶</a></dt>
-<dd><p>Categories of this message</p>
-<dl class="field-list simple">
-<dt class="field-odd">Getter</dt>
-<dd class="field-odd"><p>Current list of categories</p>
-</dd>
-<dt class="field-even">Setter</dt>
-<dd class="field-even"><p>Set new categories for the message</p>
-</dd>
-<dt class="field-odd">Type</dt>
-<dd class="field-odd"><p>list[str] or str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="O365.message.Message.cc">
-<em class="property">property </em><code class="sig-name descname">cc</code><a class="headerlink" href="#O365.message.Message.cc" title="Permalink to this definition">¶</a></dt>
-<dd><p>‘CC’ list of recipients</p>
-</dd></dl>
-
-<dl class="py method">
-<dt id="O365.message.Message.copy">
-<code class="sig-name descname">copy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">folder</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Message.copy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.Message.copy" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.message.Message.copy">
+<span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">folder</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Message.copy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.message.Message.copy" title="Link to this definition"></a></dt>
 <dd><p>Copy the message to a given folder</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>folder</strong> (<em>str</em><em> or </em><a class="reference internal" href="mailbox.html#O365.mailbox.Folder" title="O365.mailbox.Folder"><em>mailbox.Folder</em></a>) – Folder object or Folder id or Well-known name to
 copy this message to</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>the copied message</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="#O365.message.Message" title="O365.message.Message">Message</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.message.Message.created">
-<em class="property">property </em><code class="sig-name descname">created</code><a class="headerlink" href="#O365.message.Message.created" title="Permalink to this definition">¶</a></dt>
-<dd><p>Created time of the message</p>
-</dd></dl>
-
-<dl class="py method">
-<dt id="O365.message.Message.delete">
-<code class="sig-name descname">delete</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Message.delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.Message.delete" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.message.Message.delete">
+<span class="sig-name descname"><span class="pre">delete</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Message.delete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.message.Message.delete" title="Link to this definition"></a></dt>
 <dd><p>Deletes a stored message</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Success / Failure</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>bool</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.message.Message.flag">
-<em class="property">property </em><code class="sig-name descname">flag</code><a class="headerlink" href="#O365.message.Message.flag" title="Permalink to this definition">¶</a></dt>
-<dd><p>The Message Flag instance</p>
-</dd></dl>
-
-<dl class="py method">
-<dt id="O365.message.Message.forward">
-<code class="sig-name descname">forward</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Message.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.Message.forward" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.message.Message.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Message.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.message.Message.forward" title="Link to this definition"></a></dt>
 <dd><p>Creates a new message that is a forward this message</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>new message</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="#O365.message.Message" title="O365.message.Message">Message</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.message.Message.get_body_soup">
-<code class="sig-name descname">get_body_soup</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Message.get_body_soup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.Message.get_body_soup" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.message.Message.get_body_soup">
+<span class="sig-name descname"><span class="pre">get_body_soup</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Message.get_body_soup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.message.Message.get_body_soup" title="Link to this definition"></a></dt>
 <dd><p>Returns the beautifulsoup4 of the html body</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>BeautifulSoup object of body</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>BeautifulSoup</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.message.Message.get_body_text">
-<code class="sig-name descname">get_body_text</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Message.get_body_text"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.Message.get_body_text" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.message.Message.get_body_text">
+<span class="sig-name descname"><span class="pre">get_body_text</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Message.get_body_text"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.message.Message.get_body_text" title="Link to this definition"></a></dt>
 <dd><p>Parse the body html and returns the body text using bs4</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>body as text</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>str</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.message.Message.get_event">
-<code class="sig-name descname">get_event</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Message.get_event"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.Message.get_event" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.message.Message.get_event">
+<span class="sig-name descname"><span class="pre">get_event</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Message.get_event"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.message.Message.get_event" title="Link to this definition"></a></dt>
 <dd><p>If this is a EventMessage it should return the related Event</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.message.Message.get_mime_content">
-<code class="sig-name descname">get_mime_content</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Message.get_mime_content"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.Message.get_mime_content" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.message.Message.get_mime_content">
+<span class="sig-name descname"><span class="pre">get_mime_content</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Message.get_mime_content"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.message.Message.get_mime_content" title="Link to this definition"></a></dt>
 <dd><p>Returns the MIME contents of this message</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.message.Message.importance">
-<em class="property">property </em><code class="sig-name descname">importance</code><a class="headerlink" href="#O365.message.Message.importance" title="Permalink to this definition">¶</a></dt>
-<dd><p>Importance of the message</p>
-<dl class="field-list simple">
-<dt class="field-odd">Getter</dt>
-<dd class="field-odd"><p>Get the current priority of the message</p>
-</dd>
-<dt class="field-even">Setter</dt>
-<dd class="field-even"><p>Set a different importance level</p>
-</dd>
-<dt class="field-odd">Type</dt>
-<dd class="field-odd"><p>str or <a class="reference internal" href="utils.html#O365.utils.utils.ImportanceLevel" title="O365.utils.utils.ImportanceLevel">ImportanceLevel</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="O365.message.Message.is_delivery_receipt_requested">
-<em class="property">property </em><code class="sig-name descname">is_delivery_receipt_requested</code><a class="headerlink" href="#O365.message.Message.is_delivery_receipt_requested" title="Permalink to this definition">¶</a></dt>
-<dd><p>if the delivery receipt is requested for this message</p>
-<dl class="field-list simple">
-<dt class="field-odd">Getter</dt>
-<dd class="field-odd"><p>Current state of isDeliveryReceiptRequested</p>
-</dd>
-<dt class="field-even">Setter</dt>
-<dd class="field-even"><p>Set isDeliveryReceiptRequested for the message</p>
-</dd>
-<dt class="field-odd">Type</dt>
-<dd class="field-odd"><p>bool</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="O365.message.Message.is_draft">
-<em class="property">property </em><code class="sig-name descname">is_draft</code><a class="headerlink" href="#O365.message.Message.is_draft" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check if the message is marked as draft</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type</dt>
-<dd class="field-odd"><p>bool</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="O365.message.Message.is_event_message">
-<em class="property">property </em><code class="sig-name descname">is_event_message</code><a class="headerlink" href="#O365.message.Message.is_event_message" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns if this message is of type EventMessage
-and therefore can return the related event.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt id="O365.message.Message.is_read">
-<em class="property">property </em><code class="sig-name descname">is_read</code><a class="headerlink" href="#O365.message.Message.is_read" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check if the message is read or not</p>
-<dl class="field-list simple">
-<dt class="field-odd">Getter</dt>
-<dd class="field-odd"><p>Get the status of message read</p>
-</dd>
-<dt class="field-even">Setter</dt>
-<dd class="field-even"><p>Mark the message as read</p>
-</dd>
-<dt class="field-odd">Type</dt>
-<dd class="field-odd"><p>bool</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="O365.message.Message.is_read_receipt_requested">
-<em class="property">property </em><code class="sig-name descname">is_read_receipt_requested</code><a class="headerlink" href="#O365.message.Message.is_read_receipt_requested" title="Permalink to this definition">¶</a></dt>
-<dd><p>if the read receipt is requested for this message</p>
-<dl class="field-list simple">
-<dt class="field-odd">Getter</dt>
-<dd class="field-odd"><p>Current state of isReadReceiptRequested</p>
-</dd>
-<dt class="field-even">Setter</dt>
-<dd class="field-even"><p>Set isReadReceiptRequested for the message</p>
-</dd>
-<dt class="field-odd">Type</dt>
-<dd class="field-odd"><p>bool</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="O365.message.Message.mark_as_read">
-<code class="sig-name descname">mark_as_read</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Message.mark_as_read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.Message.mark_as_read" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.message.Message.mark_as_read">
+<span class="sig-name descname"><span class="pre">mark_as_read</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Message.mark_as_read"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.message.Message.mark_as_read" title="Link to this definition"></a></dt>
 <dd><p>Marks this message as read in the cloud</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Success / Failure</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>bool</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.message.Message.mark_as_unread">
-<code class="sig-name descname">mark_as_unread</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Message.mark_as_unread"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.Message.mark_as_unread" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.message.Message.mark_as_unread">
+<span class="sig-name descname"><span class="pre">mark_as_unread</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Message.mark_as_unread"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.message.Message.mark_as_unread" title="Link to this definition"></a></dt>
 <dd><p>Marks this message as unread in the cloud</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Success / Failure</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>bool</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.message.Message.meeting_message_type">
-<em class="property">property </em><code class="sig-name descname">meeting_message_type</code><a class="headerlink" href="#O365.message.Message.meeting_message_type" title="Permalink to this definition">¶</a></dt>
-<dd><p>If this message is a EventMessage, returns the
-meeting type: meetingRequest, meetingCancelled, meetingAccepted,</p>
-<blockquote>
-<div><p>meetingTentativelyAccepted, meetingDeclined</p>
-</div></blockquote>
-</dd></dl>
-
-<dl class="py method">
-<dt id="O365.message.Message.modified">
-<em class="property">property </em><code class="sig-name descname">modified</code><a class="headerlink" href="#O365.message.Message.modified" title="Permalink to this definition">¶</a></dt>
-<dd><p>Message last modified time</p>
-</dd></dl>
-
-<dl class="py method">
-<dt id="O365.message.Message.move">
-<code class="sig-name descname">move</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">folder</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Message.move"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.Message.move" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.message.Message.move">
+<span class="sig-name descname"><span class="pre">move</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">folder</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Message.move"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.message.Message.move" title="Link to this definition"></a></dt>
 <dd><p>Move the message to a given folder</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>folder</strong> (<em>str</em><em> or </em><a class="reference internal" href="mailbox.html#O365.mailbox.Folder" title="O365.mailbox.Folder"><em>mailbox.Folder</em></a>) – Folder object or Folder id or Well-known name to
 move this message to</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Success / Failure</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>bool</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.message.Message.received">
-<em class="property">property </em><code class="sig-name descname">received</code><a class="headerlink" href="#O365.message.Message.received" title="Permalink to this definition">¶</a></dt>
-<dd><p>Message received time</p>
-</dd></dl>
-
-<dl class="py method">
-<dt id="O365.message.Message.reply">
-<code class="sig-name descname">reply</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">to_all</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Message.reply"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.Message.reply" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.message.Message.reply">
+<span class="sig-name descname"><span class="pre">reply</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">to_all</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Message.reply"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.message.Message.reply" title="Link to this definition"></a></dt>
 <dd><p>Creates a new message that is a reply to this message</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>to_all</strong> (<em>bool</em>) – whether or not to replies to all the recipients
 instead to just the sender</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>new message</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="#O365.message.Message" title="O365.message.Message">Message</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.message.Message.reply_to">
-<em class="property">property </em><code class="sig-name descname">reply_to</code><a class="headerlink" href="#O365.message.Message.reply_to" title="Permalink to this definition">¶</a></dt>
-<dd><p>Reply to address</p>
-</dd></dl>
-
-<dl class="py method">
-<dt id="O365.message.Message.save_as_eml">
-<code class="sig-name descname">save_as_eml</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">to_path</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Message.save_as_eml"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.Message.save_as_eml" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.message.Message.save_as_eml">
+<span class="sig-name descname"><span class="pre">save_as_eml</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">to_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Message.save_as_eml"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.message.Message.save_as_eml" title="Link to this definition"></a></dt>
 <dd><p>Saves this message as and EML to the file system
 :param Path or str to_path: the path where to store this file</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.message.Message.save_draft">
-<code class="sig-name descname">save_draft</code><span class="sig-paren">(</span><em class="sig-param">target_folder=&lt;OutlookWellKnowFolderNames.DRAFTS: 'Drafts'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Message.save_draft"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.Message.save_draft" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.message.Message.save_draft">
+<span class="sig-name descname"><span class="pre">save_draft</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target_folder</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">OutlookWellKnowFolderNames.DRAFTS</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Message.save_draft"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.message.Message.save_draft" title="Link to this definition"></a></dt>
 <dd><p>Save this message as a draft on the cloud</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>target_folder</strong> – name of the drafts folder</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Success / Failure</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>bool</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.message.Message.save_message">
-<code class="sig-name descname">save_message</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Message.save_message"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.Message.save_message" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.message.Message.save_message">
+<span class="sig-name descname"><span class="pre">save_message</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Message.save_message"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.message.Message.save_message" title="Link to this definition"></a></dt>
 <dd><p>Saves changes to a message.
 If the message is a new or saved draft it will call ‘save_draft’ otherwise
 this will save only properties of a message that are draft-independent such as:</p>
@@ -630,127 +475,394 @@ this will save only properties of a message that are draft-independent such as:<
 </ul>
 </div></blockquote>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Success / Failure</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>bool</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.message.Message.send">
-<code class="sig-name descname">send</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">save_to_sent_folder</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Message.send"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.Message.send" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.message.Message.send">
+<span class="sig-name descname"><span class="pre">send</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">save_to_sent_folder</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Message.send"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.message.Message.send" title="Link to this definition"></a></dt>
 <dd><p>Sends this message</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>save_to_sent_folder</strong> (<em>bool</em>) – whether or not to save it to
 sent folder</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Success / Failure</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>bool</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.message.Message.sender">
-<em class="property">property </em><code class="sig-name descname">sender</code><a class="headerlink" href="#O365.message.Message.sender" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sender of the message</p>
-<dl class="field-list simple">
-<dt class="field-odd">Getter</dt>
-<dd class="field-odd"><p>Get the current sender</p>
-</dd>
-<dt class="field-even">Setter</dt>
-<dd class="field-even"><p>Update the from address with new value</p>
-</dd>
-<dt class="field-odd">Type</dt>
-<dd class="field-odd"><p>str or <a class="reference internal" href="utils.html#O365.utils.utils.Recipient" title="O365.utils.utils.Recipient">Recipient</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="O365.message.Message.sent">
-<em class="property">property </em><code class="sig-name descname">sent</code><a class="headerlink" href="#O365.message.Message.sent" title="Permalink to this definition">¶</a></dt>
-<dd><p>Message sent time</p>
-</dd></dl>
-
-<dl class="py method">
-<dt id="O365.message.Message.subject">
-<em class="property">property </em><code class="sig-name descname">subject</code><a class="headerlink" href="#O365.message.Message.subject" title="Permalink to this definition">¶</a></dt>
-<dd><p>Subject of the email message</p>
-<dl class="field-list simple">
-<dt class="field-odd">Getter</dt>
-<dd class="field-odd"><p>Get the current subject</p>
-</dd>
-<dt class="field-even">Setter</dt>
-<dd class="field-even"><p>Assign a new subject</p>
-</dd>
-<dt class="field-odd">Type</dt>
-<dd class="field-odd"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="O365.message.Message.to">
-<em class="property">property </em><code class="sig-name descname">to</code><a class="headerlink" href="#O365.message.Message.to" title="Permalink to this definition">¶</a></dt>
-<dd><p>‘TO’ list of recipients</p>
-</dd></dl>
-
-<dl class="py method">
-<dt id="O365.message.Message.to_api_data">
-<code class="sig-name descname">to_api_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">restrict_keys</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Message.to_api_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.Message.to_api_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a dict representation of this message prepared to be send
+<dt class="sig sig-object py" id="O365.message.Message.to_api_data">
+<span class="sig-name descname"><span class="pre">to_api_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">restrict_keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#Message.to_api_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.message.Message.to_api_data" title="Link to this definition"></a></dt>
+<dd><p>Returns a dict representation of this message prepared to be sent
 to the cloud</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>restrict_keys</strong> (<em>dict</em><em> or </em><em>set</em>) – a set of keys to restrict the returned
 data to</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>converted to cloud based keys</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>dict</p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt id="O365.message.Message.unique_body">
-<em class="property">property </em><code class="sig-name descname">unique_body</code><a class="headerlink" href="#O365.message.Message.unique_body" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="simple">
-<dt>The unique body of this message</dt><dd><p>Requires a select to retrieve it.</p>
-</dd>
-</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="O365.message.Message.attachments">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">attachments</span></span><a class="headerlink" href="#O365.message.Message.attachments" title="Link to this definition"></a></dt>
+<dd><p>List of attachments</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="O365.message.Message.bcc">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">bcc</span></span><a class="headerlink" href="#O365.message.Message.bcc" title="Link to this definition"></a></dt>
+<dd><p>‘BCC’ list of recipients</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="O365.message.Message.body">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">body</span></span><a class="headerlink" href="#O365.message.Message.body" title="Link to this definition"></a></dt>
+<dd><p>Body of the email message</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Get body text of current message</p>
+</dd>
+<dt class="field-even">Setter<span class="colon">:</span></dt>
+<dd class="field-even"><p>set html body of the message</p>
+</dd>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>str</p>
 </dd>
 </dl>
 </dd></dl>
 
+<dl class="py property">
+<dt class="sig sig-object py" id="O365.message.Message.body_preview">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">body_preview</span></span><a class="headerlink" href="#O365.message.Message.body_preview" title="Link to this definition"></a></dt>
+<dd><p>Returns the body preview</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.message.Message.body_type">
+<span class="sig-name descname"><span class="pre">body_type</span></span><a class="headerlink" href="#O365.message.Message.body_type" title="Link to this definition"></a></dt>
+<dd><p>The body type of the message. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> bodyType</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="O365.message.Message.categories">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">categories</span></span><a class="headerlink" href="#O365.message.Message.categories" title="Link to this definition"></a></dt>
+<dd><p>Categories of this message</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Current list of categories</p>
+</dd>
+<dt class="field-even">Setter<span class="colon">:</span></dt>
+<dd class="field-even"><p>Set new categories for the message</p>
+</dd>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[str] or str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="O365.message.Message.cc">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cc</span></span><a class="headerlink" href="#O365.message.Message.cc" title="Link to this definition"></a></dt>
+<dd><p>‘CC’ list of recipients</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.message.Message.conversation_id">
+<span class="sig-name descname"><span class="pre">conversation_id</span></span><a class="headerlink" href="#O365.message.Message.conversation_id" title="Link to this definition"></a></dt>
+<dd><p>The ID of the conversation the email belongs to. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.message.Message.conversation_index">
+<span class="sig-name descname"><span class="pre">conversation_index</span></span><a class="headerlink" href="#O365.message.Message.conversation_index" title="Link to this definition"></a></dt>
+<dd><p>Indicates the position of the message within the conversation. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> any</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="O365.message.Message.created">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">created</span></span><a class="headerlink" href="#O365.message.Message.created" title="Link to this definition"></a></dt>
+<dd><p>Created time of the message</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="O365.message.Message.flag">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">flag</span></span><a class="headerlink" href="#O365.message.Message.flag" title="Link to this definition"></a></dt>
+<dd><p>The Message Flag instance</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.message.Message.folder_id">
+<span class="sig-name descname"><span class="pre">folder_id</span></span><a class="headerlink" href="#O365.message.Message.folder_id" title="Link to this definition"></a></dt>
+<dd><p>The unique identifier for the message’s parent mailFolder. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="O365.message.Message.has_attachments">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">has_attachments</span></span><a class="headerlink" href="#O365.message.Message.has_attachments" title="Link to this definition"></a></dt>
+<dd><p>Check if the message contains attachments</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="O365.message.Message.importance">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">importance</span></span><a class="headerlink" href="#O365.message.Message.importance" title="Link to this definition"></a></dt>
+<dd><p>Importance of the message</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Get the current priority of the message</p>
+</dd>
+<dt class="field-even">Setter<span class="colon">:</span></dt>
+<dd class="field-even"><p>Set a different importance level</p>
+</dd>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str or <a class="reference internal" href="utils/utils.html#O365.utils.utils.ImportanceLevel" title="O365.utils.utils.ImportanceLevel">ImportanceLevel</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="O365.message.Message.inference_classification">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">inference_classification</span></span><a class="headerlink" href="#O365.message.Message.inference_classification" title="Link to this definition"></a></dt>
+<dd><p>Message is focused or not</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.message.Message.internet_message_id">
+<span class="sig-name descname"><span class="pre">internet_message_id</span></span><a class="headerlink" href="#O365.message.Message.internet_message_id" title="Link to this definition"></a></dt>
+<dd><p>The message ID in the format specified by RFC2822. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="O365.message.Message.is_delivery_receipt_requested">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_delivery_receipt_requested</span></span><a class="headerlink" href="#O365.message.Message.is_delivery_receipt_requested" title="Link to this definition"></a></dt>
+<dd><p>if the delivery receipt is requested for this message</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Current state of isDeliveryReceiptRequested</p>
+</dd>
+<dt class="field-even">Setter<span class="colon">:</span></dt>
+<dd class="field-even"><p>Set isDeliveryReceiptRequested for the message</p>
+</dd>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="O365.message.Message.is_draft">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_draft</span></span><a class="headerlink" href="#O365.message.Message.is_draft" title="Link to this definition"></a></dt>
+<dd><p>Check if the message is marked as draft</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="O365.message.Message.is_event_message">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_event_message</span></span><a class="headerlink" href="#O365.message.Message.is_event_message" title="Link to this definition"></a></dt>
+<dd><p>Returns if this message is of type EventMessage
+and therefore can return the related event.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="O365.message.Message.is_read">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_read</span></span><a class="headerlink" href="#O365.message.Message.is_read" title="Link to this definition"></a></dt>
+<dd><p>Check if the message is read or not</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Get the status of message read</p>
+</dd>
+<dt class="field-even">Setter<span class="colon">:</span></dt>
+<dd class="field-even"><p>Mark the message as read</p>
+</dd>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="O365.message.Message.is_read_receipt_requested">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_read_receipt_requested</span></span><a class="headerlink" href="#O365.message.Message.is_read_receipt_requested" title="Link to this definition"></a></dt>
+<dd><p>if the read receipt is requested for this message</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Current state of isReadReceiptRequested</p>
+</dd>
+<dt class="field-even">Setter<span class="colon">:</span></dt>
+<dd class="field-even"><p>Set isReadReceiptRequested for the message</p>
+</dd>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="O365.message.Message.meeting_message_type">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">meeting_message_type</span></span><a class="headerlink" href="#O365.message.Message.meeting_message_type" title="Link to this definition"></a></dt>
+<dd><p>If this message is a EventMessage, returns the
+meeting type: meetingRequest, meetingCancelled, meetingAccepted,
+meetingTentativelyAccepted, meetingDeclined</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="O365.message.Message.message_headers">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">message_headers</span></span><a class="headerlink" href="#O365.message.Message.message_headers" title="Link to this definition"></a></dt>
+<dd><p>Custom message headers</p>
+<blockquote>
+<div><p>List of internetMessageHeaders, see definition: <a class="reference external" href="https://learn.microsoft.com/en-us/graph/api/resources/internetmessageheader?view=graph-rest-1.0">https://learn.microsoft.com/en-us/graph/api/resources/internetmessageheader?view=graph-rest-1.0</a></p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[dict[str, str]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="O365.message.Message.modified">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">modified</span></span><a class="headerlink" href="#O365.message.Message.modified" title="Link to this definition"></a></dt>
+<dd><p>Message last modified time</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.message.Message.object_id">
+<span class="sig-name descname"><span class="pre">object_id</span></span><a class="headerlink" href="#O365.message.Message.object_id" title="Link to this definition"></a></dt>
+<dd><p>Unique identifier for the message. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="O365.message.Message.received">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">received</span></span><a class="headerlink" href="#O365.message.Message.received" title="Link to this definition"></a></dt>
+<dd><p>Message received time</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="O365.message.Message.reply_to">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">reply_to</span></span><a class="headerlink" href="#O365.message.Message.reply_to" title="Link to this definition"></a></dt>
+<dd><p>Reply to address</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="O365.message.Message.sender">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">sender</span></span><a class="headerlink" href="#O365.message.Message.sender" title="Link to this definition"></a></dt>
+<dd><p>Sender of the message</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Get the current sender</p>
+</dd>
+<dt class="field-even">Setter<span class="colon">:</span></dt>
+<dd class="field-even"><p>Update the from address with new value</p>
+</dd>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str or <a class="reference internal" href="utils/utils.html#O365.utils.utils.Recipient" title="O365.utils.utils.Recipient">Recipient</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="O365.message.Message.sent">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">sent</span></span><a class="headerlink" href="#O365.message.Message.sent" title="Link to this definition"></a></dt>
+<dd><p>Message sent time</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="O365.message.Message.single_value_extended_properties">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">single_value_extended_properties</span></span><a class="headerlink" href="#O365.message.Message.single_value_extended_properties" title="Link to this definition"></a></dt>
+<dd><p>singleValueExtendedProperties</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="O365.message.Message.subject">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">subject</span></span><a class="headerlink" href="#O365.message.Message.subject" title="Link to this definition"></a></dt>
+<dd><p>Subject of the email message</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Get the current subject</p>
+</dd>
+<dt class="field-even">Setter<span class="colon">:</span></dt>
+<dd class="field-even"><p>Assign a new subject</p>
+</dd>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="O365.message.Message.to">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">to</span></span><a class="headerlink" href="#O365.message.Message.to" title="Link to this definition"></a></dt>
+<dd><p>‘TO’ list of recipients</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="O365.message.Message.unique_body">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">unique_body</span></span><a class="headerlink" href="#O365.message.Message.unique_body" title="Link to this definition"></a></dt>
+<dd><p>The unique body of this message</p>
+<blockquote>
+<div><p>Requires a select to retrieve it.</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.message.Message.web_link">
+<span class="sig-name descname"><span class="pre">web_link</span></span><a class="headerlink" href="#O365.message.Message.web_link" title="Link to this definition"></a></dt>
+<dd><p>The URL to open the message in Outlook on the web. <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
-<dt id="O365.message.MessageAttachment">
-<em class="property">class </em><code class="sig-prename descclassname">O365.message.</code><code class="sig-name descname">MessageAttachment</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">attachment</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#MessageAttachment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.MessageAttachment" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="attachment.html#O365.utils.attachment.BaseAttachment" title="O365.utils.attachment.BaseAttachment"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.utils.attachment.BaseAttachment</span></code></a></p>
+<dt class="sig sig-object py" id="O365.message.MessageAttachment">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.message.</span></span><span class="sig-name descname"><span class="pre">MessageAttachment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attachment</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#MessageAttachment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.message.MessageAttachment" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="utils/attachment.html#O365.utils.attachment.BaseAttachment" title="O365.utils.attachment.BaseAttachment"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseAttachment</span></code></a></p>
 </dd></dl>
 
 <dl class="py class">
-<dt id="O365.message.MessageAttachments">
-<em class="property">class </em><code class="sig-prename descclassname">O365.message.</code><code class="sig-name descname">MessageAttachments</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span></em>, <em class="sig-param"><span class="n">attachments</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#MessageAttachments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.MessageAttachments" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="attachment.html#O365.utils.attachment.BaseAttachments" title="O365.utils.attachment.BaseAttachments"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.utils.attachment.BaseAttachments</span></code></a></p>
+<dt class="sig sig-object py" id="O365.message.MessageAttachments">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.message.</span></span><span class="sig-name descname"><span class="pre">MessageAttachments</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attachments</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#MessageAttachments"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.message.MessageAttachments" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="utils/attachment.html#O365.utils.attachment.BaseAttachments" title="O365.utils.attachment.BaseAttachments"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseAttachments</span></code></a></p>
 <dl class="py method">
-<dt id="O365.message.MessageAttachments.save_as_eml">
-<code class="sig-name descname">save_as_eml</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">attachment</span></em>, <em class="sig-param"><span class="n">to_path</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#MessageAttachments.save_as_eml"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.MessageAttachments.save_as_eml" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.message.MessageAttachments.get_mime_content">
+<span class="sig-name descname"><span class="pre">get_mime_content</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attachment</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#MessageAttachments.get_mime_content"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.message.MessageAttachments.get_mime_content" title="Link to this definition"></a></dt>
+<dd><p>Returns the MIME contents of this attachment</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.message.MessageAttachments.save_as_eml">
+<span class="sig-name descname"><span class="pre">save_as_eml</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attachment</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#MessageAttachments.save_as_eml"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.message.MessageAttachments.save_as_eml" title="Link to this definition"></a></dt>
 <dd><p>Saves this message as and EML to the file system
 :param MessageAttachment attachment: the MessageAttachment to store as eml.
 :param Path or str to_path: the path where to store this file</p>
@@ -759,17 +871,17 @@ data to</p>
 </dd></dl>
 
 <dl class="py class">
-<dt id="O365.message.MessageFlag">
-<em class="property">class </em><code class="sig-prename descclassname">O365.message.</code><code class="sig-name descname">MessageFlag</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span></em>, <em class="sig-param"><span class="n">flag_data</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#MessageFlag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.MessageFlag" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.utils.utils.ApiComponent</span></code></a></p>
+<dt class="sig sig-object py" id="O365.message.MessageFlag">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.message.</span></span><span class="sig-name descname"><span class="pre">MessageFlag</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flag_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#MessageFlag"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.message.MessageFlag" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="utils/utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">ApiComponent</span></code></a></p>
 <p>A flag on a message</p>
 <dl class="py method">
-<dt id="O365.message.MessageFlag.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span></em>, <em class="sig-param"><span class="n">flag_data</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#MessageFlag.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.MessageFlag.__init__" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.message.MessageFlag.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flag_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#MessageFlag.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.message.MessageFlag.__init__" title="Link to this definition"></a></dt>
 <dd><p>An flag on a message
 Not available on Outlook Rest Api v2 (only in beta)</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>parent</strong> (<a class="reference internal" href="#O365.message.Message" title="O365.message.Message"><em>Message</em></a>) – parent of this</p></li>
 <li><p><strong>flag_data</strong> (<em>dict</em>) – flag data from cloud</p></li>
@@ -779,140 +891,157 @@ Not available on Outlook Rest Api v2 (only in beta)</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.message.MessageFlag.completition_date">
-<em class="property">property </em><code class="sig-name descname">completition_date</code><a class="headerlink" href="#O365.message.MessageFlag.completition_date" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="O365.message.MessageFlag.delete_flag">
-<code class="sig-name descname">delete_flag</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#MessageFlag.delete_flag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.MessageFlag.delete_flag" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.message.MessageFlag.delete_flag">
+<span class="sig-name descname"><span class="pre">delete_flag</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#MessageFlag.delete_flag"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.message.MessageFlag.delete_flag" title="Link to this definition"></a></dt>
 <dd><p>Sets this message as un flagged</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.message.MessageFlag.due_date">
-<em class="property">property </em><code class="sig-name descname">due_date</code><a class="headerlink" href="#O365.message.MessageFlag.due_date" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="O365.message.MessageFlag.is_completed">
-<em class="property">property </em><code class="sig-name descname">is_completed</code><a class="headerlink" href="#O365.message.MessageFlag.is_completed" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="O365.message.MessageFlag.is_flagged">
-<em class="property">property </em><code class="sig-name descname">is_flagged</code><a class="headerlink" href="#O365.message.MessageFlag.is_flagged" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="O365.message.MessageFlag.set_completed">
-<code class="sig-name descname">set_completed</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">completition_date</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#MessageFlag.set_completed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.MessageFlag.set_completed" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.message.MessageFlag.set_completed">
+<span class="sig-name descname"><span class="pre">set_completed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">completition_date</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#MessageFlag.set_completed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.message.MessageFlag.set_completed" title="Link to this definition"></a></dt>
 <dd><p>Sets this message flag as completed
 :param completition_date: the datetime this followUp was completed</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.message.MessageFlag.set_flagged">
-<code class="sig-name descname">set_flagged</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">start_date</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">due_date</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#MessageFlag.set_flagged"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.MessageFlag.set_flagged" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.message.MessageFlag.set_flagged">
+<span class="sig-name descname"><span class="pre">set_flagged</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_date</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">due_date</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#MessageFlag.set_flagged"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.message.MessageFlag.set_flagged" title="Link to this definition"></a></dt>
 <dd><p>Sets this message as flagged
 :param start_date: the start datetime of the followUp
 :param due_date: the due datetime of the followUp</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.message.MessageFlag.start_date">
-<em class="property">property </em><code class="sig-name descname">start_date</code><a class="headerlink" href="#O365.message.MessageFlag.start_date" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="O365.message.MessageFlag.status">
-<em class="property">property </em><code class="sig-name descname">status</code><a class="headerlink" href="#O365.message.MessageFlag.status" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="O365.message.MessageFlag.to_api_data">
-<code class="sig-name descname">to_api_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#MessageFlag.to_api_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.MessageFlag.to_api_data" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.message.MessageFlag.to_api_data">
+<span class="sig-name descname"><span class="pre">to_api_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#MessageFlag.to_api_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.message.MessageFlag.to_api_data" title="Link to this definition"></a></dt>
 <dd><p>Returns this data as a dict to be sent to the server</p>
 </dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="O365.message.MessageFlag.completition_date">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">completition_date</span></span><a class="headerlink" href="#O365.message.MessageFlag.completition_date" title="Link to this definition"></a></dt>
+<dd><p>The completion date of the message flag.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
+<dd class="field-odd"><p>get the completion_date</p>
+</dd>
+<dt class="field-even">Type<span class="colon">:</span></dt>
+<dd class="field-even"><p>datetime</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="O365.message.MessageFlag.due_date">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">due_date</span></span><a class="headerlink" href="#O365.message.MessageFlag.due_date" title="Link to this definition"></a></dt>
+<dd><p>The due date of the message flag.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
+<dd class="field-odd"><p>get the due_date</p>
+</dd>
+<dt class="field-even">Type<span class="colon">:</span></dt>
+<dd class="field-even"><p>datetime</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="O365.message.MessageFlag.is_completed">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_completed</span></span><a class="headerlink" href="#O365.message.MessageFlag.is_completed" title="Link to this definition"></a></dt>
+<dd><p>Is the flag completed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
+<dd class="field-odd"><p>get the is_completed status</p>
+</dd>
+<dt class="field-even">Type<span class="colon">:</span></dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="O365.message.MessageFlag.is_flagged">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_flagged</span></span><a class="headerlink" href="#O365.message.MessageFlag.is_flagged" title="Link to this definition"></a></dt>
+<dd><p>Is item flagged.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
+<dd class="field-odd"><p>get the is_flagged status</p>
+</dd>
+<dt class="field-even">Type<span class="colon">:</span></dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="O365.message.MessageFlag.start_date">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">start_date</span></span><a class="headerlink" href="#O365.message.MessageFlag.start_date" title="Link to this definition"></a></dt>
+<dd><p>The start date of the message flag.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
+<dd class="field-odd"><p>get the start_date</p>
+</dd>
+<dt class="field-even">Type<span class="colon">:</span></dt>
+<dd class="field-even"><p>datetime</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="O365.message.MessageFlag.status">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">status</span></span><a class="headerlink" href="#O365.message.MessageFlag.status" title="Link to this definition"></a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
-<dt id="O365.message.RecipientType">
-<em class="property">class </em><code class="sig-prename descclassname">O365.message.</code><code class="sig-name descname">RecipientType</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#RecipientType"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.message.RecipientType" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
-<p>An enumeration.</p>
+<dt class="sig sig-object py" id="O365.message.RecipientType">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.message.</span></span><span class="sig-name descname"><span class="pre">RecipientType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/message.html#RecipientType"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.message.RecipientType" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
 <dl class="py attribute">
-<dt id="O365.message.RecipientType.BCC">
-<code class="sig-name descname">BCC</code><em class="property"> = 'bcc'</em><a class="headerlink" href="#O365.message.RecipientType.BCC" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.message.RecipientType.BCC">
+<span class="sig-name descname"><span class="pre">BCC</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'bcc'</span></em><a class="headerlink" href="#O365.message.RecipientType.BCC" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt id="O365.message.RecipientType.CC">
-<code class="sig-name descname">CC</code><em class="property"> = 'cc'</em><a class="headerlink" href="#O365.message.RecipientType.CC" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.message.RecipientType.CC">
+<span class="sig-name descname"><span class="pre">CC</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'cc'</span></em><a class="headerlink" href="#O365.message.RecipientType.CC" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt id="O365.message.RecipientType.TO">
-<code class="sig-name descname">TO</code><em class="property"> = 'to'</em><a class="headerlink" href="#O365.message.RecipientType.TO" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.message.RecipientType.TO">
+<span class="sig-name descname"><span class="pre">TO</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'to'</span></em><a class="headerlink" href="#O365.message.RecipientType.TO" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
-</div>
+</section>
 
 
            </div>
-           
           </div>
-          <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="sharepoint.html" class="btn btn-neutral float-right" title="Sharepoint" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="mailbox.html" class="btn btn-neutral" title="Mailbox" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="mailbox.html" class="btn btn-neutral float-left" title="Mailbox" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="onedrive.html" class="btn btn-neutral float-right" title="One Drive" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &copy; Copyright 2018, Narcolapser
-
-    </p>
+    <p>&#169; Copyright 2025, alejcas.</p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
-
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-
-  
-
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script src="../_static/language_data.js"></script>
-    
-
-  
-
-  <script type="text/javascript" src="../_static/js/theme.js"></script>
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });

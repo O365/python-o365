@@ -1,0 +1,226 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calendar &mdash; O365  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Directory and Users" href="directory.html" />
+    <link rel="prev" title="Address Book" href="addressbook.html" />
+    <link href="../_static/css/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html">
+            
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../usage.html">Detailed Usage</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="connection.html">Protocols</a></li>
+<li class="toctree-l2"><a class="reference internal" href="connection.html#resources">Resources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="account.html">Account</a></li>
+<li class="toctree-l2"><a class="reference internal" href="account.html#account-class-and-modularity">Account Class and Modularity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="addressbook.html">Address Book</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Calendar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="directory.html">Directory and Users</a></li>
+<li class="toctree-l2"><a class="reference internal" href="excel.html">Excel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group.html">Group</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mailbox.html">Mailbox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="onedrive.html">OneDrive</a></li>
+<li class="toctree-l2"><a class="reference internal" href="planner.html">Planner</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sharepoint.html">Sharepoint</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tasks.html">Tasks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="teams.html">Teams</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html">Utils</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">O365 API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">O365</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../usage.html">Detailed Usage</a></li>
+      <li class="breadcrumb-item active">Calendar</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/usage/calendar.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="addressbook.html" class="btn btn-neutral float-left" title="Address Book" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="directory.html" class="btn btn-neutral float-right" title="Directory and Users" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="calendar">
+<h1>Calendar<a class="headerlink" href="#calendar" title="Link to this heading"></a></h1>
+<p>The calendar and events functionality is group in a Schedule object.</p>
+<p>A <code class="docutils literal notranslate"><span class="pre">Schedule</span></code> instance can list and create calendars. It can also list or create events on the default user calendar. To use other calendars use a <code class="docutils literal notranslate"><span class="pre">Calendar</span></code> instance.</p>
+<p>These are the scopes needed to work with the <code class="docutils literal notranslate"><span class="pre">Schedule</span></code>, <code class="docutils literal notranslate"><span class="pre">Calendar</span></code> and <code class="docutils literal notranslate"><span class="pre">Event</span></code> classes.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Raw Scope</p></th>
+<th class="head"><p>Included in Scope Helper</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Calendars.Read</p></td>
+<td><p>calendar</p></td>
+<td><p>To only read my personal calendars</p></td>
+</tr>
+<tr class="row-odd"><td><p>Calendars.Read.Shared</p></td>
+<td><p>calendar_shared</p></td>
+<td><p>To only read another user / shared mailbox calendars</p></td>
+</tr>
+<tr class="row-even"><td><p>Calendars.ReadWrite</p></td>
+<td><p>calendar_all</p></td>
+<td><p>To read and save personal calendars</p></td>
+</tr>
+<tr class="row-odd"><td><p>Calendars.ReadWrite.Shared</p></td>
+<td><p>calendar_shared_all</p></td>
+<td><p>To read and save calendars from another user / shared mailbox</p></td>
+</tr>
+</tbody>
+</table>
+<p>Working with the <code class="docutils literal notranslate"><span class="pre">Schedule</span></code> instance:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">dt</span>
+
+<span class="c1"># ...</span>
+<span class="n">schedule</span> <span class="o">=</span> <span class="n">account</span><span class="o">.</span><span class="n">schedule</span><span class="p">()</span>
+
+<span class="n">calendar</span> <span class="o">=</span> <span class="n">schedule</span><span class="o">.</span><span class="n">get_default_calendar</span><span class="p">()</span>
+<span class="n">new_event</span> <span class="o">=</span> <span class="n">calendar</span><span class="o">.</span><span class="n">new_event</span><span class="p">()</span>  <span class="c1"># creates a new unsaved event</span>
+<span class="n">new_event</span><span class="o">.</span><span class="n">subject</span> <span class="o">=</span> <span class="s1">&#39;Recruit George Best!&#39;</span>
+<span class="n">new_event</span><span class="o">.</span><span class="n">location</span> <span class="o">=</span> <span class="s1">&#39;England&#39;</span>
+
+<span class="c1"># naive datetimes will automatically be converted to timezone aware datetime</span>
+<span class="c1">#  objects using the local timezone detected or the protocol provided timezone</span>
+
+<span class="n">new_event</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2019</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">19</span><span class="p">,</span> <span class="mi">45</span><span class="p">)</span>
+<span class="c1"># so new_event.start becomes: datetime.datetime(2018, 9, 5, 19, 45, tzinfo=&lt;DstTzInfo &#39;Europe/Paris&#39; CEST+2:00:00 DST&gt;)</span>
+
+<span class="n">new_event</span><span class="o">.</span><span class="n">recurrence</span><span class="o">.</span><span class="n">set_daily</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2019</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+<span class="n">new_event</span><span class="o">.</span><span class="n">remind_before_minutes</span> <span class="o">=</span> <span class="mi">45</span>
+
+<span class="n">new_event</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Working with Calendar instances:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">calendar</span> <span class="o">=</span> <span class="n">schedule</span><span class="o">.</span><span class="n">get_calendar</span><span class="p">(</span><span class="n">calendar_name</span><span class="o">=</span><span class="s1">&#39;Birthdays&#39;</span><span class="p">)</span>
+
+<span class="n">calendar</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Football players birthdays&#39;</span>
+<span class="n">calendar</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+
+<span class="n">q</span> <span class="o">=</span> <span class="n">calendar</span><span class="o">.</span><span class="n">new_query</span><span class="p">(</span><span class="s1">&#39;start&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">greater_equal</span><span class="p">(</span><span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2018</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">20</span><span class="p">))</span>
+<span class="n">q</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span><span class="s1">&#39;and&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">on_attribute</span><span class="p">(</span><span class="s1">&#39;end&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">less_equal</span><span class="p">(</span><span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2018</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">24</span><span class="p">))</span>
+
+<span class="n">birthdays</span> <span class="o">=</span> <span class="n">calendar</span><span class="o">.</span><span class="n">get_events</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="n">q</span><span class="p">,</span> <span class="n">include_recurring</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># include_recurring=True will include repeated events on the result set.</span>
+
+<span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">birthdays</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">subject</span> <span class="o">==</span> <span class="s1">&#39;George Best Birthday&#39;</span><span class="p">:</span>
+        <span class="c1"># He died in 2005... but we celebrate anyway!</span>
+        <span class="n">event</span><span class="o">.</span><span class="n">accept</span><span class="p">(</span><span class="s2">&quot;I&#39;ll attend!&quot;</span><span class="p">)</span>  <span class="c1"># send a response accepting</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">event</span><span class="o">.</span><span class="n">decline</span><span class="p">(</span><span class="s2">&quot;No way I&#39;m coming, I&#39;ll be in Spain&quot;</span><span class="p">,</span> <span class="n">send_response</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1"># decline the event but don&#39;t send a response to the organizer</span>
+</pre></div>
+</div>
+<p><strong>Notes regarding Calendars and Events</strong>:</p>
+<ol class="arabic">
+<li><p>Include_recurring=True:</p>
+<blockquote>
+<div><p>It’s important to know that when querying events with include_recurring=True (which is the default), it is required that you must provide a query parameter with the start and end attributes defined. Unlike when using include_recurring=False those attributes will NOT filter the data based on the operations you set on the query (greater_equal, less, etc.) but just filter the events start datetime between the provided start and end datetimes.</p>
+</div></blockquote>
+</li>
+<li><p>Shared Calendars:</p>
+<blockquote>
+<div><p>There are some known issues when working with <a class="reference external" href="https://docs.microsoft.com/en-us/graph/known-issues#calendars">shared calendars</a> in Microsoft Graph.</p>
+</div></blockquote>
+</li>
+<li><p>Event attachments:</p>
+<blockquote>
+<div><p>For some unknown reason, Microsoft does not allow to upload an attachment at the event creation time (as opposed with message attachments).
+See <a class="reference external" href="https://stackoverflow.com/questions/46438302/office365-rest-api-creating-a-calendar-event-with-attachments?rq=1">this</a>. So, to upload attachments to Events, first save the event, then attach the message and save again.</p>
+</div></blockquote>
+</li>
+</ol>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="addressbook.html" class="btn btn-neutral float-left" title="Address Book" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="directory.html" class="btn btn-neutral float-right" title="Directory and Users" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, alejcas.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
