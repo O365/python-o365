@@ -9,6 +9,11 @@ Access to Email, Calendar, Contacts, OneDrive, etc. Are easy to do in a way that
 
 The project is currently developed and maintained by [alejcas](https://github.com/alejcas).
 
+#### Core developers
+- [Alejcas](https://github.com/alejcas)
+- [Toben Archer](https://github.com/Narcolapser)
+- [Geethanadh](https://github.com/GeethanadhP)
+
 **We are always open to new pull requests!**
 
 ## Detailed docs and api reference on [O365 Docs site](https://o365.github.io/python-o365/latest/index.html)
