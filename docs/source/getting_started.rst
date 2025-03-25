@@ -14,6 +14,12 @@ To install using pip, run:
 
    pip install o365
 
+or use uv:
+
+.. code-block:: console
+
+   uv add o365
+
 Requirements: >= Python 3.9
 
 Project dependencies installed by pip:
@@ -30,11 +36,17 @@ Latest Development Version (GitHub)
 The latest development version is available on `GitHub <https://github.com/O365/python-o365>`_. 
 This version may include new features but could be unstable. **Use at your own risk**.
 
-To install from GitHub, run:
+Using pip, run:
 
 .. code-block:: console
 
    pip install git+https://github.com/O365/python-o365.git
+
+Or with uv, run:
+
+.. code-block:: console
+
+    uv add "o365 @ git+https://github.com/O365/python-o365"
 
 Basic Usage
 ===========
