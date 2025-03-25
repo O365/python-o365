@@ -20,16 +20,6 @@ Core developers
 
 We are always open to new pull requests!
 
-Rebuilding HTML Docs
---------------------
-* Install ``sphinx`` python library:
-
-.. code-block:: console 
-
-   pip install sphinx
-
-* Run the shell script ``build_docs.sh``, or copy the command from the file when using on Windows
-
 Quick example
 -------------
 Here is a simple example showing how to send an email using python-o365. 
@@ -69,3 +59,13 @@ This project was also a learning resource for us. This is a list of not so commo
 * Package organization
 * Timezone conversion and timezone aware datetimes
 * Etc. (see the code!)
+
+Rebuilding HTML Docs
+--------------------
+* Install ``sphinx`` python library:
+
+.. code-block:: console
+
+   pip install sphinx
+
+* Run the shell script ``build_docs.sh``, or copy the command from the file when using on Windows
