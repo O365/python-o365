@@ -69,4 +69,3 @@ This project was also a learning resource for us. This is a list of not so commo
 * Package organization
 * Timezone conversion and timezone aware datetimes
 * Etc. (see the code!)
-* What follows is kind of a wiki...
