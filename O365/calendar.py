@@ -549,7 +549,9 @@ class ResponseStatus(ApiComponent):
         super().__init__(protocol=parent.protocol,
                          main_resource=parent.main_resource)
         #: The status of the response |br| **Type:** str
-        self.status = response_status.get(self._cc('response'), 'none')
+        self.status = (response_status or {}).get(
+            self._cc("response"), "none"
+        )  # Deals with private events with None response_status's
         self.status = None if self.status == 'none' else EventResponse.from_value(self.status)
         if self.status:
             #: The time the response was received |br| **Type:** datetime
@@ -871,7 +873,9 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         self.object_id = cloud_data.get(cc('id'), None)
         self.__subject = cloud_data.get(cc('subject'),
                                         kwargs.get('subject', '') or '')
-        body = cloud_data.get(cc('body'), {})
+        body = (
+                cloud_data.get(cc("body"), {}) or {}
+        )  # Deals with private events with None body's
         self.__body = body.get(cc('content'), '')
         #: The type of the content. Possible values are text and html.  |br| **Type:** bodyType
         self.body_type = body.get(cc('contentType'),
