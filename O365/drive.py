@@ -2,7 +2,9 @@ import logging
 import warnings
 from pathlib import Path
 from time import sleep
+from typing import Union, Optional
 from urllib.parse import quote, urlparse
+from io import BytesIO
 
 from dateutil.parser import parse
 
@@ -31,8 +33,9 @@ ALLOWED_PDF_EXTENSIONS = {'.csv', '.doc', '.docx', '.odp', '.ods', '.odt',
 
 class DownloadableMixin:
 
-    def download(self, to_path=None, name=None, chunk_size='auto',
-                 convert_to_pdf=False, output=None):
+    def download(self, to_path: Union[None, str, Path] = None, name: str = None,
+                 chunk_size: Union[str, int] = 'auto', convert_to_pdf: bool = False,
+                 output: Optional[BytesIO] = None):
         """ Downloads this file to the local drive. Can download the
         file in chunks with multiple requests to the server.
 
@@ -45,7 +48,7 @@ class DownloadableMixin:
          however only 1 request)
         :param bool convert_to_pdf: will try to download the converted pdf
          if file extension in ALLOWED_PDF_EXTENSIONS
-        :param RawIOBase output: (optional) an opened io object to write to.
+        :param BytesIO output: (optional) an opened io object to write to.
          if set, the to_path and name will be ignored
         :return: Success / Failure
         :rtype: bool
@@ -309,17 +312,17 @@ class DriveItemVersion(ApiComponent, DownloadableMixin):
 
         return bool(response)
 
-    def download(self, to_path=None, name=None, chunk_size='auto',
-                 convert_to_pdf=False):
+    def download(self, to_path: Union[None, str, Path] = None, name: str = None,
+                 chunk_size: Union[str, int] = 'auto', convert_to_pdf: bool = False,
+                 output: Optional[BytesIO] = None):
         """ Downloads this version.
         You can not download the current version (last one).
 
         :return: Success / Failure
         :rtype: bool
         """
-        return super().download(to_path=to_path, name=name,
-                                chunk_size=chunk_size,
-                                convert_to_pdf=convert_to_pdf)
+        return super().download(to_path=to_path, name=name, chunk_size=chunk_size,
+                                convert_to_pdf=convert_to_pdf, output=output)
 
 
 class DriveItemPermission(ApiComponent):
