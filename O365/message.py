@@ -1106,8 +1106,6 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
 
         if self.object_id:
             # update message. Attachments are NOT included nor saved.
-            if not self.__is_draft:
-                raise RuntimeError('Only draft messages can be updated')
             if not self._track_changes:
                 return True  # there's nothing to update
             url = self.build_url(
