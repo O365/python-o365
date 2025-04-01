@@ -83,8 +83,8 @@ class MessageAttachments(BaseAttachments):
             file_obj.write(mime_content)
             return True
 
-    def get_mime_content(self, attachment):
-        """Returns the MIME contents of this attachment"""
+    def _get_mime_url(self, attachment: MessageAttachment) -> str:
+        """ Returns the url used to get the MIME contents of this attachment"""
         if (
             not attachment
             or not isinstance(attachment, MessageAttachment)
@@ -106,6 +106,12 @@ class MessageAttachments(BaseAttachments):
                 id=msg_id, ida=attachment.attachment_id
             )
         )
+        return url
+
+    def get_mime_content(self, attachment: MessageAttachment):
+        """Returns the MIME contents of this attachment"""
+
+        url = self._get_mime_url(attachment)
 
         response = self._parent.con.get(url)
 
@@ -113,6 +119,25 @@ class MessageAttachments(BaseAttachments):
             return None
 
         return response.content
+
+    def get_eml_as_object(self, attachment: MessageAttachment):
+        """ Returns a Message object out an eml attached message """
+
+        url = self._get_mime_url(attachment)
+
+        # modify the url to retrieve the eml message contents
+        item_attachment_keyword = self.protocol.keyword_data_store.get("item_attachment_type").removeprefix('#')
+        url = f'{url.removesuffix("$value")}?$expand={item_attachment_keyword}/item'
+
+        response = self._parent.con.get(url)
+        if not response:
+            return None
+
+        content_item = response.json().get('item', {})
+        if content_item:
+            return self._parent.__class__(parent=self._parent, **{self._cloud_data_key: content_item})
+        else:
+            return None
 
 
 class MessageFlag(ApiComponent):
