@@ -676,6 +676,9 @@ class Connection:
                     client_id=self.auth[0],
                     authority=self._msal_authority,
                     token_cache=self.token_backend,
+                    proxies=self.proxy,
+                    verify=self.verify_ssl,
+                    timeout=self.timeout
                 )
             elif self.auth_flow_type in ("authorization", "credentials"):
                 client = ConfidentialClientApplication(
@@ -683,6 +686,9 @@ class Connection:
                     client_credential=self.auth[1],
                     authority=self._msal_authority,
                     token_cache=self.token_backend,
+                    proxies=self.proxy,
+                    verify=self.verify_ssl,
+                    timeout=self.timeout
                 )
             else:
                 raise ValueError(
