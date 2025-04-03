@@ -1155,22 +1155,21 @@ class Query:
         emailAddresses/any(a:a/address eq 'george@best.com')
 
         :param str iterable_name: the OData name of the iterable
-        :param str collection: the collection to apply the any keyword on
+        :param str collection: the collection to apply the 'any' keyword on
         :param str word: the word to check
         :param str attribute: the attribute of the collection to check
         :param str func: the logical function to apply to the attribute inside
          the collection
         :param str operation: the logical operation to apply to the attribute
          inside the collection
-        :param bool negation: negate the funcion or operation inside the iterable
+        :param bool negation: negate the function or operation inside the iterable
         :rtype: Query
         """
 
         if func is None and operation is None:
             raise ValueError('Provide a function or an operation to apply')
         elif func is not None and operation is not None:
-            raise ValueError(
-                'Provide either a function or an operation but not both')
+            raise ValueError('Provide either a function or an operation but not both')
 
         current_att = self._attribute
         self._attribute = iterable_name
@@ -1215,14 +1214,14 @@ class Query:
 
         emailAddresses/any(a:a/address eq 'george@best.com')
 
-        :param str collection: the collection to apply the any keyword on
+        :param str collection: the collection to apply the 'any' keyword on
         :param str word: the word to check
         :param str attribute: the attribute of the collection to check
         :param str func: the logical function to apply to the attribute
          inside the collection
         :param str operation: the logical operation to apply to the
          attribute inside the collection
-        :param bool negation: negates the funcion or operation inside the iterable
+        :param bool negation: negates the function or operation inside the iterable
         :rtype: Query
         """
 
