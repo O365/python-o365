@@ -8,3 +8,5 @@ from .token import BaseTokenBackend, FileSystemTokenBackend, FirestoreBackend, A
 from .windows_tz import get_iana_tz, get_windows_tz
 from .consent import consent_input_token
 from .casing import to_snake_case, to_pascal_case, to_camel_case
+
+from .query import Query as ExperimentalQuery
