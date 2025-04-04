@@ -777,7 +777,7 @@ class BitwardenSecretsManagerBackend(BaseTokenBackend):
             raise Exception('Please install the bitwarden-sdk package to use this token backend.') from e
         super().__init__()
         self.client = BitwardenClient()
-        self.client.access_token_login(access_token)
+        self.client.auth().login_access_token(access_token)
         self.secret_id = secret_id
         self.secret = None
 
