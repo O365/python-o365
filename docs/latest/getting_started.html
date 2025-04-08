@@ -561,16 +561,13 @@ The authenticate method will print into the console an url that you will have to
 <tr class="row-even"><td><p>sharepoint_dl</p></td>
 <td><p>‘Sites.ReadWrite.All’</p></td>
 </tr>
-<tr class="row-odd"><td><p>settings_all</p></td>
-<td><p>‘MailboxSettings.ReadWrite’</p></td>
-</tr>
-<tr class="row-even"><td><p>tasks</p></td>
+<tr class="row-odd"><td><p>tasks</p></td>
 <td><p>‘Tasks.Read’</p></td>
 </tr>
-<tr class="row-odd"><td><p>tasks_all</p></td>
+<tr class="row-even"><td><p>tasks_all</p></td>
 <td><p>‘Tasks.ReadWrite’</p></td>
 </tr>
-<tr class="row-even"><td><p>presence</p></td>
+<tr class="row-odd"><td><p>presence</p></td>
 <td><p>‘Presence.Read’</p></td>
 </tr>
 </tbody>
@@ -578,7 +575,7 @@ The authenticate method will print into the console an url that you will have to
 <p>You can get the same scopes as before using protocols and scope helpers like this:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">protocol_graph</span> <span class="o">=</span> <span class="n">MSGraphProtocol</span><span class="p">()</span>
 
-<span class="n">scopes_graph</span> <span class="o">=</span> <span class="n">protocol</span><span class="o">.</span><span class="n">get_scopes_for</span><span class="p">(</span><span class="s1">&#39;message all&#39;</span><span class="p">)</span>
+<span class="n">scopes_graph</span> <span class="o">=</span> <span class="n">protocol</span><span class="o">.</span><span class="n">get_scopes_for</span><span class="p">(</span><span class="s1">&#39;message_all&#39;</span><span class="p">)</span>
 <span class="c1"># scopes here are: [&#39;https://graph.microsoft.com/Mail.ReadWrite&#39;, &#39;https://graph.microsoft.com/Mail.Send&#39;]</span>
 
 <span class="n">account</span> <span class="o">=</span> <span class="n">Account</span><span class="p">(</span><span class="n">credentials</span><span class="p">,</span> <span class="n">scopes</span><span class="o">=</span><span class="n">scopes_graph</span><span class="p">)</span>

@@ -405,7 +405,6 @@ onedrive                 'Files.Read.All'
 onedrive_all             'Files.ReadWrite.All'
 sharepoint               'Sites.Read.All'
 sharepoint_dl            'Sites.ReadWrite.All'
-settings_all             'MailboxSettings.ReadWrite'
 tasks                    'Tasks.Read'
 tasks_all                'Tasks.ReadWrite'
 presence                 'Presence.Read'
@@ -417,7 +416,7 @@ You can get the same scopes as before using protocols and scope helpers like thi
 
    protocol_graph = MSGraphProtocol()
 
-   scopes_graph = protocol.get_scopes_for('message all')
+   scopes_graph = protocol.get_scopes_for('message_all')
    # scopes here are: ['https://graph.microsoft.com/Mail.ReadWrite', 'https://graph.microsoft.com/Mail.Send']
 
    account = Account(credentials, scopes=scopes_graph)
