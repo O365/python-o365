@@ -55,34 +55,34 @@ Setting Scopes
 - You can set a list of scopes that your like to use, a huge list is available on `Microsoft Documentation <https://developer.microsoft.com/en-us/graph/docs/concepts/permissions_reference>`_
 - We have built a custom list make this scopes easier
 
-    =========================      =================================      ==================================================
-          Short Scope Name                   Description                                  Scopes Included
-    =========================      =================================      ==================================================
-    basic                                    Read User Info                                 ['User.Read']
-    mailbox                                 Read your mail                                  ['Mail.Read']
-    mailbox_shared                     Read shared mailbox                           ['Mail.Read.Shared']
-    mailbox_settings                    Manage mailbox settings                     ['MailboxSettings.ReadWrite']
-    message_send                        Send from your mailbox                        ['Mail.Send']
-    message_send_shared               Send using shared mailbox                         ['Mail.Send.Shared']
-    message_all                        Full access to your mailbox                  ['Mail.ReadWrite', 'Mail.Send']
-    message_all_shared               Full access to shared mailbox            ['Mail.ReadWrite.Shared', 'Mail.Send.Shared']
-    address_book                        Read your Contacts                           ['Contacts.Read']
-    address_book_shared               Read shared contacts                          ['Contacts.Read.Shared']
-    address_book_all                  Read/Write your Contacts                      ['Contacts.ReadWrite']
-    address_book_all_shared         Read/Write your Contacts                        ['Contacts.ReadWrite.Shared']
-    calendar                          Read your Calendars                               ['Calendars.Read']
-    calendar_shared                  Read shared Calendars                          ['Calendars.Read.Shared']
-    calendar_all                     Full access to your Calendars                  ['Calendars.ReadWrite']
-    calendar_shared_all              Full access to your shared Calendars            ['Calendars.ReadWrite.Shared']
-    users                                Read info of all users                     ['User.ReadBasic.All']
-    onedrive                              Read access to OneDrive                     ['Files.Read.All']
-    onedrive_all                      Full access to OneDrive                         ['Files.ReadWrite.All']
-    sharepoint                        Read access to Sharepoint                        ['Sites.Read.All']
-    sharepoint_all                    Full access to Sharepoint                        ['Sites.ReadWrite.All']
-    tasks                               Read access to Tasks                                ['Tasks.Read']
-    tasks_all                           Full access to Tasks                                ['Tasks.ReadWrite']
-    presence                            Read access to Presence                        ['Presence.Read']
-    =========================      =================================      ==================================================
+    =========================      =========================================      ==================================================
+    Short Scope Name               Description                                    Scopes Included
+    =========================      =========================================      ==================================================
+    basic                          Read User Info                                 ['User.Read']
+    mailbox                        Read your mail                                 ['Mail.Read']
+    mailbox_shared                 Read shared mailbox                            ['Mail.Read.Shared']
+    mailbox_settings               Manage mailbox settings                        ['MailboxSettings.ReadWrite']
+    message_send                   Send from your mailbox                         ['Mail.Send']
+    message_send_shared            Send using shared mailbox                      ['Mail.Send.Shared']
+    message_all                    Full access to your mailbox                    ['Mail.ReadWrite', 'Mail.Send']
+    message_all_shared             Full access to shared mailbox                  ['Mail.ReadWrite.Shared', 'Mail.Send.Shared']
+    address_book                   Read your Contacts                             ['Contacts.Read']
+    address_book_shared            Read shared contacts                           ['Contacts.Read.Shared']
+    address_book_all               Read/Write your Contacts                       ['Contacts.ReadWrite']
+    address_book_all_shared        Read/Write your Contacts                       ['Contacts.ReadWrite.Shared']
+    calendar                       Read your Calendars                            ['Calendars.Read']
+    calendar_shared                Read shared Calendars                          ['Calendars.Read.Shared']
+    calendar_all                   Full access to your Calendars                  ['Calendars.ReadWrite']
+    calendar_shared_all            Full access to your shared Calendars           ['Calendars.ReadWrite.Shared']
+    users                          Read info of all users                         ['User.ReadBasic.All']
+    onedrive                       Read access to OneDrive                        ['Files.Read.All']
+    onedrive_all                   Full access to OneDrive                        ['Files.ReadWrite.All']
+    sharepoint                     Read access to Sharepoint                      ['Sites.Read.All']
+    sharepoint_all                 Full access to Sharepoint                      ['Sites.ReadWrite.All']
+    tasks                          Read access to Tasks                           ['Tasks.Read']
+    tasks_all                      Full access to Tasks                           ['Tasks.ReadWrite']
+    presence                       Read access to Presence                        ['Presence.Read']
+    =========================      =========================================      ==================================================
 
 .. code-block:: python
 

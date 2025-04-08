@@ -49,7 +49,7 @@ coverage.xml
 
 # Sphinx documentation
 docs/_build/
-doctrees/
+.doctrees/
 
 # PyBuilder
 target/
