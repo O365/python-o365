@@ -1,39 +1,45 @@
-import logging
-import json
 import datetime as dt
-from pathlib import Path
+import json
+import logging
 import os
+from pathlib import Path
 from typing import Optional, Protocol, Union
 
 from msal.token_cache import TokenCache
 
-
 log = logging.getLogger(__name__)
 
 
-RESERVED_SCOPES = {'profile', 'openid', 'offline_access'}
+RESERVED_SCOPES = {"profile", "openid", "offline_access"}
 
 
 class CryptographyManagerType(Protocol):
+    """Abstract cryptography manafer"""
+
     def encrypt(self, data: str) -> bytes: ...
+
     def decrypt(self, data: bytes) -> str: ...
 
 
 class BaseTokenBackend(TokenCache):
-    """ A base token storage class """
+    """A base token storage class"""
 
     serializer = json  # The default serializer is json
 
     def __init__(self):
         super().__init__()
         self._has_state_changed: bool = False
+        #: Optional cryptography manager.  |br| **Type:** CryptographyManagerType
         self.cryptography_manager: Optional[CryptographyManagerType] = None
 
     @property
     def has_data(self) -> bool:
+        """Does the token backend contain data."""
         return bool(self._cache)
 
-    def token_expiration_datetime(self, *, username: Optional[str] = None) -> Optional[dt.datetime]:
+    def token_expiration_datetime(
+        self, *, username: Optional[str] = None
+    ) -> Optional[dt.datetime]:
         """
         Returns the current access token expiration datetime
         If the refresh token is present, then the expiration datetime is extended by 3 months
@@ -44,7 +50,7 @@ class BaseTokenBackend(TokenCache):
         if access_token is None:
             return None
 
-        expires_on = access_token.get('expires_on')
+        expires_on = access_token.get("expires_on")
         if expires_on is None:
             # consider the token has expired
             return None
@@ -65,41 +71,41 @@ class BaseTokenBackend(TokenCache):
             return dt.datetime.now() > token_expiration_datetime
 
     def token_is_long_lived(self, *, username: Optional[str] = None) -> bool:
-        """ Returns if the token backend has a refresh token """
+        """Returns if the token backend has a refresh token"""
         return self.get_refresh_token(username=username) is not None
 
     def _get_home_account_id(self, username: str) -> Optional[str]:
-        """ Gets the home_account_id string from the ACCOUNT cache for the specified username """
+        """Gets the home_account_id string from the ACCOUNT cache for the specified username"""
 
-        result = list(self.search(
-            TokenCache.CredentialType.ACCOUNT,
-            query={'username': username}
-        ))
+        result = list(
+            self.search(TokenCache.CredentialType.ACCOUNT, query={"username": username})
+        )
         if result:
-            return result[0].get('home_account_id')
+            return result[0].get("home_account_id")
         else:
-            log.debug(f'No account found for username: {username}')
+            log.debug(f"No account found for username: {username}")
             return None
 
     def get_all_accounts(self) -> list[dict]:
-        """ Returns a list of all accounts present in the token cache"""
+        """Returns a list of all accounts present in the token cache"""
         return list(self.search(TokenCache.CredentialType.ACCOUNT))
 
-    def get_account(self, *, username: Optional[str] = None, home_account_id: Optional[str] = None) -> Optional[dict]:
-        """ Gets the account object for the specified username or home_account_id """
+    def get_account(
+        self, *, username: Optional[str] = None, home_account_id: Optional[str] = None
+    ) -> Optional[dict]:
+        """Gets the account object for the specified username or home_account_id"""
         if username and home_account_id:
-            raise ValueError('Provide nothing or either username or home_account_id to "get_account", but not both')
+            raise ValueError(
+                'Provide nothing or either username or home_account_id to "get_account", but not both'
+            )
 
         query = None
         if username is not None:
-            query = {'username': username}
+            query = {"username": username}
         if home_account_id is not None:
-            query = {'home_account_id': home_account_id}
+            query = {"home_account_id": home_account_id}
 
-        result = list(self.search(
-            TokenCache.CredentialType.ACCOUNT,
-            query=query
-        ))
+        result = list(self.search(TokenCache.CredentialType.ACCOUNT, query=query))
 
         if result:
             return result[0]
@@ -116,18 +122,15 @@ class BaseTokenBackend(TokenCache):
         if username is not None:
             home_account_id = self._get_home_account_id(username)
             if home_account_id:
-                query = {'home_account_id': home_account_id}
+                query = {"home_account_id": home_account_id}
             else:
                 return None
 
-        results = list(self.search(
-            TokenCache.CredentialType.ACCESS_TOKEN,
-            query=query
-        ))
+        results = list(self.search(TokenCache.CredentialType.ACCESS_TOKEN, query=query))
         return results[0] if results else None
 
     def get_refresh_token(self, *, username: Optional[str] = None) -> Optional[dict]:
-        """ Retrieve the stored refresh token
+        """Retrieve the stored refresh token
         If username is None, then the first access token will be retrieved
         :param str username: The username from which retrieve the refresh token
         """
@@ -135,18 +138,17 @@ class BaseTokenBackend(TokenCache):
         if username is not None:
             home_account_id = self._get_home_account_id(username)
             if home_account_id:
-                query = {'home_account_id': home_account_id}
+                query = {"home_account_id": home_account_id}
             else:
                 return None
 
-        results = list(self.search(
-            TokenCache.CredentialType.REFRESH_TOKEN,
-            query=query
-        ))
+        results = list(
+            self.search(TokenCache.CredentialType.REFRESH_TOKEN, query=query)
+        )
         return results[0] if results else None
 
     def get_id_token(self, *, username: Optional[str] = None) -> Optional[dict]:
-        """ Retrieve the stored id token
+        """Retrieve the stored id token
         If username is None, then the first id token will be retrieved
         :param str username: The username from which retrieve the id token
         """
@@ -154,28 +156,28 @@ class BaseTokenBackend(TokenCache):
         if username is not None:
             home_account_id = self._get_home_account_id(username)
             if home_account_id:
-                query = {'home_account_id': home_account_id}
+                query = {"home_account_id": home_account_id}
             else:
                 return None
 
-        results = list(self.search(
-            TokenCache.CredentialType.ID_TOKEN,
-            query=query
-        ))
+        results = list(self.search(TokenCache.CredentialType.ID_TOKEN, query=query))
         return results[0] if results else None
 
-    def get_token_scopes(self, *, username: Optional[str] = None,
-                         remove_reserved: bool = False) -> Optional[list]:
+    def get_token_scopes(
+        self, *, username: Optional[str] = None, remove_reserved: bool = False
+    ) -> Optional[list]:
         """
         Retrieve the scopes the token (refresh first then access) has permissions on
         :param str username: The username from which retrieve the refresh token
         :param bool remove_reserved: if True RESERVED_SCOPES will be removed from the list
         """
-        token = self.get_refresh_token(username=username) or self.get_access_token(username=username)
+        token = self.get_refresh_token(username=username) or self.get_access_token(
+            username=username
+        )
         if token:
-            scopes_str = token.get('target')
+            scopes_str = token.get("target")
             if scopes_str:
-                scopes = scopes_str.split(' ')
+                scopes = scopes_str.split(" ")
                 if remove_reserved:
                     scopes = [scope for scope in scopes if scope not in RESERVED_SCOPES]
                 return scopes
@@ -191,37 +193,27 @@ class BaseTokenBackend(TokenCache):
         if not home_account_id:
             return False
 
-        query = {'home_account_id': home_account_id}
+        query = {"home_account_id": home_account_id}
 
         # remove id token
-        results = list(self.search(
-            TokenCache.CredentialType.ID_TOKEN,
-            query=query
-        ))
+        results = list(self.search(TokenCache.CredentialType.ID_TOKEN, query=query))
         for id_token in results:
             self.remove_idt(id_token)
 
         # remove access token
-        results = list(self.search(
-            TokenCache.CredentialType.ACCESS_TOKEN,
-            query=query
-        ))
+        results = list(self.search(TokenCache.CredentialType.ACCESS_TOKEN, query=query))
         for access_token in results:
             self.remove_at(access_token)
 
         # remove refresh tokens
-        results = list(self.search(
-            TokenCache.CredentialType.REFRESH_TOKEN,
-            query=query
-        ))
+        results = list(
+            self.search(TokenCache.CredentialType.REFRESH_TOKEN, query=query)
+        )
         for refresh_token in results:
             self.remove_rt(refresh_token)
 
         # remove accounts
-        results = list(self.search(
-            TokenCache.CredentialType.ACCOUNT,
-            query=query
-        ))
+        results = list(self.search(TokenCache.CredentialType.ACCOUNT, query=query))
         for account in results:
             self.remove_account(account)
 
@@ -229,10 +221,12 @@ class BaseTokenBackend(TokenCache):
         return True
 
     def add(self, event, **kwargs) -> None:
+        """Add to the current cache."""
         super().add(event, **kwargs)
         self._has_state_changed = True
 
     def modify(self, credential_type, old_entry, new_key_value_pairs=None) -> None:
+        """Modify content in the cache."""
         super().modify(credential_type, old_entry, new_key_value_pairs)
         self._has_state_changed = True
 
@@ -246,7 +240,7 @@ class BaseTokenBackend(TokenCache):
             return token_str
 
     def deserialize(self, token_cache_state: Union[bytes, str]) -> dict:
-        """ Deserialize the cache from a state previously obtained by serialize() """
+        """Deserialize the cache from a state previously obtained by serialize()"""
         with self._lock:
             self._has_state_changed = False
             if self.cryptography_manager is not None:
@@ -268,62 +262,63 @@ class BaseTokenBackend(TokenCache):
         raise NotImplementedError
 
     def delete_token(self) -> bool:
-        """ Optional Abstract method to delete the token from the backend """
+        """Optional Abstract method to delete the token from the backend"""
         raise NotImplementedError
 
     def check_token(self) -> bool:
-        """ Optional Abstract method to check for the token existence in the backend """
+        """Optional Abstract method to check for the token existence in the backend"""
         raise NotImplementedError
 
     def should_refresh_token(self, con=None) -> Optional[bool]:
         """
         This method is intended to be implemented for environments
-         where multiple Connection instances are running on parallel.
+        where multiple Connection instances are running on parallel.
 
         This method should check if it's time to refresh the token or not.
         The chosen backend can store a flag somewhere to answer this question.
         This can avoid race conditions between different instances trying to
-         refresh the token at once, when only one should make the refresh.
+        refresh the token at once, when only one should make the refresh.
 
-        > This is an example of how to achieve this:
-        > 1) Along with the token store a Flag
-        > 2) The first to see the Flag as True must transactional update it
-        >     to False. This method then returns True and therefore the
-        >     connection will refresh the token.
-        > 3) The save_token method should be rewritten to also update the flag
-        >     back to True always.
-        > 4) Meanwhile between steps 2 and 3, any other token backend checking
-        >     for this method should get the flag with a False value.
-        >     This method should then wait and check again the flag.
-        >     This can be implemented as a call with an incremental backoff
-        >     factor to avoid too many calls to the database.
-        >     At a given point in time, the flag will return True.
-        >     Then this method should load the token and finally return False
-        >     signaling there is no need to refresh the token.
+        This is an example of how to achieve this:
 
-        If this returns True, then the Connection will refresh the token.
-        If this returns False, then the Connection will NOT refresh the token.
-        If this returns None, then this method already executed the refresh and therefore
-         the Connection does not have to.
+            #. Along with the token store a Flag
+            #. The first to see the Flag as True must transactional update it
+               to False. This method then returns True and therefore the
+               connection will refresh the token.
+            #. The save_token method should be rewritten to also update the flag
+               back to True always.
+            #. Meanwhile between steps 2 and 3, any other token backend checking
+               for this method should get the flag with a False value.
 
-        By default, this always returns True
+            | This method should then wait and check again the flag.
+            | This can be implemented as a call with an incremental backoff
+              factor to avoid too many calls to the database.
+            | At a given point in time, the flag will return True.
+            | Then this method should load the token and finally return False
+              signaling there is no need to refresh the token.
+
+            | If this returns True, then the Connection will refresh the token.
+            | If this returns False, then the Connection will NOT refresh the token.
+            | If this returns None, then this method already executed the refresh and therefore
+              the Connection does not have to.
+
+            By default, this always returns True
 
         There is an example of this in the example's folder.
 
         :param Connection con: the connection that calls this method. This
-         is passed because maybe the locking mechanism needs to refresh the
-         token within the lock applied in this method.
+         is passed because maybe the locking mechanism needs to refresh the token within the lock applied in this method.
         :rtype: bool or None
-        :return: True if the Connection can refresh the token
-                 False if the Connection should not refresh the token
-                 None if the token was refreshed and therefore the
-                  Connection should do nothing.
+        :return: | True if the Connection can refresh the token
+                 | False if the Connection should not refresh the token
+                 | None if the token was refreshed and therefore the
+                 | Connection should do nothing.
         """
         return True
 
 
 class FileSystemTokenBackend(BaseTokenBackend):
-    """ A token backend based on files on the filesystem """
+    """A token backend based on files on the filesystem"""
 
     def __init__(self, token_path=None, token_filename=None):
         """
@@ -336,9 +331,10 @@ class FileSystemTokenBackend(BaseTokenBackend):
             token_path = Path(token_path) if token_path else Path()
 
         if token_path.is_file():
+            #: Path to the token stored in the file system.  |br| **Type:** str
             self.token_path = token_path
         else:
-            token_filename = token_filename or 'o365_token.txt'
+            token_filename = token_filename or "o365_token.txt"
             self.token_path = token_path / token_filename
 
     def __repr__(self):
@@ -350,13 +346,15 @@ class FileSystemTokenBackend(BaseTokenBackend):
         :return bool: Success / Failure
         """
         if self.token_path.exists():
-            with self.token_path.open('r') as token_file:
+            with self.token_path.open("r") as token_file:
                 token_dict = self.deserialize(token_file.read())
-                if 'access_token' in token_dict:
-                    raise ValueError('The token you are trying to load is not valid anymore. '
-                                     'Please delete the token and proceed to authenticate again.')
+                if "access_token" in token_dict:
+                    raise ValueError(
+                        "The token you are trying to load is not valid anymore. "
+                        "Please delete the token and proceed to authenticate again."
+                    )
                 self._cache = token_dict
-                log.debug(f'Token loaded from {self.token_path}')
+                log.debug(f"Token loaded from {self.token_path}")
             return True
         return False
 
@@ -377,10 +375,10 @@ class FileSystemTokenBackend(BaseTokenBackend):
             if not self.token_path.parent.exists():
                 self.token_path.parent.mkdir(parents=True)
         except Exception as e:
-            log.error('Token could not be saved: {}'.format(str(e)))
+            log.error("Token could not be saved: {}".format(str(e)))
             return False
 
-        with self.token_path.open('w') as token_file:
+        with self.token_path.open("w") as token_file:
             token_file.write(self.serialize())
         return True
 
@@ -403,9 +401,10 @@ class FileSystemTokenBackend(BaseTokenBackend):
 
 
 class MemoryTokenBackend(BaseTokenBackend):
+    """A token backend stored in memory."""
 
     def __repr__(self):
-        return 'MemoryTokenBackend'
+        return "MemoryTokenBackend"
 
     def load_token(self) -> bool:
         return True
@@ -415,7 +414,7 @@ class MemoryTokenBackend(BaseTokenBackend):
 
 
 class EnvTokenBackend(BaseTokenBackend):
-    """ A token backend based on environmental variable """
+    """A token backend based on environmental variable."""
 
     def __init__(self, token_env_name=None):
         """
@@ -424,6 +423,7 @@ class EnvTokenBackend(BaseTokenBackend):
         """
         super().__init__()
 
+        #: Name of the environment token (Default - `O365TOKEN`).  |br| **Type:** str
         self.token_env_name = token_env_name if token_env_name else "O365TOKEN"
 
     def __repr__(self):
@@ -474,9 +474,9 @@ class EnvTokenBackend(BaseTokenBackend):
 
 
 class FirestoreBackend(BaseTokenBackend):
-    """ A Google Firestore database backend to store tokens """
+    """A Google Firestore database backend to store tokens"""
 
-    def __init__(self, client, collection, doc_id, field_name='token'):
+    def __init__(self, client, collection, doc_id, field_name="token"):
         """
         Init Backend
         :param firestore.Client client: the firestore Client instance
@@ -485,14 +485,19 @@ class FirestoreBackend(BaseTokenBackend):
         :param str field_name: the name of the field that stores the token in the document
         """
         super().__init__()
+        #: Fire store client.  |br| **Type:** firestore.Client
         self.client = client
+        #: Fire store colelction.  |br| **Type:** str
         self.collection = collection
+        #: Fire store token document key.  |br| **Type:** str
         self.doc_id = doc_id
+        #: Fire store document reference.  |br| **Type:** any
         self.doc_ref = client.collection(collection).document(doc_id)
+        #: Fire store token field name (Default - `token`).  |br| **Type:** str
         self.field_name = field_name
 
     def __repr__(self):
-        return 'Collection: {}. Doc Id: {}'.format(self.collection, self.doc_id)
+        return "Collection: {}. Doc Id: {}".format(self.collection, self.doc_id)
 
     def load_token(self) -> bool:
         """
@@ -502,9 +507,12 @@ class FirestoreBackend(BaseTokenBackend):
         try:
             doc = self.doc_ref.get()
         except Exception as e:
-            log.error('Token (collection: {}, doc_id: {}) '
-                      'could not be retrieved from the backend: {}'
-                      .format(self.collection, self.doc_id, str(e)))
+            log.error(
+                "Token (collection: {}, doc_id: {}) "
+                "could not be retrieved from the backend: {}".format(
+                    self.collection, self.doc_id, str(e)
+                )
+            )
             doc = None
         if doc and doc.exists:
             token_str = doc.get(self.field_name)
@@ -527,11 +535,9 @@ class FirestoreBackend(BaseTokenBackend):
 
         try:
             # set token will overwrite previous data
-            self.doc_ref.set({
-                self.field_name: self.serialize()
-            })
+            self.doc_ref.set({self.field_name: self.serialize()})
         except Exception as e:
-            log.error('Token could not be saved: {}'.format(str(e)))
+            log.error("Token could not be saved: {}".format(str(e)))
             return False
 
         return True
@@ -544,7 +550,9 @@ class FirestoreBackend(BaseTokenBackend):
         try:
             self.doc_ref.delete()
         except Exception as e:
-            log.error('Could not delete the token (key: {}): {}'.format(self.doc_id, str(e)))
+            log.error(
+                "Could not delete the token (key: {}): {}".format(self.doc_id, str(e))
+            )
             return False
         return True
 
@@ -556,29 +564,37 @@ class FirestoreBackend(BaseTokenBackend):
         try:
             doc = self.doc_ref.get()
         except Exception as e:
-            log.error('Token (collection: {}, doc_id: {}) '
-                      'could not be retrieved from the backend: {}'
-                      .format(self.collection, self.doc_id, str(e)))
+            log.error(
+                "Token (collection: {}, doc_id: {}) "
+                "could not be retrieved from the backend: {}".format(
+                    self.collection, self.doc_id, str(e)
+                )
+            )
             doc = None
         return doc and doc.exists
 
 
 class AWSS3Backend(BaseTokenBackend):
-    """ An AWS S3 backend to store tokens """
+    """An AWS S3 backend to store tokens"""
 
     def __init__(self, bucket_name, filename):
         """
         Init Backend
-        :param str filename: Name of the S3 bucket
+        :param str bucket_name: Name of the S3 bucket
+        :param str filename: Name of the S3 file
         """
         try:
             import boto3
         except ModuleNotFoundError as e:
-            raise Exception('Please install the boto3 package to use this token backend.') from e
+            raise Exception(
+                "Please install the boto3 package to use this token backend."
+            ) from e
         super().__init__()
+        #: S3 bucket name.  |br| **Type:** str
         self.bucket_name = bucket_name
+        #: S3 file name.  |br| **Type:** str
         self.filename = filename
-        self._client = boto3.client('s3')
+        self._client = boto3.client("s3")
 
     def __repr__(self):
         return "AWSS3Backend('{}', '{}')".format(self.bucket_name, self.filename)
@@ -589,10 +605,16 @@ class AWSS3Backend(BaseTokenBackend):
          :return bool: Success / Failure
         """
         try:
-            token_object = self._client.get_object(Bucket=self.bucket_name, Key=self.filename)
-            self._cache = self.deserialize(token_object['Body'].read())
+            token_object = self._client.get_object(
+                Bucket=self.bucket_name, Key=self.filename
+            )
+            self._cache = self.deserialize(token_object["Body"].read())
         except Exception as e:
-            log.error("Token ({}) could not be retrieved from the backend: {}".format(self.filename, e))
+            log.error(
+                "Token ({}) could not be retrieved from the backend: {}".format(
+                    self.filename, e
+                )
+            )
             return False
         return True
 
@@ -612,9 +634,7 @@ class AWSS3Backend(BaseTokenBackend):
         if self.check_token():  # file already exists
             try:
                 _ = self._client.put_object(
-                    Bucket=self.bucket_name,
-                    Key=self.filename,
-                    Body=token_str
+                    Bucket=self.bucket_name, Key=self.filename, Body=token_str
                 )
             except Exception as e:
                 log.error("Token file could not be saved: {}".format(e))
@@ -622,11 +642,11 @@ class AWSS3Backend(BaseTokenBackend):
         else:  # create a new token file
             try:
                 r = self._client.put_object(
-                    ACL='private',
+                    ACL="private",
                     Bucket=self.bucket_name,
                     Key=self.filename,
                     Body=token_str,
-                    ContentType='text/plain'
+                    ContentType="text/plain",
                 )
             except Exception as e:
                 log.error("Token file could not be created: {}".format(e))
@@ -645,7 +665,11 @@ class AWSS3Backend(BaseTokenBackend):
             log.error("Token file could not be deleted: {}".format(e))
             return False
         else:
-            log.warning("Deleted token file {} in bucket {}.".format(self.filename, self.bucket_name))
+            log.warning(
+                "Deleted token file {} in bucket {}.".format(
+                    self.filename, self.bucket_name
+                )
+            )
             return True
 
     def check_token(self) -> bool:
@@ -662,7 +686,7 @@ class AWSS3Backend(BaseTokenBackend):
 
 
 class AWSSecretsBackend(BaseTokenBackend):
-    """ An AWS Secrets Manager backend to store tokens """
+    """An AWS Secrets Manager backend to store tokens"""
 
     def __init__(self, secret_name, region_name):
         """
@@ -673,14 +697,20 @@ class AWSSecretsBackend(BaseTokenBackend):
         try:
             import boto3
         except ModuleNotFoundError as e:
-            raise Exception('Please install the boto3 package to use this token backend.') from e
+            raise Exception(
+                "Please install the boto3 package to use this token backend."
+            ) from e
         super().__init__()
+        #: AWS Secret secret name.  |br| **Type:** str
         self.secret_name = secret_name
+        #: AWS Secret region name.  |br| **Type:** str
         self.region_name = region_name
-        self._client = boto3.client('secretsmanager', region_name=region_name)
+        self._client = boto3.client("secretsmanager", region_name=region_name)
 
     def __repr__(self):
-        return "AWSSecretsBackend('{}', '{}')".format(self.secret_name, self.region_name)
+        return "AWSSecretsBackend('{}', '{}')".format(
+            self.secret_name, self.region_name
+        )
 
     def load_token(self) -> bool:
         """
@@ -688,11 +718,17 @@ class AWSSecretsBackend(BaseTokenBackend):
         :return bool: Success / Failure
         """
         try:
-            get_secret_value_response = self._client.get_secret_value(SecretId=self.secret_name)
-            token_str = get_secret_value_response['SecretString']
+            get_secret_value_response = self._client.get_secret_value(
+                SecretId=self.secret_name
+            )
+            token_str = get_secret_value_response["SecretString"]
             self._cache = self.deserialize(token_str)
         except Exception as e:
-            log.error("Token (secret: {}) could not be retrieved from the backend: {}".format(self.secret_name, e))
+            log.error(
+                "Token (secret: {}) could not be retrieved from the backend: {}".format(
+                    self.secret_name, e
+                )
+            )
             return False
 
         return True
@@ -712,8 +748,7 @@ class AWSSecretsBackend(BaseTokenBackend):
         if self.check_token():  # secret already exists
             try:
                 _ = self._client.update_secret(
-                    SecretId=self.secret_name,
-                    SecretString=self.serialize()
+                    SecretId=self.secret_name, SecretString=self.serialize()
                 )
             except Exception as e:
                 log.error("Token secret could not be saved: {}".format(e))
@@ -722,16 +757,18 @@ class AWSSecretsBackend(BaseTokenBackend):
             try:
                 r = self._client.create_secret(
                     Name=self.secret_name,
-                    Description='Token generated by the O365 python package (https://pypi.org/project/O365/).',
-                    SecretString=self.serialize()
+                    Description="Token generated by the O365 python package (https://pypi.org/project/O365/).",
+                    SecretString=self.serialize(),
                 )
             except Exception as e:
                 log.error("Token secret could not be created: {}".format(e))
                 return False
             else:
-                log.warning("\nCreated secret {} ({}). Note: using AWS Secrets Manager incurs charges, "
-                            "please see https://aws.amazon.com/secrets-manager/pricing/ "
-                            "for pricing details.\n".format(r['Name'], r['ARN']))
+                log.warning(
+                    "\nCreated secret {} ({}). Note: using AWS Secrets Manager incurs charges, "
+                    "please see https://aws.amazon.com/secrets-manager/pricing/ "
+                    "for pricing details.\n".format(r["Name"], r["ARN"])
+                )
 
         return True
 
@@ -741,12 +778,14 @@ class AWSSecretsBackend(BaseTokenBackend):
         :return bool: Success / Failure
         """
         try:
-            r = self._client.delete_secret(SecretId=self.secret_name, ForceDeleteWithoutRecovery=True)
+            r = self._client.delete_secret(
+                SecretId=self.secret_name, ForceDeleteWithoutRecovery=True
+            )
         except Exception as e:
             log.error("Token secret could not be deleted: {}".format(e))
             return False
         else:
-            log.warning("Deleted token secret {} ({}).".format(r['Name'], r['ARN']))
+            log.warning("Deleted token secret {} ({}).".format(r["Name"], r["ARN"]))
             return True
 
     def check_token(self) -> bool:
@@ -763,7 +802,7 @@ class AWSSecretsBackend(BaseTokenBackend):
 
 
 class BitwardenSecretsManagerBackend(BaseTokenBackend):
-    """ A Bitwarden Secrets Manager backend to store tokens """
+    """A Bitwarden Secrets Manager backend to store tokens"""
 
     def __init__(self, access_token: str, secret_id: str):
         """
@@ -774,11 +813,17 @@ class BitwardenSecretsManagerBackend(BaseTokenBackend):
         try:
             from bitwarden_sdk import BitwardenClient
         except ModuleNotFoundError as e:
-            raise Exception('Please install the bitwarden-sdk package to use this token backend.') from e
+            raise Exception(
+                "Please install the bitwarden-sdk package to use this token backend."
+            ) from e
         super().__init__()
+        #: Bitwarden client.  |br| **Type:** BitWardenClient
         self.client = BitwardenClient()
+        #: Bitwarden login access token.  |br| **Type:** str
         self.client.auth().login_access_token(access_token)
+        #: Bitwarden secret is.  |br| **Type:** str
         self.secret_id = secret_id
+        #: Bitwarden secret.  |br| **Type:** str
         self.secret = None
 
     def __repr__(self):
@@ -799,7 +844,7 @@ class BitwardenSecretsManagerBackend(BaseTokenBackend):
             self._cache = self.deserialize(self.secret.value)
             return True
         except:
-            logging.warning('Existing token could not be decoded')
+            logging.warning("Existing token could not be decoded")
             return False
 
     def save_token(self, force=False) -> bool:
@@ -823,30 +868,35 @@ class BitwardenSecretsManagerBackend(BaseTokenBackend):
             self.secret.note,
             self.secret.organization_id,
             self.serialize(),
-            [self.secret.project_id]
+            [self.secret.project_id],
         )
         return True
 
 
 class DjangoTokenBackend(BaseTokenBackend):
     """
-    A Django database token backend to store tokens. To use this backend add the `TokenModel` 
+    A Django database token backend to store tokens. To use this backend add the `TokenModel`
     model below into your Django application.
-        
-    class TokenModel(models.Model):
-        token = models.JSONField()
-        created_at = models.DateTimeField(auto_now_add=True)
-        updated_at = models.DateTimeField(auto_now=True)
 
-        def __str__(self):
-            return f"Token for {self.token.get('client_id', 'unknown')}"
+    .. code-block:: python
+
+        class TokenModel(models.Model):
+            token = models.JSONField()
+            created_at = models.DateTimeField(auto_now_add=True)
+            updated_at = models.DateTimeField(auto_now=True)
+
+            def __str__(self):
+                return f"Token for {self.token.get('client_id', 'unknown')}"
 
     Example usage:
-    from O365.utils import DjangoTokenBackend
-    from models import TokenModel
 
-    token_backend = DjangoTokenBackend(token_model=TokenModel)
-    account = Account(credentials, token_backend=token_backend)
+    .. code-block:: python
+
+        from O365.utils import DjangoTokenBackend
+        from models import TokenModel
+
+        token_backend = DjangoTokenBackend(token_model=TokenModel)
+        account = Account(credentials, token_backend=token_backend)
     """
 
     def __init__(self, token_model=None):
@@ -857,10 +907,11 @@ class DjangoTokenBackend(BaseTokenBackend):
         """
         super().__init__()
         # Use the provided token_model class
+        #: Django token model  |br| **Type:** TokenModel
         self.token_model = token_model
 
     def __repr__(self):
-        return 'DjangoTokenBackend'
+        return "DjangoTokenBackend"
 
     def load_token(self) -> bool:
         """
@@ -870,7 +921,7 @@ class DjangoTokenBackend(BaseTokenBackend):
 
         try:
             # Retrieve the latest token based on the most recently created record
-            token_record = self.token_model.objects.latest('created_at')
+            token_record = self.token_model.objects.latest("created_at")
             self._cache = self.deserialize(token_record.token)
         except Exception as e:
             log.warning(f"No token found in the database, creating a new one: {str(e)}")
@@ -906,7 +957,7 @@ class DjangoTokenBackend(BaseTokenBackend):
         """
         try:
             # Delete the latest token
-            token_record = self.token_model.objects.latest('created_at')
+            token_record = self.token_model.objects.latest("created_at")
             token_record.delete()
         except Exception as e:
             log.error(f"Could not delete token: {str(e)}")
@@ -919,4 +970,3 @@ class DjangoTokenBackend(BaseTokenBackend):
         :return bool: True if it exists, False otherwise
         """
         return self.token_model.objects.exists()
-    
