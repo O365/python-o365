@@ -2,144 +2,11 @@ from __future__ import annotations
 
 import datetime as dt
 from abc import ABC, abstractmethod
-from distutils.dep_util import newer
-from typing import Union, Optional, TYPE_CHECKING, Type
+from typing import Union, Optional, TYPE_CHECKING, Type, Iterator
 
-from docutils.utils import new_document
 
 if TYPE_CHECKING:
     from O365.connection import Protocol
-
-# class OldQuery:
-#     """ Helper to conform OData filters """
-#     _mapping = {
-#         'from': 'from/emailAddress/address',
-#         'to': 'toRecipients/emailAddress/address',
-#         'start': 'start/DateTime',
-#         'end': 'end/DateTime',
-#         'due': 'duedatetime/DateTime',
-#         'reminder': 'reminderdatetime/DateTime',
-#         'flag': 'flag/flagStatus',
-#         'body': 'body/content'
-#     }
-#
-#     def __str__(self):
-#         return 'Filter: {}\nOrder: {}\nSelect: {}\nExpand: {}\nSearch: {}'.format(self.get_filters(),
-#                                                                                   self.get_order(),
-#                                                                                   self.get_selects(),
-#                                                                                   self.get_expands(),
-#                                                                                   self._search)
-#
-#     def select(self, *attributes):
-#         """ Adds the attribute to the $select parameter
-#
-#         :param str attributes: the attributes tuple to select.
-#          If empty, the on_attribute previously set is added.
-#         :rtype: Query
-#         """
-#         if attributes:
-#             for attribute in attributes:
-#                 attribute = self.protocol.convert_case(
-#                     attribute) if attribute and isinstance(attribute,
-#                                                            str) else None
-#                 if attribute:
-#                     if '/' in attribute:
-#                         # only parent attribute can be selected
-#                         attribute = attribute.split('/')[0]
-#                     self._selects.add(attribute)
-#         else:
-#             if self._attribute:
-#                 self._selects.add(self._attribute)
-#
-#         return self
-#
-#     def expand(self, *relationships):
-#         """
-#         Adds the relationships (e.g. "event" or "attachments")
-#         that should be expanded with the $expand parameter
-#         Important: The ApiComponent using this should know how to handle this relationships.
-#
-#             eg: Message knows how to handle attachments, and event (if it's an EventMessage)
-#
-#         Important: When using expand on multi-value relationships a max of 20 items will be returned.
-#
-#         :param str relationships: the relationships tuple to expand.
-#         :rtype: Query
-#         """
-#
-#         for relationship in relationships:
-#             if relationship == "event":
-#                 relationship = "{}/event".format(
-#                     self.protocol.get_service_keyword("event_message_type")
-#                 )
-#             self._expands.add(relationship)
-#
-#         return self
-#
-#     def as_params(self):
-#         """ Returns the filters, orders, select, expands and search as query parameters
-#
-#         :rtype: dict
-#         """
-#         params = {}
-#         if self.has_filters:
-#             params['$filter'] = self.get_filters()
-#         if self.has_order:
-#             params['$orderby'] = self.get_order()
-#         if self.has_expands and not self.has_selects:
-#             params['$expand'] = self.get_expands()
-#         if self.has_selects and not self.has_expands:
-#             params['$select'] = self.get_selects()
-#         if self.has_expands and self.has_selects:
-#             params['$expand'] = '{}($select={})'.format(self.get_expands(), self.get_selects())
-#         if self._search:
-#             params['$search'] = self._search
-#             params.pop('$filter', None)
-#             params.pop('$orderby', None)
-#         return params
-#
-#     def get_selects(self):
-#         """ Returns the result select clause
-#
-#         :rtype: str or None
-#         """
-#         if self._selects:
-#             return ','.join(self._selects)
-#         else:
-#             return None
-#
-#     def get_expands(self):
-#         """ Returns the result expand clause
-#
-#          :rtype: str or None
-#         """
-#         if self._expands:
-#             return ','.join(self._expands)
-#         else:
-#             return None
-#
-#     def _get_mapping(self, attribute):
-#         if attribute:
-#             mapping = self._mapping.get(attribute)
-#             if mapping:
-#                 attribute = '/'.join(
-#                     [self.protocol.convert_case(step) for step in
-#                      mapping.split('/')])
-#             else:
-#                 attribute = self.protocol.convert_case(attribute)
-#             return attribute
-#         return None
-#
-#     def on_list_field(self, field):
-#         """ Apply query on a list field, to be used along with chain()
-#
-#         :param str field: field name (note: name is case sensitive)
-#         :rtype: Query
-#         """
-#         self._attribute = 'fields/' + field
-#         return self
-
-
 
 FilterWord = Union[str, bool, None, dt.date, int, float]
 
@@ -161,36 +28,50 @@ class QueryBase(ABC):
     def __repr__(self):
         return self.render()
 
+    @abstractmethod
+    def __and__(self, other):
+        pass
+
+    @abstractmethod
+    def __or__(self, other):
+        pass
+
 
 class QueryFilter(QueryBase, ABC):
+    __slots__ = ()
 
     @abstractmethod
     def render(self, item_name: Optional[str] = None) -> str:
         pass
 
     def as_params(self) -> dict:
-        return {'$filter': self.render()}
+        return {"$filter": self.render()}
 
-    def __and__(self, other: QueryFilter):
-        self._check_chain([self, other])
-        return ChainFilter('and', [self, other])
+    def __and__(self, other: Optional[QueryBase]) -> QueryBase:
+        if other is None:
+            return self
+        if isinstance(other, QueryFilter):
+            return ChainFilter("and", [self, other])
+        elif isinstance(other, OrderByFilter):
+            return CompositeFilter(filters=self, order_by=other)
+        elif isinstance(other, SearchFilter):
+            raise ValueError("Can't mix search with filters or order by clauses.")
+        elif isinstance(other, SelectFilter):
+            return CompositeFilter(filters=self, select=other)
+        elif isinstance(other, ExpandFilter):
+            return CompositeFilter(filters=self, expand=other)
+        else:
+            raise ValueError(f"Can't mix {type(other)} with {type(self)}")
 
-    def __or__(self, other: QueryFilter):
-        self._check_chain([self, other])
-        return ChainFilter('or', [self, other])
 
-    @staticmethod
-    def _check_chain(items: list[QueryFilter]):
-        """ Checks the type of the items to be chained and raise compatibility error when applicable """
-        # 1) search can NOT be mixed with filter or orderby (can only be mixed with other search or expand and select)
-        if any(isinstance(item, SearchFilter) for item in items):
-            if any(isinstance(item, (QueryFilter, OrderBy)) for item in items):
-                raise ValueError("Can't mix search with filters or order by clauses.")
-        # 2) when combining a filter with select, orderby or expand return a CompositeFilter
+    def __or__(self, other: QueryFilter) -> ChainFilter:
+        if not isinstance(other, QueryFilter):
+            raise ValueError("Can't chain a non-query filter with and 'or' operator. Use 'and' instead.")
+        return ChainFilter("or", [self, other])
 
 
 class OperationQueryFilter(QueryFilter, ABC):
-    __slots__ = ("_operation")
+    __slots__ = ("_operation",)
 
     def __init__(self, operation: str):
         self._operation: str = operation
@@ -219,7 +100,7 @@ class LogicalFilter(OperationQueryFilter):
 
 
 class FunctionFilter(LogicalFilter):
-    __slots__ = ()
+    __slots__ = ("_operation", "_attribute", "_word")
 
     def render(self, item_name: Optional[str] = None) -> str:
         return f"{self._operation}({self._prepare_attribute(item_name)}, {self._word})"
@@ -243,86 +124,85 @@ class IterableFilter(OperationQueryFilter):
 class ChainFilter(OperationQueryFilter):
     __slots__ = ("_operation", "_filter_instances")
 
-    def __init__(self, operation: str, filter_instances: Union[list[QueryFilter], list[SearchFilter]]):
-        assert operation in ('and', 'or')
-        self._check_chain(filter_instances)
+    def __init__(self, operation: str, filter_instances: list[QueryFilter]):
+        assert operation in ("and", "or")
         super().__init__(operation)
-        self._filter_instances: Union[list[QueryFilter], list[SearchFilter]] = filter_instances
+        self._filter_instances: list[QueryFilter] = filter_instances
 
     def render(self, item_name: Optional[str] = None) -> str:
         return f" {self._operation} ".join([fi.render(item_name) for fi in self._filter_instances])
 
 
 class ModifierQueryFilter(QueryFilter, ABC):
-    __slots__ = ("_filter_instance")
+    __slots__ = ("_filter_instance",)
 
     def __init__(self, filter_instance: QueryFilter):
         self._filter_instance: QueryFilter = filter_instance
 
 
 class NegateFilter(ModifierQueryFilter):
-    __slots__ = ("_filter_instance")
+    __slots__ = ("_filter_instance",)
 
     def render(self, item_name: Optional[str] = None) -> str:
         return f"not {self._filter_instance.render(item_name=item_name)}"
 
 
 class GroupFilter(ModifierQueryFilter):
-    __slots__ = ("_filter_instance")
+    __slots__ = ("_filter_instance",)
 
     def render(self, item_name: Optional[str] = None) -> str:
         return f"({self._filter_instance.render(item_name=item_name)})"
 
 
 class SearchFilter(QueryBase):
-    __slots__ = ("_search")
+    __slots__ = ("_search",)
 
-    def __init__(self):
-        self._search: str = ''
-
-    def set(self, word: Union[str, int, bool], attribute: Optional[str]):
-        if not word:
-            raise ValueError("Word can't be empty")
-        # always convert to strings
-        if isinstance(word, bool):
-            word = str(word).lower()
+    def __init__(self, word: Optional[Union[str, int, bool]] = None, attribute: Optional[str] = None):
+        if word:
+            if attribute:
+                self._search: str = f"{attribute}:{word}"
+            else:
+                self._search: str = word
         else:
-            word = str(word)
-        if attribute:
-            self._search = f"{attribute}:{word}"
-        else:
-            self._search = word
+            self._search: str = ""
 
-    def _combine(self, search_one: str, search_two: str, operator: str = 'and'):
+    def _combine(self, search_one: str, search_two: str, operator: str = "and"):
         self._search = f"{search_one} {operator} {search_two}"
 
     def render(self) -> str:
         return f'"{self._search}"'
 
     def as_params(self) -> dict:
-        return {'$search': self.render()}
+        return {"$search": self.render()}
 
-    def __and__(self, other: SearchFilter):
+    def __and__(self, other: Optional[QueryBase]) -> QueryBase:
+        if other is None:
+            return self
         if isinstance(other, SearchFilter):
             new_search = self.__class__()
-            new_search._combine(self._search, other._search, operator='and')
+            new_search._combine(self._search, other._search, operator="and")
             return new_search
+        elif isinstance(other, QueryFilter):
+            raise ValueError("Can't mix search with filters clauses.")
+        elif isinstance(other, OrderByFilter):
+            raise ValueError("Can't mix search with order by clauses.")
+        elif isinstance(other, SelectFilter):
+            return CompositeFilter(search=self, select=other)
+        elif isinstance(other, ExpandFilter):
+            return CompositeFilter(search=self, expand=other)
         else:
-            # TODO: what if i mix it with a filter?
-            return QueryBase()
+            raise ValueError(f"Can't mix {type(other)} with {type(self)}")
 
-    def __or__(self, other: SearchFilter):
-        if isinstance(other, SearchFilter):
-            new_search = self.__class__()
-            new_search._combine(self._search, other._search, operator='or')
-            return new_search
-        else:
-            # TODO: what if i mix it with a filter?
-            return QueryBase()
+    def __or__(self, other: QueryBase) -> SearchFilter:
+        if not isinstance(other, SearchFilter):
+            raise ValueError("Can't chain a non-search filter with and 'or' operator. Use 'and' instead.")
+        new_search = self.__class__()
+        new_search._combine(self._search, other._search, operator="or")
+        return new_search
 
 
-class OrderBy(QueryBase):
-    __slots__ = ("orderby")
+class OrderByFilter(QueryBase):
+    __slots__ = ("_orderby",)
 
     def __init__(self):
         self._orderby: list[tuple[str, bool]] = []
@@ -337,50 +217,200 @@ class OrderBy(QueryBase):
             self._orderby.append((attribute, ascending))
 
     def render(self) -> str:
-        return ','.join(f"{att} {'' if asc else 'desc'}".strip() for att, asc in self._orderby)
+        return ",".join(f"{att} {'' if asc else 'desc'}".strip() for att, asc in self._orderby)
 
     def as_params(self) -> dict:
-        return {'$orderby': self.render()}
+        return {"$orderby": self.render()}
 
-    def __and__(self, other: OrderBy) -> OrderBy:
-        if isinstance(other, OrderBy):
+    def __and__(self, other: Optional[QueryBase]) -> QueryBase:
+        if other is None:
+            return self
+        if isinstance(other, OrderByFilter):
             new_order_by = self.__class__()
             for att, asc in self._orderby:
                 new_order_by.add(att, asc)
             for att, asc in other._orderby:
                 new_order_by.add(att, asc)
             return new_order_by
+        elif isinstance(other, SearchFilter):
+            raise ValueError("Can't mix order by with search clauses.")
+        elif isinstance(other, QueryFilter):
+            return CompositeFilter(order_by=self, filters=other)
+        elif isinstance(other, SelectFilter):
+            return CompositeFilter(order_by=self, select=other)
+        elif isinstance(other, ExpandFilter):
+            return CompositeFilter(order_by=self, expand=other)
         else:
-            # TODO: what if i mix it with a filter?
-            return QueryBase()
+            raise ValueError(f"Can't mix {type(other)} with {type(self)}")
 
     def __or__(self, other: QueryBase):
-        raise RuntimeError('Orderby clauses are mutually exclusive')
+        raise RuntimeError("Orderby clauses are mutually exclusive")
+
+
+class ContainerQueryFilter(QueryBase):
+    __slots__ = ("_container", "_keyword")
+
+    def __init__(self, *args: Union[str, tuple[str, SelectFilter]]):
+        self._container: list[Union[str, tuple[str, SelectFilter]]] = list(args)
+        self._keyword: str = ''
+
+    def append(self, item: Union[str, tuple[str, SelectFilter]]) -> None:
+        self._container.append(item)
+
+    def __iter__(self) -> Iterator[Union[str, tuple[str, SelectFilter]]]:
+        return iter(self._container)
+
+    def __contains__(self, attribute: str) -> bool:
+        return attribute in [item[0] if isinstance(item, tuple) else item for item in self._container]
+
+    def __and__(self, other: Optional[QueryBase]) -> QueryBase:
+        if other is None:
+            return self
+        if (isinstance(other, SelectFilter) and isinstance(self, SelectFilter)
+        ) or (isinstance(other, ExpandFilter) and isinstance(self, ExpandFilter)):
+            new_container = self.__class__(*self)
+            for item in other:
+                if isinstance(item, tuple):
+                    attribute = item[0]
+                else:
+                    attribute = item
+                if attribute not in new_container:
+                    new_container.append(item)
+            return new_container
+        elif isinstance(other, QueryFilter):
+            return CompositeFilter(**{self._keyword: self, "filters": other})
+        elif isinstance(other, SearchFilter):
+            return CompositeFilter(**{self._keyword: self, "search": other})
+        elif isinstance(other, OrderByFilter):
+            return CompositeFilter(**{self._keyword: self, "order_by": other})
+        elif isinstance(other, SelectFilter):
+            return CompositeFilter(**{self._keyword: self, "select": other})
+        elif isinstance(other, ExpandFilter):
+            return CompositeFilter(**{self._keyword: self, "expand": other})
+        else:
+            raise ValueError(f"Can't mix {type(other)} with {type(self)}")
+
+    def __or__(self, other: Optional[QueryBase]):
+        raise RuntimeError("Can't combine multiple composite filters with an 'or' statement. Use 'and' instead.")
+
+    def render(self) -> str:
+        return ",".join(self._container)
+
+    def as_params(self) -> dict:
+        return {f"${self._keyword}": self.render()}
+
+
+class SelectFilter(ContainerQueryFilter):
+    __slots__ = ("_container", "_keyword")
+
+    def __init__(self, *args: str):
+        super().__init__(*args)
+        self._keyword: str = "select"
+
+
+class ExpandFilter(ContainerQueryFilter):
+    __slots__ = ("_container", "_keyword")
+
+    def __init__(self, *args: Union[str, tuple[str, SelectFilter]]):
+        super().__init__(*args)
+        self._keyword: str = "expand"
+
+    def render(self) -> str:
+        renders = []
+        for item in self._container:
+            if isinstance(item, tuple):
+                renders.append(f"{item[0]}($select={item[1].render()})")
+            else:
+                renders.append(item)
+        return ",".join(renders)
 
 
 class CompositeFilter(QueryBase):
-    __slots__ = ("_filters", "_search", "_order_by", "_select", "_expand")
+    """ A Query object that holds all query parameters. """
 
-    def __init__(self, filters: Optional[QueryBase] = None, search: Optional[QueryBase] = None,
-                 order_by: Optional[QueryBase] = None, select: Optional[QueryBase] = None,
-                 expand: Optional[QueryBase] = None):
-        self._filters: Optional[QueryBase] = filters
-        self._search: Optional[QueryBase] = search
-        self._order_by: Optional[OrderBy] = order_by
-        # TODO: add select and expand types
-        self._select: Optional[QueryBase] = select
-        self._expand: Optional[QueryBase] = expand
+    __slots__ = ("filters", "search", "order_by", "select", "expand")
 
-        pass
+    def __init__(self, *, filters: Optional[QueryFilter] = None, search: Optional[SearchFilter] = None,
+                 order_by: Optional[OrderByFilter] = None, select: Optional[SelectFilter] = None,
+                 expand: Optional[ExpandFilter] = None):
+        self.filters: Optional[QueryFilter] = filters
+        self.search: Optional[SearchFilter] = search
+        self.order_by: Optional[OrderByFilter] = order_by
+        self.select: Optional[SelectFilter] = select
+        self.expand: Optional[ExpandFilter] = expand
 
-    def render(self, **kwargs) -> str:
-        pass
+    def render(self) -> str:
+        return (
+            f"Filters: {self.filters.render() if self.filters else ''}\n"
+            f"Search: {self.search.render() if self.search else ''}\n"
+            f"OrderBy: {self.order_by.render() if self.order_by else ''}\n"
+            f"Select: {self.select.render() if self.select else ''}\n"
+            f"Expand: {self.expand.render() if self.expand else ''}"
+        )
 
     def as_params(self) -> dict:
-        pass
+        params = {}
+        if self.filters:
+            params.update(self.filters.as_params())
+        if self.search:
+            params.update(self.search.as_params())
+        if self.order_by:
+            params.update(self.order_by.as_params())
+        if self.expand:
+            params.update(self.expand.as_params())
+        if self.select:
+            params.update(self.select.as_params())
+        return params
+
+    def __and__(self, other: Optional[QueryBase]) -> CompositeFilter:
+        """ Combine this CompositeFilter with another QueryBase object """
+        if other is None:
+            return self
+        nc = CompositeFilter(filters=self.filters, search=self.search, order_by=self.order_by,
+                             select=self.select, expand=self.expand)
+        if isinstance(other, QueryFilter):
+            if self.search is not None:
+                raise ValueError("Can't mix search with filters or order by clauses.")
+            nc.filters = nc.filters & other if nc.filters else other
+        elif isinstance(other, OrderByFilter):
+            if self.search is not None:
+                raise ValueError("Can't mix search with filters or order by clauses.")
+            nc.order_by = nc.order_by & other if nc.order_by else other
+        elif isinstance(other, SearchFilter):
+            if self.filters is not None or self.order_by is not None:
+                raise ValueError("Can't mix search with filters or order by clauses.")
+            nc.search = nc.search & other if nc.search else other
+        elif isinstance(other, SelectFilter):
+            nc.select = nc.select & other if nc.select else other
+        elif isinstance(other, ExpandFilter):
+            nc.expand = nc.expand & other if nc.expand else other
+        elif isinstance(other, CompositeFilter):
+            if (self.search and (other.filters or other.order_by)
+            ) or (other.search and (self.filters or self.order_by)):
+                raise ValueError("Can't mix search with filters or order by clauses.")
+            nc.filters = nc.filters & other.filters if nc.filters else other.filters
+            nc.search = nc.search & other.search if nc.search else other.search
+            nc.order_by = nc.order_by & other.order_by if nc.order_by else other.order_by
+            nc.select = nc.select & other.select if nc.select else other.select
+            nc.expand = nc.expand & other.expand if nc.expand else other.expand
+        return nc
+
+    def __or__(self, other: Optional[QueryBase]) -> CompositeFilter:
+        raise RuntimeError("Can't combine multiple composite filters with an 'or' statement. Use 'and' instead.")
 
 
 class QueryBuilder:
+
+    _attribute_mapping = {
+        'from': 'from/emailAddress/address',
+        'to': 'toRecipients/emailAddress/address',
+        'start': 'start/DateTime',
+        'end': 'end/DateTime',
+        'due': 'duedatetime/DateTime',
+        'reminder': 'reminderdatetime/DateTime',
+        'flag': 'flag/flagStatus',
+        'body': 'body/content'
+    }
 
     def __init__(self, protocol: Union[Protocol, Type[Protocol]]):
         """ Build a query to apply OData filters
@@ -412,6 +442,23 @@ class QueryBuilder:
             parsed_word = str(word)
         return parsed_word
 
+    def _get_attribute_from_mapping(self, attribute: str) -> str:
+        """
+        Look up the provided attribute into the query builder mapping
+        Applies a conversion to the appropriate casing defined by the protocol.
+
+        :param attribute: attribute to look up
+        :return: the attribute itself of if found the corresponding complete attribute in the mapping
+        """
+        mapping = self._attribute_mapping.get(attribute)
+        if mapping:
+            attribute = '/'.join(
+                [self.protocol.convert_case(step) for step in
+                 mapping.split('/')])
+        else:
+            attribute = self.protocol.convert_case(attribute)
+        return attribute
+
     def logical_operation(self, operation: str, attribute: str, word: FilterWord) -> LogicalFilter:
         """ Apply a logical operation like equals, less than, etc.
 
@@ -420,7 +467,7 @@ class QueryBuilder:
         :param word: value to compare the attribute with
         :return: a QueryFilter instance that can render the OData logical operation
         """
-        return LogicalFilter(operation, attribute, self._parse_filter_word(word))
+        return LogicalFilter(operation, self._get_attribute_from_mapping(attribute), self._parse_filter_word(word))
 
     def equals(self, attribute: str, word: FilterWord) -> LogicalFilter:
         """ Return an equals check
@@ -484,7 +531,7 @@ class QueryBuilder:
         :param word: value to feed the function
         :return: a QueryFilter instance that can render the OData function operation
         """
-        return FunctionFilter(operation, attribute, self._parse_filter_word(word))
+        return FunctionFilter(operation, self._get_attribute_from_mapping(attribute), self._parse_filter_word(word))
 
     def contains(self, attribute: str, word: FilterWord) -> FunctionFilter:
         """ Adds a contains word check
@@ -513,8 +560,7 @@ class QueryBuilder:
         """
         return self.function_operation('endswith', attribute, word)
 
-    @staticmethod
-    def iterable_operation(operation: str, collection: str, filter_instance: QueryFilter,
+    def iterable_operation(self, operation: str, collection: str, filter_instance: QueryFilter,
                            *, item_name: str = "a") -> IterableFilter:
         """ Performs the provided filter operation on a collection by iterating over it.
 
@@ -534,7 +580,7 @@ class QueryBuilder:
         :param item_name: the name of the collection item to be used on the filter_instance
         :return: a QueryFilter instance that can render the OData iterable operation
         """
-        return IterableFilter(operation, collection, filter_instance, item_name=item_name)
+        return IterableFilter(operation, self._get_attribute_from_mapping(collection), filter_instance, item_name=item_name)
 
 
     def any(self, collection: str, filter_instance: QueryFilter, *, item_name: str = "a") -> IterableFilter:
@@ -588,6 +634,8 @@ class QueryBuilder:
         :param group: will group this chain operation if True
         :return: a QueryFilter with the filter instances combined with an 'and' operation
         """
+        if not all(isinstance(item, QueryFilter) for item in filter_instances):
+            raise ValueError("'filter_instances' parameter must contain only QueryFilter instances")
         chain = ChainFilter(operation='and', filter_instances=list(filter_instances))
         if group:
             return self.group(chain)
@@ -601,6 +649,8 @@ class QueryBuilder:
         :param group: will group this chain operation if True
         :return: a QueryFilter with the filter instances combined with an 'or' operation
         """
+        if not all(isinstance(item, QueryFilter) for item in filter_instances):
+            raise ValueError("'filter_instances' parameter must contain only QueryFilter instances")
         chain = ChainFilter(operation='or', filter_instances=list(filter_instances))
         if group:
             return self.group(chain)
@@ -612,8 +662,7 @@ class QueryBuilder:
         """ Applies a grouping to the provided filter_instance """
         return GroupFilter(filter_instance)
 
-    @staticmethod
-    def search(word: Union[str, int, bool], attribute: Optional[str]) -> SearchFilter:
+    def search(self, word: Union[str, int, bool], attribute: Optional[str] = None) -> SearchFilter:
         """
         Perform a search.
         Note from graph docs:
@@ -626,43 +675,70 @@ class QueryBuilder:
         :param attribute: the attribute to search the word on
         :return: a SearchFilter instance that can render the OData search operation
         """
-        search = SearchFilter()
-        search.set(word=word, attribute=attribute)
+        word = self._parse_filter_word(word)
+        if attribute:
+            attribute = self._get_attribute_from_mapping(attribute)
+        search = SearchFilter(word=word, attribute=attribute)
         return search
 
     @staticmethod
-    def orderby(*args: tuple[Union[str, tuple[str, bool]]]) -> OrderBy:
-        new_order_by = OrderBy()
-        for order_by_clause in args:
+    def orderby(*attributes: tuple[Union[str, tuple[str, bool]]]) -> OrderByFilter:
+        """
+        Returns an 'order by' query param
+        This is useful to order the result set of query from a resource.
+        Note that not all attributes can be sorted and that all resources have different sort capabilities
+
+        :param attributes: the attributes to orderby
+        :return: a OrderByFilter instance that can render the OData order by operation
+        """
+        new_order_by = OrderByFilter()
+        for order_by_clause in attributes:
             if isinstance(order_by_clause, str):
                 new_order_by.add(order_by_clause)
             elif isinstance(order_by_clause, tuple):
                 new_order_by.add(order_by_clause[0], order_by_clause[1])
             else:
-                raise ValueError('Arguments must be attribute strings or tuples'
-                                 ' of attribute strings and ascending booleans')
+                raise ValueError("Arguments must be attribute strings or tuples"
+                                 " of attribute strings and ascending booleans")
         return new_order_by
 
-    def select(self):
-        pass
+    def select(self, *attributes: str) -> SelectFilter:
+        """
+        Returns a 'select' query param
+        This is useful to return a limited set of attributes from a resource or return attributes that are not
+         returned by default by the resource.
 
-    def expand(self):
-        pass
+        :param attributes: a tuple of attribute names to select
+        :return: a SelectFilter instance that can render the OData select operation
+        """
+        select = SelectFilter()
+        for attribute in attributes:
+            attribute = self.protocol.convert_case(attribute)
+            if "/" in attribute:
+                # only parent attribute can be selected
+                attribute = attribute.split("/")[0]
+            select.append(attribute)
+        return select
 
-# TODO mapping attributes?
-# TODO: selects
-# TODO: expands
+    def expand(self, relationship: str, select: Optional[SelectFilter] = None) -> ExpandFilter:
+        """
+        Returns an 'expand' query param
+        Important: If the 'expand' is a relationship (e.g. "event" or "attachments"), then the ApiComponent using
+         this query should know how to handle the relationship (e.g. Message knows how to handle attachments,
+         and event (if it's an EventMessage).
+        Important: When using expand on multi-value relationships a max of 20 items will be returned.
 
+        :param relationship: a relationship that will be expanded
+        :param select: a SelectFilter instance to select attributes on the expanded relationship
+        :return: a ExpandFilter instance that can render the OData expand operation
+        """
+        expands = ExpandFilter()
+        # this will prepend the event message type tag based on the protocol
+        if relationship == "event":
+            relationship = f"{self.protocol.get_service_keyword('event_message_type')}/event"
 
-def run_tests():
-
-    q = QueryBuilder('a')
-    q_filter = q.group(q.equals('name', 'andrew') & q.less_equal('size', 32))
-
-    q_iter = q.all('persons', q_filter, item_name='person')
-
-    print(q_filter)
-
-    print(q_iter)
-
-    print(q.chain_or(q_iter, q_filter))
+        if select is not None:
+            expands.append((relationship, select))
+        else:
+            expands.append(relationship)
+        return expands
