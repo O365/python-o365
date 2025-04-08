@@ -1,0 +1,822 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Token &mdash; O365  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Utils" href="utils.html" />
+    <link rel="prev" title="Attachment" href="attachment.html" />
+    <link href="../../_static/css/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage.html">Detailed Usage</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../api.html">O365 API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../account.html">Account</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../address_book.html">Address Book</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../calendar.html">Calendar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../category.html">Category</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../connection.html">Connection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../directory.html">Directory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../excel.html">Excel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../group.html">Group</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mailbox.html">Mailbox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../message.html">Message</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../onedrive.html">One Drive</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../planner.html">Planner</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../sharepoint.html">Sharepoint</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tasks.html">Tasks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../teams.html">Teams</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../utils.html">Utils</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="attachment.html">Attachment</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Token</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#O365.utils.token.AWSS3Backend"><code class="docutils literal notranslate"><span class="pre">AWSS3Backend</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.utils.token.AWSSecretsBackend"><code class="docutils literal notranslate"><span class="pre">AWSSecretsBackend</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.utils.token.BaseTokenBackend"><code class="docutils literal notranslate"><span class="pre">BaseTokenBackend</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.utils.token.BitwardenSecretsManagerBackend"><code class="docutils literal notranslate"><span class="pre">BitwardenSecretsManagerBackend</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.utils.token.CryptographyManagerType"><code class="docutils literal notranslate"><span class="pre">CryptographyManagerType</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.utils.token.DjangoTokenBackend"><code class="docutils literal notranslate"><span class="pre">DjangoTokenBackend</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.utils.token.EnvTokenBackend"><code class="docutils literal notranslate"><span class="pre">EnvTokenBackend</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.utils.token.FileSystemTokenBackend"><code class="docutils literal notranslate"><span class="pre">FileSystemTokenBackend</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.utils.token.FirestoreBackend"><code class="docutils literal notranslate"><span class="pre">FirestoreBackend</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.utils.token.MemoryTokenBackend"><code class="docutils literal notranslate"><span class="pre">MemoryTokenBackend</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="utils.html">Utils</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">O365</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../api.html">O365 API</a></li>
+          <li class="breadcrumb-item"><a href="../utils.html">Utils</a></li>
+      <li class="breadcrumb-item active">Token</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/api/utils/token.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="attachment.html" class="btn btn-neutral float-left" title="Attachment" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="utils.html" class="btn btn-neutral float-right" title="Utils" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="token">
+<h1>Token<a class="headerlink" href="#token" title="Link to this heading"></a></h1>
+<dl class="py class" id="module-O365.utils.token">
+<dt class="sig sig-object py" id="O365.utils.token.AWSS3Backend">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.utils.token.</span></span><span class="sig-name descname"><span class="pre">AWSS3Backend</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bucket_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/token.html#AWSS3Backend"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.token.AWSS3Backend" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#O365.utils.token.BaseTokenBackend" title="O365.utils.token.BaseTokenBackend"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseTokenBackend</span></code></a></p>
+<p>An AWS S3 backend to store tokens</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.token.AWSS3Backend.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bucket_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/token.html#AWSS3Backend.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.token.AWSS3Backend.__init__" title="Link to this definition"></a></dt>
+<dd><p>Init Backend
+:param str bucket_name: Name of the S3 bucket
+:param str filename: Name of the S3 file</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.token.AWSS3Backend.check_token">
+<span class="sig-name descname"><span class="pre">check_token</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../../_modules/O365/utils/token.html#AWSS3Backend.check_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.token.AWSS3Backend.check_token" title="Link to this definition"></a></dt>
+<dd><p>Checks if the token exists
+:return bool: True if it exists on the store</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.token.AWSS3Backend.delete_token">
+<span class="sig-name descname"><span class="pre">delete_token</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../../_modules/O365/utils/token.html#AWSS3Backend.delete_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.token.AWSS3Backend.delete_token" title="Link to this definition"></a></dt>
+<dd><p>Deletes the token from the store
+:return bool: Success / Failure</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.token.AWSS3Backend.load_token">
+<span class="sig-name descname"><span class="pre">load_token</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../../_modules/O365/utils/token.html#AWSS3Backend.load_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.token.AWSS3Backend.load_token" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Retrieves the token from the store</dt><dd><dl class="field-list simple">
+<dt class="field-odd">return bool<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Success / Failure</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.token.AWSS3Backend.save_token">
+<span class="sig-name descname"><span class="pre">save_token</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../../_modules/O365/utils/token.html#AWSS3Backend.save_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.token.AWSS3Backend.save_token" title="Link to this definition"></a></dt>
+<dd><p>Saves the token dict in the store
+:param bool force: Force save even when state has not changed
+:return bool: Success / Failure</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.utils.token.AWSS3Backend.bucket_name">
+<span class="sig-name descname"><span class="pre">bucket_name</span></span><a class="headerlink" href="#O365.utils.token.AWSS3Backend.bucket_name" title="Link to this definition"></a></dt>
+<dd><p>S3 bucket name.  <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.utils.token.AWSS3Backend.filename">
+<span class="sig-name descname"><span class="pre">filename</span></span><a class="headerlink" href="#O365.utils.token.AWSS3Backend.filename" title="Link to this definition"></a></dt>
+<dd><p>S3 file name.  <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="O365.utils.token.AWSSecretsBackend">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.utils.token.</span></span><span class="sig-name descname"><span class="pre">AWSSecretsBackend</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">secret_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">region_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/token.html#AWSSecretsBackend"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.token.AWSSecretsBackend" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#O365.utils.token.BaseTokenBackend" title="O365.utils.token.BaseTokenBackend"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseTokenBackend</span></code></a></p>
+<p>An AWS Secrets Manager backend to store tokens</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.token.AWSSecretsBackend.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">secret_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">region_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/token.html#AWSSecretsBackend.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.token.AWSSecretsBackend.__init__" title="Link to this definition"></a></dt>
+<dd><p>Init Backend
+:param str secret_name: Name of the secret stored in Secrets Manager
+:param str region_name: AWS region hosting the secret (for example, ‘us-east-2’)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.token.AWSSecretsBackend.check_token">
+<span class="sig-name descname"><span class="pre">check_token</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../../_modules/O365/utils/token.html#AWSSecretsBackend.check_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.token.AWSSecretsBackend.check_token" title="Link to this definition"></a></dt>
+<dd><p>Checks if the token exists
+:return bool: True if it exists on the store</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.token.AWSSecretsBackend.delete_token">
+<span class="sig-name descname"><span class="pre">delete_token</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../../_modules/O365/utils/token.html#AWSSecretsBackend.delete_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.token.AWSSecretsBackend.delete_token" title="Link to this definition"></a></dt>
+<dd><p>Deletes the token from the store
+:return bool: Success / Failure</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.token.AWSSecretsBackend.load_token">
+<span class="sig-name descname"><span class="pre">load_token</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../../_modules/O365/utils/token.html#AWSSecretsBackend.load_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.token.AWSSecretsBackend.load_token" title="Link to this definition"></a></dt>
+<dd><p>Retrieves the token from the store
+:return bool: Success / Failure</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.token.AWSSecretsBackend.save_token">
+<span class="sig-name descname"><span class="pre">save_token</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../../_modules/O365/utils/token.html#AWSSecretsBackend.save_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.token.AWSSecretsBackend.save_token" title="Link to this definition"></a></dt>
+<dd><p>Saves the token dict in the store
+:param bool force: Force save even when state has not changed
+:return bool: Success / Failure</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.utils.token.AWSSecretsBackend.region_name">
+<span class="sig-name descname"><span class="pre">region_name</span></span><a class="headerlink" href="#O365.utils.token.AWSSecretsBackend.region_name" title="Link to this definition"></a></dt>
+<dd><p>AWS Secret region name.  <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.utils.token.AWSSecretsBackend.secret_name">
+<span class="sig-name descname"><span class="pre">secret_name</span></span><a class="headerlink" href="#O365.utils.token.AWSSecretsBackend.secret_name" title="Link to this definition"></a></dt>
+<dd><p>AWS Secret secret name.  <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="O365.utils.token.BaseTokenBackend">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.utils.token.</span></span><span class="sig-name descname"><span class="pre">BaseTokenBackend</span></span><a class="reference internal" href="../../_modules/O365/utils/token.html#BaseTokenBackend"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.token.BaseTokenBackend" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TokenCache</span></code></p>
+<p>A base token storage class</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.token.BaseTokenBackend.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/token.html#BaseTokenBackend.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.token.BaseTokenBackend.__init__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.token.BaseTokenBackend.add">
+<span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../../_modules/O365/utils/token.html#BaseTokenBackend.add"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.token.BaseTokenBackend.add" title="Link to this definition"></a></dt>
+<dd><p>Add to the current cache.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.token.BaseTokenBackend.check_token">
+<span class="sig-name descname"><span class="pre">check_token</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../../_modules/O365/utils/token.html#BaseTokenBackend.check_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.token.BaseTokenBackend.check_token" title="Link to this definition"></a></dt>
+<dd><p>Optional Abstract method to check for the token existence in the backend</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.token.BaseTokenBackend.delete_token">
+<span class="sig-name descname"><span class="pre">delete_token</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../../_modules/O365/utils/token.html#BaseTokenBackend.delete_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.token.BaseTokenBackend.delete_token" title="Link to this definition"></a></dt>
+<dd><p>Optional Abstract method to delete the token from the backend</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.token.BaseTokenBackend.deserialize">
+<span class="sig-name descname"><span class="pre">deserialize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token_cache_state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bytes</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="../../_modules/O365/utils/token.html#BaseTokenBackend.deserialize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.token.BaseTokenBackend.deserialize" title="Link to this definition"></a></dt>
+<dd><p>Deserialize the cache from a state previously obtained by serialize()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.token.BaseTokenBackend.get_access_token">
+<span class="sig-name descname"><span class="pre">get_access_token</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">username</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../../_modules/O365/utils/token.html#BaseTokenBackend.get_access_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.token.BaseTokenBackend.get_access_token" title="Link to this definition"></a></dt>
+<dd><p>Retrieve the stored access token
+If username is None, then the first access token will be retrieved
+:param str username: The username from which retrieve the access token</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.token.BaseTokenBackend.get_account">
+<span class="sig-name descname"><span class="pre">get_account</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">username</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">home_account_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../../_modules/O365/utils/token.html#BaseTokenBackend.get_account"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.token.BaseTokenBackend.get_account" title="Link to this definition"></a></dt>
+<dd><p>Gets the account object for the specified username or home_account_id</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.token.BaseTokenBackend.get_all_accounts">
+<span class="sig-name descname"><span class="pre">get_all_accounts</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/O365/utils/token.html#BaseTokenBackend.get_all_accounts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.token.BaseTokenBackend.get_all_accounts" title="Link to this definition"></a></dt>
+<dd><p>Returns a list of all accounts present in the token cache</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.token.BaseTokenBackend.get_id_token">
+<span class="sig-name descname"><span class="pre">get_id_token</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">username</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../../_modules/O365/utils/token.html#BaseTokenBackend.get_id_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.token.BaseTokenBackend.get_id_token" title="Link to this definition"></a></dt>
+<dd><p>Retrieve the stored id token
+If username is None, then the first id token will be retrieved
+:param str username: The username from which retrieve the id token</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.token.BaseTokenBackend.get_refresh_token">
+<span class="sig-name descname"><span class="pre">get_refresh_token</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">username</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../../_modules/O365/utils/token.html#BaseTokenBackend.get_refresh_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.token.BaseTokenBackend.get_refresh_token" title="Link to this definition"></a></dt>
+<dd><p>Retrieve the stored refresh token
+If username is None, then the first access token will be retrieved
+:param str username: The username from which retrieve the refresh token</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.token.BaseTokenBackend.get_token_scopes">
+<span class="sig-name descname"><span class="pre">get_token_scopes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">username</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remove_reserved</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../../_modules/O365/utils/token.html#BaseTokenBackend.get_token_scopes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.token.BaseTokenBackend.get_token_scopes" title="Link to this definition"></a></dt>
+<dd><p>Retrieve the scopes the token (refresh first then access) has permissions on
+:param str username: The username from which retrieve the refresh token
+:param bool remove_reserved: if True RESERVED_SCOPES will be removed from the list</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.token.BaseTokenBackend.load_token">
+<span class="sig-name descname"><span class="pre">load_token</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../../_modules/O365/utils/token.html#BaseTokenBackend.load_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.token.BaseTokenBackend.load_token" title="Link to this definition"></a></dt>
+<dd><p>Abstract method that will retrieve the token data from the backend
+This MUST be implemented in subclasses</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.token.BaseTokenBackend.modify">
+<span class="sig-name descname"><span class="pre">modify</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">credential_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">old_entry</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_key_value_pairs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../../_modules/O365/utils/token.html#BaseTokenBackend.modify"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.token.BaseTokenBackend.modify" title="Link to this definition"></a></dt>
+<dd><p>Modify content in the cache.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.token.BaseTokenBackend.remove_data">
+<span class="sig-name descname"><span class="pre">remove_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">username</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../../_modules/O365/utils/token.html#BaseTokenBackend.remove_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.token.BaseTokenBackend.remove_data" title="Link to this definition"></a></dt>
+<dd><p>Removes all tokens and all related data from the token cache for the specified username.
+Returns success or failure.
+:param str username: The username from which remove the tokens and related data</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.token.BaseTokenBackend.save_token">
+<span class="sig-name descname"><span class="pre">save_token</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../../_modules/O365/utils/token.html#BaseTokenBackend.save_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.token.BaseTokenBackend.save_token" title="Link to this definition"></a></dt>
+<dd><p>Abstract method that will save the token data into the backend
+This MUST be implemented in subclasses</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.token.BaseTokenBackend.serialize">
+<span class="sig-name descname"><span class="pre">serialize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bytes</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span></span><a class="reference internal" href="../../_modules/O365/utils/token.html#BaseTokenBackend.serialize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.token.BaseTokenBackend.serialize" title="Link to this definition"></a></dt>
+<dd><p>Serialize the current cache state into a string.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.token.BaseTokenBackend.should_refresh_token">
+<span class="sig-name descname"><span class="pre">should_refresh_token</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">con</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../../_modules/O365/utils/token.html#BaseTokenBackend.should_refresh_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.token.BaseTokenBackend.should_refresh_token" title="Link to this definition"></a></dt>
+<dd><p>This method is intended to be implemented for environments
+where multiple Connection instances are running on parallel.</p>
+<p>This method should check if it’s time to refresh the token or not.
+The chosen backend can store a flag somewhere to answer this question.
+This can avoid race conditions between different instances trying to
+refresh the token at once, when only one should make the refresh.</p>
+<p>This is an example of how to achieve this:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>Along with the token store a Flag</p></li>
+<li><p>The first to see the Flag as True must transactional update it
+to False. This method then returns True and therefore the
+connection will refresh the token.</p></li>
+<li><p>The save_token method should be rewritten to also update the flag
+back to True always.</p></li>
+<li><p>Meanwhile between steps 2 and 3, any other token backend checking
+for this method should get the flag with a False value.</p></li>
+</ol>
+<div class="line-block">
+<div class="line">This method should then wait and check again the flag.</div>
+<div class="line">This can be implemented as a call with an incremental backoff
+factor to avoid too many calls to the database.</div>
+<div class="line">At a given point in time, the flag will return True.</div>
+<div class="line">Then this method should load the token and finally return False
+signaling there is no need to refresh the token.</div>
+</div>
+<div class="line-block">
+<div class="line">If this returns True, then the Connection will refresh the token.</div>
+<div class="line">If this returns False, then the Connection will NOT refresh the token.</div>
+<div class="line">If this returns None, then this method already executed the refresh and therefore
+the Connection does not have to.</div>
+</div>
+<p>By default, this always returns True</p>
+</div></blockquote>
+<p>There is an example of this in the example’s folder.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>con</strong> (<a class="reference internal" href="../connection.html#O365.connection.Connection" title="O365.connection.Connection"><em>Connection</em></a>) – the connection that calls this method. This
+is passed because maybe the locking mechanism needs to refresh the token within the lock applied in this method.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>bool or None</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><div class="line-block">
+<div class="line">True if the Connection can refresh the token</div>
+<div class="line">False if the Connection should not refresh the token</div>
+<div class="line">None if the token was refreshed and therefore the</div>
+<div class="line">Connection should do nothing.</div>
+</div>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.token.BaseTokenBackend.token_expiration_datetime">
+<span class="sig-name descname"><span class="pre">token_expiration_datetime</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">username</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">datetime</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../../_modules/O365/utils/token.html#BaseTokenBackend.token_expiration_datetime"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.token.BaseTokenBackend.token_expiration_datetime" title="Link to this definition"></a></dt>
+<dd><p>Returns the current access token expiration datetime
+If the refresh token is present, then the expiration datetime is extended by 3 months
+:param str username: The username from which check the tokens
+:return dt.datetime or None: The expiration datetime</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.token.BaseTokenBackend.token_is_expired">
+<span class="sig-name descname"><span class="pre">token_is_expired</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">username</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../../_modules/O365/utils/token.html#BaseTokenBackend.token_is_expired"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.token.BaseTokenBackend.token_is_expired" title="Link to this definition"></a></dt>
+<dd><p>Checks whether the current access token is expired
+:param str username: The username from which check the tokens
+:return bool: True if the token is expired, False otherwise</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.token.BaseTokenBackend.token_is_long_lived">
+<span class="sig-name descname"><span class="pre">token_is_long_lived</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">username</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../../_modules/O365/utils/token.html#BaseTokenBackend.token_is_long_lived"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.token.BaseTokenBackend.token_is_long_lived" title="Link to this definition"></a></dt>
+<dd><p>Returns if the token backend has a refresh token</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.utils.token.BaseTokenBackend.cryptography_manager">
+<span class="sig-name descname"><span class="pre">cryptography_manager</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#O365.utils.token.CryptographyManagerType" title="O365.utils.token.CryptographyManagerType"><span class="pre">CryptographyManagerType</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#O365.utils.token.BaseTokenBackend.cryptography_manager" title="Link to this definition"></a></dt>
+<dd><p>Optional cryptography manager.  <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> CryptographyManagerType</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="O365.utils.token.BaseTokenBackend.has_data">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">has_data</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#O365.utils.token.BaseTokenBackend.has_data" title="Link to this definition"></a></dt>
+<dd><p>Does the token backend contain data.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.utils.token.BaseTokenBackend.serializer">
+<span class="sig-name descname"><span class="pre">serializer</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;module</span> <span class="pre">'json'</span> <span class="pre">from</span> <span class="pre">'/opt/hostedtoolcache/Python/3.12.9/x64/lib/python3.12/json/__init__.py'&gt;</span></em><a class="headerlink" href="#O365.utils.token.BaseTokenBackend.serializer" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="O365.utils.token.BitwardenSecretsManagerBackend">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.utils.token.</span></span><span class="sig-name descname"><span class="pre">BitwardenSecretsManagerBackend</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">access_token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">secret_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/token.html#BitwardenSecretsManagerBackend"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.token.BitwardenSecretsManagerBackend" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#O365.utils.token.BaseTokenBackend" title="O365.utils.token.BaseTokenBackend"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseTokenBackend</span></code></a></p>
+<p>A Bitwarden Secrets Manager backend to store tokens</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.token.BitwardenSecretsManagerBackend.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">access_token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">secret_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/token.html#BitwardenSecretsManagerBackend.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.token.BitwardenSecretsManagerBackend.__init__" title="Link to this definition"></a></dt>
+<dd><p>Init Backend
+:param str access_token: Access Token used to access the Bitwarden Secrets Manager API
+:param str secret_id: ID of Bitwarden Secret used to store the O365 token</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.token.BitwardenSecretsManagerBackend.load_token">
+<span class="sig-name descname"><span class="pre">load_token</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../../_modules/O365/utils/token.html#BitwardenSecretsManagerBackend.load_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.token.BitwardenSecretsManagerBackend.load_token" title="Link to this definition"></a></dt>
+<dd><p>Retrieves the token from Bitwarden Secrets Manager
+:return bool: Success / Failure</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.token.BitwardenSecretsManagerBackend.save_token">
+<span class="sig-name descname"><span class="pre">save_token</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../../_modules/O365/utils/token.html#BitwardenSecretsManagerBackend.save_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.token.BitwardenSecretsManagerBackend.save_token" title="Link to this definition"></a></dt>
+<dd><p>Saves the token dict in Bitwarden Secrets Manager
+:param bool force: Force save even when state has not changed
+:return bool: Success / Failure</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.utils.token.BitwardenSecretsManagerBackend.client">
+<span class="sig-name descname"><span class="pre">client</span></span><a class="headerlink" href="#O365.utils.token.BitwardenSecretsManagerBackend.client" title="Link to this definition"></a></dt>
+<dd><p>Bitwarden client.  <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> BitWardenClient</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.utils.token.BitwardenSecretsManagerBackend.secret">
+<span class="sig-name descname"><span class="pre">secret</span></span><a class="headerlink" href="#O365.utils.token.BitwardenSecretsManagerBackend.secret" title="Link to this definition"></a></dt>
+<dd><p>Bitwarden secret.  <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.utils.token.BitwardenSecretsManagerBackend.secret_id">
+<span class="sig-name descname"><span class="pre">secret_id</span></span><a class="headerlink" href="#O365.utils.token.BitwardenSecretsManagerBackend.secret_id" title="Link to this definition"></a></dt>
+<dd><p>Bitwarden secret is.  <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="O365.utils.token.CryptographyManagerType">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.utils.token.</span></span><span class="sig-name descname"><span class="pre">CryptographyManagerType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/token.html#CryptographyManagerType"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.token.CryptographyManagerType" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Protocol</span></code></p>
+<p>Abstract cryptography manafer</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.token.CryptographyManagerType.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#O365.utils.token.CryptographyManagerType.__init__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.token.CryptographyManagerType.decrypt">
+<span class="sig-name descname"><span class="pre">decrypt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bytes</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../../_modules/O365/utils/token.html#CryptographyManagerType.decrypt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.token.CryptographyManagerType.decrypt" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.token.CryptographyManagerType.encrypt">
+<span class="sig-name descname"><span class="pre">encrypt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bytes</span></span></span><a class="reference internal" href="../../_modules/O365/utils/token.html#CryptographyManagerType.encrypt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.token.CryptographyManagerType.encrypt" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="O365.utils.token.DjangoTokenBackend">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.utils.token.</span></span><span class="sig-name descname"><span class="pre">DjangoTokenBackend</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token_model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/token.html#DjangoTokenBackend"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.token.DjangoTokenBackend" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#O365.utils.token.BaseTokenBackend" title="O365.utils.token.BaseTokenBackend"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseTokenBackend</span></code></a></p>
+<p>A Django database token backend to store tokens. To use this backend add the <cite>TokenModel</cite>
+model below into your Django application.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">TokenModel</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="n">token</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">JSONField</span><span class="p">()</span>
+    <span class="n">created_at</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">auto_now_add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">updated_at</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">auto_now</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Token for </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">token</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;client_id&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;unknown&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+</pre></div>
+</div>
+<p>Example usage:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">O365.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">DjangoTokenBackend</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">models</span><span class="w"> </span><span class="kn">import</span> <span class="n">TokenModel</span>
+
+<span class="n">token_backend</span> <span class="o">=</span> <span class="n">DjangoTokenBackend</span><span class="p">(</span><span class="n">token_model</span><span class="o">=</span><span class="n">TokenModel</span><span class="p">)</span>
+<span class="n">account</span> <span class="o">=</span> <span class="n">Account</span><span class="p">(</span><span class="n">credentials</span><span class="p">,</span> <span class="n">token_backend</span><span class="o">=</span><span class="n">token_backend</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.token.DjangoTokenBackend.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token_model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/token.html#DjangoTokenBackend.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.token.DjangoTokenBackend.__init__" title="Link to this definition"></a></dt>
+<dd><p>Initializes the DjangoTokenBackend.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>token_model</strong> – The Django model class to use for storing and retrieving tokens (defaults to TokenModel).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.token.DjangoTokenBackend.check_token">
+<span class="sig-name descname"><span class="pre">check_token</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../../_modules/O365/utils/token.html#DjangoTokenBackend.check_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.token.DjangoTokenBackend.check_token" title="Link to this definition"></a></dt>
+<dd><p>Checks if any token exists in the Django database
+:return bool: True if it exists, False otherwise</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.token.DjangoTokenBackend.delete_token">
+<span class="sig-name descname"><span class="pre">delete_token</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../../_modules/O365/utils/token.html#DjangoTokenBackend.delete_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.token.DjangoTokenBackend.delete_token" title="Link to this definition"></a></dt>
+<dd><p>Deletes the latest token from the Django database
+:return bool: Success / Failure</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.token.DjangoTokenBackend.load_token">
+<span class="sig-name descname"><span class="pre">load_token</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../../_modules/O365/utils/token.html#DjangoTokenBackend.load_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.token.DjangoTokenBackend.load_token" title="Link to this definition"></a></dt>
+<dd><p>Retrieves the latest token from the Django database
+:return bool: Success / Failure</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.token.DjangoTokenBackend.save_token">
+<span class="sig-name descname"><span class="pre">save_token</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../../_modules/O365/utils/token.html#DjangoTokenBackend.save_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.token.DjangoTokenBackend.save_token" title="Link to this definition"></a></dt>
+<dd><p>Saves the token dict in the Django database
+:param bool force: Force save even when state has not changed
+:return bool: Success / Failure</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.utils.token.DjangoTokenBackend.token_model">
+<span class="sig-name descname"><span class="pre">token_model</span></span><a class="headerlink" href="#O365.utils.token.DjangoTokenBackend.token_model" title="Link to this definition"></a></dt>
+<dd><p>Django token model  <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> TokenModel</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="O365.utils.token.EnvTokenBackend">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.utils.token.</span></span><span class="sig-name descname"><span class="pre">EnvTokenBackend</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token_env_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/token.html#EnvTokenBackend"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.token.EnvTokenBackend" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#O365.utils.token.BaseTokenBackend" title="O365.utils.token.BaseTokenBackend"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseTokenBackend</span></code></a></p>
+<p>A token backend based on environmental variable.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.token.EnvTokenBackend.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token_env_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/token.html#EnvTokenBackend.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.token.EnvTokenBackend.__init__" title="Link to this definition"></a></dt>
+<dd><p>Init Backend
+:param str token_env_name: the name of the environmental variable that will hold the token</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.token.EnvTokenBackend.check_token">
+<span class="sig-name descname"><span class="pre">check_token</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../../_modules/O365/utils/token.html#EnvTokenBackend.check_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.token.EnvTokenBackend.check_token" title="Link to this definition"></a></dt>
+<dd><p>Checks if the token exists in the environmental variables
+:return bool: True if exists, False otherwise</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.token.EnvTokenBackend.delete_token">
+<span class="sig-name descname"><span class="pre">delete_token</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../../_modules/O365/utils/token.html#EnvTokenBackend.delete_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.token.EnvTokenBackend.delete_token" title="Link to this definition"></a></dt>
+<dd><p>Deletes the token environmental variable
+:return bool: Success / Failure</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.token.EnvTokenBackend.load_token">
+<span class="sig-name descname"><span class="pre">load_token</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../../_modules/O365/utils/token.html#EnvTokenBackend.load_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.token.EnvTokenBackend.load_token" title="Link to this definition"></a></dt>
+<dd><p>Retrieves the token from the environmental variable
+:return bool: Success / Failure</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.token.EnvTokenBackend.save_token">
+<span class="sig-name descname"><span class="pre">save_token</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../../_modules/O365/utils/token.html#EnvTokenBackend.save_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.token.EnvTokenBackend.save_token" title="Link to this definition"></a></dt>
+<dd><p>Saves the token dict in the specified environmental variable
+:param bool force: Force save even when state has not changed
+:return bool: Success / Failure</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.utils.token.EnvTokenBackend.token_env_name">
+<span class="sig-name descname"><span class="pre">token_env_name</span></span><a class="headerlink" href="#O365.utils.token.EnvTokenBackend.token_env_name" title="Link to this definition"></a></dt>
+<dd><p>Name of the environment token (Default - <cite>O365TOKEN</cite>).  <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="O365.utils.token.FileSystemTokenBackend">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.utils.token.</span></span><span class="sig-name descname"><span class="pre">FileSystemTokenBackend</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">token_filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/token.html#FileSystemTokenBackend"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.token.FileSystemTokenBackend" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#O365.utils.token.BaseTokenBackend" title="O365.utils.token.BaseTokenBackend"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseTokenBackend</span></code></a></p>
+<p>A token backend based on files on the filesystem</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.token.FileSystemTokenBackend.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">token_filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/token.html#FileSystemTokenBackend.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.token.FileSystemTokenBackend.__init__" title="Link to this definition"></a></dt>
+<dd><p>Init Backend
+:param str or Path token_path: the path where to store the token
+:param str token_filename: the name of the token file</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.token.FileSystemTokenBackend.check_token">
+<span class="sig-name descname"><span class="pre">check_token</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../../_modules/O365/utils/token.html#FileSystemTokenBackend.check_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.token.FileSystemTokenBackend.check_token" title="Link to this definition"></a></dt>
+<dd><p>Checks if the token exists in the filesystem
+:return bool: True if exists, False otherwise</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.token.FileSystemTokenBackend.delete_token">
+<span class="sig-name descname"><span class="pre">delete_token</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../../_modules/O365/utils/token.html#FileSystemTokenBackend.delete_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.token.FileSystemTokenBackend.delete_token" title="Link to this definition"></a></dt>
+<dd><p>Deletes the token file
+:return bool: Success / Failure</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.token.FileSystemTokenBackend.load_token">
+<span class="sig-name descname"><span class="pre">load_token</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../../_modules/O365/utils/token.html#FileSystemTokenBackend.load_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.token.FileSystemTokenBackend.load_token" title="Link to this definition"></a></dt>
+<dd><p>Retrieves the token from the File System and stores it in the cache
+:return bool: Success / Failure</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.token.FileSystemTokenBackend.save_token">
+<span class="sig-name descname"><span class="pre">save_token</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../../_modules/O365/utils/token.html#FileSystemTokenBackend.save_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.token.FileSystemTokenBackend.save_token" title="Link to this definition"></a></dt>
+<dd><p>Saves the token cache dict in the specified file
+Will create the folder if it doesn’t exist
+:param bool force: Force save even when state has not changed
+:return bool: Success / Failure</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.utils.token.FileSystemTokenBackend.token_path">
+<span class="sig-name descname"><span class="pre">token_path</span></span><a class="headerlink" href="#O365.utils.token.FileSystemTokenBackend.token_path" title="Link to this definition"></a></dt>
+<dd><p>Path to the token stored in the file system.  <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="O365.utils.token.FirestoreBackend">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.utils.token.</span></span><span class="sig-name descname"><span class="pre">FirestoreBackend</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collection</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">doc_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'token'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/token.html#FirestoreBackend"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.token.FirestoreBackend" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#O365.utils.token.BaseTokenBackend" title="O365.utils.token.BaseTokenBackend"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseTokenBackend</span></code></a></p>
+<p>A Google Firestore database backend to store tokens</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.token.FirestoreBackend.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collection</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">doc_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'token'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/token.html#FirestoreBackend.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.token.FirestoreBackend.__init__" title="Link to this definition"></a></dt>
+<dd><p>Init Backend
+:param firestore.Client client: the firestore Client instance
+:param str collection: the firestore collection where to store tokens (can be a field_path)
+:param str doc_id: # the key of the token document. Must be unique per-case.
+:param str field_name: the name of the field that stores the token in the document</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.token.FirestoreBackend.check_token">
+<span class="sig-name descname"><span class="pre">check_token</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../../_modules/O365/utils/token.html#FirestoreBackend.check_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.token.FirestoreBackend.check_token" title="Link to this definition"></a></dt>
+<dd><p>Checks if the token exists
+:return bool: True if it exists on the store</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.token.FirestoreBackend.delete_token">
+<span class="sig-name descname"><span class="pre">delete_token</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../../_modules/O365/utils/token.html#FirestoreBackend.delete_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.token.FirestoreBackend.delete_token" title="Link to this definition"></a></dt>
+<dd><p>Deletes the token from the store
+:return bool: Success / Failure</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.token.FirestoreBackend.load_token">
+<span class="sig-name descname"><span class="pre">load_token</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../../_modules/O365/utils/token.html#FirestoreBackend.load_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.token.FirestoreBackend.load_token" title="Link to this definition"></a></dt>
+<dd><p>Retrieves the token from the store
+:return bool: Success / Failure</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.token.FirestoreBackend.save_token">
+<span class="sig-name descname"><span class="pre">save_token</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../../_modules/O365/utils/token.html#FirestoreBackend.save_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.token.FirestoreBackend.save_token" title="Link to this definition"></a></dt>
+<dd><p>Saves the token dict in the store
+:param bool force: Force save even when state has not changed
+:return bool: Success / Failure</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.utils.token.FirestoreBackend.client">
+<span class="sig-name descname"><span class="pre">client</span></span><a class="headerlink" href="#O365.utils.token.FirestoreBackend.client" title="Link to this definition"></a></dt>
+<dd><p>Fire store client.  <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> firestore.Client</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.utils.token.FirestoreBackend.collection">
+<span class="sig-name descname"><span class="pre">collection</span></span><a class="headerlink" href="#O365.utils.token.FirestoreBackend.collection" title="Link to this definition"></a></dt>
+<dd><p>Fire store colelction.  <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.utils.token.FirestoreBackend.doc_id">
+<span class="sig-name descname"><span class="pre">doc_id</span></span><a class="headerlink" href="#O365.utils.token.FirestoreBackend.doc_id" title="Link to this definition"></a></dt>
+<dd><p>Fire store token document key.  <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.utils.token.FirestoreBackend.doc_ref">
+<span class="sig-name descname"><span class="pre">doc_ref</span></span><a class="headerlink" href="#O365.utils.token.FirestoreBackend.doc_ref" title="Link to this definition"></a></dt>
+<dd><p>Fire store document reference.  <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> any</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.utils.token.FirestoreBackend.field_name">
+<span class="sig-name descname"><span class="pre">field_name</span></span><a class="headerlink" href="#O365.utils.token.FirestoreBackend.field_name" title="Link to this definition"></a></dt>
+<dd><p>Fire store token field name (Default - <cite>token</cite>).  <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="O365.utils.token.MemoryTokenBackend">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.utils.token.</span></span><span class="sig-name descname"><span class="pre">MemoryTokenBackend</span></span><a class="reference internal" href="../../_modules/O365/utils/token.html#MemoryTokenBackend"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.token.MemoryTokenBackend" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#O365.utils.token.BaseTokenBackend" title="O365.utils.token.BaseTokenBackend"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseTokenBackend</span></code></a></p>
+<p>A token backend stored in memory.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.token.MemoryTokenBackend.load_token">
+<span class="sig-name descname"><span class="pre">load_token</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../../_modules/O365/utils/token.html#MemoryTokenBackend.load_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.token.MemoryTokenBackend.load_token" title="Link to this definition"></a></dt>
+<dd><p>Abstract method that will retrieve the token data from the backend
+This MUST be implemented in subclasses</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.token.MemoryTokenBackend.save_token">
+<span class="sig-name descname"><span class="pre">save_token</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../../_modules/O365/utils/token.html#MemoryTokenBackend.save_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.token.MemoryTokenBackend.save_token" title="Link to this definition"></a></dt>
+<dd><p>Abstract method that will save the token data into the backend
+This MUST be implemented in subclasses</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="attachment.html" class="btn btn-neutral float-left" title="Attachment" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="utils.html" class="btn btn-neutral float-right" title="Utils" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, alejcas.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
