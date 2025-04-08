@@ -274,7 +274,7 @@ These are the scopes needed to work with the SharePoint and Site classes.
 Raw Scope                  Included in Scope Helper                 Description
 =========================  =======================================  ======================================
 MailboxSettings.Read       —                                        To only read outlook settings
-MailboxSettings.ReadWrite  settings_all                             To read and write outlook settings
+MailboxSettings.ReadWrite  mailbox_settings                         To read and write outlook settings
 =========================  =======================================  ======================================
 
 Example:
