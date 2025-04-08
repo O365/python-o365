@@ -1,11 +1,11 @@
 import calendar
 import datetime as dt
 import logging
+from zoneinfo import ZoneInfo
 
 # noinspection PyPep8Naming
 from bs4 import BeautifulSoup as bs
 from dateutil.parser import parse
-from zoneinfo import ZoneInfo
 
 from .category import Category
 from .utils import (
@@ -1940,28 +1940,29 @@ class Schedule(ApiComponent):
     def __repr__(self):
         return 'Schedule resource: {}'.format(self.main_resource)
 
-    def list_calendars(self, limit=None, *, query=None, order_by=None):
+    def list_calendars(self, limit=None, *, query=None, order_by=None, batch=None):
         """ Gets a list of calendars
 
         To use query an order_by check the OData specification here:
-        http://docs.oasis-open.org/odata/odata/v4.0/errata03/os/complete/
-        part2-url-conventions/odata-v4.0-errata03-os-part2-url-conventions
-        -complete.html
+        https://docs.oasis-open.org/odata/odata/v4.0/errata03/os/odata-v4.0-errata03-os.html
 
         :param int limit: max no. of calendars to get. Over 999 uses batch.
         :param query: applies a OData filter to the request
         :type query: Query or str
         :param order_by: orders the result set based on this condition
         :type order_by: Query or str
+        :param int batch: batch size, retrieves items in
+         batches allowing to retrieve more items than the limit.
         :return: list of calendars
-        :rtype: list[Calendar]
+        :rtype: list[Calendar] or Pagination
 
         """
         url = self.build_url(self._endpoints.get('root_calendars'))
 
         params = {}
-        if limit:
-            params['$top'] = limit
+        if limit is None or limit > self.protocol.max_top_value:
+            batch = self.protocol.max_top_value
+        params['$top'] =  batch if batch else limit
         if query:
             params['$filter'] = str(query)
         if order_by:
@@ -1974,10 +1975,16 @@ class Schedule(ApiComponent):
         data = response.json()
 
         # Everything received from cloud must be passed as self._cloud_data_key
-        contacts = [self.calendar_constructor(parent=self, **{
+        calendars = [self.calendar_constructor(parent=self, **{
             self._cloud_data_key: x}) for x in data.get('value', [])]
+        next_link = data.get(NEXT_LINK_KEYWORD, None)
+        if batch and next_link:
+            return Pagination(parent=self, data=calendars,
+                              constructor=self.calendar_constructor,
+                              next_link=next_link, limit=limit)
+        else:
+            return calendars
 
-        return contacts
 
     def new_calendar(self, calendar_name):
         """ Creates a new calendar
