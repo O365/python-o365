@@ -713,11 +713,7 @@ class QueryBuilder:
         """
         select = SelectFilter()
         for attribute in attributes:
-            attribute = self.protocol.convert_case(attribute)
-            if "/" in attribute:
-                # only parent attribute can be selected
-                attribute = attribute.split("/")[0]
-            select.append(attribute)
+            select.append(self.protocol.convert_case(attribute))
         return select
 
     def expand(self, relationship: str, select: Optional[SelectFilter] = None) -> ExpandFilter:
