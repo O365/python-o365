@@ -1859,25 +1859,25 @@ batches allowing to retrieve more items than the limit.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="O365.calendar.Schedule.list_calendars">
-<span class="sig-name descname"><span class="pre">list_calendars</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order_by</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#Schedule.list_calendars"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.calendar.Schedule.list_calendars" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">list_calendars</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order_by</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#Schedule.list_calendars"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.calendar.Schedule.list_calendars" title="Link to this definition"></a></dt>
 <dd><p>Gets a list of calendars</p>
 <p>To use query an order_by check the OData specification here:
-<a class="reference external" href="http://docs.oasis-open.org/odata/odata/v4.0/errata03/os/complete/">http://docs.oasis-open.org/odata/odata/v4.0/errata03/os/complete/</a>
-part2-url-conventions/odata-v4.0-errata03-os-part2-url-conventions
--complete.html</p>
+<a class="reference external" href="https://docs.oasis-open.org/odata/odata/v4.0/errata03/os/odata-v4.0-errata03-os.html">https://docs.oasis-open.org/odata/odata/v4.0/errata03/os/odata-v4.0-errata03-os.html</a></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>limit</strong> (<em>int</em>) – max no. of calendars to get. Over 999 uses batch.</p></li>
 <li><p><strong>query</strong> (<a class="reference internal" href="utils/utils.html#O365.utils.utils.Query" title="O365.utils.utils.Query"><em>Query</em></a><em> or </em><em>str</em>) – applies a OData filter to the request</p></li>
 <li><p><strong>order_by</strong> (<a class="reference internal" href="utils/utils.html#O365.utils.utils.Query" title="O365.utils.utils.Query"><em>Query</em></a><em> or </em><em>str</em>) – orders the result set based on this condition</p></li>
+<li><p><strong>batch</strong> (<em>int</em>) – batch size, retrieves items in
+batches allowing to retrieve more items than the limit.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>list of calendars</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>list[<a class="reference internal" href="#O365.calendar.Calendar" title="O365.calendar.Calendar">Calendar</a>]</p>
+<dd class="field-odd"><p>list[<a class="reference internal" href="#O365.calendar.Calendar" title="O365.calendar.Calendar">Calendar</a>] or <a class="reference internal" href="utils/utils.html#O365.utils.utils.Pagination" title="O365.utils.utils.Pagination">Pagination</a></p>
 </dd>
 </dl>
 </dd></dl>
