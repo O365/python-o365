@@ -2,6 +2,13 @@
 
 Almost every release features a lot of bugfixes but those are not listed here.
 
+## Version 2.1.2 (2025-04-08)
+- Calendar: list_calendars now allows pagination (Thanks @RogerSelwyn)
+- Query: added new experimental Query object that will replace the current Query object in the future. Available in utils.query.
+- Message: non-draft messages can be saved. This allows to edit non-draft messages.
+- Connection: proxies, verify_ssl and timeout are now honored in the msal http client
+- Message: new method `get_eml_as_object` to retrieve attached eml as Message objects.
+
 ## Version 2.1.1 (2025-03-20)
 - Tasks: support unsetting tasks due and reminder (Thanks @RogerSelwyn)
 - Removed Office 365 tasks file (api was deprecated on november 2024)
