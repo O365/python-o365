@@ -72,6 +72,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#O365.connection.Connection.refresh_token"><code class="docutils literal notranslate"><span class="pre">Connection.refresh_token()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.connection.Connection.request_token"><code class="docutils literal notranslate"><span class="pre">Connection.request_token()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.connection.Connection.set_proxy"><code class="docutils literal notranslate"><span class="pre">Connection.set_proxy()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.connection.Connection.update_session_auth_header"><code class="docutils literal notranslate"><span class="pre">Connection.update_session_auth_header()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.connection.Connection.auth"><code class="docutils literal notranslate"><span class="pre">Connection.auth</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.connection.Connection.auth_flow_type"><code class="docutils literal notranslate"><span class="pre">Connection.auth_flow_type</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.connection.Connection.default_headers"><code class="docutils literal notranslate"><span class="pre">Connection.default_headers</span></code></a></li>
@@ -505,6 +506,12 @@ authenticating every time</p></li>
 </ul>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.connection.Connection.update_session_auth_header">
+<span class="sig-name descname"><span class="pre">update_session_auth_header</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">access_token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/O365/connection.html#Connection.update_session_auth_header"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.connection.Connection.update_session_auth_header" title="Link to this definition"></a></dt>
+<dd><p>Will update the internal request session auth header with an access token</p>
 </dd></dl>
 
 <dl class="py attribute">

@@ -350,7 +350,7 @@ This MUST be implemented in subclasses</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="O365.utils.token.BaseTokenBackend.should_refresh_token">
-<span class="sig-name descname"><span class="pre">should_refresh_token</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">con</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../../_modules/O365/utils/token.html#BaseTokenBackend.should_refresh_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.token.BaseTokenBackend.should_refresh_token" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">should_refresh_token</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">con</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../connection.html#O365.connection.Connection" title="O365.connection.Connection"><span class="pre">Connection</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">username</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../../_modules/O365/utils/token.html#BaseTokenBackend.should_refresh_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.token.BaseTokenBackend.should_refresh_token" title="Link to this definition"></a></dt>
 <dd><p>This method is intended to be implemented for environments
 where multiple Connection instances are running on parallel.</p>
 <p>This method should check if it’s time to refresh the token or not.
@@ -379,27 +379,27 @@ signaling there is no need to refresh the token.</div>
 </div>
 <div class="line-block">
 <div class="line">If this returns True, then the Connection will refresh the token.</div>
-<div class="line">If this returns False, then the Connection will NOT refresh the token.</div>
-<div class="line">If this returns None, then this method already executed the refresh and therefore
-the Connection does not have to.</div>
+<div class="line">If this returns False, then the Connection will NOT refresh the token as it was refreshed by
+another instance or thread.</div>
+<div class="line">If this returns None, then this method has already executed the refresh and also updated the access
+token into the connection session and therefore the Connection does not have to.</div>
 </div>
 <p>By default, this always returns True</p>
 </div></blockquote>
 <p>There is an example of this in the example’s folder.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>con</strong> (<a class="reference internal" href="../connection.html#O365.connection.Connection" title="O365.connection.Connection"><em>Connection</em></a>) – the connection that calls this method. This
-is passed because maybe the locking mechanism needs to refresh the token within the lock applied in this method.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>con</strong> – the Connection instance passed by the caller. This is passed because maybe
+the locking mechanism needs to refresh the token within the lock applied in this method.</p></li>
+<li><p><strong>username</strong> – The username from which retrieve the refresh token</p></li>
+</ul>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>bool or None</p>
-</dd>
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p><div class="line-block">
-<div class="line">True if the Connection can refresh the token</div>
-<div class="line">False if the Connection should not refresh the token</div>
-<div class="line">None if the token was refreshed and therefore the</div>
-<div class="line">Connection should do nothing.</div>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><div class="line-block">
+<div class="line">True if the Connection should refresh the token</div>
+<div class="line">False if the Connection should not refresh the token as it was refreshed by another instance</div>
+<div class="line">None if the token was refreshed by this method and therefore the Connection should do nothing.</div>
 </div>
 </p>
 </dd>
@@ -500,7 +500,7 @@ If the refresh token is present, then the expiration datetime is extended by 3 m
 <dt class="sig sig-object py" id="O365.utils.token.CryptographyManagerType">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.utils.token.</span></span><span class="sig-name descname"><span class="pre">CryptographyManagerType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/token.html#CryptographyManagerType"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.token.CryptographyManagerType" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Protocol</span></code></p>
-<p>Abstract cryptography manafer</p>
+<p>Abstract cryptography manager</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="O365.utils.token.CryptographyManagerType.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#O365.utils.token.CryptographyManagerType.__init__" title="Link to this definition"></a></dt>
@@ -742,7 +742,7 @@ Will create the folder if it doesn’t exist
 <dl class="py attribute">
 <dt class="sig sig-object py" id="O365.utils.token.FirestoreBackend.collection">
 <span class="sig-name descname"><span class="pre">collection</span></span><a class="headerlink" href="#O365.utils.token.FirestoreBackend.collection" title="Link to this definition"></a></dt>
-<dd><p>Fire store colelction.  <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
+<dd><p>Fire store collection.  <div style="line-height: 0; padding: 0; margin: 0"></div><div style="line-height: 0; padding: 0; margin: 0"></div>&nbsp;&nbsp; <strong>Type:</strong> str</p>
 </dd></dl>
 
 <dl class="py attribute">
