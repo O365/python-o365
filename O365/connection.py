@@ -626,7 +626,7 @@ class Connection:
         if self.session is not None:
             access_token = self.token_backend.get_access_token(username=username)
             if access_token is not None:
-                self.session.headers.update({"Authorization": f"Bearer {access_token}"})
+                self.update_session_auth_header(access_token=access_token["secret"])
             else:
                 # if we can't find an access token for the current user, then remove the auth header from the session
                 if "Authorization" in self.session.headers:
@@ -806,8 +806,7 @@ class Connection:
 
             # Update the session headers if the session exists
             if self.session is not None:
-                access_token = result["access_token"]
-                self.session.headers.update({"Authorization": f"Bearer {access_token}"})
+                self.update_session_auth_header(access_token=result["access_token"])
 
         if store_token:
             self.token_backend.save_token()
@@ -878,6 +877,53 @@ class Connection:
 
         return naive_session
 
+    def update_session_auth_header(self, access_token: Optional[str] = None) -> None:
+        """ Will update the internal request session auth header with an access token"""
+        if access_token is None:
+            # try to get the access_token from the backend
+            access_token_dict = self.token_backend.get_access_token(
+                username=self.username
+            ) or {}
+            access_token = access_token_dict.get("secret")
+            if access_token is None:
+                # at this point this is an error.
+                raise RuntimeError("Tried to update the session auth header but no access "
+                                   "token was provided nor found in the token backend.")
+        log.debug("New access token set into session auth header")
+        self.session.headers.update(
+            {"Authorization": f"Bearer {access_token}"}
+        )
+
+    def _try_refresh_token(self) -> bool:
+        """Internal method to check try to update the refresh token"""
+        # first we check if we can acquire a new refresh token
+        token_refreshed = False
+        if (
+            self.token_backend.token_is_long_lived(username=self.username)
+            or self.auth_flow_type == "credentials"
+        ):
+            # then we ask the token backend if we should refresh the token
+            log.debug("Asking the token backend if we should refresh the token")
+            should_rt = self.token_backend.should_refresh_token(con=self, username=self.username)
+            log.debug(f"Token Backend answered {should_rt}")
+            if should_rt is True:
+                # The backend has checked that we can refresh the token
+                return self.refresh_token()
+            elif should_rt is False:
+                # The token was refreshed by another instance and 'should_refresh_token' has updated it into the
+                # backend cache. So, update the session token and retry the request again
+                self.update_session_auth_header()
+                return True
+            else:
+                # the refresh was performed by the token backend, and it has updated all the data
+                return True
+        else:
+            log.error(
+                "You can not refresh an access token that has no 'refresh_token' available."
+                "Include 'offline_access' permission to get a 'refresh_token'."
+            )
+            return False
+
     def refresh_token(self) -> bool:
         """
         Refresh the OAuth authorization token.
@@ -887,71 +933,36 @@ class Connection:
 
         :return bool: Success / Failure
         """
+        log.debug("Refreshing access token")
+
         if self.session is None:
             self.session = self.get_session(load_token=True)
 
-        token_refreshed = False
+        # This will set the connection scopes from the scopes set in the stored refresh or access token
+        scopes = self.token_backend.get_token_scopes(
+            username=self.username, remove_reserved=True
+        )
 
-        if (
-            self.token_backend.token_is_long_lived(username=self.username)
-            or self.auth_flow_type == "credentials"
-        ):
-            should_rt = self.token_backend.should_refresh_token(self)
-            if should_rt is True:
-                # The backend has checked that we can refresh the token
-                log.debug("Refreshing access token")
-
-                # This will set the connection scopes from the scopes set in the stored refresh or access token
-                scopes = self.token_backend.get_token_scopes(
-                    username=self.username, remove_reserved=True
-                )
-
-                result = self.msal_client.acquire_token_silent_with_error(
-                    scopes=scopes,
-                    account=self.msal_client.get_accounts(username=self.username)[0],
-                )
-                if result is None:
-                    raise RuntimeError("There is no refresh token to refresh")
-                elif "error" in result:
-                    raise RuntimeError(
-                        f'Refresh token operation failed: {result["error"]}'
-                    )
-                elif "access_token" in result:
-                    # refresh done, update authorization header
-                    token_refreshed = True
-                    self.session.headers.update(
-                        {"Authorization": f'Bearer {result["access_token"]}'}
-                    )
-                    log.debug(
-                        f"New oauth token fetched by refresh method for username: {self.username}"
-                    )
-            elif should_rt is False:
-                # the token was refreshed by another instance and updated into this instance,
-                # so: update the session token and retry the request again
-                access_token = self.token_backend.get_access_token(
-                    username=self.username
-                )
-                if access_token:
-                    self.session.headers.update(
-                        {"Authorization": f'Bearer {access_token["secret"]}'}
-                    )
-                else:
-                    raise RuntimeError(
-                        "Can't get access token refreshed by another instance."
-                    )
-            else:
-                # the refresh was performed by the token backend.
-                pass
-        else:
-            log.error(
-                'You can not refresh an access token that has no "refresh_token" available.'
-                'Include "offline_access" permission to get a "refresh_token"'
+        # call the refresh!
+        result = self.msal_client.acquire_token_silent_with_error(
+            scopes=scopes,
+            account=self.msal_client.get_accounts(username=self.username)[0],
+        )
+        if result is None:
+            raise RuntimeError("There is no refresh token to refresh")
+        elif "error" in result:
+            raise RuntimeError(f"Refresh token operation failed: {result['error']}")
+        elif "access_token" in result:
+            log.debug(
+                f"New oauth token fetched by refresh method for username: {self.username}"
             )
-            return False
+            # refresh done, update authorization header
+            self.update_session_auth_header(access_token=result["access_token"])
 
-        if token_refreshed and self.store_token_after_refresh:
-            self.token_backend.save_token()
-        return True
+            if self.store_token_after_refresh:
+                self.token_backend.save_token()
+            return True
+        return False
 
     def _check_delay(self) -> None:
         """Checks if a delay is needed between requests and sleeps if True"""
@@ -1117,7 +1128,8 @@ class Connection:
         except TokenExpiredError as e:
             # refresh and try again the request!
             try:
-                if self.refresh_token():
+                # try to refresh the token and/or follow token backend answer on 'should_refresh_token'
+                if self._try_refresh_token():
                     return self._internal_request(self.session, url, method, **kwargs)
                 else:
                     raise e

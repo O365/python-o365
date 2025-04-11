@@ -1,11 +1,16 @@
+from __future__ import annotations
+
 import datetime as dt
 import json
 import logging
 import os
 from pathlib import Path
-from typing import Optional, Protocol, Union
+from typing import Optional, Protocol, Union, TYPE_CHECKING
 
 from msal.token_cache import TokenCache
+
+if TYPE_CHECKING:
+    from O365.connection import Connection
 
 log = logging.getLogger(__name__)
 
@@ -14,7 +19,7 @@ RESERVED_SCOPES = {"profile", "openid", "offline_access"}
 
 
 class CryptographyManagerType(Protocol):
-    """Abstract cryptography manafer"""
+    """Abstract cryptography manager"""
 
     def encrypt(self, data: str) -> bytes: ...
 
@@ -269,7 +274,8 @@ class BaseTokenBackend(TokenCache):
         """Optional Abstract method to check for the token existence in the backend"""
         raise NotImplementedError
 
-    def should_refresh_token(self, con=None) -> Optional[bool]:
+    def should_refresh_token(self, con: Optional[Connection] = None, *,
+                             username: Optional[str] = None) -> Optional[bool]:
         """
         This method is intended to be implemented for environments
         where multiple Connection instances are running on parallel.
@@ -281,13 +287,13 @@ class BaseTokenBackend(TokenCache):
 
         This is an example of how to achieve this:
 
-            #. Along with the token store a Flag
-            #. The first to see the Flag as True must transactional update it
+            1. Along with the token store a Flag
+            2. The first to see the Flag as True must transactional update it
                to False. This method then returns True and therefore the
                connection will refresh the token.
-            #. The save_token method should be rewritten to also update the flag
+            3. The save_token method should be rewritten to also update the flag
                back to True always.
-            #. Meanwhile between steps 2 and 3, any other token backend checking
+            4. Meanwhile between steps 2 and 3, any other token backend checking
                for this method should get the flag with a False value.
 
             | This method should then wait and check again the flag.
@@ -298,21 +304,23 @@ class BaseTokenBackend(TokenCache):
               signaling there is no need to refresh the token.
 
             | If this returns True, then the Connection will refresh the token.
-            | If this returns False, then the Connection will NOT refresh the token.
-            | If this returns None, then this method already executed the refresh and therefore
-              the Connection does not have to.
+            | If this returns False, then the Connection will NOT refresh the token as it was refreshed by
+             another instance or thread.
+            | If this returns None, then this method has already executed the refresh and also updated the access
+             token into the connection session and therefore the Connection does not have to.
 
             By default, this always returns True
 
         There is an example of this in the example's folder.
 
-        :param Connection con: the connection that calls this method. This
-         is passed because maybe the locking mechanism needs to refresh the token within the lock applied in this method.
-        :rtype: bool or None
-        :return: | True if the Connection can refresh the token
-                 | False if the Connection should not refresh the token
-                 | None if the token was refreshed and therefore the
-                 | Connection should do nothing.
+
+
+        :param con: the Connection instance passed by the caller. This is passed because maybe
+         the locking mechanism needs to refresh the token within the lock applied in this method.
+        :param username: The username from which retrieve the refresh token
+        :return: | True if the Connection should refresh the token
+                 | False if the Connection should not refresh the token as it was refreshed by another instance
+                 | None if the token was refreshed by this method and therefore the Connection should do nothing.
         """
         return True
 
@@ -375,7 +383,7 @@ class FileSystemTokenBackend(BaseTokenBackend):
             if not self.token_path.parent.exists():
                 self.token_path.parent.mkdir(parents=True)
         except Exception as e:
-            log.error("Token could not be saved: {}".format(str(e)))
+            log.error(f"Token could not be saved: {e}")
             return False
 
         with self.token_path.open("w") as token_file:
@@ -487,7 +495,7 @@ class FirestoreBackend(BaseTokenBackend):
         super().__init__()
         #: Fire store client.  |br| **Type:** firestore.Client
         self.client = client
-        #: Fire store colelction.  |br| **Type:** str
+        #: Fire store collection.  |br| **Type:** str
         self.collection = collection
         #: Fire store token document key.  |br| **Type:** str
         self.doc_id = doc_id
@@ -497,7 +505,7 @@ class FirestoreBackend(BaseTokenBackend):
         self.field_name = field_name
 
     def __repr__(self):
-        return "Collection: {}. Doc Id: {}".format(self.collection, self.doc_id)
+        return f"Collection: {self.collection}. Doc Id: {self.doc_id}"
 
     def load_token(self) -> bool:
         """
@@ -508,10 +516,8 @@ class FirestoreBackend(BaseTokenBackend):
             doc = self.doc_ref.get()
         except Exception as e:
             log.error(
-                "Token (collection: {}, doc_id: {}) "
-                "could not be retrieved from the backend: {}".format(
-                    self.collection, self.doc_id, str(e)
-                )
+                f"Token (collection: {self.collection}, doc_id: {self.doc_id}) "
+                f"could not be retrieved from the backend: {e}"
             )
             doc = None
         if doc and doc.exists:
@@ -537,7 +543,7 @@ class FirestoreBackend(BaseTokenBackend):
             # set token will overwrite previous data
             self.doc_ref.set({self.field_name: self.serialize()})
         except Exception as e:
-            log.error("Token could not be saved: {}".format(str(e)))
+            log.error(f"Token could not be saved: {e}")
             return False
 
         return True
@@ -551,7 +557,7 @@ class FirestoreBackend(BaseTokenBackend):
             self.doc_ref.delete()
         except Exception as e:
             log.error(
-                "Could not delete the token (key: {}): {}".format(self.doc_id, str(e))
+                f"Could not delete the token (key: {self.doc_id}): {e}"
             )
             return False
         return True
@@ -565,11 +571,9 @@ class FirestoreBackend(BaseTokenBackend):
             doc = self.doc_ref.get()
         except Exception as e:
             log.error(
-                "Token (collection: {}, doc_id: {}) "
-                "could not be retrieved from the backend: {}".format(
-                    self.collection, self.doc_id, str(e)
+                f"Token (collection: {self.collection}, doc_id:"
+                f" {self.doc_id}) could not be retrieved from the backend: {e}"
                 )
-            )
             doc = None
         return doc and doc.exists
 
@@ -597,7 +601,7 @@ class AWSS3Backend(BaseTokenBackend):
         self._client = boto3.client("s3")
 
     def __repr__(self):
-        return "AWSS3Backend('{}', '{}')".format(self.bucket_name, self.filename)
+        return f"AWSS3Backend('{self.bucket_name}', '{self.filename}')"
 
     def load_token(self) -> bool:
         """
@@ -611,9 +615,7 @@ class AWSS3Backend(BaseTokenBackend):
             self._cache = self.deserialize(token_object["Body"].read())
         except Exception as e:
             log.error(
-                "Token ({}) could not be retrieved from the backend: {}".format(
-                    self.filename, e
-                )
+                f"Token ({self.filename}) could not be retrieved from the backend: {e}"
             )
             return False
         return True
@@ -637,7 +639,7 @@ class AWSS3Backend(BaseTokenBackend):
                     Bucket=self.bucket_name, Key=self.filename, Body=token_str
                 )
             except Exception as e:
-                log.error("Token file could not be saved: {}".format(e))
+                log.error(f"Token file could not be saved: {e}")
                 return False
         else:  # create a new token file
             try:
@@ -649,7 +651,7 @@ class AWSS3Backend(BaseTokenBackend):
                     ContentType="text/plain",
                 )
             except Exception as e:
-                log.error("Token file could not be created: {}".format(e))
+                log.error(f"Token file could not be created: {e}")
                 return False
 
         return True
@@ -662,13 +664,11 @@ class AWSS3Backend(BaseTokenBackend):
         try:
             r = self._client.delete_object(Bucket=self.bucket_name, Key=self.filename)
         except Exception as e:
-            log.error("Token file could not be deleted: {}".format(e))
+            log.error(f"Token file could not be deleted: {e}")
             return False
         else:
             log.warning(
-                "Deleted token file {} in bucket {}.".format(
-                    self.filename, self.bucket_name
-                )
+                f"Deleted token file {self.filename} in bucket {self.bucket_name}."
             )
             return True
 
@@ -708,9 +708,7 @@ class AWSSecretsBackend(BaseTokenBackend):
         self._client = boto3.client("secretsmanager", region_name=region_name)
 
     def __repr__(self):
-        return "AWSSecretsBackend('{}', '{}')".format(
-            self.secret_name, self.region_name
-        )
+        return f"AWSSecretsBackend('{self.secret_name}', '{self.region_name}')"
 
     def load_token(self) -> bool:
         """
@@ -725,9 +723,7 @@ class AWSSecretsBackend(BaseTokenBackend):
             self._cache = self.deserialize(token_str)
         except Exception as e:
             log.error(
-                "Token (secret: {}) could not be retrieved from the backend: {}".format(
-                    self.secret_name, e
-                )
+                f"Token (secret: {self.secret_name}) could not be retrieved from the backend: {e}"
             )
             return False
 
@@ -751,7 +747,7 @@ class AWSSecretsBackend(BaseTokenBackend):
                     SecretId=self.secret_name, SecretString=self.serialize()
                 )
             except Exception as e:
-                log.error("Token secret could not be saved: {}".format(e))
+                log.error(f"Token secret could not be saved: {e}")
                 return False
         else:  # create a new secret
             try:
@@ -761,13 +757,12 @@ class AWSSecretsBackend(BaseTokenBackend):
                     SecretString=self.serialize(),
                 )
             except Exception as e:
-                log.error("Token secret could not be created: {}".format(e))
+                log.error(f"Token secret could not be created: {e}")
                 return False
             else:
                 log.warning(
-                    "\nCreated secret {} ({}). Note: using AWS Secrets Manager incurs charges, "
-                    "please see https://aws.amazon.com/secrets-manager/pricing/ "
-                    "for pricing details.\n".format(r["Name"], r["ARN"])
+                    f"\nCreated secret {r['Name']} ({r['ARN']}). Note: using AWS Secrets Manager incurs charges, "
+                    f"please see https://aws.amazon.com/secrets-manager/pricing/ for pricing details.\n"
                 )
 
         return True
@@ -782,10 +777,10 @@ class AWSSecretsBackend(BaseTokenBackend):
                 SecretId=self.secret_name, ForceDeleteWithoutRecovery=True
             )
         except Exception as e:
-            log.error("Token secret could not be deleted: {}".format(e))
+            log.error(f"Token secret could not be deleted: {e}")
             return False
         else:
-            log.warning("Deleted token secret {} ({}).".format(r["Name"], r["ARN"]))
+            log.warning(f"Deleted token secret {r['Name']} ({r['ARN']}).")
             return True
 
     def check_token(self) -> bool:
@@ -827,7 +822,7 @@ class BitwardenSecretsManagerBackend(BaseTokenBackend):
         self.secret = None
 
     def __repr__(self):
-        return "BitwardenSecretsManagerBackend('{}')".format(self.secret_id)
+        return f"BitwardenSecretsManagerBackend('{self.secret_id}')"
 
     def load_token(self) -> bool:
         """
@@ -854,7 +849,7 @@ class BitwardenSecretsManagerBackend(BaseTokenBackend):
         :return bool: Success / Failure
         """
         if self.secret is None:
-            raise ValueError(f'You have to set "self.secret" data first.')
+            raise ValueError('You have to set "self.secret" data first.')
 
         if not self._cache:
             return False
@@ -924,7 +919,7 @@ class DjangoTokenBackend(BaseTokenBackend):
             token_record = self.token_model.objects.latest("created_at")
             self._cache = self.deserialize(token_record.token)
         except Exception as e:
-            log.warning(f"No token found in the database, creating a new one: {str(e)}")
+            log.warning(f"No token found in the database, creating a new one: {e}")
             return False
 
         return True
@@ -945,7 +940,7 @@ class DjangoTokenBackend(BaseTokenBackend):
             # Create a new token record in the database
             self.token_model.objects.create(token=self.serialize())
         except Exception as e:
-            log.error(f"Token could not be saved: {str(e)}")
+            log.error(f"Token could not be saved: {e}")
             return False
 
         return True
@@ -960,7 +955,7 @@ class DjangoTokenBackend(BaseTokenBackend):
             token_record = self.token_model.objects.latest("created_at")
             token_record.delete()
         except Exception as e:
-            log.error(f"Could not delete token: {str(e)}")
+            log.error(f"Could not delete token: {e}")
             return False
         return True
 
