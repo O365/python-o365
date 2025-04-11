@@ -1014,6 +1014,7 @@ class Connection:
         try:
             log.debug(f"Requesting ({method.upper()}) URL: {url}")
             log.debug(f"Request parameters: {kwargs}")
+            log.debug(f"Session default headers: {session_obj.headers}")
             # auto_retry will occur inside this function call if enabled
             response = session_obj.request(method, url, **kwargs)
 
