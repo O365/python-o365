@@ -1,7 +1,7 @@
 import json
 import logging
 import time
-from typing import Callable, Dict, List, Optional, Tuple, Union
+from typing import Callable, Dict, List, Optional, Union
 from urllib.parse import parse_qs, urlparse
 
 from msal import ConfidentialClientApplication, PublicClientApplication
@@ -34,9 +34,9 @@ from .utils import (
 
 log = logging.getLogger(__name__)
 
-O365_API_VERSION = "v2.0"
-GRAPH_API_VERSION = "v1.0"
-OAUTH_REDIRECT_URL = "https://login.microsoftonline.com/common/oauth2/nativeclient"
+O365_API_VERSION: str = "v2.0"
+GRAPH_API_VERSION: str = "v1.0"
+OAUTH_REDIRECT_URL: str = "https://login.microsoftonline.com/common/oauth2/nativeclient"
 
 RETRIES_STATUS_LIST = (
     429,  # Status code for TooManyRequests
@@ -45,9 +45,9 @@ RETRIES_STATUS_LIST = (
     503,
     504,  # Server errors
 )
-RETRIES_BACKOFF_FACTOR = 0.5
+RETRIES_BACKOFF_FACTOR: float = 0.5
 
-DEFAULT_SCOPES = {
+DEFAULT_SCOPES: dict[str, list[str]] = {
     # wrap any scope in a 1 element tuple to avoid prefixing
     "basic": ["User.Read"],
     "mailbox": ["Mail.Read"],
@@ -87,9 +87,9 @@ class Protocol:
     """Base class for all protocols"""
 
     # Override these in subclass
-    _protocol_url = "not_defined"  # Main url to request.
-    _oauth_scope_prefix = ""  # Prefix for scopes
-    _oauth_scopes = {}  # Dictionary of {scopes_name: [scope1, scope2]}
+    _protocol_url: str = "not_defined"  # Main url to request.
+    _oauth_scope_prefix: str = ""  # Prefix for scopes
+    _oauth_scopes: dict[str, list[str]] = {}  # Dictionary of {scopes_name: [scope1, scope2]}
 
     def __init__(
         self,
@@ -144,7 +144,7 @@ class Protocol:
         self.max_top_value: int = 500  # Max $top parameter value
 
         #: The in use timezone.   |br| **Type:** str
-        self._timezone = None
+        self._timezone: Optional[ZoneInfo] = None
 
         if timezone:
             self.timezone = timezone  # property setter will convert this timezone to ZoneInfo if a string is provided
@@ -256,7 +256,7 @@ class MSGraphProtocol(Protocol):
     _oauth_scope_prefix = "https://graph.microsoft.com/"
     _oauth_scopes = DEFAULT_SCOPES
 
-    def __init__(self, api_version="v1.0", default_resource=None, **kwargs):
+    def __init__(self, api_version: str = "v1.0", default_resource: Optional[str] = None, **kwargs):
         """Create a new Microsoft Graph protocol object
 
         _protocol_url = 'https://graph.microsoft.com/'
@@ -307,7 +307,7 @@ class MSOffice365Protocol(Protocol):
     _oauth_scope_prefix = "https://outlook.office.com/"
     _oauth_scopes = DEFAULT_SCOPES
 
-    def __init__(self, api_version="v2.0", default_resource=None, **kwargs):
+    def __init__(self, api_version: str = "v2.0", default_resource: Optional[str] = None, **kwargs):
         """Create a new Office 365 protocol object
 
         _protocol_url = 'https://outlook.office.com/api/'
@@ -362,7 +362,8 @@ class MSBusinessCentral365Protocol(Protocol):
     _protocol_scope_prefix = "https://api.businesscentral.dynamics.com/"
 
     def __init__(
-        self, api_version="v1.0", default_resource=None, environment=None, **kwargs
+        self, api_version: str ="v1.0", default_resource: Optional[str] = None,
+            environment: Optional[str] = None, **kwargs
     ):
         """Create a new Microsoft Graph protocol object
 
@@ -421,7 +422,7 @@ class Connection:
 
     def __init__(
         self,
-        credentials: Tuple,
+        credentials: tuple,
         *,
         proxy_server: Optional[str] = None,
         proxy_port: Optional[int] = 8080,
@@ -520,7 +521,7 @@ class Connection:
             )
 
         #: The credentials for the connection.  |br| **Type:** tuple
-        self.auth: Tuple = credentials
+        self.auth: tuple = credentials
         #: The tenant id.  |br| **Type:** str
         self.tenant_id: str = tenant_id
 
@@ -699,7 +700,7 @@ class Connection:
 
     def get_authorization_url(
         self, requested_scopes: List[str], redirect_uri: Optional[str] = None, **kwargs
-    ) -> Tuple[str, dict]:
+    ) -> tuple[str, dict]:
         """Initializes the oauth authorization flow, getting the
         authorization url that the user must approve.
 
