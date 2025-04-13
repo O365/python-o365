@@ -62,7 +62,7 @@ class LockableFirestoreBackend(FirestoreBackend):
         # 1) check if the token is already a new one:
         old_access_token = self.get_access_token(username=username)
         if old_access_token:
-            self.load_token()
+            self.load_token()  # retrieve again the token from the backend
             new_access_token = self.get_access_token(username=username)
             if old_access_token["secret"] != new_access_token["secret"]:
                 # The token is different so the refresh took part somewhere else.
@@ -130,8 +130,8 @@ class LockableFileSystemTokenBackend(FileSystemTokenBackend):
     """
 
     def __init__(self, *args, **kwargs):
-        self.max_tries = kwargs.pop("max_tries")
-        self.fs_wait = False
+        self.max_tries: int = kwargs.pop("max_tries", 3)
+        self.fs_wait: bool = False
         super().__init__(*args, **kwargs)
 
     def should_refresh_token(self, con: Optional[Connection] = None, username: Optional[str] = None):
@@ -150,10 +150,10 @@ class LockableFileSystemTokenBackend(FileSystemTokenBackend):
         unlocks the file. Since refreshing has been taken care of, the calling 
         method does not need to refresh and we return None.
         
-        If we are blocked because the file is locked, that means another 
+        If we are blocked because the file is locked, that means another
         instance is using it. We'll change the backend's state to waiting,
         sleep for 2 seconds, reload a token into memory from the file (since
-        another process is using it, we can assume it's being updated), and 
+        another process is using it, we can assume it's being updated), and
         loop again.
         
         If this newly loaded token is not expired, the other instance loaded
@@ -165,27 +165,45 @@ class LockableFileSystemTokenBackend(FileSystemTokenBackend):
         runtime exception
         """
 
+        # 1) check if the token is already a new one:
+        old_access_token = self.get_access_token(username=username)
+        if old_access_token:
+            self.load_token()  # retrieve again the token from the backend
+            new_access_token = self.get_access_token(username=username)
+            if old_access_token["secret"] != new_access_token["secret"]:
+                # The token is different so the refresh took part somewhere else.
+                # Return False so the connection can update the token access from the backend into the session
+                return False
+
+        # 2) Here the token stored in the token backend and in the token cache of this instance is the same
         for i in range(self.max_tries, 0, -1):
             try:
-                with Lock(self.token_path, "r+",
-                          fail_when_locked=True, timeout=0):
-                    log.debug("Locked oauth token file")
-                    if con.get_refresh_token() is False:
+                with Lock(self.token_path, "r+", fail_when_locked=True, timeout=0) as token_file:
+                    # we were able to lock the file ourselves so proceed to refresh the token
+                    # we have to do the refresh here as we must do it with the lock applied
+                    log.debug("Locked oauth token file. Refreshing the token now...")
+                    token_refreshed = con.refresh_token()
+                    if token_refreshed is False:
                         raise RuntimeError("Token Refresh Operation not working")
-                    log.info("New oauth token fetched")
+
+                    # we have refreshed the auth token ourselves to we must take care of
+                    # updating the header and save the token file
+                    con.update_session_auth_header()
+                    log.debug("New oauth token fetched. Saving the token data into the file")
+                    token_file.write(self.serialize())
                 log.debug("Unlocked oauth token file")
                 return None
             except LockException:
+                # somebody else has adquired a lock so will be in the process of updating the token
                 self.fs_wait = True
-                log.warning(f"Oauth file locked. Sleeping for 2 seconds... retrying {i - 1} more times.")
+                log.debug(f"Oauth file locked. Sleeping for 2 seconds... retrying {i - 1} more times.")
                 time.sleep(2)
                 log.debug("Waking up and rechecking token file for update from other instance...")
-                self.token = self.load_token()
-            # else:
-            #     log.info('Token was refreshed by another instance...')
-            #     self.fs_wait = False
-            #     return False
+                # Assume the token has been already updated
+                self.load_token()
+                # Return False so the connection can update the token access from the backend into the session
+                return False
 
         # if we exit the loop, that means we were locked out of the file after
         # multiple retries give up and throw an error - something isn't right
-        raise RuntimeError("Could not access locked token file after {self.max_tries}")
+        raise RuntimeError(f"Could not access locked token file after {self.max_tries}")
