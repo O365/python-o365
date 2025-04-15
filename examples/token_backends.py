@@ -199,10 +199,13 @@ class LockableFileSystemTokenBackend(FileSystemTokenBackend):
                 log.debug(f"Oauth file locked. Sleeping for 2 seconds... retrying {i - 1} more times.")
                 time.sleep(2)
                 log.debug("Waking up and rechecking token file for update from other instance...")
-                # Assume the token has been already updated
+                # Check if new token has been created.
                 self.load_token()
-                # Return False so the connection can update the token access from the backend into the session
-                return False
+                if not self.token_is_expired():
+                    log.debug("Token file has been updated in other instance...")
+                    # Return False so the connection can update the token access from the
+                    # backend into the session
+                    return False
 
         # if we exit the loop, that means we were locked out of the file after
         # multiple retries give up and throw an error - something isn't right

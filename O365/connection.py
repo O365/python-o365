@@ -581,14 +581,6 @@ class Connection:
             "https://login.microsoftonline.com/common/oauth2/nativeclient"
         )
 
-        # In the event of a response that returned 401 unauthorised this will flag between requests
-        # that this 401 can be a token expired error. MsGraph is returning 401 when the access token
-        # has expired. We can not distinguish between a real 401 or token expired 401. So in the event
-        # of a 401 http error we will first try to refresh the token, set this flag to True and then
-        # re-run the request. If the 401 goes away we will then set this flag to false. If it keeps the
-        # 401 then we will raise the error.
-        #: Indicates if the token has expired. |br| **Type:** bool
-        self._token_expired_flag: bool = False
 
     @property
     def auth_flow_type(self) -> str:
@@ -978,13 +970,14 @@ class Connection:
         self._previous_request_at = time.time()
 
     def _internal_request(
-        self, session_obj: Session, url: str, method: str, **kwargs
+        self, session_obj: Session, url: str, method: str, ignore401: bool, **kwargs
     ) -> Response:
         """Internal handling of requests. Handles Exceptions.
 
         :param session_obj: a requests Session instance.
         :param str url: url to send request to
         :param str method: type of request (get/put/post/patch/delete)
+        :param bool ignore401: indicates whether to ignore 401 error or not
         :param kwargs: extra params to send to the request api
         :return: Response of the request
         :rtype: requests.Response
@@ -1043,14 +1036,13 @@ class Connection:
             raise e  # re-raise exception
         except HTTPError as e:
             # Server response with 4XX or 5XX error status codes
-            if e.response.status_code == 401 and self._token_expired_flag is False:
+            if e.response.status_code == 401 and ignore401 is True:
                 # This could be a token expired error.
                 if self.token_backend.token_is_expired(username=self.username):
                     # Access token has expired, try to refresh the token and try again on the next loop
                     # By raising custom exception TokenExpiredError we signal oauth_request to fire a
                     # refresh token operation.
                     log.debug(f"Oauth Token is expired for username: {self.username}")
-                    self._token_expired_flag = True
                     raise TokenExpiredError("Oauth Token is expired")
 
             # try to extract the error message:
@@ -1103,7 +1095,7 @@ class Connection:
             # lazy creation of a naive session
             self.naive_session = self.get_naive_session()
 
-        return self._internal_request(self.naive_session, url, method, **kwargs)
+        return self._internal_request(self.naive_session, url, method, ignore401=False **kwargs)
 
     def oauth_request(self, url: str, method: str, **kwargs) -> Response:
         """Makes a request to url using an oauth session.
@@ -1124,18 +1116,22 @@ class Connection:
                     f"No auth token found. Authentication Flow needed for user {self.username}"
                 )
 
+        # In the event of a response that returned 401 unauthorised the ignore401 flag indicates
+        # that the 401 can be a token expired error. MsGraph is returning 401 when the access token
+        # has expired. We can not distinguish between a real 401 or token expired 401. So in the event
+        # of a 401 http error we will ignore the first time and try to refresh the token, and then
+        # re-run the request. If the 401 goes away we can move on. If it keeps the 401 then we will 
+        # raise the error.
         try:
-            return self._internal_request(self.session, url, method, **kwargs)
+            return self._internal_request(self.session, url, method, ignore401=True, **kwargs)
         except TokenExpiredError as e:
             # refresh and try again the request!
-            try:
-                # try to refresh the token and/or follow token backend answer on 'should_refresh_token'
-                if self._try_refresh_token():
-                    return self._internal_request(self.session, url, method, **kwargs)
-                else:
-                    raise e
-            finally:
-                self._token_expired_flag = False
+
+            # try to refresh the token and/or follow token backend answer on 'should_refresh_token'
+            if self._try_refresh_token():
+                return self._internal_request(self.session, url, method, ignore401=False, **kwargs)
+            else:
+                raise e
 
     def get(self, url: str, params: Optional[dict] = None, **kwargs) -> Response:
         """Shorthand for self.oauth_request(url, 'get')
