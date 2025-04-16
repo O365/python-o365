@@ -793,15 +793,23 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         if self.to:
             message[cc('toRecipients')] = [self._recipient_to_cloud(recipient)
                                            for recipient in self.to]
+        else:
+            message[cc("toRecipients")] = []
         if self.cc:
             message[cc('ccRecipients')] = [self._recipient_to_cloud(recipient)
                                            for recipient in self.cc]
+        else:
+            message[cc("ccRecipients")] = []
         if self.bcc:
             message[cc('bccRecipients')] = [self._recipient_to_cloud(recipient)
                                             for recipient in self.bcc]
+        else:
+            message[cc("bccRecipients")] = []
         if self.reply_to:
             message[cc('replyTo')] = [self._recipient_to_cloud(recipient) for
                                       recipient in self.reply_to]
+        else:
+            message[cc("replyTo")] = []
         if self.attachments:
             message[cc('attachments')] = self.attachments.to_api_data()
         if self.sender and self.sender.address:
