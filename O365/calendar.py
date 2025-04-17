@@ -126,9 +126,12 @@ class EventRecurrence(ApiComponent):
                                                      set())
         self.__first_day_of_week = recurrence_pattern.get(
             self._cc('firstDayOfWeek'), None)
-        if 'type' in recurrence_pattern.keys():
-            if 'weekly' not in recurrence_pattern['type'].lower():
+        if "type" in recurrence_pattern.keys():
+            self.__recurrence_type = recurrence_pattern["type"]
+            if "weekly" not in recurrence_pattern["type"].lower():
                 self.__first_day_of_week = None
+        else:
+            self.__recurrence_type = None
 
         self.__day_of_month = recurrence_pattern.get(self._cc('dayOfMonth'),
                                                      None)
@@ -338,6 +341,21 @@ class EventRecurrence(ApiComponent):
         self.__recurrence_time_zone = value
         self._track_changes()
 
+    @property
+    def recurrence_type(self):
+        """Type of the recurrence pattern
+
+        :getter: Get the type
+        :setter: Set the type
+        :type: str
+        """
+        return self.__recurrence_type
+
+    @recurrence_type.setter
+    def recurrence_type(self, value):
+        self.__recurrence_type = value
+        self._track_changes()
+        
     @property
     def start_date(self):
         """ Start date of repetition
