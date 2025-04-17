@@ -126,12 +126,10 @@ class EventRecurrence(ApiComponent):
                                                      set())
         self.__first_day_of_week = recurrence_pattern.get(
             self._cc('firstDayOfWeek'), None)
-        if "type" in recurrence_pattern.keys():
-            self.__recurrence_type = recurrence_pattern["type"]
+        self.__recurrence_type = recurrence_pattern.get("type", None)
+        if self.__recurrence_type:
             if "weekly" not in recurrence_pattern["type"].lower():
                 self.__first_day_of_week = None
-        else:
-            self.__recurrence_type = None
 
         self.__day_of_month = recurrence_pattern.get(self._cc('dayOfMonth'),
                                                      None)
