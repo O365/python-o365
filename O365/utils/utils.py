@@ -636,6 +636,9 @@ class Query:
         'flag': 'flag/flagStatus',
         'body': 'body/content'
     }
+    _select_mapping = {
+        "meetingMessageType": "microsoft.graph.eventMessage/meetingMessageType",
+    }
 
     def __init__(self, attribute=None, *, protocol):
         """ Build a query to apply OData filters
@@ -685,6 +688,7 @@ class Query:
                     if '/' in attribute:
                         # only parent attribute can be selected
                         attribute = attribute.split('/')[0]
+                    attribute = self._get_select_mapping(attribute)
                     self._selects.add(attribute)
         else:
             if self._attribute:
@@ -859,6 +863,10 @@ class Query:
                 attribute = self.protocol.convert_case(attribute)
             return attribute
         return None
+
+    def _get_select_mapping(self, attribute):
+        mapping = self._select_mapping.get(attribute)
+        return mapping or attribute
 
     @fluent
     def new(self, attribute, operation=ChainOperator.AND):
