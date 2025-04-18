@@ -988,6 +988,7 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
             location = {cc('displayName'): ''}
 
         data = {
+            cc("transactionId"): self.__transaction_id,
             cc('subject'): self.__subject,
             cc('body'): {
                 cc('contentType'): self.body_type,
