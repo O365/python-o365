@@ -344,15 +344,9 @@ class EventRecurrence(ApiComponent):
         """Type of the recurrence pattern
 
         :getter: Get the type
-        :setter: Set the type
         :type: str
         """
         return self.__recurrence_type
-
-    @recurrence_type.setter
-    def recurrence_type(self, value):
-        self.__recurrence_type = value
-        self._track_changes()
         
     @property
     def start_date(self):
