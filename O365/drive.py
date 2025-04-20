@@ -842,14 +842,15 @@ class DriveItem(ApiComponent):
         # Find out if the server has run a Sync or Async operation
         location = response.headers.get('Location', None)
 
+        parent = self.drive or self.remote_item
         if response.status_code == 202:
             # Async operation
-            return CopyOperation(parent=self.drive, monitor_url=location, target=target_drive)
+            return CopyOperation(parent=parent, monitor_url=location, target=target_drive)
         else:
             # Sync operation. Item is ready to be retrieved
             path = urlparse(location).path
             item_id = path.split('/')[-1]
-            return CopyOperation(parent=self.drive, item_id=item_id, target=target_drive)
+            return CopyOperation(parent=parent, item_id=item_id, target=target_drive)
 
     def get_versions(self):
         """ Returns a list of available versions for this item
