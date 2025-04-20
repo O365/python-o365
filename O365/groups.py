@@ -1,7 +1,7 @@
 import logging
 
 from .directory import User
-from .utils import ApiComponent
+from .utils import ApiComponent, NEXT_LINK_KEYWORD, Pagination 
 
 log = logging.getLogger(__name__)
 
@@ -209,32 +209,50 @@ class Groups(ApiComponent):
         return self.group_constructor(parent=self,
                                 **{self._cloud_data_key: data.get('value')[0]})
 
-    def get_user_groups(self, user_id = None):
-        """ Returns list of groups that given user has membership
+    def get_user_groups(self, user_id=None, limit=None, batch=None):
+        """Returns list of groups that given user has membership
 
         :param user_id: user_id
-
-        :rtype: list[Group]
+        :param int limit: max no. of groups to get. Over 999 uses batch.
+        :param int batch: batch size, retrieves items in
+          batches allowing to retrieve more items than the limit.
+        :rtype: list[Group] or Pagination
         """
 
         if not user_id:
-            raise RuntimeError('Provide the user_id')
+            raise RuntimeError("Provide the user_id")
 
         # get channels by the team id
         url = self.build_url(
             self._endpoints.get("get_user_groups").format(user_id=user_id)
         )
 
-        response = self.con.get(url)
+        params = {}
+        if limit is None or limit > self.protocol.max_top_value:
+            batch = self.protocol.max_top_value
+        params["$top"] = batch if batch else limit
+        response = self.con.get(url, params=params or None)
 
         if not response:
             return None
 
         data = response.json()
 
-        return [
+        groups = [
             self.group_constructor(parent=self, **{self._cloud_data_key: group})
-            for group in data.get('value', [])]
+            for group in data.get("value", [])
+        ]
+        next_link = data.get(NEXT_LINK_KEYWORD, None)
+        if batch and next_link:
+            return Pagination(
+                parent=self,
+                data=groups,
+                constructor=self.group_constructor,
+                next_link=next_link,
+                limit=limit,
+            )
+
+        return groups
 
     def list_groups(self):
         """Returns list of groups
