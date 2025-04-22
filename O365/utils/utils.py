@@ -862,7 +862,7 @@ class Query:
         return None
 
     def _get_select_mapping(self, attribute):
-        if attribute in ["meetingMessageType"]:
+        if attribute.lower() in ["meetingMessageType"]:
             return (
                 f"{self.protocol.keyword_data_store['event_message_type']}/{attribute}"
             )
