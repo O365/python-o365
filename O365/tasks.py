@@ -11,7 +11,11 @@ from .utils import ApiComponent, TrackerSet
 
 log = logging.getLogger(__name__)
 
+CONST_CHECKLIST_ITEM = "checklistitem"
+CONST_CHECKLIST_ITEMS = "checklistitems"
 CONST_FOLDER = "folder"
+CONST_GET_CHECKLIST = "get_checklist"
+CONST_GET_CHECKLISTS = "get_checklists"
 CONST_GET_FOLDER = "get_folder"
 CONST_GET_TASK = "get_task"
 CONST_GET_TASKS = "get_tasks"
@@ -20,13 +24,247 @@ CONST_TASK = "task"
 CONST_TASK_FOLDER = "task_folder"
 
 
+class ChecklistItem(ApiComponent):
+    """A Microsoft To-Do task CheckList Item."""
+
+    _endpoints = {
+        CONST_CHECKLIST_ITEM: "/todo/lists/{folder_id}/tasks/{task_id}/checklistItems/{id}",
+        CONST_TASK: "/todo/lists/{folder_id}/tasks/{task_id}/checklistItems",
+    }
+
+    def __init__(self, *, parent=None, con=None, **kwargs):
+        """Representation of a Microsoft To-Do task CheckList Item.
+
+        :param parent: parent object
+        :type parent: Task
+        :param Connection con: connection to use if no parent specified
+        :param Protocol protocol: protocol to use if no parent specified
+         (kwargs)
+        :param str main_resource: use this resource instead of parent resource
+         (kwargs)
+        :param str task_id: id of the task to add this item in
+         (kwargs)
+        :param str displayName: display name of the item (kwargs)
+        """
+        if parent and con:
+            raise ValueError("Need a parent or a connection but not both")
+        self.con = parent.con if parent else con
+
+        cloud_data = kwargs.get(self._cloud_data_key, {})
+
+        # Choose the main_resource passed in kwargs over parent main_resource
+        main_resource = kwargs.pop("main_resource", None) or (
+            getattr(parent, "main_resource", None) if parent else None
+        )
+
+        super().__init__(
+            protocol=parent.protocol if parent else kwargs.get("protocol"),
+            main_resource=main_resource,
+        )
+
+        # Choose the main_resource passed in kwargs over parent main_resource
+        main_resource = kwargs.pop("main_resource", None) or (
+            getattr(parent, "main_resource", None) if parent else None
+        )
+
+        cc = self._cc  # pylint: disable=invalid-name
+        # internal to know which properties need to be updated on the server
+        self._track_changes = TrackerSet(casing=cc)
+        #: Identifier of the folder of the containing task. |br| **Type:** str
+        self.folder_id = parent.folder_id
+        #: Identifier of the containing task. |br| **Type:** str
+        self.task_id = kwargs.get("task_id") or parent.task_id
+        cloud_data = kwargs.get(self._cloud_data_key, {})
+
+        #: Unique identifier for the item. |br| **Type:** str
+        self.item_id = cloud_data.get(cc("id"), None)
+
+        self.__displayname = cloud_data.get(
+            cc("displayName"), kwargs.get("displayname", None)
+        )
+
+        checked_obj = cloud_data.get(cc("checkedDateTime"), {})
+        self.__checked = self._parse_date_time_time_zone(checked_obj)
+        created_obj = cloud_data.get(cc("createdDateTime"), {})
+        self.__created = self._parse_date_time_time_zone(created_obj)
+
+        self.__is_checked = cloud_data.get(cc("isChecked"), False)
+
+    def __str__(self):
+        """Representation of the Checklist Item via the Graph api as a string."""
+        return self.__repr__()
+
+    def __repr__(self):
+        """Representation of the Checklist Item via the Graph api."""
+        marker = "x" if self.__is_checked else "o"
+        if self.__checked:
+            checked_str = (
+                f"(checked: {self.__checked.date()} at {self.__checked.time()}) "
+            )
+        else:
+            checked_str = ""
+
+        return f"Checklist Item: ({marker}) {self.__displayname} {checked_str}"
+
+    def __eq__(self, other):
+        """Comparison of tasks."""
+        return self.item_id == other.item_id
+
+    def to_api_data(self, restrict_keys=None):
+        """Return a dict to communicate with the server.
+
+        :param restrict_keys: a set of keys to restrict the returned data to
+        :rtype: dict
+        """
+        cc = self._cc  # pylint: disable=invalid-name
+
+        data = {
+            cc("displayName"): self.__displayname,
+            cc("isChecked"): self.__is_checked,
+        }
+
+        if restrict_keys:
+            for key in list(data.keys()):
+                if key not in restrict_keys:
+                    del data[key]
+        return data
+
+    @property
+    def displayname(self):
+        """Return Display Name of the task.
+
+        :type: str
+        """
+        return self.__displayname
+
+    @property
+    def created(self):
+        """Return Created time of the task.
+
+        :type: datetime
+        """
+        return self.__created
+
+    @property
+    def checked(self):
+        """Return Checked time of the task.
+
+        :type: datetime
+        """
+        return self.__checked
+
+    @property
+    def is_checked(self):
+        """Is the item checked.
+
+        :type: bool
+        """
+        return self.__is_checked
+
+    def mark_checked(self):
+        """Mark the checklist item as checked."""
+        self.__is_checked = True
+        self._track_changes.add(self._cc("isChecked"))
+
+    def mark_unchecked(self):
+        """Mark the checklist item as unchecked."""
+        self.__is_checked = False
+        self._track_changes.add(self._cc("isChecked"))
+
+    def delete(self):
+        """Delete a stored checklist item.
+
+        :return: Success / Failure
+        :rtype: bool
+        """
+        if self.item_id is None:
+            raise RuntimeError("Attempting to delete an unsaved checklist item")
+
+        url = self.build_url(
+            self._endpoints.get(CONST_CHECKLIST_ITEM).format(
+                folder_id=self.folder_id, task_id=self.task_id, id=self.item_id
+            )
+        )
+
+        response = self.con.delete(url)
+
+        return bool(response)
+
+    def save(self):
+        """Create a new checklist item or update an existing one.
+
+        Does update by checking what values have changed and update them on the server
+        :return: Success / Failure
+        :rtype: bool
+        """
+        if self.item_id:
+            # update checklist item
+            if not self._track_changes:
+                return True  # there's nothing to update
+            url = self.build_url(
+                self._endpoints.get(CONST_CHECKLIST_ITEM).format(
+                    folder_id=self.folder_id, task_id=self.task_id, id=self.item_id
+                )
+            )
+            method = self.con.patch
+            data = self.to_api_data(restrict_keys=self._track_changes)
+        else:
+            # new task
+            url = self.build_url(
+                self._endpoints.get(CONST_TASK).format(
+                    folder_id=self.folder_id, task_id=self.task_id
+                )
+            )
+
+            method = self.con.post
+            data = self.to_api_data()
+
+        response = method(url, data=data)
+        if not response:
+            return False
+
+        self._track_changes.clear()  # clear the tracked changes
+        item = response.json()
+
+        if not self.item_id:
+            # new checklist item
+            self.item_id = item.get(self._cc("id"), None)
+
+            self.__created = item.get(self._cc("createdDateTime"), None)
+            self.__checked = item.get(self._cc("checkedDateTime"), None)
+            self.__is_checked = item.get(self._cc("isChecked"), False)
+
+            self.__created = (
+                parse(self.__created).astimezone(self.protocol.timezone)
+                if self.__created
+                else None
+            )
+            self.__checked = (
+                parse(self.__checked).astimezone(self.protocol.timezone)
+                if self.__checked
+                else None
+            )
+        else:
+            self.__checked = item.get(self._cc("checkedDateTime"), None)
+            self.__checked = (
+                parse(self.__checked).astimezone(self.protocol.timezone)
+                if self.__checked
+                else None
+            )
+
+        return True
+
+
 class Task(ApiComponent):
     """A Microsoft To-Do task."""
 
     _endpoints = {
+        CONST_GET_CHECKLIST: "/todo/lists/{folder_id}/tasks/{id}/checklistItems/{ide}",
+        CONST_GET_CHECKLISTS: "/todo/lists/{folder_id}/tasks/{id}/checklistItems",
         CONST_TASK: "/todo/lists/{folder_id}/tasks/{id}",
         CONST_TASK_FOLDER: "/todo/lists/{folder_id}/tasks",
     }
+    checklist_item_constructor = ChecklistItem  #: :meta private:
 
     def __init__(self, *, parent=None, con=None, **kwargs):
         """Representation of a Microsoft To-Do task.
@@ -62,7 +300,7 @@ class Task(ApiComponent):
         # internal to know which properties need to be updated on the server
         self._track_changes = TrackerSet(casing=cc)
         #: Identifier of the containing folder. |br| **Type:** str
-        self.folder_id = kwargs.get("folder_id")
+        self.folder_id = kwargs.get("folder_id") or parent.folder_id
         cloud_data = kwargs.get(self._cloud_data_key, {})
 
         #: Unique identifier for the task. |br| **Type:** str
@@ -344,7 +582,7 @@ class Task(ApiComponent):
         return self.__is_completed
 
     def mark_completed(self):
-        """Mark the ask as completed."""
+        """Mark the task as completed."""
         self.__is_completed = True
         self._track_changes.add(self._cc("status"))
 
@@ -454,6 +692,97 @@ class Task(ApiComponent):
         :rtype: BeautifulSoup
         """
         return bs(self.body, "html.parser") if self.body_type == "html" else None
+
+    def get_checklist_items(self, query=None, batch=None, order_by=None):
+        """Return list of checklist items of a specified task.
+
+        :param query: the query string or object to query items
+        :param batch: the batch on to retrieve items.
+        :param order_by: the order clause to apply to returned items.
+
+        :rtype: checklistItems
+        """
+        url = self.build_url(
+            self._endpoints.get(CONST_GET_CHECKLISTS).format(
+                folder_id=self.folder_id, id=self.task_id
+            )
+        )
+
+        # get checklist items by the task id
+        params = {}
+        if batch:
+            params["$top"] = batch
+
+        if order_by:
+            params["$orderby"] = order_by
+
+        if query:
+            if isinstance(query, str):
+                params["$filter"] = query
+            else:
+                params |= query.as_params()
+
+        response = self.con.get(url, params=params)
+
+        if not response:
+            return iter(())
+
+        data = response.json()
+
+        return (
+            self.checklist_item_constructor(parent=self, **{self._cloud_data_key: item})
+            for item in data.get("value", [])
+        )
+
+    def get_checklist_item(self, param):
+        """Return a Checklist Item instance by it's id.
+
+        :param param: an item_id or a Query instance
+        :return: Checklist Item for the specified info
+        :rtype: ChecklistItem
+        """
+        if param is None:
+            return None
+        if isinstance(param, str):
+            url = self.build_url(
+                self._endpoints.get(CONST_GET_CHECKLIST).format(
+                    folder_id=self.folder_id, id=self.task_id, ide=param
+                )
+            )
+            params = None
+            by_id = True
+        else:
+            url = self.build_url(
+                self._endpoints.get(CONST_GET_CHECKLISTS).format(
+                    folder_id=self.folder_id, id=self.task_id
+                )
+            )
+            params = {"$top": 1}
+            params |= param.as_params()
+            by_id = False
+
+        response = self.con.get(url, params=params)
+
+        if not response:
+            return None
+
+        if by_id:
+            item = response.json()
+        else:
+            item = response.json().get("value", [])
+            if item:
+                item = item[0]
+            else:
+                return None
+        return self.checklist_item_constructor(
+            parent=self, **{self._cloud_data_key: item}
+        )
+
+    def new_checklist_item(self, displayname=None):
+        """Create a checklist item within a specified task."""
+        return self.checklist_item_constructor(
+            parent=self, displayname=displayname, task_id=self.task_id
+        )
 
 
 class Folder(ApiComponent):
@@ -727,8 +1056,8 @@ class ToDo(ApiComponent):
         """Create a new folder.
 
         :param str folder_name: name of the new folder
-        :return: a new Calendar instance
-        :rtype: Calendar
+        :return: a new folder instance
+        :rtype: Folder
         """
         if not folder_name:
             return None
@@ -750,7 +1079,7 @@ class ToDo(ApiComponent):
         :param str folder_id: the folder id to be retrieved.
         :param str folder_name: the folder name to be retrieved.
         :return: folder for the given info
-        :rtype: Calendar
+        :rtype: Folder
         """
         if folder_id and folder_name:
             raise RuntimeError("Provide only one of the options")
@@ -787,7 +1116,7 @@ class ToDo(ApiComponent):
                 return folder
 
     def get_tasks(self, batch=None, order_by=None):
-        """Get tasks from the default Calendar.
+        """Get tasks from the default Folder.
 
         :param order_by: orders the result set based on this condition
         :param int batch: batch size, retrieves items in
