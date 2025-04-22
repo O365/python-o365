@@ -685,6 +685,7 @@ class Query:
                     if '/' in attribute:
                         # only parent attribute can be selected
                         attribute = attribute.split('/')[0]
+                    attribute = self._get_select_mapping(attribute)
                     self._selects.add(attribute)
         else:
             if self._attribute:
@@ -859,6 +860,13 @@ class Query:
                 attribute = self.protocol.convert_case(attribute)
             return attribute
         return None
+
+    def _get_select_mapping(self, attribute):
+        if attribute in ["meetingMessageType"]:
+            return (
+                f"{self.protocol.keyword_data_store['event_message_type']}/{attribute}"
+            )
+        return attribute
 
     @fluent
     def new(self, attribute, operation=ChainOperator.AND):
