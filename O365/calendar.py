@@ -871,6 +871,7 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
 
         #: Unique identifier for the event.  |br| **Type:** str
         self.object_id = cloud_data.get(cc('id'), None)
+        self.__transaction_id = cloud_data.get(cc("transactionId"), None)
         self.__subject = cloud_data.get(cc('subject'),
                                         kwargs.get('subject', '') or '')
         body = (
@@ -987,6 +988,7 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
             location = {cc('displayName'): ''}
 
         data = {
+            cc("transactionId"): self.__transaction_id,
             cc('subject'): self.__subject,
             cc('body'): {
                 cc('contentType'): self.body_type,
@@ -1073,6 +1075,23 @@ class Event(ApiComponent, AttachableMixin, HandleRecipientsMixin):
     def subject(self, value):
         self.__subject = value
         self._track_changes.add(self._cc('subject'))
+
+    @property
+    def transaction_id(self):
+        """Transaction Id of the event
+
+        :getter: Get transaction_id
+        :setter: Set transaction_id of event - can only be set for event creation
+        :type: str
+        """
+        return self.__transaction_id
+
+    @transaction_id.setter
+    def transaction_id(self, value):
+        if self.object_id and value != self.__transaction_id:
+            raise ValueError("Cannot change transaction_id after event creation")
+        self.__transaction_id = value
+        self._track_changes.add(self._cc("transactionId"))
 
     @property
     def start(self):
