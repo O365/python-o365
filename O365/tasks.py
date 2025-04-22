@@ -336,11 +336,6 @@ class Task(ApiComponent):
 
         completed_obj = cloud_data.get(cc("completedDateTime"), {})
         self.__completed = self._parse_date_time_time_zone(completed_obj)
-        checklist_items = cloud_data.get(cc("checklistItems"), [])
-        self.checklist_items = (
-            self.checklist_item_constructor(parent=self, **{self._cloud_data_key: item})
-            for item in checklist_items
-        )
 
     def __str__(self):
         """Representation of the Task via the Graph api as a string."""
@@ -734,11 +729,10 @@ class Task(ApiComponent):
 
         data = response.json()
 
-        self.checklist_items = (
+        return (
             self.checklist_item_constructor(parent=self, **{self._cloud_data_key: item})
             for item in data.get("value", [])
         )
-        return self.checklist_items
 
     def get_checklist_item(self, param):
         """Return a Checklist Item instance by it's id.
