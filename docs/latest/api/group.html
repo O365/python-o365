@@ -264,14 +264,19 @@ Delegated (work or school account) - Group.Read.All, Group.ReadWrite.All</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="O365.groups.Groups.get_user_groups">
-<span class="sig-name descname"><span class="pre">get_user_groups</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/groups.html#Groups.get_user_groups"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.groups.Groups.get_user_groups" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_user_groups</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/groups.html#Groups.get_user_groups"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.groups.Groups.get_user_groups" title="Link to this definition"></a></dt>
 <dd><p>Returns list of groups that given user has membership</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>user_id</strong> – user_id</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>user_id</strong> – user_id</p></li>
+<li><p><strong>limit</strong> (<em>int</em>) – max no. of groups to get. Over 999 uses batch.</p></li>
+<li><p><strong>batch</strong> (<em>int</em>) – batch size, retrieves items in
+batches allowing to retrieve more items than the limit.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>list[<a class="reference internal" href="#O365.groups.Group" title="O365.groups.Group">Group</a>]</p>
+<dd class="field-even"><p>list[<a class="reference internal" href="#O365.groups.Group" title="O365.groups.Group">Group</a>] or <a class="reference internal" href="utils/utils.html#O365.utils.utils.Pagination" title="O365.utils.utils.Pagination">Pagination</a></p>
 </dd>
 </dl>
 </dd></dl>
