@@ -2,8 +2,7 @@ from __future__ import annotations
 
 import datetime as dt
 from abc import ABC, abstractmethod
-from typing import Union, Optional, TYPE_CHECKING, Type, Iterator
-
+from typing import Union, Optional, TYPE_CHECKING, Type, Iterator, Literal
 
 if TYPE_CHECKING:
     from O365.connection import Protocol
@@ -124,7 +123,7 @@ class IterableFilter(OperationQueryFilter):
 class ChainFilter(OperationQueryFilter):
     __slots__ = ("_operation", "_filter_instances")
 
-    def __init__(self, operation: str, filter_instances: list[QueryFilter]):
+    def __init__(self, operation: Literal["and", "or"], filter_instances: list[QueryFilter]):
         assert operation in ("and", "or")
         super().__init__(operation)
         self._filter_instances: list[QueryFilter] = filter_instances
