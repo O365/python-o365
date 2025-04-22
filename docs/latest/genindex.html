@@ -229,6 +229,8 @@
 </li>
         <li><a href="api/sharepoint.html#O365.sharepoint.Site.__init__">(O365.sharepoint.Site method)</a>
 </li>
+        <li><a href="api/tasks.html#O365.tasks.ChecklistItem.__init__">(O365.tasks.ChecklistItem method)</a>
+</li>
         <li><a href="api/tasks.html#O365.tasks.Folder.__init__">(O365.tasks.Folder method)</a>
 </li>
         <li><a href="api/tasks.html#O365.tasks.Task.__init__">(O365.tasks.Task method)</a>
@@ -662,9 +664,13 @@
         <li><a href="api/utils/token.html#O365.utils.token.FirestoreBackend.check_token">(O365.utils.token.FirestoreBackend method)</a>
 </li>
       </ul></li>
+      <li><a href="api/tasks.html#O365.tasks.ChecklistItem.checked">checked (O365.tasks.ChecklistItem property)</a>
+</li>
       <li><a href="api/planner.html#O365.planner.TaskDetails.checklist">checklist (O365.planner.TaskDetails attribute)</a>
 </li>
       <li><a href="api/planner.html#O365.planner.Task.checklist_item_count">checklist_item_count (O365.planner.Task attribute)</a>
+</li>
+      <li><a href="api/tasks.html#O365.tasks.ChecklistItem">ChecklistItem (class in O365.tasks)</a>
 </li>
       <li><a href="api/onedrive.html#O365.drive.Folder.child_count">child_count (O365.drive.Folder attribute)</a>
 </li>
@@ -857,6 +863,8 @@
 </li>
         <li><a href="api/sharepoint.html#O365.sharepoint.Site.created">(O365.sharepoint.Site attribute)</a>
 </li>
+        <li><a href="api/tasks.html#O365.tasks.ChecklistItem.created">(O365.tasks.ChecklistItem property)</a>
+</li>
         <li><a href="api/tasks.html#O365.tasks.Task.created">(O365.tasks.Task property)</a>
 </li>
       </ul></li>
@@ -973,6 +981,8 @@
 </li>
         <li><a href="api/sharepoint.html#O365.sharepoint.SharepointListItem.delete">(O365.sharepoint.SharepointListItem method)</a>
 </li>
+        <li><a href="api/tasks.html#O365.tasks.ChecklistItem.delete">(O365.tasks.ChecklistItem method)</a>
+</li>
         <li><a href="api/tasks.html#O365.tasks.Folder.delete">(O365.tasks.Folder method)</a>
 </li>
         <li><a href="api/tasks.html#O365.tasks.Task.delete">(O365.tasks.Task method)</a>
@@ -1066,6 +1076,8 @@
         <li><a href="api/teams.html#O365.teams.Team.display_name">(O365.teams.Team attribute)</a>
 </li>
       </ul></li>
+      <li><a href="api/tasks.html#O365.tasks.ChecklistItem.displayname">displayname (O365.tasks.ChecklistItem property)</a>
+</li>
       <li><a href="api/utils/token.html#O365.utils.token.DjangoTokenBackend">DjangoTokenBackend (class in O365.utils.token)</a>
 </li>
       <li><a href="api/utils/token.html#O365.utils.token.FirestoreBackend.doc_id">doc_id (O365.utils.token.FirestoreBackend attribute)</a>
@@ -1239,6 +1251,8 @@
 </li>
         <li><a href="api/message.html#O365.message.Message.folder_id">(O365.message.Message attribute)</a>
 </li>
+        <li><a href="api/tasks.html#O365.tasks.ChecklistItem.folder_id">(O365.tasks.ChecklistItem attribute)</a>
+</li>
         <li><a href="api/tasks.html#O365.tasks.Folder.folder_id">(O365.tasks.Folder attribute)</a>
 </li>
         <li><a href="api/tasks.html#O365.tasks.Task.folder_id">(O365.tasks.Task attribute)</a>
@@ -1352,6 +1366,10 @@
         <li><a href="api/teams.html#O365.teams.Teams.get_channels">(O365.teams.Teams method)</a>
 </li>
       </ul></li>
+      <li><a href="api/tasks.html#O365.tasks.Task.get_checklist_item">get_checklist_item() (O365.tasks.Task method)</a>
+</li>
+      <li><a href="api/tasks.html#O365.tasks.Task.get_checklist_items">get_checklist_items() (O365.tasks.Task method)</a>
+</li>
       <li><a href="api/onedrive.html#O365.drive.Drive.get_child_folders">get_child_folders() (O365.drive.Drive method)</a>
 
       <ul>
@@ -1498,10 +1516,10 @@
 </li>
       <li><a href="api/sharepoint.html#O365.sharepoint.SharepointList.get_list_columns">get_list_columns() (O365.sharepoint.SharepointList method)</a>
 </li>
-      <li><a href="api/sharepoint.html#O365.sharepoint.Site.get_lists">get_lists() (O365.sharepoint.Site method)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/sharepoint.html#O365.sharepoint.Site.get_lists">get_lists() (O365.sharepoint.Site method)</a>
+</li>
       <li><a href="api/teams.html#O365.teams.Chat.get_member">get_member() (O365.teams.Chat method)</a>
 </li>
       <li><a href="api/teams.html#O365.teams.Chat.get_members">get_members() (O365.teams.Chat method)</a>
@@ -1830,15 +1848,17 @@
 </li>
       <li><a href="api/excel.html#O365.excel.WorkBook.invoke_function">invoke_function() (O365.excel.WorkBook method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/calendar.html#O365.calendar.Event.is_all_day">is_all_day (O365.calendar.Event property)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/teams.html#O365.teams.Team.is_archived">is_archived (O365.teams.Team attribute)</a>
 </li>
       <li><a href="api/account.html#O365.account.Account.is_authenticated">is_authenticated (O365.account.Account property)</a>
 </li>
       <li><a href="api/calendar.html#O365.calendar.Event.is_cancelled">is_cancelled (O365.calendar.Event attribute)</a>
+</li>
+      <li><a href="api/tasks.html#O365.tasks.ChecklistItem.is_checked">is_checked (O365.tasks.ChecklistItem property)</a>
 </li>
       <li><a href="api/message.html#O365.message.MessageFlag.is_completed">is_completed (O365.message.MessageFlag property)</a>
 
@@ -1889,7 +1909,11 @@
       <li><a href="api/excel.html#O365.excel.RangeFormatFont.italic">italic (O365.excel.RangeFormatFont property)</a>
 </li>
       <li><a href="api/onedrive.html#O365.drive.CopyOperation.item_id">item_id (O365.drive.CopyOperation attribute)</a>
+
+      <ul>
+        <li><a href="api/tasks.html#O365.tasks.ChecklistItem.item_id">(O365.tasks.ChecklistItem attribute)</a>
 </li>
+      </ul></li>
       <li><a href="api/utils/utils.html#O365.utils.utils.Query.iterable">iterable() (O365.utils.utils.Query method)</a>
 </li>
   </ul></td>
@@ -2060,7 +2084,11 @@
 </li>
       <li><a href="api/message.html#O365.message.Message.mark_as_unread">mark_as_unread() (O365.message.Message method)</a>
 </li>
+      <li><a href="api/tasks.html#O365.tasks.ChecklistItem.mark_checked">mark_checked() (O365.tasks.ChecklistItem method)</a>
+</li>
       <li><a href="api/tasks.html#O365.tasks.Task.mark_completed">mark_completed() (O365.tasks.Task method)</a>
+</li>
+      <li><a href="api/tasks.html#O365.tasks.ChecklistItem.mark_unchecked">mark_unchecked() (O365.tasks.ChecklistItem method)</a>
 </li>
       <li><a href="api/tasks.html#O365.tasks.Task.mark_uncompleted">mark_uncompleted() (O365.tasks.Task method)</a>
 </li>
@@ -2278,6 +2306,8 @@
       <li><a href="api/utils/utils.html#O365.utils.utils.Query.new">new() (O365.utils.utils.Query method)</a>
 </li>
       <li><a href="api/calendar.html#O365.calendar.Schedule.new_calendar">new_calendar() (O365.calendar.Schedule method)</a>
+</li>
+      <li><a href="api/tasks.html#O365.tasks.Task.new_checklist_item">new_checklist_item() (O365.tasks.Task method)</a>
 </li>
       <li><a href="api/address_book.html#O365.address_book.ContactFolder.new_contact">new_contact() (O365.address_book.ContactFolder method)</a>
 </li>
@@ -2912,6 +2942,8 @@
 </li>
         <li><a href="api/mailbox.html#O365.mailbox.MailboxSettings.save">(O365.mailbox.MailboxSettings method)</a>
 </li>
+        <li><a href="api/tasks.html#O365.tasks.ChecklistItem.save">(O365.tasks.ChecklistItem method)</a>
+</li>
         <li><a href="api/tasks.html#O365.tasks.Task.save">(O365.tasks.Task method)</a>
 </li>
         <li><a href="api/utils/attachment.html#O365.utils.attachment.BaseAttachment.save">(O365.utils.attachment.BaseAttachment method)</a>
@@ -3235,8 +3267,12 @@
         <li><a href="api/tasks.html#O365.tasks.Task">(class in O365.tasks)</a>
 </li>
       </ul></li>
-      <li><a href="api/tasks.html#O365.tasks.Task.task_id">task_id (O365.tasks.Task attribute)</a>
+      <li><a href="api/tasks.html#O365.tasks.ChecklistItem.task_id">task_id (O365.tasks.ChecklistItem attribute)</a>
+
+      <ul>
+        <li><a href="api/tasks.html#O365.tasks.Task.task_id">(O365.tasks.Task attribute)</a>
 </li>
+      </ul></li>
       <li><a href="api/planner.html#O365.planner.TaskDetails">TaskDetails (class in O365.planner)</a>
 </li>
       <li><a href="api/account.html#O365.account.Account.tasks">tasks() (O365.account.Account method)</a>
@@ -3313,6 +3349,8 @@
         <li><a href="api/message.html#O365.message.Message.to_api_data">(O365.message.Message method)</a>
 </li>
         <li><a href="api/message.html#O365.message.MessageFlag.to_api_data">(O365.message.MessageFlag method)</a>
+</li>
+        <li><a href="api/tasks.html#O365.tasks.ChecklistItem.to_api_data">(O365.tasks.ChecklistItem method)</a>
 </li>
         <li><a href="api/tasks.html#O365.tasks.Task.to_api_data">(O365.tasks.Task method)</a>
 </li>
