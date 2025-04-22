@@ -636,9 +636,6 @@ class Query:
         'flag': 'flag/flagStatus',
         'body': 'body/content'
     }
-    _select_mapping = {
-        "meetingMessageType": "microsoft.graph.eventMessage/meetingMessageType",
-    }
 
     def __init__(self, attribute=None, *, protocol):
         """ Build a query to apply OData filters
@@ -865,8 +862,11 @@ class Query:
         return None
 
     def _get_select_mapping(self, attribute):
-        mapping = self._select_mapping.get(attribute)
-        return mapping or attribute
+        if attribute in ["meetingMessageType"]:
+            return (
+                f"{self.protocol.keyword_data_store['event_message_type']}/{attribute}"
+            )
+        return attribute
 
     @fluent
     def new(self, attribute, operation=ChainOperator.AND):
