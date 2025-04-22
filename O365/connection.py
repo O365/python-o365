@@ -970,14 +970,17 @@ class Connection:
         self._previous_request_at = time.time()
 
     def _internal_request(
-        self, session_obj: Session, url: str, method: str, ignore401: bool, **kwargs
+        self, session_obj: Session, url: str, method: str, ignore401: bool = False, **kwargs
     ) -> Response:
         """Internal handling of requests. Handles Exceptions.
 
         :param session_obj: a requests Session instance.
         :param str url: url to send request to
         :param str method: type of request (get/put/post/patch/delete)
-        :param bool ignore401: indicates whether to ignore 401 error or not
+        :param bool ignore401: indicates whether to ignore 401 error when it would 
+          indicate that there the token has expired. This is set to 'True' for the
+          first call to the api, and 'False' for the call that is initiated after a 
+          tpken refresh. 
         :param kwargs: extra params to send to the request api
         :return: Response of the request
         :rtype: requests.Response
@@ -1095,7 +1098,7 @@ class Connection:
             # lazy creation of a naive session
             self.naive_session = self.get_naive_session()
 
-        return self._internal_request(self.naive_session, url, method, ignore401=False **kwargs)
+        return self._internal_request(self.naive_session, url, method, ignore401=False, **kwargs)
 
     def oauth_request(self, url: str, method: str, **kwargs) -> Response:
         """Makes a request to url using an oauth session.
