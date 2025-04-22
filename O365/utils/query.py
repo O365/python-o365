@@ -713,7 +713,10 @@ class QueryBuilder:
         """
         select = SelectFilter()
         for attribute in attributes:
-            select.append(self.protocol.convert_case(attribute))
+            attribute = self.protocol.convert_case(attribute)
+            if attribute.lower() in ["meetingmessagetype"]:
+                attribute = f"{self.protocol.keyword_data_store['event_message_type']}/{attribute}"
+            select.append(attribute)
         return select
 
     def expand(self, relationship: str, select: Optional[SelectFilter] = None) -> ExpandFilter:
