@@ -2,12 +2,12 @@ from __future__ import annotations
 
 import datetime as dt
 from abc import ABC, abstractmethod
-from typing import Union, Optional, TYPE_CHECKING, Type, Iterator, Literal
+from typing import Union, Optional, TYPE_CHECKING, Type, Iterator, Literal, TypeAlias
 
 if TYPE_CHECKING:
     from O365.connection import Protocol
 
-FilterWord = Union[str, bool, None, dt.date, int, float]
+FilterWord: TypeAlias = Union[str, bool, None, dt.date, int, float]
 
 
 class QueryBase(ABC):
@@ -34,6 +34,34 @@ class QueryBase(ABC):
     @abstractmethod
     def __or__(self, other):
         pass
+
+    def get_filter_by_attribute(self, attribute: str) -> Optional[str]:
+        """
+        Returns a filter value by attribute name. It will match the attribute to the start of each filter attribute
+        and return the first found.
+        :param attribute: the attribute you want to search
+        :return: The value applied to that attribute or None
+        """
+        search_object: Optional[QueryFilter] = getattr(self, "_filter_instance") or getattr(self, "filters")
+        if search_object is not None:
+            # CompositeFilter, IterableFilter, ModifierQueryFilter (negate, group)
+            return search_object.get_filter_by_attribute(attribute)
+
+        search_object: Optional[list[QueryFilter]] = getattr(self, "_filter_instances")
+        if search_object is not None:
+            # ChainFilter
+            for filter_obj in search_object:
+                result = filter_obj.get_filter_by_attribute(attribute)
+                if result is not None:
+                    return result
+            return None
+
+        search_object: Optional[str] = getattr(self, "_attribute")
+        if search_object is not None:
+            # LogicalFilter or FunctionFilter
+            if search_object.lower().startswith(attribute.lower()):
+                return getattr(self, "_word")
+        return None
 
 
 class QueryFilter(QueryBase, ABC):
@@ -401,14 +429,14 @@ class CompositeFilter(QueryBase):
 class QueryBuilder:
 
     _attribute_mapping = {
-        'from': 'from/emailAddress/address',
-        'to': 'toRecipients/emailAddress/address',
-        'start': 'start/DateTime',
-        'end': 'end/DateTime',
-        'due': 'duedatetime/DateTime',
-        'reminder': 'reminderdatetime/DateTime',
-        'flag': 'flag/flagStatus',
-        'body': 'body/content'
+        "from": "from/emailAddress/address",
+        "to": "toRecipients/emailAddress/address",
+        "start": "start/DateTime",
+        "end": "end/DateTime",
+        "due": "duedatetime/DateTime",
+        "reminder": "reminderdatetime/DateTime",
+        "flag": "flag/flagStatus",
+        "body": "body/content"
     }
 
     def __init__(self, protocol: Union[Protocol, Type[Protocol]]):
@@ -428,7 +456,7 @@ class QueryBuilder:
             # bools are treated as lower case bools
             parsed_word = str(word).lower()
         elif word is None:
-            parsed_word = 'null'
+            parsed_word = "null"
         elif isinstance(word, dt.date):
             if isinstance(word, dt.datetime):
                 if word.tzinfo is None:
@@ -451,9 +479,9 @@ class QueryBuilder:
         """
         mapping = self._attribute_mapping.get(attribute)
         if mapping:
-            attribute = '/'.join(
+            attribute = "/".join(
                 [self.protocol.convert_case(step) for step in
-                 mapping.split('/')])
+                 mapping.split("/")])
         else:
             attribute = self.protocol.convert_case(attribute)
         return attribute
@@ -475,7 +503,7 @@ class QueryBuilder:
         :param word: word to compare with
         :return: a QueryFilter instance that can render the OData this logical operation
         """
-        return self.logical_operation('eq', attribute, word)
+        return self.logical_operation("eq", attribute, word)
 
     def unequal(self, attribute: str, word: FilterWord) -> LogicalFilter:
         """ Return an unequal check
@@ -484,7 +512,7 @@ class QueryBuilder:
         :param word: word to compare with
         :return: a QueryFilter instance that can render the OData this logical operation
         """
-        return self.logical_operation('ne', attribute, word)
+        return self.logical_operation("ne", attribute, word)
 
     def greater(self, attribute: str, word: FilterWord) -> LogicalFilter:
         """ Return a 'greater than' check
@@ -493,7 +521,7 @@ class QueryBuilder:
         :param word: word to compare with
         :return: a QueryFilter instance that can render the OData this logical operation
         """
-        return self.logical_operation('gt', attribute, word)
+        return self.logical_operation("gt", attribute, word)
 
     def greater_equal(self, attribute: str, word: FilterWord) -> LogicalFilter:
         """ Return a 'greater than or equal to' check
@@ -502,7 +530,7 @@ class QueryBuilder:
         :param word: word to compare with
         :return: a QueryFilter instance that can render the OData this logical operation
         """
-        return self.logical_operation('ge', attribute, word)
+        return self.logical_operation("ge", attribute, word)
 
     def less(self, attribute: str, word: FilterWord) -> LogicalFilter:
         """ Return a 'less than' check
@@ -511,7 +539,7 @@ class QueryBuilder:
         :param word: word to compare with
         :return: a QueryFilter instance that can render the OData this logical operation
         """
-        return self.logical_operation('lt', attribute, word)
+        return self.logical_operation("lt", attribute, word)
 
     def less_equal(self, attribute: str, word: FilterWord) -> LogicalFilter:
         """ Return a 'less than or equal to' check
@@ -520,7 +548,7 @@ class QueryBuilder:
         :param word: word to compare with
         :return: a QueryFilter instance that can render the OData this logical operation
         """
-        return self.logical_operation('le', attribute, word)
+        return self.logical_operation("le", attribute, word)
 
     def function_operation(self, operation: str, attribute: str, word: FilterWord) -> FunctionFilter:
         """ Apply a function operation
@@ -539,7 +567,7 @@ class QueryBuilder:
         :param word: value to feed the function
         :return: a QueryFilter instance that can render the OData function operation
         """
-        return self.function_operation('contains', attribute, word)
+        return self.function_operation("contains", attribute, word)
 
     def startswith(self, attribute: str, word: FilterWord) -> FunctionFilter:
         """ Adds a startswith word check
@@ -548,7 +576,7 @@ class QueryBuilder:
         :param word: value to feed the function
         :return: a QueryFilter instance that can render the OData function operation
         """
-        return self.function_operation('startswith', attribute, word)
+        return self.function_operation("startswith", attribute, word)
 
     def endswith(self, attribute: str, word: FilterWord) -> FunctionFilter:
         """ Adds a endswith word check
@@ -557,7 +585,7 @@ class QueryBuilder:
         :param word: value to feed the function
         :return: a QueryFilter instance that can render the OData function operation
         """
-        return self.function_operation('endswith', attribute, word)
+        return self.function_operation("endswith", attribute, word)
 
     def iterable_operation(self, operation: str, collection: str, filter_instance: QueryFilter,
                            *, item_name: str = "a") -> IterableFilter:
@@ -601,7 +629,7 @@ class QueryBuilder:
         :return: a QueryFilter instance that can render the OData iterable operation
         """
 
-        return self.iterable_operation('any', collection=collection,
+        return self.iterable_operation("any", collection=collection,
                                        filter_instance=filter_instance, item_name=item_name)
 
 
@@ -621,7 +649,7 @@ class QueryBuilder:
         :return: a QueryFilter instance that can render the OData iterable operation
         """
 
-        return self.iterable_operation('all', collection=collection,
+        return self.iterable_operation("all", collection=collection,
                                        filter_instance=filter_instance, item_name=item_name)
 
     @staticmethod
@@ -638,7 +666,7 @@ class QueryBuilder:
         """
         if not all(isinstance(item, QueryFilter) for item in filter_instances):
             raise ValueError("'filter_instances' parameter must contain only QueryFilter instances")
-        chain = ChainFilter(operation='and', filter_instances=list(filter_instances))
+        chain = ChainFilter(operation="and", filter_instances=list(filter_instances))
         if group:
             return self.group(chain)
         else:
@@ -653,7 +681,7 @@ class QueryBuilder:
         """
         if not all(isinstance(item, QueryFilter) for item in filter_instances):
             raise ValueError("'filter_instances' parameter must contain only QueryFilter instances")
-        chain = ChainFilter(operation='or', filter_instances=list(filter_instances))
+        chain = ChainFilter(operation="or", filter_instances=list(filter_instances))
         if group:
             return self.group(chain)
         else:
