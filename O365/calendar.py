@@ -1825,28 +1825,19 @@ class Calendar(ApiComponent, HandleRecipientsMixin):
             if query and not isinstance(query, str):
                 # extract start and end from query because
                 # those are required by a calendarView
-                for query_data in query._filters:
-                    if not isinstance(query_data, list):
-                        continue
-                    attribute = query_data[0]
-                    # the 2nd position contains the filter data
-                    # and the 3rd position in filter_data contains the value
-                    word = query_data[2][3]
+                start = query.get_filter_by_attribute('start/')
+                end = query.get_filter_by_attribute('start/')
 
-                    if attribute.lower().startswith('start/'):
-                        start = word.replace("'", '')  # remove the quotes
-                        query.remove_filter('start')
-                    if attribute.lower().startswith('end/'):
-                        end = word.replace("'", '')  # remove the quotes
-                        query.remove_filter('end')
+                if start:
+                    start = start.replace("'", '')  # remove the quotes
+                    query.remove_filter('start')
+                if end:
+                    end = end.replace("'", '')  # remove the quotes
+                    query.remove_filter('end')
 
             if start is None or end is None:
-                raise ValueError(
-                    "When 'include_recurring' is True you must provide a 'start' and 'end' datetimes inside a Query instance.")
-
-            if end < start:
-                raise ValueError('When using "include_recurring=True", the date asigned to the "end" datetime'
-                                 ' should be greater or equal than the date asigned to the "start" datetime.')
+                raise ValueError("When 'include_recurring' is True you must provide "
+                                 "a 'start' and 'end' datetime inside a 'Query' instance.")
 
             params[self._cc('startDateTime')] = start
             params[self._cc('endDateTime')] = end

@@ -1306,3 +1306,21 @@ class Query:
         else:
             raise RuntimeError("No filters present. Can't close a group")
         return self
+
+    def get_filter_by_attribute(self, attribute):
+        """ Returns a filter word applied to an attribute """
+
+        attribute = attribute.lower()
+
+        # iterate over the filters to find the corresponding attribute
+        for query_data in self._filters:
+            if not isinstance(query_data, list):
+                continue
+            filter_attribute = query_data[0]
+            # the 2nd position contains the filter data
+            # and the 3rd position in filter_data contains the value
+            word = query_data[2][3]
+
+            if filter_attribute.lower().startswith(attribute):
+                return word
+        return None
