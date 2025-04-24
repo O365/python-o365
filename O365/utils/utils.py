@@ -1256,7 +1256,7 @@ class Query:
          inside the collection
         :param str operation: the logical operation to apply to the
          attribute inside the collection
-        :param bool negation: negate the funcion or operation inside the iterable
+        :param bool negation: negate the function or operation inside the iterable
         :rtype: Query
         """
 

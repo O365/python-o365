@@ -429,14 +429,14 @@ class CompositeFilter(QueryBase):
 class QueryBuilder:
 
     _attribute_mapping = {
-        'from': 'from/emailAddress/address',
-        'to': 'toRecipients/emailAddress/address',
-        'start': 'start/DateTime',
-        'end': 'end/DateTime',
-        'due': 'duedatetime/DateTime',
-        'reminder': 'reminderdatetime/DateTime',
-        'flag': 'flag/flagStatus',
-        'body': 'body/content'
+        "from": "from/emailAddress/address",
+        "to": "toRecipients/emailAddress/address",
+        "start": "start/DateTime",
+        "end": "end/DateTime",
+        "due": "duedatetime/DateTime",
+        "reminder": "reminderdatetime/DateTime",
+        "flag": "flag/flagStatus",
+        "body": "body/content"
     }
 
     def __init__(self, protocol: Union[Protocol, Type[Protocol]]):
