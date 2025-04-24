@@ -564,11 +564,14 @@ class QueryBuilder:
         """ Performs the provided filter operation on a collection by iterating over it.
 
         For example:
-        q.iterable(
-            operation='any',
-            collection='email_addresses',
-            filter_instance=q.equals('address', 'george@best.com')
-        )
+
+        .. code-block:: python
+
+            q.iterable(
+                operation='any',
+                collection='email_addresses',
+                filter_instance=q.equals('address', 'george@best.com')
+            )
 
         will transform to a filter such as:
         emailAddresses/any(a:a/address eq 'george@best.com')
@@ -705,7 +708,7 @@ class QueryBuilder:
         """
         Returns a 'select' query param
         This is useful to return a limited set of attributes from a resource or return attributes that are not
-         returned by default by the resource.
+        returned by default by the resource.
 
         :param attributes: a tuple of attribute names to select
         :return: a SelectFilter instance that can render the OData select operation
@@ -722,8 +725,8 @@ class QueryBuilder:
         """
         Returns an 'expand' query param
         Important: If the 'expand' is a relationship (e.g. "event" or "attachments"), then the ApiComponent using
-         this query should know how to handle the relationship (e.g. Message knows how to handle attachments,
-         and event (if it's an EventMessage).
+        this query should know how to handle the relationship (e.g. Message knows how to handle attachments,
+        and event (if it's an EventMessage).
         Important: When using expand on multi-value relationships a max of 20 items will be returned.
 
         :param relationship: a relationship that will be expanded
