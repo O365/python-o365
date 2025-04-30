@@ -7,7 +7,7 @@ log = logging.getLogger(__name__)
 
 
 class Group(ApiComponent):
-    """ A Microsoft O365 group """
+    """ A Microsoft 365 group """
 
     _endpoints = {
             'get_group_owners': '/groups/{group_id}/owners',
@@ -17,7 +17,7 @@ class Group(ApiComponent):
     member_constructor = User  #: :meta private:
 
     def __init__(self, *, parent=None, con=None, **kwargs):
-        """ A Microsoft O365 group
+        """ A Microsoft 365 group
 
         :param parent: parent object
         :type parent: Teams
@@ -156,7 +156,7 @@ class Groups(ApiComponent):
         return 'Microsoft O365 Group parent class'
 
     def get_group_by_id(self, group_id = None):
-        """ Returns Microsoft O365/AD group with given id
+        """ Returns Microsoft 365/AD group with given id
 
         :param group_id: group id of group
 
@@ -181,7 +181,7 @@ class Groups(ApiComponent):
         return self.group_constructor(parent=self, **{self._cloud_data_key: data})
 
     def get_group_by_mail(self, group_mail=None):
-        """Returns Microsoft O365/AD group by mail field
+        """Returns Microsoft 365/AD group by mail field
 
         :param group_name: mail of group
 

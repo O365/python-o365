@@ -12,7 +12,7 @@ class TaskDetails(ApiComponent):
     _endpoints = {"task_detail": "/planner/tasks/{id}/details"}
 
     def __init__(self, *, parent=None, con=None, **kwargs):
-        """A Microsoft O365 plan details
+        """A Microsoft 365 plan details
 
         :param parent: parent object
         :type parent: Task
@@ -180,7 +180,7 @@ class PlanDetails(ApiComponent):
     _endpoints = {"plan_detail": "/planner/plans/{id}/details"}
 
     def __init__(self, *, parent=None, con=None, **kwargs):
-        """A Microsoft O365 plan details
+        """A Microsoft 365 plan details
 
         :param parent: parent object
         :type parent: Plan
@@ -386,7 +386,7 @@ class Task(ApiComponent):
         return self.object_id == other.object_id
 
     def get_details(self):
-        """Returns Microsoft O365/AD plan with given id
+        """Returns Microsoft 365/AD plan with given id
 
         :rtype: PlanDetails
         """
@@ -507,7 +507,7 @@ class Bucket(ApiComponent):
     task_constructor = Task  #: :meta private:
 
     def __init__(self, *, parent=None, con=None, **kwargs):
-        """A Microsoft O365 bucket
+        """A Microsoft 365 bucket
 
         :param parent: parent object
         :type parent: Planner or Plan
@@ -751,7 +751,7 @@ class Plan(ApiComponent):
     plan_details_constructor = PlanDetails  #: :meta private:
 
     def __init__(self, *, parent=None, con=None, **kwargs):
-        """A Microsoft O365 plan
+        """A Microsoft 365 plan
 
         :param parent: parent object
         :type parent: Planner
@@ -861,7 +861,7 @@ class Plan(ApiComponent):
             return tasks
 
     def get_details(self):
-        """Returns Microsoft O365/AD plan with given id
+        """Returns Microsoft 365/AD plan with given id
 
         :rtype: PlanDetails
         """
@@ -1040,7 +1040,7 @@ class Planner(ApiComponent):
         ]
 
     def get_plan_by_id(self, plan_id=None):
-        """Returns Microsoft O365/AD plan with given id
+        """Returns Microsoft 365/AD plan with given id
 
         :param plan_id: plan id of plan
 
@@ -1067,7 +1067,7 @@ class Planner(ApiComponent):
         )
 
     def get_bucket_by_id(self, bucket_id=None):
-        """Returns Microsoft O365/AD plan with given id
+        """Returns Microsoft 365/AD plan with given id
 
         :param bucket_id: bucket id of buckets
 
@@ -1091,7 +1091,7 @@ class Planner(ApiComponent):
         return self.bucket_constructor(parent=self, **{self._cloud_data_key: data})
 
     def get_task_by_id(self, task_id=None):
-        """Returns Microsoft O365/AD plan with given id
+        """Returns Microsoft 365/AD plan with given id
 
         :param task_id: task id of tasks
 
@@ -1115,7 +1115,7 @@ class Planner(ApiComponent):
         return self.task_constructor(parent=self, **{self._cloud_data_key: data})
 
     def list_user_tasks(self, user_id=None):
-        """Returns Microsoft O365/AD plan with given id
+        """Returns Microsoft 365/AD plan with given id
 
         :param user_id: user id
 

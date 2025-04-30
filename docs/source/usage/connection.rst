@@ -87,6 +87,6 @@ Usually you will work with the default 'ME' resource, but you can also use one o
 * 'me': the user which has given consent. The default for every protocol. Overwritten when using "with your own identity" authentication method (Only available on the authorization auth_flow_type).
 * 'user:user@domain.com': a shared mailbox or a user account for which you have permissions. If you don't provide 'user:' it will be inferred anyway.
 * 'site:sharepoint-site-id': a Sharepoint site id.
-* 'group:group-site-id': an Office 365 group id.
+* 'group:group-site-id': an Microsoft 365 group id.
 
 By setting the resource prefix (such as 'user:' or 'group:') you help the library understand the type of resource. You can also pass it like 'users/example@exampl.com'. The same applies to the other resource prefixes.
