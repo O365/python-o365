@@ -42,12 +42,12 @@ class QueryBase(ABC):
         :param attribute: the attribute you want to search
         :return: The value applied to that attribute or None
         """
-        search_object: Optional[QueryFilter] = getattr(self, "_filter_instance") or getattr(self, "filters")
+        search_object: Optional[QueryFilter] = getattr(self, "_filter_instance", None) or getattr(self, "filters", None)
         if search_object is not None:
             # CompositeFilter, IterableFilter, ModifierQueryFilter (negate, group)
             return search_object.get_filter_by_attribute(attribute)
 
-        search_object: Optional[list[QueryFilter]] = getattr(self, "_filter_instances")
+        search_object: Optional[list[QueryFilter]] = getattr(self, "_filter_instances", None)
         if search_object is not None:
             # ChainFilter
             for filter_obj in search_object:
@@ -56,7 +56,7 @@ class QueryBase(ABC):
                     return result
             return None
 
-        search_object: Optional[str] = getattr(self, "_attribute")
+        search_object: Optional[str] = getattr(self, "_attribute", None)
         if search_object is not None:
             # LogicalFilter or FunctionFilter
             if search_object.lower().startswith(attribute.lower()):
@@ -151,7 +151,7 @@ class IterableFilter(OperationQueryFilter):
 class ChainFilter(OperationQueryFilter):
     __slots__ = ("_operation", "_filter_instances")
 
-    def __init__(self, operation: Literal["and", "or"], filter_instances: list[QueryFilter]):
+    def __init__(self, operation: str, filter_instances: list[QueryFilter]):
         assert operation in ("and", "or")
         super().__init__(operation)
         self._filter_instances: list[QueryFilter] = filter_instances
@@ -375,6 +375,12 @@ class CompositeFilter(QueryBase):
             f"Expand: {self.expand.render() if self.expand else ''}"
         )
 
+    @property
+    def has_only_filters(self) -> bool:
+        """ Returns true if it only has filters"""
+        return (self.filters is not None and self.search is None and
+                self.order_by is None and self.select is None and self.expand is None)
+
     def as_params(self) -> dict:
         params = {}
         if self.filters:
@@ -423,6 +429,9 @@ class CompositeFilter(QueryBase):
         return nc
 
     def __or__(self, other: Optional[QueryBase]) -> CompositeFilter:
+        if isinstance(other, CompositeFilter):
+            if self.has_only_filters and other.has_only_filters:
+                return CompositeFilter(filters=self.filters | other.filters)
         raise RuntimeError("Can't combine multiple composite filters with an 'or' statement. Use 'and' instead.")
 
 
@@ -486,109 +495,115 @@ class QueryBuilder:
             attribute = self.protocol.convert_case(attribute)
         return attribute
 
-    def logical_operation(self, operation: str, attribute: str, word: FilterWord) -> LogicalFilter:
+    def logical_operation(self, operation: str, attribute: str, word: FilterWord) -> CompositeFilter:
         """ Apply a logical operation like equals, less than, etc.
 
         :param operation: how to combine with a new one
         :param attribute: attribute to compare word with
         :param word: value to compare the attribute with
-        :return: a QueryFilter instance that can render the OData logical operation
+        :return: a CompositeFilter instance that can render the OData logical operation
         """
-        return LogicalFilter(operation, self._get_attribute_from_mapping(attribute), self._parse_filter_word(word))
+        logical_filter = LogicalFilter(operation,
+                                       self._get_attribute_from_mapping(attribute),
+                                       self._parse_filter_word(word))
+        return CompositeFilter(filters=logical_filter)
 
-    def equals(self, attribute: str, word: FilterWord) -> LogicalFilter:
+    def equals(self, attribute: str, word: FilterWord) -> CompositeFilter:
         """ Return an equals check
 
         :param attribute: attribute to compare word with
         :param word: word to compare with
-        :return: a QueryFilter instance that can render the OData this logical operation
+        :return: a CompositeFilter instance that can render the OData this logical operation
         """
         return self.logical_operation("eq", attribute, word)
 
-    def unequal(self, attribute: str, word: FilterWord) -> LogicalFilter:
+    def unequal(self, attribute: str, word: FilterWord) -> CompositeFilter:
         """ Return an unequal check
 
         :param attribute: attribute to compare word with
         :param word: word to compare with
-        :return: a QueryFilter instance that can render the OData this logical operation
+        :return: a CompositeFilter instance that can render the OData this logical operation
         """
         return self.logical_operation("ne", attribute, word)
 
-    def greater(self, attribute: str, word: FilterWord) -> LogicalFilter:
+    def greater(self, attribute: str, word: FilterWord) -> CompositeFilter:
         """ Return a 'greater than' check
 
         :param attribute: attribute to compare word with
         :param word: word to compare with
-        :return: a QueryFilter instance that can render the OData this logical operation
+        :return: a CompositeFilter instance that can render the OData this logical operation
         """
         return self.logical_operation("gt", attribute, word)
 
-    def greater_equal(self, attribute: str, word: FilterWord) -> LogicalFilter:
+    def greater_equal(self, attribute: str, word: FilterWord) -> CompositeFilter:
         """ Return a 'greater than or equal to' check
 
         :param attribute: attribute to compare word with
         :param word: word to compare with
-        :return: a QueryFilter instance that can render the OData this logical operation
+        :return: a CompositeFilter instance that can render the OData this logical operation
         """
         return self.logical_operation("ge", attribute, word)
 
-    def less(self, attribute: str, word: FilterWord) -> LogicalFilter:
+    def less(self, attribute: str, word: FilterWord) -> CompositeFilter:
         """ Return a 'less than' check
 
         :param attribute: attribute to compare word with
         :param word: word to compare with
-        :return: a QueryFilter instance that can render the OData this logical operation
+        :return: a CompositeFilter instance that can render the OData this logical operation
         """
         return self.logical_operation("lt", attribute, word)
 
-    def less_equal(self, attribute: str, word: FilterWord) -> LogicalFilter:
+    def less_equal(self, attribute: str, word: FilterWord) -> CompositeFilter:
         """ Return a 'less than or equal to' check
 
         :param attribute: attribute to compare word with
         :param word: word to compare with
-        :return: a QueryFilter instance that can render the OData this logical operation
+        :return: a CompositeFilter instance that can render the OData this logical operation
         """
         return self.logical_operation("le", attribute, word)
 
-    def function_operation(self, operation: str, attribute: str, word: FilterWord) -> FunctionFilter:
+    def function_operation(self, operation: str, attribute: str, word: FilterWord) -> CompositeFilter:
         """ Apply a function operation
 
         :param operation: function name to operate on attribute
         :param attribute: the name of the attribute on which to apply the function
         :param word: value to feed the function
-        :return: a QueryFilter instance that can render the OData function operation
+        :return: a CompositeFilter instance that can render the OData function operation
         """
-        return FunctionFilter(operation, self._get_attribute_from_mapping(attribute), self._parse_filter_word(word))
+        function_filter = FunctionFilter(operation,
+                                         self._get_attribute_from_mapping(attribute),
+                                         self._parse_filter_word(word))
+        return CompositeFilter(filters=function_filter)
 
-    def contains(self, attribute: str, word: FilterWord) -> FunctionFilter:
+    def contains(self, attribute: str, word: FilterWord) -> CompositeFilter:
         """ Adds a contains word check
 
         :param attribute: the name of the attribute on which to apply the function
         :param word: value to feed the function
-        :return: a QueryFilter instance that can render the OData function operation
+        :return: a CompositeFilter instance that can render the OData function operation
         """
         return self.function_operation("contains", attribute, word)
 
-    def startswith(self, attribute: str, word: FilterWord) -> FunctionFilter:
+    def startswith(self, attribute: str, word: FilterWord) -> CompositeFilter:
         """ Adds a startswith word check
 
         :param attribute: the name of the attribute on which to apply the function
         :param word: value to feed the function
-        :return: a QueryFilter instance that can render the OData function operation
+        :return: a CompositeFilter instance that can render the OData function operation
         """
         return self.function_operation("startswith", attribute, word)
 
-    def endswith(self, attribute: str, word: FilterWord) -> FunctionFilter:
+    def endswith(self, attribute: str, word: FilterWord) -> CompositeFilter:
         """ Adds a endswith word check
 
         :param attribute: the name of the attribute on which to apply the function
         :param word: value to feed the function
-        :return: a QueryFilter instance that can render the OData function operation
+        :return: a CompositeFilter instance that can render the OData function operation
         """
         return self.function_operation("endswith", attribute, word)
 
-    def iterable_operation(self, operation: str, collection: str, filter_instance: QueryFilter,
-                           *, item_name: str = "a") -> IterableFilter:
+    def iterable_operation(self, operation: str, collection: str, filter_instance: CompositeFilter,
+                           *, item_name: str = "a") -> CompositeFilter:
         """ Performs the provided filter operation on a collection by iterating over it.
 
         For example:
@@ -603,14 +618,18 @@ class QueryBuilder:
 
         :param operation: the iterable operation name
         :param collection: the collection to apply the iterable operation on
-        :param filter_instance: a QueryFilter Instance on which you will apply the iterable operation
+        :param filter_instance: a CompositeFilter instance on which you will apply the iterable operation
         :param item_name: the name of the collection item to be used on the filter_instance
-        :return: a QueryFilter instance that can render the OData iterable operation
+        :return: a CompositeFilter instance that can render the OData iterable operation
         """
-        return IterableFilter(operation, self._get_attribute_from_mapping(collection), filter_instance, item_name=item_name)
+        iterable_filter = IterableFilter(operation,
+                                         self._get_attribute_from_mapping(collection),
+                                         filter_instance.filters,
+                                         item_name=item_name)
+        return CompositeFilter(filters=iterable_filter)
 
 
-    def any(self, collection: str, filter_instance: QueryFilter, *, item_name: str = "a") -> IterableFilter:
+    def any(self, collection: str, filter_instance: CompositeFilter, *, item_name: str = "a") -> CompositeFilter:
         """ Performs a filter with the OData 'any' keyword on the collection
 
         For example:
@@ -621,16 +640,16 @@ class QueryBuilder:
         emailAddresses/any(a:a/address eq 'george@best.com')
 
         :param collection: the collection to apply the iterable operation on
-        :param filter_instance: a QueryFilter Instance on which you will apply the iterable operation
+        :param filter_instance: a CompositeFilter Instance on which you will apply the iterable operation
         :param item_name: the name of the collection item to be used on the filter_instance
-        :return: a QueryFilter instance that can render the OData iterable operation
+        :return: a CompositeFilter instance that can render the OData iterable operation
         """
 
         return self.iterable_operation("any", collection=collection,
                                        filter_instance=filter_instance, item_name=item_name)
 
 
-    def all(self, collection: str, filter_instance: QueryFilter, *, item_name: str = "a") -> IterableFilter:
+    def all(self, collection: str, filter_instance: CompositeFilter, *, item_name: str = "a") -> CompositeFilter:
         """ Performs a filter with the OData 'all' keyword on the collection
 
         For example:
@@ -641,55 +660,56 @@ class QueryBuilder:
         emailAddresses/all(a:a/address eq 'george@best.com')
 
         :param collection: the collection to apply the iterable operation on
-        :param filter_instance: a QueryFilter Instance on which you will apply the iterable operation
+        :param filter_instance: a CompositeFilter Instance on which you will apply the iterable operation
         :param item_name: the name of the collection item to be used on the filter_instance
-        :return: a QueryFilter instance that can render the OData iterable operation
+        :return: a CompositeFilter instance that can render the OData iterable operation
         """
 
         return self.iterable_operation("all", collection=collection,
                                        filter_instance=filter_instance, item_name=item_name)
 
     @staticmethod
-    def negate(filter_instance: QueryFilter) -> NegateFilter:
-        """ Apply a not operator to the provided QueryFilter """
-        return NegateFilter(filter_instance=filter_instance)
+    def negate(filter_instance: CompositeFilter) -> CompositeFilter:
+        """ Apply a not operator to the provided QueryFilter
+        :param filter_instance: a CompositeFilter instance
+        :return: a CompositeFilter with its filter negated
+        """
+        negate_filter = NegateFilter(filter_instance=filter_instance.filters)
+        return CompositeFilter(filters=negate_filter)
 
-    def chain_and(self, *filter_instances: QueryFilter, group: bool = False) -> QueryFilter:
+    def _chain(self, operator: str, *filter_instances: CompositeFilter, group: bool = False) -> CompositeFilter:
+        chain = ChainFilter(operation=operator, filter_instances=[fl.filters for fl in filter_instances])
+        chain = CompositeFilter(filters=chain)
+        if group:
+            return self.group(chain)
+        else:
+            return chain
+
+    def chain_and(self, *filter_instances: CompositeFilter, group: bool = False) -> CompositeFilter:
         """ Start a chain 'and' operation
 
-        :param filter_instances: a list of other QueryFilters you want to combine with the 'and' operation
+        :param filter_instances: a list of other CompositeFilter you want to combine with the 'and' operation
         :param group: will group this chain operation if True
-        :return: a QueryFilter with the filter instances combined with an 'and' operation
+        :return: a CompositeFilter with the filter instances combined with an 'and' operation
         """
-        if not all(isinstance(item, QueryFilter) for item in filter_instances):
-            raise ValueError("'filter_instances' parameter must contain only QueryFilter instances")
-        chain = ChainFilter(operation="and", filter_instances=list(filter_instances))
-        if group:
-            return self.group(chain)
-        else:
-            return chain
+        return self._chain("and", *filter_instances, group=group)
 
-    def chain_or(self, *filter_instances: QueryFilter, group: bool = False) -> QueryFilter:
+    def chain_or(self, *filter_instances: CompositeFilter, group: bool = False) -> CompositeFilter:
         """ Start a chain 'or' operation. Will automatically apply a grouping.
 
-        :param filter_instances: a list of other QueryFilters you want to combine with the 'or' operation
+        :param filter_instances: a list of other CompositeFilter you want to combine with the 'or' operation
         :param group: will group this chain operation if True
-        :return: a QueryFilter with the filter instances combined with an 'or' operation
+        :return: a CompositeFilter with the filter instances combined with an 'or' operation
         """
-        if not all(isinstance(item, QueryFilter) for item in filter_instances):
-            raise ValueError("'filter_instances' parameter must contain only QueryFilter instances")
-        chain = ChainFilter(operation="or", filter_instances=list(filter_instances))
-        if group:
-            return self.group(chain)
-        else:
-            return chain
+        return self._chain("or", *filter_instances, group=group)
 
     @staticmethod
-    def group(filter_instance: QueryFilter) -> GroupFilter:
+    def group(filter_instance: CompositeFilter) -> CompositeFilter:
         """ Applies a grouping to the provided filter_instance """
-        return GroupFilter(filter_instance)
+        group_filter = GroupFilter(filter_instance.filters)
+        return CompositeFilter(filters=group_filter)
 
-    def search(self, word: Union[str, int, bool], attribute: Optional[str] = None) -> SearchFilter:
+    def search(self, word: Union[str, int, bool], attribute: Optional[str] = None) -> CompositeFilter:
         """
         Perform a search.
         Note from graph docs:
@@ -700,23 +720,23 @@ class QueryBuilder:
 
         :param word: the text to search
         :param attribute: the attribute to search the word on
-        :return: a SearchFilter instance that can render the OData search operation
+        :return: a CompositeFilter instance that can render the OData search operation
         """
         word = self._parse_filter_word(word)
         if attribute:
             attribute = self._get_attribute_from_mapping(attribute)
         search = SearchFilter(word=word, attribute=attribute)
-        return search
+        return CompositeFilter(search=search)
 
     @staticmethod
-    def orderby(*attributes: tuple[Union[str, tuple[str, bool]]]) -> OrderByFilter:
+    def orderby(*attributes: tuple[Union[str, tuple[str, bool]]]) -> CompositeFilter:
         """
         Returns an 'order by' query param
         This is useful to order the result set of query from a resource.
         Note that not all attributes can be sorted and that all resources have different sort capabilities
 
         :param attributes: the attributes to orderby
-        :return: a OrderByFilter instance that can render the OData order by operation
+        :return: a CompositeFilter instance that can render the OData order by operation
         """
         new_order_by = OrderByFilter()
         for order_by_clause in attributes:
@@ -727,16 +747,16 @@ class QueryBuilder:
             else:
                 raise ValueError("Arguments must be attribute strings or tuples"
                                  " of attribute strings and ascending booleans")
-        return new_order_by
+        return CompositeFilter(order_by=new_order_by)
 
-    def select(self, *attributes: str) -> SelectFilter:
+    def select(self, *attributes: str) -> CompositeFilter:
         """
         Returns a 'select' query param
         This is useful to return a limited set of attributes from a resource or return attributes that are not
          returned by default by the resource.
 
         :param attributes: a tuple of attribute names to select
-        :return: a SelectFilter instance that can render the OData select operation
+        :return: a CompositeFilter instance that can render the OData select operation
         """
         select = SelectFilter()
         for attribute in attributes:
@@ -744,9 +764,9 @@ class QueryBuilder:
             if attribute.lower() in ["meetingmessagetype"]:
                 attribute = f"{self.protocol.keyword_data_store['event_message_type']}/{attribute}"
             select.append(attribute)
-        return select
+        return CompositeFilter(select=select)
 
-    def expand(self, relationship: str, select: Optional[SelectFilter] = None) -> ExpandFilter:
+    def expand(self, relationship: str, select: Optional[CompositeFilter] = None) -> CompositeFilter:
         """
         Returns an 'expand' query param
         Important: If the 'expand' is a relationship (e.g. "event" or "attachments"), then the ApiComponent using
@@ -755,16 +775,16 @@ class QueryBuilder:
         Important: When using expand on multi-value relationships a max of 20 items will be returned.
 
         :param relationship: a relationship that will be expanded
-        :param select: a SelectFilter instance to select attributes on the expanded relationship
-        :return: a ExpandFilter instance that can render the OData expand operation
+        :param select: a CompositeFilter instance to select attributes on the expanded relationship
+        :return: a CompositeFilter instance that can render the OData expand operation
         """
-        expands = ExpandFilter()
+        expand = ExpandFilter()
         # this will prepend the event message type tag based on the protocol
         if relationship == "event":
             relationship = f"{self.protocol.get_service_keyword('event_message_type')}/event"
 
         if select is not None:
-            expands.append((relationship, select))
+            expand.append((relationship, select.select))
         else:
-            expands.append(relationship)
-        return expands
+            expand.append(relationship)
+        return CompositeFilter(expand=expand)
