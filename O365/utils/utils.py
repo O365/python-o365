@@ -1308,7 +1308,13 @@ class Query:
         return self
 
     def get_filter_by_attribute(self, attribute):
-        """ Returns a filter word applied to an attribute """
+        """
+        Returns a filter value by attribute name. It will match the attribute to the start of each filter attribute
+        and return the first found.
+        
+        :param attribute: the attribute you want to search
+        :return: The value applied to that attribute or None
+        """
 
         attribute = attribute.lower()
 

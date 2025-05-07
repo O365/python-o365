@@ -7,5 +7,6 @@ Utils
    :caption: Contents:
 
    utils/attachment
+   utils/query
    utils/token
    utils/utils
