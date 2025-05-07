@@ -2,10 +2,10 @@
 [![PyPI](https://img.shields.io/pypi/v/O365.svg)](https://pypi.python.org/pypi/O365)
 [![PyPI pyversions](https://img.shields.io/pypi/pyversions/O365.svg)](https://pypi.python.org/pypi/O365/)
 
-# O365 - Microsoft Graph and Office 365 API made easy
+# O365 - Microsoft Graph and related APIs made easy
 
-This project aims to make interacting with the Microsoft Graph api easy to do in a Pythonic way.
-Access to Email, Calendar, Contacts, OneDrive, etc. Are easy to do in a way that feel easy and straight forward to beginners and feels just right to seasoned python programmer.
+This project aims to make interacting with the Microsoft api, and related apis, easy to do in a Pythonic way.
+Access to Email, Calendar, Contacts, OneDrive, Sharepoint, etc. Are easy to do in a way that feel easy and straight forward to beginners and feels just right to seasoned python programmer.
 
 The project is currently developed and maintained by [alejcas](https://github.com/alejcas).
 

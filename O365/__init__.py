@@ -1,6 +1,7 @@
 """
-A simple python library to interact with Microsoft Graph
+A simple python library to interact with Microsoft Graph and other MS api
 """
+
 import warnings
 import sys
 
@@ -14,4 +15,4 @@ from .message import Message
 
 if sys.warnoptions:
     # allow Deprecation warnings to appear
-    warnings.simplefilter('always', DeprecationWarning)
+    warnings.simplefilter("always", DeprecationWarning)
