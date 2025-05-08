@@ -2098,9 +2098,19 @@ class Schedule(ApiComponent):
         return self.calendar_constructor(parent=self,
                                          **{self._cloud_data_key: data})
 
-    def get_events(self, limit=25, *, query=None, order_by=None, batch=None,
-                   download_attachments=False, include_recurring=True):
-        """ Get events from the default Calendar
+    def get_events(
+        self,
+        limit=25,
+        *,
+        query=None,
+        order_by=None,
+        batch=None,
+        download_attachments=False,
+        include_recurring=True,
+        start_recurring=None,
+        end_recurring=None,
+    ):
+        """Get events from the default Calendar
 
         :param int limit: max no. of events to get. Over 999 uses batch.
         :param query: applies a OData filter to the request
@@ -2111,16 +2121,24 @@ class Schedule(ApiComponent):
          batches allowing to retrieve more items than the limit.
         :param bool download_attachments: downloads event attachments
         :param bool include_recurring: whether to include recurring events or not
+        :param start_recurring: a string datetime or a Query object with just a start condition
+        :param end_recurring: a string datetime or a Query object with just an end condition
         :return: list of items in this folder
         :rtype: list[Event] or Pagination
         """
 
         default_calendar = self.calendar_constructor(parent=self)
 
-        return default_calendar.get_events(limit=limit, query=query,
-                                           order_by=order_by, batch=batch,
-                                           download_attachments=download_attachments,
-                                           include_recurring=include_recurring)
+        return default_calendar.get_events(
+            limit=limit,
+            query=query,
+            order_by=order_by,
+            batch=batch,
+            download_attachments=download_attachments,
+            include_recurring=include_recurring,
+            start_recurring=start_recurring,
+            end_recurring=end_recurring,
+        )
 
     def new_event(self, subject=None):
         """ Returns a new (unsaved) Event object in the default calendar
