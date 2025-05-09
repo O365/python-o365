@@ -19,7 +19,7 @@ log = logging.getLogger(__name__)
 
 
 class Contact(ApiComponent, AttachableMixin):
-    """ Contact manages lists of events on associated contact on office365. """
+    """ Contact manages lists of events on associated contact on Microsoft 365. """
 
     _endpoints = {
         'contact': '/contacts',

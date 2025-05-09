@@ -1160,16 +1160,8 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
             self.object_id = message.get(self._cc('id'), None)
             self.folder_id = message.get(self._cc('parentFolderId'), None)
 
-            # fallback to office365 v1.0
-            self.__created = message.get(self._cc('createdDateTime'),
-                                         message.get(
-                                             self._cc('dateTimeCreated'),
-                                             None))
-            # fallback to office365 v1.0
-            self.__modified = message.get(self._cc('lastModifiedDateTime'),
-                                          message.get(
-                                              self._cc('dateTimeModified'),
-                                              None))
+            self.__created = message.get(self._cc('createdDateTime'),None)
+            self.__modified = message.get(self._cc('lastModifiedDateTime'),None)
 
             self.__created = parse(self.__created).astimezone(
                 self.protocol.timezone) if self.__created else None
