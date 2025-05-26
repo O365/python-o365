@@ -34,7 +34,6 @@ from .utils import (
 
 log = logging.getLogger(__name__)
 
-O365_API_VERSION: str = "v2.0"
 GRAPH_API_VERSION: str = "v1.0"
 OAUTH_REDIRECT_URL: str = "https://login.microsoftonline.com/common/oauth2/nativeclient"
 
@@ -193,8 +192,6 @@ class Protocol:
         When using Microsoft Graph API, the keywords of the API use
         lowerCamelCase Casing
 
-        When using Office 365 API, the keywords of the API use PascalCase Casing
-
         Default case in this API is lowerCamelCase
 
         :param  key: a dictionary key to convert
@@ -298,62 +295,9 @@ class MSGraphProtocol(Protocol):
         )
 
 
-class MSOffice365Protocol(Protocol):
-    """A Microsoft Office 365 Protocol Implementation
-    https://docs.microsoft.com/en-us/outlook/rest/compare-graph-outlook
-    """
-
-    _protocol_url = "https://outlook.office.com/api/"
-    _oauth_scope_prefix = "https://outlook.office.com/"
-    _oauth_scopes = DEFAULT_SCOPES
-
-    def __init__(self, api_version: str = "v2.0", default_resource: Optional[str] = None, **kwargs):
-        """Create a new Office 365 protocol object
-
-        _protocol_url = 'https://outlook.office.com/api/'
-
-        _oauth_scope_prefix = 'https://outlook.office.com/'
-
-        :param str api_version: api version to use
-        :param str default_resource: the default resource to use when there is
-         nothing explicitly specified during the requests
-        """
-        super().__init__(
-            protocol_url=self._protocol_url,
-            api_version=api_version,
-            default_resource=default_resource,
-            casing_function=to_pascal_case,
-            protocol_scope_prefix=self._oauth_scope_prefix,
-            **kwargs,
-        )
-
-        self.keyword_data_store["message_type"] = "Microsoft.OutlookServices.Message"
-        self.keyword_data_store["event_message_type"] = (
-            "Microsoft.OutlookServices.EventMessage"
-        )
-        self.keyword_data_store["file_attachment_type"] = (
-            "#Microsoft.OutlookServices.FileAttachment"
-        )
-        self.keyword_data_store["item_attachment_type"] = (
-            "#Microsoft.OutlookServices.ItemAttachment"
-        )
-        self.keyword_data_store["prefer_timezone_header"] = (
-            f'outlook.timezone="{get_windows_tz(self.timezone)}"'
-        )
-        #: The max value for 'top' (999).  |br| **Type:** str
-        self.max_top_value = 999  # Max $top parameter value
-
-    @Protocol.timezone.setter
-    def timezone(self, timezone: Union[str, ZoneInfo]) -> None:
-        super()._update_timezone(timezone)
-        self.keyword_data_store["prefer_timezone_header"] = (
-            f'outlook.timezone="{get_windows_tz(self._timezone)}"'
-        )
-
-
 class MSBusinessCentral365Protocol(Protocol):
     """A Microsoft Business Central Protocol Implementation
-    https://docs.microsoft.com/en-us/dynamics-nav/api-reference/v1.0/endpoints-apis-for-dynamics
+    https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/api-reference/v1.0/
     """
 
     _protocol_url = "https://api.businesscentral.dynamics.com/"

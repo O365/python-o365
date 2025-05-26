@@ -1780,8 +1780,9 @@ class Calendar(ApiComponent, HandleRecipientsMixin):
 
         return True
 
-    def get_events(self, limit=25, *, query=None, order_by=None, batch=None,
-                   download_attachments=False, include_recurring=True):
+    def get_events(self, limit: int = 25, *, query=None, order_by=None, batch=None,
+                   download_attachments=False, include_recurring=True,
+                   start_recurring=None, end_recurring=None):
         """ Get events from this Calendar
 
         :param int limit: max no. of events to get. Over 999 uses batch.
@@ -1793,6 +1794,8 @@ class Calendar(ApiComponent, HandleRecipientsMixin):
          batches allowing to retrieve more items than the limit.
         :param download_attachments: downloads event attachments
         :param bool include_recurring: whether to include recurring events or not
+        :param start_recurring: a string datetime or a Query object with just a start condition
+        :param end_recurring: a string datetime or a Query object with just an end condition
         :return: list of events in this calendar
         :rtype: list[Event] or Pagination
         """
@@ -1822,22 +1825,29 @@ class Calendar(ApiComponent, HandleRecipientsMixin):
         if include_recurring:
             start = None
             end = None
-            if query and not isinstance(query, str):
-                # extract start and end from query because
-                # those are required by a calendarView
-                start = query.get_filter_by_attribute('start/')
-                end = query.get_filter_by_attribute('start/')
-
-                if start:
-                    start = start.replace("'", '')  # remove the quotes
-                    query.remove_filter('start')
-                if end:
-                    end = end.replace("'", '')  # remove the quotes
-                    query.remove_filter('end')
-
+            if start_recurring is None:
+                pass
+            elif isinstance(start_recurring, str):
+                start = start_recurring
+            elif isinstance(start_recurring, dt.datetime):
+                start = start_recurring.isoformat()
+            else:
+                # it's a Query Object
+                start = start_recurring.get_filter_by_attribute('start/')
+            if end_recurring is None:
+                pass
+            elif isinstance(end_recurring, str):
+                end = end_recurring
+            elif isinstance(end_recurring, dt.datetime):
+                end = end_recurring.isoformat()
+            else:
+                # it's a Query Object
+                end = end_recurring.get_filter_by_attribute('end/')
             if start is None or end is None:
                 raise ValueError("When 'include_recurring' is True you must provide "
-                                 "a 'start' and 'end' datetime inside a 'Query' instance.")
+                                 "a 'start_recurring' and 'end_recurring' with a datetime string.")
+            start = start.replace("'", '')  # remove the quotes
+            end = end.replace("'", '')  # remove the quotes
 
             params[self._cc('startDateTime')] = start
             params[self._cc('endDateTime')] = end
@@ -2088,9 +2098,19 @@ class Schedule(ApiComponent):
         return self.calendar_constructor(parent=self,
                                          **{self._cloud_data_key: data})
 
-    def get_events(self, limit=25, *, query=None, order_by=None, batch=None,
-                   download_attachments=False, include_recurring=True):
-        """ Get events from the default Calendar
+    def get_events(
+        self,
+        limit=25,
+        *,
+        query=None,
+        order_by=None,
+        batch=None,
+        download_attachments=False,
+        include_recurring=True,
+        start_recurring=None,
+        end_recurring=None,
+    ):
+        """Get events from the default Calendar
 
         :param int limit: max no. of events to get. Over 999 uses batch.
         :param query: applies a OData filter to the request
@@ -2101,16 +2121,24 @@ class Schedule(ApiComponent):
          batches allowing to retrieve more items than the limit.
         :param bool download_attachments: downloads event attachments
         :param bool include_recurring: whether to include recurring events or not
+        :param start_recurring: a string datetime or a Query object with just a start condition
+        :param end_recurring: a string datetime or a Query object with just an end condition
         :return: list of items in this folder
         :rtype: list[Event] or Pagination
         """
 
         default_calendar = self.calendar_constructor(parent=self)
 
-        return default_calendar.get_events(limit=limit, query=query,
-                                           order_by=order_by, batch=batch,
-                                           download_attachments=download_attachments,
-                                           include_recurring=include_recurring)
+        return default_calendar.get_events(
+            limit=limit,
+            query=query,
+            order_by=order_by,
+            batch=batch,
+            download_attachments=download_attachments,
+            include_recurring=include_recurring,
+            start_recurring=start_recurring,
+            end_recurring=end_recurring,
+        )
 
     def new_event(self, subject=None):
         """ Returns a new (unsaved) Event object in the default calendar

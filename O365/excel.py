@@ -9,7 +9,6 @@ import logging
 import re
 from urllib.parse import quote
 
-from .connection import MSOffice365Protocol
 from .drive import File
 from .utils import ApiComponent, TrackerSet, to_snake_case
 
@@ -2065,11 +2064,6 @@ class WorkBook(ApiComponent):
             or file_item.mime_type != EXCEL_XLSX_MIME_TYPE
         ):
             raise ValueError("This file is not a valid Excel xlsx file.")
-
-        if isinstance(file_item.protocol, MSOffice365Protocol):
-            raise ValueError(
-                "Excel capabilities are only allowed on the MSGraph protocol"
-            )
 
         # append the workbook path
         main_resource = "{}{}/workbook".format(

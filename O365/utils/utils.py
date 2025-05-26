@@ -21,7 +21,7 @@ NEXT_LINK_KEYWORD = '@odata.nextLink'
 
 log = logging.getLogger(__name__)
 
-MAX_RECIPIENTS_PER_MESSAGE = 500  # Actual limit on Office 365
+MAX_RECIPIENTS_PER_MESSAGE = 500  # Actual limit on Microsoft 365
 
 
 class CaseEnum(Enum):
