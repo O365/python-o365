@@ -49,10 +49,15 @@ Working with Calendar instances:
     calendar.name = 'Football players birthdays'
     calendar.update()
 
-    q = calendar.new_query('start').greater_equal(dt.datetime(2018, 5, 20))
-    q.chain('and').on_attribute('end').less_equal(dt.datetime(2018, 5, 24))
+    
+    start_q = calendar.new_query('start').greater_equal(dt.datetime(2018, 5, 20))
+    end_q = calendar.new_query('start').less_equal(dt.datetime(2018, 5, 24))
 
-    birthdays = calendar.get_events(query=q, include_recurring=True)  # include_recurring=True will include repeated events on the result set.
+    birthdays = calendar.get_events(
+        include_recurring=True, # include_recurring=True will include repeated events on the result set.
+        start_recurring=start_q, 
+        end_recurring=end_q,
+        )  
 
     for event in birthdays:
         if event.subject == 'George Best Birthday':
@@ -65,7 +70,10 @@ Working with Calendar instances:
 
 1. Include_recurring=True:
 
-    It's important to know that when querying events with include_recurring=True (which is the default), it is required that you must provide a query parameter with the start and end attributes defined. Unlike when using include_recurring=False those attributes will NOT filter the data based on the operations you set on the query (greater_equal, less, etc.) but just filter the events start datetime between the provided start and end datetimes.
+    It's important to know that when querying events with include_recurring=True (which is the default), 
+    it is required that you must provide start and end parameters, these may be simple date strings, python dates or individual queries. 
+    Unlike when using include_recurring=False those attributes will NOT filter the data based on the operations you set on the query (greater_equal, less, etc.) 
+    but just filter the events start datetime between the provided start and end datetimes.
 
 2. Shared Calendars:
 

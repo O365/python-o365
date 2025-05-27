@@ -158,10 +158,15 @@
 <span class="n">calendar</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Football players birthdays&#39;</span>
 <span class="n">calendar</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
 
-<span class="n">q</span> <span class="o">=</span> <span class="n">calendar</span><span class="o">.</span><span class="n">new_query</span><span class="p">(</span><span class="s1">&#39;start&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">greater_equal</span><span class="p">(</span><span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2018</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">20</span><span class="p">))</span>
-<span class="n">q</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span><span class="s1">&#39;and&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">on_attribute</span><span class="p">(</span><span class="s1">&#39;end&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">less_equal</span><span class="p">(</span><span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2018</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">24</span><span class="p">))</span>
 
-<span class="n">birthdays</span> <span class="o">=</span> <span class="n">calendar</span><span class="o">.</span><span class="n">get_events</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="n">q</span><span class="p">,</span> <span class="n">include_recurring</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># include_recurring=True will include repeated events on the result set.</span>
+<span class="n">start_q</span> <span class="o">=</span> <span class="n">calendar</span><span class="o">.</span><span class="n">new_query</span><span class="p">(</span><span class="s1">&#39;start&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">greater_equal</span><span class="p">(</span><span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2018</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">20</span><span class="p">))</span>
+<span class="n">end_q</span> <span class="o">=</span> <span class="n">calendar</span><span class="o">.</span><span class="n">new_query</span><span class="p">(</span><span class="s1">&#39;start&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">less_equal</span><span class="p">(</span><span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2018</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">24</span><span class="p">))</span>
+
+<span class="n">birthdays</span> <span class="o">=</span> <span class="n">calendar</span><span class="o">.</span><span class="n">get_events</span><span class="p">(</span>
+    <span class="n">include_recurring</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="c1"># include_recurring=True will include repeated events on the result set.</span>
+    <span class="n">start_recurring</span><span class="o">=</span><span class="n">start_q</span><span class="p">,</span>
+    <span class="n">end_recurring</span><span class="o">=</span><span class="n">end_q</span><span class="p">,</span>
+    <span class="p">)</span>
 
 <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">birthdays</span><span class="p">:</span>
     <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">subject</span> <span class="o">==</span> <span class="s1">&#39;George Best Birthday&#39;</span><span class="p">:</span>
@@ -175,7 +180,10 @@
 <ol class="arabic">
 <li><p>Include_recurring=True:</p>
 <blockquote>
-<div><p>It’s important to know that when querying events with include_recurring=True (which is the default), it is required that you must provide a query parameter with the start and end attributes defined. Unlike when using include_recurring=False those attributes will NOT filter the data based on the operations you set on the query (greater_equal, less, etc.) but just filter the events start datetime between the provided start and end datetimes.</p>
+<div><p>It’s important to know that when querying events with include_recurring=True (which is the default),
+it is required that you must provide start and end parameters, these may be simple date strings, python dates or individual queries.
+Unlike when using include_recurring=False those attributes will NOT filter the data based on the operations you set on the query (greater_equal, less, etc.)
+but just filter the events start datetime between the provided start and end datetimes.</p>
 </div></blockquote>
 </li>
 <li><p>Shared Calendars:</p>
