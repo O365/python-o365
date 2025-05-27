@@ -66,6 +66,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../teams.html">Teams</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../utils.html">Utils</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="attachment.html">Attachment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="query.html">Query</a></li>
 <li class="toctree-l3"><a class="reference internal" href="token.html">Token</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Utils</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#O365.utils.utils.ApiComponent"><code class="docutils literal notranslate"><span class="pre">ApiComponent</span></code></a></li>
@@ -730,7 +731,16 @@ Important: The ApiComponent using this should know how to handle this relationsh
 <dl class="py method">
 <dt class="sig sig-object py" id="O365.utils.utils.Query.get_filter_by_attribute">
 <span class="sig-name descname"><span class="pre">get_filter_by_attribute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attribute</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/utils.html#Query.get_filter_by_attribute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.utils.Query.get_filter_by_attribute" title="Link to this definition"></a></dt>
-<dd><p>Returns a filter word applied to an attribute</p>
+<dd><p>Returns a filter value by attribute name. It will match the attribute to the start of each filter attribute
+and return the first found.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>attribute</strong> – the attribute you want to search</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The value applied to that attribute or None</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">

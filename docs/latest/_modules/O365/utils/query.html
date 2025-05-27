@@ -1,0 +1,1119 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>O365.utils.query &mdash; O365  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link href="../../../_static/css/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html">
+            
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Detailed Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">O365 API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">O365</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">O365.utils.query</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for O365.utils.query</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">dt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">TypeAlias</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">O365.connection</span><span class="w"> </span><span class="kn">import</span> <span class="n">Protocol</span>
+
+<span class="n">FilterWord</span><span class="p">:</span> <span class="n">TypeAlias</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">dt</span><span class="o">.</span><span class="n">date</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="QueryBase">
+<a class="viewcode-back" href="../../../api/utils/query.html#O365.utils.query.QueryBase">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">QueryBase</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
+
+<div class="viewcode-block" id="QueryBase.as_params">
+<a class="viewcode-back" href="../../../api/utils/query.html#O365.utils.query.QueryBase.as_params">[docs]</a>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">as_params</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="QueryBase.render">
+<a class="viewcode-back" href="../../../api/utils/query.html#O365.utils.query.QueryBase.render">[docs]</a>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">pass</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">render</span><span class="p">()</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__and__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__or__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+<div class="viewcode-block" id="QueryBase.get_filter_by_attribute">
+<a class="viewcode-back" href="../../../api/utils/query.html#O365.utils.query.QueryBase.get_filter_by_attribute">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_filter_by_attribute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a filter value by attribute name. It will match the attribute to the start of each filter attribute</span>
+<span class="sd">        and return the first found.</span>
+<span class="sd">        </span>
+<span class="sd">        :param attribute: the attribute you want to search</span>
+<span class="sd">        :return: The value applied to that attribute or None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">search_object</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">QueryFilter</span><span class="p">]</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_filter_instance&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;filters&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">search_object</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># CompositeFilter, IterableFilter, ModifierQueryFilter (negate, group)</span>
+            <span class="k">return</span> <span class="n">search_object</span><span class="o">.</span><span class="n">get_filter_by_attribute</span><span class="p">(</span><span class="n">attribute</span><span class="p">)</span>
+
+        <span class="n">search_object</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">QueryFilter</span><span class="p">]]</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_filter_instances&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">search_object</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># ChainFilter</span>
+            <span class="k">for</span> <span class="n">filter_obj</span> <span class="ow">in</span> <span class="n">search_object</span><span class="p">:</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="n">filter_obj</span><span class="o">.</span><span class="n">get_filter_by_attribute</span><span class="p">(</span><span class="n">attribute</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">result</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="n">search_object</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_attribute&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">search_object</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># LogicalFilter or FunctionFilter</span>
+            <span class="k">if</span> <span class="n">search_object</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">attribute</span><span class="o">.</span><span class="n">lower</span><span class="p">()):</span>
+                <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_word&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="QueryFilter">
+<a class="viewcode-back" href="../../../api/utils/query.html#O365.utils.query.QueryFilter">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">QueryFilter</span><span class="p">(</span><span class="n">QueryBase</span><span class="p">,</span> <span class="n">ABC</span><span class="p">):</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
+
+<div class="viewcode-block" id="QueryFilter.render">
+<a class="viewcode-back" href="../../../api/utils/query.html#O365.utils.query.QueryFilter.render">[docs]</a>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="QueryFilter.as_params">
+<a class="viewcode-back" href="../../../api/utils/query.html#O365.utils.query.QueryFilter.as_params">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">as_params</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;$filter&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">render</span><span class="p">()}</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__and__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">QueryBase</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">QueryBase</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">other</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">QueryFilter</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">ChainFilter</span><span class="p">(</span><span class="s2">&quot;and&quot;</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">])</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">OrderByFilter</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">CompositeFilter</span><span class="p">(</span><span class="n">filters</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">order_by</span><span class="o">=</span><span class="n">other</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">SearchFilter</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Can&#39;t mix search with filters or order by clauses.&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">SelectFilter</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">CompositeFilter</span><span class="p">(</span><span class="n">filters</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="n">other</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">ExpandFilter</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">CompositeFilter</span><span class="p">(</span><span class="n">filters</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">expand</span><span class="o">=</span><span class="n">other</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Can&#39;t mix </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">other</span><span class="p">)</span><span class="si">}</span><span class="s2"> with </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__or__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">QueryFilter</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ChainFilter</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">QueryFilter</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Can&#39;t chain a non-query filter with and &#39;or&#39; operator. Use &#39;and&#39; instead.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ChainFilter</span><span class="p">(</span><span class="s2">&quot;or&quot;</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">])</span></div>
+
+
+
+<div class="viewcode-block" id="OperationQueryFilter">
+<a class="viewcode-back" href="../../../api/utils/query.html#O365.utils.query.OperationQueryFilter">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">OperationQueryFilter</span><span class="p">(</span><span class="n">QueryFilter</span><span class="p">,</span> <span class="n">ABC</span><span class="p">):</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;_operation&quot;</span><span class="p">,)</span>
+
+<div class="viewcode-block" id="OperationQueryFilter.__init__">
+<a class="viewcode-back" href="../../../api/utils/query.html#O365.utils.query.OperationQueryFilter.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operation</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_operation</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">operation</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="LogicalFilter">
+<a class="viewcode-back" href="../../../api/utils/query.html#O365.utils.query.LogicalFilter">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">LogicalFilter</span><span class="p">(</span><span class="n">OperationQueryFilter</span><span class="p">):</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;_operation&quot;</span><span class="p">,</span> <span class="s2">&quot;_attribute&quot;</span><span class="p">,</span> <span class="s2">&quot;_word&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="LogicalFilter.__init__">
+<a class="viewcode-back" href="../../../api/utils/query.html#O365.utils.query.LogicalFilter.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operation</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">attribute</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">word</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">operation</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_attribute</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">attribute</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_word</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">word</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_prepare_attribute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">item_name</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_attribute</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># iteration will occur in the item itself</span>
+                <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">item_name</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">item_name</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_attribute</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_attribute</span>
+
+<div class="viewcode-block" id="LogicalFilter.render">
+<a class="viewcode-back" href="../../../api/utils/query.html#O365.utils.query.LogicalFilter.render">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_prepare_attribute</span><span class="p">(</span><span class="n">item_name</span><span class="p">)</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_operation</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_word</span><span class="si">}</span><span class="s2">&quot;</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="FunctionFilter">
+<a class="viewcode-back" href="../../../api/utils/query.html#O365.utils.query.FunctionFilter">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">FunctionFilter</span><span class="p">(</span><span class="n">LogicalFilter</span><span class="p">):</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;_operation&quot;</span><span class="p">,</span> <span class="s2">&quot;_attribute&quot;</span><span class="p">,</span> <span class="s2">&quot;_word&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="FunctionFilter.render">
+<a class="viewcode-back" href="../../../api/utils/query.html#O365.utils.query.FunctionFilter.render">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_operation</span><span class="si">}</span><span class="s2">(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_prepare_attribute</span><span class="p">(</span><span class="n">item_name</span><span class="p">)</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_word</span><span class="si">}</span><span class="s2">)&quot;</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="IterableFilter">
+<a class="viewcode-back" href="../../../api/utils/query.html#O365.utils.query.IterableFilter">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">IterableFilter</span><span class="p">(</span><span class="n">OperationQueryFilter</span><span class="p">):</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;_operation&quot;</span><span class="p">,</span> <span class="s2">&quot;_collection&quot;</span><span class="p">,</span> <span class="s2">&quot;_item_name&quot;</span><span class="p">,</span> <span class="s2">&quot;_filter_instance&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="IterableFilter.__init__">
+<a class="viewcode-back" href="../../../api/utils/query.html#O365.utils.query.IterableFilter.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operation</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">collection</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">filter_instance</span><span class="p">:</span> <span class="n">QueryFilter</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">item_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;a&quot;</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">operation</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_collection</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">collection</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_item_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">item_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_filter_instance</span><span class="p">:</span> <span class="n">QueryFilter</span> <span class="o">=</span> <span class="n">filter_instance</span></div>
+
+
+<div class="viewcode-block" id="IterableFilter.render">
+<a class="viewcode-back" href="../../../api/utils/query.html#O365.utils.query.IterableFilter.render">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="c1"># an iterable filter will always ignore external item names</span>
+        <span class="n">filter_instance_render</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_instance</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">item_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_item_name</span><span class="p">)</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_collection</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_operation</span><span class="si">}</span><span class="s2">(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_item_name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">filter_instance_render</span><span class="si">}</span><span class="s2">)&quot;</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="ChainFilter">
+<a class="viewcode-back" href="../../../api/utils/query.html#O365.utils.query.ChainFilter">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ChainFilter</span><span class="p">(</span><span class="n">OperationQueryFilter</span><span class="p">):</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;_operation&quot;</span><span class="p">,</span> <span class="s2">&quot;_filter_instances&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ChainFilter.__init__">
+<a class="viewcode-back" href="../../../api/utils/query.html#O365.utils.query.ChainFilter.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operation</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">filter_instances</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">QueryFilter</span><span class="p">]):</span>
+        <span class="k">assert</span> <span class="n">operation</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;and&quot;</span><span class="p">,</span> <span class="s2">&quot;or&quot;</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">operation</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_filter_instances</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">QueryFilter</span><span class="p">]</span> <span class="o">=</span> <span class="n">filter_instances</span></div>
+
+
+<div class="viewcode-block" id="ChainFilter.render">
+<a class="viewcode-back" href="../../../api/utils/query.html#O365.utils.query.ChainFilter.render">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_operation</span><span class="si">}</span><span class="s2"> &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">fi</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">item_name</span><span class="p">)</span> <span class="k">for</span> <span class="n">fi</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_instances</span><span class="p">])</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="ModifierQueryFilter">
+<a class="viewcode-back" href="../../../api/utils/query.html#O365.utils.query.ModifierQueryFilter">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ModifierQueryFilter</span><span class="p">(</span><span class="n">QueryFilter</span><span class="p">,</span> <span class="n">ABC</span><span class="p">):</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;_filter_instance&quot;</span><span class="p">,)</span>
+
+<div class="viewcode-block" id="ModifierQueryFilter.__init__">
+<a class="viewcode-back" href="../../../api/utils/query.html#O365.utils.query.ModifierQueryFilter.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filter_instance</span><span class="p">:</span> <span class="n">QueryFilter</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_filter_instance</span><span class="p">:</span> <span class="n">QueryFilter</span> <span class="o">=</span> <span class="n">filter_instance</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="NegateFilter">
+<a class="viewcode-back" href="../../../api/utils/query.html#O365.utils.query.NegateFilter">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">NegateFilter</span><span class="p">(</span><span class="n">ModifierQueryFilter</span><span class="p">):</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;_filter_instance&quot;</span><span class="p">,)</span>
+
+<div class="viewcode-block" id="NegateFilter.render">
+<a class="viewcode-back" href="../../../api/utils/query.html#O365.utils.query.NegateFilter.render">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;not </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_filter_instance</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">item_name</span><span class="o">=</span><span class="n">item_name</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="GroupFilter">
+<a class="viewcode-back" href="../../../api/utils/query.html#O365.utils.query.GroupFilter">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">GroupFilter</span><span class="p">(</span><span class="n">ModifierQueryFilter</span><span class="p">):</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;_filter_instance&quot;</span><span class="p">,)</span>
+
+<div class="viewcode-block" id="GroupFilter.render">
+<a class="viewcode-back" href="../../../api/utils/query.html#O365.utils.query.GroupFilter.render">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_filter_instance</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">item_name</span><span class="o">=</span><span class="n">item_name</span><span class="p">)</span><span class="si">}</span><span class="s2">)&quot;</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="SearchFilter">
+<a class="viewcode-back" href="../../../api/utils/query.html#O365.utils.query.SearchFilter">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SearchFilter</span><span class="p">(</span><span class="n">QueryBase</span><span class="p">):</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;_search&quot;</span><span class="p">,)</span>
+
+<div class="viewcode-block" id="SearchFilter.__init__">
+<a class="viewcode-back" href="../../../api/utils/query.html#O365.utils.query.SearchFilter.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">word</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">attribute</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">word</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">attribute</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_search</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">attribute</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">word</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_search</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">word</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_search</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_combine</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">search_one</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">search_two</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">operator</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;and&quot;</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_search</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">search_one</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">operator</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">search_two</span><span class="si">}</span><span class="s2">&quot;</span>
+
+<div class="viewcode-block" id="SearchFilter.render">
+<a class="viewcode-back" href="../../../api/utils/query.html#O365.utils.query.SearchFilter.render">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_search</span><span class="si">}</span><span class="s1">&quot;&#39;</span></div>
+
+
+<div class="viewcode-block" id="SearchFilter.as_params">
+<a class="viewcode-back" href="../../../api/utils/query.html#O365.utils.query.SearchFilter.as_params">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">as_params</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;$search&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">render</span><span class="p">()}</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__and__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">QueryBase</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">QueryBase</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">other</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">SearchFilter</span><span class="p">):</span>
+            <span class="n">new_search</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">()</span>
+            <span class="n">new_search</span><span class="o">.</span><span class="n">_combine</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_search</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">_search</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="s2">&quot;and&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">new_search</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">QueryFilter</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Can&#39;t mix search with filters clauses.&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">OrderByFilter</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Can&#39;t mix search with order by clauses.&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">SelectFilter</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">CompositeFilter</span><span class="p">(</span><span class="n">search</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="n">other</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">ExpandFilter</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">CompositeFilter</span><span class="p">(</span><span class="n">search</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">expand</span><span class="o">=</span><span class="n">other</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Can&#39;t mix </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">other</span><span class="p">)</span><span class="si">}</span><span class="s2"> with </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__or__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">QueryBase</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SearchFilter</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">SearchFilter</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Can&#39;t chain a non-search filter with and &#39;or&#39; operator. Use &#39;and&#39; instead.&quot;</span><span class="p">)</span>
+        <span class="n">new_search</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">()</span>
+        <span class="n">new_search</span><span class="o">.</span><span class="n">_combine</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_search</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">_search</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="s2">&quot;or&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">new_search</span></div>
+
+
+
+<div class="viewcode-block" id="OrderByFilter">
+<a class="viewcode-back" href="../../../api/utils/query.html#O365.utils.query.OrderByFilter">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">OrderByFilter</span><span class="p">(</span><span class="n">QueryBase</span><span class="p">):</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;_orderby&quot;</span><span class="p">,)</span>
+
+<div class="viewcode-block" id="OrderByFilter.__init__">
+<a class="viewcode-back" href="../../../api/utils/query.html#O365.utils.query.OrderByFilter.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_orderby</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_sorted_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">att</span> <span class="k">for</span> <span class="n">att</span><span class="p">,</span> <span class="n">asc</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_orderby</span><span class="p">]</span>
+
+<div class="viewcode-block" id="OrderByFilter.add">
+<a class="viewcode-back" href="../../../api/utils/query.html#O365.utils.query.OrderByFilter.add">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ascending</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">attribute</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Attribute can&#39;t be empty&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">attribute</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sorted_attributes</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_orderby</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">attribute</span><span class="p">,</span> <span class="n">ascending</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="OrderByFilter.render">
+<a class="viewcode-back" href="../../../api/utils/query.html#O365.utils.query.OrderByFilter.render">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">att</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;&#39;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">asc</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;desc&#39;</span><span class="si">}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">att</span><span class="p">,</span> <span class="n">asc</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_orderby</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="OrderByFilter.as_params">
+<a class="viewcode-back" href="../../../api/utils/query.html#O365.utils.query.OrderByFilter.as_params">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">as_params</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;$orderby&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">render</span><span class="p">()}</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__and__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">QueryBase</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">QueryBase</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">other</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">OrderByFilter</span><span class="p">):</span>
+            <span class="n">new_order_by</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">att</span><span class="p">,</span> <span class="n">asc</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_orderby</span><span class="p">:</span>
+                <span class="n">new_order_by</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">att</span><span class="p">,</span> <span class="n">asc</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">att</span><span class="p">,</span> <span class="n">asc</span> <span class="ow">in</span> <span class="n">other</span><span class="o">.</span><span class="n">_orderby</span><span class="p">:</span>
+                <span class="n">new_order_by</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">att</span><span class="p">,</span> <span class="n">asc</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">new_order_by</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">SearchFilter</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Can&#39;t mix order by with search clauses.&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">QueryFilter</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">CompositeFilter</span><span class="p">(</span><span class="n">order_by</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">filters</span><span class="o">=</span><span class="n">other</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">SelectFilter</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">CompositeFilter</span><span class="p">(</span><span class="n">order_by</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="n">other</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">ExpandFilter</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">CompositeFilter</span><span class="p">(</span><span class="n">order_by</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">expand</span><span class="o">=</span><span class="n">other</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Can&#39;t mix </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">other</span><span class="p">)</span><span class="si">}</span><span class="s2"> with </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__or__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">QueryBase</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Orderby clauses are mutually exclusive&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="ContainerQueryFilter">
+<a class="viewcode-back" href="../../../api/utils/query.html#O365.utils.query.ContainerQueryFilter">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ContainerQueryFilter</span><span class="p">(</span><span class="n">QueryBase</span><span class="p">):</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;_container&quot;</span><span class="p">,</span> <span class="s2">&quot;_keyword&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ContainerQueryFilter.__init__">
+<a class="viewcode-back" href="../../../api/utils/query.html#O365.utils.query.ContainerQueryFilter.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">SelectFilter</span><span class="p">]]):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_container</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">SelectFilter</span><span class="p">]]]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_keyword</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span></div>
+
+
+<div class="viewcode-block" id="ContainerQueryFilter.append">
+<a class="viewcode-back" href="../../../api/utils/query.html#O365.utils.query.ContainerQueryFilter.append">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">SelectFilter</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_container</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">SelectFilter</span><span class="p">]]]:</span>
+        <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_container</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">attribute</span> <span class="ow">in</span> <span class="p">[</span><span class="n">item</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="k">else</span> <span class="n">item</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_container</span><span class="p">]</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__and__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">QueryBase</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">QueryBase</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">other</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">SelectFilter</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">SelectFilter</span><span class="p">)</span>
+        <span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">ExpandFilter</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ExpandFilter</span><span class="p">)):</span>
+            <span class="n">new_container</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">other</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+                    <span class="n">attribute</span> <span class="o">=</span> <span class="n">item</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">attribute</span> <span class="o">=</span> <span class="n">item</span>
+                <span class="k">if</span> <span class="n">attribute</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">new_container</span><span class="p">:</span>
+                    <span class="n">new_container</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">new_container</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">QueryFilter</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">CompositeFilter</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_keyword</span><span class="p">:</span> <span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;filters&quot;</span><span class="p">:</span> <span class="n">other</span><span class="p">})</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">SearchFilter</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">CompositeFilter</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_keyword</span><span class="p">:</span> <span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;search&quot;</span><span class="p">:</span> <span class="n">other</span><span class="p">})</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">OrderByFilter</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">CompositeFilter</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_keyword</span><span class="p">:</span> <span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;order_by&quot;</span><span class="p">:</span> <span class="n">other</span><span class="p">})</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">SelectFilter</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">CompositeFilter</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_keyword</span><span class="p">:</span> <span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;select&quot;</span><span class="p">:</span> <span class="n">other</span><span class="p">})</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">ExpandFilter</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">CompositeFilter</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_keyword</span><span class="p">:</span> <span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;expand&quot;</span><span class="p">:</span> <span class="n">other</span><span class="p">})</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Can&#39;t mix </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">other</span><span class="p">)</span><span class="si">}</span><span class="s2"> with </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__or__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">QueryBase</span><span class="p">]):</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Can&#39;t combine multiple composite filters with an &#39;or&#39; statement. Use &#39;and&#39; instead.&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ContainerQueryFilter.render">
+<a class="viewcode-back" href="../../../api/utils/query.html#O365.utils.query.ContainerQueryFilter.render">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_container</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ContainerQueryFilter.as_params">
+<a class="viewcode-back" href="../../../api/utils/query.html#O365.utils.query.ContainerQueryFilter.as_params">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">as_params</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span><span class="sa">f</span><span class="s2">&quot;$</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_keyword</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">render</span><span class="p">()}</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="SelectFilter">
+<a class="viewcode-back" href="../../../api/utils/query.html#O365.utils.query.SelectFilter">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SelectFilter</span><span class="p">(</span><span class="n">ContainerQueryFilter</span><span class="p">):</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;_container&quot;</span><span class="p">,</span> <span class="s2">&quot;_keyword&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="SelectFilter.__init__">
+<a class="viewcode-back" href="../../../api/utils/query.html#O365.utils.query.SelectFilter.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_keyword</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;select&quot;</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="ExpandFilter">
+<a class="viewcode-back" href="../../../api/utils/query.html#O365.utils.query.ExpandFilter">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ExpandFilter</span><span class="p">(</span><span class="n">ContainerQueryFilter</span><span class="p">):</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;_container&quot;</span><span class="p">,</span> <span class="s2">&quot;_keyword&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ExpandFilter.__init__">
+<a class="viewcode-back" href="../../../api/utils/query.html#O365.utils.query.ExpandFilter.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">SelectFilter</span><span class="p">]]):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_keyword</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;expand&quot;</span></div>
+
+
+<div class="viewcode-block" id="ExpandFilter.render">
+<a class="viewcode-back" href="../../../api/utils/query.html#O365.utils.query.ExpandFilter.render">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">renders</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_container</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+                <span class="n">renders</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">item</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">($select=</span><span class="si">{</span><span class="n">item</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">render</span><span class="p">()</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">renders</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">renders</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="CompositeFilter">
+<a class="viewcode-back" href="../../../api/utils/query.html#O365.utils.query.CompositeFilter">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">CompositeFilter</span><span class="p">(</span><span class="n">QueryBase</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; A Query object that holds all query parameters. &quot;&quot;&quot;</span>
+
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;filters&quot;</span><span class="p">,</span> <span class="s2">&quot;search&quot;</span><span class="p">,</span> <span class="s2">&quot;order_by&quot;</span><span class="p">,</span> <span class="s2">&quot;select&quot;</span><span class="p">,</span> <span class="s2">&quot;expand&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="CompositeFilter.__init__">
+<a class="viewcode-back" href="../../../api/utils/query.html#O365.utils.query.CompositeFilter.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">filters</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">QueryFilter</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">search</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SearchFilter</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">order_by</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">OrderByFilter</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">select</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SelectFilter</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">expand</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ExpandFilter</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filters</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">QueryFilter</span><span class="p">]</span> <span class="o">=</span> <span class="n">filters</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">search</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SearchFilter</span><span class="p">]</span> <span class="o">=</span> <span class="n">search</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">order_by</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">OrderByFilter</span><span class="p">]</span> <span class="o">=</span> <span class="n">order_by</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SelectFilter</span><span class="p">]</span> <span class="o">=</span> <span class="n">select</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">expand</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ExpandFilter</span><span class="p">]</span> <span class="o">=</span> <span class="n">expand</span></div>
+
+
+<div class="viewcode-block" id="CompositeFilter.render">
+<a class="viewcode-back" href="../../../api/utils/query.html#O365.utils.query.CompositeFilter.render">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Filters: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">render</span><span class="p">()</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">filters</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;Search: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">search</span><span class="o">.</span><span class="n">render</span><span class="p">()</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">search</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;OrderBy: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">order_by</span><span class="o">.</span><span class="n">render</span><span class="p">()</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">order_by</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;Select: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="o">.</span><span class="n">render</span><span class="p">()</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;Expand: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">expand</span><span class="o">.</span><span class="n">render</span><span class="p">()</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">expand</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">has_only_filters</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns true if it only has filters&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filters</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">search</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">order_by</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">select</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">expand</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span>
+
+<div class="viewcode-block" id="CompositeFilter.as_params">
+<a class="viewcode-back" href="../../../api/utils/query.html#O365.utils.query.CompositeFilter.as_params">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">as_params</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">filters</span><span class="p">:</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">as_params</span><span class="p">())</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">search</span><span class="p">:</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">search</span><span class="o">.</span><span class="n">as_params</span><span class="p">())</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">order_by</span><span class="p">:</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">order_by</span><span class="o">.</span><span class="n">as_params</span><span class="p">())</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">expand</span><span class="p">:</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">expand</span><span class="o">.</span><span class="n">as_params</span><span class="p">())</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="p">:</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="o">.</span><span class="n">as_params</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">params</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__and__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">QueryBase</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">CompositeFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Combine this CompositeFilter with another QueryBase object &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">other</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span>
+        <span class="n">nc</span> <span class="o">=</span> <span class="n">CompositeFilter</span><span class="p">(</span><span class="n">filters</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">filters</span><span class="p">,</span> <span class="n">search</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">search</span><span class="p">,</span> <span class="n">order_by</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">order_by</span><span class="p">,</span>
+                             <span class="n">select</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="p">,</span> <span class="n">expand</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">expand</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">QueryFilter</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">search</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Can&#39;t mix search with filters or order by clauses.&quot;</span><span class="p">)</span>
+            <span class="n">nc</span><span class="o">.</span><span class="n">filters</span> <span class="o">=</span> <span class="n">nc</span><span class="o">.</span><span class="n">filters</span> <span class="o">&amp;</span> <span class="n">other</span> <span class="k">if</span> <span class="n">nc</span><span class="o">.</span><span class="n">filters</span> <span class="k">else</span> <span class="n">other</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">OrderByFilter</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">search</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Can&#39;t mix search with filters or order by clauses.&quot;</span><span class="p">)</span>
+            <span class="n">nc</span><span class="o">.</span><span class="n">order_by</span> <span class="o">=</span> <span class="n">nc</span><span class="o">.</span><span class="n">order_by</span> <span class="o">&amp;</span> <span class="n">other</span> <span class="k">if</span> <span class="n">nc</span><span class="o">.</span><span class="n">order_by</span> <span class="k">else</span> <span class="n">other</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">SearchFilter</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">filters</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">order_by</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Can&#39;t mix search with filters or order by clauses.&quot;</span><span class="p">)</span>
+            <span class="n">nc</span><span class="o">.</span><span class="n">search</span> <span class="o">=</span> <span class="n">nc</span><span class="o">.</span><span class="n">search</span> <span class="o">&amp;</span> <span class="n">other</span> <span class="k">if</span> <span class="n">nc</span><span class="o">.</span><span class="n">search</span> <span class="k">else</span> <span class="n">other</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">SelectFilter</span><span class="p">):</span>
+            <span class="n">nc</span><span class="o">.</span><span class="n">select</span> <span class="o">=</span> <span class="n">nc</span><span class="o">.</span><span class="n">select</span> <span class="o">&amp;</span> <span class="n">other</span> <span class="k">if</span> <span class="n">nc</span><span class="o">.</span><span class="n">select</span> <span class="k">else</span> <span class="n">other</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">ExpandFilter</span><span class="p">):</span>
+            <span class="n">nc</span><span class="o">.</span><span class="n">expand</span> <span class="o">=</span> <span class="n">nc</span><span class="o">.</span><span class="n">expand</span> <span class="o">&amp;</span> <span class="n">other</span> <span class="k">if</span> <span class="n">nc</span><span class="o">.</span><span class="n">expand</span> <span class="k">else</span> <span class="n">other</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">CompositeFilter</span><span class="p">):</span>
+            <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">search</span> <span class="ow">and</span> <span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">filters</span> <span class="ow">or</span> <span class="n">other</span><span class="o">.</span><span class="n">order_by</span><span class="p">)</span>
+            <span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">search</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filters</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">order_by</span><span class="p">)):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Can&#39;t mix search with filters or order by clauses.&quot;</span><span class="p">)</span>
+            <span class="n">nc</span><span class="o">.</span><span class="n">filters</span> <span class="o">=</span> <span class="n">nc</span><span class="o">.</span><span class="n">filters</span> <span class="o">&amp;</span> <span class="n">other</span><span class="o">.</span><span class="n">filters</span> <span class="k">if</span> <span class="n">nc</span><span class="o">.</span><span class="n">filters</span> <span class="k">else</span> <span class="n">other</span><span class="o">.</span><span class="n">filters</span>
+            <span class="n">nc</span><span class="o">.</span><span class="n">search</span> <span class="o">=</span> <span class="n">nc</span><span class="o">.</span><span class="n">search</span> <span class="o">&amp;</span> <span class="n">other</span><span class="o">.</span><span class="n">search</span> <span class="k">if</span> <span class="n">nc</span><span class="o">.</span><span class="n">search</span> <span class="k">else</span> <span class="n">other</span><span class="o">.</span><span class="n">search</span>
+            <span class="n">nc</span><span class="o">.</span><span class="n">order_by</span> <span class="o">=</span> <span class="n">nc</span><span class="o">.</span><span class="n">order_by</span> <span class="o">&amp;</span> <span class="n">other</span><span class="o">.</span><span class="n">order_by</span> <span class="k">if</span> <span class="n">nc</span><span class="o">.</span><span class="n">order_by</span> <span class="k">else</span> <span class="n">other</span><span class="o">.</span><span class="n">order_by</span>
+            <span class="n">nc</span><span class="o">.</span><span class="n">select</span> <span class="o">=</span> <span class="n">nc</span><span class="o">.</span><span class="n">select</span> <span class="o">&amp;</span> <span class="n">other</span><span class="o">.</span><span class="n">select</span> <span class="k">if</span> <span class="n">nc</span><span class="o">.</span><span class="n">select</span> <span class="k">else</span> <span class="n">other</span><span class="o">.</span><span class="n">select</span>
+            <span class="n">nc</span><span class="o">.</span><span class="n">expand</span> <span class="o">=</span> <span class="n">nc</span><span class="o">.</span><span class="n">expand</span> <span class="o">&amp;</span> <span class="n">other</span><span class="o">.</span><span class="n">expand</span> <span class="k">if</span> <span class="n">nc</span><span class="o">.</span><span class="n">expand</span> <span class="k">else</span> <span class="n">other</span><span class="o">.</span><span class="n">expand</span>
+        <span class="k">return</span> <span class="n">nc</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__or__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">QueryBase</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">CompositeFilter</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">CompositeFilter</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_only_filters</span> <span class="ow">and</span> <span class="n">other</span><span class="o">.</span><span class="n">has_only_filters</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">CompositeFilter</span><span class="p">(</span><span class="n">filters</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">filters</span> <span class="o">|</span> <span class="n">other</span><span class="o">.</span><span class="n">filters</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Can&#39;t combine multiple composite filters with an &#39;or&#39; statement. Use &#39;and&#39; instead.&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="QueryBuilder">
+<a class="viewcode-back" href="../../../api/utils/query.html#O365.utils.query.QueryBuilder">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">QueryBuilder</span><span class="p">:</span>
+
+    <span class="n">_attribute_mapping</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;from&quot;</span><span class="p">:</span> <span class="s2">&quot;from/emailAddress/address&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;to&quot;</span><span class="p">:</span> <span class="s2">&quot;toRecipients/emailAddress/address&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;start&quot;</span><span class="p">:</span> <span class="s2">&quot;start/DateTime&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;end&quot;</span><span class="p">:</span> <span class="s2">&quot;end/DateTime&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;due&quot;</span><span class="p">:</span> <span class="s2">&quot;duedatetime/DateTime&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;reminder&quot;</span><span class="p">:</span> <span class="s2">&quot;reminderdatetime/DateTime&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;flag&quot;</span><span class="p">:</span> <span class="s2">&quot;flag/flagStatus&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;body&quot;</span><span class="p">:</span> <span class="s2">&quot;body/content&quot;</span>
+    <span class="p">}</span>
+
+<div class="viewcode-block" id="QueryBuilder.__init__">
+<a class="viewcode-back" href="../../../api/utils/query.html#O365.utils.query.QueryBuilder.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">protocol</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Protocol</span><span class="p">,</span> <span class="n">Type</span><span class="p">[</span><span class="n">Protocol</span><span class="p">]]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Build a query to apply OData filters</span>
+<span class="sd">        https://docs.microsoft.com/en-us/graph/query-parameters</span>
+
+<span class="sd">        :param Protocol protocol: protocol to retrieve the timezone from</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">protocol</span> <span class="o">=</span> <span class="n">protocol</span><span class="p">()</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">protocol</span><span class="p">,</span> <span class="nb">type</span><span class="p">)</span> <span class="k">else</span> <span class="n">protocol</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_parse_filter_word</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">word</span><span class="p">:</span> <span class="n">FilterWord</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Converts the word parameter into a string &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">word</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="c1"># string must be enclosed in quotes</span>
+            <span class="n">parsed_word</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">word</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">word</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+            <span class="c1"># bools are treated as lower case bools</span>
+            <span class="n">parsed_word</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">word</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">word</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">parsed_word</span> <span class="o">=</span> <span class="s2">&quot;null&quot;</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">word</span><span class="p">,</span> <span class="n">dt</span><span class="o">.</span><span class="n">date</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">word</span><span class="p">,</span> <span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">word</span><span class="o">.</span><span class="n">tzinfo</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="c1"># if it&#39;s a naive datetime, localize the datetime.</span>
+                    <span class="n">word</span> <span class="o">=</span> <span class="n">word</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">protocol</span><span class="o">.</span><span class="n">timezone</span><span class="p">)</span>  <span class="c1"># localize datetime into local tz</span>
+            <span class="c1"># convert datetime to iso format</span>
+            <span class="n">parsed_word</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">word</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># other cases like int or float, return as a string.</span>
+            <span class="n">parsed_word</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">parsed_word</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_attribute_from_mapping</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Look up the provided attribute into the query builder mapping</span>
+<span class="sd">        Applies a conversion to the appropriate casing defined by the protocol.</span>
+
+<span class="sd">        :param attribute: attribute to look up</span>
+<span class="sd">        :return: the attribute itself of if found the corresponding complete attribute in the mapping</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">mapping</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_attribute_mapping</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">attribute</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">mapping</span><span class="p">:</span>
+            <span class="n">attribute</span> <span class="o">=</span> <span class="s2">&quot;/&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">protocol</span><span class="o">.</span><span class="n">convert_case</span><span class="p">(</span><span class="n">step</span><span class="p">)</span> <span class="k">for</span> <span class="n">step</span> <span class="ow">in</span>
+                 <span class="n">mapping</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">attribute</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">protocol</span><span class="o">.</span><span class="n">convert_case</span><span class="p">(</span><span class="n">attribute</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">attribute</span>
+
+<div class="viewcode-block" id="QueryBuilder.logical_operation">
+<a class="viewcode-back" href="../../../api/utils/query.html#O365.utils.query.QueryBuilder.logical_operation">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">logical_operation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operation</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">attribute</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">word</span><span class="p">:</span> <span class="n">FilterWord</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CompositeFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Apply a logical operation like equals, less than, etc.</span>
+
+<span class="sd">        :param operation: how to combine with a new one</span>
+<span class="sd">        :param attribute: attribute to compare word with</span>
+<span class="sd">        :param word: value to compare the attribute with</span>
+<span class="sd">        :return: a CompositeFilter instance that can render the OData logical operation</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logical_filter</span> <span class="o">=</span> <span class="n">LogicalFilter</span><span class="p">(</span><span class="n">operation</span><span class="p">,</span>
+                                       <span class="bp">self</span><span class="o">.</span><span class="n">_get_attribute_from_mapping</span><span class="p">(</span><span class="n">attribute</span><span class="p">),</span>
+                                       <span class="bp">self</span><span class="o">.</span><span class="n">_parse_filter_word</span><span class="p">(</span><span class="n">word</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">CompositeFilter</span><span class="p">(</span><span class="n">filters</span><span class="o">=</span><span class="n">logical_filter</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="QueryBuilder.equals">
+<a class="viewcode-back" href="../../../api/utils/query.html#O365.utils.query.QueryBuilder.equals">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">equals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">word</span><span class="p">:</span> <span class="n">FilterWord</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CompositeFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Return an equals check</span>
+
+<span class="sd">        :param attribute: attribute to compare word with</span>
+<span class="sd">        :param word: word to compare with</span>
+<span class="sd">        :return: a CompositeFilter instance that can render the OData this logical operation</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">logical_operation</span><span class="p">(</span><span class="s2">&quot;eq&quot;</span><span class="p">,</span> <span class="n">attribute</span><span class="p">,</span> <span class="n">word</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="QueryBuilder.unequal">
+<a class="viewcode-back" href="../../../api/utils/query.html#O365.utils.query.QueryBuilder.unequal">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">unequal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">word</span><span class="p">:</span> <span class="n">FilterWord</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CompositeFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Return an unequal check</span>
+
+<span class="sd">        :param attribute: attribute to compare word with</span>
+<span class="sd">        :param word: word to compare with</span>
+<span class="sd">        :return: a CompositeFilter instance that can render the OData this logical operation</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">logical_operation</span><span class="p">(</span><span class="s2">&quot;ne&quot;</span><span class="p">,</span> <span class="n">attribute</span><span class="p">,</span> <span class="n">word</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="QueryBuilder.greater">
+<a class="viewcode-back" href="../../../api/utils/query.html#O365.utils.query.QueryBuilder.greater">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">greater</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">word</span><span class="p">:</span> <span class="n">FilterWord</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CompositeFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Return a &#39;greater than&#39; check</span>
+
+<span class="sd">        :param attribute: attribute to compare word with</span>
+<span class="sd">        :param word: word to compare with</span>
+<span class="sd">        :return: a CompositeFilter instance that can render the OData this logical operation</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">logical_operation</span><span class="p">(</span><span class="s2">&quot;gt&quot;</span><span class="p">,</span> <span class="n">attribute</span><span class="p">,</span> <span class="n">word</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="QueryBuilder.greater_equal">
+<a class="viewcode-back" href="../../../api/utils/query.html#O365.utils.query.QueryBuilder.greater_equal">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">greater_equal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">word</span><span class="p">:</span> <span class="n">FilterWord</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CompositeFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Return a &#39;greater than or equal to&#39; check</span>
+
+<span class="sd">        :param attribute: attribute to compare word with</span>
+<span class="sd">        :param word: word to compare with</span>
+<span class="sd">        :return: a CompositeFilter instance that can render the OData this logical operation</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">logical_operation</span><span class="p">(</span><span class="s2">&quot;ge&quot;</span><span class="p">,</span> <span class="n">attribute</span><span class="p">,</span> <span class="n">word</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="QueryBuilder.less">
+<a class="viewcode-back" href="../../../api/utils/query.html#O365.utils.query.QueryBuilder.less">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">less</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">word</span><span class="p">:</span> <span class="n">FilterWord</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CompositeFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Return a &#39;less than&#39; check</span>
+
+<span class="sd">        :param attribute: attribute to compare word with</span>
+<span class="sd">        :param word: word to compare with</span>
+<span class="sd">        :return: a CompositeFilter instance that can render the OData this logical operation</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">logical_operation</span><span class="p">(</span><span class="s2">&quot;lt&quot;</span><span class="p">,</span> <span class="n">attribute</span><span class="p">,</span> <span class="n">word</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="QueryBuilder.less_equal">
+<a class="viewcode-back" href="../../../api/utils/query.html#O365.utils.query.QueryBuilder.less_equal">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">less_equal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">word</span><span class="p">:</span> <span class="n">FilterWord</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CompositeFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Return a &#39;less than or equal to&#39; check</span>
+
+<span class="sd">        :param attribute: attribute to compare word with</span>
+<span class="sd">        :param word: word to compare with</span>
+<span class="sd">        :return: a CompositeFilter instance that can render the OData this logical operation</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">logical_operation</span><span class="p">(</span><span class="s2">&quot;le&quot;</span><span class="p">,</span> <span class="n">attribute</span><span class="p">,</span> <span class="n">word</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="QueryBuilder.function_operation">
+<a class="viewcode-back" href="../../../api/utils/query.html#O365.utils.query.QueryBuilder.function_operation">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">function_operation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operation</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">attribute</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">word</span><span class="p">:</span> <span class="n">FilterWord</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CompositeFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Apply a function operation</span>
+
+<span class="sd">        :param operation: function name to operate on attribute</span>
+<span class="sd">        :param attribute: the name of the attribute on which to apply the function</span>
+<span class="sd">        :param word: value to feed the function</span>
+<span class="sd">        :return: a CompositeFilter instance that can render the OData function operation</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">function_filter</span> <span class="o">=</span> <span class="n">FunctionFilter</span><span class="p">(</span><span class="n">operation</span><span class="p">,</span>
+                                         <span class="bp">self</span><span class="o">.</span><span class="n">_get_attribute_from_mapping</span><span class="p">(</span><span class="n">attribute</span><span class="p">),</span>
+                                         <span class="bp">self</span><span class="o">.</span><span class="n">_parse_filter_word</span><span class="p">(</span><span class="n">word</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">CompositeFilter</span><span class="p">(</span><span class="n">filters</span><span class="o">=</span><span class="n">function_filter</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="QueryBuilder.contains">
+<a class="viewcode-back" href="../../../api/utils/query.html#O365.utils.query.QueryBuilder.contains">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">contains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">word</span><span class="p">:</span> <span class="n">FilterWord</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CompositeFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Adds a contains word check</span>
+
+<span class="sd">        :param attribute: the name of the attribute on which to apply the function</span>
+<span class="sd">        :param word: value to feed the function</span>
+<span class="sd">        :return: a CompositeFilter instance that can render the OData function operation</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">function_operation</span><span class="p">(</span><span class="s2">&quot;contains&quot;</span><span class="p">,</span> <span class="n">attribute</span><span class="p">,</span> <span class="n">word</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="QueryBuilder.startswith">
+<a class="viewcode-back" href="../../../api/utils/query.html#O365.utils.query.QueryBuilder.startswith">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">startswith</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">word</span><span class="p">:</span> <span class="n">FilterWord</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CompositeFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Adds a startswith word check</span>
+
+<span class="sd">        :param attribute: the name of the attribute on which to apply the function</span>
+<span class="sd">        :param word: value to feed the function</span>
+<span class="sd">        :return: a CompositeFilter instance that can render the OData function operation</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">function_operation</span><span class="p">(</span><span class="s2">&quot;startswith&quot;</span><span class="p">,</span> <span class="n">attribute</span><span class="p">,</span> <span class="n">word</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="QueryBuilder.endswith">
+<a class="viewcode-back" href="../../../api/utils/query.html#O365.utils.query.QueryBuilder.endswith">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">endswith</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">word</span><span class="p">:</span> <span class="n">FilterWord</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CompositeFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Adds a endswith word check</span>
+
+<span class="sd">        :param attribute: the name of the attribute on which to apply the function</span>
+<span class="sd">        :param word: value to feed the function</span>
+<span class="sd">        :return: a CompositeFilter instance that can render the OData function operation</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">function_operation</span><span class="p">(</span><span class="s2">&quot;endswith&quot;</span><span class="p">,</span> <span class="n">attribute</span><span class="p">,</span> <span class="n">word</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="QueryBuilder.iterable_operation">
+<a class="viewcode-back" href="../../../api/utils/query.html#O365.utils.query.QueryBuilder.iterable_operation">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">iterable_operation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operation</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">collection</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">filter_instance</span><span class="p">:</span> <span class="n">CompositeFilter</span><span class="p">,</span>
+                           <span class="o">*</span><span class="p">,</span> <span class="n">item_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;a&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CompositeFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Performs the provided filter operation on a collection by iterating over it.</span>
+
+<span class="sd">        For example:</span>
+
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            q.iterable(</span>
+<span class="sd">                operation=&#39;any&#39;,</span>
+<span class="sd">                collection=&#39;email_addresses&#39;,</span>
+<span class="sd">                filter_instance=q.equals(&#39;address&#39;, &#39;george@best.com&#39;)</span>
+<span class="sd">            )</span>
+
+<span class="sd">        will transform to a filter such as:</span>
+<span class="sd">        emailAddresses/any(a:a/address eq &#39;george@best.com&#39;)</span>
+
+<span class="sd">        :param operation: the iterable operation name</span>
+<span class="sd">        :param collection: the collection to apply the iterable operation on</span>
+<span class="sd">        :param filter_instance: a CompositeFilter instance on which you will apply the iterable operation</span>
+<span class="sd">        :param item_name: the name of the collection item to be used on the filter_instance</span>
+<span class="sd">        :return: a CompositeFilter instance that can render the OData iterable operation</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">iterable_filter</span> <span class="o">=</span> <span class="n">IterableFilter</span><span class="p">(</span><span class="n">operation</span><span class="p">,</span>
+                                         <span class="bp">self</span><span class="o">.</span><span class="n">_get_attribute_from_mapping</span><span class="p">(</span><span class="n">collection</span><span class="p">),</span>
+                                         <span class="n">filter_instance</span><span class="o">.</span><span class="n">filters</span><span class="p">,</span>
+                                         <span class="n">item_name</span><span class="o">=</span><span class="n">item_name</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">CompositeFilter</span><span class="p">(</span><span class="n">filters</span><span class="o">=</span><span class="n">iterable_filter</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="QueryBuilder.any">
+<a class="viewcode-back" href="../../../api/utils/query.html#O365.utils.query.QueryBuilder.any">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">any</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">collection</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">filter_instance</span><span class="p">:</span> <span class="n">CompositeFilter</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">item_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;a&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CompositeFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Performs a filter with the OData &#39;any&#39; keyword on the collection</span>
+
+<span class="sd">        For example:</span>
+<span class="sd">        q.any(collection=&#39;email_addresses&#39;, filter_instance=q.equals(&#39;address&#39;, &#39;george@best.com&#39;))</span>
+
+<span class="sd">        will transform to a filter such as:</span>
+
+<span class="sd">        emailAddresses/any(a:a/address eq &#39;george@best.com&#39;)</span>
+
+<span class="sd">        :param collection: the collection to apply the iterable operation on</span>
+<span class="sd">        :param filter_instance: a CompositeFilter Instance on which you will apply the iterable operation</span>
+<span class="sd">        :param item_name: the name of the collection item to be used on the filter_instance</span>
+<span class="sd">        :return: a CompositeFilter instance that can render the OData iterable operation</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterable_operation</span><span class="p">(</span><span class="s2">&quot;any&quot;</span><span class="p">,</span> <span class="n">collection</span><span class="o">=</span><span class="n">collection</span><span class="p">,</span>
+                                       <span class="n">filter_instance</span><span class="o">=</span><span class="n">filter_instance</span><span class="p">,</span> <span class="n">item_name</span><span class="o">=</span><span class="n">item_name</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="QueryBuilder.all">
+<a class="viewcode-back" href="../../../api/utils/query.html#O365.utils.query.QueryBuilder.all">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">collection</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">filter_instance</span><span class="p">:</span> <span class="n">CompositeFilter</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">item_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;a&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CompositeFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Performs a filter with the OData &#39;all&#39; keyword on the collection</span>
+
+<span class="sd">        For example:</span>
+<span class="sd">        q.all(collection=&#39;email_addresses&#39;, filter_instance=q.equals(&#39;address&#39;, &#39;george@best.com&#39;))</span>
+
+<span class="sd">        will transform to a filter such as:</span>
+
+<span class="sd">        emailAddresses/all(a:a/address eq &#39;george@best.com&#39;)</span>
+
+<span class="sd">        :param collection: the collection to apply the iterable operation on</span>
+<span class="sd">        :param filter_instance: a CompositeFilter Instance on which you will apply the iterable operation</span>
+<span class="sd">        :param item_name: the name of the collection item to be used on the filter_instance</span>
+<span class="sd">        :return: a CompositeFilter instance that can render the OData iterable operation</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterable_operation</span><span class="p">(</span><span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="n">collection</span><span class="o">=</span><span class="n">collection</span><span class="p">,</span>
+                                       <span class="n">filter_instance</span><span class="o">=</span><span class="n">filter_instance</span><span class="p">,</span> <span class="n">item_name</span><span class="o">=</span><span class="n">item_name</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="QueryBuilder.negate">
+<a class="viewcode-back" href="../../../api/utils/query.html#O365.utils.query.QueryBuilder.negate">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">negate</span><span class="p">(</span><span class="n">filter_instance</span><span class="p">:</span> <span class="n">CompositeFilter</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CompositeFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Apply a not operator to the provided QueryFilter</span>
+<span class="sd">        :param filter_instance: a CompositeFilter instance</span>
+<span class="sd">        :return: a CompositeFilter with its filter negated</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">negate_filter</span> <span class="o">=</span> <span class="n">NegateFilter</span><span class="p">(</span><span class="n">filter_instance</span><span class="o">=</span><span class="n">filter_instance</span><span class="o">.</span><span class="n">filters</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">CompositeFilter</span><span class="p">(</span><span class="n">filters</span><span class="o">=</span><span class="n">negate_filter</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_chain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operator</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">filter_instances</span><span class="p">:</span> <span class="n">CompositeFilter</span><span class="p">,</span> <span class="n">group</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CompositeFilter</span><span class="p">:</span>
+        <span class="n">chain</span> <span class="o">=</span> <span class="n">ChainFilter</span><span class="p">(</span><span class="n">operation</span><span class="o">=</span><span class="n">operator</span><span class="p">,</span> <span class="n">filter_instances</span><span class="o">=</span><span class="p">[</span><span class="n">fl</span><span class="o">.</span><span class="n">filters</span> <span class="k">for</span> <span class="n">fl</span> <span class="ow">in</span> <span class="n">filter_instances</span><span class="p">])</span>
+        <span class="n">chain</span> <span class="o">=</span> <span class="n">CompositeFilter</span><span class="p">(</span><span class="n">filters</span><span class="o">=</span><span class="n">chain</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">group</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="n">chain</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">chain</span>
+
+<div class="viewcode-block" id="QueryBuilder.chain_and">
+<a class="viewcode-back" href="../../../api/utils/query.html#O365.utils.query.QueryBuilder.chain_and">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">chain_and</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">filter_instances</span><span class="p">:</span> <span class="n">CompositeFilter</span><span class="p">,</span> <span class="n">group</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CompositeFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Start a chain &#39;and&#39; operation</span>
+
+<span class="sd">        :param filter_instances: a list of other CompositeFilter you want to combine with the &#39;and&#39; operation</span>
+<span class="sd">        :param group: will group this chain operation if True</span>
+<span class="sd">        :return: a CompositeFilter with the filter instances combined with an &#39;and&#39; operation</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_chain</span><span class="p">(</span><span class="s2">&quot;and&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">filter_instances</span><span class="p">,</span> <span class="n">group</span><span class="o">=</span><span class="n">group</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="QueryBuilder.chain_or">
+<a class="viewcode-back" href="../../../api/utils/query.html#O365.utils.query.QueryBuilder.chain_or">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">chain_or</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">filter_instances</span><span class="p">:</span> <span class="n">CompositeFilter</span><span class="p">,</span> <span class="n">group</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CompositeFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Start a chain &#39;or&#39; operation. Will automatically apply a grouping.</span>
+
+<span class="sd">        :param filter_instances: a list of other CompositeFilter you want to combine with the &#39;or&#39; operation</span>
+<span class="sd">        :param group: will group this chain operation if True</span>
+<span class="sd">        :return: a CompositeFilter with the filter instances combined with an &#39;or&#39; operation</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_chain</span><span class="p">(</span><span class="s2">&quot;or&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">filter_instances</span><span class="p">,</span> <span class="n">group</span><span class="o">=</span><span class="n">group</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="QueryBuilder.group">
+<a class="viewcode-back" href="../../../api/utils/query.html#O365.utils.query.QueryBuilder.group">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">group</span><span class="p">(</span><span class="n">filter_instance</span><span class="p">:</span> <span class="n">CompositeFilter</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CompositeFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Applies a grouping to the provided filter_instance &quot;&quot;&quot;</span>
+        <span class="n">group_filter</span> <span class="o">=</span> <span class="n">GroupFilter</span><span class="p">(</span><span class="n">filter_instance</span><span class="o">.</span><span class="n">filters</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">CompositeFilter</span><span class="p">(</span><span class="n">filters</span><span class="o">=</span><span class="n">group_filter</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="QueryBuilder.search">
+<a class="viewcode-back" href="../../../api/utils/query.html#O365.utils.query.QueryBuilder.search">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">search</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">word</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">bool</span><span class="p">],</span> <span class="n">attribute</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CompositeFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Perform a search.</span>
+<span class="sd">        Note from graph docs:</span>
+
+<span class="sd">         You can currently search only message and person collections.</span>
+<span class="sd">         A $search request returns up to 250 results.</span>
+<span class="sd">         You cannot use $filter or $orderby in a search request.</span>
+
+<span class="sd">        :param word: the text to search</span>
+<span class="sd">        :param attribute: the attribute to search the word on</span>
+<span class="sd">        :return: a CompositeFilter instance that can render the OData search operation</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">word</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_filter_word</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">attribute</span><span class="p">:</span>
+            <span class="n">attribute</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_attribute_from_mapping</span><span class="p">(</span><span class="n">attribute</span><span class="p">)</span>
+        <span class="n">search</span> <span class="o">=</span> <span class="n">SearchFilter</span><span class="p">(</span><span class="n">word</span><span class="o">=</span><span class="n">word</span><span class="p">,</span> <span class="n">attribute</span><span class="o">=</span><span class="n">attribute</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">CompositeFilter</span><span class="p">(</span><span class="n">search</span><span class="o">=</span><span class="n">search</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="QueryBuilder.orderby">
+<a class="viewcode-back" href="../../../api/utils/query.html#O365.utils.query.QueryBuilder.orderby">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">orderby</span><span class="p">(</span><span class="o">*</span><span class="n">attributes</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]]])</span> <span class="o">-&gt;</span> <span class="n">CompositeFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns an &#39;order by&#39; query param</span>
+<span class="sd">        This is useful to order the result set of query from a resource.</span>
+<span class="sd">        Note that not all attributes can be sorted and that all resources have different sort capabilities</span>
+
+<span class="sd">        :param attributes: the attributes to orderby</span>
+<span class="sd">        :return: a CompositeFilter instance that can render the OData order by operation</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">new_order_by</span> <span class="o">=</span> <span class="n">OrderByFilter</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">order_by_clause</span> <span class="ow">in</span> <span class="n">attributes</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">order_by_clause</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="n">new_order_by</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">order_by_clause</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">order_by_clause</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+                <span class="n">new_order_by</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">order_by_clause</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">order_by_clause</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Arguments must be attribute strings or tuples&quot;</span>
+                                 <span class="s2">&quot; of attribute strings and ascending booleans&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">CompositeFilter</span><span class="p">(</span><span class="n">order_by</span><span class="o">=</span><span class="n">new_order_by</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="QueryBuilder.select">
+<a class="viewcode-back" href="../../../api/utils/query.html#O365.utils.query.QueryBuilder.select">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">select</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">attributes</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CompositeFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a &#39;select&#39; query param</span>
+<span class="sd">        This is useful to return a limited set of attributes from a resource or return attributes that are not</span>
+<span class="sd">        returned by default by the resource.</span>
+
+<span class="sd">        :param attributes: a tuple of attribute names to select</span>
+<span class="sd">        :return: a CompositeFilter instance that can render the OData select operation</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">select</span> <span class="o">=</span> <span class="n">SelectFilter</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">attribute</span> <span class="ow">in</span> <span class="n">attributes</span><span class="p">:</span>
+            <span class="n">attribute</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">protocol</span><span class="o">.</span><span class="n">convert_case</span><span class="p">(</span><span class="n">attribute</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">attribute</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;meetingmessagetype&quot;</span><span class="p">]:</span>
+                <span class="n">attribute</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">protocol</span><span class="o">.</span><span class="n">keyword_data_store</span><span class="p">[</span><span class="s1">&#39;event_message_type&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">attribute</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="n">select</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">attribute</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">CompositeFilter</span><span class="p">(</span><span class="n">select</span><span class="o">=</span><span class="n">select</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="QueryBuilder.expand">
+<a class="viewcode-back" href="../../../api/utils/query.html#O365.utils.query.QueryBuilder.expand">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">expand</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">relationship</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">select</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">CompositeFilter</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CompositeFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns an &#39;expand&#39; query param</span>
+<span class="sd">        Important: If the &#39;expand&#39; is a relationship (e.g. &quot;event&quot; or &quot;attachments&quot;), then the ApiComponent using</span>
+<span class="sd">        this query should know how to handle the relationship (e.g. Message knows how to handle attachments,</span>
+<span class="sd">        and event (if it&#39;s an EventMessage).</span>
+<span class="sd">        Important: When using expand on multi-value relationships a max of 20 items will be returned.</span>
+
+<span class="sd">        :param relationship: a relationship that will be expanded</span>
+<span class="sd">        :param select: a CompositeFilter instance to select attributes on the expanded relationship</span>
+<span class="sd">        :return: a CompositeFilter instance that can render the OData expand operation</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">expand</span> <span class="o">=</span> <span class="n">ExpandFilter</span><span class="p">()</span>
+        <span class="c1"># this will prepend the event message type tag based on the protocol</span>
+        <span class="k">if</span> <span class="n">relationship</span> <span class="o">==</span> <span class="s2">&quot;event&quot;</span><span class="p">:</span>
+            <span class="n">relationship</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">protocol</span><span class="o">.</span><span class="n">get_service_keyword</span><span class="p">(</span><span class="s1">&#39;event_message_type&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">/event&quot;</span>
+
+        <span class="k">if</span> <span class="n">select</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">expand</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">relationship</span><span class="p">,</span> <span class="n">select</span><span class="o">.</span><span class="n">select</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">expand</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">relationship</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">CompositeFilter</span><span class="p">(</span><span class="n">expand</span><span class="o">=</span><span class="n">expand</span><span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, alejcas.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

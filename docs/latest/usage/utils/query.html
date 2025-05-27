@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Token &mdash; O365  documentation</title>
+  <title>Query &mdash; O365  documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
 
@@ -19,8 +19,8 @@
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Utils" href="utils.html" />
-    <link rel="prev" title="Query" href="query.html" />
+    <link rel="next" title="Token" href="token.html" />
+    <link rel="prev" title="Utils" href="../utils.html" />
     <link href="../../_static/css/style.css" rel="stylesheet" type="text/css">
 
 </head>
@@ -65,11 +65,11 @@
 <li class="toctree-l2"><a class="reference internal" href="../tasks.html">Tasks</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../teams.html">Teams</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../utils.html">Utils</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="query.html">Query</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">Token</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#filesystemtokenbackend">FileSystemTokenBackend</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Query</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#query-builder">Query Builder</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="token.html">Token</a></li>
 <li class="toctree-l3"><a class="reference internal" href="utils.html">Utils</a></li>
 </ul>
 </li>
@@ -94,46 +94,23 @@
       <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../../usage.html">Detailed Usage</a></li>
           <li class="breadcrumb-item"><a href="../utils.html">Utils</a></li>
-      <li class="breadcrumb-item active">Token</li>
+      <li class="breadcrumb-item active">Query</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../../_sources/usage/utils/token.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/usage/utils/query.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
-        <a href="query.html" class="btn btn-neutral float-left" title="Query" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="utils.html" class="btn btn-neutral float-right" title="Utils" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../utils.html" class="btn btn-neutral float-left" title="Utils" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="token.html" class="btn btn-neutral float-right" title="Token" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
   </div>
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="token">
-<h1>Token<a class="headerlink" href="#token" title="Link to this heading"></a></h1>
-<p>When initiating the account connection you may wish to store the token for ongoing usage, removing the need to re-authenticate every time. There are a variety of storage mechanisms available which are shown in the detailed api.</p>
-<section id="filesystemtokenbackend">
-<h2>FileSystemTokenBackend<a class="headerlink" href="#filesystemtokenbackend" title="Link to this heading"></a></h2>
-<p>To store the token in your local file system, you can use the <code class="docutils literal notranslate"><span class="pre">FileSystemTokenBackend</span></code>. This takes a path and a file name as parameters.</p>
-<p>For example:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">O365</span><span class="w"> </span><span class="kn">import</span> <span class="n">Account</span><span class="p">,</span> <span class="n">FileSystemTokenBackend</span>
-
-<span class="n">token_backend</span> <span class="o">=</span> <span class="n">FileSystemTokenBackend</span><span class="p">(</span><span class="n">token_path</span><span class="o">=</span><span class="n">token_path</span><span class="p">,</span> <span class="n">token_filename</span><span class="o">=</span><span class="n">token_filename</span><span class="p">)</span>
-
-<span class="n">account</span> <span class="o">=</span> <span class="n">Account</span><span class="p">(</span><span class="n">credentials</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;my_client_id&#39;</span><span class="p">,</span> <span class="s1">&#39;my_client_secret&#39;</span><span class="p">),</span> <span class="n">token_backend</span><span class="o">=</span><span class="n">token_backend</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>The methods are similar for the other token backends.</p>
-<p>You can also pass in a cryptography manager to the token backend so encrypt the token in the store, and to decrypt on retrieval. The cryptography manager must support the <code class="docutils literal notranslate"><span class="pre">encrypt</span></code> and <code class="docutils literal notranslate"><span class="pre">decrypt</span></code> methods.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">O365</span><span class="w"> </span><span class="kn">import</span> <span class="n">Account</span><span class="p">,</span> <span class="n">FileSystemTokenBackend</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">xxx</span><span class="w"> </span><span class="kn">import</span> <span class="n">CryptoManager</span>
-
-<span class="n">key</span> <span class="o">=</span> <span class="s2">&quot;my really secret key&quot;</span>
-<span class="n">mycryptomanager</span> <span class="o">=</span> <span class="n">CryptoManager</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
-
-<span class="n">token_backend</span> <span class="o">=</span> <span class="n">FileSystemTokenBackend</span><span class="p">(</span><span class="n">token_path</span><span class="o">=</span><span class="n">token_path</span><span class="p">,</span> <span class="n">token_filename</span><span class="o">=</span><span class="n">token_filename</span><span class="p">,</span> <span class="n">cryptography_manager</span><span class="o">=</span><span class="n">mycryptomanager</span><span class="p">)</span>
-
-<span class="n">account</span> <span class="o">=</span> <span class="n">Account</span><span class="p">(</span><span class="n">credentials</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;my_client_id&#39;</span><span class="p">,</span> <span class="s1">&#39;my_client_secret&#39;</span><span class="p">),</span> <span class="n">token_backend</span><span class="o">=</span><span class="n">token_backend</span><span class="p">)</span>
-</pre></div>
-</div>
+  <section id="query">
+<h1>Query<a class="headerlink" href="#query" title="Link to this heading"></a></h1>
+<section id="query-builder">
+<h2>Query Builder<a class="headerlink" href="#query-builder" title="Link to this heading"></a></h2>
 </section>
 </section>
 
@@ -141,8 +118,8 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="query.html" class="btn btn-neutral float-left" title="Query" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="utils.html" class="btn btn-neutral float-right" title="Utils" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../utils.html" class="btn btn-neutral float-left" title="Utils" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="token.html" class="btn btn-neutral float-right" title="Token" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
