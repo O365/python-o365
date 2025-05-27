@@ -25,16 +25,16 @@ CHUNK_SIZE_BASE = 1024 * 320  # 320 Kb
 
 # 5 MB --> Must be a multiple of CHUNK_SIZE_BASE
 DEFAULT_UPLOAD_CHUNK_SIZE = 1024 * 1024 * 5
-ALLOWED_PDF_EXTENSIONS = {'.csv', '.doc', '.docx', '.odp', '.ods', '.odt',
-                          '.pot', '.potm', '.potx',
-                          '.pps', '.ppsx', '.ppsxm', '.ppt', '.pptm', '.pptx',
-                          '.rtf', '.xls', '.xlsx'}
+ALLOWED_PDF_EXTENSIONS = {".csv", ".doc", ".docx", ".odp", ".ods", ".odt",
+                          ".pot", ".potm", ".potx",
+                          ".pps", ".ppsx", ".ppsxm", ".ppt", ".pptm", ".pptx",
+                          ".rtf", ".xls", ".xlsx"}
 
 
 class DownloadableMixin:
 
     def download(self, to_path: Union[None, str, Path] = None, name: str = None,
-                 chunk_size: Union[str, int] = 'auto', convert_to_pdf: bool = False,
+                 chunk_size: Union[str, int] = "auto", convert_to_pdf: bool = False,
                  output: Optional[BytesIO] = None):
         """ Downloads this file to the local drive. Can download the
         file in chunks with multiple requests to the server.
@@ -64,7 +64,7 @@ class DownloadableMixin:
                     to_path = Path(to_path)
 
             if not to_path.exists():
-                raise FileNotFoundError('{} does not exist'.format(to_path))
+                raise FileNotFoundError("{} does not exist".format(to_path))
 
             if name and not Path(name).suffix and self.name:
                 name = name + Path(self.name).suffix
@@ -76,12 +76,12 @@ class DownloadableMixin:
                 to_path = to_path / name
 
         url = self.build_url(
-            self._endpoints.get('download').format(id=self.object_id))
+            self._endpoints.get("download").format(id=self.object_id))
 
         try:
             if chunk_size is None:
                 stream = False
-            elif chunk_size == 'auto':
+            elif chunk_size == "auto":
                 if self.size and self.size > SIZE_THERSHOLD:
                     stream = True
                 else:
@@ -94,12 +94,16 @@ class DownloadableMixin:
                                  "or any integer number representing bytes")
 
             params = {}
-            if convert_to_pdf and Path(name).suffix in ALLOWED_PDF_EXTENSIONS:
-                params['format'] = 'pdf'
+            if convert_to_pdf:
+                if not output:
+                    if Path(name).suffix in ALLOWED_PDF_EXTENSIONS:
+                        params["format"] = "pdf"
+                else:
+                    params["format"] = "pdf"
 
             with self.con.get(url, stream=stream, params=params) as response:
                 if not response:
-                    log.debug('Downloading driveitem Request failed: {}'.format(
+                    log.debug("Downloading driveitem Request failed: {}".format(
                         response.reason))
                     return False
 
@@ -115,12 +119,12 @@ class DownloadableMixin:
                 if output:
                     write_output(output)
                 else:
-                    with to_path.open(mode='wb') as output:
+                    with to_path.open(mode="wb") as output:
                         write_output(output)
 
         except Exception as e:
             log.error(
-                'Error downloading driveitem {}. Error: {}'.format(self.name,
+                "Error downloading driveitem {}. Error: {}".format(self.name,
                                                                    str(e)))
             return False
 
