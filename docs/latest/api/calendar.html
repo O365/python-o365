@@ -1838,13 +1838,14 @@ values have changed and update them on the server</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="O365.calendar.Schedule.get_calendar">
-<span class="sig-name descname"><span class="pre">get_calendar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">calendar_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calendar_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#Schedule.get_calendar"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.calendar.Schedule.get_calendar" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_calendar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">calendar_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calendar_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/calendar.html#Schedule.get_calendar"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.calendar.Schedule.get_calendar" title="Link to this definition"></a></dt>
 <dd><p>Returns a calendar by it’s id or name</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>calendar_id</strong> (<em>str</em>) – the calendar id to be retrieved.</p></li>
 <li><p><strong>calendar_name</strong> (<em>str</em>) – the calendar name to be retrieved.</p></li>
+<li><p><strong>query</strong> (<a class="reference internal" href="utils/utils.html#O365.utils.utils.Query" title="O365.utils.utils.Query"><em>Query</em></a>) – applies a OData filter to the request</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
