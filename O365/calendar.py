@@ -1994,7 +1994,10 @@ class Schedule(ApiComponent):
             batch = self.protocol.max_top_value
         params['$top'] =  batch if batch else limit
         if query:
-            params['$filter'] = str(query)
+            if isinstance(query, str):
+                params["$filter"] = query
+            else:
+                params.update(query.as_params())
         if order_by:
             params['$orderby'] = order_by
 
