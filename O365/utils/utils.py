@@ -1,5 +1,6 @@
 import datetime as dt
 import logging
+import warnings
 from collections import OrderedDict
 from enum import Enum
 from typing import Dict, Union
@@ -496,6 +497,9 @@ class ApiComponent:
         :return: new Query
         :rtype: Query
         """
+        warnings.warn('This method will be deprecated in future releases. A new Query object is finished and will be the only option in future releases. '
+                      'Use `from O365.utils import ExperimentalQuery as Query` instead to prepare for this change. '
+                      'Current docs already explain this change. See O365/utils/query.py for more details.', DeprecationWarning)
         return Query(attribute=attribute, protocol=self.protocol)
 
     q = new_query  # alias for new query

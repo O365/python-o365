@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import datetime as dt
 from abc import ABC, abstractmethod
-from typing import Union, Optional, TYPE_CHECKING, Type, Iterator, Literal, TypeAlias
+from typing import Union, Optional, TYPE_CHECKING, Type, Iterator, TypeAlias
 
 if TYPE_CHECKING:
     from O365.connection import Protocol
@@ -375,6 +375,35 @@ class CompositeFilter(QueryBase):
             f"Select: {self.select.render() if self.select else ''}\n"
             f"Expand: {self.expand.render() if self.expand else ''}"
         )
+
+    @property
+    def has_filters(self) -> bool:
+        """ Returns if this CompositeFilter has filters"""
+        return self.filters is not None
+
+    @property
+    def has_selects(self) -> bool:
+        """ Returns if this CompositeFilter has selects"""
+        return self.select is not None
+
+    @property
+    def has_expands(self) -> bool:
+        """ Returns if this CompositeFilter has expands"""
+        return self.expand is not None
+
+    @property
+    def has_search(self) -> bool:
+        """ Returns if this CompositeFilter has search"""
+        return self.search is not None
+
+    @property
+    def has_order_by(self) -> bool:
+        """ Returns if this CompositeFilter has order_by"""
+        return self.order_by is not None
+
+    def clear_filters(self) -> None:
+        """ Removes all filters from the query """
+        self.filters = None
 
     @property
     def has_only_filters(self) -> bool:
