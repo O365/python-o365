@@ -2041,11 +2041,13 @@ class Schedule(ApiComponent):
         return self.calendar_constructor(parent=self,
                                          **{self._cloud_data_key: data})
 
-    def get_calendar(self, calendar_id=None, calendar_name=None):
-        """ Returns a calendar by it's id or name
+    def get_calendar(self, calendar_id=None, calendar_name=None, query=None):
+        """Returns a calendar by it's id or name
 
         :param str calendar_id: the calendar id to be retrieved.
         :param str calendar_name: the calendar name to be retrieved.
+        :param query: applies a OData filter to the request
+        :type query: Query
         :return: calendar for the given info
         :rtype: Calendar
         """
@@ -2066,6 +2068,10 @@ class Schedule(ApiComponent):
             params = {
                 '$filter': "{} eq '{}'".format(self._cc('name'), calendar_name),
                 '$top': 1}
+        if query:
+            if not isinstance(query, str):
+                params = {} if params is None else params
+                params.update(query.as_params())
 
         response = self.con.get(url, params=params)
         if not response:
