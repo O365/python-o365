@@ -914,17 +914,22 @@ class Connection:
         self._previous_request_at = time.time()
 
     def _internal_request(
-        self, session_obj: Session, url: str, method: str, ignore401: bool = False, **kwargs
+        self,
+        session_obj: Session,
+        url: str,
+        method: str,
+        ignore40x: bool = False,
+        **kwargs,
     ) -> Response:
         """Internal handling of requests. Handles Exceptions.
 
         :param session_obj: a requests Session instance.
         :param str url: url to send request to
         :param str method: type of request (get/put/post/patch/delete)
-        :param bool ignore401: indicates whether to ignore 401 error when it would 
+        :param bool ignore40x: indicates whether to ignore 40x errors when it would
           indicate that there the token has expired. This is set to 'True' for the
-          first call to the api, and 'False' for the call that is initiated after a 
-          tpken refresh. 
+          first call to the api, and 'False' for the call that is initiated after a
+          tpken refresh.
         :param kwargs: extra params to send to the request api
         :return: Response of the request
         :rtype: requests.Response
@@ -983,7 +988,7 @@ class Connection:
             raise e  # re-raise exception
         except HTTPError as e:
             # Server response with 4XX or 5XX error status codes
-            if e.response.status_code == 401 and ignore401 is True:
+            if e.response.status_code in [401, 403] and ignore40x is True:
                 # This could be a token expired error.
                 if self.token_backend.token_is_expired(username=self.username):
                     # Access token has expired, try to refresh the token and try again on the next loop
@@ -1042,7 +1047,9 @@ class Connection:
             # lazy creation of a naive session
             self.naive_session = self.get_naive_session()
 
-        return self._internal_request(self.naive_session, url, method, ignore401=False, **kwargs)
+        return self._internal_request(
+            self.naive_session, url, method, ignore40x=False, **kwargs
+        )
 
     def oauth_request(self, url: str, method: str, **kwargs) -> Response:
         """Makes a request to url using an oauth session.
@@ -1063,20 +1070,24 @@ class Connection:
                     f"No auth token found. Authentication Flow needed for user {self.username}"
                 )
 
-        # In the event of a response that returned 401 unauthorised the ignore401 flag indicates
-        # that the 401 can be a token expired error. MsGraph is returning 401 when the access token
-        # has expired. We can not distinguish between a real 401 or token expired 401. So in the event
-        # of a 401 http error we will ignore the first time and try to refresh the token, and then
-        # re-run the request. If the 401 goes away we can move on. If it keeps the 401 then we will 
+        # In the event of a response that returned 401 or 403 unauthorised the ignore40x flag indicates
+        # that the 40x can be a token expired error. MsGraph is returning 401 or 403 when the access token
+        # has expired. We can not distinguish between a real 40x or token expired 40x. So in the event
+        # of a 40x http error we will ignore the first time and try to refresh the token, and then
+        # re-run the request. If the 40x goes away we can move on. If it keeps the 40x then we will
         # raise the error.
         try:
-            return self._internal_request(self.session, url, method, ignore401=True, **kwargs)
+            return self._internal_request(
+                self.session, url, method, ignore40x=True, **kwargs
+            )
         except TokenExpiredError as e:
             # refresh and try again the request!
 
             # try to refresh the token and/or follow token backend answer on 'should_refresh_token'
             if self._try_refresh_token():
-                return self._internal_request(self.session, url, method, ignore401=False, **kwargs)
+                return self._internal_request(
+                    self.session, url, method, ignore40x=False, **kwargs
+                )
             else:
                 raise e
 
