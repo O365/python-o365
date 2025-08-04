@@ -1,7 +1,7 @@
 [project]
 dynamic = ["license"]
 name = "o365"
-version = "2.1.4"
+version = "2.1.5"
 description = "O365 - Microsoft Graph and Office 365 API made easy"
 readme = "README.md"
 requires-python = ">=3.9"
