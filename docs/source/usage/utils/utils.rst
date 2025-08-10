@@ -39,6 +39,10 @@ For example:
 
 Query helper
 ------------
+.. note::
+
+    This method of creating queries is now deprecated, queries shoould now be created using the ExperimentalQuery methods - :ref:`query_builder`
+
 Every ``ApiComponent`` (such as ``MailBox``) implements a new_query method that will return a ``Query`` instance. This ``Query`` instance can handle the filtering, sorting, selecting, expanding and search very easily.
 
 For example:
