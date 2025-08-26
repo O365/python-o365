@@ -337,6 +337,11 @@ class Task(ApiComponent):
         completed_obj = cloud_data.get(cc("completedDateTime"), {})
         self.__completed = self._parse_date_time_time_zone(completed_obj)
 
+        self.__checklist_items = (
+            self.checklist_item_constructor(parent=self, **{self._cloud_data_key: item})
+            for item in cloud_data.get(cc("checklistItems"), [])
+        )
+
     def __str__(self):
         """Representation of the Task via the Graph api as a string."""
         return self.__repr__()
@@ -580,6 +585,15 @@ class Task(ApiComponent):
         :type: bool
         """
         return self.__is_completed
+
+    @property
+    def checklist_items(self):
+        """Checklist items for the task.
+
+        :getter: Get checklistItems
+        :type: list[ChecklistItem]
+        """
+        return self.__checklist_items
 
     def mark_completed(self):
         """Mark the task as completed."""
