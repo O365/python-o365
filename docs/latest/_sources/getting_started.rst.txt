@@ -20,7 +20,7 @@ or use uv:
 
    uv add o365
 
-Requirements: >= Python 3.9
+Requirements: >= Python 3.10
 
 Project dependencies installed by pip:
 

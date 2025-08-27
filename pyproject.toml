@@ -4,7 +4,7 @@ name = "o365"
 version = "2.1.5"
 description = "O365 - Microsoft Graph and Office 365 API made easy"
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 authors = [
     { name = "Alejcas", email = "alejcas@users.noreply.github.com" },
     { name = "Narcolapser", email = "narcolapser@users.noreply.github.com" },
@@ -15,7 +15,6 @@ classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: Apache Software License",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
