@@ -1988,6 +1988,15 @@ class WorkSheet(ApiComponent):
 
         # Find the last row index so we can grab a range after it.
         current_range = self.get_used_range()
+        # Minor adjustment because Graph will return [['']] in an empty worksheet.
+        # Also, beware that Graph might report ghost values if testing using the front end site and that can be interesting
+        # during debugging. I ctrl + A and delete then click elsewhere before testing again.
+        # Might also take a moment for the backend to eventually catch up to the changes.
+        # Graph can be weirdly slow. It might be an institution thing.
+        if current_range.row_count == 1 and len(current_range.values[0]) == 1 and current_range.values[0][0] == '':
+            current_range.values = []
+            current_range.row_count = 0
+
         target_index = current_range.row_count
 
         # Generate the address needed to outline the bounding rectangle to use to fill in data.
