@@ -1606,6 +1606,7 @@ class Drive(ApiComponent):
         items = (
             self._classifier(item)(parent=self, **{self._cloud_data_key: item})
             for item in data.get('value', []))
+
         next_link = data.get(NEXT_LINK_KEYWORD, None)
         if batch and next_link:
             return Pagination(parent=self, data=items,

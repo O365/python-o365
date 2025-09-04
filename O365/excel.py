@@ -1980,11 +1980,21 @@ class WorkSheet(ApiComponent):
         Appends rows to the end of a worksheet. There is no direct Graph API to do this operation without a Table
         instance. Instead, this method identifies the last row in the worksheet and requests a range after that row
         and updates that range.
+
+        Beware! If you open your workbook from sharepoint and delete all of the rows in one go and attempt to append
+        new rows, you will get undefined behavior from the Microsoft Graph API. I don't know if I did not give enough
+        time for the backend to synchronize from the moment of deletion on my browser and the moment I triggered my
+        script, but this is something I have observed. Sometimes insertion fails and sometimes it inserts where the new
+        row would have been if data had not been deleted from the browser side. Maybe it is an API cache issue. However,
+        after the first row is inserted successfully, this undefined behavior goes away on repeat calls to my scripts.
+        Documenting this behavior for future consumers of this API.
+
         :param list[list[str]] rows: list of rows to push to this range. If updating a single cell, pass a list
             containing a single row (list) containing a single cell worth of data.
         """
         row_count = len(rows)
         col_count = len(rows[0]) if row_count > 0 else 0
+        col_index = col_count - 1
 
         # Find the last row index so we can grab a range after it.
         current_range = self.get_used_range()
@@ -2000,7 +2010,7 @@ class WorkSheet(ApiComponent):
         target_index = current_range.row_count
 
         # Generate the address needed to outline the bounding rectangle to use to fill in data.
-        col_name = col_index_to_label(col_count)
+        col_name = col_index_to_label(col_index)
         insert_range_address = 'A{}:{}{}'.format(target_index + 1, col_name, target_index + row_count)
 
         # Request to push the data to the given range.
