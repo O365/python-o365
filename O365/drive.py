@@ -14,7 +14,7 @@ from .utils import (
     ApiComponent,
     OneDriveWellKnowFolderNames,
     Pagination,
-    ExperimentalQuery,
+    QueryBuilder,
     CompositeFilter
 )
 
@@ -1188,12 +1188,12 @@ class Folder(DriveItem):
         if query:
             if not isinstance(query, str):
                 if isinstance(query, CompositeFilter):
-                    q = ExperimentalQuery(protocol=self.protocol)
+                    q = QueryBuilder(protocol=self.protocol)
                     query = query & q.unequal('folder', None)
                 else:
                     query = query.on_attribute('folder').unequal(None)
         else:
-            q = ExperimentalQuery(protocol=self.protocol)
+            q = QueryBuilder(protocol=self.protocol)
             query = q.unequal('folder', None)
 
         return self.get_items(limit=limit, query=query, order_by=order_by, batch=batch)
@@ -1656,12 +1656,12 @@ class Drive(ApiComponent):
         if query:
             if not isinstance(query, str):
                 if isinstance(query, CompositeFilter):
-                    q = ExperimentalQuery(protocol=self.protocol)
+                    q = QueryBuilder(protocol=self.protocol)
                     query = query & q.unequal('folder', None)
                 else:
                     query = query.on_attribute('folder').unequal(None)
         else:
-            q = ExperimentalQuery(protocol=self.protocol)
+            q = QueryBuilder(protocol=self.protocol)
             query = q.unequal('folder', None)
 
         return self.get_items(limit=limit, query=query, order_by=order_by, batch=batch)
