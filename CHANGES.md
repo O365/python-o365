@@ -5,6 +5,9 @@ Almost every release features a lot of bugfixes but those are not listed here.
 ## Version 2.1.5 (2025-08-04)
 - Bug fixing release
 
+## Version 2.1.5 (2025-08-04)
+- Bug fixing release
+
 ## Version 2.1.4 (2025-06-03)
 - Calendar: Schedule.get_calendar method can now use query objects with select, expand and order by (Thanks @RogerSelwyn)
 
