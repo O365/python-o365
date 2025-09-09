@@ -11,8 +11,8 @@ Sites.Read.All             sharepoint                               To only read
 Sites.ReadWrite.All        sharepoint_dl                            To read and save sites, lists and items
 =========================  =======================================  =======================================
 
-Note that using the *.All scopes is way less secure than granting permissions to specific sites and using
-Sites.Selected scope.
+Note that using the :code:`.All` scopes is way less secure than granting permissions to specific sites and using
+:code:`Sites.Selected scope`.
 
 Assuming an authenticated account, create a Sharepoint instance, and connect
 to a Sharepoint site.
