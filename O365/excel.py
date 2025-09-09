@@ -1954,7 +1954,7 @@ class WorkSheet(ApiComponent):
         direct endpoint API for tableless row updates.
         :param str|Range address: the address to resolve to a range which can be used for updating cells.
         :param list[list[str]] rows: list of rows to push to this range. If updating a single cell, pass a list
-            containing a single row (list) containing a single cell worth of data.
+        containing a single row (list) containing a single cell worth of data.
         """
         if isinstance(address, str):
             address = self.get_range(address)
