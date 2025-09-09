@@ -12,8 +12,8 @@ For example:
 
 .. code-block:: python
 
-    from O365.utils import ExperimentalQuery
-    builder = ExperimentalQuery(protocol=account.protocol)
+    from O365.utils import QueryBuilder
+    builder = QueryBuilder(protocol=account.protocol)
 
     query = builder.chain_or(builder.contains('subject', 'george best'), builder.startswith('subject', 'quotes')
 
