@@ -1,6 +1,5 @@
 import datetime as dt
 import logging
-import warnings
 from collections import OrderedDict
 from enum import Enum
 from typing import Dict, Union
@@ -8,6 +7,7 @@ from typing import Dict, Union
 from dateutil.parser import parse
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
+from .query import QueryBuilder
 from .casing import to_snake_case
 from .decorators import fluent
 from .windows_tz import get_iana_tz, get_windows_tz
@@ -490,17 +490,14 @@ class ApiComponent:
             self._cc('timeZone'): timezone
         }
 
-    def new_query(self, attribute=None):
+    def new_query(self) -> QueryBuilder:
         """ Create a new query to filter results
 
         :param str attribute: attribute to apply the query for
-        :return: new Query
-        :rtype: Query
+        :return: new QueryBuilder
+        :rtype: QueryBuilder
         """
-        warnings.warn('This method will be deprecated in future releases. A new Query object is finished and will be the only option in future releases. '
-                      'Use `from O365.utils import ExperimentalQuery as Query` instead to prepare for this change. '
-                      'Current docs already explain this change. See O365/utils/query.py for more details.', DeprecationWarning)
-        return Query(attribute=attribute, protocol=self.protocol)
+        return QueryBuilder(protocol=self.protocol)
 
     q = new_query  # alias for new query
 

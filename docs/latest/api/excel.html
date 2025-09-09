@@ -238,6 +238,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.WorkSheet.__init__"><code class="docutils literal notranslate"><span class="pre">WorkSheet.__init__()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.WorkSheet.add_named_range"><code class="docutils literal notranslate"><span class="pre">WorkSheet.add_named_range()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.WorkSheet.add_table"><code class="docutils literal notranslate"><span class="pre">WorkSheet.add_table()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.excel.WorkSheet.append_rows"><code class="docutils literal notranslate"><span class="pre">WorkSheet.append_rows()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.WorkSheet.delete"><code class="docutils literal notranslate"><span class="pre">WorkSheet.delete()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.WorkSheet.get_cell"><code class="docutils literal notranslate"><span class="pre">WorkSheet.get_cell()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.WorkSheet.get_named_range"><code class="docutils literal notranslate"><span class="pre">WorkSheet.get_named_range()</span></code></a></li>
@@ -251,6 +252,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.WorkSheet.remove_sheet_name_from_address"><code class="docutils literal notranslate"><span class="pre">WorkSheet.remove_sheet_name_from_address()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.WorkSheet.session"><code class="docutils literal notranslate"><span class="pre">WorkSheet.session</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.WorkSheet.update"><code class="docutils literal notranslate"><span class="pre">WorkSheet.update()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.excel.WorkSheet.update_cells"><code class="docutils literal notranslate"><span class="pre">WorkSheet.update_cells()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.WorkSheet.visibility"><code class="docutils literal notranslate"><span class="pre">WorkSheet.visibility</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.excel.WorkSheet.workbook"><code class="docutils literal notranslate"><span class="pre">WorkSheet.workbook</span></code></a></li>
 </ul>
@@ -1832,6 +1834,27 @@ communications</p></li>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="O365.excel.WorkSheet.append_rows">
+<span class="sig-name descname"><span class="pre">append_rows</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rows</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/excel.html#WorkSheet.append_rows"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.excel.WorkSheet.append_rows" title="Link to this definition"></a></dt>
+<dd><p>Appends rows to the end of a worksheet. There is no direct Graph API to do this operation without a Table
+instance. Instead, this method identifies the last row in the worksheet and requests a range after that row
+and updates that range.</p>
+<p>Beware! If you open your workbook from sharepoint and delete all of the rows in one go and attempt to append
+new rows, you will get undefined behavior from the Microsoft Graph API. I don’t know if I did not give enough
+time for the backend to synchronize from the moment of deletion on my browser and the moment I triggered my
+script, but this is something I have observed. Sometimes insertion fails and sometimes it inserts where the new
+row would have been if data had not been deleted from the browser side. Maybe it is an API cache issue. However,
+after the first row is inserted successfully, this undefined behavior goes away on repeat calls to my scripts.
+Documenting this behavior for future consumers of this API.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>rows</strong> (<em>list</em><em>[</em><em>list</em><em>[</em><em>str</em><em>]</em><em>]</em>) – list of rows to push to this range. If updating a single cell, pass a list
+containing a single row (list) containing a single cell worth of data.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="O365.excel.WorkSheet.delete">
 <span class="sig-name descname"><span class="pre">delete</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/excel.html#WorkSheet.delete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.excel.WorkSheet.delete" title="Link to this definition"></a></dt>
 <dd><p>Deletes this worksheet</p>
@@ -1921,6 +1944,18 @@ Considers only cells with values as used cells (ignores formatting).</p>
 <dt class="sig sig-object py" id="O365.excel.WorkSheet.update">
 <span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">visibility</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/excel.html#WorkSheet.update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.excel.WorkSheet.update" title="Link to this definition"></a></dt>
 <dd><p>Changes the name, position or visibility of this worksheet</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.excel.WorkSheet.update_cells">
+<span class="sig-name descname"><span class="pre">update_cells</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">address</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rows</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/excel.html#WorkSheet.update_cells"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.excel.WorkSheet.update_cells" title="Link to this definition"></a></dt>
+<dd><p>Updates the cells at a given range in this worksheet. This is a convenience method since there is no
+direct endpoint API for tableless row updates.
+:param str|Range address: the address to resolve to a range which can be used for updating cells.
+:param list[list[str]] rows: list of rows to push to this range. If updating a single cell, pass a list</p>
+<blockquote>
+<div><p>containing a single row (list) containing a single cell worth of data.</p>
+</div></blockquote>
 </dd></dl>
 
 <dl class="py attribute">

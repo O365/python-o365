@@ -115,16 +115,22 @@
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p>Sites.Read.All</p></td>
+<tr class="row-even"><td><p>Sites.Selected</p></td>
+<td><p><em>None</em></p></td>
+<td><p>Sites a permission was granted by admins (see <a class="reference external" href="https://github.com/O365/python-o365/issues/1122">https://github.com/O365/python-o365/issues/1122</a>)</p></td>
+</tr>
+<tr class="row-odd"><td><p>Sites.Read.All</p></td>
 <td><p>sharepoint</p></td>
 <td><p>To only read sites, lists and items</p></td>
 </tr>
-<tr class="row-odd"><td><p>Sites.ReadWrite.All</p></td>
+<tr class="row-even"><td><p>Sites.ReadWrite.All</p></td>
 <td><p>sharepoint_dl</p></td>
 <td><p>To read and save sites, lists and items</p></td>
 </tr>
 </tbody>
 </table>
+<p>Note that using the <a href="#id1"><span class="problematic" id="id2">*</span></a>.All scopes is way less secure than granting permissions to specific sites and using
+Sites.Selected scope.</p>
 <p>Assuming an authenticated account, create a Sharepoint instance, and connect
 to a Sharepoint site.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1">#Create Sharepoint instance and connect to a site</span>

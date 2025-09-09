@@ -6,9 +6,13 @@ These are the scopes needed to work with the SharePoint and Site classes.
 =========================  =======================================  =======================================
 Raw Scope                  Included in Scope Helper                 Description
 =========================  =======================================  =======================================
+Sites.Selected             *None*                                   Sites a permission was granted by admins (see https://github.com/O365/python-o365/issues/1122)
 Sites.Read.All             sharepoint                               To only read sites, lists and items
 Sites.ReadWrite.All        sharepoint_dl                            To read and save sites, lists and items
 =========================  =======================================  =======================================
+
+Note that using the *.All scopes is way less secure than granting permissions to specific sites and using
+Sites.Selected scope.
 
 Assuming an authenticated account, create a Sharepoint instance, and connect
 to a Sharepoint site.

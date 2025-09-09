@@ -2,6 +2,22 @@
 
 Almost every release features a lot of bugfixes but those are not listed here.
 
+## Version 2.1.7 (2025-09-05)
+
+> [!IMPORTANT]
+> **Breaking Change:** Removed support for Python 3.9
+> **Breaking Change:** Removed Old Query in favour of the new QueryBuilder (both are interchangeable for other methods to use it, but are build differently)
+
+- Tasks: Add population of checklist_items on Task (Thanks @RogerSelwyn)
+- Excel: Added `append_rows` and `update_cells` to `WorkSheet` (Thanks @luissantosHCIT)
+
+## Version 2.1.6 (2025-09-05)
+
+- Version Yanked
+
+## Version 2.1.5 (2025-08-04)
+- Bug fixing release
+    
 ## Version 2.1.4 (2025-06-03)
 - Calendar: Schedule.get_calendar method can now use query objects with select, expand and order by (Thanks @RogerSelwyn)
 
@@ -13,7 +29,6 @@ Almost every release features a lot of bugfixes but those are not listed here.
 - Groups: Added pagination to get_user_groups (Thanks @RogerSelwyn)
 - Tasks: Added support for check list items (Thanks @RogerSelwyn)
 - Removed Office365 protocol
-
 
 ## Version 2.1.2 (2025-04-08)
 - Calendar: list_calendars now allows pagination (Thanks @RogerSelwyn)

@@ -10,7 +10,7 @@ import re
 from urllib.parse import quote
 
 from .drive import File
-from .utils import ApiComponent, TrackerSet, to_snake_case
+from .utils import ApiComponent, TrackerSet, to_snake_case, col_index_to_label
 
 log = logging.getLogger(__name__)
 
@@ -1947,6 +1947,74 @@ class WorkSheet(ApiComponent):
         return self.named_range_constructor(
             parent=self, **{self._cloud_data_key: response.json()}
         )
+
+    def update_cells(self, address, rows):
+        """
+        Updates the cells at a given range in this worksheet. This is a convenience method since there is no
+        direct endpoint API for tableless row updates.
+        :param str|Range address: the address to resolve to a range which can be used for updating cells.
+        :param list[list[str]] rows: list of rows to push to this range. If updating a single cell, pass a list
+            containing a single row (list) containing a single cell worth of data.
+        """
+        if isinstance(address, str):
+            address = self.get_range(address)
+
+        if not isinstance(address, Range):
+            raise ValueError("address was not an accepted type: str or Range")
+
+        if not isinstance(rows, list):
+            raise ValueError("rows was not an accepted type: list[list[str]]")
+
+        # Let's not even try pushing to API if the range rectangle mismatches the input row and column count.
+        row_count = len(rows)
+        col_count = len(rows[0]) if row_count > 0 else 1
+
+        if address.row_count != row_count or address.column_count != col_count:
+            raise ValueError("rows and columns are not the same size as the range selected. This is required by the Microsoft Graph API.")
+
+        address.values = rows
+        address.update()
+
+    def append_rows(self, rows):
+        """
+        Appends rows to the end of a worksheet. There is no direct Graph API to do this operation without a Table
+        instance. Instead, this method identifies the last row in the worksheet and requests a range after that row
+        and updates that range.
+
+        Beware! If you open your workbook from sharepoint and delete all of the rows in one go and attempt to append
+        new rows, you will get undefined behavior from the Microsoft Graph API. I don't know if I did not give enough
+        time for the backend to synchronize from the moment of deletion on my browser and the moment I triggered my
+        script, but this is something I have observed. Sometimes insertion fails and sometimes it inserts where the new
+        row would have been if data had not been deleted from the browser side. Maybe it is an API cache issue. However,
+        after the first row is inserted successfully, this undefined behavior goes away on repeat calls to my scripts.
+        Documenting this behavior for future consumers of this API.
+
+        :param list[list[str]] rows: list of rows to push to this range. If updating a single cell, pass a list
+            containing a single row (list) containing a single cell worth of data.
+        """
+        row_count = len(rows)
+        col_count = len(rows[0]) if row_count > 0 else 0
+        col_index = col_count - 1
+
+        # Find the last row index so we can grab a range after it.
+        current_range = self.get_used_range()
+        # Minor adjustment because Graph will return [['']] in an empty worksheet.
+        # Also, beware that Graph might report ghost values if testing using the front end site and that can be interesting
+        # during debugging. I ctrl + A and delete then click elsewhere before testing again.
+        # Might also take a moment for the backend to eventually catch up to the changes.
+        # Graph can be weirdly slow. It might be an institution thing.
+        if current_range.row_count == 1 and len(current_range.values[0]) == 1 and current_range.values[0][0] == '':
+            current_range.values = []
+            current_range.row_count = 0
+
+        target_index = current_range.row_count
+
+        # Generate the address needed to outline the bounding rectangle to use to fill in data.
+        col_name = col_index_to_label(col_index)
+        insert_range_address = 'A{}:{}{}'.format(target_index + 1, col_name, target_index + row_count)
+
+        # Request to push the data to the given range.
+        self.update_cells(insert_range_address, rows)
 
     def get_named_range(self, name):
         """Retrieves a Named range by it's name"""

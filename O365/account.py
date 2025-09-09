@@ -25,7 +25,7 @@ class Account:
         protocol = protocol or MSGraphProtocol  # Defaults to Graph protocol
         if isinstance(protocol, type):
             protocol = protocol(default_resource=main_resource, **kwargs)
-        #: The protocol to use for the account. Defaults ot MSGraphProtocol. |br| **Type:** Protocol
+        # The protocol to use for the account. Defaults ot MSGraphProtocol. |br| **Type:** Protocol
         self.protocol: Protocol = protocol
 
         if not isinstance(self.protocol, Protocol):
