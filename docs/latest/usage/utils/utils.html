@@ -144,6 +144,10 @@
 </section>
 <section id="query-helper">
 <h2>Query helper<a class="headerlink" href="#query-helper" title="Link to this heading"></a></h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method of creating queries is now deprecated, queries shoould now be created using the ExperimentalQuery methods - <a class="reference internal" href="query.html#query-builder"><span class="std std-ref">Query Builder</span></a></p>
+</div>
 <p>Every <code class="docutils literal notranslate"><span class="pre">ApiComponent</span></code> (such as <code class="docutils literal notranslate"><span class="pre">MailBox</span></code>) implements a new_query method that will return a <code class="docutils literal notranslate"><span class="pre">Query</span></code> instance. This <code class="docutils literal notranslate"><span class="pre">Query</span></code> instance can handle the filtering, sorting, selecting, expanding and search very easily.</p>
 <p>For example:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">query</span> <span class="o">=</span> <span class="n">mailbox</span><span class="o">.</span><span class="n">new_query</span><span class="p">()</span>  <span class="c1"># you can use the shorthand: mailbox.q()</span>

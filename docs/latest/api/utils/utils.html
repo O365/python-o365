@@ -168,34 +168,34 @@ service url</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="O365.utils.utils.ApiComponent.new_query">
-<span class="sig-name descname"><span class="pre">new_query</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attribute</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/utils.html#ApiComponent.new_query"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.utils.ApiComponent.new_query" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">new_query</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="query.html#O365.utils.query.QueryBuilder" title="O365.utils.query.QueryBuilder"><span class="pre">QueryBuilder</span></a></span></span><a class="reference internal" href="../../_modules/O365/utils/utils.html#ApiComponent.new_query"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.utils.ApiComponent.new_query" title="Link to this definition"></a></dt>
 <dd><p>Create a new query to filter results</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>attribute</strong> (<em>str</em>) – attribute to apply the query for</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>new Query</p>
+<dd class="field-even"><p>new QueryBuilder</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="#O365.utils.utils.Query" title="O365.utils.utils.Query">Query</a></p>
+<dd class="field-odd"><p><a class="reference internal" href="query.html#O365.utils.query.QueryBuilder" title="O365.utils.query.QueryBuilder">QueryBuilder</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="O365.utils.utils.ApiComponent.q">
-<span class="sig-name descname"><span class="pre">q</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attribute</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#O365.utils.utils.ApiComponent.q" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">q</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="query.html#O365.utils.query.QueryBuilder" title="O365.utils.query.QueryBuilder"><span class="pre">QueryBuilder</span></a></span></span><a class="headerlink" href="#O365.utils.utils.ApiComponent.q" title="Link to this definition"></a></dt>
 <dd><p>Create a new query to filter results</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>attribute</strong> (<em>str</em>) – attribute to apply the query for</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>new Query</p>
+<dd class="field-even"><p>new QueryBuilder</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="#O365.utils.utils.Query" title="O365.utils.utils.Query">Query</a></p>
+<dd class="field-odd"><p><a class="reference internal" href="query.html#O365.utils.query.QueryBuilder" title="O365.utils.query.QueryBuilder">QueryBuilder</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -515,13 +515,14 @@ attribute inside the collection</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="#O365.utils.utils.Query" title="O365.utils.utils.Query">Query</a></p>
-</dd>
-</dl>
+<dd class="field-even"><p><p>Query</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This method is part of fluent api and can be chained</p>
 </div>
+</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -547,13 +548,14 @@ attribute inside the collection</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="#O365.utils.utils.Query" title="O365.utils.utils.Query">Query</a></p>
-</dd>
-</dl>
+<dd class="field-even"><p><p>Query</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This method is part of fluent api and can be chained</p>
 </div>
+</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -576,13 +578,14 @@ attribute inside the collection</p></li>
 <dd class="field-odd"><p><strong>operation</strong> (<a class="reference internal" href="#O365.utils.utils.ChainOperator" title="O365.utils.utils.ChainOperator"><em>ChainOperator</em></a><em>, </em><em>str</em>) – how to combine with a new one</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="#O365.utils.utils.Query" title="O365.utils.utils.Query">Query</a></p>
-</dd>
-</dl>
+<dd class="field-even"><p><p>Query</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This method is part of fluent api and can be chained</p>
 </div>
+</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -591,13 +594,14 @@ attribute inside the collection</p></li>
 <dd><p>Clear everything</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="#O365.utils.utils.Query" title="O365.utils.utils.Query">Query</a></p>
-</dd>
-</dl>
+<dd class="field-odd"><p><p>Query</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This method is part of fluent api and can be chained</p>
 </div>
+</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -627,13 +631,14 @@ attribute inside the collection</p></li>
 <dd class="field-odd"><p><strong>word</strong> (<em>str</em>) – word to check</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="#O365.utils.utils.Query" title="O365.utils.utils.Query">Query</a></p>
-</dd>
-</dl>
+<dd class="field-even"><p><p>Query</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This method is part of fluent api and can be chained</p>
 </div>
+</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -645,13 +650,14 @@ attribute inside the collection</p></li>
 <dd class="field-odd"><p><strong>word</strong> (<em>str</em>) – word to check</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="#O365.utils.utils.Query" title="O365.utils.utils.Query">Query</a></p>
-</dd>
-</dl>
+<dd class="field-even"><p><p>Query</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This method is part of fluent api and can be chained</p>
 </div>
+</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -663,13 +669,14 @@ attribute inside the collection</p></li>
 <dd class="field-odd"><p><strong>word</strong> – word to compare with</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="#O365.utils.utils.Query" title="O365.utils.utils.Query">Query</a></p>
-</dd>
-</dl>
+<dd class="field-even"><p><p>Query</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This method is part of fluent api and can be chained</p>
 </div>
+</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -687,13 +694,14 @@ Important: The ApiComponent using this should know how to handle this relationsh
 <dd class="field-odd"><p><strong>relationships</strong> (<em>str</em>) – the relationships tuple to expand.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="#O365.utils.utils.Query" title="O365.utils.utils.Query">Query</a></p>
-</dd>
-</dl>
+<dd class="field-even"><p><p>Query</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This method is part of fluent api and can be chained</p>
 </div>
+</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -708,13 +716,14 @@ Important: The ApiComponent using this should know how to handle this relationsh
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="#O365.utils.utils.Query" title="O365.utils.utils.Query">Query</a></p>
-</dd>
-</dl>
+<dd class="field-even"><p><p>Query</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This method is part of fluent api and can be chained</p>
 </div>
+</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -785,13 +794,14 @@ and return the first found.</p>
 <dd class="field-odd"><p><strong>word</strong> – word to compare with</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="#O365.utils.utils.Query" title="O365.utils.utils.Query">Query</a></p>
-</dd>
-</dl>
+<dd class="field-even"><p><p>Query</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This method is part of fluent api and can be chained</p>
 </div>
+</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -803,13 +813,14 @@ and return the first found.</p>
 <dd class="field-odd"><p><strong>word</strong> – word to compare with</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="#O365.utils.utils.Query" title="O365.utils.utils.Query">Query</a></p>
-</dd>
-</dl>
+<dd class="field-even"><p><p>Query</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This method is part of fluent api and can be chained</p>
 </div>
+</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -837,13 +848,14 @@ inside the collection</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="#O365.utils.utils.Query" title="O365.utils.utils.Query">Query</a></p>
-</dd>
-</dl>
+<dd class="field-even"><p><p>Query</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This method is part of fluent api and can be chained</p>
 </div>
+</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -855,13 +867,14 @@ inside the collection</p></li>
 <dd class="field-odd"><p><strong>word</strong> – word to compare with</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="#O365.utils.utils.Query" title="O365.utils.utils.Query">Query</a></p>
-</dd>
-</dl>
+<dd class="field-even"><p><p>Query</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This method is part of fluent api and can be chained</p>
 </div>
+</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -873,13 +886,14 @@ inside the collection</p></li>
 <dd class="field-odd"><p><strong>word</strong> – word to compare with</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="#O365.utils.utils.Query" title="O365.utils.utils.Query">Query</a></p>
-</dd>
-</dl>
+<dd class="field-even"><p><p>Query</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This method is part of fluent api and can be chained</p>
 </div>
+</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -895,13 +909,14 @@ inside the collection</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="#O365.utils.utils.Query" title="O365.utils.utils.Query">Query</a></p>
-</dd>
-</dl>
+<dd class="field-even"><p><p>Query</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This method is part of fluent api and can be chained</p>
 </div>
+</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -910,13 +925,14 @@ inside the collection</p></li>
 <dd><p>Apply a not operator</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="#O365.utils.utils.Query" title="O365.utils.utils.Query">Query</a></p>
-</dd>
-</dl>
+<dd class="field-odd"><p><p>Query</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This method is part of fluent api and can be chained</p>
 </div>
+</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -931,13 +947,14 @@ inside the collection</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="#O365.utils.utils.Query" title="O365.utils.utils.Query">Query</a></p>
-</dd>
-</dl>
+<dd class="field-even"><p><p>Query</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This method is part of fluent api and can be chained</p>
 </div>
+</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -949,13 +966,14 @@ inside the collection</p></li>
 <dd class="field-odd"><p><strong>attribute</strong> (<em>str</em>) – attribute name</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="#O365.utils.utils.Query" title="O365.utils.utils.Query">Query</a></p>
-</dd>
-</dl>
+<dd class="field-even"><p><p>Query</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This method is part of fluent api and can be chained</p>
 </div>
+</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -967,13 +985,14 @@ inside the collection</p></li>
 <dd class="field-odd"><p><strong>field</strong> (<em>str</em>) – field name (note: name is case sensitive)</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="#O365.utils.utils.Query" title="O365.utils.utils.Query">Query</a></p>
-</dd>
-</dl>
+<dd class="field-even"><p><p>Query</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This method is part of fluent api and can be chained</p>
 </div>
+</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -994,13 +1013,14 @@ inside the collection</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="#O365.utils.utils.Query" title="O365.utils.utils.Query">Query</a></p>
-</dd>
-</dl>
+<dd class="field-even"><p><p>Query</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This method is part of fluent api and can be chained</p>
 </div>
+</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -1024,13 +1044,14 @@ You cannot use $filter or $orderby in a search request.</p>
 <dd class="field-odd"><p><strong>text</strong> (<em>str</em>) – the text to search</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>the Query instance</p>
-</dd>
-</dl>
+<dd class="field-even"><p><p>the Query instance</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This method is part of fluent api and can be chained</p>
 </div>
+</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -1043,13 +1064,14 @@ You cannot use $filter or $orderby in a search request.</p>
 If empty, the on_attribute previously set is added.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="#O365.utils.utils.Query" title="O365.utils.utils.Query">Query</a></p>
-</dd>
-</dl>
+<dd class="field-even"><p><p>Query</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This method is part of fluent api and can be chained</p>
 </div>
+</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -1061,13 +1083,14 @@ If empty, the on_attribute previously set is added.</p>
 <dd class="field-odd"><p><strong>word</strong> (<em>str</em>) – word to check</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="#O365.utils.utils.Query" title="O365.utils.utils.Query">Query</a></p>
-</dd>
-</dl>
+<dd class="field-even"><p><p>Query</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This method is part of fluent api and can be chained</p>
 </div>
+</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -1079,13 +1102,14 @@ If empty, the on_attribute previously set is added.</p>
 <dd class="field-odd"><p><strong>word</strong> – word to compare with</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="#O365.utils.utils.Query" title="O365.utils.utils.Query">Query</a></p>
-</dd>
-</dl>
+<dd class="field-even"><p><p>Query</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This method is part of fluent api and can be chained</p>
 </div>
+</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py property">
