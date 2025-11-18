@@ -49,14 +49,14 @@ For example:
 
 .. code-block:: python
 
-    query = mailbox.new_query()  # you can use the shorthand: mailbox.q()
+    builder = mailbox.new_query()  # you can use the shorthand: mailbox.q()
 
-    query = query.on_attribute('subject').contains('george best').chain('or').startswith('quotes')
+    query = builder.chain_or(builder.contains('subject', 'george best'), builder.startswith('subject', 'quotes')
 
     # 'created_date_time' will automatically be converted to the protocol casing.
     # For example when using MS Graph this will become 'createdDateTime'.
 
-    query = query.chain('and').on_attribute('created_date_time').greater(datetime(2018, 3, 21))
+    query = query & builder.greater('created_date_time', datetime(2018, 3, 21))
 
     print(query)
 

@@ -64,15 +64,16 @@ Without admin consent you can only access a few properties of each user such as 
 To search the Global Address List (Users API):
 
 .. code-block:: python
-
+    
     global_address_list = account.directory()
 
     # for backwards compatibility only this also works and returns a Directory object:
     # global_address_list = account.address_book(address_book='gal')
 
     # start a new query:
-    q = global_address_list.new_query('display_name')
-    q.startswith('George Best')
+    builder = global_address_list.new_query()
+    query = builder.select('display_name')
+    query = query & builder.startswith('subject', 'George Best')
 
     for user in global_address_list.get_users(query=q):
         print(user)
