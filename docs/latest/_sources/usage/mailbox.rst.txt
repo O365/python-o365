@@ -87,7 +87,8 @@ MailboxSettings.ReadWrite  mailbox_settings                         To read and 
 .. .. code-block:: python
 
 ..     # All child folders whose name startswith 'Top'
-..     mail_folders = mailbox.get_folders(query=mailbox.new_query('displayName').startswith('Top'))
+..     builder = mailbox.new_query()
+..     mail_folders = mailbox.get_folders(query=builder.startswith('displayName', 'Top'))
 
 Mailbox and Messages
 """"""""""""""""""""
@@ -152,8 +153,9 @@ Creating a draft message is as easy as this:
 **Working with saved emails is also easy**
 
 .. code-block:: python
-
-    query = mailbox.new_query().on_attribute('subject').contains('george best')  # see Query object in Utils
+    
+    builder = mailbox.new_query()
+    query = builder.chain_or(builder.contains('subject', 'george best'), builder.startswith('subject', 'quotes')  # see Query object in Utils
     messages = mailbox.get_messages(limit=25, query=query)
 
     message = messages[0]  # get the first one

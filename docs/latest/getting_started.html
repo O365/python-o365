@@ -145,13 +145,13 @@ This version may include new features but could be unstable. <strong>Use at your
 <p>The first step to be able to work with this library is to register an application and retrieve the auth token. See <a class="reference internal" href="#authentication"><span class="std std-ref">Authentication</span></a>.</p>
 <p>With the access token retrieved and stored you will be able to perform api calls to the service.</p>
 <p>A common pattern to check for authentication and use the library is this one:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">scopes</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;my_required_scopes&#39;</span><span class="p">]</span>  <span class="c1"># you can use scope helpers here (see Permissions and Scopes section)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">requested_scopes</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;my_required_scopes&#39;</span><span class="p">]</span>  <span class="c1"># you can use scope helpers here (see Permissions and Scopes section)</span>
 
 <span class="n">account</span> <span class="o">=</span> <span class="n">Account</span><span class="p">(</span><span class="n">credentials</span><span class="p">)</span>
 
 <span class="k">if</span> <span class="ow">not</span> <span class="n">account</span><span class="o">.</span><span class="n">is_authenticated</span><span class="p">:</span>  <span class="c1"># will check if there is a token and has not expired</span>
    <span class="c1"># ask for a login using console based authentication. See Authentication for other flows</span>
-   <span class="k">if</span> <span class="n">account</span><span class="o">.</span><span class="n">authenticate</span><span class="p">(</span><span class="n">scopes</span><span class="o">=</span><span class="n">scopes</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+   <span class="k">if</span> <span class="n">account</span><span class="o">.</span><span class="n">authenticate</span><span class="p">(</span><span class="n">requested_scopes</span><span class="o">=</span><span class="n">requeated_scopes</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
       <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Authentication Failed&#39;</span><span class="p">)</span>
 
 <span class="c1"># now we are authenticated</span>
@@ -345,7 +345,7 @@ Go to the [procotol section](#protocols) to know more about them.</p>
 <span class="c1"># the default authentication method will be &quot;on behalf of a user&quot;</span>
 
 <span class="n">account</span> <span class="o">=</span> <span class="n">Account</span><span class="p">(</span><span class="n">credentials</span><span class="p">)</span>
-<span class="k">if</span> <span class="n">account</span><span class="o">.</span><span class="n">authenticate</span><span class="p">(</span><span class="n">scopes</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;basic&#39;</span><span class="p">,</span> <span class="s1">&#39;message_all&#39;</span><span class="p">]):</span>
+<span class="k">if</span> <span class="n">account</span><span class="o">.</span><span class="n">authenticate</span><span class="p">(</span><span class="n">requested_scopes</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;basic&#39;</span><span class="p">,</span> <span class="s1">&#39;message_all&#39;</span><span class="p">]):</span>
    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Authenticated!&#39;</span><span class="p">)</span>
 
 <span class="c1"># &#39;basic&#39; adds: &#39;https://graph.microsoft.com/User.Read&#39;</span>
@@ -395,7 +395,7 @@ The method will then return True if the login attempt was succesful.</p>
 <li><p>Console based authentication interface:</p>
 <p>You can authenticate using a console. The best way to achieve this is by using the authenticate method of the Account class.</p>
 <p>account = Account(credentials)
-account.authenticate(scopes=[‘basic’, ‘message_all’])
+account.authenticate(requested_scopes=[‘basic’, ‘message_all’])
 The authenticate method will print into the console an url that you will have to visit to achieve authentication. Then after visiting the link and authenticate you will have to paste back the resulting url into the console. The method will return True and print a message if it was succesful.</p>
 <p><strong>Tip:</strong> When using macOS the console is limited to 1024 characters. If your url has multiple scopes it can exceed this limit. To solve this. Just import readline at the top of your script.</p>
 </li>
@@ -480,14 +480,14 @@ The authenticate method will print into the console an url that you will have to
 
 <span class="n">credentials</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;client_id&#39;</span><span class="p">,</span> <span class="s1">&#39;client_secret&#39;</span><span class="p">)</span>
 
-<span class="n">scopes</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Mail.ReadWrite&#39;</span><span class="p">,</span> <span class="s1">&#39;Mail.Send&#39;</span><span class="p">]</span>
+<span class="n">requested_scopes</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Mail.ReadWrite&#39;</span><span class="p">,</span> <span class="s1">&#39;Mail.Send&#39;</span><span class="p">]</span>
 
-<span class="n">account</span> <span class="o">=</span> <span class="n">Account</span><span class="p">(</span><span class="n">credentials</span><span class="p">,</span> <span class="n">scopes</span><span class="o">=</span><span class="n">scopes</span><span class="p">)</span>
+<span class="n">account</span> <span class="o">=</span> <span class="n">Account</span><span class="p">(</span><span class="n">credentials</span><span class="p">,</span> <span class="n">requested_scopes</span><span class="o">=</span><span class="n">requested_scopes</span><span class="p">)</span>
 <span class="n">account</span><span class="o">.</span><span class="n">authenticate</span><span class="p">()</span>
 
 <span class="c1"># The latter is exactly the same as passing scopes to the authenticate method like so:</span>
 <span class="c1"># account = Account(credentials)</span>
-<span class="c1"># account.authenticate(scopes=scopes)</span>
+<span class="c1"># account.authenticate(requested_scopes=requested_scopes)</span>
 </pre></div>
 </div>
 <p>Scope implementation depends on the protocol used. So by using protocol data you can automatically set the scopes needed. This is implemented by using ‘scope helpers’. Those are little helpers that group scope functionality and abstract the protocol used.</p>
@@ -578,7 +578,7 @@ The authenticate method will print into the console an url that you will have to
 <span class="n">scopes_graph</span> <span class="o">=</span> <span class="n">protocol</span><span class="o">.</span><span class="n">get_scopes_for</span><span class="p">(</span><span class="s1">&#39;message_all&#39;</span><span class="p">)</span>
 <span class="c1"># scopes here are: [&#39;https://graph.microsoft.com/Mail.ReadWrite&#39;, &#39;https://graph.microsoft.com/Mail.Send&#39;]</span>
 
-<span class="n">account</span> <span class="o">=</span> <span class="n">Account</span><span class="p">(</span><span class="n">credentials</span><span class="p">,</span> <span class="n">scopes</span><span class="o">=</span><span class="n">scopes_graph</span><span class="p">)</span>
+<span class="n">account</span> <span class="o">=</span> <span class="n">Account</span><span class="p">(</span><span class="n">credentials</span><span class="p">,</span> <span class="n">requested_scopes</span><span class="o">=</span><span class="n">scopes_graph</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="admonition note">

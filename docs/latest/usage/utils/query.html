@@ -113,8 +113,7 @@
 <span id="id1"></span><h2>Query Builder<a class="headerlink" href="#query-builder" title="Link to this heading"></a></h2>
 <p>A query can be created for every <code class="docutils literal notranslate"><span class="pre">ApiComponent</span></code> (such as <code class="docutils literal notranslate"><span class="pre">MailBox</span></code>). The <code class="docutils literal notranslate"><span class="pre">Query</span></code> can be used to handle the filtering, sorting, selecting, expanding and search very easily.</p>
 <p>For example:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">O365.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">QueryBuilder</span>
-<span class="n">builder</span> <span class="o">=</span> <span class="n">QueryBuilder</span><span class="p">(</span><span class="n">protocol</span><span class="o">=</span><span class="n">account</span><span class="o">.</span><span class="n">protocol</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">builder</span> <span class="o">=</span> <span class="n">mailbox</span><span class="o">.</span><span class="n">new_query</span><span class="p">()</span>
 
 <span class="n">query</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">chain_or</span><span class="p">(</span><span class="n">builder</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="s1">&#39;subject&#39;</span><span class="p">,</span> <span class="s1">&#39;george best&#39;</span><span class="p">),</span> <span class="n">builder</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;subject&#39;</span><span class="p">,</span> <span class="s1">&#39;quotes&#39;</span><span class="p">)</span>
 
@@ -128,7 +127,7 @@
 <span class="c1"># contains(subject, &#39;george best&#39;) or startswith(subject, &#39;quotes&#39;) and createdDateTime gt &#39;2018-03-21T00:00:00Z&#39;</span>
 <span class="c1"># note you can pass naive datetimes and those will be converted to you local timezone and then send to the api as UTC in iso8601 format</span>
 
-<span class="c1"># To use Query objetcs just pass it to the query parameter:</span>
+<span class="c1"># To use Query objects just pass it to the query parameter:</span>
 <span class="n">filtered_messages</span> <span class="o">=</span> <span class="n">mailbox</span><span class="o">.</span><span class="n">get_messages</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="n">query</span><span class="p">)</span>
 </pre></div>
 </div>

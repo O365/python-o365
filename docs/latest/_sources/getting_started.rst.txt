@@ -59,13 +59,13 @@ A common pattern to check for authentication and use the library is this one:
 
 .. code-block:: python
 
-   scopes = ['my_required_scopes']  # you can use scope helpers here (see Permissions and Scopes section)
+   requested_scopes = ['my_required_scopes']  # you can use scope helpers here (see Permissions and Scopes section)
 
    account = Account(credentials)
 
    if not account.is_authenticated:  # will check if there is a token and has not expired
       # ask for a login using console based authentication. See Authentication for other flows
-      if account.authenticate(scopes=scopes) is False:
+      if account.authenticate(requested_scopes=requeated_scopes) is False:
          raise RuntimeError('Authentication Failed')
 
    # now we are authenticated
@@ -228,7 +228,7 @@ To authenticate (login) you can use :ref:`different_interfaces`. On the followin
           # the default authentication method will be "on behalf of a user"
 
           account = Account(credentials)
-          if account.authenticate(scopes=['basic', 'message_all']):
+          if account.authenticate(requested_scopes=['basic', 'message_all']):
              print('Authenticated!')
 
           # 'basic' adds: 'https://graph.microsoft.com/User.Read'
@@ -281,7 +281,7 @@ To accomplish the authentication you can basically use different approaches. The
    You can authenticate using a console. The best way to achieve this is by using the authenticate method of the Account class.
 
    account = Account(credentials)
-   account.authenticate(scopes=['basic', 'message_all'])
+   account.authenticate(requested_scopes=['basic', 'message_all'])
    The authenticate method will print into the console an url that you will have to visit to achieve authentication. Then after visiting the link and authenticate you will have to paste back the resulting url into the console. The method will return True and print a message if it was succesful.
 
    **Tip:** When using macOS the console is limited to 1024 characters. If your url has multiple scopes it can exceed this limit. To solve this. Just import readline at the top of your script.
@@ -370,14 +370,14 @@ For example your application can have Calendar.Read, Mail.ReadWrite and Mail.Sen
 
    credentials = ('client_id', 'client_secret')
 
-   scopes = ['Mail.ReadWrite', 'Mail.Send']
+   requested_scopes = ['Mail.ReadWrite', 'Mail.Send']
 
-   account = Account(credentials, scopes=scopes)
+   account = Account(credentials, requested_scopes=requested_scopes)
    account.authenticate()
 
    # The latter is exactly the same as passing scopes to the authenticate method like so:
    # account = Account(credentials)
-   # account.authenticate(scopes=scopes)
+   # account.authenticate(requested_scopes=requested_scopes)
 
 Scope implementation depends on the protocol used. So by using protocol data you can automatically set the scopes needed. This is implemented by using 'scope helpers'. Those are little helpers that group scope functionality and abstract the protocol used.
 
@@ -419,7 +419,7 @@ You can get the same scopes as before using protocols and scope helpers like thi
    scopes_graph = protocol.get_scopes_for('message_all')
    # scopes here are: ['https://graph.microsoft.com/Mail.ReadWrite', 'https://graph.microsoft.com/Mail.Send']
 
-   account = Account(credentials, scopes=scopes_graph)
+   account = Account(credentials, requested_scopes=scopes_graph)
 
 .. note::
    

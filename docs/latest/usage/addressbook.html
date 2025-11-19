@@ -185,8 +185,9 @@ However you can use the <a class="reference external" href="https://developer.mi
 <span class="c1"># global_address_list = account.address_book(address_book=&#39;gal&#39;)</span>
 
 <span class="c1"># start a new query:</span>
-<span class="n">q</span> <span class="o">=</span> <span class="n">global_address_list</span><span class="o">.</span><span class="n">new_query</span><span class="p">(</span><span class="s1">&#39;display_name&#39;</span><span class="p">)</span>
-<span class="n">q</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;George Best&#39;</span><span class="p">)</span>
+<span class="n">builder</span> <span class="o">=</span> <span class="n">global_address_list</span><span class="o">.</span><span class="n">new_query</span><span class="p">()</span>
+<span class="n">query</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s1">&#39;display_name&#39;</span><span class="p">)</span>
+<span class="n">query</span> <span class="o">=</span> <span class="n">query</span> <span class="o">&amp;</span> <span class="n">builder</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;subject&#39;</span><span class="p">,</span> <span class="s1">&#39;George Best&#39;</span><span class="p">)</span>
 
 <span class="k">for</span> <span class="n">user</span> <span class="ow">in</span> <span class="n">global_address_list</span><span class="o">.</span><span class="n">get_users</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="n">q</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>

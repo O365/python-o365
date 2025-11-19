@@ -275,11 +275,11 @@ Account class represents a specific account you would like to connect</p>
 </ul>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Full permission to your mail</span>
 <span class="n">account</span> <span class="o">=</span> <span class="n">Account</span><span class="p">(</span><span class="n">credentials</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;my_client_id&#39;</span><span class="p">,</span> <span class="s1">&#39;my_client_secret&#39;</span><span class="p">),</span>
-                  <span class="n">scopes</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;message_all&#39;</span><span class="p">])</span>
+                  <span class="n">requested_scopes</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;message_all&#39;</span><span class="p">])</span>
 
 <span class="c1"># Why change every time, add all at a time :)</span>
 <span class="n">account</span> <span class="o">=</span> <span class="n">Account</span><span class="p">(</span><span class="n">credentials</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;my_client_id&#39;</span><span class="p">,</span> <span class="s1">&#39;my_client_secret&#39;</span><span class="p">),</span>
-                  <span class="n">scopes</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;message_all&#39;</span><span class="p">,</span> <span class="s1">&#39;message_all_shared&#39;</span><span class="p">,</span> <span class="s1">&#39;address_book_all&#39;</span><span class="p">,</span>
+                  <span class="n">requested_scopes</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;message_all&#39;</span><span class="p">,</span> <span class="s1">&#39;message_all_shared&#39;</span><span class="p">,</span> <span class="s1">&#39;address_book_all&#39;</span><span class="p">,</span>
                           <span class="s1">&#39;address_book_all_shared&#39;</span><span class="p">,</span>
                           <span class="s1">&#39;calendar&#39;</span><span class="p">,</span> <span class="s1">&#39;users&#39;</span><span class="p">,</span> <span class="s1">&#39;onedrive&#39;</span><span class="p">,</span> <span class="s1">&#39;sharepoint_dl&#39;</span><span class="p">])</span>
 </pre></div>
@@ -333,8 +333,8 @@ Account class represents a specific account you would like to connect</p>
 <span class="kn">from</span><span class="w"> </span><span class="nn">O365.mailbox</span><span class="w"> </span><span class="kn">import</span> <span class="n">MailBox</span>
 
 <span class="n">protocol</span> <span class="o">=</span> <span class="n">MSGraphProtocol</span><span class="p">()</span>
-<span class="n">scopes</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;...&#39;</span><span class="p">]</span>
-<span class="n">con</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">((</span><span class="s1">&#39;client_id&#39;</span><span class="p">,</span> <span class="s1">&#39;client_secret&#39;</span><span class="p">),</span> <span class="n">scopes</span><span class="o">=</span><span class="n">scopes</span><span class="p">)</span>
+<span class="n">requested_scopes</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;...&#39;</span><span class="p">]</span>
+<span class="n">con</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">((</span><span class="s1">&#39;client_id&#39;</span><span class="p">,</span> <span class="s1">&#39;client_secret&#39;</span><span class="p">),</span> <span class="n">requested_scopes</span><span class="o">=</span><span class="n">requested_scopes</span><span class="p">)</span>
 
 <span class="n">message</span> <span class="o">=</span> <span class="n">Message</span><span class="p">(</span><span class="n">con</span><span class="o">=</span><span class="n">con</span><span class="p">,</span> <span class="n">protocol</span><span class="o">=</span><span class="n">protocol</span><span class="p">)</span>
 <span class="c1"># ...</span>
@@ -374,7 +374,7 @@ Account class represents a specific account you would like to connect</p>
 <span class="kn">from</span><span class="w"> </span><span class="nn">O365</span><span class="w"> </span><span class="kn">import</span> <span class="n">Connection</span><span class="p">,</span> <span class="n">MSGraphProtocol</span>
 
 <span class="n">protocol</span> <span class="o">=</span> <span class="n">MSGraphProtocol</span><span class="p">()</span>  <span class="c1"># or maybe a user defined protocol</span>
-<span class="n">con</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">((</span><span class="s1">&#39;client_id&#39;</span><span class="p">,</span> <span class="s1">&#39;client_secret&#39;</span><span class="p">),</span> <span class="n">scopes</span><span class="o">=</span><span class="n">protocol</span><span class="o">.</span><span class="n">get_scopes_for</span><span class="p">([</span><span class="s1">&#39;...&#39;</span><span class="p">]))</span>
+<span class="n">con</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">((</span><span class="s1">&#39;client_id&#39;</span><span class="p">,</span> <span class="s1">&#39;client_secret&#39;</span><span class="p">),</span> <span class="n">requested_scopes</span><span class="o">=</span><span class="n">protocol</span><span class="o">.</span><span class="n">get_scopes_for</span><span class="p">([</span><span class="s1">&#39;...&#39;</span><span class="p">]))</span>
 <span class="n">custom_class</span> <span class="o">=</span> <span class="n">CustomClass</span><span class="p">(</span><span class="n">con</span><span class="o">=</span><span class="n">con</span><span class="p">,</span> <span class="n">protocol</span><span class="o">=</span><span class="n">protocol</span><span class="p">)</span>
 
 <span class="n">custom_class</span><span class="o">.</span><span class="n">do_some_stuff</span><span class="p">()</span>
