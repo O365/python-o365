@@ -52,7 +52,7 @@ Working with Calendar instances:
 
     
     start_q = builder.greater_equal('start', dt.datetime(2018, 5, 20))
-    end_q = builder.greater_equal('start', dt.datetime(2018, 5, 24))
+    end_q = builder.less_equal('start', dt.datetime(2018, 5, 24))
 
     birthdays = calendar.get_events(
         include_recurring=True, # include_recurring=True will include repeated events on the result set.

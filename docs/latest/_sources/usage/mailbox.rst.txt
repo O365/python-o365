@@ -87,8 +87,7 @@ MailboxSettings.ReadWrite  mailbox_settings                         To read and 
 .. .. code-block:: python
 
 ..     # All child folders whose name startswith 'Top'
-..     builder = mailbox.new_query()
-..     mail_folders = mailbox.get_folders(query=builder.startswith('displayName', 'Top'))
+..     mail_folders = mailbox.get_folders(query=mailbox.new_query().startswith('display_name', 'Top'))
 
 Mailbox and Messages
 """"""""""""""""""""
