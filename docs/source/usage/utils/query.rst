@@ -12,8 +12,7 @@ For example:
 
 .. code-block:: python
 
-    from O365.utils import QueryBuilder
-    builder = QueryBuilder(protocol=account.protocol)
+    builder = mailbox.new_query()
 
     query = builder.chain_or(builder.contains('subject', 'george best'), builder.startswith('subject', 'quotes')
 
@@ -27,7 +26,7 @@ For example:
     # contains(subject, 'george best') or startswith(subject, 'quotes') and createdDateTime gt '2018-03-21T00:00:00Z'
     # note you can pass naive datetimes and those will be converted to you local timezone and then send to the api as UTC in iso8601 format
 
-    # To use Query objetcs just pass it to the query parameter:
+    # To use Query objects just pass it to the query parameter:
     filtered_messages = mailbox.get_messages(query=query)
 
 You can also specify specific data to be retrieved with "select":

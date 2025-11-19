@@ -46,12 +46,13 @@ Working with Calendar instances:
 
     calendar = schedule.get_calendar(calendar_name='Birthdays')
 
+    builder = calendar.new_query()
     calendar.name = 'Football players birthdays'
     calendar.update()
 
     
-    start_q = calendar.new_query('start').greater_equal(dt.datetime(2018, 5, 20))
-    end_q = calendar.new_query('start').less_equal(dt.datetime(2018, 5, 24))
+    start_q = builder.greater_equal('start', dt.datetime(2018, 5, 20))
+    end_q = builder.greater_equal('start', dt.datetime(2018, 5, 24))
 
     birthdays = calendar.get_events(
         include_recurring=True, # include_recurring=True will include repeated events on the result set.

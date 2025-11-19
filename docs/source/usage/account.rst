@@ -88,11 +88,11 @@ Setting Scopes
 
     # Full permission to your mail
     account = Account(credentials=('my_client_id', 'my_client_secret'),
-                      scopes=['message_all'])
+                      requested_scopes=['message_all'])
 
     # Why change every time, add all at a time :)
     account = Account(credentials=('my_client_id', 'my_client_secret'),
-                      scopes=['message_all', 'message_all_shared', 'address_book_all',
+                      requested_scopes=['message_all', 'message_all_shared', 'address_book_all',
                               'address_book_all_shared',
                               'calendar', 'users', 'onedrive', 'sharepoint_dl'])
 
@@ -143,8 +143,8 @@ You can work only with the required pieces:
     from O365.mailbox import MailBox
 
     protocol = MSGraphProtocol()
-    scopes = ['...']
-    con = Connection(('client_id', 'client_secret'), scopes=scopes)
+    requested_scopes = ['...']
+    con = Connection(('client_id', 'client_secret'), requested_scopes=requested_scopes)
 
     message = Message(con=con, protocol=protocol)
     # ...
@@ -186,7 +186,7 @@ It's also easy to implement a custom Class. Just Inherit from ApiComponent, defi
     from O365 import Connection, MSGraphProtocol
 
     protocol = MSGraphProtocol()  # or maybe a user defined protocol
-    con = Connection(('client_id', 'client_secret'), scopes=protocol.get_scopes_for(['...']))
+    con = Connection(('client_id', 'client_secret'), requested_scopes=protocol.get_scopes_for(['...']))
     custom_class = CustomClass(con=con, protocol=protocol)
 
     custom_class.do_some_stuff()
