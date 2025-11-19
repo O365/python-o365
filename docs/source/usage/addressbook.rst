@@ -72,8 +72,7 @@ To search the Global Address List (Users API):
 
     # start a new query:
     builder = global_address_list.new_query()
-    query = builder.select('display_name')
-    query = query & builder.startswith('subject', 'George Best')
+    query = builder.startswith('display_name', 'George Best')
 
     for user in global_address_list.get_users(query=q):
         print(user)
