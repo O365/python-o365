@@ -1,85 +1,52 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>One Drive &mdash; O365  documentation</title>
-  
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
 
   
-  
-  
-  
-
-  
-
-  
-  
-    
-
-  
-
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Mailbox" href="mailbox.html" />
-    <link rel="prev" title="Connection" href="connection.html" /> 
-
-  
-  <script src="../_static/js/modernizr.min.js"></script>
+    <link rel="next" title="Group" href="group.html" />
+    <link rel="prev" title="Directory" href="directory.html" />
+    <link href="../_static/css/style.css" rel="stylesheet" type="text/css">
 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
-          
+        <div class="wy-side-nav-search" >
 
           
-            <a href="../index.html" class="icon icon-home"> O365
           
-
-          
+          <a href="../index.html">
+            
           </a>
-
-          
-            
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p class="caption"><span class="caption-text">Contents:</span></p>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../usage.html">Detailed Usage</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../api.html">O365 API</a><ul class="current">
@@ -87,142 +54,194 @@
 <li class="toctree-l2"><a class="reference internal" href="address_book.html">Address Book</a></li>
 <li class="toctree-l2"><a class="reference internal" href="attachment.html">Attachment</a></li>
 <li class="toctree-l2"><a class="reference internal" href="calendar.html">Calendar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="category.html">Outlook Category</a></li>
 <li class="toctree-l2"><a class="reference internal" href="connection.html">Connection</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">One Drive</a></li>
+<li class="toctree-l2"><a class="reference internal" href="directory.html">Directory</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">One Drive</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#O365.drive.CopyOperation"><code class="docutils literal notranslate"><span class="pre">CopyOperation</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.CopyOperation.__init__"><code class="docutils literal notranslate"><span class="pre">CopyOperation.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.CopyOperation.check_status"><code class="docutils literal notranslate"><span class="pre">CopyOperation.check_status()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.CopyOperation.get_item"><code class="docutils literal notranslate"><span class="pre">CopyOperation.get_item()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#O365.drive.DownloadableMixin"><code class="docutils literal notranslate"><span class="pre">DownloadableMixin</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.DownloadableMixin.download"><code class="docutils literal notranslate"><span class="pre">DownloadableMixin.download()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#O365.drive.Drive"><code class="docutils literal notranslate"><span class="pre">Drive</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.Drive.__init__"><code class="docutils literal notranslate"><span class="pre">Drive.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.Drive.get_child_folders"><code class="docutils literal notranslate"><span class="pre">Drive.get_child_folders()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.Drive.get_item"><code class="docutils literal notranslate"><span class="pre">Drive.get_item()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.Drive.get_item_by_path"><code class="docutils literal notranslate"><span class="pre">Drive.get_item_by_path()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.Drive.get_items"><code class="docutils literal notranslate"><span class="pre">Drive.get_items()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.Drive.get_recent"><code class="docutils literal notranslate"><span class="pre">Drive.get_recent()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.Drive.get_root_folder"><code class="docutils literal notranslate"><span class="pre">Drive.get_root_folder()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.Drive.get_shared_with_me"><code class="docutils literal notranslate"><span class="pre">Drive.get_shared_with_me()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.Drive.get_special_folder"><code class="docutils literal notranslate"><span class="pre">Drive.get_special_folder()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.Drive.refresh"><code class="docutils literal notranslate"><span class="pre">Drive.refresh()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.Drive.search"><code class="docutils literal notranslate"><span class="pre">Drive.search()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#O365.drive.DriveItem"><code class="docutils literal notranslate"><span class="pre">DriveItem</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.DriveItem.__init__"><code class="docutils literal notranslate"><span class="pre">DriveItem.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.DriveItem.copy"><code class="docutils literal notranslate"><span class="pre">DriveItem.copy()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.DriveItem.delete"><code class="docutils literal notranslate"><span class="pre">DriveItem.delete()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.DriveItem.get_drive"><code class="docutils literal notranslate"><span class="pre">DriveItem.get_drive()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.DriveItem.get_parent"><code class="docutils literal notranslate"><span class="pre">DriveItem.get_parent()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.DriveItem.get_permissions"><code class="docutils literal notranslate"><span class="pre">DriveItem.get_permissions()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.DriveItem.get_thumbnails"><code class="docutils literal notranslate"><span class="pre">DriveItem.get_thumbnails()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.DriveItem.get_version"><code class="docutils literal notranslate"><span class="pre">DriveItem.get_version()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.DriveItem.get_versions"><code class="docutils literal notranslate"><span class="pre">DriveItem.get_versions()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.DriveItem.is_file"><code class="docutils literal notranslate"><span class="pre">DriveItem.is_file</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.DriveItem.is_folder"><code class="docutils literal notranslate"><span class="pre">DriveItem.is_folder</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.DriveItem.is_image"><code class="docutils literal notranslate"><span class="pre">DriveItem.is_image</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.DriveItem.is_photo"><code class="docutils literal notranslate"><span class="pre">DriveItem.is_photo</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.DriveItem.move"><code class="docutils literal notranslate"><span class="pre">DriveItem.move()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.DriveItem.share_with_invite"><code class="docutils literal notranslate"><span class="pre">DriveItem.share_with_invite()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.DriveItem.share_with_link"><code class="docutils literal notranslate"><span class="pre">DriveItem.share_with_link()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.DriveItem.update"><code class="docutils literal notranslate"><span class="pre">DriveItem.update()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#O365.drive.DriveItemPermission"><code class="docutils literal notranslate"><span class="pre">DriveItemPermission</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.DriveItemPermission.__init__"><code class="docutils literal notranslate"><span class="pre">DriveItemPermission.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.DriveItemPermission.delete"><code class="docutils literal notranslate"><span class="pre">DriveItemPermission.delete()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.DriveItemPermission.update_roles"><code class="docutils literal notranslate"><span class="pre">DriveItemPermission.update_roles()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#O365.drive.DriveItemVersion"><code class="docutils literal notranslate"><span class="pre">DriveItemVersion</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.DriveItemVersion.__init__"><code class="docutils literal notranslate"><span class="pre">DriveItemVersion.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.DriveItemVersion.download"><code class="docutils literal notranslate"><span class="pre">DriveItemVersion.download()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.DriveItemVersion.restore"><code class="docutils literal notranslate"><span class="pre">DriveItemVersion.restore()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#O365.drive.File"><code class="docutils literal notranslate"><span class="pre">File</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.File.__init__"><code class="docutils literal notranslate"><span class="pre">File.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.File.extension"><code class="docutils literal notranslate"><span class="pre">File.extension</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#O365.drive.Folder"><code class="docutils literal notranslate"><span class="pre">Folder</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.Folder.__init__"><code class="docutils literal notranslate"><span class="pre">Folder.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.Folder.create_child_folder"><code class="docutils literal notranslate"><span class="pre">Folder.create_child_folder()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.Folder.download_contents"><code class="docutils literal notranslate"><span class="pre">Folder.download_contents()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.Folder.get_child_folders"><code class="docutils literal notranslate"><span class="pre">Folder.get_child_folders()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.Folder.get_items"><code class="docutils literal notranslate"><span class="pre">Folder.get_items()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.Folder.search"><code class="docutils literal notranslate"><span class="pre">Folder.search()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.Folder.upload_file"><code class="docutils literal notranslate"><span class="pre">Folder.upload_file()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#O365.drive.Image"><code class="docutils literal notranslate"><span class="pre">Image</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.Image.__init__"><code class="docutils literal notranslate"><span class="pre">Image.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.Image.dimensions"><code class="docutils literal notranslate"><span class="pre">Image.dimensions</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#O365.drive.Photo"><code class="docutils literal notranslate"><span class="pre">Photo</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.Photo.__init__"><code class="docutils literal notranslate"><span class="pre">Photo.__init__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#O365.drive.Storage"><code class="docutils literal notranslate"><span class="pre">Storage</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.Storage.__init__"><code class="docutils literal notranslate"><span class="pre">Storage.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.Storage.drive_constructor"><code class="docutils literal notranslate"><span class="pre">Storage.drive_constructor</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.Storage.get_default_drive"><code class="docutils literal notranslate"><span class="pre">Storage.get_default_drive()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.Storage.get_drive"><code class="docutils literal notranslate"><span class="pre">Storage.get_drive()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.drive.Storage.get_drives"><code class="docutils literal notranslate"><span class="pre">Storage.get_drives()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="group.html">Group</a></li>
 <li class="toctree-l2"><a class="reference internal" href="mailbox.html">Mailbox</a></li>
 <li class="toctree-l2"><a class="reference internal" href="message.html">Message</a></li>
+<li class="toctree-l2"><a class="reference internal" href="planner.html">Planner</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sharepoint.html">Sharepoint</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tasks.html">Tasks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="teams.html">Teams</a></li>
 <li class="toctree-l2"><a class="reference internal" href="utils.html">Utils</a></li>
 </ul>
 </li>
 </ul>
 
-            
-          
         </div>
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">O365</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="../index.html">Docs</a> &raquo;</li>
-        
-          <li><a href="../api.html">O365 API</a> &raquo;</li>
-        
-      <li>One Drive</li>
-    
-    
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../api.html">O365 API</a></li>
+      <li class="breadcrumb-item active">One Drive</li>
       <li class="wy-breadcrumbs-aside">
-        
-            
             <a href="../_sources/api/drive.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
-  </ul>
-
-  
-  <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
-      
-        <a href="mailbox.html" class="btn btn-neutral float-right" title="Mailbox" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="connection.html" class="btn btn-neutral" title="Connection" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="directory.html" class="btn btn-neutral float-left" title="Directory" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="group.html" class="btn btn-neutral float-right" title="Group" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
   </div>
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <div class="section" id="module-O365.drive">
-<span id="one-drive"></span><h1>One Drive<a class="headerlink" href="#module-O365.drive" title="Permalink to this headline">¶</a></h1>
+             
+  <section id="module-O365.drive">
+<span id="one-drive"></span><h1>One Drive<a class="headerlink" href="#module-O365.drive" title="Link to this heading"></a></h1>
 <dl class="py class">
-<dt id="O365.drive.CopyOperation">
-<em class="property">class </em><code class="sig-prename descclassname">O365.drive.</code><code class="sig-name descname">CopyOperation</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">con</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#CopyOperation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.CopyOperation" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.utils.utils.ApiComponent</span></code></a></p>
+<dt class="sig sig-object py" id="O365.drive.CopyOperation">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.drive.</span></span><span class="sig-name descname"><span class="pre">CopyOperation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">con</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#CopyOperation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.drive.CopyOperation" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">ApiComponent</span></code></a></p>
 <p><a class="reference external" href="https://github.com/OneDrive/onedrive-api-docs/issues/762">https://github.com/OneDrive/onedrive-api-docs/issues/762</a></p>
 <dl class="py method">
-<dt id="O365.drive.CopyOperation.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">con</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#CopyOperation.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.CopyOperation.__init__" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.drive.CopyOperation.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">con</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#CopyOperation.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.drive.CopyOperation.__init__" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>parent</strong> (<a class="reference internal" href="#O365.drive.Drive" title="O365.drive.Drive"><em>Drive</em></a>) – parent for this operation</p></li>
+<li><p><strong>parent</strong> (<a class="reference internal" href="#O365.drive.Drive" title="O365.drive.Drive"><em>Drive</em></a>) – parent for this operation i.e. the source of the copied item</p></li>
 <li><p><strong>con</strong> (<a class="reference internal" href="connection.html#O365.connection.Connection" title="O365.connection.Connection"><em>Connection</em></a>) – connection to use if no parent specified</p></li>
+<li><p><strong>target</strong> (<a class="reference internal" href="#O365.drive.Drive" title="O365.drive.Drive"><em>Drive</em></a>) – The target drive for the copy operation</p></li>
 <li><p><strong>protocol</strong> (<a class="reference internal" href="connection.html#O365.connection.Protocol" title="O365.connection.Protocol"><em>Protocol</em></a>) – protocol to use if no parent specified
 (kwargs)</p></li>
 <li><p><strong>main_resource</strong> (<em>str</em>) – use this resource instead of parent resource
 (kwargs)</p></li>
-<li><p><strong>monitor_url</strong> (<em>str</em>) – </p></li>
-<li><p><strong>item_id</strong> (<em>str</em>) – </p></li>
+<li><p><strong>monitor_url</strong> (<em>str</em>)</p></li>
+<li><p><strong>item_id</strong> (<em>str</em>)</p></li>
 </ul>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.drive.CopyOperation.check_status">
-<code class="sig-name descname">check_status</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">delay</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#CopyOperation.check_status"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.CopyOperation.check_status" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.drive.CopyOperation.check_status">
+<span class="sig-name descname"><span class="pre">check_status</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">delay</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#CopyOperation.check_status"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.drive.CopyOperation.check_status" title="Link to this definition"></a></dt>
 <dd><p>Checks the api endpoint in a loop</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>delay</strong> – number of seconds to wait between api calls.
 Note Connection ‘requests_delay’ also apply.</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>tuple of status and percentage complete</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>tuple(str, float)</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.drive.CopyOperation.get_item">
-<code class="sig-name descname">get_item</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#CopyOperation.get_item"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.CopyOperation.get_item" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.drive.CopyOperation.get_item">
+<span class="sig-name descname"><span class="pre">get_item</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#CopyOperation.get_item"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.drive.CopyOperation.get_item" title="Link to this definition"></a></dt>
 <dd><p>Returns the item copied</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Copied Item</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="#O365.drive.DriveItem" title="O365.drive.DriveItem">DriveItem</a></p>
 </dd>
 </dl>
@@ -231,16 +250,16 @@ Note Connection ‘requests_delay’ also apply.</p>
 </dd></dl>
 
 <dl class="py class">
-<dt id="O365.drive.DownloadableMixin">
-<em class="property">class </em><code class="sig-prename descclassname">O365.drive.</code><code class="sig-name descname">DownloadableMixin</code><a class="reference internal" href="../_modules/O365/drive.html#DownloadableMixin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.DownloadableMixin" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.drive.DownloadableMixin">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.drive.</span></span><span class="sig-name descname"><span class="pre">DownloadableMixin</span></span><a class="reference internal" href="../_modules/O365/drive.html#DownloadableMixin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.drive.DownloadableMixin" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="py method">
-<dt id="O365.drive.DownloadableMixin.download">
-<code class="sig-name descname">download</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">to_path</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">chunk_size</span><span class="o">=</span><span class="default_value">'auto'</span></em>, <em class="sig-param"><span class="n">convert_to_pdf</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">output</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#DownloadableMixin.download"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.DownloadableMixin.download" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.drive.DownloadableMixin.download">
+<span class="sig-name descname"><span class="pre">download</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">to_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chunk_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convert_to_pdf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#DownloadableMixin.download"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.drive.DownloadableMixin.download" title="Link to this definition"></a></dt>
 <dd><p>Downloads this file to the local drive. Can download the
 file in chunks with multiple requests to the server.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>to_path</strong> (<em>str</em><em> or </em><em>Path</em>) – a path to store the downloaded file</p></li>
 <li><p><strong>name</strong> (<em>str</em>) – the name you want the stored file to have.</p></li>
@@ -254,10 +273,10 @@ if file extension in ALLOWED_PDF_EXTENSIONS</p></li>
 if set, the to_path and name will be ignored</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Success / Failure</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>bool</p>
 </dd>
 </dl>
@@ -266,17 +285,17 @@ if set, the to_path and name will be ignored</p></li>
 </dd></dl>
 
 <dl class="py class">
-<dt id="O365.drive.Drive">
-<em class="property">class </em><code class="sig-prename descclassname">O365.drive.</code><code class="sig-name descname">Drive</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">con</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#Drive"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.Drive" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.utils.utils.ApiComponent</span></code></a></p>
+<dt class="sig sig-object py" id="O365.drive.Drive">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.drive.</span></span><span class="sig-name descname"><span class="pre">Drive</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">con</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#Drive"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.drive.Drive" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">ApiComponent</span></code></a></p>
 <p>A Drive representation.
 A Drive is a Container of Folders and Files and act as a root item</p>
 <dl class="py method">
-<dt id="O365.drive.Drive.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">con</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#Drive.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.Drive.__init__" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.drive.Drive.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">con</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#Drive.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.drive.Drive.__init__" title="Link to this definition"></a></dt>
 <dd><p>Create a drive representation</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>parent</strong> (<a class="reference internal" href="#O365.drive.Drive" title="O365.drive.Drive"><em>Drive</em></a><em> or </em><a class="reference internal" href="#O365.drive.Storage" title="O365.drive.Storage"><em>Storage</em></a>) – parent for this operation</p></li>
 <li><p><strong>con</strong> (<a class="reference internal" href="connection.html#O365.connection.Connection" title="O365.connection.Connection"><em>Connection</em></a>) – connection to use if no parent specified</p></li>
@@ -290,11 +309,11 @@ A Drive is a Container of Folders and Files and act as a root item</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.drive.Drive.get_child_folders">
-<code class="sig-name descname">get_child_folders</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">limit</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">query</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">order_by</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">batch</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#Drive.get_child_folders"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.Drive.get_child_folders" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.drive.Drive.get_child_folders">
+<span class="sig-name descname"><span class="pre">get_child_folders</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order_by</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#Drive.get_child_folders"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.drive.Drive.get_child_folders" title="Link to this definition"></a></dt>
 <dd><p>Returns all the folders inside this folder</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>limit</strong> (<em>int</em>) – max no. of folders to get. Over 999 uses batch.</p></li>
 <li><p><strong>query</strong> (<a class="reference internal" href="utils.html#O365.utils.utils.Query" title="O365.utils.utils.Query"><em>Query</em></a><em> or </em><em>str</em>) – applies a OData filter to the request</p></li>
@@ -303,43 +322,43 @@ A Drive is a Container of Folders and Files and act as a root item</p>
 batches allowing to retrieve more items than the limit.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>folder items in this folder</p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>generator of DriveItem or <a class="reference internal" href="utils.html#O365.utils.utils.Pagination" title="O365.utils.utils.Pagination">Pagination</a></p>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>generator of <a class="reference internal" href="#O365.drive.DriveItem" title="O365.drive.DriveItem">DriveItem</a> or <a class="reference internal" href="utils.html#O365.utils.utils.Pagination" title="O365.utils.utils.Pagination">Pagination</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.drive.Drive.get_item">
-<code class="sig-name descname">get_item</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">item_id</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#Drive.get_item"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.Drive.get_item" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.drive.Drive.get_item">
+<span class="sig-name descname"><span class="pre">get_item</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#Drive.get_item"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.drive.Drive.get_item" title="Link to this definition"></a></dt>
 <dd><p>Returns a DriveItem by it’s Id</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>one item</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="#O365.drive.DriveItem" title="O365.drive.DriveItem">DriveItem</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.drive.Drive.get_item_by_path">
-<code class="sig-name descname">get_item_by_path</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">item_path</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#Drive.get_item_by_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.Drive.get_item_by_path" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a DriveItem by it’s path: /path/to/file
+<dt class="sig sig-object py" id="O365.drive.Drive.get_item_by_path">
+<span class="sig-name descname"><span class="pre">get_item_by_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#Drive.get_item_by_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.drive.Drive.get_item_by_path" title="Link to this definition"></a></dt>
+<dd><p>Returns a DriveItem by it’s absolute path: /path/to/file
 :return: one item
 :rtype: DriveItem</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.drive.Drive.get_items">
-<code class="sig-name descname">get_items</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">limit</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">query</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">order_by</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">batch</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#Drive.get_items"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.Drive.get_items" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.drive.Drive.get_items">
+<span class="sig-name descname"><span class="pre">get_items</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order_by</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#Drive.get_items"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.drive.Drive.get_items" title="Link to this definition"></a></dt>
 <dd><p>Returns a collection of drive items from the root folder</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>limit</strong> (<em>int</em>) – max no. of items to get. Over 999 uses batch.</p></li>
 <li><p><strong>query</strong> (<a class="reference internal" href="utils.html#O365.utils.utils.Query" title="O365.utils.utils.Query"><em>Query</em></a><em> or </em><em>str</em>) – applies a OData filter to the request</p></li>
@@ -348,21 +367,21 @@ batches allowing to retrieve more items than the limit.</p></li>
 batches allowing to retrieve more items than the limit.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>items in this folder</p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>generator of DriveItem or <a class="reference internal" href="utils.html#O365.utils.utils.Pagination" title="O365.utils.utils.Pagination">Pagination</a></p>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>generator of <a class="reference internal" href="#O365.drive.DriveItem" title="O365.drive.DriveItem">DriveItem</a> or <a class="reference internal" href="utils.html#O365.utils.utils.Pagination" title="O365.utils.utils.Pagination">Pagination</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.drive.Drive.get_recent">
-<code class="sig-name descname">get_recent</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">limit</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">query</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">order_by</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">batch</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#Drive.get_recent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.Drive.get_recent" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.drive.Drive.get_recent">
+<span class="sig-name descname"><span class="pre">get_recent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order_by</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#Drive.get_recent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.drive.Drive.get_recent" title="Link to this definition"></a></dt>
 <dd><p>Returns a collection of recently used DriveItems</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>limit</strong> (<em>int</em>) – max no. of items to get. Over 999 uses batch.</p></li>
 <li><p><strong>query</strong> (<a class="reference internal" href="utils.html#O365.utils.utils.Query" title="O365.utils.utils.Query"><em>Query</em></a><em> or </em><em>str</em>) – applies a OData filter to the request</p></li>
@@ -371,83 +390,84 @@ batches allowing to retrieve more items than the limit.</p></li>
 batches allowing to retrieve more items than the limit.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>items in this folder</p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>generator of DriveItem or <a class="reference internal" href="utils.html#O365.utils.utils.Pagination" title="O365.utils.utils.Pagination">Pagination</a></p>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>generator of <a class="reference internal" href="#O365.drive.DriveItem" title="O365.drive.DriveItem">DriveItem</a> or <a class="reference internal" href="utils.html#O365.utils.utils.Pagination" title="O365.utils.utils.Pagination">Pagination</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.drive.Drive.get_root_folder">
-<code class="sig-name descname">get_root_folder</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#Drive.get_root_folder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.Drive.get_root_folder" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.drive.Drive.get_root_folder">
+<span class="sig-name descname"><span class="pre">get_root_folder</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#Drive.get_root_folder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.drive.Drive.get_root_folder" title="Link to this definition"></a></dt>
 <dd><p>Returns the Root Folder of this drive</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Root Folder</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="#O365.drive.DriveItem" title="O365.drive.DriveItem">DriveItem</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.drive.Drive.get_shared_with_me">
-<code class="sig-name descname">get_shared_with_me</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">limit</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">query</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">order_by</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">batch</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#Drive.get_shared_with_me"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.Drive.get_shared_with_me" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.drive.Drive.get_shared_with_me">
+<span class="sig-name descname"><span class="pre">get_shared_with_me</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_external</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order_by</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#Drive.get_shared_with_me"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.drive.Drive.get_shared_with_me" title="Link to this definition"></a></dt>
 <dd><p>Returns a collection of DriveItems shared with me</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>limit</strong> (<em>int</em>) – max no. of items to get. Over 999 uses batch.</p></li>
 <li><p><strong>query</strong> (<a class="reference internal" href="utils.html#O365.utils.utils.Query" title="O365.utils.utils.Query"><em>Query</em></a><em> or </em><em>str</em>) – applies a OData filter to the request</p></li>
 <li><p><strong>order_by</strong> (<a class="reference internal" href="utils.html#O365.utils.utils.Query" title="O365.utils.utils.Query"><em>Query</em></a><em> or </em><em>str</em>) – orders the result set based on this condition</p></li>
 <li><p><strong>batch</strong> (<em>int</em>) – batch size, retrieves items in
 batches allowing to retrieve more items than the limit.</p></li>
+<li><p><strong>allow_external</strong> (<em>bool</em>) – includes items shared from external tenants</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>items in this folder</p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>generator of DriveItem or <a class="reference internal" href="utils.html#O365.utils.utils.Pagination" title="O365.utils.utils.Pagination">Pagination</a></p>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>generator of <a class="reference internal" href="#O365.drive.DriveItem" title="O365.drive.DriveItem">DriveItem</a> or <a class="reference internal" href="utils.html#O365.utils.utils.Pagination" title="O365.utils.utils.Pagination">Pagination</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.drive.Drive.get_special_folder">
-<code class="sig-name descname">get_special_folder</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#Drive.get_special_folder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.Drive.get_special_folder" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.drive.Drive.get_special_folder">
+<span class="sig-name descname"><span class="pre">get_special_folder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#Drive.get_special_folder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.drive.Drive.get_special_folder" title="Link to this definition"></a></dt>
 <dd><p>Returns the specified Special Folder</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>a special Folder</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="#O365.drive.Folder" title="O365.drive.Folder">drive.Folder</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.drive.Drive.refresh">
-<code class="sig-name descname">refresh</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#Drive.refresh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.Drive.refresh" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.drive.Drive.refresh">
+<span class="sig-name descname"><span class="pre">refresh</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#Drive.refresh"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.drive.Drive.refresh" title="Link to this definition"></a></dt>
 <dd><p>Updates this drive with data from the server</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Success / Failure</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>bool</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.drive.Drive.search">
-<code class="sig-name descname">search</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">search_text</span></em>, <em class="sig-param"><span class="n">limit</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">query</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">order_by</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">batch</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#Drive.search"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.Drive.search" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.drive.Drive.search">
+<span class="sig-name descname"><span class="pre">search</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">search_text</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order_by</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#Drive.search"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.drive.Drive.search" title="Link to this definition"></a></dt>
 <dd><p>Search for DriveItems under this drive.
 Your app can search more broadly to include items shared with the
 current user.</p>
@@ -457,7 +477,7 @@ indexing of content.</p>
 <p>As a result, there will be some time between creation of an
 item and when it will appear in search results.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>search_text</strong> (<em>str</em>) – The query text used to search for items.
 Values may be matched across several fields including filename,
@@ -469,11 +489,11 @@ metadata, and file content.</p></li>
 batches allowing to retrieve more items than the limit.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>items in this folder matching search</p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>generator of DriveItem or <a class="reference internal" href="utils.html#O365.utils.utils.Pagination" title="O365.utils.utils.Pagination">Pagination</a></p>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>generator of <a class="reference internal" href="#O365.drive.DriveItem" title="O365.drive.DriveItem">DriveItem</a> or <a class="reference internal" href="utils.html#O365.utils.utils.Pagination" title="O365.utils.utils.Pagination">Pagination</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -481,16 +501,16 @@ batches allowing to retrieve more items than the limit.</p></li>
 </dd></dl>
 
 <dl class="py class">
-<dt id="O365.drive.DriveItem">
-<em class="property">class </em><code class="sig-prename descclassname">O365.drive.</code><code class="sig-name descname">DriveItem</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">con</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#DriveItem"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.DriveItem" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.utils.utils.ApiComponent</span></code></a></p>
+<dt class="sig sig-object py" id="O365.drive.DriveItem">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.drive.</span></span><span class="sig-name descname"><span class="pre">DriveItem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">con</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#DriveItem"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.drive.DriveItem" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">ApiComponent</span></code></a></p>
 <p>A DriveItem representation. Groups all functionality</p>
 <dl class="py method">
-<dt id="O365.drive.DriveItem.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">con</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#DriveItem.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.DriveItem.__init__" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.drive.DriveItem.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">con</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#DriveItem.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.drive.DriveItem.__init__" title="Link to this definition"></a></dt>
 <dd><p>Create a DriveItem</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>parent</strong> (<a class="reference internal" href="#O365.drive.Drive" title="O365.drive.Drive"><em>Drive</em></a><em> or </em><a class="reference internal" href="#O365.drive.Folder" title="O365.drive.Folder"><em>drive.Folder</em></a>) – parent for this operation</p></li>
 <li><p><strong>con</strong> (<a class="reference internal" href="connection.html#O365.connection.Connection" title="O365.connection.Connection"><em>Connection</em></a>) – connection to use if no parent specified</p></li>
@@ -504,171 +524,173 @@ batches allowing to retrieve more items than the limit.</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.drive.DriveItem.copy">
-<code class="sig-name descname">copy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">target</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">name</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#DriveItem.copy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.DriveItem.copy" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.drive.DriveItem.copy">
+<span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#DriveItem.copy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.drive.DriveItem.copy" title="Link to this definition"></a></dt>
 <dd><p>Asynchronously creates a copy of this DriveItem and all it’s
 child elements.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>target</strong> (<a class="reference internal" href="#O365.drive.Folder" title="O365.drive.Folder"><em>drive.Folder</em></a><em> or </em><a class="reference internal" href="#O365.drive.Drive" title="O365.drive.Drive"><em>Drive</em></a>) – target location to move to.
-If it’s a drive the item will be moved to the root folder.</p></li>
+If it’s a drive the item will be moved to the root folder.
+If it’s None, the target is the parent of the item being copied i.e. item will be copied
+into the same location.</p></li>
 <li><p><strong>name</strong> – a new name for the copy.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="#O365.drive.CopyOperation" title="O365.drive.CopyOperation">CopyOperation</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.drive.DriveItem.delete">
-<code class="sig-name descname">delete</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#DriveItem.delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.DriveItem.delete" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.drive.DriveItem.delete">
+<span class="sig-name descname"><span class="pre">delete</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#DriveItem.delete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.drive.DriveItem.delete" title="Link to this definition"></a></dt>
 <dd><p>Moves this item to the Recycle Bin</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Success / Failure</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>bool</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.drive.DriveItem.get_drive">
-<code class="sig-name descname">get_drive</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#DriveItem.get_drive"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.DriveItem.get_drive" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.drive.DriveItem.get_drive">
+<span class="sig-name descname"><span class="pre">get_drive</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#DriveItem.get_drive"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.drive.DriveItem.get_drive" title="Link to this definition"></a></dt>
 <dd><p>Returns this item drive
 :return: Drive of this item
 :rtype: Drive or None</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.drive.DriveItem.get_parent">
-<code class="sig-name descname">get_parent</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#DriveItem.get_parent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.DriveItem.get_parent" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.drive.DriveItem.get_parent">
+<span class="sig-name descname"><span class="pre">get_parent</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#DriveItem.get_parent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.drive.DriveItem.get_parent" title="Link to this definition"></a></dt>
 <dd><p>the parent of this DriveItem</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Parent of this item</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="#O365.drive.Drive" title="O365.drive.Drive">Drive</a> or <a class="reference internal" href="#O365.drive.Folder" title="O365.drive.Folder">drive.Folder</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.drive.DriveItem.get_permissions">
-<code class="sig-name descname">get_permissions</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#DriveItem.get_permissions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.DriveItem.get_permissions" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.drive.DriveItem.get_permissions">
+<span class="sig-name descname"><span class="pre">get_permissions</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#DriveItem.get_permissions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.drive.DriveItem.get_permissions" title="Link to this definition"></a></dt>
 <dd><p>Returns a list of DriveItemPermissions with the
 permissions granted for this DriveItem.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>List of Permissions</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>list[<a class="reference internal" href="#O365.drive.DriveItemPermission" title="O365.drive.DriveItemPermission">DriveItemPermission</a>]</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.drive.DriveItem.get_thumbnails">
-<code class="sig-name descname">get_thumbnails</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">size</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#DriveItem.get_thumbnails"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.DriveItem.get_thumbnails" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.drive.DriveItem.get_thumbnails">
+<span class="sig-name descname"><span class="pre">get_thumbnails</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#DriveItem.get_thumbnails"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.drive.DriveItem.get_thumbnails" title="Link to this definition"></a></dt>
 <dd><p>Returns this Item Thumbnails. Thumbnails are not supported on
 SharePoint Server 2016.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>size</strong> – request only the specified size: ej: “small”,
 Custom 300x400 px: “c300x400”, Crop: “c300x400_Crop”</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Thumbnail Data</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>dict</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.drive.DriveItem.get_version">
-<code class="sig-name descname">get_version</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">version_id</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#DriveItem.get_version"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.DriveItem.get_version" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.drive.DriveItem.get_version">
+<span class="sig-name descname"><span class="pre">get_version</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">version_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#DriveItem.get_version"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.drive.DriveItem.get_version" title="Link to this definition"></a></dt>
 <dd><p>Returns a version for specified id</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>a version object of specified id</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="#O365.drive.DriveItemVersion" title="O365.drive.DriveItemVersion">DriveItemVersion</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.drive.DriveItem.get_versions">
-<code class="sig-name descname">get_versions</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#DriveItem.get_versions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.DriveItem.get_versions" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.drive.DriveItem.get_versions">
+<span class="sig-name descname"><span class="pre">get_versions</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#DriveItem.get_versions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.drive.DriveItem.get_versions" title="Link to this definition"></a></dt>
 <dd><p>Returns a list of available versions for this item</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>list of versions</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>list[<a class="reference internal" href="#O365.drive.DriveItemVersion" title="O365.drive.DriveItemVersion">DriveItemVersion</a>]</p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt id="O365.drive.DriveItem.is_file">
-<em class="property">property </em><code class="sig-name descname">is_file</code><a class="headerlink" href="#O365.drive.DriveItem.is_file" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="O365.drive.DriveItem.is_file">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_file</span></span><a class="headerlink" href="#O365.drive.DriveItem.is_file" title="Link to this definition"></a></dt>
 <dd><p>Returns if this DriveItem is a File</p>
 </dd></dl>
 
-<dl class="py method">
-<dt id="O365.drive.DriveItem.is_folder">
-<em class="property">property </em><code class="sig-name descname">is_folder</code><a class="headerlink" href="#O365.drive.DriveItem.is_folder" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="O365.drive.DriveItem.is_folder">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_folder</span></span><a class="headerlink" href="#O365.drive.DriveItem.is_folder" title="Link to this definition"></a></dt>
 <dd><p>Returns if this DriveItem is a Folder</p>
 </dd></dl>
 
-<dl class="py method">
-<dt id="O365.drive.DriveItem.is_image">
-<em class="property">property </em><code class="sig-name descname">is_image</code><a class="headerlink" href="#O365.drive.DriveItem.is_image" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="O365.drive.DriveItem.is_image">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_image</span></span><a class="headerlink" href="#O365.drive.DriveItem.is_image" title="Link to this definition"></a></dt>
 <dd><p>Returns if this DriveItem is a Image</p>
 </dd></dl>
 
-<dl class="py method">
-<dt id="O365.drive.DriveItem.is_photo">
-<em class="property">property </em><code class="sig-name descname">is_photo</code><a class="headerlink" href="#O365.drive.DriveItem.is_photo" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="O365.drive.DriveItem.is_photo">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_photo</span></span><a class="headerlink" href="#O365.drive.DriveItem.is_photo" title="Link to this definition"></a></dt>
 <dd><p>Returns if this DriveItem is a Photo</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.drive.DriveItem.move">
-<code class="sig-name descname">move</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">target</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#DriveItem.move"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.DriveItem.move" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.drive.DriveItem.move">
+<span class="sig-name descname"><span class="pre">move</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#DriveItem.move"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.drive.DriveItem.move" title="Link to this definition"></a></dt>
 <dd><p>Moves this DriveItem to another Folder.
 Can’t move between different Drives.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>target</strong> (<a class="reference internal" href="#O365.drive.Folder" title="O365.drive.Folder"><em>drive.Folder</em></a><em> or </em><a class="reference internal" href="#O365.drive.DriveItem" title="O365.drive.DriveItem"><em>DriveItem</em></a><em> or </em><em>str</em>) – a Folder, Drive item or Item Id string.
 If it’s a drive the item will be moved to the root folder.</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Success / Failure</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>bool</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.drive.DriveItem.share_with_invite">
-<code class="sig-name descname">share_with_invite</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">recipients</span></em>, <em class="sig-param"><span class="n">require_sign_in</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">send_email</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">message</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">share_type</span><span class="o">=</span><span class="default_value">'view'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#DriveItem.share_with_invite"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.DriveItem.share_with_invite" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.drive.DriveItem.share_with_invite">
+<span class="sig-name descname"><span class="pre">share_with_invite</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">recipients</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">require_sign_in</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">send_email</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">share_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'view'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#DriveItem.share_with_invite"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.drive.DriveItem.share_with_invite" title="Link to this definition"></a></dt>
 <dd><p>Sends an invitation to access or edit this DriveItem</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>recipients</strong> (<em>list</em><em>[</em><em>str</em><em>] or </em><em>list</em><em>[</em><a class="reference internal" href="address_book.html#O365.address_book.Contact" title="O365.address_book.Contact"><em>Contact</em></a><em>] or </em><em>str</em><em> or </em><a class="reference internal" href="address_book.html#O365.address_book.Contact" title="O365.address_book.Contact"><em>Contact</em></a>) – a string or Contact or a list of the former
 representing recipients of this invitation</p></li>
@@ -680,51 +702,53 @@ invited will need to log in to view the contents</p></li>
 ‘edit’ will allow to modify the contents</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>link to share</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="#O365.drive.DriveItemPermission" title="O365.drive.DriveItemPermission">DriveItemPermission</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.drive.DriveItem.share_with_link">
-<code class="sig-name descname">share_with_link</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">share_type</span><span class="o">=</span><span class="default_value">'view'</span></em>, <em class="sig-param"><span class="n">share_scope</span><span class="o">=</span><span class="default_value">'anonymous'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#DriveItem.share_with_link"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.DriveItem.share_with_link" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.drive.DriveItem.share_with_link">
+<span class="sig-name descname"><span class="pre">share_with_link</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">share_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'view'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">share_scope</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'anonymous'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">share_password</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">share_expiration_date</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#DriveItem.share_with_link"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.drive.DriveItem.share_with_link" title="Link to this definition"></a></dt>
 <dd><p>Creates or returns a link you can share with others</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>share_type</strong> (<em>str</em>) – ‘view’ to allow only view access,
 ‘edit’ to allow editions, and
 ‘embed’ to allow the DriveItem to be embedded</p></li>
 <li><p><strong>share_scope</strong> (<em>str</em>) – ‘anonymous’: anyone with the link can access.
 ‘organization’ Only organization members can access</p></li>
+<li><p><strong>share_password</strong> (<em>str</em>) – sharing link password that is set by the creator. Optional.</p></li>
+<li><p><strong>share_expiration_date</strong> (<em>str</em>) – format of yyyy-MM-dd (e.g., 2022-02-14) that indicates the expiration date of the permission. Optional.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>link to share</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="#O365.drive.DriveItemPermission" title="O365.drive.DriveItemPermission">DriveItemPermission</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.drive.DriveItem.update">
-<code class="sig-name descname">update</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#DriveItem.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.DriveItem.update" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.drive.DriveItem.update">
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#DriveItem.update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.drive.DriveItem.update" title="Link to this definition"></a></dt>
 <dd><p>Updates this item</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>kwargs</strong> – all the properties to be updated.
 only name and description are allowed at the moment.</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Success / Failure</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>bool</p>
 </dd>
 </dl>
@@ -733,16 +757,16 @@ only name and description are allowed at the moment.</p>
 </dd></dl>
 
 <dl class="py class">
-<dt id="O365.drive.DriveItemPermission">
-<em class="property">class </em><code class="sig-prename descclassname">O365.drive.</code><code class="sig-name descname">DriveItemPermission</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">con</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#DriveItemPermission"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.DriveItemPermission" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.utils.utils.ApiComponent</span></code></a></p>
+<dt class="sig sig-object py" id="O365.drive.DriveItemPermission">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.drive.</span></span><span class="sig-name descname"><span class="pre">DriveItemPermission</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">con</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#DriveItemPermission"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.drive.DriveItemPermission" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">ApiComponent</span></code></a></p>
 <p>A Permission representation for a DriveItem</p>
 <dl class="py method">
-<dt id="O365.drive.DriveItemPermission.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">con</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#DriveItemPermission.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.DriveItemPermission.__init__" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.drive.DriveItemPermission.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">con</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#DriveItemPermission.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.drive.DriveItemPermission.__init__" title="Link to this definition"></a></dt>
 <dd><p>Permissions for DriveItem</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>parent</strong> (<a class="reference internal" href="#O365.drive.DriveItem" title="O365.drive.DriveItem"><em>DriveItem</em></a>) – parent for this operation</p></li>
 <li><p><strong>con</strong> (<a class="reference internal" href="connection.html#O365.connection.Connection" title="O365.connection.Connection"><em>Connection</em></a>) – connection to use if no parent specified</p></li>
@@ -756,29 +780,29 @@ only name and description are allowed at the moment.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.drive.DriveItemPermission.delete">
-<code class="sig-name descname">delete</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#DriveItemPermission.delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.DriveItemPermission.delete" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.drive.DriveItemPermission.delete">
+<span class="sig-name descname"><span class="pre">delete</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#DriveItemPermission.delete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.drive.DriveItemPermission.delete" title="Link to this definition"></a></dt>
 <dd><p>Deletes this permission. Only permissions that are not
 inherited can be deleted.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Success / Failure</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>bool</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.drive.DriveItemPermission.update_roles">
-<code class="sig-name descname">update_roles</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">roles</span><span class="o">=</span><span class="default_value">'view'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#DriveItemPermission.update_roles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.DriveItemPermission.update_roles" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.drive.DriveItemPermission.update_roles">
+<span class="sig-name descname"><span class="pre">update_roles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">roles</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'view'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#DriveItemPermission.update_roles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.drive.DriveItemPermission.update_roles" title="Link to this definition"></a></dt>
 <dd><p>Updates the roles of this permission</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Success / Failure</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>bool</p>
 </dd>
 </dl>
@@ -787,16 +811,16 @@ inherited can be deleted.</p>
 </dd></dl>
 
 <dl class="py class">
-<dt id="O365.drive.DriveItemVersion">
-<em class="property">class </em><code class="sig-prename descclassname">O365.drive.</code><code class="sig-name descname">DriveItemVersion</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">con</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#DriveItemVersion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.DriveItemVersion" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.utils.utils.ApiComponent</span></code></a>, <a class="reference internal" href="#O365.drive.DownloadableMixin" title="O365.drive.DownloadableMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.drive.DownloadableMixin</span></code></a></p>
+<dt class="sig sig-object py" id="O365.drive.DriveItemVersion">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.drive.</span></span><span class="sig-name descname"><span class="pre">DriveItemVersion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">con</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#DriveItemVersion"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.drive.DriveItemVersion" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">ApiComponent</span></code></a>, <a class="reference internal" href="#O365.drive.DownloadableMixin" title="O365.drive.DownloadableMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">DownloadableMixin</span></code></a></p>
 <p>A version of a DriveItem</p>
 <dl class="py method">
-<dt id="O365.drive.DriveItemVersion.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">con</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#DriveItemVersion.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.DriveItemVersion.__init__" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.drive.DriveItemVersion.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">con</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#DriveItemVersion.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.drive.DriveItemVersion.__init__" title="Link to this definition"></a></dt>
 <dd><p>Version of DriveItem</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>parent</strong> (<a class="reference internal" href="#O365.drive.DriveItem" title="O365.drive.DriveItem"><em>DriveItem</em></a>) – parent for this operation</p></li>
 <li><p><strong>con</strong> (<a class="reference internal" href="connection.html#O365.connection.Connection" title="O365.connection.Connection"><em>Connection</em></a>) – connection to use if no parent specified</p></li>
@@ -810,30 +834,30 @@ inherited can be deleted.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.drive.DriveItemVersion.download">
-<code class="sig-name descname">download</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">to_path</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">chunk_size</span><span class="o">=</span><span class="default_value">'auto'</span></em>, <em class="sig-param"><span class="n">convert_to_pdf</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#DriveItemVersion.download"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.DriveItemVersion.download" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.drive.DriveItemVersion.download">
+<span class="sig-name descname"><span class="pre">download</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">to_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chunk_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convert_to_pdf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#DriveItemVersion.download"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.drive.DriveItemVersion.download" title="Link to this definition"></a></dt>
 <dd><p>Downloads this version.
 You can not download the current version (last one).</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Success / Failure</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>bool</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.drive.DriveItemVersion.restore">
-<code class="sig-name descname">restore</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#DriveItemVersion.restore"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.DriveItemVersion.restore" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.drive.DriveItemVersion.restore">
+<span class="sig-name descname"><span class="pre">restore</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#DriveItemVersion.restore"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.drive.DriveItemVersion.restore" title="Link to this definition"></a></dt>
 <dd><p>Restores this DriveItem Version.
 You can not restore the current version (last one).</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Success / Failure</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>bool</p>
 </dd>
 </dl>
@@ -842,16 +866,16 @@ You can not restore the current version (last one).</p>
 </dd></dl>
 
 <dl class="py class">
-<dt id="O365.drive.File">
-<em class="property">class </em><code class="sig-prename descclassname">O365.drive.</code><code class="sig-name descname">File</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#File"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.File" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#O365.drive.DriveItem" title="O365.drive.DriveItem"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.drive.DriveItem</span></code></a>, <a class="reference internal" href="#O365.drive.DownloadableMixin" title="O365.drive.DownloadableMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.drive.DownloadableMixin</span></code></a></p>
+<dt class="sig sig-object py" id="O365.drive.File">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.drive.</span></span><span class="sig-name descname"><span class="pre">File</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#File"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.drive.File" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#O365.drive.DriveItem" title="O365.drive.DriveItem"><code class="xref py py-class docutils literal notranslate"><span class="pre">DriveItem</span></code></a>, <a class="reference internal" href="#O365.drive.DownloadableMixin" title="O365.drive.DownloadableMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">DownloadableMixin</span></code></a></p>
 <p>A File</p>
 <dl class="py method">
-<dt id="O365.drive.File.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#File.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.File.__init__" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.drive.File.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#File.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.drive.File.__init__" title="Link to this definition"></a></dt>
 <dd><p>Create a DriveItem</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>parent</strong> (<a class="reference internal" href="#O365.drive.Drive" title="O365.drive.Drive"><em>Drive</em></a><em> or </em><a class="reference internal" href="#O365.drive.Folder" title="O365.drive.Folder"><em>drive.Folder</em></a>) – parent for this operation</p></li>
 <li><p><strong>con</strong> (<a class="reference internal" href="connection.html#O365.connection.Connection" title="O365.connection.Connection"><em>Connection</em></a>) – connection to use if no parent specified</p></li>
@@ -864,24 +888,24 @@ You can not restore the current version (last one).</p>
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt id="O365.drive.File.extension">
-<em class="property">property </em><code class="sig-name descname">extension</code><a class="headerlink" href="#O365.drive.File.extension" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="O365.drive.File.extension">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">extension</span></span><a class="headerlink" href="#O365.drive.File.extension" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
-<dt id="O365.drive.Folder">
-<em class="property">class </em><code class="sig-prename descclassname">O365.drive.</code><code class="sig-name descname">Folder</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#Folder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.Folder" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#O365.drive.DriveItem" title="O365.drive.DriveItem"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.drive.DriveItem</span></code></a></p>
+<dt class="sig sig-object py" id="O365.drive.Folder">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.drive.</span></span><span class="sig-name descname"><span class="pre">Folder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#Folder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.drive.Folder" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#O365.drive.DriveItem" title="O365.drive.DriveItem"><code class="xref py py-class docutils literal notranslate"><span class="pre">DriveItem</span></code></a></p>
 <p>A Folder inside a Drive</p>
 <dl class="py method">
-<dt id="O365.drive.Folder.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#Folder.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.Folder.__init__" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.drive.Folder.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#Folder.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.drive.Folder.__init__" title="Link to this definition"></a></dt>
 <dd><p>Create a DriveItem</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>parent</strong> (<a class="reference internal" href="#O365.drive.Drive" title="O365.drive.Drive"><em>Drive</em></a><em> or </em><a class="reference internal" href="#O365.drive.Folder" title="O365.drive.Folder"><em>drive.Folder</em></a>) – parent for this operation</p></li>
 <li><p><strong>con</strong> (<a class="reference internal" href="connection.html#O365.connection.Connection" title="O365.connection.Connection"><em>Connection</em></a>) – connection to use if no parent specified</p></li>
@@ -895,43 +919,39 @@ You can not restore the current version (last one).</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.drive.Folder.create_child_folder">
-<code class="sig-name descname">create_child_folder</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">description</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#Folder.create_child_folder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.Folder.create_child_folder" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.drive.Folder.create_child_folder">
+<span class="sig-name descname"><span class="pre">create_child_folder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#Folder.create_child_folder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.drive.Folder.create_child_folder" title="Link to this definition"></a></dt>
 <dd><p>Creates a Child Folder</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>name</strong> (<em>str</em>) – the name of the new child folder</p></li>
 <li><p><strong>description</strong> (<em>str</em>) – the description of the new child folder</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>newly created folder</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="#O365.drive.Folder" title="O365.drive.Folder">drive.Folder</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.drive.Folder.download_contents">
-<code class="sig-name descname">download_contents</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">to_folder</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#Folder.download_contents"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.Folder.download_contents" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.drive.Folder.download_contents">
+<span class="sig-name descname"><span class="pre">download_contents</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">to_folder</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#Folder.download_contents"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.drive.Folder.download_contents" title="Link to this definition"></a></dt>
 <dd><p>This will download each file and folder sequentially.
-Caution when downloading big folder structures</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>to_folder</strong> (<a class="reference internal" href="#O365.drive.Folder" title="O365.drive.Folder"><em>drive.Folder</em></a>) – folder where to store the contents</p>
-</dd>
-</dl>
+Caution when downloading big folder structures
+:param drive.Folder to_folder: folder where to store the contents</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.drive.Folder.get_child_folders">
-<code class="sig-name descname">get_child_folders</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">limit</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">query</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">order_by</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">batch</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#Folder.get_child_folders"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.Folder.get_child_folders" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.drive.Folder.get_child_folders">
+<span class="sig-name descname"><span class="pre">get_child_folders</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order_by</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#Folder.get_child_folders"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.drive.Folder.get_child_folders" title="Link to this definition"></a></dt>
 <dd><p>Returns all the folders inside this folder</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>limit</strong> (<em>int</em>) – max no. of folders to get. Over 999 uses batch.</p></li>
 <li><p><strong>query</strong> (<a class="reference internal" href="utils.html#O365.utils.utils.Query" title="O365.utils.utils.Query"><em>Query</em></a><em> or </em><em>str</em>) – applies a OData filter to the request</p></li>
@@ -940,21 +960,21 @@ Caution when downloading big folder structures</p>
 batches allowing to retrieve more items than the limit.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>folder items in this folder</p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>generator of DriveItem or <a class="reference internal" href="utils.html#O365.utils.utils.Pagination" title="O365.utils.utils.Pagination">Pagination</a></p>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>generator of <a class="reference internal" href="#O365.drive.DriveItem" title="O365.drive.DriveItem">DriveItem</a> or <a class="reference internal" href="utils.html#O365.utils.utils.Pagination" title="O365.utils.utils.Pagination">Pagination</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.drive.Folder.get_items">
-<code class="sig-name descname">get_items</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">limit</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">query</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">order_by</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">batch</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#Folder.get_items"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.Folder.get_items" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.drive.Folder.get_items">
+<span class="sig-name descname"><span class="pre">get_items</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order_by</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#Folder.get_items"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.drive.Folder.get_items" title="Link to this definition"></a></dt>
 <dd><p>Returns generator all the items inside this folder</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>limit</strong> (<em>int</em>) – max no. of folders to get. Over 999 uses batch.</p></li>
 <li><p><strong>query</strong> (<a class="reference internal" href="utils.html#O365.utils.utils.Query" title="O365.utils.utils.Query"><em>Query</em></a><em> or </em><em>str</em>) – applies a OData filter to the request</p></li>
@@ -963,25 +983,25 @@ batches allowing to retrieve more items than the limit.</p></li>
 batches allowing to retrieve more items than the limit.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>items in this folder</p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>generator of DriveItem or <a class="reference internal" href="utils.html#O365.utils.utils.Pagination" title="O365.utils.utils.Pagination">Pagination</a></p>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>generator of <a class="reference internal" href="#O365.drive.DriveItem" title="O365.drive.DriveItem">DriveItem</a> or <a class="reference internal" href="utils.html#O365.utils.utils.Pagination" title="O365.utils.utils.Pagination">Pagination</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.drive.Folder.search">
-<code class="sig-name descname">search</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">search_text</span></em>, <em class="sig-param"><span class="n">limit</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">query</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">order_by</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">batch</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#Folder.search"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.Folder.search" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.drive.Folder.search">
+<span class="sig-name descname"><span class="pre">search</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">search_text</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order_by</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#Folder.search"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.drive.Folder.search" title="Link to this definition"></a></dt>
 <dd><p>Search for DriveItems under this folder
 The search API uses a search service under the covers,
 which requires indexing of content.</p>
 <p>As a result, there will be some time between creation of an item
 and when it will appear in search results.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>search_text</strong> (<em>str</em>) – The query text used to search for items.
 Values may be matched across several fields including filename,
@@ -993,21 +1013,21 @@ metadata, and file content.</p></li>
 batches allowing to retrieve more items than the limit.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>items in this folder matching search</p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>generator of DriveItem or <a class="reference internal" href="utils.html#O365.utils.utils.Pagination" title="O365.utils.utils.Pagination">Pagination</a></p>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>generator of <a class="reference internal" href="#O365.drive.DriveItem" title="O365.drive.DriveItem">DriveItem</a> or <a class="reference internal" href="utils.html#O365.utils.utils.Pagination" title="O365.utils.utils.Pagination">Pagination</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.drive.Folder.upload_file">
-<code class="sig-name descname">upload_file</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">item</span></em>, <em class="sig-param"><span class="n">item_name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">chunk_size</span><span class="o">=</span><span class="default_value">5242880</span></em>, <em class="sig-param"><span class="n">upload_in_chunks</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">stream</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">stream_size</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">conflict_handling</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#Folder.upload_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.Folder.upload_file" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.drive.Folder.upload_file">
+<span class="sig-name descname"><span class="pre">upload_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">item_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chunk_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5242880</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">upload_in_chunks</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stream</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stream_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">conflict_handling</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_created_date_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_last_modified_date_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#Folder.upload_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.drive.Folder.upload_file" title="Link to this definition"></a></dt>
 <dd><p>Uploads a file</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>item</strong> (<em>str</em><em> or </em><em>Path</em>) – path to the item you want to upload</p></li>
 <li><p><strong>item_name</strong> (<em>str</em><em> or </em><em>Path</em>) – name of the item on the server. None to use original name</p></li>
@@ -1020,12 +1040,14 @@ if set, the to_path and name will be ignored</p></li>
 <li><p><strong>conflict_handling</strong> (<em>str</em>) – How to handle conflicts.
 NOTE: works for chunk upload only (&gt;4MB or upload_in_chunks is True)
 None to use default (overwrite). Options: fail | replace | rename</p></li>
+<li><p><strong>file_created_date_time</strong> – allow to force file created date time while uploading</p></li>
+<li><p><strong>file_last_modified_date_time</strong> – allow to force file last modified date time while uploading</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>uploaded file</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="#O365.drive.DriveItem" title="O365.drive.DriveItem">DriveItem</a></p>
 </dd>
 </dl>
@@ -1034,16 +1056,16 @@ None to use default (overwrite). Options: fail | replace | rename</p></li>
 </dd></dl>
 
 <dl class="py class">
-<dt id="O365.drive.Image">
-<em class="property">class </em><code class="sig-prename descclassname">O365.drive.</code><code class="sig-name descname">Image</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#Image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.Image" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#O365.drive.File" title="O365.drive.File"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.drive.File</span></code></a></p>
+<dt class="sig sig-object py" id="O365.drive.Image">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.drive.</span></span><span class="sig-name descname"><span class="pre">Image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#Image"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.drive.Image" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#O365.drive.File" title="O365.drive.File"><code class="xref py py-class docutils literal notranslate"><span class="pre">File</span></code></a></p>
 <p>An Image</p>
 <dl class="py method">
-<dt id="O365.drive.Image.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#Image.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.Image.__init__" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.drive.Image.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#Image.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.drive.Image.__init__" title="Link to this definition"></a></dt>
 <dd><p>Create a DriveItem</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>parent</strong> (<a class="reference internal" href="#O365.drive.Drive" title="O365.drive.Drive"><em>Drive</em></a><em> or </em><a class="reference internal" href="#O365.drive.Folder" title="O365.drive.Folder"><em>drive.Folder</em></a>) – parent for this operation</p></li>
 <li><p><strong>con</strong> (<a class="reference internal" href="connection.html#O365.connection.Connection" title="O365.connection.Connection"><em>Connection</em></a>) – connection to use if no parent specified</p></li>
@@ -1056,15 +1078,15 @@ None to use default (overwrite). Options: fail | replace | rename</p></li>
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt id="O365.drive.Image.dimensions">
-<em class="property">property </em><code class="sig-name descname">dimensions</code><a class="headerlink" href="#O365.drive.Image.dimensions" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="O365.drive.Image.dimensions">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dimensions</span></span><a class="headerlink" href="#O365.drive.Image.dimensions" title="Link to this definition"></a></dt>
 <dd><p>Dimension of the Image</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>width x height</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>str</p>
 </dd>
 </dl>
@@ -1073,16 +1095,16 @@ None to use default (overwrite). Options: fail | replace | rename</p></li>
 </dd></dl>
 
 <dl class="py class">
-<dt id="O365.drive.Photo">
-<em class="property">class </em><code class="sig-prename descclassname">O365.drive.</code><code class="sig-name descname">Photo</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#Photo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.Photo" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#O365.drive.Image" title="O365.drive.Image"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.drive.Image</span></code></a></p>
+<dt class="sig sig-object py" id="O365.drive.Photo">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.drive.</span></span><span class="sig-name descname"><span class="pre">Photo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#Photo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.drive.Photo" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#O365.drive.Image" title="O365.drive.Image"><code class="xref py py-class docutils literal notranslate"><span class="pre">Image</span></code></a></p>
 <p>Photo Object. Inherits from Image but has more attributes</p>
 <dl class="py method">
-<dt id="O365.drive.Photo.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#Photo.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.Photo.__init__" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.drive.Photo.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#Photo.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.drive.Photo.__init__" title="Link to this definition"></a></dt>
 <dd><p>Create a DriveItem</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>parent</strong> (<a class="reference internal" href="#O365.drive.Drive" title="O365.drive.Drive"><em>Drive</em></a><em> or </em><a class="reference internal" href="#O365.drive.Folder" title="O365.drive.Folder"><em>drive.Folder</em></a>) – parent for this operation</p></li>
 <li><p><strong>con</strong> (<a class="reference internal" href="connection.html#O365.connection.Connection" title="O365.connection.Connection"><em>Connection</em></a>) – connection to use if no parent specified</p></li>
@@ -1098,16 +1120,16 @@ None to use default (overwrite). Options: fail | replace | rename</p></li>
 </dd></dl>
 
 <dl class="py class">
-<dt id="O365.drive.Storage">
-<em class="property">class </em><code class="sig-prename descclassname">O365.drive.</code><code class="sig-name descname">Storage</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">con</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#Storage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.Storage" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">O365.utils.utils.ApiComponent</span></code></a></p>
+<dt class="sig sig-object py" id="O365.drive.Storage">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.drive.</span></span><span class="sig-name descname"><span class="pre">Storage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">con</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#Storage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.drive.Storage" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="utils.html#O365.utils.utils.ApiComponent" title="O365.utils.utils.ApiComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">ApiComponent</span></code></a></p>
 <p>Parent Class that holds drives</p>
 <dl class="py method">
-<dt id="O365.drive.Storage.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">con</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#Storage.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.Storage.__init__" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.drive.Storage.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">con</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#Storage.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.drive.Storage.__init__" title="Link to this definition"></a></dt>
 <dd><p>Create a storage representation</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>parent</strong> (<a class="reference internal" href="account.html#O365.account.Account" title="O365.account.Account"><em>Account</em></a>) – parent for this operation</p></li>
 <li><p><strong>con</strong> (<a class="reference internal" href="connection.html#O365.connection.Connection" title="O365.connection.Connection"><em>Connection</em></a>) – connection to use if no parent specified</p></li>
@@ -1121,108 +1143,81 @@ None to use default (overwrite). Options: fail | replace | rename</p></li>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="O365.drive.Storage.drive_constructor">
-<code class="sig-name descname">drive_constructor</code><a class="headerlink" href="#O365.drive.Storage.drive_constructor" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.drive.Storage.drive_constructor">
+<span class="sig-name descname"><span class="pre">drive_constructor</span></span><a class="headerlink" href="#O365.drive.Storage.drive_constructor" title="Link to this definition"></a></dt>
 <dd><p>alias of <a class="reference internal" href="#O365.drive.Drive" title="O365.drive.Drive"><code class="xref py py-class docutils literal notranslate"><span class="pre">Drive</span></code></a></p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.drive.Storage.get_default_drive">
-<code class="sig-name descname">get_default_drive</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">request_drive</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#Storage.get_default_drive"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.Storage.get_default_drive" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.drive.Storage.get_default_drive">
+<span class="sig-name descname"><span class="pre">get_default_drive</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request_drive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#Storage.get_default_drive"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.drive.Storage.get_default_drive" title="Link to this definition"></a></dt>
 <dd><p>Returns a Drive instance</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>request_drive</strong> – True will make an api call to retrieve the drive
 data</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>default One Drive</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="#O365.drive.Drive" title="O365.drive.Drive">Drive</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.drive.Storage.get_drive">
-<code class="sig-name descname">get_drive</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">drive_id</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#Storage.get_drive"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.Storage.get_drive" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.drive.Storage.get_drive">
+<span class="sig-name descname"><span class="pre">get_drive</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">drive_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#Storage.get_drive"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.drive.Storage.get_drive" title="Link to this definition"></a></dt>
 <dd><p>Returns a Drive instance</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>drive_id</strong> – the drive_id to be retrieved</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Drive for the id</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="#O365.drive.Drive" title="O365.drive.Drive">Drive</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="O365.drive.Storage.get_drives">
-<code class="sig-name descname">get_drives</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#Storage.get_drives"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#O365.drive.Storage.get_drives" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="O365.drive.Storage.get_drives">
+<span class="sig-name descname"><span class="pre">get_drives</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/drive.html#Storage.get_drives"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.drive.Storage.get_drives" title="Link to this definition"></a></dt>
 <dd><p>Returns a collection of drives</p>
 </dd></dl>
 
 </dd></dl>
 
-</div>
+</section>
 
 
            </div>
-           
           </div>
-          <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="mailbox.html" class="btn btn-neutral float-right" title="Mailbox" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="connection.html" class="btn btn-neutral" title="Connection" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="directory.html" class="btn btn-neutral float-left" title="Directory" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="group.html" class="btn btn-neutral float-right" title="Group" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &copy; Copyright 2018, Narcolapser
-
-    </p>
+    <p>&#169; Copyright 2025, alejcas.</p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
-
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-
-  
-
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script src="../_static/language_data.js"></script>
-    
-
-  
-
-  <script type="text/javascript" src="../_static/js/theme.js"></script>
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });

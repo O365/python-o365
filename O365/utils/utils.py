@@ -2,14 +2,15 @@ import datetime as dt
 import logging
 from collections import OrderedDict
 from enum import Enum
-from typing import Union, Dict
-from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
+from typing import Dict, Union
 
 from dateutil.parser import parse
+from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
+from .query import QueryBuilder
 from .casing import to_snake_case
-from .windows_tz import get_iana_tz, get_windows_tz
 from .decorators import fluent
+from .windows_tz import get_iana_tz, get_windows_tz
 
 ME_RESOURCE = 'me'
 USERS_RESOURCE = 'users'
@@ -21,7 +22,7 @@ NEXT_LINK_KEYWORD = '@odata.nextLink'
 
 log = logging.getLogger(__name__)
 
-MAX_RECIPIENTS_PER_MESSAGE = 500  # Actual limit on Office 365
+MAX_RECIPIENTS_PER_MESSAGE = 500  # Actual limit on Microsoft 365
 
 
 class CaseEnum(Enum):
@@ -341,6 +342,7 @@ class ApiComponent:
         if self.protocol is None:
             raise ValueError('Protocol not provided to Api Component')
         mr, bu = self.build_base_url(main_resource)
+        #: The main resource for the components. |br| **Type:** str
         self.main_resource = mr
         self._base_url = bu
 
@@ -488,14 +490,14 @@ class ApiComponent:
             self._cc('timeZone'): timezone
         }
 
-    def new_query(self, attribute=None):
+    def new_query(self) -> QueryBuilder:
         """ Create a new query to filter results
 
         :param str attribute: attribute to apply the query for
-        :return: new Query
-        :rtype: Query
+        :return: new QueryBuilder
+        :rtype: QueryBuilder
         """
-        return Query(attribute=attribute, protocol=self.protocol)
+        return QueryBuilder(protocol=self.protocol)
 
     q = new_query  # alias for new query
 
@@ -505,7 +507,7 @@ class Pagination(ApiComponent):
 
     def __init__(self, *, parent=None, data=None, constructor=None,
                  next_link=None, limit=None, **kwargs):
-        """ Returns an iterator that returns data until it's exhausted.
+        """Returns an iterator that returns data until it's exhausted.
         Then will request more data (same amount as the original request)
         to the server until this data is exhausted as well.
         Stops when no more data exists or limit is reached.
@@ -518,7 +520,7 @@ class Pagination(ApiComponent):
         :param str next_link: the link to request more data to
         :param int limit: when to stop retrieving more data
         :param kwargs: any extra key-word arguments to pass to the
-         construtctor.
+         constructor.
         """
         if parent is None:
             raise ValueError('Parent must be another Api Component')
@@ -526,21 +528,30 @@ class Pagination(ApiComponent):
         super().__init__(protocol=parent.protocol,
                          main_resource=parent.main_resource)
 
+        #: The parent. |br| **Type:** any
         self.parent = parent
         self.con = parent.con
+        #: The constructor. |br| **Type:** any
         self.constructor = constructor
+        #: The next link for the pagination. |br| **Type:** str
         self.next_link = next_link
+        #: The limit of when to stop. |br| **Type:** int
         self.limit = limit
+        #: The start data. |br| **Type:** any
         self.data = data = list(data) if data else []
 
         data_count = len(data)
         if limit and limit < data_count:
+            #: Data count. |br| **Type:** int
             self.data_count = limit
+            #: Total count. |br| **Type:** int
             self.total_count = limit
         else:
             self.data_count = data_count
             self.total_count = data_count
+        #: State. |br| **Type:** int
         self.state = 0
+        #: Extra args. |br| **Type:** dict
         self.extra_args = kwargs
 
     def __str__(self):
@@ -634,6 +645,7 @@ class Query:
         :param str attribute: attribute to apply the query for
         :param Protocol protocol: protocol to use for connecting
         """
+        #: Protocol to use. |br| **Type:** protocol
         self.protocol = protocol() if isinstance(protocol, type) else protocol
         self._attribute = None
         self._chain = None
@@ -674,6 +686,7 @@ class Query:
                     if '/' in attribute:
                         # only parent attribute can be selected
                         attribute = attribute.split('/')[0]
+                    attribute = self._get_select_mapping(attribute)
                     self._selects.add(attribute)
         else:
             if self._attribute:
@@ -683,18 +696,24 @@ class Query:
 
     @fluent
     def expand(self, *relationships):
-        """ Adds the relationships (e.g. "event" or "attachments")
+        """
+        Adds the relationships (e.g. "event" or "attachments")
         that should be expanded with the $expand parameter
         Important: The ApiComponent using this should know how to handle this relationships.
-            eg: Message knows how to handle attachments, and event (if it's an EventMessage).
+
+            eg: Message knows how to handle attachments, and event (if it's an EventMessage)
+
         Important: When using expand on multi-value relationships a max of 20 items will be returned.
+
         :param str relationships: the relationships tuple to expand.
         :rtype: Query
         """
 
         for relationship in relationships:
-            if relationship == 'event':
-                relationship = '{}/event'.format(self.protocol.get_service_keyword('event_message_type'))
+            if relationship == "event":
+                relationship = "{}/event".format(
+                    self.protocol.get_service_keyword("event_message_type")
+                )
             self._expands.add(relationship)
 
         return self
@@ -704,9 +723,11 @@ class Query:
         """
         Perform a search.
         Not from graph docs:
+
          You can currently search only message and person collections.
          A $search request returns up to 250 results.
          You cannot use $filter or $orderby in a search request.
+
         :param str text: the text to search
         :return: the Query instance
         """
@@ -840,6 +861,13 @@ class Query:
                 attribute = self.protocol.convert_case(attribute)
             return attribute
         return None
+
+    def _get_select_mapping(self, attribute):
+        if attribute.lower() in ["meetingMessageType"]:
+            return (
+                f"{self.protocol.keyword_data_store['event_message_type']}/{attribute}"
+            )
+        return attribute
 
     @fluent
     def new(self, attribute, operation=ChainOperator.AND):
@@ -1136,22 +1164,21 @@ class Query:
         emailAddresses/any(a:a/address eq 'george@best.com')
 
         :param str iterable_name: the OData name of the iterable
-        :param str collection: the collection to apply the any keyword on
+        :param str collection: the collection to apply the 'any' keyword on
         :param str word: the word to check
         :param str attribute: the attribute of the collection to check
         :param str func: the logical function to apply to the attribute inside
          the collection
         :param str operation: the logical operation to apply to the attribute
          inside the collection
-        :param bool negation: negate the funcion or operation inside the iterable
+        :param bool negation: negate the function or operation inside the iterable
         :rtype: Query
         """
 
         if func is None and operation is None:
             raise ValueError('Provide a function or an operation to apply')
         elif func is not None and operation is not None:
-            raise ValueError(
-                'Provide either a function or an operation but not both')
+            raise ValueError('Provide either a function or an operation but not both')
 
         current_att = self._attribute
         self._attribute = iterable_name
@@ -1196,14 +1223,14 @@ class Query:
 
         emailAddresses/any(a:a/address eq 'george@best.com')
 
-        :param str collection: the collection to apply the any keyword on
+        :param str collection: the collection to apply the 'any' keyword on
         :param str word: the word to check
         :param str attribute: the attribute of the collection to check
         :param str func: the logical function to apply to the attribute
          inside the collection
         :param str operation: the logical operation to apply to the
          attribute inside the collection
-        :param bool negation: negates the funcion or operation inside the iterable
+        :param bool negation: negates the function or operation inside the iterable
         :rtype: Query
         """
 
@@ -1230,7 +1257,7 @@ class Query:
          inside the collection
         :param str operation: the logical operation to apply to the
          attribute inside the collection
-        :param bool negation: negate the funcion or operation inside the iterable
+        :param bool negation: negate the function or operation inside the iterable
         :rtype: Query
         """
 
@@ -1280,3 +1307,27 @@ class Query:
         else:
             raise RuntimeError("No filters present. Can't close a group")
         return self
+
+    def get_filter_by_attribute(self, attribute):
+        """
+        Returns a filter value by attribute name. It will match the attribute to the start of each filter attribute
+        and return the first found.
+        
+        :param attribute: the attribute you want to search
+        :return: The value applied to that attribute or None
+        """
+
+        attribute = attribute.lower()
+
+        # iterate over the filters to find the corresponding attribute
+        for query_data in self._filters:
+            if not isinstance(query_data, list):
+                continue
+            filter_attribute = query_data[0]
+            # the 2nd position contains the filter data
+            # and the 3rd position in filter_data contains the value
+            word = query_data[2][3]
+
+            if filter_attribute.lower().startswith(attribute):
+                return word
+        return None

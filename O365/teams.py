@@ -3,7 +3,7 @@ from enum import Enum
 
 from dateutil.parser import parse
 
-from .utils import ApiComponent, NEXT_LINK_KEYWORD, Pagination
+from .utils import NEXT_LINK_KEYWORD, ApiComponent, Pagination
 
 log = logging.getLogger(__name__)
 
@@ -106,6 +106,7 @@ class ChatMessage(ApiComponent):
             raise ValueError('Need a parent or a connection but not both')
         self.con = parent.con if parent else con
         cloud_data = kwargs.get(self._cloud_data_key, {})
+        #: Unique ID of the message. |br| **Type:** str
         self.object_id = cloud_data.get('id')
 
         # Choose the main_resource passed in kwargs over parent main_resource
@@ -113,6 +114,8 @@ class ChatMessage(ApiComponent):
             getattr(parent, 'main_resource', None) if parent else None)
 
         # determine proper resource prefix based on whether the message is a reply
+        #:  ID of the parent chat message or root chat message of the thread.
+        #: |br| **Type:** str
         self.reply_to_id = cloud_data.get('replyToId')
         if self.reply_to_id:
             resource_prefix = '/replies/{message_id}'.format(
@@ -126,10 +129,16 @@ class ChatMessage(ApiComponent):
             protocol=parent.protocol if parent else kwargs.get('protocol'),
             main_resource=main_resource)
 
+        #: The type of chat message. |br| **Type:** chatMessageType
         self.message_type = cloud_data.get('messageType')
+        #: The subject of the chat message, in plaintext. |br| **Type:** str
         self.subject = cloud_data.get('subject')
+        #: Summary text of the chat message that could be used for
+        #: push notifications and summary views or fall back views. |br| **Type:** str
         self.summary = cloud_data.get('summary')
+        #: The importance of the chat message. |br| **Type:** str
         self.importance = cloud_data.get('importance')
+        #: Link to the message in Microsoft Teams. |br| **Type:** str
         self.web_url = cloud_data.get('webUrl')
 
         local_tz = self.protocol.timezone
@@ -137,16 +146,28 @@ class ChatMessage(ApiComponent):
         last_modified = cloud_data.get('lastModifiedDateTime')
         last_edit = cloud_data.get('lastEditedDateTime')
         deleted = cloud_data.get('deletedDateTime')
+        #: Timestamp of when the chat message was created. |br| **Type:** datetime
         self.created_date = parse(created).astimezone(
             local_tz) if created else None
+        #: Timestamp when the chat message is created (initial setting)
+        #: or modified, including when a reaction is added or removed.
+        #: |br| **Type:** datetime
         self.last_modified_date = parse(last_modified).astimezone(
             local_tz) if last_modified else None
+        #: Timestamp when edits to the chat message were made.
+        #: Triggers an "Edited" flag in the Teams UI. |br| **Type:** datetime
         self.last_edited_date = parse(last_edit).astimezone(
             local_tz) if last_edit else None
+        #: Timestamp at which the chat message was deleted, or null if not deleted.
+        #: |br| **Type:** datetime
         self.deleted_date = parse(deleted).astimezone(
             local_tz) if deleted else None
 
+        #: If the message was sent in a chat, represents the identity of the chat.
+        #: |br| **Type:** str
         self.chat_id = cloud_data.get('chatId')
+        #: If the message was sent in a channel, represents identity of the channel.
+        #: |br| **Type:** channelIdentity
         self.channel_identity = cloud_data.get('channelIdentity')
 
         sent_from = cloud_data.get('from')
@@ -157,14 +178,23 @@ class ChatMessage(ApiComponent):
             from_data = {}
             from_key = None
 
+        #: Id of the user or application message was sent from.
+        #: |br| **Type:** str
         self.from_id = from_data.get('id') if sent_from else None
+        #:  Name of the user or application message was sent from.
+        #: |br| **Type:** str
         self.from_display_name = from_data.get('displayName',
                                                None) if sent_from else None
+        #: Type of the user or application message was sent from.
+        #: |br| **Type:** any
         self.from_type = from_data.get(
             '{}IdentityType'.format(from_key)) if sent_from else None
 
         body = cloud_data.get('body')
+        #:  The type of the content. Possible values are text and html.
+        #: |br| **Type:** bodyType
         self.content_type = body.get('contentType')
+        #: The content of the item. |br| **Type:** str
         self.content = body.get('content')
 
     def __repr__(self):
@@ -179,7 +209,7 @@ class ChannelMessage(ChatMessage):
     _endpoints = {'get_replies': '/replies',
                   'get_reply': '/replies/{message_id}'}
 
-    message_constructor = ChatMessage
+    message_constructor = ChatMessage  #: :meta private:
 
     def __init__(self, **kwargs):
         """ A Microsoft Teams chat message that is the start of a channel thread """
@@ -187,7 +217,9 @@ class ChannelMessage(ChatMessage):
 
         cloud_data = kwargs.get(self._cloud_data_key, {})
         channel_identity = cloud_data.get('channelIdentity')
+        #: The identity of the channel in which the message was posted. |br| **Type:** str
         self.team_id = channel_identity.get('teamId')
+        #: The identity of the team in which the message was posted. |br| **Type:** str
         self.channel_id = channel_identity.get('channelId')
 
     def get_reply(self, message_id):
@@ -264,8 +296,8 @@ class Chat(ApiComponent):
                   'get_members': '/members',
                   'get_member': '/members/{membership_id}'}
 
-    message_constructor = ChatMessage
-    member_constructor = ConversationMember
+    message_constructor = ChatMessage  #: :meta private:
+    member_constructor = ConversationMember  #: :meta private:
 
     def __init__(self, *, parent=None, con=None, **kwargs):
         """ A Microsoft Teams chat
@@ -280,6 +312,7 @@ class Chat(ApiComponent):
         self.con = parent.con if parent else con
 
         cloud_data = kwargs.get(self._cloud_data_key, {})
+        #: The chat's unique identifier. |br| **Type:** str
         self.object_id = cloud_data.get('id')
 
         # Choose the main_resource passed in kwargs over parent main_resource
@@ -291,14 +324,23 @@ class Chat(ApiComponent):
             protocol=parent.protocol if parent else kwargs.get('protocol'),
             main_resource=main_resource)
 
+        #: Subject or topic for the chat. Only available for group chats.
+        #: |br| **Type:** str
         self.topic = cloud_data.get('topic')
+        #: Specifies the type of chat.
+        #: Possible values are: group, oneOnOne, meeting, unknownFutureValue.
+        #: |br| **Type:** chatType
         self.chat_type = cloud_data.get('chatType')
+        #: The URL for the chat in Microsoft Teams. |br| **Type:** str
         self.web_url = cloud_data.get('webUrl')
         created = cloud_data.get('createdDateTime')
         last_update = cloud_data.get('lastUpdatedDateTime')
         local_tz = self.protocol.timezone
+        #: Date and time at which the chat was created. |br| **Type:** datetime
         self.created_date = parse(created).astimezone(
             local_tz) if created else None
+        #: Date and time at which the chat was renamed or
+        #: the list of members was last changed. |br| **Type:** datetime
         self.last_update_date = parse(last_update).astimezone(
             local_tz) if last_update else None
 
@@ -424,6 +466,7 @@ class Presence(ApiComponent):
 
         cloud_data = kwargs.get(self._cloud_data_key, {})
 
+        #: The unique identifier for the user. |br| **Type:** str
         self.object_id = cloud_data.get('id')
 
         # Choose the main_resource passed in kwargs over parent main_resource
@@ -436,7 +479,16 @@ class Presence(ApiComponent):
             protocol=parent.protocol if parent else kwargs.get('protocol'),
             main_resource=main_resource)
 
+        #: The base presence information for a user.
+        #: Possible values are Available, AvailableIdle, Away, BeRightBack,
+        #: Busy, BusyIdle, DoNotDisturb, Offline, PresenceUnknown
+        #: |br| **Type:** list[str]
         self.availability = cloud_data.get('availability')
+        #: The supplemental information to a user's availability.
+        #: Possible values are Available, Away, BeRightBack, Busy, DoNotDisturb,
+        #: InACall, InAConferenceCall, Inactive, InAMeeting, Offline, OffWork,
+        #: OutOfOffice, PresenceUnknown, Presenting, UrgentInterruptionsOnly.
+        #: |br| **Type:** list[str]
         self.activity = cloud_data.get('activity')
 
     def __str__(self):
@@ -455,7 +507,7 @@ class Channel(ApiComponent):
     _endpoints = {'get_messages': '/messages',
                   'get_message': '/messages/{message_id}'}
 
-    message_constructor = ChannelMessage
+    message_constructor = ChannelMessage  #: :meta private:
 
     def __init__(self, *, parent=None, con=None, **kwargs):
         """ A Microsoft Teams channel
@@ -473,6 +525,7 @@ class Channel(ApiComponent):
         self.con = parent.con if parent else con
 
         cloud_data = kwargs.get(self._cloud_data_key, {})
+        #: The channel's unique identifier. |br| **Type:** str
         self.object_id = cloud_data.get('id')
 
         # Choose the main_resource passed in kwargs over parent main_resource
@@ -486,8 +539,12 @@ class Channel(ApiComponent):
             protocol=parent.protocol if parent else kwargs.get('protocol'),
             main_resource=main_resource)
 
+        #: Channel name as it will appear to the user in Microsoft Teams.
+        #: |br| **Type:** str
         self.display_name = cloud_data.get(self._cc('displayName'), '')
+        #: Optional textual description for the channel. |br| **Type:** str
         self.description = cloud_data.get('description')
+        #: The email address for sending messages to the channel. |br| **Type:** str
         self.email = cloud_data.get('email')
 
     def get_message(self, message_id):
@@ -573,7 +630,7 @@ class Team(ApiComponent):
     _endpoints = {'get_channels': '/channels',
                   'get_channel': '/channels/{channel_id}'}
 
-    channel_constructor = Channel
+    channel_constructor = Channel  #: :meta private:
 
     def __init__(self, *, parent=None, con=None, **kwargs):
         """ A Microsoft Teams team
@@ -592,6 +649,7 @@ class Team(ApiComponent):
 
         cloud_data = kwargs.get(self._cloud_data_key, {})
 
+        #: The unique identifier of the team. |br| **Type:** str
         self.object_id = cloud_data.get('id')
 
         # Choose the main_resource passed in kwargs over parent main_resource
@@ -605,9 +663,14 @@ class Team(ApiComponent):
             protocol=parent.protocol if parent else kwargs.get('protocol'),
             main_resource=main_resource)
 
+        #: The name of the team. |br| **Type:** str
         self.display_name = cloud_data.get(self._cc('displayName'), '')
+        #: An optional description for the team. |br| **Type:** str
         self.description = cloud_data.get(self._cc('description'), '')
+        #: Whether this team is in read-only mode. |br| **Type:** bool
         self.is_archived = cloud_data.get(self._cc('isArchived'), '')
+        #: A hyperlink that goes to the team in the Microsoft Teams client.
+        #: |br| **Type:** str
         self.web_url = cloud_data.get(self._cc('webUrl'), '')
 
     def __str__(self):
@@ -678,6 +741,11 @@ class App(ApiComponent):
 
         cloud_data = kwargs.get(self._cloud_data_key, {})
 
+        #: The app ID generated for the catalog is different from the developer-provided
+        #: ID found within the Microsoft Teams zip app package. The externalId value is
+        #: empty for apps with a distributionMethod type of store. When apps are
+        #: published to the global store, the id of the app matches the id in the app manifest.
+        #: |br| **Type:** str
         self.object_id = cloud_data.get('id')
 
         # Choose the main_resource passed in kwargs over parent main_resource
@@ -690,6 +758,7 @@ class App(ApiComponent):
             protocol=parent.protocol if parent else kwargs.get('protocol'),
             main_resource=main_resource)
 
+        #: The details for each version of the app. |br| **Type:** list[teamsAppDefinition]
         self.app_definition = cloud_data.get(self._cc('teamsAppDefinition'),
                                              {})
 
@@ -718,11 +787,11 @@ class Teams(ApiComponent):
         "get_apps_in_team": "/teams/{team_id}/installedApps?$expand=teamsAppDefinition",
         "get_my_chats": "/me/chats"
     }
-    presence_constructor = Presence
-    team_constructor = Team
-    channel_constructor = Channel
-    app_constructor = App
-    chat_constructor = Chat
+    presence_constructor = Presence  #: :meta private:
+    team_constructor = Team  #: :meta private:
+    channel_constructor = Channel  #: :meta private:
+    app_constructor = App  #: :meta private:
+    chat_constructor = Chat  #: :meta private:
 
     def __init__(self, *, parent=None, con=None, **kwargs):
         """ A Teams object

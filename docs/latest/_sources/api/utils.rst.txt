@@ -1,7 +1,12 @@
+=====
 Utils
------
+=====
 
-.. automodule:: O365.utils.utils
-    :members:
-    :undoc-members:
-    :show-inheritance:
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
+
+   utils/attachment
+   utils/query
+   utils/token
+   utils/utils

@@ -1,24 +1,23 @@
 import logging
 
-from dateutil.parser import parse
-from .utils import ApiComponent
 from .directory import User
+from .utils import ApiComponent, NEXT_LINK_KEYWORD, Pagination 
 
 log = logging.getLogger(__name__)
 
 
 class Group(ApiComponent):
-    """ A Microsoft O365 group """
+    """ A Microsoft 365 group """
 
     _endpoints = {
             'get_group_owners': '/groups/{group_id}/owners',
             'get_group_members': '/groups/{group_id}/members',
     }
 
-    member_constructor = User
+    member_constructor = User  #: :meta private:
 
     def __init__(self, *, parent=None, con=None, **kwargs):
-        """ A Microsoft O365 group
+        """ A Microsoft 365 group
 
         :param parent: parent object
         :type parent: Teams
@@ -34,6 +33,7 @@ class Group(ApiComponent):
 
         cloud_data = kwargs.get(self._cloud_data_key, {})
 
+        #: The unique identifier for the group. |br| **Type:** str
         self.object_id = cloud_data.get('id')
 
         # Choose the main_resource passed in kwargs over parent main_resource
@@ -46,11 +46,17 @@ class Group(ApiComponent):
             protocol=parent.protocol if parent else kwargs.get('protocol'),
             main_resource=main_resource)
 
+        #: The group type. |br| **Type:** str
         self.type = cloud_data.get('@odata.type')
+        #: The display name for the group. |br| **Type:** str
         self.display_name = cloud_data.get(self._cc('displayName'), '')
+        #: An optional description for the group. |br| **Type:** str
         self.description = cloud_data.get(self._cc('description'), '')
+        #: The SMTP address for the group, for example, "serviceadmins@contoso.com". |br| **Type:** str
         self.mail = cloud_data.get(self._cc('mail'), '')
+        #: The mail alias for the group, unique for Microsoft 365 groups in the organization. |br| **Type:** str
         self.mail_nickname = cloud_data.get(self._cc('mailNickname'), '')
+        #: Specifies the group join policy and group content visibility for groups. |br| **Type:** str
         self.visibility = cloud_data.get(self._cc('visibility'), '')
 
     def __str__(self):
@@ -119,7 +125,7 @@ class Groups(ApiComponent):
         'list_groups': '/groups',
     }
 
-    group_constructor = Group
+    group_constructor = Group  #: :meta private:
 
     def __init__(self, *, parent=None, con=None, **kwargs):
         """ A Teams object
@@ -150,7 +156,7 @@ class Groups(ApiComponent):
         return 'Microsoft O365 Group parent class'
 
     def get_group_by_id(self, group_id = None):
-        """ Returns Microsoft O365/AD group with given id
+        """ Returns Microsoft 365/AD group with given id
 
         :param group_id: group id of group
 
@@ -160,10 +166,10 @@ class Groups(ApiComponent):
         if not group_id:
             raise RuntimeError('Provide the group_id')
 
-        if group_id:
-            # get channels by the team id
-            url = self.build_url(
-                self._endpoints.get('get_group_by_id').format(group_id=group_id))
+        # get channels by the team id
+        url = self.build_url(
+            self._endpoints.get("get_group_by_id").format(group_id=group_id)
+        )
 
         response = self.con.get(url)
 
@@ -172,23 +178,22 @@ class Groups(ApiComponent):
 
         data = response.json()
 
-        return self.group_constructor(parent=self,
-                                **{self._cloud_data_key: data})
+        return self.group_constructor(parent=self, **{self._cloud_data_key: data})
 
-    def get_group_by_mail(self, group_mail = None):
-        """ Returns Microsoft O365/AD group by mail field
+    def get_group_by_mail(self, group_mail=None):
+        """Returns Microsoft 365/AD group by mail field
 
         :param group_name: mail of group
 
         :rtype: Group
         """
         if not group_mail:
-            raise RuntimeError('Provide the group mail')
+            raise RuntimeError("Provide the group mail")
 
-        if group_mail:
-            # get groups by filter mail
-            url = self.build_url(
-                self._endpoints.get('get_group_by_mail').format(group_mail=group_mail))
+        # get groups by filter mail
+        url = self.build_url(
+            self._endpoints.get("get_group_by_mail").format(group_mail=group_mail)
+        )
 
         response = self.con.get(url, headers={'ConsistencyLevel': 'eventual'})
 
@@ -204,35 +209,54 @@ class Groups(ApiComponent):
         return self.group_constructor(parent=self,
                                 **{self._cloud_data_key: data.get('value')[0]})
 
-    def get_user_groups(self, user_id = None):
-        """ Returns list of groups that given user has membership
+    def get_user_groups(self, user_id=None, limit=None, batch=None):
+        """Returns list of groups that given user has membership
 
         :param user_id: user_id
-
-        :rtype: list[Group]
+        :param int limit: max no. of groups to get. Over 999 uses batch.
+        :param int batch: batch size, retrieves items in
+          batches allowing to retrieve more items than the limit.
+        :rtype: list[Group] or Pagination
         """
 
         if not user_id:
-            raise RuntimeError('Provide the user_id')
+            raise RuntimeError("Provide the user_id")
 
-        if user_id:
-            # get channels by the team id
-            url = self.build_url(
-                self._endpoints.get('get_user_groups').format(user_id=user_id))
+        # get channels by the team id
+        url = self.build_url(
+            self._endpoints.get("get_user_groups").format(user_id=user_id)
+        )
 
-        response = self.con.get(url)
+        params = {}
+        if limit is None or limit > self.protocol.max_top_value:
+            batch = self.protocol.max_top_value
+        params["$top"] = batch if batch else limit
+        response = self.con.get(url, params=params or None)
 
         if not response:
             return None
 
         data = response.json()
 
-        return [
+        groups = [
             self.group_constructor(parent=self, **{self._cloud_data_key: group})
-            for group in data.get('value', [])]
+            for group in data.get("value", [])
+        ]
+        next_link = data.get(NEXT_LINK_KEYWORD, None)
+        if batch and next_link:
+            return Pagination(
+                parent=self,
+                data=groups,
+                constructor=self.group_constructor,
+                next_link=next_link,
+                limit=limit,
+            )
+
+        return groups
 
     def list_groups(self):
-        """ Returns list of groups
+        """Returns list of groups
+
         :rtype: list[Group]
         """
 

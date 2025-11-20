@@ -1,0 +1,1279 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>O365.utils.token &mdash; O365  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link href="../../../_static/css/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html">
+            
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Detailed Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">O365 API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">O365</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">O365.utils.token</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for O365.utils.token</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">dt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Protocol</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">msal.token_cache</span><span class="w"> </span><span class="kn">import</span> <span class="n">TokenCache</span>
+
+<span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<span class="n">RESERVED_SCOPES</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;profile&quot;</span><span class="p">,</span> <span class="s2">&quot;openid&quot;</span><span class="p">,</span> <span class="s2">&quot;offline_access&quot;</span><span class="p">}</span>
+
+
+<div class="viewcode-block" id="CryptographyManagerType">
+<a class="viewcode-back" href="../../../api/utils/token.html#O365.utils.token.CryptographyManagerType">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">CryptographyManagerType</span><span class="p">(</span><span class="n">Protocol</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Abstract cryptography manafer&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="CryptographyManagerType.encrypt">
+<a class="viewcode-back" href="../../../api/utils/token.html#O365.utils.token.CryptographyManagerType.encrypt">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">encrypt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span> <span class="o">...</span></div>
+
+
+<div class="viewcode-block" id="CryptographyManagerType.decrypt">
+<a class="viewcode-back" href="../../../api/utils/token.html#O365.utils.token.CryptographyManagerType.decrypt">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">decrypt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span> <span class="o">...</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="BaseTokenBackend">
+<a class="viewcode-back" href="../../../api/utils/token.html#O365.utils.token.BaseTokenBackend">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">BaseTokenBackend</span><span class="p">(</span><span class="n">TokenCache</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A base token storage class&quot;&quot;&quot;</span>
+
+    <span class="n">serializer</span> <span class="o">=</span> <span class="n">json</span>  <span class="c1"># The default serializer is json</span>
+
+<div class="viewcode-block" id="BaseTokenBackend.__init__">
+<a class="viewcode-back" href="../../../api/utils/token.html#O365.utils.token.BaseTokenBackend.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_has_state_changed</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="c1">#: Optional cryptography manager.  |br| **Type:** CryptographyManagerType</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cryptography_manager</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">CryptographyManagerType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">has_data</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Does the token backend contain data.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">)</span>
+
+<div class="viewcode-block" id="BaseTokenBackend.token_expiration_datetime">
+<a class="viewcode-back" href="../../../api/utils/token.html#O365.utils.token.BaseTokenBackend.token_expiration_datetime">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">token_expiration_datetime</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">username</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the current access token expiration datetime</span>
+<span class="sd">        If the refresh token is present, then the expiration datetime is extended by 3 months</span>
+<span class="sd">        :param str username: The username from which check the tokens</span>
+<span class="sd">        :return dt.datetime or None: The expiration datetime</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">access_token</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_access_token</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="n">username</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">access_token</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="n">expires_on</span> <span class="o">=</span> <span class="n">access_token</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;expires_on&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">expires_on</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># consider the token has expired</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">expires_on</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">expires_on</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="n">expires_on</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BaseTokenBackend.token_is_expired">
+<a class="viewcode-back" href="../../../api/utils/token.html#O365.utils.token.BaseTokenBackend.token_is_expired">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">token_is_expired</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">username</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Checks whether the current access token is expired</span>
+<span class="sd">        :param str username: The username from which check the tokens</span>
+<span class="sd">        :return bool: True if the token is expired, False otherwise</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">token_expiration_datetime</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">token_expiration_datetime</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="n">username</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">token_expiration_datetime</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">&gt;</span> <span class="n">token_expiration_datetime</span></div>
+
+
+<div class="viewcode-block" id="BaseTokenBackend.token_is_long_lived">
+<a class="viewcode-back" href="../../../api/utils/token.html#O365.utils.token.BaseTokenBackend.token_is_long_lived">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">token_is_long_lived</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">username</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns if the token backend has a refresh token&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_refresh_token</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="n">username</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_home_account_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">username</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Gets the home_account_id string from the ACCOUNT cache for the specified username&quot;&quot;&quot;</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">TokenCache</span><span class="o">.</span><span class="n">CredentialType</span><span class="o">.</span><span class="n">ACCOUNT</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;username&quot;</span><span class="p">:</span> <span class="n">username</span><span class="p">})</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">result</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;home_account_id&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No account found for username: </span><span class="si">{</span><span class="n">username</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="BaseTokenBackend.get_all_accounts">
+<a class="viewcode-back" href="../../../api/utils/token.html#O365.utils.token.BaseTokenBackend.get_all_accounts">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_all_accounts</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a list of all accounts present in the token cache&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">TokenCache</span><span class="o">.</span><span class="n">CredentialType</span><span class="o">.</span><span class="n">ACCOUNT</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="BaseTokenBackend.get_account">
+<a class="viewcode-back" href="../../../api/utils/token.html#O365.utils.token.BaseTokenBackend.get_account">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_account</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">username</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">home_account_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Gets the account object for the specified username or home_account_id&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">username</span> <span class="ow">and</span> <span class="n">home_account_id</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s1">&#39;Provide nothing or either username or home_account_id to &quot;get_account&quot;, but not both&#39;</span>
+            <span class="p">)</span>
+
+        <span class="n">query</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">username</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">query</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;username&quot;</span><span class="p">:</span> <span class="n">username</span><span class="p">}</span>
+        <span class="k">if</span> <span class="n">home_account_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">query</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;home_account_id&quot;</span><span class="p">:</span> <span class="n">home_account_id</span><span class="p">}</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">TokenCache</span><span class="o">.</span><span class="n">CredentialType</span><span class="o">.</span><span class="n">ACCOUNT</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="n">query</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">result</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="BaseTokenBackend.get_access_token">
+<a class="viewcode-back" href="../../../api/utils/token.html#O365.utils.token.BaseTokenBackend.get_access_token">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_access_token</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">username</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieve the stored access token</span>
+<span class="sd">        If username is None, then the first access token will be retrieved</span>
+<span class="sd">        :param str username: The username from which retrieve the access token</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">username</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">home_account_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_home_account_id</span><span class="p">(</span><span class="n">username</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">home_account_id</span><span class="p">:</span>
+                <span class="n">query</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;home_account_id&quot;</span><span class="p">:</span> <span class="n">home_account_id</span><span class="p">}</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="n">results</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">TokenCache</span><span class="o">.</span><span class="n">CredentialType</span><span class="o">.</span><span class="n">ACCESS_TOKEN</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="n">query</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">results</span> <span class="k">else</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="BaseTokenBackend.get_refresh_token">
+<a class="viewcode-back" href="../../../api/utils/token.html#O365.utils.token.BaseTokenBackend.get_refresh_token">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_refresh_token</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">username</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Retrieve the stored refresh token</span>
+<span class="sd">        If username is None, then the first access token will be retrieved</span>
+<span class="sd">        :param str username: The username from which retrieve the refresh token</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">username</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">home_account_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_home_account_id</span><span class="p">(</span><span class="n">username</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">home_account_id</span><span class="p">:</span>
+                <span class="n">query</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;home_account_id&quot;</span><span class="p">:</span> <span class="n">home_account_id</span><span class="p">}</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="n">results</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">TokenCache</span><span class="o">.</span><span class="n">CredentialType</span><span class="o">.</span><span class="n">REFRESH_TOKEN</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="n">query</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">results</span> <span class="k">else</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="BaseTokenBackend.get_id_token">
+<a class="viewcode-back" href="../../../api/utils/token.html#O365.utils.token.BaseTokenBackend.get_id_token">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_id_token</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">username</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Retrieve the stored id token</span>
+<span class="sd">        If username is None, then the first id token will be retrieved</span>
+<span class="sd">        :param str username: The username from which retrieve the id token</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">username</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">home_account_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_home_account_id</span><span class="p">(</span><span class="n">username</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">home_account_id</span><span class="p">:</span>
+                <span class="n">query</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;home_account_id&quot;</span><span class="p">:</span> <span class="n">home_account_id</span><span class="p">}</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="n">results</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">TokenCache</span><span class="o">.</span><span class="n">CredentialType</span><span class="o">.</span><span class="n">ID_TOKEN</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="n">query</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">results</span> <span class="k">else</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="BaseTokenBackend.get_token_scopes">
+<a class="viewcode-back" href="../../../api/utils/token.html#O365.utils.token.BaseTokenBackend.get_token_scopes">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_token_scopes</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">username</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">remove_reserved</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieve the scopes the token (refresh first then access) has permissions on</span>
+<span class="sd">        :param str username: The username from which retrieve the refresh token</span>
+<span class="sd">        :param bool remove_reserved: if True RESERVED_SCOPES will be removed from the list</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">token</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_refresh_token</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="n">username</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_access_token</span><span class="p">(</span>
+            <span class="n">username</span><span class="o">=</span><span class="n">username</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">token</span><span class="p">:</span>
+            <span class="n">scopes_str</span> <span class="o">=</span> <span class="n">token</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;target&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">scopes_str</span><span class="p">:</span>
+                <span class="n">scopes</span> <span class="o">=</span> <span class="n">scopes_str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">remove_reserved</span><span class="p">:</span>
+                    <span class="n">scopes</span> <span class="o">=</span> <span class="p">[</span><span class="n">scope</span> <span class="k">for</span> <span class="n">scope</span> <span class="ow">in</span> <span class="n">scopes</span> <span class="k">if</span> <span class="n">scope</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">RESERVED_SCOPES</span><span class="p">]</span>
+                <span class="k">return</span> <span class="n">scopes</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="BaseTokenBackend.remove_data">
+<a class="viewcode-back" href="../../../api/utils/token.html#O365.utils.token.BaseTokenBackend.remove_data">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">remove_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">username</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Removes all tokens and all related data from the token cache for the specified username.</span>
+<span class="sd">        Returns success or failure.</span>
+<span class="sd">        :param str username: The username from which remove the tokens and related data</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">home_account_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_home_account_id</span><span class="p">(</span><span class="n">username</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">home_account_id</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="n">query</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;home_account_id&quot;</span><span class="p">:</span> <span class="n">home_account_id</span><span class="p">}</span>
+
+        <span class="c1"># remove id token</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">TokenCache</span><span class="o">.</span><span class="n">CredentialType</span><span class="o">.</span><span class="n">ID_TOKEN</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="n">query</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">id_token</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">remove_idt</span><span class="p">(</span><span class="n">id_token</span><span class="p">)</span>
+
+        <span class="c1"># remove access token</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">TokenCache</span><span class="o">.</span><span class="n">CredentialType</span><span class="o">.</span><span class="n">ACCESS_TOKEN</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="n">query</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">access_token</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">remove_at</span><span class="p">(</span><span class="n">access_token</span><span class="p">)</span>
+
+        <span class="c1"># remove refresh tokens</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">TokenCache</span><span class="o">.</span><span class="n">CredentialType</span><span class="o">.</span><span class="n">REFRESH_TOKEN</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="n">query</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="k">for</span> <span class="n">refresh_token</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">remove_rt</span><span class="p">(</span><span class="n">refresh_token</span><span class="p">)</span>
+
+        <span class="c1"># remove accounts</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">TokenCache</span><span class="o">.</span><span class="n">CredentialType</span><span class="o">.</span><span class="n">ACCOUNT</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="n">query</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">account</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">remove_account</span><span class="p">(</span><span class="n">account</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_has_state_changed</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="BaseTokenBackend.add">
+<a class="viewcode-back" href="../../../api/utils/token.html#O365.utils.token.BaseTokenBackend.add">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add to the current cache.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_has_state_changed</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="BaseTokenBackend.modify">
+<a class="viewcode-back" href="../../../api/utils/token.html#O365.utils.token.BaseTokenBackend.modify">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">modify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">credential_type</span><span class="p">,</span> <span class="n">old_entry</span><span class="p">,</span> <span class="n">new_key_value_pairs</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Modify content in the cache.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">modify</span><span class="p">(</span><span class="n">credential_type</span><span class="p">,</span> <span class="n">old_entry</span><span class="p">,</span> <span class="n">new_key_value_pairs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_has_state_changed</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="BaseTokenBackend.serialize">
+<a class="viewcode-back" href="../../../api/utils/token.html#O365.utils.token.BaseTokenBackend.serialize">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">bytes</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Serialize the current cache state into a string.&quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_has_state_changed</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">token_str</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">serializer</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cryptography_manager</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">token_str</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cryptography_manager</span><span class="o">.</span><span class="n">encrypt</span><span class="p">(</span><span class="n">token_str</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">token_str</span></div>
+
+
+<div class="viewcode-block" id="BaseTokenBackend.deserialize">
+<a class="viewcode-back" href="../../../api/utils/token.html#O365.utils.token.BaseTokenBackend.deserialize">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">deserialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">token_cache_state</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">bytes</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deserialize the cache from a state previously obtained by serialize()&quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_has_state_changed</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cryptography_manager</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">token_cache_state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cryptography_manager</span><span class="o">.</span><span class="n">decrypt</span><span class="p">(</span><span class="n">token_cache_state</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">serializer</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">token_cache_state</span><span class="p">)</span> <span class="k">if</span> <span class="n">token_cache_state</span> <span class="k">else</span> <span class="p">{}</span></div>
+
+
+<div class="viewcode-block" id="BaseTokenBackend.load_token">
+<a class="viewcode-back" href="../../../api/utils/token.html#O365.utils.token.BaseTokenBackend.load_token">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">load_token</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Abstract method that will retrieve the token data from the backend</span>
+<span class="sd">        This MUST be implemented in subclasses</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+<div class="viewcode-block" id="BaseTokenBackend.save_token">
+<a class="viewcode-back" href="../../../api/utils/token.html#O365.utils.token.BaseTokenBackend.save_token">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">save_token</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Abstract method that will save the token data into the backend</span>
+<span class="sd">        This MUST be implemented in subclasses</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+<div class="viewcode-block" id="BaseTokenBackend.delete_token">
+<a class="viewcode-back" href="../../../api/utils/token.html#O365.utils.token.BaseTokenBackend.delete_token">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">delete_token</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Optional Abstract method to delete the token from the backend&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+<div class="viewcode-block" id="BaseTokenBackend.check_token">
+<a class="viewcode-back" href="../../../api/utils/token.html#O365.utils.token.BaseTokenBackend.check_token">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">check_token</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Optional Abstract method to check for the token existence in the backend&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+<div class="viewcode-block" id="BaseTokenBackend.should_refresh_token">
+<a class="viewcode-back" href="../../../api/utils/token.html#O365.utils.token.BaseTokenBackend.should_refresh_token">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">should_refresh_token</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">con</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This method is intended to be implemented for environments</span>
+<span class="sd">        where multiple Connection instances are running on parallel.</span>
+
+<span class="sd">        This method should check if it&#39;s time to refresh the token or not.</span>
+<span class="sd">        The chosen backend can store a flag somewhere to answer this question.</span>
+<span class="sd">        This can avoid race conditions between different instances trying to</span>
+<span class="sd">        refresh the token at once, when only one should make the refresh.</span>
+
+<span class="sd">        This is an example of how to achieve this:</span>
+
+<span class="sd">            #. Along with the token store a Flag</span>
+<span class="sd">            #. The first to see the Flag as True must transactional update it</span>
+<span class="sd">               to False. This method then returns True and therefore the</span>
+<span class="sd">               connection will refresh the token.</span>
+<span class="sd">            #. The save_token method should be rewritten to also update the flag</span>
+<span class="sd">               back to True always.</span>
+<span class="sd">            #. Meanwhile between steps 2 and 3, any other token backend checking</span>
+<span class="sd">               for this method should get the flag with a False value.</span>
+
+<span class="sd">            | This method should then wait and check again the flag.</span>
+<span class="sd">            | This can be implemented as a call with an incremental backoff</span>
+<span class="sd">              factor to avoid too many calls to the database.</span>
+<span class="sd">            | At a given point in time, the flag will return True.</span>
+<span class="sd">            | Then this method should load the token and finally return False</span>
+<span class="sd">              signaling there is no need to refresh the token.</span>
+
+<span class="sd">            | If this returns True, then the Connection will refresh the token.</span>
+<span class="sd">            | If this returns False, then the Connection will NOT refresh the token.</span>
+<span class="sd">            | If this returns None, then this method already executed the refresh and therefore</span>
+<span class="sd">              the Connection does not have to.</span>
+
+<span class="sd">            By default, this always returns True</span>
+
+<span class="sd">        There is an example of this in the example&#39;s folder.</span>
+
+<span class="sd">        :param Connection con: the connection that calls this method. This</span>
+<span class="sd">         is passed because maybe the locking mechanism needs to refresh the token within the lock applied in this method.</span>
+<span class="sd">        :rtype: bool or None</span>
+<span class="sd">        :return: | True if the Connection can refresh the token</span>
+<span class="sd">                 | False if the Connection should not refresh the token</span>
+<span class="sd">                 | None if the token was refreshed and therefore the</span>
+<span class="sd">                 | Connection should do nothing.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="FileSystemTokenBackend">
+<a class="viewcode-back" href="../../../api/utils/token.html#O365.utils.token.FileSystemTokenBackend">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">FileSystemTokenBackend</span><span class="p">(</span><span class="n">BaseTokenBackend</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A token backend based on files on the filesystem&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="FileSystemTokenBackend.__init__">
+<a class="viewcode-back" href="../../../api/utils/token.html#O365.utils.token.FileSystemTokenBackend.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">token_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">token_filename</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Init Backend</span>
+<span class="sd">        :param str or Path token_path: the path where to store the token</span>
+<span class="sd">        :param str token_filename: the name of the token file</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">token_path</span><span class="p">,</span> <span class="n">Path</span><span class="p">):</span>
+            <span class="n">token_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">token_path</span><span class="p">)</span> <span class="k">if</span> <span class="n">token_path</span> <span class="k">else</span> <span class="n">Path</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">token_path</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
+            <span class="c1">#: Path to the token stored in the file system.  |br| **Type:** str</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">token_path</span> <span class="o">=</span> <span class="n">token_path</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">token_filename</span> <span class="o">=</span> <span class="n">token_filename</span> <span class="ow">or</span> <span class="s2">&quot;o365_token.txt&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">token_path</span> <span class="o">=</span> <span class="n">token_path</span> <span class="o">/</span> <span class="n">token_filename</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">token_path</span><span class="p">)</span>
+
+<div class="viewcode-block" id="FileSystemTokenBackend.load_token">
+<a class="viewcode-back" href="../../../api/utils/token.html#O365.utils.token.FileSystemTokenBackend.load_token">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">load_token</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieves the token from the File System and stores it in the cache</span>
+<span class="sd">        :return bool: Success / Failure</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">token_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">token_path</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">token_file</span><span class="p">:</span>
+                <span class="n">token_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">deserialize</span><span class="p">(</span><span class="n">token_file</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+                <span class="k">if</span> <span class="s2">&quot;access_token&quot;</span> <span class="ow">in</span> <span class="n">token_dict</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="s2">&quot;The token you are trying to load is not valid anymore. &quot;</span>
+                        <span class="s2">&quot;Please delete the token and proceed to authenticate again.&quot;</span>
+                    <span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span> <span class="o">=</span> <span class="n">token_dict</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Token loaded from </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">token_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="FileSystemTokenBackend.save_token">
+<a class="viewcode-back" href="../../../api/utils/token.html#O365.utils.token.FileSystemTokenBackend.save_token">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">save_token</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Saves the token cache dict in the specified file</span>
+<span class="sd">        Will create the folder if it doesn&#39;t exist</span>
+<span class="sd">        :param bool force: Force save even when state has not changed</span>
+<span class="sd">        :return bool: Success / Failure</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="n">force</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_state_changed</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">token_path</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">token_path</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Token could not be saved: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)))</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">token_path</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">token_file</span><span class="p">:</span>
+            <span class="n">token_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">serialize</span><span class="p">())</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="FileSystemTokenBackend.delete_token">
+<a class="viewcode-back" href="../../../api/utils/token.html#O365.utils.token.FileSystemTokenBackend.delete_token">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">delete_token</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Deletes the token file</span>
+<span class="sd">        :return bool: Success / Failure</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">token_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">token_path</span><span class="o">.</span><span class="n">unlink</span><span class="p">()</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="FileSystemTokenBackend.check_token">
+<a class="viewcode-back" href="../../../api/utils/token.html#O365.utils.token.FileSystemTokenBackend.check_token">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">check_token</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Checks if the token exists in the filesystem</span>
+<span class="sd">        :return bool: True if exists, False otherwise</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">token_path</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="MemoryTokenBackend">
+<a class="viewcode-back" href="../../../api/utils/token.html#O365.utils.token.MemoryTokenBackend">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">MemoryTokenBackend</span><span class="p">(</span><span class="n">BaseTokenBackend</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A token backend stored in memory.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;MemoryTokenBackend&quot;</span>
+
+<div class="viewcode-block" id="MemoryTokenBackend.load_token">
+<a class="viewcode-back" href="../../../api/utils/token.html#O365.utils.token.MemoryTokenBackend.load_token">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">load_token</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="MemoryTokenBackend.save_token">
+<a class="viewcode-back" href="../../../api/utils/token.html#O365.utils.token.MemoryTokenBackend.save_token">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">save_token</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="EnvTokenBackend">
+<a class="viewcode-back" href="../../../api/utils/token.html#O365.utils.token.EnvTokenBackend">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">EnvTokenBackend</span><span class="p">(</span><span class="n">BaseTokenBackend</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A token backend based on environmental variable.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="EnvTokenBackend.__init__">
+<a class="viewcode-back" href="../../../api/utils/token.html#O365.utils.token.EnvTokenBackend.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">token_env_name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Init Backend</span>
+<span class="sd">        :param str token_env_name: the name of the environmental variable that will hold the token</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="c1">#: Name of the environment token (Default - `O365TOKEN`).  |br| **Type:** str</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">token_env_name</span> <span class="o">=</span> <span class="n">token_env_name</span> <span class="k">if</span> <span class="n">token_env_name</span> <span class="k">else</span> <span class="s2">&quot;O365TOKEN&quot;</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">token_env_name</span><span class="p">)</span>
+
+<div class="viewcode-block" id="EnvTokenBackend.load_token">
+<a class="viewcode-back" href="../../../api/utils/token.html#O365.utils.token.EnvTokenBackend.load_token">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">load_token</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieves the token from the environmental variable</span>
+<span class="sd">        :return bool: Success / Failure</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">token_env_name</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">deserialize</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">token_env_name</span><span class="p">))</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="EnvTokenBackend.save_token">
+<a class="viewcode-back" href="../../../api/utils/token.html#O365.utils.token.EnvTokenBackend.save_token">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">save_token</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Saves the token dict in the specified environmental variable</span>
+<span class="sd">        :param bool force: Force save even when state has not changed</span>
+<span class="sd">        :return bool: Success / Failure</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="n">force</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_state_changed</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+
+        <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">token_env_name</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">serialize</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="EnvTokenBackend.delete_token">
+<a class="viewcode-back" href="../../../api/utils/token.html#O365.utils.token.EnvTokenBackend.delete_token">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">delete_token</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Deletes the token environmental variable</span>
+<span class="sd">        :return bool: Success / Failure</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">token_env_name</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">:</span>
+            <span class="k">del</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">token_env_name</span><span class="p">]</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="EnvTokenBackend.check_token">
+<a class="viewcode-back" href="../../../api/utils/token.html#O365.utils.token.EnvTokenBackend.check_token">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">check_token</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Checks if the token exists in the environmental variables</span>
+<span class="sd">        :return bool: True if exists, False otherwise</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">token_env_name</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="FirestoreBackend">
+<a class="viewcode-back" href="../../../api/utils/token.html#O365.utils.token.FirestoreBackend">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">FirestoreBackend</span><span class="p">(</span><span class="n">BaseTokenBackend</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A Google Firestore database backend to store tokens&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="FirestoreBackend.__init__">
+<a class="viewcode-back" href="../../../api/utils/token.html#O365.utils.token.FirestoreBackend.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">client</span><span class="p">,</span> <span class="n">collection</span><span class="p">,</span> <span class="n">doc_id</span><span class="p">,</span> <span class="n">field_name</span><span class="o">=</span><span class="s2">&quot;token&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Init Backend</span>
+<span class="sd">        :param firestore.Client client: the firestore Client instance</span>
+<span class="sd">        :param str collection: the firestore collection where to store tokens (can be a field_path)</span>
+<span class="sd">        :param str doc_id: # the key of the token document. Must be unique per-case.</span>
+<span class="sd">        :param str field_name: the name of the field that stores the token in the document</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="c1">#: Fire store client.  |br| **Type:** firestore.Client</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span> <span class="o">=</span> <span class="n">client</span>
+        <span class="c1">#: Fire store colelction.  |br| **Type:** str</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">collection</span> <span class="o">=</span> <span class="n">collection</span>
+        <span class="c1">#: Fire store token document key.  |br| **Type:** str</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">doc_id</span> <span class="o">=</span> <span class="n">doc_id</span>
+        <span class="c1">#: Fire store document reference.  |br| **Type:** any</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">doc_ref</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">collection</span><span class="p">(</span><span class="n">collection</span><span class="p">)</span><span class="o">.</span><span class="n">document</span><span class="p">(</span><span class="n">doc_id</span><span class="p">)</span>
+        <span class="c1">#: Fire store token field name (Default - `token`).  |br| **Type:** str</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">field_name</span> <span class="o">=</span> <span class="n">field_name</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;Collection: </span><span class="si">{}</span><span class="s2">. Doc Id: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">collection</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">doc_id</span><span class="p">)</span>
+
+<div class="viewcode-block" id="FirestoreBackend.load_token">
+<a class="viewcode-back" href="../../../api/utils/token.html#O365.utils.token.FirestoreBackend.load_token">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">load_token</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieves the token from the store</span>
+<span class="sd">        :return bool: Success / Failure</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">doc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">doc_ref</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                <span class="s2">&quot;Token (collection: </span><span class="si">{}</span><span class="s2">, doc_id: </span><span class="si">{}</span><span class="s2">) &quot;</span>
+                <span class="s2">&quot;could not be retrieved from the backend: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">collection</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">doc_id</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+            <span class="n">doc</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">doc</span> <span class="ow">and</span> <span class="n">doc</span><span class="o">.</span><span class="n">exists</span><span class="p">:</span>
+            <span class="n">token_str</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">field_name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">token_str</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">deserialize</span><span class="p">(</span><span class="n">token_str</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="FirestoreBackend.save_token">
+<a class="viewcode-back" href="../../../api/utils/token.html#O365.utils.token.FirestoreBackend.save_token">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">save_token</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Saves the token dict in the store</span>
+<span class="sd">        :param bool force: Force save even when state has not changed</span>
+<span class="sd">        :return bool: Success / Failure</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="n">force</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_state_changed</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># set token will overwrite previous data</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">doc_ref</span><span class="o">.</span><span class="n">set</span><span class="p">({</span><span class="bp">self</span><span class="o">.</span><span class="n">field_name</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">serialize</span><span class="p">()})</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Token could not be saved: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)))</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="FirestoreBackend.delete_token">
+<a class="viewcode-back" href="../../../api/utils/token.html#O365.utils.token.FirestoreBackend.delete_token">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">delete_token</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Deletes the token from the store</span>
+<span class="sd">        :return bool: Success / Failure</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">doc_ref</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                <span class="s2">&quot;Could not delete the token (key: </span><span class="si">{}</span><span class="s2">): </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">doc_id</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="FirestoreBackend.check_token">
+<a class="viewcode-back" href="../../../api/utils/token.html#O365.utils.token.FirestoreBackend.check_token">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">check_token</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Checks if the token exists</span>
+<span class="sd">        :return bool: True if it exists on the store</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">doc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">doc_ref</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                <span class="s2">&quot;Token (collection: </span><span class="si">{}</span><span class="s2">, doc_id: </span><span class="si">{}</span><span class="s2">) &quot;</span>
+                <span class="s2">&quot;could not be retrieved from the backend: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">collection</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">doc_id</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+            <span class="n">doc</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="n">doc</span> <span class="ow">and</span> <span class="n">doc</span><span class="o">.</span><span class="n">exists</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="AWSS3Backend">
+<a class="viewcode-back" href="../../../api/utils/token.html#O365.utils.token.AWSS3Backend">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">AWSS3Backend</span><span class="p">(</span><span class="n">BaseTokenBackend</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;An AWS S3 backend to store tokens&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="AWSS3Backend.__init__">
+<a class="viewcode-back" href="../../../api/utils/token.html#O365.utils.token.AWSS3Backend.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bucket_name</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Init Backend</span>
+<span class="sd">        :param str bucket_name: Name of the S3 bucket</span>
+<span class="sd">        :param str filename: Name of the S3 file</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="kn">import</span><span class="w"> </span><span class="nn">boto3</span>
+        <span class="k">except</span> <span class="ne">ModuleNotFoundError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
+                <span class="s2">&quot;Please install the boto3 package to use this token backend.&quot;</span>
+            <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="c1">#: S3 bucket name.  |br| **Type:** str</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bucket_name</span> <span class="o">=</span> <span class="n">bucket_name</span>
+        <span class="c1">#: S3 file name.  |br| **Type:** str</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_client</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">client</span><span class="p">(</span><span class="s2">&quot;s3&quot;</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;AWSS3Backend(&#39;</span><span class="si">{}</span><span class="s2">&#39;, &#39;</span><span class="si">{}</span><span class="s2">&#39;)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bucket_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
+
+<div class="viewcode-block" id="AWSS3Backend.load_token">
+<a class="viewcode-back" href="../../../api/utils/token.html#O365.utils.token.AWSS3Backend.load_token">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">load_token</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieves the token from the store</span>
+<span class="sd">         :return bool: Success / Failure</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">token_object</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">get_object</span><span class="p">(</span>
+                <span class="n">Bucket</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bucket_name</span><span class="p">,</span> <span class="n">Key</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">deserialize</span><span class="p">(</span><span class="n">token_object</span><span class="p">[</span><span class="s2">&quot;Body&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                <span class="s2">&quot;Token (</span><span class="si">{}</span><span class="s2">) could not be retrieved from the backend: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="n">e</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="AWSS3Backend.save_token">
+<a class="viewcode-back" href="../../../api/utils/token.html#O365.utils.token.AWSS3Backend.save_token">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">save_token</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Saves the token dict in the store</span>
+<span class="sd">        :param bool force: Force save even when state has not changed</span>
+<span class="sd">        :return bool: Success / Failure</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="n">force</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_state_changed</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+
+        <span class="n">token_str</span> <span class="o">=</span> <span class="nb">str</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">serialize</span><span class="p">())</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_token</span><span class="p">():</span>  <span class="c1"># file already exists</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">put_object</span><span class="p">(</span>
+                    <span class="n">Bucket</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bucket_name</span><span class="p">,</span> <span class="n">Key</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="n">Body</span><span class="o">=</span><span class="n">token_str</span>
+                <span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Token file could not be saved: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+                <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>  <span class="c1"># create a new token file</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">put_object</span><span class="p">(</span>
+                    <span class="n">ACL</span><span class="o">=</span><span class="s2">&quot;private&quot;</span><span class="p">,</span>
+                    <span class="n">Bucket</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bucket_name</span><span class="p">,</span>
+                    <span class="n">Key</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span>
+                    <span class="n">Body</span><span class="o">=</span><span class="n">token_str</span><span class="p">,</span>
+                    <span class="n">ContentType</span><span class="o">=</span><span class="s2">&quot;text/plain&quot;</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Token file could not be created: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+                <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="AWSS3Backend.delete_token">
+<a class="viewcode-back" href="../../../api/utils/token.html#O365.utils.token.AWSS3Backend.delete_token">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">delete_token</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Deletes the token from the store</span>
+<span class="sd">        :return bool: Success / Failure</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">delete_object</span><span class="p">(</span><span class="n">Bucket</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bucket_name</span><span class="p">,</span> <span class="n">Key</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Token file could not be deleted: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="s2">&quot;Deleted token file </span><span class="si">{}</span><span class="s2"> in bucket </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bucket_name</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="AWSS3Backend.check_token">
+<a class="viewcode-back" href="../../../api/utils/token.html#O365.utils.token.AWSS3Backend.check_token">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">check_token</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Checks if the token exists</span>
+<span class="sd">        :return bool: True if it exists on the store</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">head_object</span><span class="p">(</span><span class="n">Bucket</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bucket_name</span><span class="p">,</span> <span class="n">Key</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="AWSSecretsBackend">
+<a class="viewcode-back" href="../../../api/utils/token.html#O365.utils.token.AWSSecretsBackend">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">AWSSecretsBackend</span><span class="p">(</span><span class="n">BaseTokenBackend</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;An AWS Secrets Manager backend to store tokens&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="AWSSecretsBackend.__init__">
+<a class="viewcode-back" href="../../../api/utils/token.html#O365.utils.token.AWSSecretsBackend.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">secret_name</span><span class="p">,</span> <span class="n">region_name</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Init Backend</span>
+<span class="sd">        :param str secret_name: Name of the secret stored in Secrets Manager</span>
+<span class="sd">        :param str region_name: AWS region hosting the secret (for example, &#39;us-east-2&#39;)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="kn">import</span><span class="w"> </span><span class="nn">boto3</span>
+        <span class="k">except</span> <span class="ne">ModuleNotFoundError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
+                <span class="s2">&quot;Please install the boto3 package to use this token backend.&quot;</span>
+            <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="c1">#: AWS Secret secret name.  |br| **Type:** str</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">secret_name</span> <span class="o">=</span> <span class="n">secret_name</span>
+        <span class="c1">#: AWS Secret region name.  |br| **Type:** str</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">region_name</span> <span class="o">=</span> <span class="n">region_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_client</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">client</span><span class="p">(</span><span class="s2">&quot;secretsmanager&quot;</span><span class="p">,</span> <span class="n">region_name</span><span class="o">=</span><span class="n">region_name</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;AWSSecretsBackend(&#39;</span><span class="si">{}</span><span class="s2">&#39;, &#39;</span><span class="si">{}</span><span class="s2">&#39;)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">secret_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">region_name</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="AWSSecretsBackend.load_token">
+<a class="viewcode-back" href="../../../api/utils/token.html#O365.utils.token.AWSSecretsBackend.load_token">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">load_token</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieves the token from the store</span>
+<span class="sd">        :return bool: Success / Failure</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">get_secret_value_response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">get_secret_value</span><span class="p">(</span>
+                <span class="n">SecretId</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">secret_name</span>
+            <span class="p">)</span>
+            <span class="n">token_str</span> <span class="o">=</span> <span class="n">get_secret_value_response</span><span class="p">[</span><span class="s2">&quot;SecretString&quot;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">deserialize</span><span class="p">(</span><span class="n">token_str</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                <span class="s2">&quot;Token (secret: </span><span class="si">{}</span><span class="s2">) could not be retrieved from the backend: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">secret_name</span><span class="p">,</span> <span class="n">e</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="AWSSecretsBackend.save_token">
+<a class="viewcode-back" href="../../../api/utils/token.html#O365.utils.token.AWSSecretsBackend.save_token">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">save_token</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Saves the token dict in the store</span>
+<span class="sd">        :param bool force: Force save even when state has not changed</span>
+<span class="sd">        :return bool: Success / Failure</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="n">force</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_state_changed</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_token</span><span class="p">():</span>  <span class="c1"># secret already exists</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">update_secret</span><span class="p">(</span>
+                    <span class="n">SecretId</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">secret_name</span><span class="p">,</span> <span class="n">SecretString</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">serialize</span><span class="p">()</span>
+                <span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Token secret could not be saved: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+                <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>  <span class="c1"># create a new secret</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">create_secret</span><span class="p">(</span>
+                    <span class="n">Name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">secret_name</span><span class="p">,</span>
+                    <span class="n">Description</span><span class="o">=</span><span class="s2">&quot;Token generated by the O365 python package (https://pypi.org/project/O365/).&quot;</span><span class="p">,</span>
+                    <span class="n">SecretString</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">serialize</span><span class="p">(),</span>
+                <span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Token secret could not be created: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+                <span class="k">return</span> <span class="kc">False</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                    <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Created secret </span><span class="si">{}</span><span class="s2"> (</span><span class="si">{}</span><span class="s2">). Note: using AWS Secrets Manager incurs charges, &quot;</span>
+                    <span class="s2">&quot;please see https://aws.amazon.com/secrets-manager/pricing/ &quot;</span>
+                    <span class="s2">&quot;for pricing details.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s2">&quot;Name&quot;</span><span class="p">],</span> <span class="n">r</span><span class="p">[</span><span class="s2">&quot;ARN&quot;</span><span class="p">])</span>
+                <span class="p">)</span>
+
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="AWSSecretsBackend.delete_token">
+<a class="viewcode-back" href="../../../api/utils/token.html#O365.utils.token.AWSSecretsBackend.delete_token">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">delete_token</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Deletes the token from the store</span>
+<span class="sd">        :return bool: Success / Failure</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">delete_secret</span><span class="p">(</span>
+                <span class="n">SecretId</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">secret_name</span><span class="p">,</span> <span class="n">ForceDeleteWithoutRecovery</span><span class="o">=</span><span class="kc">True</span>
+            <span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Token secret could not be deleted: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Deleted token secret </span><span class="si">{}</span><span class="s2"> (</span><span class="si">{}</span><span class="s2">).&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s2">&quot;Name&quot;</span><span class="p">],</span> <span class="n">r</span><span class="p">[</span><span class="s2">&quot;ARN&quot;</span><span class="p">]))</span>
+            <span class="k">return</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="AWSSecretsBackend.check_token">
+<a class="viewcode-back" href="../../../api/utils/token.html#O365.utils.token.AWSSecretsBackend.check_token">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">check_token</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Checks if the token exists</span>
+<span class="sd">        :return bool: True if it exists on the store</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">describe_secret</span><span class="p">(</span><span class="n">SecretId</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">secret_name</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="BitwardenSecretsManagerBackend">
+<a class="viewcode-back" href="../../../api/utils/token.html#O365.utils.token.BitwardenSecretsManagerBackend">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">BitwardenSecretsManagerBackend</span><span class="p">(</span><span class="n">BaseTokenBackend</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A Bitwarden Secrets Manager backend to store tokens&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="BitwardenSecretsManagerBackend.__init__">
+<a class="viewcode-back" href="../../../api/utils/token.html#O365.utils.token.BitwardenSecretsManagerBackend.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">access_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">secret_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Init Backend</span>
+<span class="sd">        :param str access_token: Access Token used to access the Bitwarden Secrets Manager API</span>
+<span class="sd">        :param str secret_id: ID of Bitwarden Secret used to store the O365 token</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">bitwarden_sdk</span><span class="w"> </span><span class="kn">import</span> <span class="n">BitwardenClient</span>
+        <span class="k">except</span> <span class="ne">ModuleNotFoundError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
+                <span class="s2">&quot;Please install the bitwarden-sdk package to use this token backend.&quot;</span>
+            <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="c1">#: Bitwarden client.  |br| **Type:** BitWardenClient</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span> <span class="o">=</span> <span class="n">BitwardenClient</span><span class="p">()</span>
+        <span class="c1">#: Bitwarden login access token.  |br| **Type:** str</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">auth</span><span class="p">()</span><span class="o">.</span><span class="n">login_access_token</span><span class="p">(</span><span class="n">access_token</span><span class="p">)</span>
+        <span class="c1">#: Bitwarden secret is.  |br| **Type:** str</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">secret_id</span> <span class="o">=</span> <span class="n">secret_id</span>
+        <span class="c1">#: Bitwarden secret.  |br| **Type:** str</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">secret</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;BitwardenSecretsManagerBackend(&#39;</span><span class="si">{}</span><span class="s2">&#39;)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">secret_id</span><span class="p">)</span>
+
+<div class="viewcode-block" id="BitwardenSecretsManagerBackend.load_token">
+<a class="viewcode-back" href="../../../api/utils/token.html#O365.utils.token.BitwardenSecretsManagerBackend.load_token">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">load_token</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieves the token from Bitwarden Secrets Manager</span>
+<span class="sd">        :return bool: Success / Failure</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">secrets</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">secret_id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">resp</span><span class="o">.</span><span class="n">success</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">secret</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">data</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">deserialize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">secret</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Existing token could not be decoded&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="BitwardenSecretsManagerBackend.save_token">
+<a class="viewcode-back" href="../../../api/utils/token.html#O365.utils.token.BitwardenSecretsManagerBackend.save_token">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">save_token</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Saves the token dict in Bitwarden Secrets Manager</span>
+<span class="sd">        :param bool force: Force save even when state has not changed</span>
+<span class="sd">        :return bool: Success / Failure</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">secret</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;You have to set &quot;self.secret&quot; data first.&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="n">force</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_state_changed</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">secrets</span><span class="p">()</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">secret</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">secret</span><span class="o">.</span><span class="n">key</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">secret</span><span class="o">.</span><span class="n">note</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">secret</span><span class="o">.</span><span class="n">organization_id</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">serialize</span><span class="p">(),</span>
+            <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">secret</span><span class="o">.</span><span class="n">project_id</span><span class="p">],</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="DjangoTokenBackend">
+<a class="viewcode-back" href="../../../api/utils/token.html#O365.utils.token.DjangoTokenBackend">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">DjangoTokenBackend</span><span class="p">(</span><span class="n">BaseTokenBackend</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A Django database token backend to store tokens. To use this backend add the `TokenModel`</span>
+<span class="sd">    model below into your Django application.</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        class TokenModel(models.Model):</span>
+<span class="sd">            token = models.JSONField()</span>
+<span class="sd">            created_at = models.DateTimeField(auto_now_add=True)</span>
+<span class="sd">            updated_at = models.DateTimeField(auto_now=True)</span>
+
+<span class="sd">            def __str__(self):</span>
+<span class="sd">                return f&quot;Token for {self.token.get(&#39;client_id&#39;, &#39;unknown&#39;)}&quot;</span>
+
+<span class="sd">    Example usage:</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        from O365.utils import DjangoTokenBackend</span>
+<span class="sd">        from models import TokenModel</span>
+
+<span class="sd">        token_backend = DjangoTokenBackend(token_model=TokenModel)</span>
+<span class="sd">        account = Account(credentials, token_backend=token_backend)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="DjangoTokenBackend.__init__">
+<a class="viewcode-back" href="../../../api/utils/token.html#O365.utils.token.DjangoTokenBackend.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">token_model</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initializes the DjangoTokenBackend.</span>
+
+<span class="sd">        :param token_model: The Django model class to use for storing and retrieving tokens (defaults to TokenModel).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="c1"># Use the provided token_model class</span>
+        <span class="c1">#: Django token model  |br| **Type:** TokenModel</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">token_model</span> <span class="o">=</span> <span class="n">token_model</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;DjangoTokenBackend&quot;</span>
+
+<div class="viewcode-block" id="DjangoTokenBackend.load_token">
+<a class="viewcode-back" href="../../../api/utils/token.html#O365.utils.token.DjangoTokenBackend.load_token">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">load_token</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieves the latest token from the Django database</span>
+<span class="sd">        :return bool: Success / Failure</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Retrieve the latest token based on the most recently created record</span>
+            <span class="n">token_record</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">token_model</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">latest</span><span class="p">(</span><span class="s2">&quot;created_at&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">deserialize</span><span class="p">(</span><span class="n">token_record</span><span class="o">.</span><span class="n">token</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No token found in the database, creating a new one: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="DjangoTokenBackend.save_token">
+<a class="viewcode-back" href="../../../api/utils/token.html#O365.utils.token.DjangoTokenBackend.save_token">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">save_token</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Saves the token dict in the Django database</span>
+<span class="sd">        :param bool force: Force save even when state has not changed</span>
+<span class="sd">        :return bool: Success / Failure</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="n">force</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_state_changed</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Create a new token record in the database</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">token_model</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">token</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">serialize</span><span class="p">())</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Token could not be saved: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="DjangoTokenBackend.delete_token">
+<a class="viewcode-back" href="../../../api/utils/token.html#O365.utils.token.DjangoTokenBackend.delete_token">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">delete_token</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Deletes the latest token from the Django database</span>
+<span class="sd">        :return bool: Success / Failure</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Delete the latest token</span>
+            <span class="n">token_record</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">token_model</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">latest</span><span class="p">(</span><span class="s2">&quot;created_at&quot;</span><span class="p">)</span>
+            <span class="n">token_record</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not delete token: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="DjangoTokenBackend.check_token">
+<a class="viewcode-back" href="../../../api/utils/token.html#O365.utils.token.DjangoTokenBackend.check_token">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">check_token</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Checks if any token exists in the Django database</span>
+<span class="sd">        :return bool: True if it exists, False otherwise</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">token_model</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, alejcas.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

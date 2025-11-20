@@ -2,13 +2,21 @@ import logging
 import warnings
 from pathlib import Path
 from time import sleep
-from urllib.parse import urlparse, quote
+from typing import Union, Optional
+from urllib.parse import quote, urlparse
+from io import BytesIO
 
 from dateutil.parser import parse
 
 from .address_book import Contact
-from .utils import ApiComponent, Pagination, NEXT_LINK_KEYWORD, \
-    OneDriveWellKnowFolderNames
+from .utils import (
+    NEXT_LINK_KEYWORD,
+    ApiComponent,
+    OneDriveWellKnowFolderNames,
+    Pagination,
+    QueryBuilder,
+    CompositeFilter
+)
 
 log = logging.getLogger(__name__)
 
@@ -19,16 +27,17 @@ CHUNK_SIZE_BASE = 1024 * 320  # 320 Kb
 
 # 5 MB --> Must be a multiple of CHUNK_SIZE_BASE
 DEFAULT_UPLOAD_CHUNK_SIZE = 1024 * 1024 * 5
-ALLOWED_PDF_EXTENSIONS = {'.csv', '.doc', '.docx', '.odp', '.ods', '.odt',
-                          '.pot', '.potm', '.potx',
-                          '.pps', '.ppsx', '.ppsxm', '.ppt', '.pptm', '.pptx',
-                          '.rtf', '.xls', '.xlsx'}
+ALLOWED_PDF_EXTENSIONS = {".csv", ".doc", ".docx", ".odp", ".ods", ".odt",
+                          ".pot", ".potm", ".potx",
+                          ".pps", ".ppsx", ".ppsxm", ".ppt", ".pptm", ".pptx",
+                          ".rtf", ".xls", ".xlsx"}
 
 
 class DownloadableMixin:
 
-    def download(self, to_path=None, name=None, chunk_size='auto',
-                 convert_to_pdf=False, output=None):
+    def download(self, to_path: Union[None, str, Path] = None, name: str = None,
+                 chunk_size: Union[str, int] = "auto", convert_to_pdf: bool = False,
+                 output: Optional[BytesIO] = None):
         """ Downloads this file to the local drive. Can download the
         file in chunks with multiple requests to the server.
 
@@ -41,7 +50,7 @@ class DownloadableMixin:
          however only 1 request)
         :param bool convert_to_pdf: will try to download the converted pdf
          if file extension in ALLOWED_PDF_EXTENSIONS
-        :param RawIOBase output: (optional) an opened io object to write to.
+        :param BytesIO output: (optional) an opened io object to write to.
          if set, the to_path and name will be ignored
         :return: Success / Failure
         :rtype: bool
@@ -57,7 +66,7 @@ class DownloadableMixin:
                     to_path = Path(to_path)
 
             if not to_path.exists():
-                raise FileNotFoundError('{} does not exist'.format(to_path))
+                raise FileNotFoundError("{} does not exist".format(to_path))
 
             if name and not Path(name).suffix and self.name:
                 name = name + Path(self.name).suffix
@@ -69,12 +78,12 @@ class DownloadableMixin:
                 to_path = to_path / name
 
         url = self.build_url(
-            self._endpoints.get('download').format(id=self.object_id))
+            self._endpoints.get("download").format(id=self.object_id))
 
         try:
             if chunk_size is None:
                 stream = False
-            elif chunk_size == 'auto':
+            elif chunk_size == "auto":
                 if self.size and self.size > SIZE_THERSHOLD:
                     stream = True
                 else:
@@ -87,12 +96,16 @@ class DownloadableMixin:
                                  "or any integer number representing bytes")
 
             params = {}
-            if convert_to_pdf and Path(name).suffix in ALLOWED_PDF_EXTENSIONS:
-                params['format'] = 'pdf'
+            if convert_to_pdf:
+                if not output:
+                    if Path(name).suffix in ALLOWED_PDF_EXTENSIONS:
+                        params["format"] = "pdf"
+                else:
+                    params["format"] = "pdf"
 
             with self.con.get(url, stream=stream, params=params) as response:
                 if not response:
-                    log.debug('Downloading driveitem Request failed: {}'.format(
+                    log.debug("Downloading driveitem Request failed: {}".format(
                         response.reason))
                     return False
 
@@ -108,12 +121,12 @@ class DownloadableMixin:
                 if output:
                     write_output(output)
                 else:
-                    with to_path.open(mode='wb') as output:
+                    with to_path.open(mode="wb") as output:
                         write_output(output)
 
         except Exception as e:
             log.error(
-                'Error downloading driveitem {}. Error: {}'.format(self.name,
+                "Error downloading driveitem {}. Error: {}".format(self.name,
                                                                    str(e)))
             return False
 
@@ -146,7 +159,9 @@ class CopyOperation(ApiComponent):
         if parent and con:
             raise ValueError('Need a parent or a connection but not both')
         self.con = parent.con if parent else con
+        #: Parent drive of the copy operation. |br| **Type:** Drive
         self.parent = parent  # parent will be always a Drive
+        #: Target drive of the copy operation. |br| **Type:** Drive
         self.target = target or parent
 
         # Choose the main_resource passed in kwargs over parent main_resource
@@ -157,7 +172,9 @@ class CopyOperation(ApiComponent):
             protocol=parent.protocol if parent else kwargs.get('protocol'),
             main_resource=main_resource)
 
+        #: Monitor url of the copy operation. |br| **Type:** str
         self.monitor_url = kwargs.get('monitor_url', None)
+        #: item_id of the copy operation. |br| **Type:** str
         self.item_id = kwargs.get('item_id', None)
         if self.monitor_url is None and self.item_id is None:
             raise ValueError('Must provide a valid monitor_url or item_id')
@@ -166,7 +183,9 @@ class CopyOperation(ApiComponent):
                 'Must provide a valid monitor_url or item_id, but not both')
 
         if self.item_id:
+            #: Status of the copy operation. |br| **Type:** str
             self.status = 'completed'
+            #: Percentage complete of the copy operation. |br| **Type:** float
             self.completion_percentage = 100.0
         else:
             self.status = 'inProgress'
@@ -255,16 +274,23 @@ class DriveItemVersion(ApiComponent, DownloadableMixin):
 
         cloud_data = kwargs.get(self._cloud_data_key, {})
 
+        #: The unique identifier of the item within the Drive. |br| **Type:** str
         self.driveitem_id = self._parent.object_id
+        #: The ID of the version. |br| **Type:** str
         self.object_id = cloud_data.get('id', '1.0')
+        #: The name (ID) of the version. |br| **Type:** str
         self.name = self.object_id
         modified = cloud_data.get(self._cc('lastModifiedDateTime'), None)
         local_tz = self.protocol.timezone
+        #: Date and time the version was last modified. |br| **Type:** datetime
         self.modified = parse(modified).astimezone(
             local_tz) if modified else None
+        #: Indicates the size of the content stream for this version of the item.
+        #: |br| **Type:** int
         self.size = cloud_data.get('size', 0)
         modified_by = cloud_data.get(self._cc('lastModifiedBy'), {}).get('user',
                                                                          None)
+        #: Identity of the user which last modified the version. |br| **Type:** Contact
         self.modified_by = Contact(con=self.con, protocol=self.protocol, **{
             self._cloud_data_key: modified_by}) if modified_by else None
 
@@ -292,17 +318,17 @@ class DriveItemVersion(ApiComponent, DownloadableMixin):
 
         return bool(response)
 
-    def download(self, to_path=None, name=None, chunk_size='auto',
-                 convert_to_pdf=False):
+    def download(self, to_path: Union[None, str, Path] = None, name: str = None,
+                 chunk_size: Union[str, int] = 'auto', convert_to_pdf: bool = False,
+                 output: Optional[BytesIO] = None):
         """ Downloads this version.
         You can not download the current version (last one).
 
         :return: Success / Failure
         :rtype: bool
         """
-        return super().download(to_path=to_path, name=name,
-                                chunk_size=chunk_size,
-                                convert_to_pdf=convert_to_pdf)
+        return super().download(to_path=to_path, name=name, chunk_size=chunk_size,
+                                convert_to_pdf=convert_to_pdf, output=output)
 
 
 class DriveItemPermission(ApiComponent):
@@ -333,36 +359,53 @@ class DriveItemPermission(ApiComponent):
         protocol = parent.protocol if parent else kwargs.get('protocol')
         super().__init__(protocol=protocol, main_resource=main_resource)
 
+        #: The unique identifier of the item within the Drive. |br| **Type:** str
         self.driveitem_id = self._parent.object_id
         cloud_data = kwargs.get(self._cloud_data_key, {})
+        #: The unique identifier of the permission among all permissions on the item. |br| **Type:** str
         self.object_id = cloud_data.get(self._cc('id'))
+        #: Provides a reference to the ancestor of the current permission,
+        #: if it's inherited from an ancestor. |br| **Type:** ItemReference
         self.inherited_from = cloud_data.get(self._cc('inheritedFrom'), None)
 
         link = cloud_data.get(self._cc('link'), None)
+        #: The unique identifier of the permission among all permissions on the item. |br| **Type:** str
         self.permission_type = 'owner'
         if link:
+            #: The permission type. |br| **Type:** str
             self.permission_type = 'link'
+            #: The share type. |br| **Type:** str
             self.share_type = link.get('type', 'view')
+            #: The share scope. |br| **Type:** str
             self.share_scope = link.get('scope', 'anonymous')
+            #: The share link. |br| **Type:** str
             self.share_link = link.get('webUrl', None)
 
         invitation = cloud_data.get(self._cc('invitation'), None)
         if invitation:
             self.permission_type = 'invitation'
+            #: The share email. |br| **Type:** str
             self.share_email = invitation.get('email', '')
             invited_by = invitation.get('invitedBy', {})
+            #: The invited by user. |br| **Type:** str
             self.invited_by = invited_by.get('user', {}).get(
                 self._cc('displayName'), None) or invited_by.get('application',
                                                                  {}).get(
                 self._cc('displayName'), None)
+            #: Is sign in required. |br| **Type:** bool
             self.require_sign_in = invitation.get(self._cc('signInRequired'),
                                                   True)
 
+        #: The type of permission, for example, read. |br| **Type:** list[str]
         self.roles = cloud_data.get(self._cc('roles'), [])
         granted_to = cloud_data.get(self._cc('grantedTo'), {})
+        #: For user type permissions, the details of the users and applications
+        #: for this permission. |br| **Type:** IdentitySet
         self.granted_to = granted_to.get('user', {}).get(
             self._cc('displayName')) or granted_to.get('application', {}).get(
             self._cc('displayName'))
+        #: A unique token that can be used to access this shared item via the shares API
+        #: |br| **Type:** str
         self.share_id = cloud_data.get(self._cc('shareId'), None)
 
     def __str__(self):
@@ -475,16 +518,23 @@ class DriveItem(ApiComponent):
 
         cloud_data = kwargs.get(self._cloud_data_key, {})
 
+        #: The unique identifier of the item within the Drive. |br| **Type:** str
         self.object_id = cloud_data.get(self._cc('id'))
 
         parent_reference = cloud_data.get(self._cc('parentReference'), {})
+        #: The id of the parent. |br| **Type:** str
         self.parent_id = parent_reference.get('id', None)
+        #: Identifier of the drive instance that contains the item. |br| **Type:** str
         self.drive_id = parent_reference.get(self._cc('driveId'), None)
+        #: Path that can be used to navigate to the item. |br| **Type:** str
         self.parent_path = parent_reference.get(self._cc("path"), None)
 
         remote_item = cloud_data.get(self._cc('remoteItem'), None)
         if remote_item is not None:
+            #: The drive |br| **Type:** Drive
             self.drive = None  # drive is unknown?
+            #: Remote item data, if the item is shared from a drive other than the one being accessed.
+            #: |br| **Type:** remoteItem
             self.remote_item = self._classifier(remote_item)(parent=self, **{
                 self._cloud_data_key: remote_item})
             self.parent_id = self.remote_item.parent_id
@@ -496,28 +546,40 @@ class DriveItem(ApiComponent):
                     'drive', None))
             self.remote_item = None
 
+        #: The name of the item (filename and extension). |br| **Type:** str
         self.name = cloud_data.get(self._cc('name'), '')
+        #: URL that displays the resource in the browser.  |br| **Type:** str
         self.web_url = cloud_data.get(self._cc('webUrl'))
         created_by = cloud_data.get(self._cc('createdBy'), {}).get('user', None)
+        #: Identity of the user, device, and application which created the item. |br| **Type:** Contact
         self.created_by = Contact(con=self.con, protocol=self.protocol, **{
             self._cloud_data_key: created_by}) if created_by else None
         modified_by = cloud_data.get(self._cc('lastModifiedBy'), {}).get('user',
                                                                          None)
+        #: Identity of the user, device, and application which last modified the item
+        #: |br| **Type:** Contact
         self.modified_by = Contact(con=self.con, protocol=self.protocol, **{
             self._cloud_data_key: modified_by}) if modified_by else None
 
         created = cloud_data.get(self._cc('createdDateTime'), None)
         modified = cloud_data.get(self._cc('lastModifiedDateTime'), None)
         local_tz = self.protocol.timezone
+        #: Date and time of item creation. |br| **Type:** datetime
         self.created = parse(created).astimezone(local_tz) if created else None
+        #: Date and time the item was last modified. |br| **Type:** datetime
         self.modified = parse(modified).astimezone(
             local_tz) if modified else None
 
+        #: Provides a user-visible description of the item. |br| **Type:** str
         self.description = cloud_data.get(self._cc('description'), '')
+        #: Size of the item in bytes. |br| **Type:** int
         self.size = cloud_data.get(self._cc('size'), 0)
+        #: Indicates that the item has been shared with others and
+        #: provides information about the shared state of the item. |br| **Type:** str
         self.shared = cloud_data.get(self._cc('shared'), {}).get('scope', None)
 
         # Thumbnails
+        #: The thumbnails. |br| **Type:** any
         self.thumbnails = cloud_data.get(self._cc('thumbnails'), [])
 
     def __str__(self):
@@ -726,17 +788,18 @@ class DriveItem(ApiComponent):
         return True
 
     def copy(self, target=None, name=None):
-        """ Asynchronously creates a copy of this DriveItem and all it's
+        """Asynchronously creates a copy of this DriveItem and all it's
         child elements.
 
         :param target: target location to move to.
-         If it's a drive the item will be moved to the root folder.
-         If it's None, the target is the parent of the item being copied i.e. item will be copied
+            If it's a drive the item will be moved to the root folder.
+            If it's None, the target is the parent of the item being copied i.e. item will be copied
             into the same location.
         :type target: drive.Folder or Drive
         :param name: a new name for the copy.
         :rtype: CopyOperation
         """
+
         if target is None and name is None:
             raise ValueError('Must provide a target or a name (or both)')
 
@@ -785,14 +848,15 @@ class DriveItem(ApiComponent):
         # Find out if the server has run a Sync or Async operation
         location = response.headers.get('Location', None)
 
+        parent = self.drive or self.remote_item
         if response.status_code == 202:
             # Async operation
-            return CopyOperation(parent=self.drive, monitor_url=location, target=target_drive)
+            return CopyOperation(parent=parent, monitor_url=location, target=target_drive)
         else:
             # Sync operation. Item is ready to be retrieved
             path = urlparse(location).path
             item_id = path.split('/')[-1]
-            return CopyOperation(parent=self.drive, item_id=item_id, target=target_drive)
+            return CopyOperation(parent=parent, item_id=item_id, target=target_drive)
 
     def get_versions(self):
         """ Returns a list of available versions for this item
@@ -972,14 +1036,21 @@ class File(DriveItem, DownloadableMixin):
         super().__init__(**kwargs)
         cloud_data = kwargs.get(self._cloud_data_key, {})
 
+        #: The MIME type for the file. |br| **Type:** str
         self.mime_type = cloud_data.get(self._cc('file'), {}).get(
             self._cc('mimeType'), None)
 
+        #: Hashes of the file's binary content, if available. |br| **Type:** Hashes
         self.hashes = cloud_data.get(self._cc('file'), {}).get(
             self._cc('hashes'), None)
 
     @property
     def extension(self):
+        """The suffix of the file name.
+
+        :getter: get the suffix
+        :type: str
+        """
         return Path(self.name).suffix
 
 
@@ -991,7 +1062,9 @@ class Image(File):
         cloud_data = kwargs.get(self._cloud_data_key, {})
 
         image = cloud_data.get(self._cc('image'), {})
+        #: Height of the image, in pixels. |br| **Type:** int
         self.height = image.get(self._cc('height'), 0)
+        #: Width of the image, in pixels. |br| **Type:** int
         self.width = image.get(self._cc('width'), 0)
 
     @property
@@ -1015,15 +1088,23 @@ class Photo(Image):
 
         taken = photo.get(self._cc('takenDateTime'), None)
         local_tz = self.protocol.timezone
+        #: Represents the date and time the photo was taken. |br| **Type:** datetime
         self.taken_datetime = parse(taken).astimezone(
             local_tz) if taken else None
+        #: Camera manufacturer. |br| **Type:** str
         self.camera_make = photo.get(self._cc('cameraMake'), None)
+        #: Camera model. |br| **Type:** str
         self.camera_model = photo.get(self._cc('cameraModel'), None)
+        #: The denominator for the exposure time fraction from the camera. |br| **Type:** float
         self.exposure_denominator = photo.get(self._cc('exposureDenominator'),
                                               None)
+        #: The numerator for the exposure time fraction from the camera. |br| **Type:** float
         self.exposure_numerator = photo.get(self._cc('exposureNumerator'), None)
+        #: The F-stop value from the camera |br| **Type:** float
         self.fnumber = photo.get(self._cc('fNumber'), None)
+        #: The focal length from the camera. |br| **Type:** float
         self.focal_length = photo.get(self._cc('focalLength'), None)
+        #: The ISO value from the camera. |br| **Type:** int
         self.iso = photo.get(self._cc('iso'), None)
 
 
@@ -1034,8 +1115,10 @@ class Folder(DriveItem):
         super().__init__(*args, **kwargs)
         cloud_data = kwargs.get(self._cloud_data_key, {})
 
+        #: Number of children contained immediately within this container. |br| **Type:** int
         self.child_count = cloud_data.get(self._cc('folder'), {}).get(
             self._cc('childCount'), 0)
+        #: The unique identifier for this item in the /drive/special collection. |br| **Type:** str
         self.special_folder = cloud_data.get(self._cc('specialFolder'), {}).get(
             'name', None)
 
@@ -1104,9 +1187,14 @@ class Folder(DriveItem):
 
         if query:
             if not isinstance(query, str):
-                query = query.on_attribute('folder').unequal(None)
+                if isinstance(query, CompositeFilter):
+                    q = QueryBuilder(protocol=self.protocol)
+                    query = query & q.unequal('folder', None)
+                else:
+                    query = query.on_attribute('folder').unequal(None)
         else:
-            query = self.q('folder').unequal(None)
+            q = QueryBuilder(protocol=self.protocol)
+            query = q.unequal('folder', None)
 
         return self.get_items(limit=limit, query=query, order_by=order_by, batch=batch)
 
@@ -1416,6 +1504,7 @@ class Drive(ApiComponent):
         if parent and con:
             raise ValueError('Need a parent or a connection but not both')
         self.con = parent.con if parent else con
+        #: The parent of the Drive. |br| **Type:** Drive
         self.parent = parent if isinstance(parent, Drive) else None
 
         # Choose the main_resource passed in kwargs over parent main_resource
@@ -1502,11 +1591,6 @@ class Drive(ApiComponent):
             params['$orderby'] = order_by
 
         if query:
-            # if query.has_filters:
-            #     warnings.warn(
-            #         'Filters are not allowed by the Api Provider '
-            #         'in this method')
-            #     query.clear_filters()
             if isinstance(query, str):
                 params['$filter'] = query
             else:
@@ -1522,6 +1606,7 @@ class Drive(ApiComponent):
         items = (
             self._classifier(item)(parent=self, **{self._cloud_data_key: item})
             for item in data.get('value', []))
+
         next_link = data.get(NEXT_LINK_KEYWORD, None)
         if batch and next_link:
             return Pagination(parent=self, data=items,
@@ -1568,11 +1653,16 @@ class Drive(ApiComponent):
         :return: folder items in this folder
         :rtype: generator of DriveItem or Pagination
         """
-
         if query:
-            query = query.on_attribute('folder').unequal(None)
+            if not isinstance(query, str):
+                if isinstance(query, CompositeFilter):
+                    q = QueryBuilder(protocol=self.protocol)
+                    query = query & q.unequal('folder', None)
+                else:
+                    query = query.on_attribute('folder').unequal(None)
         else:
-            query = self.q('folder').unequal(None)
+            q = QueryBuilder(protocol=self.protocol)
+            query = q.unequal('folder', None)
 
         return self.get_items(limit=limit, query=query, order_by=order_by, batch=batch)
 
@@ -1836,7 +1926,7 @@ class Storage(ApiComponent):
         'get_drive': '/drives/{id}',
         'list_drives': '/drives',
     }
-    drive_constructor = Drive
+    drive_constructor = Drive  #: :meta private:
 
     def __init__(self, *, parent=None, con=None, **kwargs):
         """ Create a storage representation

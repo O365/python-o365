@@ -1,0 +1,905 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Query &mdash; O365  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Token" href="token.html" />
+    <link rel="prev" title="Attachment" href="attachment.html" />
+    <link href="../../_static/css/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage.html">Detailed Usage</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../api.html">O365 API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../account.html">Account</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../address_book.html">Address Book</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../calendar.html">Calendar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../category.html">Category</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../connection.html">Connection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../directory.html">Directory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../excel.html">Excel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../group.html">Group</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mailbox.html">Mailbox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../message.html">Message</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../onedrive.html">One Drive</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../planner.html">Planner</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../sharepoint.html">Sharepoint</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tasks.html">Tasks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../teams.html">Teams</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../utils.html">Utils</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="attachment.html">Attachment</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Query</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#O365.utils.query.ChainFilter"><code class="docutils literal notranslate"><span class="pre">ChainFilter</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.utils.query.CompositeFilter"><code class="docutils literal notranslate"><span class="pre">CompositeFilter</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.utils.query.ContainerQueryFilter"><code class="docutils literal notranslate"><span class="pre">ContainerQueryFilter</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.utils.query.ExpandFilter"><code class="docutils literal notranslate"><span class="pre">ExpandFilter</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.utils.query.FunctionFilter"><code class="docutils literal notranslate"><span class="pre">FunctionFilter</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.utils.query.GroupFilter"><code class="docutils literal notranslate"><span class="pre">GroupFilter</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.utils.query.IterableFilter"><code class="docutils literal notranslate"><span class="pre">IterableFilter</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.utils.query.LogicalFilter"><code class="docutils literal notranslate"><span class="pre">LogicalFilter</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.utils.query.ModifierQueryFilter"><code class="docutils literal notranslate"><span class="pre">ModifierQueryFilter</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.utils.query.NegateFilter"><code class="docutils literal notranslate"><span class="pre">NegateFilter</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.utils.query.OperationQueryFilter"><code class="docutils literal notranslate"><span class="pre">OperationQueryFilter</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.utils.query.OrderByFilter"><code class="docutils literal notranslate"><span class="pre">OrderByFilter</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.utils.query.QueryBase"><code class="docutils literal notranslate"><span class="pre">QueryBase</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.utils.query.QueryBuilder"><code class="docutils literal notranslate"><span class="pre">QueryBuilder</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.utils.query.QueryFilter"><code class="docutils literal notranslate"><span class="pre">QueryFilter</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.utils.query.SearchFilter"><code class="docutils literal notranslate"><span class="pre">SearchFilter</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.utils.query.SelectFilter"><code class="docutils literal notranslate"><span class="pre">SelectFilter</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="token.html">Token</a></li>
+<li class="toctree-l3"><a class="reference internal" href="utils.html">Utils</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">O365</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../api.html">O365 API</a></li>
+          <li class="breadcrumb-item"><a href="../utils.html">Utils</a></li>
+      <li class="breadcrumb-item active">Query</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/api/utils/query.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="attachment.html" class="btn btn-neutral float-left" title="Attachment" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="token.html" class="btn btn-neutral float-right" title="Token" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="query">
+<h1>Query<a class="headerlink" href="#query" title="Link to this heading"></a></h1>
+<dl class="py class" id="module-O365.utils.query">
+<dt class="sig sig-object py" id="O365.utils.query.ChainFilter">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.utils.query.</span></span><span class="sig-name descname"><span class="pre">ChainFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">operation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_instances</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#O365.utils.query.QueryFilter" title="O365.utils.query.QueryFilter"><span class="pre">QueryFilter</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/query.html#ChainFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.query.ChainFilter" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#O365.utils.query.OperationQueryFilter" title="O365.utils.query.OperationQueryFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">OperationQueryFilter</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.query.ChainFilter.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">operation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_instances</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#O365.utils.query.QueryFilter" title="O365.utils.query.QueryFilter"><span class="pre">QueryFilter</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/query.html#ChainFilter.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.query.ChainFilter.__init__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.query.ChainFilter.render">
+<span class="sig-name descname"><span class="pre">render</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../../_modules/O365/utils/query.html#ChainFilter.render"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.query.ChainFilter.render" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="O365.utils.query.CompositeFilter">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.utils.query.</span></span><span class="sig-name descname"><span class="pre">CompositeFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">filters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#O365.utils.query.QueryFilter" title="O365.utils.query.QueryFilter"><span class="pre">QueryFilter</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">search</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#O365.utils.query.SearchFilter" title="O365.utils.query.SearchFilter"><span class="pre">SearchFilter</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order_by</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#O365.utils.query.OrderByFilter" title="O365.utils.query.OrderByFilter"><span class="pre">OrderByFilter</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#O365.utils.query.SelectFilter" title="O365.utils.query.SelectFilter"><span class="pre">SelectFilter</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expand</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#O365.utils.query.ExpandFilter" title="O365.utils.query.ExpandFilter"><span class="pre">ExpandFilter</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/query.html#CompositeFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.query.CompositeFilter" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#O365.utils.query.QueryBase" title="O365.utils.query.QueryBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">QueryBase</span></code></a></p>
+<p>A Query object that holds all query parameters.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.query.CompositeFilter.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">filters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#O365.utils.query.QueryFilter" title="O365.utils.query.QueryFilter"><span class="pre">QueryFilter</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">search</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#O365.utils.query.SearchFilter" title="O365.utils.query.SearchFilter"><span class="pre">SearchFilter</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order_by</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#O365.utils.query.OrderByFilter" title="O365.utils.query.OrderByFilter"><span class="pre">OrderByFilter</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#O365.utils.query.SelectFilter" title="O365.utils.query.SelectFilter"><span class="pre">SelectFilter</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expand</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#O365.utils.query.ExpandFilter" title="O365.utils.query.ExpandFilter"><span class="pre">ExpandFilter</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/query.html#CompositeFilter.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.query.CompositeFilter.__init__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.query.CompositeFilter.as_params">
+<span class="sig-name descname"><span class="pre">as_params</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="../../_modules/O365/utils/query.html#CompositeFilter.as_params"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.query.CompositeFilter.as_params" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.query.CompositeFilter.clear_filters">
+<span class="sig-name descname"><span class="pre">clear_filters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../../_modules/O365/utils/query.html#CompositeFilter.clear_filters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.query.CompositeFilter.clear_filters" title="Link to this definition"></a></dt>
+<dd><p>Removes all filters from the query</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.query.CompositeFilter.render">
+<span class="sig-name descname"><span class="pre">render</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../../_modules/O365/utils/query.html#CompositeFilter.render"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.query.CompositeFilter.render" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.utils.query.CompositeFilter.expand">
+<span class="sig-name descname"><span class="pre">expand</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#O365.utils.query.ExpandFilter" title="O365.utils.query.ExpandFilter"><span class="pre">ExpandFilter</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#O365.utils.query.CompositeFilter.expand" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.utils.query.CompositeFilter.filters">
+<span class="sig-name descname"><span class="pre">filters</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#O365.utils.query.QueryFilter" title="O365.utils.query.QueryFilter"><span class="pre">QueryFilter</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#O365.utils.query.CompositeFilter.filters" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="O365.utils.query.CompositeFilter.has_expands">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">has_expands</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#O365.utils.query.CompositeFilter.has_expands" title="Link to this definition"></a></dt>
+<dd><p>Returns if this CompositeFilter has expands</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="O365.utils.query.CompositeFilter.has_filters">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">has_filters</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#O365.utils.query.CompositeFilter.has_filters" title="Link to this definition"></a></dt>
+<dd><p>Returns if this CompositeFilter has filters</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="O365.utils.query.CompositeFilter.has_only_filters">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">has_only_filters</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#O365.utils.query.CompositeFilter.has_only_filters" title="Link to this definition"></a></dt>
+<dd><p>Returns true if it only has filters</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="O365.utils.query.CompositeFilter.has_order_by">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">has_order_by</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#O365.utils.query.CompositeFilter.has_order_by" title="Link to this definition"></a></dt>
+<dd><p>Returns if this CompositeFilter has order_by</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="O365.utils.query.CompositeFilter.has_search">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">has_search</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#O365.utils.query.CompositeFilter.has_search" title="Link to this definition"></a></dt>
+<dd><p>Returns if this CompositeFilter has search</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="O365.utils.query.CompositeFilter.has_selects">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">has_selects</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#O365.utils.query.CompositeFilter.has_selects" title="Link to this definition"></a></dt>
+<dd><p>Returns if this CompositeFilter has selects</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.utils.query.CompositeFilter.order_by">
+<span class="sig-name descname"><span class="pre">order_by</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#O365.utils.query.OrderByFilter" title="O365.utils.query.OrderByFilter"><span class="pre">OrderByFilter</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#O365.utils.query.CompositeFilter.order_by" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.utils.query.CompositeFilter.search">
+<span class="sig-name descname"><span class="pre">search</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#O365.utils.query.SearchFilter" title="O365.utils.query.SearchFilter"><span class="pre">SearchFilter</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#O365.utils.query.CompositeFilter.search" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="O365.utils.query.CompositeFilter.select">
+<span class="sig-name descname"><span class="pre">select</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#O365.utils.query.SelectFilter" title="O365.utils.query.SelectFilter"><span class="pre">SelectFilter</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#O365.utils.query.CompositeFilter.select" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="O365.utils.query.ContainerQueryFilter">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.utils.query.</span></span><span class="sig-name descname"><span class="pre">ContainerQueryFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#O365.utils.query.SelectFilter" title="O365.utils.query.SelectFilter"><span class="pre">SelectFilter</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/query.html#ContainerQueryFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.query.ContainerQueryFilter" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#O365.utils.query.QueryBase" title="O365.utils.query.QueryBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">QueryBase</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.query.ContainerQueryFilter.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#O365.utils.query.SelectFilter" title="O365.utils.query.SelectFilter"><span class="pre">SelectFilter</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/query.html#ContainerQueryFilter.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.query.ContainerQueryFilter.__init__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.query.ContainerQueryFilter.append">
+<span class="sig-name descname"><span class="pre">append</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#O365.utils.query.SelectFilter" title="O365.utils.query.SelectFilter"><span class="pre">SelectFilter</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../../_modules/O365/utils/query.html#ContainerQueryFilter.append"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.query.ContainerQueryFilter.append" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.query.ContainerQueryFilter.as_params">
+<span class="sig-name descname"><span class="pre">as_params</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="../../_modules/O365/utils/query.html#ContainerQueryFilter.as_params"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.query.ContainerQueryFilter.as_params" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.query.ContainerQueryFilter.render">
+<span class="sig-name descname"><span class="pre">render</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../../_modules/O365/utils/query.html#ContainerQueryFilter.render"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.query.ContainerQueryFilter.render" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="O365.utils.query.ExpandFilter">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.utils.query.</span></span><span class="sig-name descname"><span class="pre">ExpandFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#O365.utils.query.SelectFilter" title="O365.utils.query.SelectFilter"><span class="pre">SelectFilter</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/query.html#ExpandFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.query.ExpandFilter" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#O365.utils.query.ContainerQueryFilter" title="O365.utils.query.ContainerQueryFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">ContainerQueryFilter</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.query.ExpandFilter.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#O365.utils.query.SelectFilter" title="O365.utils.query.SelectFilter"><span class="pre">SelectFilter</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/query.html#ExpandFilter.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.query.ExpandFilter.__init__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.query.ExpandFilter.render">
+<span class="sig-name descname"><span class="pre">render</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../../_modules/O365/utils/query.html#ExpandFilter.render"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.query.ExpandFilter.render" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="O365.utils.query.FunctionFilter">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.utils.query.</span></span><span class="sig-name descname"><span class="pre">FunctionFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">operation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attribute</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">word</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/query.html#FunctionFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.query.FunctionFilter" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#O365.utils.query.LogicalFilter" title="O365.utils.query.LogicalFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">LogicalFilter</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.query.FunctionFilter.render">
+<span class="sig-name descname"><span class="pre">render</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../../_modules/O365/utils/query.html#FunctionFilter.render"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.query.FunctionFilter.render" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="O365.utils.query.GroupFilter">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.utils.query.</span></span><span class="sig-name descname"><span class="pre">GroupFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filter_instance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#O365.utils.query.QueryFilter" title="O365.utils.query.QueryFilter"><span class="pre">QueryFilter</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/query.html#GroupFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.query.GroupFilter" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#O365.utils.query.ModifierQueryFilter" title="O365.utils.query.ModifierQueryFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">ModifierQueryFilter</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.query.GroupFilter.render">
+<span class="sig-name descname"><span class="pre">render</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../../_modules/O365/utils/query.html#GroupFilter.render"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.query.GroupFilter.render" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="O365.utils.query.IterableFilter">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.utils.query.</span></span><span class="sig-name descname"><span class="pre">IterableFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">operation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collection</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_instance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#O365.utils.query.QueryFilter" title="O365.utils.query.QueryFilter"><span class="pre">QueryFilter</span></a></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">item_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'a'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/query.html#IterableFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.query.IterableFilter" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#O365.utils.query.OperationQueryFilter" title="O365.utils.query.OperationQueryFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">OperationQueryFilter</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.query.IterableFilter.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">operation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collection</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_instance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#O365.utils.query.QueryFilter" title="O365.utils.query.QueryFilter"><span class="pre">QueryFilter</span></a></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">item_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'a'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/query.html#IterableFilter.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.query.IterableFilter.__init__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.query.IterableFilter.render">
+<span class="sig-name descname"><span class="pre">render</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../../_modules/O365/utils/query.html#IterableFilter.render"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.query.IterableFilter.render" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="O365.utils.query.LogicalFilter">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.utils.query.</span></span><span class="sig-name descname"><span class="pre">LogicalFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">operation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attribute</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">word</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/query.html#LogicalFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.query.LogicalFilter" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#O365.utils.query.OperationQueryFilter" title="O365.utils.query.OperationQueryFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">OperationQueryFilter</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.query.LogicalFilter.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">operation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attribute</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">word</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/query.html#LogicalFilter.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.query.LogicalFilter.__init__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.query.LogicalFilter.render">
+<span class="sig-name descname"><span class="pre">render</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../../_modules/O365/utils/query.html#LogicalFilter.render"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.query.LogicalFilter.render" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="O365.utils.query.ModifierQueryFilter">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.utils.query.</span></span><span class="sig-name descname"><span class="pre">ModifierQueryFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filter_instance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#O365.utils.query.QueryFilter" title="O365.utils.query.QueryFilter"><span class="pre">QueryFilter</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/query.html#ModifierQueryFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.query.ModifierQueryFilter" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#O365.utils.query.QueryFilter" title="O365.utils.query.QueryFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">QueryFilter</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.query.ModifierQueryFilter.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filter_instance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#O365.utils.query.QueryFilter" title="O365.utils.query.QueryFilter"><span class="pre">QueryFilter</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/query.html#ModifierQueryFilter.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.query.ModifierQueryFilter.__init__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="O365.utils.query.NegateFilter">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.utils.query.</span></span><span class="sig-name descname"><span class="pre">NegateFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filter_instance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#O365.utils.query.QueryFilter" title="O365.utils.query.QueryFilter"><span class="pre">QueryFilter</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/query.html#NegateFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.query.NegateFilter" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#O365.utils.query.ModifierQueryFilter" title="O365.utils.query.ModifierQueryFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">ModifierQueryFilter</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.query.NegateFilter.render">
+<span class="sig-name descname"><span class="pre">render</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../../_modules/O365/utils/query.html#NegateFilter.render"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.query.NegateFilter.render" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="O365.utils.query.OperationQueryFilter">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.utils.query.</span></span><span class="sig-name descname"><span class="pre">OperationQueryFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">operation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/query.html#OperationQueryFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.query.OperationQueryFilter" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#O365.utils.query.QueryFilter" title="O365.utils.query.QueryFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">QueryFilter</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.query.OperationQueryFilter.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">operation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/query.html#OperationQueryFilter.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.query.OperationQueryFilter.__init__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="O365.utils.query.OrderByFilter">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.utils.query.</span></span><span class="sig-name descname"><span class="pre">OrderByFilter</span></span><a class="reference internal" href="../../_modules/O365/utils/query.html#OrderByFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.query.OrderByFilter" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#O365.utils.query.QueryBase" title="O365.utils.query.QueryBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">QueryBase</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.query.OrderByFilter.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/query.html#OrderByFilter.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.query.OrderByFilter.__init__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.query.OrderByFilter.add">
+<span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attribute</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ascending</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../../_modules/O365/utils/query.html#OrderByFilter.add"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.query.OrderByFilter.add" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.query.OrderByFilter.as_params">
+<span class="sig-name descname"><span class="pre">as_params</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="../../_modules/O365/utils/query.html#OrderByFilter.as_params"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.query.OrderByFilter.as_params" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.query.OrderByFilter.render">
+<span class="sig-name descname"><span class="pre">render</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../../_modules/O365/utils/query.html#OrderByFilter.render"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.query.OrderByFilter.render" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="O365.utils.query.QueryBase">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.utils.query.</span></span><span class="sig-name descname"><span class="pre">QueryBase</span></span><a class="reference internal" href="../../_modules/O365/utils/query.html#QueryBase"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.query.QueryBase" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.query.QueryBase.as_params">
+<em class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">as_params</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="../../_modules/O365/utils/query.html#QueryBase.as_params"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.query.QueryBase.as_params" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.query.QueryBase.get_filter_by_attribute">
+<span class="sig-name descname"><span class="pre">get_filter_by_attribute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attribute</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../../_modules/O365/utils/query.html#QueryBase.get_filter_by_attribute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.query.QueryBase.get_filter_by_attribute" title="Link to this definition"></a></dt>
+<dd><p>Returns a filter value by attribute name. It will match the attribute to the start of each filter attribute
+and return the first found.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>attribute</strong> – the attribute you want to search</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The value applied to that attribute or None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.query.QueryBase.render">
+<em class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">render</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../../_modules/O365/utils/query.html#QueryBase.render"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.query.QueryBase.render" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="O365.utils.query.QueryBuilder">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.utils.query.</span></span><span class="sig-name descname"><span class="pre">QueryBuilder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">protocol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../connection.html#O365.connection.Protocol" title="O365.connection.Protocol"><span class="pre">Protocol</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../connection.html#O365.connection.Protocol" title="O365.connection.Protocol"><span class="pre">Protocol</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/query.html#QueryBuilder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.query.QueryBuilder" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.query.QueryBuilder.group">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filter_instance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#O365.utils.query.CompositeFilter" title="O365.utils.query.CompositeFilter"><span class="pre">CompositeFilter</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#O365.utils.query.CompositeFilter" title="O365.utils.query.CompositeFilter"><span class="pre">CompositeFilter</span></a></span></span><a class="reference internal" href="../../_modules/O365/utils/query.html#QueryBuilder.group"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.query.QueryBuilder.group" title="Link to this definition"></a></dt>
+<dd><p>Applies a grouping to the provided filter_instance</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.query.QueryBuilder.negate">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">negate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filter_instance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#O365.utils.query.CompositeFilter" title="O365.utils.query.CompositeFilter"><span class="pre">CompositeFilter</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#O365.utils.query.CompositeFilter" title="O365.utils.query.CompositeFilter"><span class="pre">CompositeFilter</span></a></span></span><a class="reference internal" href="../../_modules/O365/utils/query.html#QueryBuilder.negate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.query.QueryBuilder.negate" title="Link to this definition"></a></dt>
+<dd><p>Apply a not operator to the provided QueryFilter
+:param filter_instance: a CompositeFilter instance
+:return: a CompositeFilter with its filter negated</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.query.QueryBuilder.orderby">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">orderby</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">attributes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#O365.utils.query.CompositeFilter" title="O365.utils.query.CompositeFilter"><span class="pre">CompositeFilter</span></a></span></span><a class="reference internal" href="../../_modules/O365/utils/query.html#QueryBuilder.orderby"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.query.QueryBuilder.orderby" title="Link to this definition"></a></dt>
+<dd><p>Returns an ‘order by’ query param
+This is useful to order the result set of query from a resource.
+Note that not all attributes can be sorted and that all resources have different sort capabilities</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>attributes</strong> – the attributes to orderby</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a CompositeFilter instance that can render the OData order by operation</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.query.QueryBuilder.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">protocol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../connection.html#O365.connection.Protocol" title="O365.connection.Protocol"><span class="pre">Protocol</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../connection.html#O365.connection.Protocol" title="O365.connection.Protocol"><span class="pre">Protocol</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/query.html#QueryBuilder.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.query.QueryBuilder.__init__" title="Link to this definition"></a></dt>
+<dd><p>Build a query to apply OData filters
+<a class="reference external" href="https://docs.microsoft.com/en-us/graph/query-parameters">https://docs.microsoft.com/en-us/graph/query-parameters</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>protocol</strong> (<a class="reference internal" href="../connection.html#O365.connection.Protocol" title="O365.connection.Protocol"><em>Protocol</em></a>) – protocol to retrieve the timezone from</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.query.QueryBuilder.all">
+<span class="sig-name descname"><span class="pre">all</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">collection</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_instance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#O365.utils.query.CompositeFilter" title="O365.utils.query.CompositeFilter"><span class="pre">CompositeFilter</span></a></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">item_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'a'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#O365.utils.query.CompositeFilter" title="O365.utils.query.CompositeFilter"><span class="pre">CompositeFilter</span></a></span></span><a class="reference internal" href="../../_modules/O365/utils/query.html#QueryBuilder.all"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.query.QueryBuilder.all" title="Link to this definition"></a></dt>
+<dd><p>Performs a filter with the OData ‘all’ keyword on the collection</p>
+<p>For example:
+q.all(collection=’email_addresses’, filter_instance=q.equals(‘address’, <a class="reference external" href="mailto:'george&#37;&#52;&#48;best&#46;com">‘george<span>&#64;</span>best<span>&#46;</span>com</a>’))</p>
+<p>will transform to a filter such as:</p>
+<p>emailAddresses/all(a:a/address eq ‘george&#64;best.com’)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>collection</strong> – the collection to apply the iterable operation on</p></li>
+<li><p><strong>filter_instance</strong> – a CompositeFilter Instance on which you will apply the iterable operation</p></li>
+<li><p><strong>item_name</strong> – the name of the collection item to be used on the filter_instance</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a CompositeFilter instance that can render the OData iterable operation</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.query.QueryBuilder.any">
+<span class="sig-name descname"><span class="pre">any</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">collection</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_instance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#O365.utils.query.CompositeFilter" title="O365.utils.query.CompositeFilter"><span class="pre">CompositeFilter</span></a></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">item_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'a'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#O365.utils.query.CompositeFilter" title="O365.utils.query.CompositeFilter"><span class="pre">CompositeFilter</span></a></span></span><a class="reference internal" href="../../_modules/O365/utils/query.html#QueryBuilder.any"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.query.QueryBuilder.any" title="Link to this definition"></a></dt>
+<dd><p>Performs a filter with the OData ‘any’ keyword on the collection</p>
+<p>For example:
+q.any(collection=’email_addresses’, filter_instance=q.equals(‘address’, <a class="reference external" href="mailto:'george&#37;&#52;&#48;best&#46;com">‘george<span>&#64;</span>best<span>&#46;</span>com</a>’))</p>
+<p>will transform to a filter such as:</p>
+<p>emailAddresses/any(a:a/address eq ‘george&#64;best.com’)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>collection</strong> – the collection to apply the iterable operation on</p></li>
+<li><p><strong>filter_instance</strong> – a CompositeFilter Instance on which you will apply the iterable operation</p></li>
+<li><p><strong>item_name</strong> – the name of the collection item to be used on the filter_instance</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a CompositeFilter instance that can render the OData iterable operation</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.query.QueryBuilder.chain_and">
+<span class="sig-name descname"><span class="pre">chain_and</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">filter_instances</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#O365.utils.query.CompositeFilter" title="O365.utils.query.CompositeFilter"><span class="pre">CompositeFilter</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">group</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#O365.utils.query.CompositeFilter" title="O365.utils.query.CompositeFilter"><span class="pre">CompositeFilter</span></a></span></span><a class="reference internal" href="../../_modules/O365/utils/query.html#QueryBuilder.chain_and"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.query.QueryBuilder.chain_and" title="Link to this definition"></a></dt>
+<dd><p>Start a chain ‘and’ operation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filter_instances</strong> – a list of other CompositeFilter you want to combine with the ‘and’ operation</p></li>
+<li><p><strong>group</strong> – will group this chain operation if True</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a CompositeFilter with the filter instances combined with an ‘and’ operation</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.query.QueryBuilder.chain_or">
+<span class="sig-name descname"><span class="pre">chain_or</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">filter_instances</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#O365.utils.query.CompositeFilter" title="O365.utils.query.CompositeFilter"><span class="pre">CompositeFilter</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">group</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#O365.utils.query.CompositeFilter" title="O365.utils.query.CompositeFilter"><span class="pre">CompositeFilter</span></a></span></span><a class="reference internal" href="../../_modules/O365/utils/query.html#QueryBuilder.chain_or"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.query.QueryBuilder.chain_or" title="Link to this definition"></a></dt>
+<dd><p>Start a chain ‘or’ operation. Will automatically apply a grouping.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filter_instances</strong> – a list of other CompositeFilter you want to combine with the ‘or’ operation</p></li>
+<li><p><strong>group</strong> – will group this chain operation if True</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a CompositeFilter with the filter instances combined with an ‘or’ operation</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.query.QueryBuilder.contains">
+<span class="sig-name descname"><span class="pre">contains</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attribute</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">word</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">date</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#O365.utils.query.CompositeFilter" title="O365.utils.query.CompositeFilter"><span class="pre">CompositeFilter</span></a></span></span><a class="reference internal" href="../../_modules/O365/utils/query.html#QueryBuilder.contains"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.query.QueryBuilder.contains" title="Link to this definition"></a></dt>
+<dd><p>Adds a contains word check</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>attribute</strong> – the name of the attribute on which to apply the function</p></li>
+<li><p><strong>word</strong> – value to feed the function</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a CompositeFilter instance that can render the OData function operation</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.query.QueryBuilder.endswith">
+<span class="sig-name descname"><span class="pre">endswith</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attribute</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">word</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">date</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#O365.utils.query.CompositeFilter" title="O365.utils.query.CompositeFilter"><span class="pre">CompositeFilter</span></a></span></span><a class="reference internal" href="../../_modules/O365/utils/query.html#QueryBuilder.endswith"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.query.QueryBuilder.endswith" title="Link to this definition"></a></dt>
+<dd><p>Adds a endswith word check</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>attribute</strong> – the name of the attribute on which to apply the function</p></li>
+<li><p><strong>word</strong> – value to feed the function</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a CompositeFilter instance that can render the OData function operation</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.query.QueryBuilder.equals">
+<span class="sig-name descname"><span class="pre">equals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attribute</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">word</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">date</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#O365.utils.query.CompositeFilter" title="O365.utils.query.CompositeFilter"><span class="pre">CompositeFilter</span></a></span></span><a class="reference internal" href="../../_modules/O365/utils/query.html#QueryBuilder.equals"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.query.QueryBuilder.equals" title="Link to this definition"></a></dt>
+<dd><p>Return an equals check</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>attribute</strong> – attribute to compare word with</p></li>
+<li><p><strong>word</strong> – word to compare with</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a CompositeFilter instance that can render the OData this logical operation</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.query.QueryBuilder.expand">
+<span class="sig-name descname"><span class="pre">expand</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">relationship</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#O365.utils.query.CompositeFilter" title="O365.utils.query.CompositeFilter"><span class="pre">CompositeFilter</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#O365.utils.query.CompositeFilter" title="O365.utils.query.CompositeFilter"><span class="pre">CompositeFilter</span></a></span></span><a class="reference internal" href="../../_modules/O365/utils/query.html#QueryBuilder.expand"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.query.QueryBuilder.expand" title="Link to this definition"></a></dt>
+<dd><p>Returns an ‘expand’ query param
+Important: If the ‘expand’ is a relationship (e.g. “event” or “attachments”), then the ApiComponent using
+this query should know how to handle the relationship (e.g. Message knows how to handle attachments,
+and event (if it’s an EventMessage).
+Important: When using expand on multi-value relationships a max of 20 items will be returned.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>relationship</strong> – a relationship that will be expanded</p></li>
+<li><p><strong>select</strong> – a CompositeFilter instance to select attributes on the expanded relationship</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a CompositeFilter instance that can render the OData expand operation</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.query.QueryBuilder.function_operation">
+<span class="sig-name descname"><span class="pre">function_operation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">operation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attribute</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">word</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">date</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#O365.utils.query.CompositeFilter" title="O365.utils.query.CompositeFilter"><span class="pre">CompositeFilter</span></a></span></span><a class="reference internal" href="../../_modules/O365/utils/query.html#QueryBuilder.function_operation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.query.QueryBuilder.function_operation" title="Link to this definition"></a></dt>
+<dd><p>Apply a function operation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>operation</strong> – function name to operate on attribute</p></li>
+<li><p><strong>attribute</strong> – the name of the attribute on which to apply the function</p></li>
+<li><p><strong>word</strong> – value to feed the function</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a CompositeFilter instance that can render the OData function operation</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.query.QueryBuilder.greater">
+<span class="sig-name descname"><span class="pre">greater</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attribute</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">word</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">date</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#O365.utils.query.CompositeFilter" title="O365.utils.query.CompositeFilter"><span class="pre">CompositeFilter</span></a></span></span><a class="reference internal" href="../../_modules/O365/utils/query.html#QueryBuilder.greater"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.query.QueryBuilder.greater" title="Link to this definition"></a></dt>
+<dd><p>Return a ‘greater than’ check</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>attribute</strong> – attribute to compare word with</p></li>
+<li><p><strong>word</strong> – word to compare with</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a CompositeFilter instance that can render the OData this logical operation</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.query.QueryBuilder.greater_equal">
+<span class="sig-name descname"><span class="pre">greater_equal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attribute</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">word</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">date</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#O365.utils.query.CompositeFilter" title="O365.utils.query.CompositeFilter"><span class="pre">CompositeFilter</span></a></span></span><a class="reference internal" href="../../_modules/O365/utils/query.html#QueryBuilder.greater_equal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.query.QueryBuilder.greater_equal" title="Link to this definition"></a></dt>
+<dd><p>Return a ‘greater than or equal to’ check</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>attribute</strong> – attribute to compare word with</p></li>
+<li><p><strong>word</strong> – word to compare with</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a CompositeFilter instance that can render the OData this logical operation</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.query.QueryBuilder.iterable_operation">
+<span class="sig-name descname"><span class="pre">iterable_operation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">operation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collection</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_instance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#O365.utils.query.CompositeFilter" title="O365.utils.query.CompositeFilter"><span class="pre">CompositeFilter</span></a></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">item_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'a'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#O365.utils.query.CompositeFilter" title="O365.utils.query.CompositeFilter"><span class="pre">CompositeFilter</span></a></span></span><a class="reference internal" href="../../_modules/O365/utils/query.html#QueryBuilder.iterable_operation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.query.QueryBuilder.iterable_operation" title="Link to this definition"></a></dt>
+<dd><p>Performs the provided filter operation on a collection by iterating over it.</p>
+<p>For example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">q</span><span class="o">.</span><span class="n">iterable</span><span class="p">(</span>
+    <span class="n">operation</span><span class="o">=</span><span class="s1">&#39;any&#39;</span><span class="p">,</span>
+    <span class="n">collection</span><span class="o">=</span><span class="s1">&#39;email_addresses&#39;</span><span class="p">,</span>
+    <span class="n">filter_instance</span><span class="o">=</span><span class="n">q</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span><span class="s1">&#39;address&#39;</span><span class="p">,</span> <span class="s1">&#39;george@best.com&#39;</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>will transform to a filter such as:
+emailAddresses/any(a:a/address eq ‘george&#64;best.com’)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>operation</strong> – the iterable operation name</p></li>
+<li><p><strong>collection</strong> – the collection to apply the iterable operation on</p></li>
+<li><p><strong>filter_instance</strong> – a CompositeFilter instance on which you will apply the iterable operation</p></li>
+<li><p><strong>item_name</strong> – the name of the collection item to be used on the filter_instance</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a CompositeFilter instance that can render the OData iterable operation</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.query.QueryBuilder.less">
+<span class="sig-name descname"><span class="pre">less</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attribute</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">word</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">date</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#O365.utils.query.CompositeFilter" title="O365.utils.query.CompositeFilter"><span class="pre">CompositeFilter</span></a></span></span><a class="reference internal" href="../../_modules/O365/utils/query.html#QueryBuilder.less"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.query.QueryBuilder.less" title="Link to this definition"></a></dt>
+<dd><p>Return a ‘less than’ check</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>attribute</strong> – attribute to compare word with</p></li>
+<li><p><strong>word</strong> – word to compare with</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a CompositeFilter instance that can render the OData this logical operation</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.query.QueryBuilder.less_equal">
+<span class="sig-name descname"><span class="pre">less_equal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attribute</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">word</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">date</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#O365.utils.query.CompositeFilter" title="O365.utils.query.CompositeFilter"><span class="pre">CompositeFilter</span></a></span></span><a class="reference internal" href="../../_modules/O365/utils/query.html#QueryBuilder.less_equal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.query.QueryBuilder.less_equal" title="Link to this definition"></a></dt>
+<dd><p>Return a ‘less than or equal to’ check</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>attribute</strong> – attribute to compare word with</p></li>
+<li><p><strong>word</strong> – word to compare with</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a CompositeFilter instance that can render the OData this logical operation</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.query.QueryBuilder.logical_operation">
+<span class="sig-name descname"><span class="pre">logical_operation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">operation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attribute</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">word</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">date</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#O365.utils.query.CompositeFilter" title="O365.utils.query.CompositeFilter"><span class="pre">CompositeFilter</span></a></span></span><a class="reference internal" href="../../_modules/O365/utils/query.html#QueryBuilder.logical_operation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.query.QueryBuilder.logical_operation" title="Link to this definition"></a></dt>
+<dd><p>Apply a logical operation like equals, less than, etc.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>operation</strong> – how to combine with a new one</p></li>
+<li><p><strong>attribute</strong> – attribute to compare word with</p></li>
+<li><p><strong>word</strong> – value to compare the attribute with</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a CompositeFilter instance that can render the OData logical operation</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.query.QueryBuilder.search">
+<span class="sig-name descname"><span class="pre">search</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">word</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attribute</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#O365.utils.query.CompositeFilter" title="O365.utils.query.CompositeFilter"><span class="pre">CompositeFilter</span></a></span></span><a class="reference internal" href="../../_modules/O365/utils/query.html#QueryBuilder.search"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.query.QueryBuilder.search" title="Link to this definition"></a></dt>
+<dd><p>Perform a search.
+Note from graph docs:</p>
+<blockquote>
+<div><p>You can currently search only message and person collections.
+A $search request returns up to 250 results.
+You cannot use $filter or $orderby in a search request.</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>word</strong> – the text to search</p></li>
+<li><p><strong>attribute</strong> – the attribute to search the word on</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a CompositeFilter instance that can render the OData search operation</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.query.QueryBuilder.select">
+<span class="sig-name descname"><span class="pre">select</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">attributes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#O365.utils.query.CompositeFilter" title="O365.utils.query.CompositeFilter"><span class="pre">CompositeFilter</span></a></span></span><a class="reference internal" href="../../_modules/O365/utils/query.html#QueryBuilder.select"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.query.QueryBuilder.select" title="Link to this definition"></a></dt>
+<dd><p>Returns a ‘select’ query param
+This is useful to return a limited set of attributes from a resource or return attributes that are not
+returned by default by the resource.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>attributes</strong> – a tuple of attribute names to select</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a CompositeFilter instance that can render the OData select operation</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.query.QueryBuilder.startswith">
+<span class="sig-name descname"><span class="pre">startswith</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attribute</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">word</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">date</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#O365.utils.query.CompositeFilter" title="O365.utils.query.CompositeFilter"><span class="pre">CompositeFilter</span></a></span></span><a class="reference internal" href="../../_modules/O365/utils/query.html#QueryBuilder.startswith"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.query.QueryBuilder.startswith" title="Link to this definition"></a></dt>
+<dd><p>Adds a startswith word check</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>attribute</strong> – the name of the attribute on which to apply the function</p></li>
+<li><p><strong>word</strong> – value to feed the function</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a CompositeFilter instance that can render the OData function operation</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.query.QueryBuilder.unequal">
+<span class="sig-name descname"><span class="pre">unequal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attribute</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">word</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">date</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#O365.utils.query.CompositeFilter" title="O365.utils.query.CompositeFilter"><span class="pre">CompositeFilter</span></a></span></span><a class="reference internal" href="../../_modules/O365/utils/query.html#QueryBuilder.unequal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.query.QueryBuilder.unequal" title="Link to this definition"></a></dt>
+<dd><p>Return an unequal check</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>attribute</strong> – attribute to compare word with</p></li>
+<li><p><strong>word</strong> – word to compare with</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a CompositeFilter instance that can render the OData this logical operation</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="O365.utils.query.QueryFilter">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.utils.query.</span></span><span class="sig-name descname"><span class="pre">QueryFilter</span></span><a class="reference internal" href="../../_modules/O365/utils/query.html#QueryFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.query.QueryFilter" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#O365.utils.query.QueryBase" title="O365.utils.query.QueryBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">QueryBase</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.query.QueryFilter.as_params">
+<span class="sig-name descname"><span class="pre">as_params</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="../../_modules/O365/utils/query.html#QueryFilter.as_params"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.query.QueryFilter.as_params" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.query.QueryFilter.render">
+<em class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">render</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../../_modules/O365/utils/query.html#QueryFilter.render"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.query.QueryFilter.render" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="O365.utils.query.SearchFilter">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.utils.query.</span></span><span class="sig-name descname"><span class="pre">SearchFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">word</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attribute</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/query.html#SearchFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.query.SearchFilter" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#O365.utils.query.QueryBase" title="O365.utils.query.QueryBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">QueryBase</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.query.SearchFilter.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">word</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attribute</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/query.html#SearchFilter.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.query.SearchFilter.__init__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.query.SearchFilter.as_params">
+<span class="sig-name descname"><span class="pre">as_params</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="../../_modules/O365/utils/query.html#SearchFilter.as_params"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.query.SearchFilter.as_params" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.query.SearchFilter.render">
+<span class="sig-name descname"><span class="pre">render</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../../_modules/O365/utils/query.html#SearchFilter.render"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.query.SearchFilter.render" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="O365.utils.query.SelectFilter">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">O365.utils.query.</span></span><span class="sig-name descname"><span class="pre">SelectFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/query.html#SelectFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.query.SelectFilter" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#O365.utils.query.ContainerQueryFilter" title="O365.utils.query.ContainerQueryFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">ContainerQueryFilter</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.utils.query.SelectFilter.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/O365/utils/query.html#SelectFilter.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.utils.query.SelectFilter.__init__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="attachment.html" class="btn btn-neutral float-left" title="Attachment" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="token.html" class="btn btn-neutral float-right" title="Token" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, alejcas.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

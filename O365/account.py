@@ -1,12 +1,12 @@
-from typing import Type, Tuple, Optional, Callable, List
 import warnings
+from typing import Callable, List, Optional, Tuple, Type
 
-from .connection import Connection, Protocol, MSGraphProtocol, MSOffice365Protocol
+from .connection import Connection, MSGraphProtocol, Protocol
 from .utils import ME_RESOURCE, consent_input_token
 
 
 class Account:
-    connection_constructor: Type = Connection
+    connection_constructor: Type = Connection  #: :meta private:
 
     def __init__(self, credentials: Tuple[str, str], *,
                  username: Optional[str] = None,
@@ -25,6 +25,7 @@ class Account:
         protocol = protocol or MSGraphProtocol  # Defaults to Graph protocol
         if isinstance(protocol, type):
             protocol = protocol(default_resource=main_resource, **kwargs)
+        # The protocol to use for the account. Defaults ot MSGraphProtocol. |br| **Type:** Protocol
         self.protocol: Protocol = protocol
 
         if not isinstance(self.protocol, Protocol):
@@ -57,6 +58,7 @@ class Account:
         kwargs['username'] = username
 
         self.con = self.connection_constructor(credentials, **kwargs)
+        #: The resource in use for the account. |br| **Type:** str
         self.main_resource: str = main_resource or self.protocol.default_resource
 
     def __repr__(self):
@@ -77,7 +79,10 @@ class Account:
             if self.con.load_token_from_backend() is False:
                 return False
 
-        return not self.con.token_backend.token_is_expired(username=self.con.username, refresh_token=True)
+        return (
+                self.con.token_backend.token_is_long_lived(username=self.con.username)
+                or not self.con.token_backend.token_is_expired(username=self.con.username)
+        )
 
     def authenticate(self, *, requested_scopes: Optional[list] = None, redirect_uri: Optional[str] = None,
                      handle_consent: Callable = consent_input_token, **kwargs) -> bool:
@@ -182,11 +187,12 @@ class Account:
         return self.con.username
 
     def get_authenticated_usernames(self) -> list[str]:
-        """ Returns a list of usernames that are authenticated and have a valid access or refresh token. """
+        """ Returns a list of usernames that are authenticated and have a valid access token or a refresh token."""
         usernames = []
+        tb = self.con.token_backend
         for account in self.con.token_backend.get_all_accounts():
             username = account.get('username')
-            if username and not self.con.token_backend.token_is_expired(username=username, refresh_token=True):
+            if username and (tb.token_is_long_lived(username=username) or not tb.token_is_expired(username=username)):
                 usernames.append(username)
 
         return usernames
@@ -265,7 +271,7 @@ class Account:
 
     def directory(self, resource: Optional[str] = None):
         """ Returns the active directory instance"""
-        from .directory import Directory, USERS_RESOURCE
+        from .directory import USERS_RESOURCE, Directory
 
         return Directory(parent=self, main_resource=resource or USERS_RESOURCE)
 
@@ -331,10 +337,7 @@ class Account:
     def tasks(self, *, resource: str = ''):
         """ Get an instance to read information from Microsoft ToDo """
 
-        if isinstance(self.protocol, MSOffice365Protocol):
-            from .tasks import ToDo
-        else:
-            from .tasks_graph import ToDo as ToDo
+        from .tasks import ToDo
 
         return ToDo(parent=self, main_resource=resource)
 
