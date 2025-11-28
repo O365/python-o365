@@ -2,13 +2,11 @@ import warnings
 from typing import Callable, List, Optional, Tuple, Type
 
 from .connection import Connection, MSGraphProtocol, Protocol
-from .subscriptions import Subscriptions
 from .utils import ME_RESOURCE, consent_input_token
 
 
 class Account:
     connection_constructor: Type = Connection  #: :meta private:
-    subscriptions_constructor: Type = Subscriptions
 
     def __init__(self, credentials: Tuple[str, str], *,
                  username: Optional[str] = None,
@@ -62,7 +60,6 @@ class Account:
         self.con = self.connection_constructor(credentials, **kwargs)
         #: The resource in use for the account. |br| **Type:** str
         self.main_resource: str = main_resource or self.protocol.default_resource
-        self.subscriptions = self.subscriptions_constructor(parent=self)
 
     def __repr__(self):
         if self.con.auth:
@@ -369,3 +366,9 @@ class Account:
 
         from .groups import Groups
         return Groups(parent=self, main_resource=resource)
+
+    def subscriptions(self, *, resource: str = ''):
+        """ Get an instance to manage MS Graph subscriptions """
+
+        from .subscriptions import Subscriptions
+        return Subscriptions(parent=self, main_resource=resource)
