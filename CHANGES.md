@@ -2,11 +2,16 @@
 
 Almost every release features a lot of bugfixes but those are not listed here.
 
+
+## Versions 2.1.8 (2025-11-28)
+
+- NEW: Added Subscriptions api support (Thanks @sdelgadoc)
+
 ## Version 2.1.7 (2025-09-05)
 
 > [!IMPORTANT]
 > **Breaking Change:** Removed support for Python 3.9
-> **Breaking Change:** Removed Old Query in favour of the new QueryBuilder (both are interchangeable for other methods to use it, but are build differently)
+> **Breaking Change:** Removed Old Query in favor of the new QueryBuilder (both are interchangeable for other methods to use it, but are build differently)
 
 - Tasks: Add population of checklist_items on Task (Thanks @RogerSelwyn)
 - Excel: Added `append_rows` and `update_cells` to `WorkSheet` (Thanks @luissantosHCIT)
