@@ -1070,4 +1070,3 @@ class MailBox(Folder):
         return self.mailbox_settings_constructor(
             parent=self, **{self._cloud_data_key: data}
         )
-
