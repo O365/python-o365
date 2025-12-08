@@ -3,7 +3,7 @@
 
 Quickstart for this example:
 1) Run Flask locally withg the following command:
-    - flask --app examples/subscription_account_webhook.py run --debug
+    - flask --app examples/subscriptions_example.py run --debug
 2) Expose HTTPS via a tunnel to your localhost:5000:
     - Free: pinggy (https://pinggy.io/) to get https://<subdomain>.pinggy.link -> http://localhost:5000
     - Paid/free-tier: ngrok (https://ngrok.com/): ngrok http 5000, note the https URL.
