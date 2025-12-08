@@ -76,6 +76,27 @@ class Subscriptions(ApiComponent):
             raise ValueError("change_type must contain at least one value.")
         return value
 
+    def get_subscription(
+        self,
+        subscription_id: str,
+        *,
+        params: Optional[Mapping[str, object]] = None,
+        **request_kwargs,
+    ) -> Optional[dict]:
+        """Retrieve a single webhook subscription by id."""
+        if not subscription_id:
+            raise ValueError("subscription_id must be provided.")
+        if params is not None and not isinstance(params, Mapping):
+            raise ValueError("params must be a mapping if provided.")
+
+        url = self._build_subscription_url(subscription_id)
+        response = self.con.get(url, params=params, **request_kwargs)
+
+        if not response:
+            return None
+
+        return response.json()
+
     def create_subscription(
         self,
         notification_url: str,
