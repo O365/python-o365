@@ -228,6 +228,43 @@ class Subscriptions(ApiComponent):
 
         return response.json()
 
+    def update_subscription(
+        self,
+        subscription_id: str,
+        *,
+        notification_url: Optional[str] = None,
+        expiration_datetime: Optional[dt.datetime] = None,
+        expiration_minutes: Optional[int] = None,
+        **request_kwargs,
+    ) -> Optional[dict]:
+        """Update subscription fields (expiration and/or notification URL)."""
+        if not subscription_id:
+            raise ValueError("subscription_id must be provided.")
+
+        payload = {}
+
+        if expiration_datetime is not None or expiration_minutes is not None:
+            payload[self._cc("expiration_date_time")] = self._format_subscription_expiration(
+                expiration_datetime=expiration_datetime,
+                expiration_minutes=expiration_minutes,
+            )
+
+        if notification_url is not None:
+            if not notification_url:
+                raise ValueError("notification_url, if provided, cannot be empty.")
+            payload[self._cc("notification_url")] = notification_url
+
+        if not payload:
+            raise ValueError("At least one of expiration or notification_url must be provided.")
+
+        url = self._build_subscription_url(subscription_id)
+        response = self.con.patch(url, data=payload, **request_kwargs)
+
+        if not response:
+            return None
+
+        return response.json()
+
     def delete_subscription(
         self,
         subscription_id: str,
