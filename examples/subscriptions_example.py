@@ -38,7 +38,7 @@ account.authenticate(
             ])
 
 RESOURCE = "/me/mailFolders('inbox')/messages"
-DEFAULT_EXPIRATION_MINUTES = 55  # Graph requires renewals before the limit
+DEFAULT_EXPIRATION_MINUTES = 2880
 
 app = Flask(__name__)
 
