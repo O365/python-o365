@@ -10,9 +10,11 @@ Quickstart for this example:
 3) Use the tunnel HTTPS URL as notification_url pointing to /webhook, URL-encoded. 
 4) To create a subscription, follow the example request below:
     - https://<your-tunnel-host>/subscriptions?notification_url=https%3A%2F%2F<your-tunnel-host>%2Fwebhook&client_state=abc123
-4) To renew a subscription, follow the example request below: 
+5) To list subscriptions, follow the example request below:
+    - http://<your-tunnel-host>/subscriptions/list
+6) To renew a subscription, follow the example request below: 
     - http://<your-tunnel-host>/subscriptions/<subscription_id>/renew?expiration_minutes=55
-5) To delete a subscription, follow the example request below:
+7) To delete a subscription, follow the example request below:
     - http://<your-tunnel-host>/subscriptions/<subscription_id>/delete
 Graph will call https://<your-tunnel-host>/webhook; this app echoes validationToken and returns 202 for notifications.
 """
@@ -38,7 +40,7 @@ account.authenticate(
             ])
 
 RESOURCE = "/me/mailFolders('inbox')/messages"
-DEFAULT_EXPIRATION_MINUTES = 2880
+DEFAULT_EXPIRATION_MINUTES = 10069 # Maximum expiration is 10,070 in the future.
 
 app = Flask(__name__)
 
@@ -63,7 +65,7 @@ def create_subscription():
     client_state = request.args.get("client_state")
     resource = request.args.get("resource", RESOURCE)
 
-    subscription = account.subscriptions.create_subscription(
+    subscription = account.subscriptions().create_subscription(
         notification_url=notification_url,
         resource=resource,
         change_type="created",
@@ -73,10 +75,26 @@ def create_subscription():
     return jsonify(subscription), 201
 
 
+@app.get("/subscriptions/list")
+def list_subscriptions():
+    limit_raw = request.args.get("limit")
+    limit = None
+    if limit_raw is not None:
+        try:
+            limit = int(limit_raw)
+        except ValueError:
+            abort(400, description="limit must be an integer")
+        if limit <= 0:
+            abort(400, description="limit must be a positive integer")
+
+    subscriptions = account.subscriptions().list_subscriptions(limit=limit)
+    return jsonify(list(subscriptions)), 200
+
+
 @app.get("/subscriptions/<subscription_id>/renew")
 def renew_subscription(subscription_id: str):
     expiration_minutes = _int_arg("expiration_minutes", DEFAULT_EXPIRATION_MINUTES)
-    updated = account.subscriptions.renew_subscription(
+    updated = account.subscriptions().renew_subscription(
         subscription_id,
         expiration_minutes=expiration_minutes,
     )
@@ -85,7 +103,7 @@ def renew_subscription(subscription_id: str):
 
 @app.get("/subscriptions/<subscription_id>/delete")
 def delete_subscription(subscription_id: str):
-    deleted = account.subscriptions.delete_subscription(subscription_id)
+    deleted = account.subscriptions().delete_subscription(subscription_id)
     if not deleted:
         abort(404, description="Subscription not found")
     return ("", 204)
