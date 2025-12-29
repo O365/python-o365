@@ -19,6 +19,7 @@ O365 API
    api/onedrive
    api/planner
    api/sharepoint
+   api/subscriptions
    api/tasks
    api/teams
    api/utils
