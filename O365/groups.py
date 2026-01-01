@@ -137,10 +137,6 @@ class Group(ApiComponent):
 
     def _remove_member(self, user, url_key):
 
-        #log.debug(f"url_key: { url_key }")
-        #log.debug(f"endpoint: { self._endpoints.get(url_key) }")
-
-
         if isinstance(user, User):
             object_id = user.id
         elif isinstance(user, str):
