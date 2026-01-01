@@ -274,7 +274,8 @@ class User(ApiComponent):
 class Directory(ApiComponent):
 
     _endpoints = {
-        'get_user': '/{email}'
+        'get_user': '/{email}',
+        "invitation": "invitations",
     }
     user_constructor = User  #: :meta private:
 
@@ -473,3 +474,32 @@ class Directory(ApiComponent):
                               next_link=next_link, limit=limit)
         else:
             return direct_reports
+
+
+    def invite_user(self, email: str, redirect_url: str, **kwargs) -> dict[str]:
+        """ Sends a guest invitation to the named user to make them a guest of the tenant.
+        This user can then be added to groups and teams.
+
+        The return dict is what the graph call returns.  The two key pieces of information
+        is the invitedUser > id key, and the inviteRedeemKey (which is used to activate
+        the account).
+
+
+        :param email: the email address of the guest to be added
+        :type email: str
+        :param redirect_url: the URL the user will be redirected to after registering their guest account
+        :type redirect_url: str
+        :rtype: dict
+        """
+
+        url = self.build_url(self._endpoints.get('invitation'))
+        url = "{}{}".format( self.protocol.service_url, self._endpoints.get('invitation') )
+
+        data = kwargs
+        data['invitedUserEmailAddress'] = email
+        data['inviteRedirectUrl'] = redirect_url
+
+        response = self.con.post(url, data=data)
+
+        return_json = response.json()
+        return return_json
