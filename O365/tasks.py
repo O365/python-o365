@@ -20,6 +20,7 @@ CONST_GET_FOLDER = "get_folder"
 CONST_GET_TASK = "get_task"
 CONST_GET_TASKS = "get_tasks"
 CONST_ROOT_FOLDERS = "root_folders"
+CONST_ROOT_FOLDERS_DELTA = "root_folders_delta"
 CONST_TASK = "task"
 CONST_TASK_FOLDER = "task_folder"
 
@@ -993,6 +994,7 @@ class ToDo(ApiComponent):
 
     _endpoints = {
         CONST_ROOT_FOLDERS: "/todo/lists",
+        CONST_ROOT_FOLDERS_DELTA: "/todo/lists/delta",
         CONST_GET_FOLDER: "/todo/lists/{id}",
     }
 
@@ -1032,18 +1034,8 @@ class ToDo(ApiComponent):
         """Representation of the ToDo via the Graph api as."""
         return "Microsoft To-Do"
 
-    def list_folders(self, query=None, limit=None):
-        """Return a list of folders.
-
-        To use query an order_by check the OData specification here:
-        https://docs.oasis-open.org/odata/odata/v4.0/errata03/os/complete/
-        part2-url-conventions/odata-v4.0-errata03-os-part2-url-conventions
-        -complete.html
-        :param query: the query string or object to list folders
-        :param int limit: max no. of folders to get. Over 999 uses batch.
-        :rtype: list[Folder]
-        """
-        url = self.build_url(self._endpoints.get(CONST_ROOT_FOLDERS))
+    def _list_folders_with_url(self, url, query=None, limit=None):
+        """Return a list of folders using the provided url."""
 
         params = {}
         if limit:
@@ -1065,6 +1057,36 @@ class ToDo(ApiComponent):
             self.folder_constructor(parent=self, **{self._cloud_data_key: x})
             for x in data.get("value", [])
         ]
+
+    def list_folders(self, query=None, limit=None):
+        """Return a list of folders.
+
+        To use query an order_by check the OData specification here:
+        https://docs.oasis-open.org/odata/odata/v4.0/errata03/os/complete/
+        part2-url-conventions/odata-v4.0-errata03-os-part2-url-conventions
+        -complete.html
+        :param query: the query string or object to list folders
+        :param int limit: max no. of folders to get. Over 999 uses batch.
+        :rtype: list[Folder]
+        """
+        url = self.build_url(self._endpoints.get(CONST_ROOT_FOLDERS))
+
+        return self._list_folders_with_url(url, query, limit)
+
+    def list_folders_delta(self, query=None, limit=None):
+        """Return a list of folders using the delta endpoint.
+
+        To use query an order_by check the OData specification here:
+        https://docs.oasis-open.org/odata/odata/v4.0/errata03/os/complete/
+        part2-url-conventions/odata-v4.0-errata03-os-part2-url-conventions
+        -complete.html
+        :param query: the query string or object to list folders
+        :param int limit: max no. of folders to get. Over 999 uses batch.
+        :rtype: list[Folder]
+        """
+        url = self.build_url(self._endpoints.get(CONST_ROOT_FOLDERS_DELTA))
+
+        return self._list_folders_with_url(url, query, limit)
 
     def new_folder(self, folder_name):
         """Create a new folder.
