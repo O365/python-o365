@@ -128,6 +128,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#O365.tasks.ToDo.get_folder"><code class="docutils literal notranslate"><span class="pre">ToDo.get_folder()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.tasks.ToDo.get_tasks"><code class="docutils literal notranslate"><span class="pre">ToDo.get_tasks()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.tasks.ToDo.list_folders"><code class="docutils literal notranslate"><span class="pre">ToDo.list_folders()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.tasks.ToDo.list_folders_delta"><code class="docutils literal notranslate"><span class="pre">ToDo.list_folders_delta()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.tasks.ToDo.new_folder"><code class="docutils literal notranslate"><span class="pre">ToDo.new_folder()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.tasks.ToDo.new_task"><code class="docutils literal notranslate"><span class="pre">ToDo.new_task()</span></code></a></li>
 </ul>
@@ -861,6 +862,19 @@ batches allowing to retrieve more items than the limit.</p></li>
 <dt class="sig sig-object py" id="O365.tasks.ToDo.list_folders">
 <span class="sig-name descname"><span class="pre">list_folders</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/tasks.html#ToDo.list_folders"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.tasks.ToDo.list_folders" title="Link to this definition"></a></dt>
 <dd><p>Return a list of folders.</p>
+<p>To use query an order_by check the OData specification here:
+<a class="reference external" href="https://docs.oasis-open.org/odata/odata/v4.0/errata03/os/complete/">https://docs.oasis-open.org/odata/odata/v4.0/errata03/os/complete/</a>
+part2-url-conventions/odata-v4.0-errata03-os-part2-url-conventions
+-complete.html
+:param query: the query string or object to list folders
+:param int limit: max no. of folders to get. Over 999 uses batch.
+:rtype: list[Folder]</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.tasks.ToDo.list_folders_delta">
+<span class="sig-name descname"><span class="pre">list_folders_delta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/O365/tasks.html#ToDo.list_folders_delta"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.tasks.ToDo.list_folders_delta" title="Link to this definition"></a></dt>
+<dd><p>Return a list of folders using the delta endpoint.</p>
 <p>To use query an order_by check the OData specification here:
 <a class="reference external" href="https://docs.oasis-open.org/odata/odata/v4.0/errata03/os/complete/">https://docs.oasis-open.org/odata/odata/v4.0/errata03/os/complete/</a>
 part2-url-conventions/odata-v4.0-errata03-os-part2-url-conventions
