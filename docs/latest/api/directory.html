@@ -63,6 +63,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#O365.directory.Directory.get_user_direct_reports"><code class="docutils literal notranslate"><span class="pre">Directory.get_user_direct_reports()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.directory.Directory.get_user_manager"><code class="docutils literal notranslate"><span class="pre">Directory.get_user_manager()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#O365.directory.Directory.get_users"><code class="docutils literal notranslate"><span class="pre">Directory.get_users()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#O365.directory.Directory.invite_user"><code class="docutils literal notranslate"><span class="pre">Directory.invite_user()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#O365.directory.User"><code class="docutils literal notranslate"><span class="pre">User</span></code></a><ul>
@@ -293,6 +294,27 @@ batches allowing to retrieve more items than the limit.</p></li>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>list[<a class="reference internal" href="#O365.directory.User" title="O365.directory.User">User</a>] or <a class="reference internal" href="utils/utils.html#O365.utils.utils.Pagination" title="O365.utils.utils.Pagination">Pagination</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="O365.directory.Directory.invite_user">
+<span class="sig-name descname"><span class="pre">invite_user</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">email</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">redirect_url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/O365/directory.html#Directory.invite_user"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#O365.directory.Directory.invite_user" title="Link to this definition"></a></dt>
+<dd><p>Sends a guest invitation to the named user to make them a guest of the tenant.
+This user can then be added to groups and teams.</p>
+<p>The return dict is what the graph call returns.  The two key pieces of information
+is the invitedUser &gt; id key, and the inviteRedeemKey (which is used to activate
+the account).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>email</strong> (<em>str</em>) – the email address of the guest to be added</p></li>
+<li><p><strong>redirect_url</strong> (<em>str</em>) – the URL the user will be redirected to after registering their guest account</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict</p>
 </dd>
 </dl>
 </dd></dl>
