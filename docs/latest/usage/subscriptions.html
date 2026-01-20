@@ -1,0 +1,344 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Subscriptions &mdash; O365  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Tasks" href="tasks.html" />
+    <link rel="prev" title="Sharepoint" href="sharepoint.html" />
+    <link href="../_static/css/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html">
+            
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../usage.html">Detailed Usage</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="connection.html">Protocols</a></li>
+<li class="toctree-l2"><a class="reference internal" href="connection.html#resources">Resources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="account.html">Account</a></li>
+<li class="toctree-l2"><a class="reference internal" href="account.html#account-class-and-modularity">Account Class and Modularity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="addressbook.html">Address Book</a></li>
+<li class="toctree-l2"><a class="reference internal" href="calendar.html">Calendar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="directory.html">Directory and Users</a></li>
+<li class="toctree-l2"><a class="reference internal" href="excel.html">Excel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group.html">Group</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mailbox.html">Mailbox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="onedrive.html">OneDrive</a></li>
+<li class="toctree-l2"><a class="reference internal" href="planner.html">Planner</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sharepoint.html">Sharepoint</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Subscriptions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#create-a-subscription">Create a Subscription</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#list-subscriptions">List Subscriptions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#renew-a-subscription">Renew a Subscription</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#delete-a-subscription">Delete a Subscription</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#webhook">Webhook</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tasks.html">Tasks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="teams.html">Teams</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html">Utils</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">O365 API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">O365</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../usage.html">Detailed Usage</a></li>
+      <li class="breadcrumb-item active">Subscriptions</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/usage/subscriptions.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="sharepoint.html" class="btn btn-neutral float-left" title="Sharepoint" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tasks.html" class="btn btn-neutral float-right" title="Tasks" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="subscriptions">
+<h1>Subscriptions<a class="headerlink" href="#subscriptions" title="Link to this heading"></a></h1>
+<p>Subscriptions provides the ability to create and manage webhook subscriptions for change notifications against Microsoft Graph. Read here for more details on MS Graph subscriptions</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://learn.microsoft.com/en-us/graph/api/resources/subscription?view=graph-rest-1.0">https://learn.microsoft.com/en-us/graph/api/resources/subscription?view=graph-rest-1.0</a></p></li>
+<li><p><a class="reference external" href="https://learn.microsoft.com/en-us/graph/change-notifications-delivery-webhooks?tabs=http">https://learn.microsoft.com/en-us/graph/change-notifications-delivery-webhooks?tabs=http</a></p></li>
+</ul>
+<section id="create-a-subscription">
+<h2>Create a Subscription<a class="headerlink" href="#create-a-subscription" title="Link to this heading"></a></h2>
+<p>Assuming a web host (example uses <cite>flask</cite>) and an authenticated account, create a subscription to be notified about new emails.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">flask</span><span class="w"> </span><span class="kn">import</span> <span class="n">Flask</span><span class="p">,</span> <span class="n">abort</span><span class="p">,</span> <span class="n">jsonify</span><span class="p">,</span> <span class="n">request</span>
+
+<span class="n">RESOURCE</span> <span class="o">=</span> <span class="s2">&quot;/me/mailFolders(&#39;inbox&#39;)/messages&quot;</span>
+<span class="n">DEFAULT_EXPIRATION_MINUTES</span> <span class="o">=</span> <span class="mi">10069</span>  <span class="c1"># Maximum expiration is 10,070 in the future for Outlook message.</span>
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/subscriptions&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">create_subscription</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a subscription.&quot;&quot;&quot;</span>
+    <span class="n">notification_url</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;notification_url&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">notification_url</span><span class="p">:</span>
+        <span class="n">abort</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;notification_url is required&quot;</span><span class="p">)</span>
+
+    <span class="n">expiration_minutes</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;expiration_minutes&quot;</span><span class="p">,</span> <span class="n">DEFAULT_EXPIRATION_MINUTES</span><span class="p">))</span>
+    <span class="n">client_state</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;client_state&quot;</span><span class="p">)</span>
+    <span class="n">resource</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;resource&quot;</span><span class="p">,</span> <span class="n">RESOURCE</span><span class="p">)</span>
+
+    <span class="n">subscription</span> <span class="o">=</span> <span class="n">account</span><span class="o">.</span><span class="n">subscriptions</span><span class="p">()</span><span class="o">.</span><span class="n">create_subscription</span><span class="p">(</span>
+        <span class="n">notification_url</span><span class="o">=</span><span class="n">notification_url</span><span class="p">,</span>
+        <span class="n">resource</span><span class="o">=</span><span class="n">resource</span><span class="p">,</span>
+        <span class="n">change_type</span><span class="o">=</span><span class="s2">&quot;created&quot;</span><span class="p">,</span>
+        <span class="n">expiration_minutes</span><span class="o">=</span><span class="n">expiration_minutes</span><span class="p">,</span>
+        <span class="n">client_state</span><span class="o">=</span><span class="n">client_state</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">subscription</span><span class="p">),</span> <span class="mi">201</span>
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;/webhook&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">webhook_handler</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Handle Microsoft Graph webhook calls.</span>
+
+<span class="sd">    - During subscription validation, Graph sends POST with ?validationToken=... .</span>
+<span class="sd">    We must echo the token as plain text within 10 seconds.</span>
+<span class="sd">    - For change notifications, Graph posts JSON; we just log/ack.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">validation_token</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;validationToken&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">validation_token</span><span class="p">:</span>
+        <span class="c1"># Echo back token exactly as plain text with HTTP 200.</span>
+        <span class="k">return</span> <span class="n">validation_token</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">:</span> <span class="s2">&quot;text/plain&quot;</span><span class="p">}</span>
+
+    <span class="c1"># Change notifications: inspect or log as needed.</span>
+    <span class="n">payload</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">(</span><span class="n">silent</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{}</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Received notification payload:&quot;</span><span class="p">,</span> <span class="n">payload</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="mi">202</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Use this url:</p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">https://&lt;your-tunnel-host&gt;/subscriptions?notification_url=https%3A%2F%2F&lt;your-tunnel-host&gt;%2Fwebhook&amp;client_state=abc123</span></code></p>
+</div></blockquote>
+<p>HTTP status 201 and the following should be returned:</p>
+<div class="highlight-JSON notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;@odata.context&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://graph.microsoft.com/v1.0/$metadata#subscriptions/$entity&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;applicationId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;12345678-bad9-4c34-94d6-f9a1388522f8&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;changeType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;created&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;clientState&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;abc123&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;creatorId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;12345678-a5c7-46da-8107-b25090a1ed66&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;encryptionCertificate&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;encryptionCertificateId&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;expirationDateTime&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2026-01-07T11:20:42.305776Z&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;548355f8-c2c0-47ae-aac7-3ad02b2dfdb1&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;includeResourceData&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;latestSupportedTlsVersion&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;v1_2&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;lifecycleNotificationUrl&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;notificationQueryOptions&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;notificationUrl&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://&lt;your-tunnel-host&gt;/webhook&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;notificationUrlAppId&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;resource&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/me/mailFolders(&#39;inbox&#39;)/messages&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="list-subscriptions">
+<h2>List Subscriptions<a class="headerlink" href="#list-subscriptions" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/subscriptions/list&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">list_subscriptions</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;List all subscriptions.&quot;&quot;&quot;</span>
+    <span class="n">limit</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;limit&quot;</span><span class="p">))</span>
+    <span class="n">subscriptions</span> <span class="o">=</span> <span class="n">account</span><span class="o">.</span><span class="n">subscriptions</span><span class="p">()</span><span class="o">.</span><span class="n">list_subscriptions</span><span class="p">(</span><span class="n">limit</span><span class="o">=</span><span class="n">limit</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">subscriptions</span><span class="p">)),</span> <span class="mi">200</span>
+</pre></div>
+</div>
+<p>Use this url:</p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">https://&lt;your-tunnel-host&gt;/subscriptions/list</span></code></p>
+</div></blockquote>
+<p>HTTP status 200 and the following should be returned:</p>
+<div class="highlight-JSON notranslate"><div class="highlight"><pre><span></span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;@odata.context&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://graph.microsoft.com/v1.0/$metadata#subscriptions/$entity&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;applicationId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;12345678-bad9-4c34-94d6-f9a1388522f8&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;changeType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;created&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;clientState&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;abc123&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;creatorId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;12345678-a5c7-46da-8107-b25090a1ed66&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;encryptionCertificate&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;encryptionCertificateId&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;expirationDateTime&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2026-01-07T11:20:42.305776Z&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;548355f8-c2c0-47ae-aac7-3ad02b2dfdb1&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;includeResourceData&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;latestSupportedTlsVersion&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;v1_2&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;lifecycleNotificationUrl&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;notificationQueryOptions&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;notificationUrl&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://&lt;your-tunnel-host&gt;/webhook&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;notificationUrlAppId&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;resource&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/me/mailFolders(&#39;inbox&#39;)/messages&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+</section>
+<section id="renew-a-subscription">
+<h2>Renew a Subscription<a class="headerlink" href="#renew-a-subscription" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/subscriptions/&lt;subscription_id&gt;/renew&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">renew_subscription</span><span class="p">(</span><span class="n">subscription_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Renew a subscription.&quot;&quot;&quot;</span>
+    <span class="n">expiration_minutes</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;expiration_minutes&quot;</span><span class="p">,</span> <span class="n">DEFAULT_EXPIRATION_MINUTES</span><span class="p">))</span>
+    <span class="n">updated</span> <span class="o">=</span> <span class="n">account</span><span class="o">.</span><span class="n">subscriptions</span><span class="p">()</span><span class="o">.</span><span class="n">renew_subscription</span><span class="p">(</span>
+        <span class="n">subscription_id</span><span class="p">,</span>
+        <span class="n">expiration_minutes</span><span class="o">=</span><span class="n">expiration_minutes</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">updated</span><span class="p">),</span> <span class="mi">200</span>
+</pre></div>
+</div>
+<p>Use this url:</p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">http://&lt;your-tunnel-host&gt;/subscriptions/548355f8-c2c0-47ae-aac7-3ad02b2dfdb1/renew?expiration_minutes=10069</span></code></p>
+</div></blockquote>
+<p>HTTP status 200 and the following should be returned:</p>
+<div class="highlight-JSON notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;@odata.context&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://graph.microsoft.com/v1.0/$metadata#subscriptions/$entity&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;applicationId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;12345678-bad9-4c34-94d6-f9a1388522f8&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;changeType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;created&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;clientState&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;abc123&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;creatorId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;12345678-a5c7-46da-8107-b25090a1ed66&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;encryptionCertificate&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;encryptionCertificateId&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;expirationDateTime&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2026-01-07T11:35:40.301594Z&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;548355f8-c2c0-47ae-aac7-3ad02b2dfdb1&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;includeResourceData&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;latestSupportedTlsVersion&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;v1_2&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;lifecycleNotificationUrl&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;notificationQueryOptions&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;notificationUrl&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://&lt;your-tunnel-host&gt;/webhook&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;notificationUrlAppId&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;resource&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/me/mailFolders(&#39;inbox&#39;)/messages&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="delete-a-subscription">
+<h2>Delete a Subscription<a class="headerlink" href="#delete-a-subscription" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/subscriptions/&lt;subscription_id&gt;/delete&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">delete_subscription</span><span class="p">(</span><span class="n">subscription_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Delete a subscription.&quot;&quot;&quot;</span>
+    <span class="n">deleted</span> <span class="o">=</span> <span class="n">account</span><span class="o">.</span><span class="n">subscriptions</span><span class="p">()</span><span class="o">.</span><span class="n">delete_subscription</span><span class="p">(</span><span class="n">subscription_id</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">deleted</span><span class="p">:</span>
+        <span class="n">abort</span><span class="p">(</span><span class="mi">404</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Subscription not found&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="mi">204</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Use this url:</p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">http://&lt;your-tunnel-host&gt;/subscriptions/548355f8-c2c0-47ae-aac7-3ad02b2dfdb1/delete</span></code></p>
+</div></blockquote>
+<p>HTTP status 204 should be returned.</p>
+</section>
+<section id="webhook">
+<h2>Webhook<a class="headerlink" href="#webhook" title="Link to this heading"></a></h2>
+<p>With a subscription as described above and an email sent to the inbox, a webhook will be received as below:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s1">&#39;subscriptionId&#39;</span><span class="p">:</span> <span class="s1">&#39;548355f8-c2c0-47ae-aac7-3ad02b2dfdb12&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;subscriptionExpirationDateTime&#39;</span><span class="p">:</span> <span class="s1">&#39;2026-01-07T11:35:40.301594+00:00&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;changeType&#39;</span><span class="p">:</span> <span class="s1">&#39;created&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;resource&#39;</span><span class="p">:</span> <span class="s1">&#39;Users/12345678-a5c7-46da-8107-b25090a1ed66/Messages/&lt;long_guid&gt;=&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;resourceData&#39;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s1">&#39;@odata.type&#39;</span><span class="p">:</span> <span class="s1">&#39;#Microsoft.Graph.Message&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;@odata.id&#39;</span><span class="p">:</span> <span class="s1">&#39;Users/12345678-a5c7-46da-8107-b25090a1ed66/Messages/&lt;long_guid&gt;=&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;@odata.etag&#39;</span><span class="p">:</span> <span class="s1">&#39;W/&quot;CQAAABYACCCoiRErLbiNRJDCFyMjq4khBBnH4N7A&quot;&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="s1">&#39;&lt;long_guid&gt;=&#39;</span>
+            <span class="p">},</span>
+            <span class="s1">&#39;clientState&#39;</span><span class="p">:</span> <span class="s1">&#39;abc123&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;tenantId&#39;</span><span class="p">:</span> <span class="s1">&#39;12345678-abcd-1234-abcd-1234567890ab&#39;</span>
+        <span class="p">}</span>
+    <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The client state should be validated for accuracy and if correct, the message can be acted upon as approriate for the type of subscription.</p>
+<p>An example application can be found in the examples directory here - <a class="reference external" href="https://github.com/O365/python-o365/blob/master/examples/subscriptions_example.py">https://github.com/O365/python-o365/blob/master/examples/subscriptions_example.py</a></p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="sharepoint.html" class="btn btn-neutral float-left" title="Sharepoint" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tasks.html" class="btn btn-neutral float-right" title="Tasks" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, alejcas.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
