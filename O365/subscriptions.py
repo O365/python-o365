@@ -116,7 +116,7 @@ class Subscriptions(ApiComponent):
     ) -> Optional[dict]:
         """Create a Microsoft Graph webhook subscription.
 
-        See Documentation.md for webhook setup requirements.
+        See subscriptions usage documentation for webhook setup requirements.
         """
         if not notification_url:
             raise ValueError("notification_url must be provided.")

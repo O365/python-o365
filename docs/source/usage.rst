@@ -17,6 +17,7 @@ Detailed Usage
    usage/onedrive
    usage/planner
    usage/sharepoint
+   usage/subscriptions
    usage/tasks
    usage/teams
    usage/utils
