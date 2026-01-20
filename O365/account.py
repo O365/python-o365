@@ -8,7 +8,7 @@ from .utils import ME_RESOURCE, consent_input_token
 class Account:
     connection_constructor: Type = Connection  #: :meta private:
 
-    def __init__(self, credentials: Tuple[str, str], *,
+    def __init__(self, credentials: str | tuple[str, str], *,
                  username: Optional[str] = None,
                  protocol: Optional[Protocol] = None,
                  main_resource: Optional[str] = None, **kwargs):

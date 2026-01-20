@@ -366,7 +366,7 @@ class Connection:
 
     def __init__(
         self,
-        credentials: tuple,
+        credentials: str | tuple[str, str],
         *,
         proxy_server: Optional[str] = None,
         proxy_port: Optional[int] = 8080,
