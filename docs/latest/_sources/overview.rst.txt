@@ -66,6 +66,6 @@ Rebuilding HTML Docs
 
 .. code-block:: console
 
-   pip install sphinx
+   pip install sphinx sphinx-rtd-theme
 
 * Run the shell script ``build_docs.sh``, or copy the command from the file when using on Windows
