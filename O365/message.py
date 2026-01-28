@@ -766,6 +766,18 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
                 return
         self.__message_headers.append({"name": name, "value": value})
 
+    def delay_delivery(self, delay_seconds_or_absolute_datetime):
+        if isinstance(delay_seconds_or_absolute_datetime, int):
+            self.single_value_extended_properties.append({
+                "id": "SystemTime 0x3FEF",
+                "value": (dt.datetime.now(dt.timezone.utc) + dt.timedelta(seconds=delay_seconds_or_absolute_datetime)).strftime("%Y-%m-%dT%H:%M:%SZ")
+            })
+        else:
+            self.single_value_extended_properties.append({
+                "id": "SystemTime 0x3FEF",
+                "value": delay_seconds_or_absolute_datetime
+            })
+
     def to_api_data(self, restrict_keys=None):
         """ Returns a dict representation of this message prepared to be sent
         to the cloud
@@ -840,6 +852,9 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
 
         if self.message_headers:
             message[cc('internetMessageHeaders')] = self.message_headers
+
+        if self.single_value_extended_properties:
+            message[cc('singleValueExtendedProperties')] = self.single_value_extended_properties
 
         if restrict_keys:
             for key in list(message.keys()):
