@@ -3,6 +3,13 @@
 Almost every release features a lot of bugfixes but those are not listed here.
 
 
+## Versions 2.1.9 (2026-01-30)
+
+- Message: You can now delay the delivery of a message (Thanks @yeyeric)
+- Tasks: Add support for the delta endpoint (Thanks @RogerSelwyn)
+- Directory: Added `invite_user` method to create a guest user in the directory (Thanks @neilkatin)
+- Subscriptions: Added list, get, and update methods to subscriptions (Thanks @sdelgadoc)
+
 ## Versions 2.1.8 (2025-11-28)
 
 - NEW: Added Subscriptions api support (Thanks @sdelgadoc)
