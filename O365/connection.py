@@ -880,7 +880,9 @@ class Connection:
             username=self.username, remove_reserved=True
         )
 
+        # call the refresh!
         if self.auth_flow_type == "credentials":
+            # in this case we don't have an account to work with...
             result = self.msal_client.acquire_token_for_client(scopes=scopes)
         else:
             # call the refresh!
