@@ -95,6 +95,7 @@ class Contact(ApiComponent, AttachableMixin):
         if email and email not in self.__emails:
             # a Contact from OneDrive?
             self.__emails.add(email)
+        self.__birthday = cloud_data.get(cc("birthday"), None)
         self.__business_address = cloud_data.get(cc('businessAddress'), {})
         self.__home_address = cloud_data.get(cc('homeAddress'), {})
         self.__other_address = cloud_data.get(cc('otherAddress'), {})
@@ -359,6 +360,32 @@ class Contact(ApiComponent, AttachableMixin):
         return self.emails[0].address
 
     @property
+    def birthday(self):
+        """Birthday
+
+        :getter: Get the birthday of contact
+        :setter: Update the birthday
+        :type: datetime
+        """
+        return self.__birthday
+
+    @birthday.setter
+    def birthday(self, value):
+        if value:
+            if not isinstance(value, dt.date):
+                raise ValueError("'birthday' must be a valid datetime object")
+            if not isinstance(value, dt.datetime):
+                # force datetime
+                value = dt.datetime(value.year, value.month, value.day)
+            if value.tzinfo is None:
+                # localize datetime
+                value = value.replace(tzinfo=self.protocol.timezone)
+            elif value.tzinfo != self.protocol.timezone:
+                value = value.astimezone(self.protocol.timezone)
+        self.__birthday = value
+        self._track_changes.add(self._cc("birthday"))
+        
+    @property
     def business_address(self):
         """ Business Address
 
@@ -491,6 +518,7 @@ class Contact(ApiComponent, AttachableMixin):
             cc('emailAddresses'): [{self._cc('name'): recipient.name or '',
                                     self._cc('address'): recipient.address}
                                    for recipient in self.emails],
+            cc("birthday"): self.__birthday.strftime("%Y-%m-%dT%H:%M:%SZ"),
             cc('businessAddress'): self.__business_address,
             cc('homeAddress'): self.__home_address,
             cc('otherAddress'): self.__other_address,
