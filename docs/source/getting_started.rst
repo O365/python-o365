@@ -65,7 +65,7 @@ A common pattern to check for authentication and use the library is this one:
 
    if not account.is_authenticated:  # will check if there is a token and has not expired
       # ask for a login using console based authentication. See Authentication for other flows
-      if account.authenticate(requested_scopes=requeated_scopes) is False:
+      if account.authenticate(requested_scopes=requested_scopes) is False:
          raise RuntimeError('Authentication Failed')
 
    # now we are authenticated
