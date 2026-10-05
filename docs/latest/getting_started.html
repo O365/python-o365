@@ -151,7 +151,7 @@ This version may include new features but could be unstable. <strong>Use at your
 
 <span class="k">if</span> <span class="ow">not</span> <span class="n">account</span><span class="o">.</span><span class="n">is_authenticated</span><span class="p">:</span>  <span class="c1"># will check if there is a token and has not expired</span>
    <span class="c1"># ask for a login using console based authentication. See Authentication for other flows</span>
-   <span class="k">if</span> <span class="n">account</span><span class="o">.</span><span class="n">authenticate</span><span class="p">(</span><span class="n">requested_scopes</span><span class="o">=</span><span class="n">requeated_scopes</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+   <span class="k">if</span> <span class="n">account</span><span class="o">.</span><span class="n">authenticate</span><span class="p">(</span><span class="n">requested_scopes</span><span class="o">=</span><span class="n">requested_scopes</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
       <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">'Authentication Failed'</span><span class="p">)</span>
 
 <span class="c1"># now we are authenticated</span>
