@@ -108,7 +108,7 @@ IANA_TO_WIN = {
     "America/Cuiaba": "Central Brazilian Standard Time",
     "America/Curacao": "SA Western Standard Time",
     "America/Danmarkshavn": "UTC",
-    "America/Dawson": "Pacific Standard Time",
+    "America/Dawson": "Yukon Standard Time",
     "America/Dawson_Creek": "US Mountain Standard Time",
     "America/Denver": "Mountain Standard Time",
     "America/Detroit": "Eastern Standard Time",
@@ -222,7 +222,7 @@ IANA_TO_WIN = {
     "America/Tortola": "SA Western Standard Time",
     "America/Vancouver": "British Columbia Standard Time",
     "America/Virgin": "SA Western Standard Time",
-    "America/Whitehorse": "Pacific Standard Time",
+    "America/Whitehorse": "Yukon Standard Time",
     "America/Winnipeg": "Manitoba Standard Time",
     "America/Yakutat": "Alaskan Standard Time",
     "America/Yellowknife": "Alberta Standard Time",
@@ -386,7 +386,7 @@ IANA_TO_WIN = {
     "Canada/Newfoundland": "Newfoundland Standard Time",
     "Canada/Pacific": "British Columbia Standard Time",
     "Canada/Saskatchewan": "Canada Central Standard Time",
-    "Canada/Yukon": "Pacific Standard Time",
+    "Canada/Yukon": "Yukon Standard Time",
     "Chile/Continental": "Pacific SA Standard Time",
     "Chile/EasterIsland": "Easter Island Standard Time",
     "Cuba": "Cuba Standard Time",
@@ -610,6 +610,7 @@ WIN_TO_IANA.update({
     "British Columbia Standard Time": "America/Vancouver",
     "Alberta Standard Time": "America/Edmonton",
     "Manitoba Standard Time": "America/Winnipeg",
+    "Yukon Standard Time": "America/Whitehorse",
 })
 
 

@@ -22,6 +22,12 @@ def test_canada_2026_windows_to_iana(iana, windows):
     assert get_iana_tz(windows).key == iana
 
 
+def test_yukon():
+    # Yukon has kept UTC-07:00 all year since 2020; Windows has had a zone for it since then.
+    assert get_windows_tz(ZoneInfo("America/Whitehorse")) == "Yukon Standard Time"
+    assert get_iana_tz("Yukon Standard Time").key == "America/Whitehorse"
+
+
 def test_unknown_windows_tz_raises():
     with pytest.raises(ZoneInfoNotFoundError):
         get_iana_tz("No Such Standard Time")
