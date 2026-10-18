@@ -113,7 +113,7 @@ IANA_TO_WIN = {
     "America/Denver": "Mountain Standard Time",
     "America/Detroit": "Eastern Standard Time",
     "America/Dominica": "SA Western Standard Time",
-    "America/Edmonton": "Mountain Standard Time",
+    "America/Edmonton": "Alberta Standard Time",
     "America/Eirunepe": "SA Pacific Standard Time",
     "America/El_Salvador": "Central America Standard Time",
     "America/Ensenada": "Pacific Standard Time (Mexico)",
@@ -141,7 +141,7 @@ IANA_TO_WIN = {
     "America/Indiana/Vincennes": "Eastern Standard Time",
     "America/Indiana/Winamac": "Eastern Standard Time",
     "America/Indianapolis": "US Eastern Standard Time",
-    "America/Inuvik": "Mountain Standard Time",
+    "America/Inuvik": "Alberta Standard Time",
     "America/Iqaluit": "Eastern Standard Time",
     "America/Jamaica": "SA Pacific Standard Time",
     "America/Jujuy": "Argentina Standard Time",
@@ -220,12 +220,12 @@ IANA_TO_WIN = {
     "America/Tijuana": "Pacific Standard Time (Mexico)",
     "America/Toronto": "Eastern Standard Time",
     "America/Tortola": "SA Western Standard Time",
-    "America/Vancouver": "Pacific Standard Time",
+    "America/Vancouver": "British Columbia Standard Time",
     "America/Virgin": "SA Western Standard Time",
     "America/Whitehorse": "Pacific Standard Time",
-    "America/Winnipeg": "Central Standard Time",
+    "America/Winnipeg": "Manitoba Standard Time",
     "America/Yakutat": "Alaskan Standard Time",
-    "America/Yellowknife": "Mountain Standard Time",
+    "America/Yellowknife": "Alberta Standard Time",
     "Antarctica/Casey": "W. Australia Standard Time",
     "Antarctica/Davis": "SE Asia Standard Time",
     "Antarctica/DumontDUrville": "West Pacific Standard Time",
@@ -379,12 +379,12 @@ IANA_TO_WIN = {
     "CET": "Romance Standard Time",
     "CST6CDT": "Central Standard Time",
     "Canada/Atlantic": "Atlantic Standard Time",
-    "Canada/Central": "Central Standard Time",
+    "Canada/Central": "Manitoba Standard Time",
     "Canada/East-Saskatchewan": "Canada Central Standard Time",
     "Canada/Eastern": "Eastern Standard Time",
-    "Canada/Mountain": "Mountain Standard Time",
+    "Canada/Mountain": "Alberta Standard Time",
     "Canada/Newfoundland": "Newfoundland Standard Time",
-    "Canada/Pacific": "Pacific Standard Time",
+    "Canada/Pacific": "British Columbia Standard Time",
     "Canada/Saskatchewan": "Canada Central Standard Time",
     "Canada/Yukon": "Pacific Standard Time",
     "Chile/Continental": "Pacific SA Standard Time",
@@ -604,6 +604,13 @@ IANA_TO_WIN = {
 
 # when converting to Iana, only consider for win UTC the value Iana UTC
 WIN_TO_IANA = {v: k for k, v in IANA_TO_WIN.items() if v != 'UTC' or (v == 'UTC' and k == 'UTC')}
+# Windows zones added in 2026 for Canada: map back to the canonical IANA names
+# (as CLDR does), not to Canada/* aliases that some systems no longer install.
+WIN_TO_IANA.update({
+    "British Columbia Standard Time": "America/Vancouver",
+    "Alberta Standard Time": "America/Edmonton",
+    "Manitoba Standard Time": "America/Winnipeg",
+})
 
 
 def get_iana_tz(windows_tz: str) -> ZoneInfo:
