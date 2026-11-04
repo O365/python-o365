@@ -217,7 +217,7 @@ class Account:
     def connection(self):
         """ Alias for self.con
 
-        :rtype: type(self.connection_constructor)
+        :rtype: Connection(self.connection_constructor)
         """
         return self.con
 
