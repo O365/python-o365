@@ -12,6 +12,11 @@ class Group(ApiComponent):
     _endpoints = {
             'get_group_owners': '/groups/{group_id}/owners',
             'get_group_members': '/groups/{group_id}/members',
+            'add_group_owner': '/groups/{group_id}/owners/$ref',
+            'add_group_member': '/groups/{group_id}/members/$ref',
+            'add_group_members': '/groups/{group_id}',
+            'remove_group_owner': '/groups/{group_id}/owners/{object_id}/$ref',
+            'remove_group_member': '/groups/{group_id}/members/{object_id}/$ref',
     }
 
     member_constructor = User  #: :meta private:
@@ -110,6 +115,96 @@ class Group(ApiComponent):
         data = response.json()
 
         return [self.member_constructor(parent=self, **{self._cloud_data_key: lst}) for lst in data.get('value', [])]
+
+
+    def remove_group_owner(self, user):
+        """ Remove the specified group owner
+
+
+        :param user: either a User object, or a str with the directory object id of the owner to be deleted
+        :rtype: None
+        """
+        return self._remove_member(user, "remove_group_owner")
+
+    def remove_group_member(self, user):
+        """ Remove the specified group member
+
+
+        :param user: either a User object, or a str with the directory object id of the owner to be deleted
+        :rtype: None
+        """
+        return self._remove_member(user, "remove_group_member")
+
+    def _remove_member(self, user, url_key):
+
+        if isinstance(user, User):
+            object_id = user.id
+        elif isinstance(user, str):
+            object_id = user
+        else:
+            raise RuntimeError("group._remove_member: bad user type: needs to be User or str")
+
+
+
+    def add_group_member(self, user: User | str):
+        """ Add a user to the group as a member.
+
+        :param user: either a User object, or the object_id of a user in the directory to add
+        :type user: User | str
+        :rtype: None
+        """
+        return self._add_member(user, "add_group_member")
+
+    def add_group_owner(self, user):
+        """ Add a user to the group as an owner.
+
+        :param user: either a User object, or the object_id of a user in the directory to add
+        :type user: User | str
+        :rtype: None
+        """
+        return self._add_member(user, "add_group_owner")
+
+    def _add_member(self, user, url_key):
+        object_id = self._arg_to_user_id(user)
+        url = self.build_url(self._endpoints.get(url_key).format(group_id=self.object_id))
+
+        payload = { '@odata.id': f'https://graph.microsoft.com/v1.0/directoryObjects/{ object_id }' }
+        return self.con.post(url, data=payload)
+
+    def _arg_to_user_id(self, user):
+        """ Translate a user argument (either a User object or a string of the user id) to an object_id string
+        """
+
+        if isinstance(user, User):
+            object_id = user.id
+        elif isinstance(user, str):
+            object_id = user
+        else:
+            raise Exception("group._arg_to_user_id: bad user type: needs to be User or str")
+
+        return object_id
+
+
+    def add_group_members(self, member_ids: list[User | str]):
+        """ Add the specified users to this group.
+
+        Called with a list of member object_id strings or User objects.  You can add up to 20 users at a time.
+
+        :param member_ids: list of member id strings or User objects
+        :rtype: None
+        """
+
+        if len(member_ids) > 20:
+            raise RuntimeError(f"group.add_group_members: cannot add more than 20 users at a time (attempted { len(member_ids) })")
+        url = self.build_url(self._endpoints.get('add_group_members').format(group_id=self.object_id))
+
+        # construct the payload
+        payload = {
+                'members@odata.bind': [ f'https://graph.microsoft.com/v1.0/directoryObjects/{ self._arg_to_user_id(id) }' for id in member_ids ]
+                }
+
+        return self.con.patch(url, data=payload)
+
 
 
 class Groups(ApiComponent):
