@@ -150,11 +150,13 @@ class SharepointListItem(ApiComponent):
         self._track_changes = TrackerSet(casing=self._cc)
 
     def _valid_field(self, field):
-        # Verify the used field names are valid internal field names
-        valid_field_names = self.fields if self.fields \
-            else self._parent.column_name_cw.values() \
-            if self._parent \
-            else None
+        # Verify the used field names are valid internal field names.
+        # The item fields only hold the columns that have a value on this
+        # item, so the list columns are checked too: an empty column can
+        # still be set.
+        valid_field_names = set(self.fields or ())
+        if self._parent:
+            valid_field_names.update(self._parent.column_name_cw.values())
         if valid_field_names:
             return field in valid_field_names
 
