@@ -372,3 +372,14 @@ class Account:
 
         from .subscriptions import Subscriptions
         return Subscriptions(parent=self, main_resource=resource)
+
+    def work_hours_and_locations(self):
+        """Get an instance to work with work-hours and location occurrences."""
+        if not isinstance(self.protocol, MSGraphProtocol):
+            raise RuntimeError(
+                "work_hours_and_locations api only works on Microsoft Graph API"
+            )
+
+        from .work_hours_and_locations import WorkHoursAndLocations
+
+        return WorkHoursAndLocations(parent=self)

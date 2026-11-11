@@ -22,4 +22,5 @@ O365 API
    api/subscriptions
    api/tasks
    api/teams
+   api/work_hours_and_locations
    api/utils
