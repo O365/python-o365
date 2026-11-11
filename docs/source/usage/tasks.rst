@@ -34,9 +34,28 @@ Working with the `ToDo`` instance:
     new_task.mark_completed()
     new_task.save()
 
+    # set importance using the Graph values: 'low', 'normal', or 'high'
+    new_task.importance = 'low'
+    new_task.save()
+
     # naive datetimes will automatically be converted to timezone aware datetime
     #  objects using the local timezone detected or the protocol provided timezone
     #  as with the Calendar functionality
+
+Importance accepts only ``'low'``, ``'normal'``, or ``'high'``; other values raise
+``ValueError``. Saving unrelated changes leaves the existing importance unchanged.
+
+Renaming an existing checklist item:
+
+.. code-block:: python
+
+    checklist_item = new_task.get_checklist_item('checklist-item-id')
+    checklist_item.displayname = 'Review the contract'
+    checklist_item.save()
+
+The display name must be a string. Renaming an item leaves its checked state
+unchanged unless you also call ``mark_checked()`` or ``mark_unchecked()`` before
+saving.
 
 Working with Folder instances:
 
