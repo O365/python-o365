@@ -657,7 +657,7 @@ class Connection:
             raise ValueError("Must provide at least one scope")
 
         flow = self.msal_client.initiate_auth_code_flow(
-            scopes=requested_scopes, redirect_uri=redirect_uri
+            scopes=requested_scopes, redirect_uri=redirect_uri, response_mode="form_post"
         )
 
         return flow.get("auth_uri"), flow
