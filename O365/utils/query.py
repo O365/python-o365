@@ -113,13 +113,13 @@ class LogicalFilter(OperationQueryFilter):
         self._attribute: str = attribute
         self._word: str = word
 
-    def _prepare_attribute(self, item_name: str = None) -> str:
+    def _prepare_attribute(self, item_name: Optional[str] = None) -> str:
         if item_name:
-            if self._attribute is None:
+            if self._attribute:
+                return f"{item_name}/{self._attribute}"
+            else:
                 # iteration will occur in the item itself
                 return f"{item_name}"
-            else:
-                return f"{item_name}/{self._attribute}"
         else:
             return self._attribute
 
