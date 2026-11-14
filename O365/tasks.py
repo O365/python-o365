@@ -8,7 +8,7 @@ from enum import Enum
 from bs4 import BeautifulSoup as bs
 from dateutil.parser import parse
 
-from .utils import ApiComponent, TrackerSet
+from .utils import ApiComponent, ImportanceLevel, TrackerSet
 
 log = logging.getLogger(__name__)
 
@@ -402,11 +402,20 @@ class ChecklistItem(ApiComponent):
 
     @property
     def displayname(self):
-        """Return Display Name of the task.
+        """Display name of the checklist item.
 
+        :getter: Get display name
+        :setter: Set display name
         :type: str
         """
         return self.__displayname
+
+    @displayname.setter
+    def displayname(self, value):
+        if not isinstance(value, str):
+            raise ValueError("'displayname' must be a string")
+        self.__displayname = value
+        self._track_changes.add(self._cc("displayName"))
 
     @property
     def created(self):
@@ -662,6 +671,9 @@ class Task(ApiComponent):
             cc("status"): "completed" if self.__is_completed else "notStarted",
         }
 
+        if self.__importance is not None:
+            data[cc("importance")] = self.__importance
+
         if self.__body:
             data[cc("body")] = {
                 cc("contentType"): self.body_type,
@@ -728,10 +740,24 @@ class Task(ApiComponent):
     def importance(self):
         """Return Task importance.
 
-        :getter: Get importance level (Low, Normal, High)
+        :getter: Get importance level
+        :setter: Set importance using a string or ImportanceLevel
         :type: str
         """
         return self.__importance
+
+    @importance.setter
+    def importance(self, value):
+        importance = (
+            value if isinstance(value, ImportanceLevel)
+            else ImportanceLevel.from_value(value)
+        )
+        if importance is None:
+            raise ValueError(
+                "'importance' must be 'low', 'normal', 'high', or an ImportanceLevel"
+            )
+        self.__importance = importance.value
+        self._track_changes.add(self._cc("importance"))
 
     @property
     def is_starred(self):
