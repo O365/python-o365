@@ -4,6 +4,7 @@ import pytest
 
 from O365.connection import MSGraphProtocol
 from O365.tasks import ChecklistItem, Task
+from O365.utils import ImportanceLevel
 
 
 @pytest.fixture
@@ -17,8 +18,9 @@ def task():
 
 
 @pytest.mark.parametrize("importance", ["low", "normal", "high"])
-def test_save_task_importance(task, importance):
-    task.importance = importance
+@pytest.mark.parametrize("as_enum", [False, True])
+def test_save_task_importance(task, importance, as_enum):
+    task.importance = ImportanceLevel.from_value(importance) if as_enum else importance
 
     assert task.save() is True
     task.con.patch.assert_called_once_with(
@@ -32,10 +34,11 @@ def test_save_task_importance(task, importance):
 
 
 @pytest.mark.parametrize("importance", ["low", "normal", "high"])
-def test_create_task_importance(task, importance):
+@pytest.mark.parametrize("as_enum", [False, True])
+def test_create_task_importance(task, importance, as_enum):
     task.task_id = None
     task.con.post.return_value.json.return_value = {"id": "new-task"}
-    task.importance = importance
+    task.importance = ImportanceLevel.from_value(importance) if as_enum else importance
     task.subject = "New task"
 
     assert task.save() is True
@@ -52,7 +55,7 @@ def test_create_task_importance(task, importance):
     )
 
 
-@pytest.mark.parametrize("value", [None, "", "urgent", "High", 1, [], {}])
+@pytest.mark.parametrize("value", [None, "", "urgent", 1, [], {}])
 def test_invalid_task_importance(task, value):
     with pytest.raises(ValueError, match="'importance' must be"):
         task.importance = value
@@ -60,6 +63,17 @@ def test_invalid_task_importance(task, value):
     assert task.importance == "high"
     assert task.save() is True
     task.con.patch.assert_not_called()
+
+
+def test_task_importance_uses_shared_enum_conversion(task):
+    task.importance = "High"
+
+    assert task.save() is True
+    task.con.patch.assert_called_once_with(
+        task.protocol.service_url + "me/todo/lists/folder/tasks/task",
+        data={"importance": "high"},
+    )
+    assert task.importance == "high"
 
 
 def test_save_task_importance_with_other_edits(task):

@@ -42,8 +42,10 @@ Working with the `ToDo`` instance:
     #  objects using the local timezone detected or the protocol provided timezone
     #  as with the Calendar functionality
 
-Importance accepts only ``'low'``, ``'normal'``, or ``'high'``; other values raise
-``ValueError``. Saving unrelated changes leaves the existing importance unchanged.
+Importance accepts strings such as ``'low'``, ``'normal'``, or ``'high'``, or an
+``O365.utils.ImportanceLevel`` member, using the shared enum's string conversion.
+Invalid values raise ``ValueError``. The getter continues to return the Graph
+string. Saving unrelated changes leaves the existing importance unchanged.
 
 Renaming an existing checklist item:
 

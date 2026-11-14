@@ -8,7 +8,7 @@ from enum import Enum
 from bs4 import BeautifulSoup as bs
 from dateutil.parser import parse
 
-from .utils import ApiComponent, TrackerSet
+from .utils import ApiComponent, ImportanceLevel, TrackerSet
 
 log = logging.getLogger(__name__)
 
@@ -741,16 +741,22 @@ class Task(ApiComponent):
         """Return Task importance.
 
         :getter: Get importance level
-        :setter: Set importance to 'low', 'normal', or 'high'
+        :setter: Set importance using a string or ImportanceLevel
         :type: str
         """
         return self.__importance
 
     @importance.setter
     def importance(self, value):
-        if not isinstance(value, str) or value not in ("low", "normal", "high"):
-            raise ValueError("'importance' must be 'low', 'normal', or 'high'")
-        self.__importance = value
+        importance = (
+            value if isinstance(value, ImportanceLevel)
+            else ImportanceLevel.from_value(value)
+        )
+        if importance is None:
+            raise ValueError(
+                "'importance' must be 'low', 'normal', 'high', or an ImportanceLevel"
+            )
+        self.__importance = importance.value
         self._track_changes.add(self._cc("importance"))
 
     @property
