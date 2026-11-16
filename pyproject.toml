@@ -25,7 +25,7 @@ dependencies = [
     "msal>=1.31.1",
     "python-dateutil>=2.9.0.post0",
     "requests>=2.32.3",
-    "tzdata>=2024.2",
+    "tzdata>=2026.6",
     "tzlocal>=5.2",
 ]
 
