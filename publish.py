@@ -40,7 +40,7 @@ def main() -> None:
         run("uv", "build", "--no-sources")
 
     # 3. Publish
-    if click.confirm("Do you want to publish the package?", default=False):
+    if click.confirm("Do you want to publish the package?", default=True):
         click.echo("Publishing package...")
         run("uv", "publish")
 
