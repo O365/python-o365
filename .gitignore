@@ -73,6 +73,11 @@ Pipfile.lock
 # config.py file that contains secrets
 config.py
 
+# environment files that may contain secrets
+.env
+.env.*
+!.env.example
+
 # virtualenvironments
 venv/
 

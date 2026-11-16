@@ -2,6 +2,11 @@
 
 Almost every release features a lot of bugfixes but those are not listed here.
 
+## Versions 2.1.11 (2026-11-16)
+
+- Address-Book: Implement birthday property in address book (Thanks @RogerSelwyn)
+- Sharepoint: Allow updating SharePoint list item fields that have no value yet (Thanks @RClaudiuM)
+- Tasks: Add writable To Do importance and checklist names (Thanks @snfx-johaver)
 
 ## Versions 2.1.10 (2026-09-09)
 
