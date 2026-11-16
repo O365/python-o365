@@ -140,11 +140,28 @@
 <span class="n">new_task</span><span class="o">.</span><span class="n">mark_completed</span><span class="p">()</span>
 <span class="n">new_task</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
 
+<span class="c1"># set importance using the Graph values: 'low', 'normal', or 'high'</span>
+<span class="n">new_task</span><span class="o">.</span><span class="n">importance</span> <span class="o">=</span> <span class="s1">'low'</span>
+<span class="n">new_task</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+
 <span class="c1"># naive datetimes will automatically be converted to timezone aware datetime</span>
 <span class="c1">#  objects using the local timezone detected or the protocol provided timezone</span>
 <span class="c1">#  as with the Calendar functionality</span>
 </pre></div>
 </div>
+<p>Importance accepts strings such as <code class="docutils literal notranslate"><span class="pre">'low'</span></code>, <code class="docutils literal notranslate"><span class="pre">'normal'</span></code>, or <code class="docutils literal notranslate"><span class="pre">'high'</span></code>, or an
+<code class="docutils literal notranslate"><span class="pre">O365.utils.ImportanceLevel</span></code> member, using the shared enum’s string conversion.
+Invalid values raise <code class="docutils literal notranslate"><span class="pre">ValueError</span></code>. The getter continues to return the Graph
+string. Saving unrelated changes leaves the existing importance unchanged.</p>
+<p>Renaming an existing checklist item:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">checklist_item</span> <span class="o">=</span> <span class="n">new_task</span><span class="o">.</span><span class="n">get_checklist_item</span><span class="p">(</span><span class="s1">'checklist-item-id'</span><span class="p">)</span>
+<span class="n">checklist_item</span><span class="o">.</span><span class="n">displayname</span> <span class="o">=</span> <span class="s1">'Review the contract'</span>
+<span class="n">checklist_item</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>The display name must be a string. Renaming an item leaves its checked state
+unchanged unless you also call <code class="docutils literal notranslate"><span class="pre">mark_checked()</span></code> or <code class="docutils literal notranslate"><span class="pre">mark_unchecked()</span></code> before
+saving.</p>
 <p>Working with Folder instances:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1">#create a new folder</span>
 <span class="n">new_folder</span> <span class="o">=</span> <span class="n">todo</span><span class="o">.</span><span class="n">new_folder</span><span class="p">(</span><span class="s1">'Defenders'</span><span class="p">)</span>
