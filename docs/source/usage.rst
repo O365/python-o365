@@ -20,4 +20,5 @@ Detailed Usage
    usage/subscriptions
    usage/tasks
    usage/teams
+   usage/work_hours_and_locations
    usage/utils
